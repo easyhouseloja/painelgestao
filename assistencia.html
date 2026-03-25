@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Assistência Técnica — 23/03/2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{--bg:#0b0e1a;--surface:#111629;--surface2:#1a2040;--border:#252d4a;--text:#e2e8f0;--muted:#64748b;--blue:#3b82f6;--ok:#22c55e;--warn:#eab308;--danger:#ef4444;--accent:#f97316;--font:'Syne',system-ui,sans-serif;--mono:'DM Mono',monospace}
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
+  header{padding:20px 40px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .logo{font-size:18px;font-weight:800;letter-spacing:-.5px}
+  .subtitle{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+  .date-badge{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .nav-tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;gap:2px;flex-wrap:wrap}
+  .nav-tab{padding:12px 18px;font-size:12px;font-family:var(--mono);cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s}
+  .nav-tab.active{color:var(--text);border-bottom-color:var(--blue)}
+  .nav-tab:hover:not(.active){color:var(--text)}
+  .tab-pane{display:none}
+  .tab-pane.active{display:block}
+  .alert-banner{background:linear-gradient(90deg,rgba(34,197,94,.18),rgba(34,197,94,.04));border-bottom:2px solid rgba(34,197,94,.4);padding:13px 40px;display:flex;align-items:center;gap:10px;font-size:12px;color:#86efac;font-family:var(--mono)}
+  main{padding:28px 40px}
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+  .kpi-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+  .kpi-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px 20px;position:relative;overflow:hidden}
+  .kpi-card.d{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.06)}
+  .kpi-card.w{border-color:rgba(234,179,8,.4);background:rgba(234,179,8,.06)}
+  .kpi-card.ok{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.06)}
+  .kpi-card.o{border-color:rgba(249,115,22,.4);background:rgba(249,115,22,.06)}
+  .kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:var(--mono);margin-bottom:10px}
+  .kpi-value{font-size:28px;font-weight:800;line-height:1}
+  .kpi-value.d{color:var(--danger)}.kpi-value.w{color:var(--warn)}.kpi-value.ok{color:var(--ok)}.kpi-value.o{color:var(--accent)}
+  .kpi-sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
+  .kpi-icon{position:absolute;right:16px;top:16px;font-size:22px;opacity:.25}
+  .delta{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-family:var(--mono);font-weight:600;margin-left:6px}
+  .delta.up{background:rgba(239,68,68,.2);color:#fca5a5}
+  .delta.dn{background:rgba(34,197,94,.2);color:#86efac}
+  .section-title{font-size:11px;font-family:var(--mono);text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+  .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
+  .chart-grid-2{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-bottom:20px}
+  .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px}
+  .chart-title{font-size:13px;font-weight:700;margin-bottom:3px}
+  .chart-desc{font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:14px}
+  .chart-wrap{position:relative;height:230px}
+  .chart-wrap.tall{height:290px}
+  .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+  .donut-label{font-size:9px;color:var(--muted);font-family:var(--mono)}
+  .table-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:20px}
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:var(--mono);padding:8px 10px;border-bottom:1px solid var(--border)}
+  tbody td{padding:9px 10px;font-size:12px;border-bottom:1px solid rgba(37,45,74,.5)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:var(--surface2)}
+  .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-family:var(--mono);font-weight:600}
+  .b-ok{background:rgba(34,197,94,.15);color:#86efac}
+  .b-w{background:rgba(234,179,8,.15);color:#fde047}
+  .b-d{background:rgba(249,115,22,.15);color:#fb923c}
+  .b-c{background:rgba(239,68,68,.15);color:#fca5a5}
+  .b-blue{background:rgba(59,130,246,.15);color:#93c5fd}
+  .meter-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .meter-label{font-size:11px;font-family:var(--mono);width:200px;flex-shrink:0}
+  .meter-bg{flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+  .meter-fill{height:100%;border-radius:4px}
+  .meter-count{font-family:var(--mono);font-size:11px;width:32px;text-align:right;flex-shrink:0}
+  .uf-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:12px}
+  .uf-bar-bg{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:12px}
+  .uf-bar{height:100%;border-radius:3px}
+  .motivo-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .motivo-name{font-size:11px;font-family:var(--mono);width:220px;flex-shrink:0}
+  .motivo-bar-bg{flex:1;height:10px;background:var(--surface2);border-radius:5px;overflow:hidden}
+  .motivo-fill{height:100%;border-radius:5px}
+  .motivo-count{font-family:var(--mono);font-size:11px;width:32px;text-align:right;flex-shrink:0;color:var(--accent);font-weight:600}
+  .crit-row{display:grid;grid-template-columns:80px 1fr 100px 90px 80px;gap:8px;padding:9px 12px;align-items:center;border-bottom:1px solid var(--border);font-size:12px}
+  .crit-row:last-child{border-bottom:none}
+  .crit-row.hdr{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-family:var(--mono);border-bottom:1px solid var(--border);padding-bottom:7px}
+  .comp-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+  .comp-row:last-child{border-bottom:none}
+  .comp-label{color:var(--muted);font-family:var(--mono);font-size:12px}
+  .comp-old{font-family:var(--mono);color:var(--muted);font-size:13px}
+  .comp-arrow{font-size:16px;margin:0 4px}
+  .comp-new{font-family:var(--mono);font-size:14px;font-weight:700}
+  .comp-title{font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .filter-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-family:var(--mono);cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .15s}
+  .filter-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+  .filter-btn:hover:not(.active){border-color:var(--blue);color:var(--text)}
+  #searchInput::placeholder{color:var(--muted)}
+  footer{text-align:center;padding:20px;font-size:10px;color:var(--muted);font-family:var(--mono);border-top:1px solid var(--border);margin-top:10px}
+  @media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr}.chart-grid-3{grid-template-columns:1fr 1fr}.chart-grid-2{grid-template-columns:1fr}.kpi-grid-3{grid-template-columns:1fr 1fr}.kpi-grid-4{grid-template-columns:1fr 1fr}main{padding:16px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">🛠 Assistência Técnica · Asteca</div>
+    <div class="subtitle">Fonte: Relatório COMERCIAL 009 · 23/03/2026 · Meta: 15 dias para envio</div>
+  </div>
+  <div class="date-badge">Atualizado em <span style="color:var(--text);font-weight:600">23/03/2026</span></div>
+</header>
+
+<div class="alert-banner">
+  ✅ &nbsp;Excelência mantida! <strong>3 itens em atraso</strong> de 59 totais (<strong>5,1%</strong>) · Atraso médio: <strong>6,5d</strong> · Faixas Crítico e Moderado: <strong>zeradas pelo 3º dia seguido</strong> · MG/RJ/ES: 0 atrasos
+</div>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showTab('resumo',this)">📊 Resumo</button>
+  <button class="nav-tab" onclick="showTab('motivos',this)">🔍 Motivos</button>
+  <button class="nav-tab" onclick="showTab('regioes',this)">🗺️ Regiões</button>
+  <button class="nav-tab" onclick="showTab('pecas',this)">📦 Peças</button>
+  <button class="nav-tab" onclick="showTab('criticos',this)">🚨 Atrasos</button>
+  <button class="nav-tab" onclick="showTab('comparativo',this)">📈 Comparativo</button>
+  <button class="nav-tab" onclick="showTab('pedidos',this)">📋 Pedidos</button>
+</div>
+
+<main>
+
+<!-- ═══ RESUMO ═══ -->
+<div id="tab-resumo" class="tab-pane active">
+  <div class="kpi-grid">
+    <div class="kpi-card ok"><div class="kpi-label">Total de Itens</div><div class="kpi-value ok">59 <span class="delta dn">-14</span></div><div class="kpi-sub">44 pedidos únicos</div><div class="kpi-icon">📦</div></div>
+    <div class="kpi-card d"><div class="kpi-label">Pendentes de Envio</div><div class="kpi-value d">59</div><div class="kpi-sub">100% — sem NF emitida</div><div class="kpi-icon">🚨</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Em Atraso (&gt;15 dias)</div><div class="kpi-value ok">3 <span class="delta up">+1</span></div><div class="kpi-sub">5,1% do total · ainda excelente</div><div class="kpi-icon">⏰</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Atraso Médio</div><div class="kpi-value ok">6,5d <span class="delta up">+1,3d</span></div><div class="kpi-sub">dentro da meta — ótimo</div><div class="kpi-icon">📅</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Maior Atraso</div><div class="kpi-value ok">27d <span class="delta up">+3d</span></div><div class="kpi-sub">pedido desde 24/02/2026</div><div class="kpi-icon">📌</div></div>
+  </div>
+  <div class="kpi-grid-3">
+    <div class="kpi-card ok"><div class="kpi-label">Valor Total Pendente</div><div class="kpi-value ok" style="font-size:22px">R$ 2.105,45 <span class="delta dn">-11%</span></div><div class="kpi-sub">vs R$2.359 em 20/03</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Valor em Atraso</div><div class="kpi-value ok" style="font-size:22px">R$ 34,67 <span class="delta up">+8%</span></div><div class="kpi-sub">vs R$32 em 20/03 · ainda mínimo</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Maior Atraso Atual</div><div class="kpi-value ok" style="font-size:22px">27 dias</div><div class="kpi-sub">3 pedidos SP em faixa Leve</div></div>
+  </div>
+
+  <div class="chart-grid-3">
+    <div class="chart-card">
+      <div class="chart-title">Distribuição por Faixa</div>
+      <div class="chart-desc">itens pendentes por severidade</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="cDonut"></canvas>
+        <div class="donut-center"><div style="font-size:26px;font-weight:800">59</div><div class="donut-label">itens</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono)"><span style="width:10px;height:10px;border-radius:50%;background:#22c55e;flex-shrink:0"></span>No Prazo 56</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono)"><span style="width:10px;height:10px;border-radius:50%;background:#eab308;flex-shrink:0"></span>Leve 3</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono)"><span style="width:10px;height:10px;border-radius:50%;background:#334155;flex-shrink:0"></span>Moderado 0 ✅</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono)"><span style="width:10px;height:10px;border-radius:50%;background:#334155;flex-shrink:0"></span>Crítico 0 ✅</div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Pendentes por Região</div>
+      <div class="chart-desc">volume e atraso por região</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="cRegiao"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Volume por Data do Pedido</div>
+      <div class="chart-desc">itens pendentes por data de abertura</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="cTimeline"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="section-title">Distribuição por Faixa de Atraso</div>
+      <div class="meter-row"><div class="meter-label">✅ No prazo (0–15 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:94.9%;background:var(--ok)"></div></div><div class="meter-count">56</div></div>
+      <div class="meter-row"><div class="meter-label">🟡 Leve (16–30 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:5.1%;background:var(--warn)"></div></div><div class="meter-count">3</div></div>
+      <div class="meter-row"><div class="meter-label">🟢 Moderado (31–45 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:0%;background:var(--ok)"></div></div><div class="meter-count" style="color:var(--ok)">0</div></div>
+      <div class="meter-row"><div class="meter-label">🟢 Crítico (&gt;45 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:0%;background:var(--ok)"></div></div><div class="meter-count" style="color:var(--ok)">0</div></div>
+      <div style="margin-top:14px;padding:12px;background:rgba(34,197,94,.08);border-radius:8px;border:1px solid rgba(34,197,94,.3)">
+        <div style="font-size:11px;font-family:var(--mono);color:#86efac;line-height:1.7">
+          🏆 Faixas Crítico e Moderado: <strong>zeradas pelo 3º dia consecutivo</strong><br>
+          Apenas 3 itens Leve — os 2 pedidos mais antigos de fev/26 + 1 de mar/26.<br>
+          Atraso médio de <strong>6,5d</strong> está bem abaixo da meta de 15 dias.
+        </div>
+      </div>
+      <div style="margin-top:10px"><canvas id="cFaixa" style="max-height:80px"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="section-title">Pendentes por UF</div>
+      <div><div class="uf-header"><span style="font-weight:700">🔵 SP — São Paulo</span><span style="color:var(--muted);font-family:var(--mono);font-size:10px">25 itens · 9,4d · <span style="color:var(--warn)">3 atrasados</span></span></div><div class="uf-bar-bg"><div class="uf-bar" style="width:100%;background:linear-gradient(90deg,var(--blue),var(--warn))"></div></div></div>
+      <div><div class="uf-header"><span style="font-weight:700">🟠 MG — Minas Gerais</span><span style="color:var(--muted);font-family:var(--mono);font-size:10px">23 itens · 3,5d · <span style="color:var(--ok)">0 atrasados</span></span></div><div class="uf-bar-bg"><div class="uf-bar" style="width:92%;background:linear-gradient(90deg,var(--ok),var(--ok))"></div></div></div>
+      <div><div class="uf-header"><span style="font-weight:700">🔴 RJ — Rio de Janeiro</span><span style="color:var(--muted);font-family:var(--mono);font-size:10px">9 itens · 5,0d · <span style="color:var(--ok)">0 atrasados</span></span></div><div class="uf-bar-bg"><div class="uf-bar" style="width:36%;background:linear-gradient(90deg,var(--blue),var(--ok))"></div></div></div>
+      <div><div class="uf-header"><span style="font-weight:700">🟡 ES — Espírito Santo</span><span style="color:var(--muted);font-family:var(--mono);font-size:10px">2 itens · 12,0d · <span style="color:var(--ok)">0 atrasados</span></span></div><div class="uf-bar-bg"><div class="uf-bar" style="width:8%;background:var(--ok)"></div></div></div>
+      <div style="margin-top:14px;padding:10px;background:rgba(34,197,94,.08);border-radius:8px;border:1px solid rgba(34,197,94,.2)">
+        <div style="font-size:10px;font-family:var(--mono);color:#86efac">🎉 MG, RJ e ES: 0 atrasos pelo 3º dia! SP: 3 itens Leve (pedidos antigos fev/mar)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MOTIVOS ═══ -->
+<div id="tab-motivos" class="tab-pane">
+  <div class="kpi-grid-3">
+    <div class="kpi-card o"><div class="kpi-label">Principal Causa</div><div class="kpi-value o" style="font-size:18px">Avaria no Transporte</div><div class="kpi-sub">23 ocorrências — 39,0%</div><div class="kpi-icon">🚛</div></div>
+    <div class="kpi-card w"><div class="kpi-label">2ª Causa</div><div class="kpi-value w" style="font-size:18px">Quina Batida</div><div class="kpi-sub">11 ocorrências — 18,6%</div><div class="kpi-icon">📐</div></div>
+    <div class="kpi-card d"><div class="kpi-label">3ª Causa</div><div class="kpi-value d" style="font-size:18px">Peça Quebrada</div><div class="kpi-sub">10 ocorrências — 16,9%</div><div class="kpi-icon">💥</div></div>
+  </div>
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Ranking de Motivos</div>
+      <div class="chart-desc">frequência absoluta de cada causa</div>
+      <div class="motivo-row"><div class="motivo-name">🔴 Avaria durante o Transporte</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:100%;background:var(--accent)"></div></div><div class="motivo-count">23</div></div>
+      <div class="motivo-row"><div class="motivo-name">🟡 Quina Batida</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:47.8%;background:var(--warn)"></div></div><div class="motivo-count" style="color:var(--warn)">11</div></div>
+      <div class="motivo-row"><div class="motivo-name">🟠 Peça Quebrada</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:43.5%;background:var(--danger)"></div></div><div class="motivo-count" style="color:var(--danger)">10</div></div>
+      <div class="motivo-row"><div class="motivo-name">🔵 Espelho Quebrado</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:34.8%;background:var(--blue)"></div></div><div class="motivo-count" style="color:var(--blue)">8</div></div>
+      <div class="motivo-row"><div class="motivo-name">⚪ Faltou Kit Ferragem</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:13%;background:var(--muted)"></div></div><div class="motivo-count" style="color:var(--muted)">3</div></div>
+      <div class="motivo-row"><div class="motivo-name">⚪ Outros (4 causas)</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:17.4%;background:var(--border)"></div></div><div class="motivo-count" style="color:var(--muted)">4</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="chart-card">
+        <div class="chart-title">Distribuição por Categoria</div>
+        <div class="chart-desc">agrupamento por origem do problema</div>
+        <div class="chart-wrap" style="height:170px"><canvas id="cMotivos"></canvas></div>
+      </div>
+      <div class="chart-card" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
+        <div><div style="font-size:22px;font-weight:800;color:var(--accent)">34</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Logística — Transporte (57,6%)</div></div>
+        <div><div style="font-size:22px;font-weight:800;color:var(--danger)">18</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Qualidade — Produto (30,5%)</div></div>
+        <div><div style="font-size:22px;font-weight:800;color:var(--blue)">7</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Processos — Operac. (11,9%)</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REGIÕES ═══ -->
+<div id="tab-regioes" class="tab-pane">
+  <div class="chart-grid-2">
+    <div class="chart-card"><div class="chart-title">Itens Pendentes por UF</div><div class="chart-desc">total pendente e em atraso por estado</div><div class="chart-wrap tall"><canvas id="cUFBars"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Composição Regional</div><div class="chart-desc">distribuição proporcional por UF</div><div class="chart-wrap" style="height:200px"><canvas id="cUFDonut"></canvas></div></div>
+  </div>
+  <div class="chart-grid-2">
+    <div class="table-card" style="margin-bottom:0">
+      <div class="section-title">Detalhamento por UF</div>
+      <table><thead><tr><th>UF</th><th>Pendentes</th><th>Em Atraso</th><th>No Prazo</th><th>% Atraso</th><th>Média dias</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SP</strong></td><td style="font-weight:700;color:var(--blue)">25</td><td style="font-weight:700;color:var(--warn)">3</td><td style="color:var(--ok)">22</td><td>12,0%</td><td style="font-family:var(--mono)">9,4d</td><td><span class="badge b-ok">Bom</span></td></tr>
+        <tr><td><strong>MG</strong></td><td style="font-weight:700;color:var(--blue)">23</td><td style="font-weight:700;color:var(--ok)">0</td><td style="color:var(--ok)">23</td><td>0,0%</td><td style="font-family:var(--mono)">3,5d</td><td><span class="badge b-ok">🎉 Zerado</span></td></tr>
+        <tr><td><strong>RJ</strong></td><td style="font-weight:700;color:var(--blue)">9</td><td style="font-weight:700;color:var(--ok)">0</td><td style="color:var(--ok)">9</td><td>0,0%</td><td style="font-family:var(--mono)">5,0d</td><td><span class="badge b-ok">🎉 Zerado</span></td></tr>
+        <tr><td><strong>ES</strong></td><td style="font-weight:700;color:var(--blue)">2</td><td style="font-weight:700;color:var(--ok)">0</td><td style="color:var(--ok)">2</td><td>0,0%</td><td style="font-family:var(--mono)">12,0d</td><td><span class="badge b-ok">No Prazo</span></td></tr>
+      </tbody></table>
+    </div>
+    <div class="table-card" style="margin-bottom:0">
+      <div class="section-title">Detalhamento por Região</div>
+      <table><thead><tr><th>Região</th><th>Pendentes</th><th>Em Atraso</th><th>% Atraso</th><th>Média</th></tr></thead>
+      <tbody>
+        <tr><td>SP/SUL</td><td style="font-weight:700;color:var(--blue)">25</td><td style="color:var(--warn);font-weight:700">3</td><td style="font-family:var(--mono)">12,0%</td><td style="font-family:var(--mono)">9,4d</td></tr>
+        <tr><td>MG/RJ/ES</td><td style="font-weight:700;color:var(--blue)">34</td><td style="color:var(--ok);font-weight:700">0</td><td style="font-family:var(--mono)">0,0%</td><td style="font-family:var(--mono)">4,4d</td></tr>
+      </tbody></table>
+      <div style="margin-top:14px;padding:12px;background:rgba(34,197,94,.08);border-radius:8px;border:1px solid rgba(34,197,94,.2)">
+        <div style="font-size:10px;font-family:var(--mono);color:#86efac;line-height:1.6">🏆 MG/RJ/ES: 3º dia consecutivo com 0 atrasos!<br>SP/SUL: 3 itens Leve (todos pedidos antigos)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PEÇAS ═══ -->
+<div id="tab-pecas" class="tab-pane">
+  <div class="chart-grid-2">
+    <div class="chart-card"><div class="chart-title">Top 10 Peças com Mais Pendências</div><div class="chart-desc">por quantidade de unidades em aberto (cor = urgência)</div><div class="chart-wrap tall"><canvas id="cPecas"></canvas></div></div>
+    <div class="table-card" style="margin-bottom:0">
+      <div class="section-title">Detalhamento Top 10</div>
+      <table><thead><tr><th>#</th><th>Descrição</th><th>Qtd</th><th>Pedidos</th><th>Máx. Dias</th></tr></thead>
+      <tbody id="pecasTableBody"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ATRASOS ═══ -->
+<div id="tab-criticos" class="tab-pane">
+  <div class="kpi-grid-3">
+    <div class="kpi-card ok"><div class="kpi-label">Itens Críticos (&gt;45d)</div><div class="kpi-value ok">0</div><div class="kpi-sub">🎉 Zerado pelo 3º dia seguido</div><div class="kpi-icon">✅</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Itens Moderados (31–45d)</div><div class="kpi-value ok">0</div><div class="kpi-sub">🎉 Zerado pelo 3º dia seguido</div><div class="kpi-icon">✅</div></div>
+    <div class="kpi-card w"><div class="kpi-label">Itens em Atraso (Leve)</div><div class="kpi-value w">3 <span class="delta up">+1</span></div><div class="kpi-sub">Faixa 16–30 dias · SP apenas</div><div class="kpi-icon">⏰</div></div>
+  </div>
+  <div class="table-card">
+    <div class="section-title">Itens em Atraso — Faixa Leve (16–30 dias) · apenas 3 itens</div>
+    <div class="crit-row hdr"><span>Nº Pedido</span><span>Cliente</span><span>Cidade/UF</span><span>Data Pedido</span><span>Dias</span></div>
+    <div id="critBody"></div>
+  </div>
+  <div style="margin-top:16px;padding:16px;background:rgba(34,197,94,.08);border-radius:13px;border:1px solid rgba(34,197,94,.2)">
+    <div style="font-size:12px;font-family:var(--mono);color:#86efac;line-height:1.8">
+      ✅ Situação de excelência: <strong>apenas 3 itens em atraso</strong> — todos na faixa Leve.<br>
+      Os pedidos #86772 (27d) e #107937 (25d) são os mais antigos — oriundos de fevereiro.<br>
+      O pedido #238589 (17d) de 06/03 também entrou na faixa Leve.<br>
+      🚨 Ação: verificar status de entrega desses 3 pedidos SP com equipe logística.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMPARATIVO ═══ -->
+<div id="tab-comparativo" class="tab-pane">
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="comp-title">📊 Indicadores DxD <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">20/03/2026 → 23/03/2026</span></div>
+      <div class="comp-row"><span class="comp-label">Total de itens</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">73</span><span class="comp-arrow" style="color:var(--ok)">→</span><span class="comp-new" style="color:var(--ok)">59 <span class="delta dn">-14</span></span></div></div>
+      <div class="comp-row"><span class="comp-label">Pedidos únicos</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">47</span><span class="comp-arrow" style="color:var(--ok)">→</span><span class="comp-new" style="color:var(--ok)">44 <span class="delta dn">-3</span></span></div></div>
+      <div class="comp-row"><span class="comp-label">Itens em atraso</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">2</span><span class="comp-arrow" style="color:var(--warn)">→</span><span class="comp-new" style="color:var(--warn)">3 <span class="delta up">+1</span></span></div></div>
+      <div class="comp-row"><span class="comp-label">% em atraso (itens)</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">2,7%</span><span class="comp-arrow" style="color:var(--warn)">→</span><span class="comp-new" style="color:var(--warn)">5,1% <span class="delta up">+2,4pp</span></span></div></div>
+      <div class="comp-row"><span class="comp-label">Atraso médio</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">5,2d</span><span class="comp-arrow" style="color:var(--warn)">→</span><span class="comp-new" style="color:var(--warn)">6,5d <span class="delta up">+1,3d</span></span></div></div>
+      <div class="comp-row"><span class="comp-label">Maior atraso</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">24d</span><span class="comp-arrow" style="color:var(--warn)">→</span><span class="comp-new" style="color:var(--warn)">27d <span class="delta up">+3d</span></span></div></div>
+      <div class="comp-row"><span class="comp-label">Valor pendente</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">R$ 2.359</span><span class="comp-arrow" style="color:var(--ok)">→</span><span class="comp-new" style="color:var(--ok)">R$ 2.105 <span class="delta dn">-11%</span></span></div></div>
+      <div class="comp-row"><span class="comp-label">Valor em atraso</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">R$ 32</span><span class="comp-arrow" style="color:var(--warn)">→</span><span class="comp-new" style="color:var(--warn)">R$ 35 <span class="delta up">+9%</span></span></div></div>
+      <div class="comp-row"><span class="comp-label">Pedidos em atraso</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">2</span><span class="comp-arrow" style="color:var(--warn)">→</span><span class="comp-new" style="color:var(--warn)">3 <span class="delta up">+1</span></span></div></div>
+      <div class="comp-row"><span class="comp-label">Faixas Crítico/Mod.</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">0 / 0</span><span class="comp-arrow" style="color:var(--ok)">→</span><span class="comp-new" style="color:var(--ok)">0 / 0 ✅ 3º dia</span></div></div>
+      <div style="margin-top:16px;padding:12px;background:rgba(34,197,94,.08);border-radius:8px;border:1px solid rgba(34,197,94,.3);font-size:11px;font-family:var(--mono);color:#86efac;line-height:1.8">
+        ✅ Volume total reduziu: 73→59 itens (-14) — pedidos resolvidos.<br>
+        ✅ Faixas Crítico e Moderado: <strong>zeradas pelo 3º dia consecutivo</strong>.<br>
+        ⚠ Leve +1 item: pedido #238589 (06/03) cruzou os 16 dias.<br>
+        ⚠ Os 2 pedidos mais antigos (#86772, #107937) ainda pendentes — ação necessária.
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="section-title">Evolução por Faixa: 20/03 → 23/03</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="cComp"></canvas></div>
+      <div style="margin-top:12px;padding:10px;background:var(--surface2);border-radius:8px">
+        <div style="font-size:10px;font-family:var(--mono);color:var(--muted);line-height:1.8">
+          🔵 20/03/2026: No Prazo 71 · Leve 2 · Moderado 0 · Crítico 0<br>
+          🟢 23/03/2026: No Prazo 56 · Leve 3 · Moderado 0 · Crítico 0
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:20px">
+    <div class="section-title">Histórico Completo — Itens vs Atraso (8 Capturas)</div>
+    <div class="chart-wrap" style="height:220px"><canvas id="cHistorico"></canvas></div>
+  </div>
+
+  <div class="section-title" style="margin-top:8px">Análise de Pedidos Únicos — Evolução das 8 Capturas</div>
+
+  <div class="chart-grid-3" style="margin-bottom:20px">
+    <div class="chart-card">
+      <div class="comp-title" style="font-size:13px">📋 Pedidos Únicos Pendentes</div>
+      <div class="comp-row"><span class="comp-label">04/03</span><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--mono)">128</span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">54 atr · 42,2%</span></div></div>
+      <div class="comp-row"><span class="comp-label">10/03</span><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--mono);color:var(--danger)">146 <span class="delta up">+18</span></span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">35 atr · 24,0%</span></div></div>
+      <div class="comp-row"><span class="comp-label">12/03</span><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--mono);color:var(--ok)">119 <span class="delta dn">-27</span></span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">35 atr · 29,4%</span></div></div>
+      <div class="comp-row"><span class="comp-label">17/03</span><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--mono);color:var(--danger)">120 <span class="delta up">+18</span></span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">33 atr · 27,5%</span></div></div>
+      <div class="comp-row"><span class="comp-label">19/03</span><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--mono);color:var(--ok)">45 <span class="delta dn">-75</span></span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">9 atr · 20,0%</span></div></div>
+      <div class="comp-row"><span class="comp-label">20/03</span><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--mono);color:var(--ok)">47 <span class="delta up">+2</span></span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">2 atr · 4,3%</span></div></div>
+      <div class="comp-row" style="border-bottom:2px solid var(--ok)"><span class="comp-label" style="color:var(--ok);font-weight:700">23/03 ✅</span><div style="display:flex;align-items:center;gap:8px"><span style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ok)">44 <span class="delta dn">-3</span></span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">3 atr · <strong style="color:var(--ok)">6,8%</strong></span></div></div>
+      <div style="margin-top:14px;padding:10px;background:rgba(34,197,94,.08);border-radius:8px;border:1px solid rgba(34,197,94,.2)">
+        <div style="font-size:10px;font-family:var(--mono);color:#86efac;line-height:1.7">
+          ✅ Nível operacional excelente mantido.<br>
+          Ratio itens/pedido: 1,34 (fluxo saudável de novos pedidos)<br>
+          3 dias consecutivos sem Crítico ou Moderado
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Evolução de Pedidos por Faixa</div>
+      <div class="chart-desc">pedidos únicos por severidade — 8 capturas</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="cPedidosFaixa"></canvas></div>
+    </div>
+
+    <div class="chart-card" style="padding:16px">
+      <div class="comp-title" style="font-size:13px">📊 Faixas — Itens vs Pedidos (20→23/03)</div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead>
+          <tr>
+            <th style="text-align:left;font-size:9px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:6px 8px;border-bottom:1px solid var(--border)">Faixa</th>
+            <th style="text-align:center;font-size:9px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:6px 4px;border-bottom:1px solid var(--border)">20/03<br><span style="font-size:8px">ped / itens</span></th>
+            <th style="text-align:center;font-size:9px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:6px 4px;border-bottom:1px solid var(--border)">23/03<br><span style="font-size:8px">ped / itens</span></th>
+            <th style="text-align:center;font-size:9px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:6px 4px;border-bottom:1px solid var(--border)">Δ ped</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:7px 8px"><span class="badge b-ok">✅ No Prazo</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">45 / 71</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--ok)">41 / 56</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta dn">-4</span></td></tr>
+          <tr><td style="padding:7px 8px"><span class="badge b-w">🟡 Leve</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">2 / 2</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--warn)">3 / 3</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta up">+1</span></td></tr>
+          <tr><td style="padding:7px 8px"><span class="badge b-d">🟠 Moderado</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">0 / 0</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--ok)">0 / 0 ✅</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span style="font-size:10px;color:var(--muted)">= 0</span></td></tr>
+          <tr><td style="padding:7px 8px"><span class="badge b-c">🔴 Crítico</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">0 / 0</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--ok)">0 / 0 ✅</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span style="font-size:10px;color:var(--muted)">= 0</span></td></tr>
+          <tr style="border-top:2px solid var(--border)"><td style="padding:7px 8px;font-weight:700">TOTAL</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted);font-weight:700">47 / 73</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--ok)">44 / 59</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta dn">-3</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;font-size:9px;font-family:var(--mono);color:var(--muted);line-height:1.6">
+        💡 Ratio itens/pedido: 20/03=1,55 · 23/03=<strong style="color:var(--text)">1,34</strong><br>
+        ✅ % pedidos em atraso: 4,3%→<strong style="color:var(--ok)">6,8%</strong> (ainda excelente)
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-grid-2" style="margin-bottom:20px">
+    <div class="chart-card">
+      <div class="chart-title">Pedidos Únicos — Composição por Faixa</div>
+      <div class="chart-desc">barras empilhadas: evolução das 8 capturas</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="cPedidosStack"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Pedidos vs Itens em Atraso</div>
+      <div class="chart-desc">evolução comparativa — total de pedidos e itens acima de 15 dias</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="cItensPorPedido"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PEDIDOS ═══ -->
+<div id="tab-pedidos" class="tab-pane">
+  <div class="kpi-grid-4">
+    <div class="kpi-card ok"><div class="kpi-label">Total de Pedidos</div><div class="kpi-value ok">44 <span class="delta dn">-3</span></div><div class="kpi-sub">pedidos únicos em aberto</div><div class="kpi-icon">📋</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Pedidos Críticos (&gt;45d)</div><div class="kpi-value ok" id="kpi-criticos-count">—</div><div class="kpi-sub">3º dia zerado consecutivo</div><div class="kpi-icon">✅</div></div>
+    <div class="kpi-card w"><div class="kpi-label">Pedidos em Atraso (&gt;15d)</div><div class="kpi-value w" id="kpi-atraso-count">—</div><div class="kpi-sub">todos na faixa Leve · SP</div><div class="kpi-icon">⏰</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Pedidos no Prazo (≤15d)</div><div class="kpi-value ok" id="kpi-prazo-count">—</div><div class="kpi-sub">dentro da meta</div><div class="kpi-icon">✅</div></div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <div style="font-size:11px;font-family:var(--mono);color:var(--muted)">FILTROS:</div>
+    <input id="searchInput" type="text" placeholder="Buscar cliente, nº pedido, cidade…" oninput="filterPedidos()" style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 12px;color:var(--text);font-family:var(--mono);font-size:11px;width:260px;outline:none">
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="filter-btn active" onclick="setFilter('todos',this)">Todos (44)</button>
+      <button class="filter-btn" onclick="setFilter('Cr\u00edtico',this)">🔴 Críticos</button>
+      <button class="filter-btn" onclick="setFilter('Moderado',this)">🟠 Moderados</button>
+      <button class="filter-btn" onclick="setFilter('Leve',this)">🟡 Leve (3)</button>
+      <button class="filter-btn" onclick="setFilter('No Prazo',this)">✅ No Prazo</button>
+    </div>
+    <div style="margin-left:auto;font-size:11px;font-family:var(--mono);color:var(--muted)">Exibindo: <span id="countLabel" style="color:var(--text);font-weight:700">44</span> pedidos</div>
+  </div>
+  <div class="table-card" style="padding:0;overflow:hidden">
+    <div style="overflow-x:auto">
+      <table style="min-width:900px">
+        <thead><tr>
+          <th style="padding:12px 14px;cursor:pointer" onclick="sortTable('NUM PED')">Nº Pedido ⇅</th>
+          <th style="padding:12px 14px;cursor:pointer" onclick="sortTable('cliente')">Cliente ⇅</th>
+          <th style="padding:12px 14px">Cidade / UF</th>
+          <th style="padding:12px 14px;cursor:pointer" onclick="sortTable('dt_pedido')">Data Pedido ⇅</th>
+          <th style="padding:12px 14px;cursor:pointer;text-align:center" onclick="sortTable('dias')">Dias ⇅</th>
+          <th style="padding:12px 14px;text-align:center">Itens</th>
+          <th style="padding:12px 14px">Motivo</th>
+          <th style="padding:12px 14px;text-align:right">Valor (R$)</th>
+          <th style="padding:12px 14px;text-align:center">Status</th>
+        </tr></thead>
+        <tbody id="pedidosBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+<footer>Dashboard Assistência Técnica · Asteca · Referência 23/03/2026 · Meta envio: 15 dias · Gerado automaticamente</footer>
+
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='pedidos'&&!pedidosRendered){renderPedidos();pedidosRendered=true;}
+}
+Chart.defaults.color='#64748b';
+Chart.defaults.font.family="'DM Mono',monospace";
+Chart.defaults.font.size=10;
+const C={ok:'#22c55e',warn:'#eab308',accent:'#f97316',danger:'#ef4444',blue:'#3b82f6',muted:'#64748b'};
+const GRID={color:'rgba(37,45,74,.8)',drawBorder:false};
+const TICKS={color:'#64748b'};
+
+// Donut
+new Chart(document.getElementById('cDonut'),{type:'doughnut',data:{labels:['No Prazo','Leve','Moderado','Crítico'],datasets:[{data:[56,3,0,0],backgroundColor:[C.ok,C.warn,'#33415500','#33415500'],borderWidth:2,borderColor:'#111629',hoverOffset:6}]},options:{cutout:'72%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw+' itens'}}}}});
+
+// Faixa bar
+new Chart(document.getElementById('cFaixa'),{type:'bar',data:{labels:['No Prazo','Leve','Mod.','Crítico'],datasets:[{data:[56,3,0,0],backgroundColor:[C.ok,C.warn,C.muted+'22',C.muted+'22'],borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:{display:false},ticks:TICKS}},maintainAspectRatio:false}});
+
+// Região
+new Chart(document.getElementById('cRegiao'),{type:'bar',data:{labels:['SP/SUL','MG/RJ/ES'],datasets:[{label:'Pendentes',data:[25,34],backgroundColor:C.blue+'99',borderRadius:4},{label:'Em Atraso',data:[3,0],backgroundColor:C.danger+'99',borderRadius:4}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
+
+// Timeline
+const TL_L=['24/02','26/02','06/03','10/03','11/03','12/03','13/03','17/03','18/03','19/03','20/03','23/03'];
+const TL_V=[1,1,1,1,4,4,10,1,5,13,9,9];
+new Chart(document.getElementById('cTimeline'),{type:'bar',data:{labels:TL_L,datasets:[{label:'Itens',data:TL_V,backgroundColor:TL_V.map(v=>v>=10?C.accent:v>=5?C.warn:C.blue+'88'),borderRadius:3}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{...TICKS,maxRotation:45,font:{size:9}}},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
+
+// Motivos donut
+new Chart(document.getElementById('cMotivos'),{type:'doughnut',data:{labels:['Avaria Transp.','Quina Batida','Peça Quebrada','Espelho Quebr.','Outros'],datasets:[{data:[23,11,10,8,7],backgroundColor:[C.accent,C.warn,C.danger,C.blue,C.muted],borderWidth:2,borderColor:'#111629'}]},options:{cutout:'60%',plugins:{legend:{position:'right',labels:{color:'#94a3b8',boxWidth:8,font:{size:9}}},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw}}}}});
+
+// UF bars
+new Chart(document.getElementById('cUFBars'),{type:'bar',data:{labels:['SP','MG','RJ','ES'],datasets:[{label:'Total',data:[25,23,9,2],backgroundColor:C.blue+'88',borderRadius:4},{label:'Em Atraso',data:[3,0,0,0],backgroundColor:C.danger+'88',borderRadius:4}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
+
+// UF donut
+new Chart(document.getElementById('cUFDonut'),{type:'doughnut',data:{labels:['SP','MG','RJ','ES'],datasets:[{data:[25,23,9,2],backgroundColor:[C.blue,C.accent,C.danger,C.ok],borderWidth:2,borderColor:'#111629',hoverOffset:6}]},options:{cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',boxWidth:10}}}}});
+
+// Top Peças
+const TOP_PECAS=[
+  {peca:'CANTONEIRA 20X20X42 PRATA (4 FUROS)',                  qtd:26,dias_max:10,pedidos:1},
+  {peca:'PRATELEIRA SUP S/FURO GR EASY SLIM 575X330 AMENDOA',   qtd:12,dias_max:4, pedidos:3},
+  {peca:'VOL CX ESPELHO C/4 ESP 900X235X3',                     qtd:6, dias_max:4, pedidos:6},
+  {peca:'APLIQUE GR 6PTS LOOP 2324X60X4 MDF BRANCO',            qtd:6, dias_max:25,pedidos:1},
+  {peca:'DISTANCIADOR FRONT COMODA HOR 6 GAV AMENDOA',          qtd:4, dias_max:10,pedidos:1},
+  {peca:'DISTANCIADOR TRAS COMODA HOR 6 GAV',                   qtd:4, dias_max:10,pedidos:1},
+  {peca:'PRATELEIRA C/FURO COMODA 02 PTS 07 GAV AMENDOA',       qtd:3, dias_max:5, pedidos:1},
+  {peca:'PRATELEIRA INF GR EASY SLIM 575X330 AMENDOA',          qtd:3, dias_max:4, pedidos:3},
+  {peca:'TAMPO MESA EASY LINE 1360X720X15 MDP AMENDOA',         qtd:3, dias_max:10,pedidos:3},
+  {peca:'PUXADOR PZ67 M4 (OURO VELHO)',                         qtd:3, dias_max:12,pedidos:1},
+];
+new Chart(document.getElementById('cPecas'),{type:'bar',data:{labels:TOP_PECAS.map(p=>p.peca.length>28?p.peca.substring(0,28)+'…':p.peca),datasets:[{label:'Qtd pendente',data:TOP_PECAS.map(p=>p.qtd),backgroundColor:TOP_PECAS.map(p=>p.dias_max>45?C.danger:p.dias_max>15?C.warn:C.blue),borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:{display:false},ticks:{...TICKS,font:{size:9}}}},maintainAspectRatio:false}});
+const pecasTbody=document.getElementById('pecasTableBody');
+TOP_PECAS.forEach((p,i)=>{const mc=p.dias_max>45?'color:var(--danger)':p.dias_max>15?'color:var(--warn)':'color:var(--ok)';pecasTbody.innerHTML+=`<tr><td style="font-family:var(--mono);color:var(--muted)">${i+1}</td><td style="font-size:11px">${p.peca}</td><td style="font-family:var(--mono);font-weight:700;color:var(--blue)">${p.qtd}</td><td style="font-family:var(--mono);color:var(--muted)">${p.pedidos}</td><td style="font-family:var(--mono);font-weight:700;${mc}">${p.dias_max}d</td></tr>`;});
+
+// Comp faixas
+new Chart(document.getElementById('cComp'),{type:'bar',data:{labels:['No Prazo','Leve','Moderado','Crítico'],datasets:[{label:'20/03/2026',data:[71,2,0,0],backgroundColor:[C.ok+'55',C.warn+'55',C.muted+'22',C.muted+'22'],borderRadius:4},{label:'23/03/2026',data:[56,3,0,0],backgroundColor:[C.ok,C.warn,C.muted+'22',C.muted+'22'],borderRadius:4}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
+
+// Histórico 8 capturas
+new Chart(document.getElementById('cHistorico'),{type:'line',data:{labels:['04/03','10/03','12/03','13/03','17/03','19/03','20/03','23/03'],datasets:[{label:'Total Itens',data:[202,235,210,178,201,93,73,59],borderColor:C.blue,backgroundColor:C.blue+'22',tension:.3,fill:true,pointRadius:5},{label:'Em Atraso',data:[99,67,66,63,64,26,2,3],borderColor:C.warn,backgroundColor:C.warn+'11',tension:.3,fill:false,pointRadius:5},{label:'Críticos (>45d)',data:[28,24,23,22,31,7,0,0],borderColor:C.danger,backgroundColor:C.danger+'11',tension:.3,fill:false,pointRadius:5,borderDash:[4,4]}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}}},scales:{x:{grid:GRID,ticks:{...TICKS,font:{size:9}}},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
+
+// Pedidos por faixa linha (8 capturas)
+new Chart(document.getElementById('cPedidosFaixa'),{type:'line',data:{labels:['04/03','10/03','12/03','13/03','17/03','19/03','20/03','23/03'],datasets:[{label:'No Prazo',data:[74,111,84,70,87,36,45,41],borderColor:C.ok,tension:.3,fill:false,pointRadius:4},{label:'Leve',data:[23,5,8,8,8,8,2,3],borderColor:C.warn,tension:.3,fill:false,pointRadius:4},{label:'Moderado',data:[14,17,15,13,11,0,0,0],borderColor:C.accent,tension:.3,fill:false,pointRadius:4},{label:'Crítico',data:[17,13,12,11,14,1,0,0],borderColor:C.danger,tension:.3,fill:false,pointRadius:4,borderDash:[4,4]}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}}},scales:{x:{grid:GRID,ticks:{...TICKS,font:{size:9}}},y:{grid:GRID,ticks:TICKS,beginAtZero:true}},maintainAspectRatio:false}});
+
+// Pedidos stacked bar
+new Chart(document.getElementById('cPedidosStack'),{type:'bar',data:{labels:['04/03','10/03','12/03','13/03','17/03','19/03','20/03','23/03'],datasets:[{label:'No Prazo',data:[74,111,84,70,87,36,45,41],backgroundColor:C.ok+'bb',stack:'p'},{label:'Leve',data:[23,5,8,8,8,8,2,3],backgroundColor:C.warn+'bb',stack:'p'},{label:'Moderado',data:[14,17,15,13,11,0,0,0],backgroundColor:C.accent+'bb',stack:'p'},{label:'Crítico',data:[17,13,12,11,14,1,0,0],backgroundColor:C.danger+'bb',stack:'p'}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}},tooltip:{callbacks:{footer:items=>'Total: '+items.reduce((a,i)=>a+i.raw,0)+' pedidos'}}},scales:{x:{grid:GRID,ticks:{...TICKS,font:{size:9}},stacked:true},y:{grid:GRID,ticks:TICKS,stacked:true,beginAtZero:true}},maintainAspectRatio:false}});
+
+// Pedidos vs atraso
+new Chart(document.getElementById('cItensPorPedido'),{type:'bar',data:{labels:['04/03','10/03','12/03','13/03','17/03','19/03','20/03','23/03'],datasets:[{label:'Total Pedidos',data:[128,146,119,102,120,45,47,44],backgroundColor:C.blue+'88',borderRadius:4},{label:'Pedidos em Atraso',data:[54,35,35,32,33,9,2,3],backgroundColor:C.danger+'88',borderRadius:4}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}}},scales:{x:{grid:GRID,ticks:{...TICKS,font:{size:9}}},y:{grid:GRID,ticks:TICKS,beginAtZero:true}},maintainAspectRatio:false}});
+
+// Pedidos data
+const PEDIDOS_ALL=[{"NUM PED":86772,"cliente":"DAVID SANTOS","cidade":"SAO PAULO","uf":"SP","dt_pedido":"24/02/2026","dias":27,"total_itens":1,"motivos":"QUINA BATIDA","valor":7.67,"faixa":"Leve"},{"NUM PED":107937,"cliente":"IVANEIDE ARAUJO","cidade":"GUARULHOS","uf":"SP","dt_pedido":"26/02/2026","dias":25,"total_itens":1,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":24.54,"faixa":"Leve"},{"NUM PED":238589,"cliente":"EMMERSON XAVIER","cidade":"SAO JOAO DA BOA VISTA","uf":"SP","dt_pedido":"06/03/2026","dias":17,"total_itens":1,"motivos":"PECA QUEBRADA","valor":2.46,"faixa":"Leve"},{"NUM PED":308947,"cliente":"DEBORA DOS SANTOS ARANTE","cidade":"SAO PAULO","uf":"SP","dt_pedido":"10/03/2026","dias":13,"total_itens":1,"motivos":"FALTOU KIT FERRA","valor":1.0,"faixa":"No Prazo"},{"NUM PED":328122,"cliente":"LARISSA GIACOMELI TURINI","cidade":"CACHOEIRO DE ITAPEMIRIM","uf":"ES","dt_pedido":"11/03/2026","dias":12,"total_itens":1,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":34.19,"faixa":"No Prazo"},{"NUM PED":328203,"cliente":"LARISSA GIACOMELI TURINI","cidade":"CACHOEIRO DE ITAPEMIRIM","uf":"ES","dt_pedido":"11/03/2026","dias":12,"total_itens":1,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":3.93,"faixa":"No Prazo"},{"NUM PED":328319,"cliente":"LAURA OLIVEIRA SANTOS","cidade":"SAO PAULO","uf":"SP","dt_pedido":"11/03/2026","dias":12,"total_itens":1,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":41.74,"faixa":"No Prazo"},{"NUM PED":328983,"cliente":"RAYAK SANTOS","cidade":"SAO PAULO","uf":"SP","dt_pedido":"11/03/2026","dias":12,"total_itens":1,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":14.24,"faixa":"No Prazo"},{"NUM PED":341773,"cliente":"ANA ALVES","cidade":"NOVA IGUACU","uf":"RJ","dt_pedido":"12/03/2026","dias":11,"total_itens":3,"motivos":"PECA QUEBRADA","valor":17.06,"faixa":"No Prazo"},{"NUM PED":345160,"cliente":"JEFFERSON CARVALHO ALVES","cidade":"JUNDIAI","uf":"SP","dt_pedido":"12/03/2026","dias":11,"total_itens":1,"motivos":"QUINA BATIDA","valor":3.58,"faixa":"No Prazo"},{"NUM PED":362009,"cliente":"MARCIA ELIAS DO NASCIMENTO SILVA","cidade":"BARUERI","uf":"SP","dt_pedido":"13/03/2026","dias":10,"total_itens":2,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":10.48,"faixa":"No Prazo"},{"NUM PED":362953,"cliente":"ISAAC MEDEIROS","cidade":"ENGENHEIRO NAVARRO","uf":"MG","dt_pedido":"13/03/2026","dias":10,"total_itens":1,"motivos":"FALTOU DENTRO DO KIT","valor":1.56,"faixa":"No Prazo"},{"NUM PED":363047,"cliente":"ADRIANA SANTOS BRITO","cidade":"MOGI DAS CRUZES","uf":"SP","dt_pedido":"13/03/2026","dias":10,"total_itens":2,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":83.59,"faixa":"No Prazo"},{"NUM PED":363242,"cliente":"ANDY ALVES DA SILVA","cidade":"MAUA","uf":"SP","dt_pedido":"13/03/2026","dias":10,"total_itens":5,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":19.31,"faixa":"No Prazo"},{"NUM PED":394206,"cliente":"ISAAC OLIVEIRA BARBOSA","cidade":"RIO DE JANEIRO","uf":"RJ","dt_pedido":"17/03/2026","dias":6,"total_itens":1,"motivos":"FALTOU KIT FERRA","valor":11.38,"faixa":"No Prazo"},{"NUM PED":411422,"cliente":"THALES AUGUSTO RIBEIRO TERRA","cidade":"ALTEROSA","uf":"MG","dt_pedido":"18/03/2026","dias":5,"total_itens":3,"motivos":"PECA QUEBRADA / QUINA BATIDA","valor":60.6,"faixa":"No Prazo"},{"NUM PED":414893,"cliente":"CLAUDIA CRISTINA DO NASCIMENTO","cidade":"CAMPINAS","uf":"SP","dt_pedido":"18/03/2026","dias":5,"total_itens":1,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":12.57,"faixa":"No Prazo"},{"NUM PED":416423,"cliente":"PATRICIA JARDIM","cidade":"SAO JOSE DOS CAMPOS","uf":"SP","dt_pedido":"18/03/2026","dias":5,"total_itens":1,"motivos":"TONALIDADE DIFERENTE","valor":2.0,"faixa":"No Prazo"},{"NUM PED":428520,"cliente":"ROSANGELA RODRIGUES ALVES","cidade":"SABARA","uf":"MG","dt_pedido":"19/03/2026","dias":4,"total_itens":3,"motivos":"PECA QUEBRADA / QUINA BATIDA","valor":51.74,"faixa":"No Prazo"},{"NUM PED":432650,"cliente":"MARIANE PEREIRA DA CRUZ","cidade":"PATOS DE MINAS","uf":"MG","dt_pedido":"19/03/2026","dias":4,"total_itens":1,"motivos":"ESPELHO QUEBRADO","valor":152.31,"faixa":"No Prazo"},{"NUM PED":433091,"cliente":"CYNTHIA LUCENA DE SOUZA","cidade":"SETE LAGOAS","uf":"MG","dt_pedido":"19/03/2026","dias":4,"total_itens":1,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":12.51,"faixa":"No Prazo"},{"NUM PED":433328,"cliente":"CAROLINA SANCHES","cidade":"SAO PAULO","uf":"SP","dt_pedido":"19/03/2026","dias":4,"total_itens":1,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":235.01,"faixa":"No Prazo"},{"NUM PED":433366,"cliente":"YURI RITIAN GONCALVES DOS SANTOS","cidade":"MONTES CLAROS","uf":"MG","dt_pedido":"19/03/2026","dias":4,"total_itens":1,"motivos":"FALTOU KIT FERRA","valor":11.38,"faixa":"No Prazo"},{"NUM PED":433485,"cliente":"BRUNA APARECIDA SANTOS DA CONCEICAO","cidade":"SAO PAULO","uf":"SP","dt_pedido":"19/03/2026","dias":4,"total_itens":1,"motivos":"ESPELHO QUEBRADO","valor":53.23,"faixa":"No Prazo"},{"NUM PED":433564,"cliente":"NATHALIA RIOS RIBEIRO","cidade":"JUIZ DE FORA","uf":"MG","dt_pedido":"19/03/2026","dias":4,"total_itens":2,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":22.94,"faixa":"No Prazo"},{"NUM PED":433713,"cliente":"ROBSON APARECIDO MENDES DA SILVA","cidade":"MARIA DA FE","uf":"MG","dt_pedido":"19/03/2026","dias":4,"total_itens":2,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":22.94,"faixa":"No Prazo"},{"NUM PED":433946,"cliente":"ANDREIA CRISTINA BERNARDES","cidade":"POCOS DE CALDAS","uf":"MG","dt_pedido":"19/03/2026","dias":4,"total_itens":1,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":12.51,"faixa":"No Prazo"},{"NUM PED":443835,"cliente":"ADRIANA VENANCIO","cidade":"DUQUE DE CAXIAS","uf":"RJ","dt_pedido":"20/03/2026","dias":3,"total_itens":2,"motivos":"QUINA BATIDA","valor":22.94,"faixa":"No Prazo"},{"NUM PED":444430,"cliente":"ROSIANA ALVES MOREIRA","cidade":"BELO HORIZONTE","uf":"MG","dt_pedido":"20/03/2026","dias":3,"total_itens":1,"motivos":"AVARIA DURANTE O TRANSPORTE","valor":16.05,"faixa":"No Prazo"},{"NUM PED":447320,"cliente":"LUCIENE VIOL","cidade":"BARBACENA","uf":"MG","dt_pedido":"20/03/2026","dias":3,"total_itens":1,"motivos":"ESPELHO QUEBRADO","valor":91.71,"faixa":"No Prazo"},{"NUM PED":448899,"cliente":"LETICIA APARECIDA PIZA PIZA","cidade":"MUZAMBINHO","uf":"MG","dt_pedido":"20/03/2026","dias":3,"total_itens":1,"motivos":"QUINA BATIDA","valor":34.62,"faixa":"No Prazo"},{"NUM PED":450106,"cliente":"LEIDIANE OLIVEIRA","cidade":"SAO PAULO","uf":"SP","dt_pedido":"20/03/2026","dias":3,"total_itens":1,"motivos":"ESPELHO QUEBRADO","valor":53.23,"faixa":"No Prazo"},{"NUM PED":450109,"cliente":"ALINE JOELMA CAETANO DE OLIVEIRA","cidade":"AMPARO","uf":"SP","dt_pedido":"20/03/2026","dias":3,"total_itens":1,"motivos":"ESPELHO QUEBRADO","valor":53.23,"faixa":"No Prazo"},{"NUM PED":450144,"cliente":"DANIELA PEREIRA","cidade":"JANDIRA","uf":"SP","dt_pedido":"20/03/2026","dias":3,"total_itens":1,"motivos":"ESPELHO QUEBRADO","valor":53.23,"faixa":"No Prazo"},{"NUM PED":450147,"cliente":"ANA PAULA FIRMINO","cidade":"BARBACENA","uf":"MG","dt_pedido":"20/03/2026","dias":3,"total_itens":1,"motivos":"ESPELHO QUEBRADO","valor":53.23,"faixa":"No Prazo"},{"NUM PED":493951,"cliente":"JOAO PEDRO RODRIGUES","cidade":"BRAGANCA PAULISTA","uf":"SP","dt_pedido":"23/03/2026","dias":0,"total_itens":1,"motivos":"PECA QUEBRADA NO VOLUME","valor":235.01,"faixa":"No Prazo"},{"NUM PED":494046,"cliente":"MARIA EDUARDA MEDEIROS","cidade":"RESSAQUINHA","uf":"MG","dt_pedido":"23/03/2026","dias":0,"total_itens":1,"motivos":"ESPELHO QUEBRADO","valor":53.23,"faixa":"No Prazo"},{"NUM PED":494158,"cliente":"MANUELA BARREIRO","cidade":"RIO DAS OSTRAS","uf":"RJ","dt_pedido":"23/03/2026","dias":0,"total_itens":1,"motivos":"PECA QUEBRADA","valor":7.64,"faixa":"No Prazo"},{"NUM PED":494195,"cliente":"MANUELA BARREIRO","cidade":"RIO DAS OSTRAS","uf":"RJ","dt_pedido":"23/03/2026","dias":0,"total_itens":1,"motivos":"PECA QUEBRADA","valor":12.0,"faixa":"No Prazo"},{"NUM PED":494421,"cliente":"GEANCLAUS SANTOS","cidade":"GOVERNADOR VALADARES","uf":"MG","dt_pedido":"23/03/2026","dias":0,"total_itens":1,"motivos":"QUINA BATIDA","valor":17.9,"faixa":"No Prazo"},{"NUM PED":494426,"cliente":"EDVANE TEIXEIRA ALVES","cidade":"ITANHAEM","uf":"SP","dt_pedido":"23/03/2026","dias":0,"total_itens":1,"motivos":"QUINA BATIDA","valor":66.63,"faixa":"No Prazo"},{"NUM PED":494729,"cliente":"FELIPE MELO","cidade":"PETROPOLIS","uf":"RJ","dt_pedido":"23/03/2026","dias":0,"total_itens":1,"motivos":"QUINA BATIDA","valor":66.63,"faixa":"No Prazo"},{"NUM PED":494848,"cliente":"RAYANE LEAL","cidade":"CONTAGEM","uf":"MG","dt_pedido":"23/03/2026","dias":0,"total_itens":1,"motivos":"ERRO DE CADASTRO DA PECA","valor":333.0,"faixa":"No Prazo"},{"NUM PED":495511,"cliente":"JOSE RODRIGUES","cidade":"BETIM","uf":"MG","dt_pedido":"23/03/2026","dias":0,"total_itens":1,"motivos":"QUINA BATIDA","valor":8.7,"faixa":"No Prazo"}];
+
+// Atrasos list
+const critBody=document.getElementById('critBody');
+PEDIDOS_ALL.filter(p=>p.dias>15).forEach(p=>{
+  const pill=`<span class="dias-pill" style="background:rgba(234,179,8,.2);color:#fde047">${p.dias}d</span>`;
+  critBody.innerHTML+=`<div class="crit-row" style="background:rgba(234,179,8,.06)"><span style="font-family:var(--mono);font-weight:700;color:var(--blue)">#${p['NUM PED']}</span><span style="font-size:11px">${p.cliente}</span><span style="font-size:11px;color:var(--muted)">${p.cidade}/${p.uf}</span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">${p.dt_pedido}</span>${pill}</div>`;
+});
+
+let currentFilter='todos',sortKey='dias',sortAsc=false,pedidosRendered=false;
+function faixaBadge(f){const m={'Cr\u00edtico':'b-c','Moderado':'b-d','Leve':'b-w','No Prazo':'b-ok'};const e={'Cr\u00edtico':'🔴','Moderado':'🟠','Leve':'🟡','No Prazo':'✅'};return`<span class="badge ${m[f]||'b-blue'}">${e[f]||''}${f}</span>`;}
+function diasPill(d){if(d>45)return`<span style="background:rgba(220,38,38,.25);color:#fca5a5;font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">${d}d</span>`;if(d>30)return`<span style="background:rgba(249,115,22,.2);color:#fb923c;font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">${d}d</span>`;if(d>15)return`<span style="background:rgba(234,179,8,.2);color:#fde047;font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">${d}d</span>`;return`<span style="background:rgba(34,197,94,.15);color:#86efac;font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">${d}d</span>`;}
+function renderPedidos(){
+  const s=(document.getElementById('searchInput').value||'').toLowerCase();
+  let d=PEDIDOS_ALL.filter(p=>{const mf=currentFilter==='todos'||p.faixa===currentFilter;const ms=!s||p.cliente.toLowerCase().includes(s)||String(p['NUM PED']).includes(s)||p.cidade.toLowerCase().includes(s)||p.uf.toLowerCase().includes(s)||(p.motivos||'').toLowerCase().includes(s);return mf&&ms;});
+  d.sort((a,b)=>{let va=a[sortKey],vb=b[sortKey];if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}return sortAsc?(va<vb?-1:va>vb?1:0):(va>vb?-1:va<vb?1:0);});
+  document.getElementById('countLabel').textContent=d.length;
+  document.getElementById('pedidosBody').innerHTML=d.map((p,i)=>`<tr style="background:${i%2===0?'var(--surface2)':'var(--surface)'}"><td style="font-family:var(--mono);font-weight:700;color:var(--blue)">#${p['NUM PED']}</td><td style="font-weight:600;font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p.cliente}">${p.cliente}</td><td style="font-size:11px;color:var(--muted)">${p.cidade} <span style="background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px">${p.uf}</span></td><td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${p.dt_pedido}</td><td style="text-align:center">${diasPill(p.dias)}</td><td style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted)">${p.total_itens}</td><td style="font-size:10px;color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p.motivos||''}">${p.motivos||'—'}</td><td style="text-align:right;font-family:var(--mono);font-size:11px">R$ ${p.valor.toFixed(2).replace('.',',')}</td><td style="text-align:center">${faixaBadge(p.faixa)}</td></tr>`).join('');
+}
+function filterPedidos(){renderPedidos();}
+function setFilter(f,el){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderPedidos();}
+function sortTable(k){if(sortKey===k)sortAsc=!sortAsc;else{sortKey=k;sortAsc=false;}renderPedidos();}
+document.getElementById('kpi-criticos-count').textContent=PEDIDOS_ALL.filter(p=>p.faixa==='Cr\u00edtico').length;
+document.getElementById('kpi-atraso-count').textContent=PEDIDOS_ALL.filter(p=>p.dias>15).length;
+document.getElementById('kpi-prazo-count').textContent=PEDIDOS_ALL.filter(p=>p.dias<=15).length;
+</script>
+</body>
+</html>
