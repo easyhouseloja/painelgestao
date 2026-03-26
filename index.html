@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Easy House</title>
- <link rel="icon" href="easyhouse.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -1482,13 +1481,13 @@ lucide.createIcons();
 const USUARIOS = {
   'operacao@lojaeasyhouse.com.br':    'EH-OP1',
   'operacao2@lojaeasyhouse.com.br':   'EH-OP2',
-  'comercial@lojaeasyhouse.com.br':   'EH-CM1',
-  'comercial2@lojaeasyhouse.com.br':  'EH-CM2',
-  'sac@lojaeasyhouse.com.br':         'EH-SC1',
-  'sac2@lojaeasyhouse.com.br':        'EH-SC2',
-  'sac3@lojaeasyhouse.com.br':        'EH-SC3',
+  'comercial@lojaeasyhouse.com.br':   'EH-COM1',
+  'comercial2@lojaeasyhouse.com.br':  'EH-COM2',
+  'sac@lojaeasyhouse.com.br':         'EH-SAC1',
+  'sac2@lojaeasyhouse.com.br':        'EH-SAC2',
+  'sac3@lojaeasyhouse.com.br':        'EH-SAC3',
   'logistica@lojaeasyhouse.com.br':   'EH-LOG1',
-  'lucaslopes@grupolopas.com.br':     'EH-LL1',
+  'lucaslopes@grupolopas.com.br':     'EH-ADM1',
   'easyhouseloja@gmail.com':          'EH-ADM2',
 };
 
@@ -1618,66 +1617,12 @@ function inicializarUI(email) {
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────────
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 const NOTIFICACOES_HOJE = [
-  // ── CRÍTICOS PRIMEIRO ──
-  {
-    id: 1,
-    icon: '🚚',
-    cor: 'rgba(204,40,40,0.18)',
-    titulo: 'SLA: 4 pedido(s) crítico(s) ⚠️',
-    desc: '502 pedidos s/ faturar · R$ 508.756,83 em valor · Melhor: MTC (100%) · Pior: RGE (90,57%)',
-    hora: '24/03/2026',
-    lida: false,
-    link: 'sla_transporte.html',
-    critico: true
-  },
-  // ── INFORMATIVOS ──
-  {
-    id: 2,
-    icon: '📦',
-    cor: 'rgba(212,160,23,0.15)',
-    titulo: 'Estoque: 8 variações em alerta ⚠️',
-    desc: 'GR Easy Slim 8 PTS (Branco 0%) · GR Easy Move (Amendoa 0%) · GR Lopas Atlas (21%) · GR Easy Slim 2025 (18,7%) · GR Alonzo (13%) · Cômoda Lopas (0%) e mais 2.',
-    hora: '24/03/2026',
-    lida: false,
-    link: 'estoque.html',
-    critico: true
-  },
-  {
-    id: 3,
-    icon: '📈',
-    cor: 'rgba(45,125,210,0.15)',
-    titulo: 'Comercial: R$ 279.073 hoje (23/03)',
-    desc: 'Mês acumulado: R$ 8.773.724 · Shopee R$ 4,9M · Maga R$ 1,9M · ML R$ 1,6M',
-    hora: '24/03/2026',
-    lida: false,
-    link: 'comercial.html',
-    critico: false
-  },
-  {
-    id: 4,
-    icon: '🔧',
-    cor: 'rgba(31,189,114,0.12)',
-    titulo: 'Assistência: sem críticos ✓',
-    desc: '59 chamados totais · 56 no prazo · 3 leve · 0 críticos',
-    hora: '24/03/2026',
-    lida: false,
-    link: 'assistencia.html',
-    critico: false
-  },
-  {
-    id: 5,
-    icon: '❌',
-    cor: 'rgba(204,40,40,0.12)',
-    titulo: 'Cancelamentos: 579 no período',
-    desc: 'Shopee 389 · Magazine Luiza 123 · Mercado Livre 55',
-    hora: '24/03/2026',
-    lida: false,
-    link: 'cancelamentos.html',
-    critico: false
-  },
+  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 18 variacoes em alerta ⚠️',desc:'CABECEIRA BOX 1,60 EASY GLOW (0.0%) · CABECEIRA BOX 1,60 EASY GLOW (0.0%) · GUARDA ROUPA 4PTS EASY LIKE (0.0%) · GUARDA ROUPA 4PTS EASY LIKE (0.0%) e mais 14.',hora:'25/03/2026',lida:false,link:'estoque.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: 1 critico(s) · 297 em aberto ⚠️',desc:'297 pedidos em aberto · R$ 304.105 · Peso: 35.777 kg · Melhor: SOUL (100.0%) · Pior: NOVA (91.74%)',hora:'25/03/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: R$ 279.073 em 23/03',desc:'Acumulado no mes: R$ 8.773.724',hora:'25/03/2026',lida:false,link:'comercial.html',critico:false},
+  {id:4,icon:'🔧',cor:'rgba(31,189,114,0.12)',titulo:'Assistencia: sem criticos ✓',desc:'59 total · 56 no prazo · 3 leve · 0 moderados',hora:'25/03/2026',lida:false,link:'assistencia.html',critico:false},
+  {id:5,icon:'❌',cor:'rgba(204,40,40,0.12)',titulo:'Cancelamentos: 579 no periodo',desc:'Shopee 389 · Magazine Luiza 123 · Mercado Livre 55',hora:'25/03/2026',lida:false,link:'cancelamentos.html',critico:false}
 ];
-
-// Há críticos hoje?
 const TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
 
 function inicializarNotificacoes() {
