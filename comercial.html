@@ -7,10 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-/* ════════════════════════════════════════════
-   TEMPLATE PADRÃO — NÃO ALTERAR O CSS
-   Apenas atualizar os dados no bloco DATA (JS)
-   ════════════════════════════════════════════ */
 :root {
   --bg:      #0b0f1a;
   --bg2:     #111827;
@@ -36,6 +32,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
+/* ── HEADER ── */
 .header{
   background:linear-gradient(135deg,#0b0f1a 0%,#0f1f3d 50%,#0b0f1a 100%);
   border-bottom:1px solid var(--border);
@@ -50,32 +47,51 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 }
 .header-sub{font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
 .header-badges{display:flex;gap:8px;flex-wrap:wrap;}
-.badge{background:var(--bg3);border:1px solid var(--border);border-radius:999px;padding:5px 14px;font-size:.75rem;font-weight:600;color:var(--accent);}
+.badge{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:999px;padding:5px 14px;
+  font-size:.75rem;font-weight:600;color:var(--accent);
+}
 .badge.green{color:var(--green);}
 .badge.orange{color:var(--shopee);}
 
-.tabs{display:flex;gap:2px;padding:0 40px;border-bottom:1px solid var(--border);background:var(--bg);}
+/* ── TABS ── */
+.tabs{
+  display:flex;gap:2px;padding:0 40px;
+  border-bottom:1px solid var(--border);background:var(--bg);
+}
 .tab{
   padding:12px 20px;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;
   color:var(--muted);cursor:pointer;border-radius:8px 8px 0 0;
-  border:1px solid transparent;border-bottom:none;letter-spacing:.4px;transition:all .2s;
+  border:1px solid transparent;border-bottom:none;
+  letter-spacing:.4px;transition:all .2s;
 }
 .tab:hover{color:var(--text);background:var(--bg3);}
 .tab.active{color:var(--accent);background:var(--card);border-color:var(--border);}
 
+/* ── PAGES ── */
 .page{display:none;padding:28px 40px 48px;animation:fadeIn .25s ease;}
 .page.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
+/* ── SECTION TITLE ── */
 .section-title{
   font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;
   color:var(--muted);letter-spacing:1px;text-transform:uppercase;
-  margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border);
+  margin:28px 0 14px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
 }
 
+/* ── KPI STRIP ── */
 .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
-.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden;}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c,var(--accent));}
+.kpi-card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:20px 22px;position:relative;overflow:hidden;
+}
+.kpi-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--c,var(--accent));
+}
 .kpi-card.blue{--c:var(--accent);}
 .kpi-card.green{--c:var(--green);}
 .kpi-card.orange{--c:var(--shopee);}
@@ -88,27 +104,44 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .pill-red{background:rgba(239,68,68,.15);color:var(--red);}
 .pill-yellow{background:rgba(234,179,8,.15);color:var(--yellow);}
 
+/* ── GRID ── */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
 
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;}
+/* ── CHART CARD ── */
+.chart-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:22px 24px;
+}
 .chart-title{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:16px;letter-spacing:.3px;}
 .chart-wrap{position:relative;height:240px;}
 
+/* ── PROGRESS ── */
 .prog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .prog-label{font-size:.72rem;color:var(--muted);width:70px;flex-shrink:0;}
 .prog-bar-bg{flex:1;height:7px;background:var(--bg3);border-radius:999px;overflow:hidden;}
-.prog-bar-fill{height:100%;border-radius:999px;}
-.prog-val{font-family:'DM Mono',monospace;font-size:.75rem;font-weight:500;width:52px;text-align:right;flex-shrink:0;}
+.prog-bar-fill{height:100%;border-radius:999px;transition:width .8s ease;}
+.prog-val{font-family:'DM Mono',monospace;font-size:.75rem;font-weight:500;width:44px;text-align:right;flex-shrink:0;}
 
+/* ── AXO CARDS ── */
 .axo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
-.axo-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+.axo-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:12px;
+  padding:16px 18px;
+}
 .axo-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
 .axo-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;}
 
+/* ── TABLE ── */
 .data-table{width:100%;border-collapse:collapse;}
-.data-table th{background:var(--bg3);padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;}
-.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.8rem;}
+.data-table th{
+  background:var(--bg3);padding:10px 14px;text-align:left;
+  font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;
+}
+.data-table td{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  font-family:'DM Mono',monospace;font-size:.8rem;
+}
 .data-table tr:last-child td{border-bottom:none;}
 .data-table tr:hover td{background:rgba(255,255,255,.02);}
 .data-table .total-row td{background:var(--bg3);font-weight:700;color:var(--accent);}
@@ -117,26 +150,96 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .tag-red{background:rgba(239,68,68,.15);color:var(--red);}
 .tag-yellow{background:rgba(234,179,8,.15);color:var(--yellow);}
 
+/* ── MKT BAR ── */
 .mkt-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
 .mkt-name{font-size:.8rem;font-weight:600;width:130px;flex-shrink:0;}
 .mkt-bar-bg{flex:1;height:10px;background:var(--bg3);border-radius:999px;overflow:hidden;}
 .mkt-bar-fill{height:100%;border-radius:999px;}
-.mkt-val{font-family:'DM Mono',monospace;font-size:.8rem;width:120px;text-align:right;flex-shrink:0;}
+.mkt-val{font-family:'DM Mono',monospace;font-size:.8rem;width:100px;text-align:right;flex-shrink:0;}
 .mkt-var{font-size:.72rem;width:80px;text-align:right;flex-shrink:0;}
 
+/* ── DAILY TABLE ── */
 .daily-wrap{overflow-y:auto;max-height:520px;border-radius:14px;border:1px solid var(--border);}
 .daily-wrap::-webkit-scrollbar{width:4px;}
 .daily-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 
+/* ── CAT DETAIL ── */
 .cat-grid-mp{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
 .cat-mp-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-.cat-mp-header{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.cat-mp-header{
+  padding:14px 18px;display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border);
+}
 .cat-mp-name{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;}
 .cat-mp-total{font-family:'DM Mono',monospace;font-size:.85rem;color:var(--accent);}
 
+/* ── PRODUTOS ── */
+.prod-section { margin-bottom: 32px; }
+.prod-mp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
+.prod-mp-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.prod-mp-header {
+  padding: 14px 20px; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.prod-mp-header-title { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; }
+.prod-mp-header-sub { font-size: .72rem; color: var(--muted); margin-left: auto; font-family: 'DM Mono', monospace; }
+.prod-table { width: 100%; border-collapse: collapse; }
+.prod-table th {
+  background: var(--bg3); padding: 8px 14px; text-align: left;
+  font-size: .68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 600;
+}
+.prod-table th.right { text-align: right; }
+.prod-table td { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: .78rem; }
+.prod-table td.mono { font-family: 'DM Mono', monospace; text-align: right; white-space: nowrap; }
+.prod-table td.qty  { font-family: 'DM Mono', monospace; text-align: right; color: var(--muted); }
+.prod-table tr:last-child td { border-bottom: none; }
+.prod-table tr:hover td { background: rgba(255,255,255,.02); }
+.prod-rank {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  font-size: .65rem; font-weight: 700; margin-right: 8px; flex-shrink: 0;
+}
+.prod-rank-1 { background: rgba(234,179,8,.25); color: #eab308; }
+.prod-rank-2 { background: rgba(148,163,184,.2); color: #94a3b8; }
+.prod-rank-3 { background: rgba(180,120,80,.2); color: #cd7f4a; }
+.prod-rank-n { background: rgba(122,138,171,.1); color: var(--muted); }
+.prod-name { display: flex; align-items: center; }
+.prod-name-text { font-size: .78rem; line-height: 1.4; }
+
+.estado-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.estado-tab {
+  padding: 7px 18px; font-family: 'Syne', sans-serif; font-size: .78rem; font-weight: 600;
+  color: var(--muted); cursor: pointer; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg3); transition: all .2s;
+}
+.estado-tab:hover { color: var(--text); border-color: var(--muted); }
+.estado-tab.active { color: var(--accent); border-color: var(--accent); background: rgba(56,189,248,.08); }
+
+.estado-page { display: none; }
+.estado-page.active { display: block; }
+.estado-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+/* representatividade */
+.prod-rep-bar-bg { flex:1; height:5px; background:var(--bg3); border-radius:999px; overflow:hidden; min-width:36px; }
+.prod-rep-bar-fill { height:100%; border-radius:999px; background:var(--accent); opacity:.75; }
+.prod-rep-cell { display:flex; align-items:center; gap:6px; justify-content:flex-end; min-width:90px; }
+.prod-rep-pct { font-family:'DM Mono',monospace; font-size:.7rem; color:var(--accent); white-space:nowrap; min-width:36px; text-align:right; }
+
+/* top15 geral */
+.top15-card { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:28px; }
+.top15-header {
+  padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+  background:linear-gradient(135deg,rgba(56,189,248,.07),rgba(124,58,237,.05));
+  border-bottom:1px solid var(--border);
+}
+.top15-title { font-family:'Syne',sans-serif; font-size:1rem; font-weight:700; color:var(--text); }
+.top15-summary { display:flex; gap:24px; flex-wrap:wrap; }
+.top15-stat-val { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:700; color:var(--accent); }
+.top15-stat-label { font-size:.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+
 @media(max-width:1100px){
   .kpi-strip,.grid-3,.axo-grid{grid-template-columns:repeat(2,1fr);}
-  .grid-2,.cat-grid-mp{grid-template-columns:1fr;}
+  .grid-2,.cat-grid-mp,.prod-mp-grid,.estado-grid{grid-template-columns:1fr;}
   .page{padding:20px 20px 40px;}
   .header{padding:16px 20px;}
   .tabs{padding:0 20px;}
@@ -148,127 +251,124 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════════════════
-     ESTRUTURA HTML — NÃO ALTERAR
-     Todo conteúdo é injetado dinamicamente pelo bloco DATA
-     ════════════════════════════════════════════════════════ -->
-
 <!-- HEADER -->
 <div class="header">
   <div>
     <h1>📊 Dashboard Vendas</h1>
-    <div class="header-sub" id="hdr-periodo"></div>
+    <div class="header-sub">Março 2026 · Período 01/03 a 25/03</div>
   </div>
   <div class="header-badges">
-    <span class="badge"        id="hdr-meta-pct"></span>
-    <span class="badge green"  id="hdr-var-mes"></span>
-    <span class="badge orange" id="hdr-var-ano"></span>
+    <span class="badge">107,60% da Meta</span>
+    <span class="badge green">+42,83% vs Fev</span>
+    <span class="badge orange">+290% Ano x Ano</span>
   </div>
 </div>
 
 <!-- TABS -->
 <div class="tabs">
-  <div class="tab active" onclick="showPage('visao',event)">Visão Geral</div>
-  <div class="tab" onclick="showPage('marketplaces',event)">Marketplaces</div>
-  <div class="tab" onclick="showPage('categorias',event)">Categorias</div>
-  <div class="tab" onclick="showPage('diario',event)">Vendas Diárias</div>
+  <div class="tab active" onclick="showPage('visao')">Visão Geral</div>
+  <div class="tab" onclick="showPage('marketplaces')">Marketplaces</div>
+  <div class="tab" onclick="showPage('categorias')">Categorias</div>
+  <div class="tab" onclick="showPage('diario')">Vendas Diárias</div>
+  <div class="tab" onclick="showPage('produtos')">Análise de Produtos</div>
 </div>
 
-<!-- ═══ ABA: VISÃO GERAL ═══ -->
+<!-- ═══════════ VISÃO GERAL ═══════════ -->
 <div class="page active" id="page-visao">
+
   <div class="kpi-strip">
     <div class="kpi-card blue">
       <div class="kpi-label">Faturamento Total</div>
-      <div class="kpi-value" id="v-fat-total"></div>
-      <div class="kpi-sub"><span class="kpi-pill pill-green" id="v-var-mes-pill"></span> vs mês anterior</div>
+      <div class="kpi-value">R$ 8,57M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">+50,41%</span> vs mês anterior</div>
     </div>
     <div class="kpi-card green">
       <div class="kpi-label">% Meta Atingida</div>
-      <div class="kpi-value" id="v-meta-pct"></div>
-      <div class="kpi-sub">Meta: <span id="v-meta-val"></span> · <span class="kpi-pill pill-green" id="v-dias-pill"></span></div>
+      <div class="kpi-value" style="color:var(--yellow)">99,61%</div>
+      <div class="kpi-sub">Meta: R$ 8,60M · <span class="kpi-pill pill-yellow">23 dias</span></div>
     </div>
     <div class="kpi-card orange">
       <div class="kpi-label">Projeção do Mês</div>
-      <div class="kpi-value" style="color:var(--shopee)" id="v-projecao"></div>
-      <div class="kpi-sub"><span class="kpi-pill pill-green" id="v-proj-acima"></span> acima da meta</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 11,55M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">+34%</span> acima da meta</div>
     </div>
     <div class="kpi-card purple">
       <div class="kpi-label">Crescimento Ano x Ano</div>
-      <div class="kpi-value" style="color:var(--comp)" id="v-axa"></div>
-      <div class="kpi-sub" id="v-axa-sub"></div>
+      <div class="kpi-value" style="color:var(--comp)">+345%</div>
+      <div class="kpi-sub">2025: R$ 1,92M → 2026: R$ 8,57M</div>
     </div>
   </div>
 
   <div class="section-title">Performance por Categoria</div>
-  <div class="grid-3">
+  <div class="grid-3" style="margin-bottom:28px;">
     <!-- GR -->
     <div class="chart-card" style="border-color:rgba(52,211,153,.3);">
       <div class="chart-title">🛋️ Guarda-Roupa (GR)</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gr);margin-bottom:4px;" id="cat-gr-val"></div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;" id="cat-gr-sub"></div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gr);margin-bottom:4px;">R$ 6,56M</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 5,50M · Projeção: R$ 8,13M</div>
       <div class="prog-row">
         <div class="prog-label">Realizado</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" id="cat-gr-bar" style="background:var(--gr);"></div></div>
-        <div class="prog-val" id="cat-gr-pct"></div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:var(--gr);"></div></div>
+        <div class="prog-val" style="color:var(--green)">119,12%</div>
       </div>
       <div class="prog-row">
         <div class="prog-label">Projeção</div>
         <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:rgba(52,211,153,.3);"></div></div>
-        <div class="prog-val" style="color:var(--gr)" id="cat-gr-proj-pct"></div>
+        <div class="prog-val" style="color:var(--gr)">147,7%</div>
       </div>
-      <div style="margin-top:12px;" id="cat-gr-tag"></div>
+      <div style="margin-top:12px;"><span class="tag tag-green">✓ META BATIDA</span></div>
     </div>
     <!-- SALA -->
     <div class="chart-card" style="border-color:rgba(251,113,133,.3);">
       <div class="chart-title">🪑 Sala de Jantar (SALA)</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--sala);margin-bottom:4px;" id="cat-sala-val"></div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;" id="cat-sala-sub"></div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--sala);margin-bottom:4px;">R$ 1,63M</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,89M · Projeção: R$ 2,02M</div>
       <div class="prog-row">
         <div class="prog-label">Realizado</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" id="cat-sala-bar" style="background:var(--sala);"></div></div>
-        <div class="prog-val" id="cat-sala-pct"></div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:86.09%;background:var(--sala);"></div></div>
+        <div class="prog-val" style="color:var(--yellow)">86,09%</div>
       </div>
       <div class="prog-row">
         <div class="prog-label">Projeção</div>
         <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:rgba(251,113,133,.3);"></div></div>
-        <div class="prog-val" style="color:var(--sala)" id="cat-sala-proj-pct"></div>
+        <div class="prog-val" style="color:var(--sala)">106,8%</div>
       </div>
-      <div style="margin-top:12px;" id="cat-sala-tag"></div>
+      <div style="margin-top:12px;"><span class="tag tag-yellow">⚡ PROJEÇÃO OK</span></div>
     </div>
     <!-- COMP -->
     <div class="chart-card" style="border-color:rgba(129,140,248,.3);">
       <div class="chart-title">🪞 Complementos (COMP)</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--comp);margin-bottom:4px;" id="cat-comp-val"></div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;" id="cat-comp-sub"></div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--comp);margin-bottom:4px;">R$ 1,07M</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,20M · Projeção: R$ 1,32M</div>
       <div class="prog-row">
         <div class="prog-label">Realizado</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" id="cat-comp-bar" style="background:var(--comp);"></div></div>
-        <div class="prog-val" id="cat-comp-pct"></div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:88.73%;background:var(--comp);"></div></div>
+        <div class="prog-val" style="color:var(--yellow)">88,73%</div>
       </div>
       <div class="prog-row">
         <div class="prog-label">Projeção</div>
         <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:rgba(129,140,248,.3);"></div></div>
-        <div class="prog-val" style="color:var(--comp)" id="cat-comp-proj-pct"></div>
+        <div class="prog-val" style="color:var(--comp)">110,0%</div>
       </div>
-      <div style="margin-top:12px;" id="cat-comp-tag"></div>
+      <div style="margin-top:12px;"><span class="tag tag-yellow">⚡ PROJEÇÃO OK</span></div>
     </div>
   </div>
 
   <div class="axo-grid">
     <div class="axo-card" style="border-color:rgba(56,189,248,.3);">
-      <div class="axo-label" id="axo-mes-ant-label"></div>
-      <div class="axo-val" style="color:var(--muted);" id="axo-mes-ant-val"></div>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;" id="axo-mes-ant-full"></div>
+      <div class="axo-label">Mês Anterior (Fev/26)</div>
+      <div class="axo-val" style="color:var(--muted);">R$ 6,48M</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">R$ 6.478.558,26</div>
     </div>
     <div class="axo-card" style="border-color:rgba(34,197,94,.3);">
       <div class="axo-label">Mês Atual vs Anterior</div>
-      <div class="axo-val" style="color:var(--green);" id="axo-var-mes"></div>
-      <div style="font-size:.75rem;color:var(--green);margin-top:4px;" id="axo-var-mes-sub"></div>
+      <div class="axo-val" style="color:var(--green);">▲ +42,83%</div>
+      <div style="font-size:.75rem;color:var(--green);margin-top:4px;">R$ 9,25M vs R$ 6,48M</div>
     </div>
     <div class="axo-card" style="border-color:rgba(34,197,94,.3);">
       <div class="axo-label">Crescimento Ano x Ano</div>
-      <div class="axo-val" style="color:var(--green);" id="axo-axa"></div>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;" id="axo-axa-sub"></div>
+      <div class="axo-val" style="color:var(--green);">▲ +290%</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">Mar/25: R$ 2,37M</div>
     </div>
   </div>
 
@@ -284,35 +384,73 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
-<!-- ═══ ABA: MARKETPLACES ═══ -->
+<!-- ═══════════ MARKETPLACES ═══════════ -->
 <div class="page" id="page-marketplaces">
+
   <div class="kpi-strip">
     <div class="kpi-card orange">
       <div class="kpi-label">Shopee · Líder</div>
-      <div class="kpi-value" style="color:var(--shopee);" id="mp-sh-val"></div>
-      <div class="kpi-sub" id="mp-sh-sub"></div>
+      <div class="kpi-value" style="color:var(--shopee);">R$ 4,74M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">+69% M×M</span> · 55% do total</div>
     </div>
     <div class="kpi-card blue">
       <div class="kpi-label">Magalu · Destaque 🚀</div>
-      <div class="kpi-value" style="color:var(--magalu);" id="mp-ma-val"></div>
-      <div class="kpi-sub" id="mp-ma-sub"></div>
+      <div class="kpi-value" style="color:var(--magalu);">R$ 1,89M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">+107% M×M</span> · 22%</div>
     </div>
     <div class="kpi-card" style="--c:var(--ml)">
       <div class="kpi-label">Mercado Livre</div>
-      <div class="kpi-value" style="color:var(--ml);" id="mp-ml-val"></div>
-      <div class="kpi-sub" id="mp-ml-sub"></div>
+      <div class="kpi-value" style="color:var(--ml);">R$ 1,66M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-6% M×M</span> · 19%</div>
     </div>
     <div class="kpi-card purple">
       <div class="kpi-label">Outros Canais</div>
-      <div class="kpi-value" style="color:var(--comp);" id="mp-outros-val"></div>
-      <div class="kpi-sub" id="mp-outros-sub"></div>
+      <div class="kpi-value" style="color:var(--comp);">R$ 247K</div>
+      <div class="kpi-sub">Via + Madeira + Web · ~3%</div>
     </div>
   </div>
 
   <div class="section-title">Participação & Comparativo por Canal</div>
   <div class="chart-card" style="margin-bottom:20px;">
     <div class="chart-title">Distribuição do Faturamento — Realizado vs Mês Anterior</div>
-    <div style="margin-top:8px;" id="mkt-bars-container"></div>
+    <div style="margin-top:8px;">
+      <div class="mkt-row">
+        <div class="mkt-name" style="color:var(--shopee)">🟠 Shopee</div>
+        <div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:56%;background:var(--shopee);"></div></div>
+        <div class="mkt-val">R$ 5.190.125,19</div>
+        <div class="mkt-var"><span class="tag tag-green">+64%</span></div>
+      </div>
+      <div class="mkt-row">
+        <div class="mkt-name" style="color:var(--magalu)">🔵 Magalu</div>
+        <div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:22%;background:var(--magalu);"></div></div>
+        <div class="mkt-val">R$ 1.993.799,38</div>
+        <div class="mkt-var"><span class="tag tag-green">+87%</span></div>
+      </div>
+      <div class="mkt-row">
+        <div class="mkt-name" style="color:var(--ml)">🟡 Merc.Livre</div>
+        <div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:19%;background:var(--ml);"></div></div>
+        <div class="mkt-val">R$ 1.760.631,60</div>
+        <div class="mkt-var"><span class="tag tag-red">-11%</span></div>
+      </div>
+      <div class="mkt-row">
+        <div class="mkt-name" style="color:var(--via)">🟣 Via Varejo</div>
+        <div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1.4%;background:var(--via);"></div></div>
+        <div class="mkt-val">R$ 131.663,05</div>
+        <div class="mkt-var"><span class="tag tag-green">+23%</span></div>
+      </div>
+      <div class="mkt-row">
+        <div class="mkt-name" style="color:var(--madeira)">🪵 Madeira</div>
+        <div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1.3%;background:var(--madeira);"></div></div>
+        <div class="mkt-val">R$ 119.614,42</div>
+        <div class="mkt-var"><span class="tag tag-green">+21%</span></div>
+      </div>
+      <div class="mkt-row">
+        <div class="mkt-name" style="color:var(--web)">⚪ Web Cont.</div>
+        <div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.26%;background:var(--web);"></div></div>
+        <div class="mkt-val">R$ 24.192,40</div>
+        <div class="mkt-var"><span class="tag tag-green">+9%</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="section-title">Tabela Completa por Marketplace</div>
@@ -320,20 +458,184 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <table class="data-table">
       <thead>
         <tr>
-          <th>Canal</th><th>Mês Atual</th><th>Mês Anterior</th><th>Ano Anterior</th>
-          <th>Var. M×M</th><th>Var. A×A</th><th>Projeção</th><th>Part. %</th>
+          <th>Canal</th>
+          <th>Mês Atual</th>
+          <th>Mês Anterior</th>
+          <th>Ano Anterior</th>
+          <th>Var. M×M</th>
+          <th>Var. A×A</th>
+          <th>Projeção</th>
+          <th>Part. %</th>
         </tr>
       </thead>
-      <tbody id="mkt-table-body"></tbody>
+      <tbody>
+        <tr>
+          <td style="color:var(--shopee);font-weight:700;">🟠 Shopee</td>
+          <td>R$ 5.190.125,19</td>
+          <td>R$ 3.167.605,38</td>
+          <td>R$ 40.371,14</td>
+          <td><span class="tag tag-green">+64%</span></td>
+          <td><span class="tag tag-green">+12.756%</span></td>
+          <td style="color:var(--green)">R$ 6.703.911,70</td>
+          <td>56%</td>
+        </tr>
+        <tr>
+          <td style="color:var(--magalu);font-weight:700;">🔵 Magalu</td>
+          <td>R$ 1.993.799,38</td>
+          <td>R$ 1.067.876,18</td>
+          <td>R$ 854.829,50</td>
+          <td><span class="tag tag-green">+87%</span></td>
+          <td><span class="tag tag-green">+133%</span></td>
+          <td style="color:var(--green)">R$ 2.575.324,20</td>
+          <td>22%</td>
+        </tr>
+        <tr>
+          <td style="color:var(--ml);font-weight:700;">🟡 Merc.Livre</td>
+          <td>R$ 1.760.631,60</td>
+          <td>R$ 1.988.460,74</td>
+          <td>R$ 727.368,99</td>
+          <td><span class="tag tag-red">-11%</span></td>
+          <td><span class="tag tag-green">+142%</span></td>
+          <td style="color:var(--green)">R$ 2.274.149,15</td>
+          <td>19%</td>
+        </tr>
+        <tr>
+          <td style="color:var(--via);font-weight:700;">🟣 Via Varejo</td>
+          <td>R$ 131.663,05</td>
+          <td>R$ 107.197,52</td>
+          <td>R$ 108.585,75</td>
+          <td><span class="tag tag-green">+23%</span></td>
+          <td><span class="tag tag-green">+21%</span></td>
+          <td style="color:var(--green)">R$ 170.064,77</td>
+          <td>1%</td>
+        </tr>
+        <tr>
+          <td style="color:var(--madeira);font-weight:700;">🪵 Madeira</td>
+          <td>R$ 119.614,42</td>
+          <td>R$ 98.765,29</td>
+          <td>R$ 586.373,84</td>
+          <td><span class="tag tag-green">+21%</span></td>
+          <td><span class="tag tag-red">-80%</span></td>
+          <td style="color:var(--green)">R$ 154.501,96</td>
+          <td>1%</td>
+        </tr>
+        <tr>
+          <td style="color:var(--web);font-weight:700;">⚪ Web Cont.</td>
+          <td>R$ 24.192,40</td>
+          <td>R$ 22.165,75</td>
+          <td>R$ 34.591,40</td>
+          <td><span class="tag tag-green">+9%</span></td>
+          <td><span class="tag tag-red">-30%</span></td>
+          <td style="color:var(--green)">R$ 31.248,52</td>
+          <td>0,3%</td>
+        </tr>
+        <tr class="total-row">
+          <td>TOTAL</td>
+          <td>R$ 9.253.535,88</td>
+          <td>R$ 6.478.558,26</td>
+          <td>R$ 2.372.685,78</td>
+          <td><span class="tag tag-green">+43%</span></td>
+          <td><span class="tag tag-green">+290%</span></td>
+          <td>R$ 11.474.384,49</td>
+          <td>100%</td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>
 
-<!-- ═══ ABA: CATEGORIAS ═══ -->
+<!-- ═══════════ CATEGORIAS ═══════════ -->
 <div class="page" id="page-categorias">
+
   <div class="section-title">Faturado × Meta × Projeção por Categoria e Marketplace</div>
-  <div class="cat-grid-mp" id="cat-grid-container">
-    <!-- Injetado pelo JS -->
+
+  <div class="cat-grid-mp">
+    <!-- SHOPEE -->
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--shopee);">
+        <div class="cat-mp-name" style="color:var(--shopee);">🟠 Shopee</div>
+        <div class="cat-mp-total">Total: R$ 4.368.756,45</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead>
+        <tbody>
+          <tr><td>COMP</td><td>R$ 604.664,11</td><td>R$ 560.000,00</td><td><span class="tag tag-green">107,98%</span></td><td style="color:var(--green)">R$ 852.026,69</td></tr>
+          <tr><td>GR</td><td>R$ 2.742.962,81</td><td>R$ 2.560.000,00</td><td><span class="tag tag-green">107,15%</span></td><td style="color:var(--green)">R$ 3.865.083,96</td></tr>
+          <tr><td>SALA</td><td>R$ 1.021.129,53</td><td>R$ 880.000,00</td><td><span class="tag tag-green">116,04%</span></td><td style="color:var(--green)">R$ 1.438.864,33</td></tr>
+          <tr class="total-row"><td>TOTAL</td><td>R$ 4.368.756,45</td><td>R$ 4.000.000,00</td><td><span class="tag tag-green">109,22%</span></td><td>R$ 6.155.974,99</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MERCADO LIVRE -->
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--ml);">
+        <div class="cat-mp-name" style="color:var(--ml);">🟡 Mercado Livre</div>
+        <div class="cat-mp-total">Total: R$ 1.531.494,17</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead>
+        <tbody>
+          <tr><td>COMP</td><td>R$ 194.960,86</td><td>R$ 420.000,00</td><td><span class="tag tag-red">46,42%</span></td><td>R$ 274.717,57</td></tr>
+          <tr><td>GR</td><td>R$ 1.183.746,57</td><td>R$ 1.920.000,00</td><td><span class="tag tag-yellow">61,65%</span></td><td>R$ 1.668.006,53</td></tr>
+          <tr><td>SALA</td><td>R$ 152.786,74</td><td>R$ 660.000,00</td><td><span class="tag tag-red">23,15%</span></td><td>R$ 215.290,40</td></tr>
+          <tr class="total-row"><td>TOTAL</td><td>R$ 1.531.494,17</td><td>R$ 3.000.000,00</td><td><span class="tag tag-red">51,05%</span></td><td>R$ 2.158.014,51</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MAGALU -->
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--magalu);">
+        <div class="cat-mp-name" style="color:var(--magalu);">🔵 Magalu</div>
+        <div class="cat-mp-total">Total: R$ 1.775.374,87</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead>
+        <tbody>
+          <tr><td>COMP</td><td>R$ 40.762,44</td><td>R$ 210.000,00</td><td><span class="tag tag-red">19,41%</span></td><td>R$ 57.437,98</td></tr>
+          <tr><td>GR</td><td>R$ 1.541.097,22</td><td>R$ 960.000,00</td><td><span class="tag tag-green">160,53%</span></td><td style="color:var(--green)">R$ 2.171.546,08</td></tr>
+          <tr><td>SALA</td><td>R$ 193.515,22</td><td>R$ 330.000,00</td><td><span class="tag tag-yellow">58,64%</span></td><td>R$ 272.680,53</td></tr>
+          <tr class="total-row"><td>TOTAL</td><td>R$ 1.775.374,87</td><td>R$ 1.500.000,00</td><td><span class="tag tag-green">118,36%</span></td><td>R$ 2.501.664,60</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MADEIRA -->
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--madeira);">
+        <div class="cat-mp-name" style="color:var(--madeira);">🪵 Madeira</div>
+        <div class="cat-mp-total">Total: R$ 97.056,09</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead>
+        <tbody>
+          <tr><td>COMP</td><td>R$ 28.262,02</td><td>R$ 21.000,00</td><td><span class="tag tag-green">134,58%</span></td><td style="color:var(--green)">R$ 39.823,75</td></tr>
+          <tr><td>GR</td><td>R$ 55.977,76</td><td>R$ 96.000,00</td><td><span class="tag tag-yellow">58,31%</span></td><td>R$ 78.877,75</td></tr>
+          <tr><td>SALA</td><td>R$ 12.816,31</td><td>R$ 33.000,00</td><td><span class="tag tag-red">38,84%</span></td><td>R$ 18.059,35</td></tr>
+          <tr class="total-row"><td>TOTAL</td><td>R$ 97.056,09</td><td>R$ 150.000,00</td><td><span class="tag tag-yellow">64,70%</span></td><td>R$ 136.760,85</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- VIA -->
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--via);">
+        <div class="cat-mp-name" style="color:var(--via);">🟣 Via</div>
+        <div class="cat-mp-total">Total: R$ 103.048,66</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead>
+        <tbody>
+          <tr><td>COMP</td><td>R$ 12.437,04</td><td>R$ 21.000,00</td><td><span class="tag tag-yellow">59,22%</span></td><td>R$ 17.524,91</td></tr>
+          <tr><td>GR</td><td>R$ 86.480,78</td><td>R$ 96.000,00</td><td><span class="tag tag-yellow">90,08%</span></td><td>R$ 121.859,28</td></tr>
+          <tr><td>SALA</td><td>R$ 4.130,84</td><td>R$ 33.000,00</td><td><span class="tag tag-red">12,52%</span></td><td>R$ 5.820,73</td></tr>
+          <tr class="total-row"><td>TOTAL</td><td>R$ 103.048,66</td><td>R$ 150.000,00</td><td><span class="tag tag-yellow">68,70%</span></td><td>R$ 145.204,92</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHART CATEGORIAS -->
     <div class="chart-card">
       <div class="chart-title">📊 Fat. por Categoria — Todos Canais</div>
       <div class="chart-wrap"><canvas id="catDetailChart"></canvas></div>
@@ -341,39 +643,40 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
-<!-- ═══ ABA: VENDAS DIÁRIAS ═══ -->
+<!-- ═══════════ VENDAS DIÁRIAS ═══════════ -->
 <div class="page" id="page-diario">
+
   <div class="kpi-strip">
     <div class="kpi-card blue">
       <div class="kpi-label">Total Vendas (Geral)</div>
-      <div class="kpi-value" id="d-total"></div>
-      <div class="kpi-sub" id="d-total-sub"></div>
+      <div class="kpi-value">R$ 9,22M</div>
+      <div class="kpi-sub">01/03 a 25/03 · 25 dias</div>
     </div>
     <div class="kpi-card green">
       <div class="kpi-label">Média Diária</div>
-      <div class="kpi-value" style="color:var(--green)" id="d-media"></div>
-      <div class="kpi-sub" id="d-media-sub"></div>
+      <div class="kpi-value" style="color:var(--green)">R$ 369K</div>
+      <div class="kpi-sub">R$ 368.903,97 / dia</div>
     </div>
     <div class="kpi-card orange">
       <div class="kpi-label">Melhor Dia</div>
-      <div class="kpi-value" style="color:var(--shopee)" id="d-melhor"></div>
-      <div class="kpi-sub" id="d-melhor-sub"></div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 906K</div>
+      <div class="kpi-sub">15/03 · R$ 906.342,37</div>
     </div>
     <div class="kpi-card purple">
       <div class="kpi-label">Projeção Shopee</div>
-      <div class="kpi-value" style="color:var(--comp)" id="d-proj-sh"></div>
-      <div class="kpi-sub" id="d-proj-sh-sub"></div>
+      <div class="kpi-value" style="color:var(--comp)">R$ 6,49M</div>
+      <div class="kpi-sub">R$ 6.493.175,28 projetado</div>
     </div>
   </div>
 
   <div class="chart-card" style="margin-bottom:24px;">
-    <div class="chart-title" id="d-chart-title"></div>
+    <div class="chart-title">📅 Vendas Diárias Gerais — Realizado (01 a 25/Mar)</div>
     <div style="position:relative;height:280px;"><canvas id="dailyChart"></canvas></div>
   </div>
 
   <div class="section-title">Detalhe Diário por Marketplace</div>
   <div class="daily-wrap">
-    <table class="data-table">
+    <table class="data-table" id="dailyTable">
       <thead>
         <tr>
           <th>Dia</th>
@@ -384,6 +687,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <th style="color:var(--madeira)">Madeira</th>
           <th style="color:var(--via)">Via</th>
           <th style="color:var(--web)">Web Cont.</th>
+          <th style="color:#06b6d4">Zema</th>
         </tr>
       </thead>
       <tbody id="dailyTbody"></tbody>
@@ -391,436 +695,928 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 
-<script>
-/* ══════════════════════════════════════════════════════════════════════
-   ██████╗  █████╗ ████████╗ █████╗     ██████╗ ██╗      ██████╗  ██████╗
-   ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗    ██╔══██╗██║     ██╔═══██╗██╔════╝
-   ██║  ██║███████║   ██║   ███████║    ██████╔╝██║     ██║   ██║██║
-   ██║  ██║██╔══██║   ██║   ██╔══██║    ██╔══██╗██║     ██║   ██║██║
-   ██████╔╝██║  ██║   ██║   ██║  ██║    ██████╔╝███████╗╚██████╔╝╚██████╗
-   ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝   ╚═════╝ ╚══════╝ ╚═════╝  ╚═════╝
+<!-- ═══════════ ANÁLISE DE PRODUTOS ═══════════ -->
+<div class="page" id="page-produtos">
 
-   ATUALIZE APENAS ESTE BLOCO — TODO O RESTO É AUTOMÁTICO
-   ══════════════════════════════════════════════════════════════════════ */
+  <!-- KPIs rápidos -->
+  <div class="kpi-strip" style="grid-template-columns:repeat(5,1fr);">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Top Produto — Shopee</div>
+      <div class="kpi-value" style="color:var(--shopee);font-size:1.0rem;line-height:1.3">GR Easy Slim 8P Espelho Amendoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">980 un</span> · R$ 991.250,00</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--ml)">
+      <div class="kpi-label">Top Produto — Merc. Livre</div>
+      <div class="kpi-value" style="color:var(--ml);font-size:1.0rem;line-height:1.3">GR 2P Correr Toronto Plus MDF Branco</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">272 un</span> · R$ 434.578,97</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Top Produto — Magalu</div>
+      <div class="kpi-value" style="color:var(--magalu);font-size:1.0rem;line-height:1.3">GR Easy Slim 8P Espelho e Pés Amendoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">680 un</span> · R$ 725.689,08</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Top Produto — Via Varejo</div>
+      <div class="kpi-value" style="color:var(--via);font-size:1.0rem;line-height:1.3">GR 6P Easy Slim Espelho Amendoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">35 un</span> · R$ 31.956,62</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--madeira)">
+      <div class="kpi-label">Top Produto — Madeira</div>
+      <div class="kpi-value" style="color:var(--madeira);font-size:1.0rem;line-height:1.3">GR Easy Slim 8P Espelho Amendoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">12 un</span> · R$ 13.796,01</div>
+    </div>
+  </div>
 
-const DATA = {
-
-  /* ─── 1. CABEÇALHO ─────────────────────────────────────────────────── */
-  periodo:     '01/03 a 24/03',          // ex: '01/03 a 25/03'
-  totalDias:   24,                        // número de dias do período
-
-  /* ─── 2. KPIs GERAIS ────────────────────────────────────────────────── */
-  fatTotal:    8913263.78,               // Faturamento total do período
-  fatMeta:     8600000.00,               // Meta do mês (fixo mensal)
-  fatProjecao: 11512965.72,              // Projeção calculada
-  fatMesAnt:   6165735.80,               // Faturamento mês anterior
-  fatAnoAnt:   2193032.22,               // Faturamento mesmo período ano anterior
-  // Ano anterior (ex: 2025):
-  anoAntLabel: '2025',
-  anoAtualLabel:'2026',
-
-  /* ─── 3. CATEGORIAS (totais do período) ─────────────────────────────── */
-  cat: {
-    gr:   { fat: 6329901.73, meta: 5504000.00, proj: 8176123.06 },
-    sala: { fat: 1557764.02, meta: 1892000.00, proj: 2012111.85 },
-    comp: { fat: 1025598.04, meta: 1204000.00, proj: 1324730.80 },
-  },
-
-  /* ─── 4. MARKETPLACES ───────────────────────────────────────────────── */
-  mp: [
-    // { key, label, emoji, cor, atual, anterior, anoAnt, varMes(%), varAno(%), proj, part(%) }
-    { key:'sh',  label:'Shopee',        emoji:'🟠', cor:'var(--shopee)',  atual:4972334.89, anterior:3054589.00, anoAnt:32501.41,   varMes:63,   varAno:15199, proj:6422599.24, part:56 },
-    { key:'ma',  label:'Magalu',        emoji:'🔵', cor:'var(--magalu)',  atual:1936893.00, anterior:1047967.51, anoAnt:801984.60,  varMes:85,   varAno:142,   proj:2501820.13, part:22 },
-    { key:'ml',  label:'Merc.Livre',    emoji:'🟡', cor:'var(--ml)',      atual:1707395.50, anterior:1813985.62, anoAnt:665708.46,  varMes:-6,   varAno:156,   proj:2205385.85, part:19 },
-    { key:'via', label:'Via Varejo',    emoji:'🟣', cor:'var(--via)',     atual:123557.02,  anterior:107197.52,  anoAnt:97402.45,   varMes:15,   varAno:27,    proj:159594.49,  part:1  },
-    { key:'mad', label:'Madeira',       emoji:'🪵', cor:'var(--madeira)', atual:115381.12,  anterior:93343.00,   anoAnt:545679.40,  varMes:24,   varAno:-79,   proj:149033.94,  part:1  },
-    { key:'web', label:'Web Cont.',     emoji:'⚪', cor:'var(--web)',     atual:24192.40,   anterior:22165.75,   anoAnt:30366.41,   varMes:9,    varAno:-20,   proj:31248.52,   part:0.3},
-  ],
-
-  /* ─── 5. CATEGORIAS POR MARKETPLACE ────────────────────────────────── */
-  // Para a aba Categorias — faturado/meta/% de cada canal
-  catMp: [
-    {
-      key:'sh', label:'Shopee', emoji:'🟠', cor:'var(--shopee)',
-      total: { fat:4368756.45, meta:4000000.00 },
-      linhas: [
-        { cat:'COMP', fat:604664.11,   meta:560000.00,  pct:107.98, proj:852026.69  },
-        { cat:'GR',   fat:2742962.81,  meta:2560000.00, pct:107.15, proj:3865083.96 },
-        { cat:'SALA', fat:1021129.53,  meta:880000.00,  pct:116.04, proj:1438864.33 },
-      ]
-    },
-    {
-      key:'ml', label:'Mercado Livre', emoji:'🟡', cor:'var(--ml)',
-      total: { fat:1531494.17, meta:3000000.00 },
-      linhas: [
-        { cat:'COMP', fat:194960.86,  meta:420000.00,  pct:46.42, proj:274717.57  },
-        { cat:'GR',   fat:1183746.57, meta:1920000.00, pct:61.65, proj:1668006.53 },
-        { cat:'SALA', fat:152786.74,  meta:660000.00,  pct:23.15, proj:215290.40  },
-      ]
-    },
-    {
-      key:'ma', label:'Magalu', emoji:'🔵', cor:'var(--magalu)',
-      total: { fat:1775374.87, meta:1500000.00 },
-      linhas: [
-        { cat:'COMP', fat:40762.44,   meta:210000.00, pct:19.41,  proj:57437.98   },
-        { cat:'GR',   fat:1541097.22, meta:960000.00, pct:160.53, proj:2171546.08 },
-        { cat:'SALA', fat:193515.22,  meta:330000.00, pct:58.64,  proj:272680.53  },
-      ]
-    },
-    {
-      key:'mad', label:'Madeira', emoji:'🪵', cor:'var(--madeira)',
-      total: { fat:97056.09, meta:150000.00 },
-      linhas: [
-        { cat:'COMP', fat:28262.02, meta:21000.00, pct:134.58, proj:39823.75 },
-        { cat:'GR',   fat:55977.76, meta:96000.00, pct:58.31,  proj:78877.75 },
-        { cat:'SALA', fat:12816.31, meta:33000.00, pct:38.84,  proj:18059.35 },
-      ]
-    },
-    {
-      key:'via', label:'Via', emoji:'🟣', cor:'var(--via)',
-      total: { fat:103048.66, meta:150000.00 },
-      linhas: [
-        { cat:'COMP', fat:12437.04, meta:21000.00, pct:59.22, proj:17524.91  },
-        { cat:'GR',   fat:86480.78, meta:96000.00, pct:90.08, proj:121859.28 },
-        { cat:'SALA', fat:4130.84,  meta:33000.00, pct:12.52, proj:5820.73   },
-      ]
-    },
-  ],
-
-  /* ─── 6. VENDAS DIÁRIAS ─────────────────────────────────────────────── */
-  // Adicionar uma linha por dia: {d:'DD/MM', g:geral, sh:shopee, me:meili, ma:magalu, mad:madeira, via:via, web:web}
-  daily: [
-    {d:'01/03', g:249965.03,  sh:113420.07, me:89689.22,  ma:39226.22,  mad:2189.44,  via:5440.08,  web:0      },
-    {d:'02/03', g:253163.58,  sh:138770.79, me:47611.29,  ma:48149.64,  mad:9171.83,  via:9460.03,  web:0      },
-    {d:'03/03', g:642838.10,  sh:437277.14, me:146855.17, ma:48056.20,  mad:7517.41,  via:569.59,   web:2562.61},
-    {d:'04/03', g:369540.79,  sh:167488.12, me:82689.35,  ma:106213.58, mad:5487.03,  via:5015.81,  web:0      },
-    {d:'05/03', g:339741.29,  sh:184566.21, me:64392.13,  ma:82242.51,  mad:2868.71,  via:4709.71,  web:0      },
-    {d:'06/03', g:382582.50,  sh:196951.70, me:78443.81,  ma:95864.46,  mad:1249.96,  via:10072.58, web:0      },
-    {d:'07/03', g:418763.40,  sh:211215.20, me:80076.99,  ma:115883.60, mad:4996.20,  via:5647.17,  web:944.21 },
-    {d:'08/03', g:392044.80,  sh:215009.70, me:79500.90,  ma:80922.30,  mad:4754.41,  via:10878.76, web:978.79 },
-    {d:'09/03', g:392132.40,  sh:193949.13, me:92477.77,  ma:98425.16,  mad:2914.04,  via:4366.30,  web:0      },
-    {d:'10/03', g:502395.59,  sh:246473.61, me:102587.50, ma:131348.93, mad:18279.60, via:3705.95,  web:0      },
-    {d:'11/03', g:461523.50,  sh:218428.05, me:86547.02,  ma:148892.09, mad:0,        via:1699.52,  web:2625.65},
-    {d:'12/03', g:429161.01,  sh:204690.69, me:92302.95,  ma:121431.39, mad:3301.71,  via:5403.86,  web:0      },
-    {d:'13/03', g:389939.54,  sh:204431.84, me:58638.35,  ma:111695.62, mad:7320.35,  via:3892.18,  web:0      },
-    {d:'14/03', g:400795.11,  sh:211637.29, me:50429.45,  ma:130736.50, mad:3488.12,  via:2675.36,  web:1311.30},
-    {d:'15/03', g:906342.37,  sh:590843.66, me:139559.20, ma:157014.42, mad:10861.61, via:8063.48,  web:0      },
-    {d:'16/03', g:387237.60,  sh:221215.96, me:65495.32,  ma:95604.22,  mad:2304.23,  via:2617.87,  web:0      },
-    {d:'17/03', g:337816.90,  sh:184877.28, me:68420.19,  ma:74817.30,  mad:1625.06,  via:3911.59,  web:2952.03},
-    {d:'18/03', g:225848.44,  sh:165613.14, me:28517.24,  ma:25585.68,  mad:822.98,   via:570.83,   web:3845.25},
-    {d:'19/03', g:260504.40,  sh:166060.55, me:36949.64,  ma:45502.47,  mad:6535.95,  via:4185.41,  web:0      },
-    {d:'20/03', g:240798.68,  sh:148780.38, me:36811.26,  ma:40474.79,  mad:5341.66,  via:5096.94,  web:3492.14},
-    {d:'21/03', g:250806.39,  sh:136488.19, me:51270.62,  ma:48629.78,  mad:1939.16,  via:9347.31,  web:2573.59},
-    {d:'22/03', g:260709.91,  sh:129545.33, me:79417.57,  ma:47194.32,  mad:0,        via:3194.01,  web:0      },
-    {d:'23/03', g:279073.07,  sh:208342.63, me:27300.73,  ma:29950.67,  mad:6721.01,  via:3725.80,  web:3032.23},
-    {d:'24/03', g:247385.34,  sh:149329.44, me:42857.45,  ma:48561.35,  mad:3420.77,  via:3216.33,  web:0      },
-    // ← ADICIONAR PRÓXIMO DIA AQUI ↑
-  ],
-
-  /* ─── 7. KPIs DA ABA DIÁRIA ─────────────────────────────────────────── */
-  diario: {
-    projShopee:     6516982.88,   // Projeção Shopee
-    projShopeeFull: 'R$ 6.516.982,88',
-  },
-
-}; /* ══ FIM DO BLOCO DATA ══ */
-
-
-/* ════════════════════════════════════════════════════════
-   ENGINE — NÃO ALTERAR ABAIXO DESTA LINHA
-   ════════════════════════════════════════════════════════ */
-
-// ── Formatadores ──
-const fmtM  = v => 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtAb = v => {
-  if(v>=1e6) return 'R$ '+(v/1e6).toFixed(2)+'M';
-  if(v>=1e3) return 'R$ '+(v/1e3).toFixed(1)+'K';
-  return fmtM(v);
-};
-const fmtPct = v => v.toFixed(2).replace('.',',')+'%';
-const tagPct = p => {
-  if(p>=100) return `<span class="tag tag-green">${fmtPct(p)}</span>`;
-  if(p>=70)  return `<span class="tag tag-yellow">${fmtPct(p)}</span>`;
-  return      `<span class="tag tag-red">${fmtPct(p)}</span>`;
-};
-const varTag = v => v>=0
-  ? `<span class="tag tag-green">+${v}%</span>`
-  : `<span class="tag tag-red">${v}%</span>`;
-
-// ── Derivados ──
-const d = DATA;
-const varMesPct  = ((d.fatTotal - d.fatMesAnt) / d.fatMesAnt * 100).toFixed(2);
-const metaPct    = (d.fatTotal / d.fatMeta * 100).toFixed(2);
-const varAnoPct  = Math.round((d.fatTotal - d.fatAnoAnt) / d.fatAnoAnt * 100);
-const projAcima  = Math.round((d.fatProjecao - d.fatMeta) / d.fatMeta * 100);
-const outros     = d.mp.filter(m=>!['sh','ma','ml'].includes(m.key)).reduce((a,m)=>a+m.atual,0);
-const shopee     = d.mp.find(m=>m.key==='sh');
-const magalu     = d.mp.find(m=>m.key==='ma');
-const ml         = d.mp.find(m=>m.key==='ml');
-const dailyVals  = d.daily.map(r=>r.g);
-const dailyAvg   = dailyVals.reduce((a,b)=>a+b,0)/dailyVals.length;
-const bestDay    = d.daily.reduce((a,r)=>r.g>a.g?r:a);
-
-// ── Preenche HEADER ──
-setText('hdr-periodo',     `Março 2026 · Período ${d.periodo}`);
-setText('hdr-meta-pct',    `${fmtPct(+metaPct)} da Meta`);
-setText('hdr-var-mes',     `+${varMesPct}% vs Fev`);
-setText('hdr-var-ano',     `+${varAnoPct}% Ano x Ano`);
-
-// ── Preenche VISÃO GERAL ──
-setText('v-fat-total',     fmtAb(d.fatTotal));
-setHTML('v-var-mes-pill',  `+${varMesPct}%`);
-setHTML('v-meta-pct',      `<span style="color:${+metaPct>=100?'var(--green)':'var(--yellow)'}">${fmtPct(+metaPct)}</span>`);
-setText('v-meta-val',      fmtAb(d.fatMeta));
-setText('v-dias-pill',     `${d.totalDias} dias`);
-setText('v-projecao',      fmtAb(d.fatProjecao));
-setText('v-proj-acima',    `+${projAcima}%`);
-setText('v-axa',           `+${varAnoPct}%`);
-setText('v-axa-sub',       `${d.anoAntLabel}: ${fmtAb(d.fatAnoAnt)} → ${d.anoAtualLabel}: ${fmtAb(d.fatTotal)}`);
-
-// Categorias
-function renderCat(key, cfg) {
-  const pct     = cfg.fat / cfg.meta * 100;
-  const projPct = cfg.proj / cfg.meta * 100;
-  const barW    = Math.min(pct, 100).toFixed(1);
-  const bateu   = pct >= 100;
-  setText(`cat-${key}-val`,      fmtAb(cfg.fat));
-  setText(`cat-${key}-sub`,      `Meta: ${fmtAb(cfg.meta)} · Projeção: ${fmtAb(cfg.proj)}`);
-  document.getElementById(`cat-${key}-bar`).style.width = barW + '%';
-  setHTML(`cat-${key}-pct`,      `<span style="color:${bateu?'var(--green)':'var(--yellow)'}">${fmtPct(pct)}</span>`);
-  setText(`cat-${key}-proj-pct`, fmtPct(projPct));
-  setHTML(`cat-${key}-tag`,      bateu
-    ? `<span class="tag tag-green">✓ META BATIDA</span>`
-    : `<span class="tag tag-yellow">⚡ PROJEÇÃO OK</span>`);
-}
-renderCat('gr',   d.cat.gr);
-renderCat('sala', d.cat.sala);
-renderCat('comp', d.cat.comp);
-
-// Axo cards
-const mesAntNome = 'Fev/26';
-setText('axo-mes-ant-label', `Mês Anterior (${mesAntNome})`);
-setText('axo-mes-ant-val',   fmtAb(d.fatMesAnt));
-setText('axo-mes-ant-full',  fmtM(d.fatMesAnt));
-setText('axo-var-mes',       `▲ +${varMesPct}%`);
-setText('axo-var-mes-sub',   `${fmtAb(d.fatTotal)} vs ${fmtAb(d.fatMesAnt)}`);
-setText('axo-axa',           `▲ +${varAnoPct}%`);
-setText('axo-axa-sub',       `Mar/${d.anoAntLabel.slice(-2)}: ${fmtAb(d.fatAnoAnt)}`);
-
-// ── Preenche MARKETPLACES ──
-setText('mp-sh-val',     fmtAb(shopee.atual));
-setHTML('mp-sh-sub',     `${varTag(shopee.varMes)} M×M · ${shopee.part}% do total`);
-setText('mp-ma-val',     fmtAb(magalu.atual));
-setHTML('mp-ma-sub',     `${varTag(magalu.varMes)} M×M · ${magalu.part}%`);
-setText('mp-ml-val',     fmtAb(ml.atual));
-setHTML('mp-ml-sub',     `${varTag(ml.varMes)} M×M · ${ml.part}%`);
-setText('mp-outros-val', fmtAb(outros));
-setText('mp-outros-sub', 'Via + Madeira + Web · ~3%');
-
-// Barras horizontais
-const maxMp = Math.max(...d.mp.map(m=>m.atual));
-const barsHtml = d.mp.map(m => `
-  <div class="mkt-row">
-    <div class="mkt-name" style="color:${m.cor}">${m.emoji} ${m.label}</div>
-    <div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:${(m.atual/maxMp*100).toFixed(1)}%;background:${m.cor};"></div></div>
-    <div class="mkt-val">${fmtM(m.atual)}</div>
-    <div class="mkt-var">${varTag(m.varMes)}</div>
-  </div>`).join('');
-setHTML('mkt-bars-container', barsHtml);
-
-// Tabela marketplaces
-const mktRows = d.mp.map(m => `
-  <tr>
-    <td style="color:${m.cor};font-weight:700;">${m.emoji} ${m.label}</td>
-    <td>${fmtM(m.atual)}</td>
-    <td>${fmtM(m.anterior)}</td>
-    <td>${fmtM(m.anoAnt)}</td>
-    <td>${varTag(m.varMes)}</td>
-    <td>${varTag(m.varAno)}</td>
-    <td style="color:var(--green)">${fmtM(m.proj)}</td>
-    <td>${m.part}%</td>
-  </tr>`).join('');
-const totAtual = d.mp.reduce((a,m)=>a+m.atual,0);
-const totProj  = d.mp.reduce((a,m)=>a+m.proj,0);
-setHTML('mkt-table-body', mktRows + `
-  <tr class="total-row">
-    <td>TOTAL</td>
-    <td>${fmtM(totAtual)}</td>
-    <td>${fmtM(d.fatMesAnt)}</td>
-    <td>${fmtM(d.fatAnoAnt)}</td>
-    <td>${varTag(+varMesPct)}</td>
-    <td>${varTag(varAnoPct)}</td>
-    <td>${fmtM(totProj)}</td>
-    <td>100%</td>
-  </tr>`);
-
-// ── Preenche CATEGORIAS ──
-const catCards = d.catMp.map(mp => {
-  const mpPct = mp.total.fat / mp.total.meta * 100;
-  const rows = mp.linhas.map(l => `
-    <tr>
-      <td>${l.cat}</td>
-      <td>${fmtM(l.fat)}</td>
-      <td>${fmtM(l.meta)}</td>
-      <td>${tagPct(l.pct)}</td>
-      <td style="color:${l.pct>=100?'var(--green)':'var(--text)'}">${fmtM(l.proj)}</td>
-    </tr>`).join('');
-  const totPct = (mp.total.fat/mp.total.meta*100);
-  return `
-    <div class="cat-mp-card">
-      <div class="cat-mp-header" style="border-left:3px solid ${mp.cor};">
-        <div class="cat-mp-name" style="color:${mp.cor};">${mp.emoji} ${mp.label}</div>
-        <div class="cat-mp-total">Total: ${fmtM(mp.total.fat)}</div>
+  <!-- ── TOP 15 GERAL — TODOS OS CANAIS ── -->
+  <div class="section-title">📊 Top 15 Produtos — Visão Geral (Todos os Canais)</div>
+  <div class="top15-card">
+    <div class="top15-header">
+      <div>
+        <div class="top15-title">Itens mais vendidos · Base consolidada de todos os marketplaces</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">Representatividade calculada sobre faturamento total geral · R$ 8.344.528,00 (base planilha)</div>
       </div>
-      <table class="data-table">
-        <thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead>
-        <tbody>
-          ${rows}
-          <tr class="total-row">
-            <td>TOTAL</td>
-            <td>${fmtM(mp.total.fat)}</td>
-            <td>${fmtM(mp.total.meta)}</td>
-            <td>${tagPct(totPct)}</td>
-            <td>${fmtM(mp.total.fat / mp.total.meta * d.fatProjecao / totAtual * mp.total.meta)}</td>
-          </tr>
-        </tbody>
+      <div class="top15-summary">
+        <div>
+          <div class="top15-stat-val">71,89%</div>
+          <div class="top15-stat-label">Rep. acumulada top 15</div>
+        </div>
+        <div>
+          <div class="top15-stat-val">5.435 un</div>
+          <div class="top15-stat-label">Qtd total top 15</div>
+        </div>
+        <div>
+          <div class="top15-stat-val">R$ 6,00M</div>
+          <div class="top15-stat-label">Valor top 15</div>
+        </div>
+      </div>
+    </div>
+    <table class="prod-table" style="width:100%">
+      <thead>
+        <tr>
+          <th style="width:32px">#</th>
+          <th>Produto</th>
+          <th class="right">Valor Total</th>
+          <th class="right">Qtd</th>
+          <th class="right" style="min-width:120px">Representatividade</th>
+        </tr>
+      </thead>
+      <tbody id="top15-geral"></tbody>
+    </table>
+  </div>
+
+  <!-- ── RANKING GERAL POR MARKETPLACE ── -->
+  <div class="section-title">🏆 Top Produtos por Marketplace — Geral</div>
+  <div class="prod-mp-grid">
+
+    <!-- SHOPEE GERAL -->
+    <div class="prod-mp-card">
+      <div class="prod-mp-header" style="border-left:3px solid var(--shopee);">
+        <div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee</div>
+        <div class="prod-mp-header-sub">Top 15 produtos</div>
+      </div>
+      <table class="prod-table">
+        <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+        <tbody id="prod-shopee-geral"></tbody>
       </table>
-    </div>`;
-}).join('');
+    </div>
 
-// Inserir antes do gráfico (último filho)
-const catGrid = document.getElementById('cat-grid-container');
-catGrid.insertAdjacentHTML('afterbegin', catCards);
+    <!-- MERCADO LIVRE GERAL -->
+    <div class="prod-mp-card">
+      <div class="prod-mp-header" style="border-left:3px solid var(--ml);">
+        <div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre</div>
+        <div class="prod-mp-header-sub">Top 15 produtos</div>
+      </div>
+      <table class="prod-table">
+        <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+        <tbody id="prod-ml-geral"></tbody>
+      </table>
+    </div>
 
-// ── Preenche VENDAS DIÁRIAS ──
-setText('d-total',       fmtAb(d.daily.reduce((a,r)=>a+r.g,0)));
-setText('d-total-sub',   `01/03 a ${d.periodo.split(' a ')[1]} · ${d.totalDias} dias`);
-setText('d-media',       fmtAb(dailyAvg));
-setText('d-media-sub',   `${fmtM(dailyAvg)} / dia`);
-setText('d-melhor',      fmtAb(bestDay.g));
-setText('d-melhor-sub',  `${bestDay.d} · ${fmtM(bestDay.g)}`);
-setText('d-proj-sh',     fmtAb(d.diario.projShopee));
-setText('d-proj-sh-sub', `${d.diario.projShopeeFull} projetado`);
-setText('d-chart-title', `📅 Vendas Diárias Gerais — Realizado (01 a ${d.periodo.split(' a ')[1]})`);
 
-// Tabela diária
-const keys = ['g','sh','me','ma','mad','via','web'];
-const tbody = document.getElementById('dailyTbody');
-d.daily.forEach(row => {
-  const tr = document.createElement('tr');
-  const ok = row.g >= dailyAvg;
-  tr.innerHTML = `<td style="font-family:'DM Mono',monospace;color:var(--muted)">${row.d}</td>`
-    + keys.map(k=>`<td style="${k==='g'?(ok?'color:var(--green)':'color:var(--red)'):''}">${row[k]>0?fmtM(row[k]):'—'}</td>`).join('');
-  tbody.appendChild(tr);
-});
-const totals = keys.map(k=>d.daily.reduce((a,r)=>a+r[k],0));
-const trT = document.createElement('tr'); trT.className='total-row';
-trT.innerHTML = `<td>TOTAL</td>`+totals.map(t=>`<td>${fmtM(t)}</td>`).join('');
-tbody.appendChild(trT);
-const trA = document.createElement('tr'); trA.style.background='var(--bg3)';
-trA.innerHTML = `<td style="color:var(--muted);font-size:.7rem">MÉDIA/DIA</td>`
-  +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">${fmtM(t/d.totalDias)}</td>`).join('');
-tbody.appendChild(trA);
+    <!-- MAGALU GERAL -->
+    <div class="prod-mp-card">
+      <div class="prod-mp-header" style="border-left:3px solid var(--magalu);">
+        <div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu</div>
+        <div class="prod-mp-header-sub">Top 15 produtos</div>
+      </div>
+      <table class="prod-table">
+        <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+        <tbody id="prod-magalu-geral"></tbody>
+      </table>
+    </div>
 
-// ── Helpers ──
-function setText(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
-function setHTML(id,v){ const el=document.getElementById(id); if(el) el.innerHTML=v; }
+    <!-- VIA VAREJO GERAL -->
+    <div class="prod-mp-card">
+      <div class="prod-mp-header" style="border-left:3px solid var(--via);">
+        <div class="prod-mp-header-title" style="color:var(--via);">🟣 Via Varejo</div>
+        <div class="prod-mp-header-sub">Top produtos</div>
+      </div>
+      <table class="prod-table">
+        <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+        <tbody id="prod-via-geral"></tbody>
+      </table>
+    </div>
+
+    <!-- MADEIRA GERAL -->
+    <div class="prod-mp-card">
+      <div class="prod-mp-header" style="border-left:3px solid var(--madeira);">
+        <div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira</div>
+        <div class="prod-mp-header-sub">Top produtos</div>
+      </div>
+      <table class="prod-table">
+        <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+        <tbody id="prod-madeira-geral"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- ── POR ESTADO ── -->
+  <div class="section-title">📍 Top Produtos por Marketplace & Estado</div>
+
+  <div class="estado-tabs">
+    <div class="estado-tab active" onclick="showEstado('sp',event)">🏙️ São Paulo</div>
+    <div class="estado-tab" onclick="showEstado('mg',event)">⛰️ Minas Gerais</div>
+    <div class="estado-tab" onclick="showEstado('rj',event)">🌊 Rio de Janeiro</div>
+  </div>
+
+  <!-- SÃO PAULO -->
+  <div class="estado-page active" id="estado-sp">
+    <div class="estado-grid">
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--shopee);">
+          <div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee — São Paulo</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-shopee-sp"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--ml);">
+          <div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre — São Paulo</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-ml-sp"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--magalu);">
+          <div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu — São Paulo</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-magalu-sp"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--via);">
+          <div class="prod-mp-header-title" style="color:var(--via);">🟣 Via Varejo — São Paulo</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-via-sp"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--madeira);">
+          <div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira — São Paulo</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-madeira-sp"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MINAS GERAIS -->
+  <div class="estado-page" id="estado-mg">
+    <div class="estado-grid">
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--shopee);">
+          <div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee — Minas Gerais</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-shopee-mg"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--ml);">
+          <div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre — Minas Gerais</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-ml-mg"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--magalu);">
+          <div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu — Minas Gerais</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-magalu-mg"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--via);">
+          <div class="prod-mp-header-title" style="color:var(--via);">🟣 Via Varejo — Minas Gerais</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-via-mg"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--madeira);">
+          <div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira — Minas Gerais</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-madeira-mg"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIO DE JANEIRO -->
+  <div class="estado-page" id="estado-rj">
+    <div class="estado-grid">
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--shopee);">
+          <div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee — Rio de Janeiro</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-shopee-rj"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--ml);">
+          <div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre — Rio de Janeiro</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-ml-rj"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--magalu);">
+          <div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu — Rio de Janeiro</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-magalu-rj"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--via);">
+          <div class="prod-mp-header-title" style="color:var(--via);">🟣 Via Varejo — Rio de Janeiro</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-via-rj"></tbody>
+        </table>
+      </div>
+      <div class="prod-mp-card">
+        <div class="prod-mp-header" style="border-left:3px solid var(--madeira);">
+          <div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira — Rio de Janeiro</div>
+        </div>
+        <table class="prod-table">
+          <thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. no Canal</th></tr></thead>
+          <tbody id="prod-madeira-rj"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-produtos -->
+
+<script>
+// ── DATA ──
+const daily = [
+  {d:'01/03', g:249965.03,  sh:113420.07, me:89689.22,  ma:39226.22,  mad:2189.44,  via:5440.08,  web:0,       zema:0},
+  {d:'02/03', g:253163.58,  sh:138770.79, me:47611.29,  ma:48149.64,  mad:9171.83,  via:9460.03,  web:0,       zema:0},
+  {d:'03/03', g:642838.10,  sh:437277.14, me:146855.17, ma:48056.20,  mad:7517.41,  via:569.59,   web:2562.61,  zema:0},
+  {d:'04/03', g:369540.79,  sh:167488.12, me:82689.35,  ma:106213.58, mad:5487.03,  via:5015.81,  web:0,       zema:2646.90},
+  {d:'05/03', g:39741.29,   sh:184566.21, me:64392.13,  ma:82242.51,  mad:2868.71,  via:4709.71,  web:0,       zema:-962.02},
+  {d:'06/03', g:382582.50,  sh:196951.70, me:78443.81,  ma:95864.46,  mad:1249.96,  via:10072.58, web:0,       zema:0},
+  {d:'07/03', g:18763.40,   sh:211215.20, me:80076.99,  ma:115883.60, mad:4996.20,  via:5647.17,  web:944.21,   zema:0},
+  {d:'08/03', g:92044.80,   sh:215009.70, me:79500.90,  ma:80922.30,  mad:4754.41,  via:10878.76, web:978.79,   zema:0},
+  {d:'09/03', g:92132.40,   sh:193949.13, me:92477.77,  ma:98425.16,  mad:2914.04,  via:4366.30,  web:0,       zema:0},
+  {d:'10/03', g:502395.59,  sh:246473.61, me:102587.50, ma:131348.93, mad:18279.60, via:3705.95,  web:0,       zema:0},
+  {d:'11/03', g:51523.50,   sh:218428.05, me:86547.02,  ma:148892.09, mad:0,        via:1699.52,  web:2625.65,  zema:3331.15},
+  {d:'12/03', g:29161.01,   sh:204690.69, me:92302.95,  ma:121431.39, mad:3301.71,  via:5403.86,  web:0,       zema:2030.41},
+  {d:'13/03', g:89939.54,   sh:204431.84, me:58638.35,  ma:111695.62, mad:7320.35,  via:3892.18,  web:0,       zema:3961.20},
+  {d:'14/03', g:400795.11,  sh:211637.29, me:50429.45,  ma:130736.50, mad:3488.12,  via:2675.36,  web:1311.30,  zema:517.09},
+  {d:'15/03', g:26342.37,   sh:590843.66, me:139559.20, ma:157014.42, mad:10861.61, via:8063.48,  web:0,       zema:0},
+  {d:'16/03', g:87237.60,   sh:221215.96, me:65495.32,  ma:95604.22,  mad:2304.23,  via:2617.87,  web:0,       zema:0},
+  {d:'17/03', g:37816.90,   sh:184877.28, me:68420.19,  ma:74817.30,  mad:1625.06,  via:3911.59,  web:2952.03,  zema:1213.40},
+  {d:'18/03', g:25848.44,   sh:165613.14, me:28517.24,  ma:25585.68,  mad:822.98,   via:570.83,   web:3845.25,  zema:893.32},
+  {d:'19/03', g:50504.40,   sh:166060.55, me:36949.64,  ma:45502.47,  mad:6535.95,  via:4185.41,  web:0,       zema:1270.34},
+  {d:'20/03', g:40798.68,   sh:148780.38, me:36811.26,  ma:40474.79,  mad:5341.66,  via:5096.94,  web:3492.14,  zema:801.51},
+  {d:'21/03', g:50806.39,   sh:136488.19, me:51270.62,  ma:48629.78,  mad:1939.16,  via:9347.31,  web:2573.59,  zema:557.74},
+  {d:'22/03', g:50709.91,   sh:129545.33, me:79417.57,  ma:47194.32,  mad:0,        via:3194.01,  web:0,       zema:1358.68},
+  {d:'23/03', g:79073.07,   sh:208342.63, me:27300.73,  ma:29950.67,  mad:6721.01,  via:3725.80,  web:3032.23,  zema:0},
+  {d:'24/03', g:47385.34,   sh:149329.44, me:42857.45,  ma:48561.35,  mad:3420.77,  via:3216.33,  web:0,       zema:0},
+  {d:'25/03', g:101489.39,  sh:191025.58, me:39275.38,  ma:52044.86,  mad:9040.10,  via:7720.40,  web:0,       zema:2383.07},
+];
+
+const fmt = v => v > 0
+  ? 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})
+  : '—';
 
 // ── TABS ──
-function showPage(id, e) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(e && e.currentTarget) e.currentTarget.classList.add('active');
-  if(!chartsBuilt[id]){ buildCharts(id); chartsBuilt[id]=true; }
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (!chartsBuilt[id]) { buildCharts(id); chartsBuilt[id] = true; }
 }
+
+// ── DAILY TABLE ──
+(function buildDailyTable() {
+  const tbody = document.getElementById('dailyTbody');
+  const keys = ['g','sh','me','ma','mad','via','web','zema'];
+  const avg = daily.reduce((a,r) => a + r.g, 0) / daily.length;
+
+  daily.forEach(row => {
+    const tr = document.createElement('tr');
+    const isGood = row.g >= avg;
+    tr.innerHTML = `
+      <td style="font-family:'DM Mono',monospace;color:var(--muted)">${row.d}</td>
+      ${keys.map(k => `<td style="${k==='g'?(isGood?'color:var(--green)':'color:var(--red)'):''}">${fmt(row[k])}</td>`).join('')}
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Totals row
+  const totals = ['g','sh','me','ma','mad','via','web'].map(k => daily.reduce((a,r)=>a+r[k],0));
+  const trTot = document.createElement('tr');
+  trTot.className = 'total-row';
+  trTot.innerHTML = `<td>TOTAL</td>${totals.map(t=>`<td>${fmt(t)}</td>`).join('')}`;
+  tbody.appendChild(trTot);
+
+  // Avg row
+  const trAvg = document.createElement('tr');
+  trAvg.style.background = 'var(--bg3)';
+  trAvg.innerHTML = `<td style="color:var(--muted);font-size:.7rem">MÉDIA/DIA</td>${totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">${fmt(t/25)}</td>`).join('')}`;
+  tbody.appendChild(trAvg);
+})();
 
 // ── CHARTS ──
 const chartsBuilt = {};
-const gridCfg = {color:'rgba(31,45,69,.8)',drawBorder:false};
-const tickCfg  = {color:'#7a8aab',font:{size:10,family:'DM Mono'}};
-const legCfg   = {labels:{color:'#7a8aab',font:{size:11},boxWidth:10}};
+
+const gridCfg = {
+  color: 'rgba(31,45,69,.8)',
+  drawBorder: false,
+};
+const tickCfg = { color: '#7a8aab', font: { size: 10, family: 'DM Mono' } };
+const legendCfg = { labels: { color: '#7a8aab', font: { size: 11 }, boxWidth: 10 } };
 
 function buildCharts(page) {
-  if(page==='visao'){
-    new Chart(document.getElementById('catChart'),{
-      type:'doughnut',
-      data:{
-        labels:['GR','SALA','COMP'],
-        datasets:[{
-          data:[d.cat.gr.fat, d.cat.sala.fat, d.cat.comp.fat],
-          backgroundColor:['#34d399','#fb7185','#818cf8'],
-          borderWidth:2, borderColor:'#161d2e'
+  if (page === 'visao') {
+    // Categoria donut
+    new Chart(document.getElementById('catChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['GR', 'SALA', 'COMP'],
+        datasets: [{
+          data: [6556471.32, 1628745.14, 1068319.42],
+          backgroundColor: ['#34d399','#fb7185','#818cf8'],
+          borderWidth: 2, borderColor: '#161d2e',
         }]
       },
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:legCfg,tooltip:{callbacks:{label:ctx=>` ${fmtAb(ctx.raw)}`}}}}
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: legendCfg, tooltip: { callbacks: { label: ctx => ` R$ ${(ctx.raw/1e6).toFixed(2)}M` } } }
+      }
     });
-    new Chart(document.getElementById('mktChart'),{
-      type:'bar',
-      data:{
-        labels: d.mp.map(m=>m.label),
-        datasets:[{
-          data: d.mp.map(m=>m.atual),
-          backgroundColor:['#f97316','#0086ff','#ffe000','#c084fc','#e07b54','#64748b'],
-          borderRadius:6, barThickness:36
+
+    // Marketplace bar
+    new Chart(document.getElementById('mktChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Shopee','Magalu','Merc.Livre','Via','Madeira','Web'],
+        datasets: [{
+          data: [5190125.19, 1993799.38, 1760631.60, 131663.05, 119614.42, 24192.40],
+          backgroundColor: ['#f97316','#0086ff','#ffe000','#c084fc','#e07b54','#64748b'],
+          borderRadius: 6, barThickness: 36,
         }]
       },
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false}},
-        scales:{
-          x:{grid:gridCfg,ticks:tickCfg},
-          y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1e6).toFixed(1)+'M'}}
-        }}
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: gridCfg, ticks: tickCfg },
+          y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1e6).toFixed(1) + 'M' } }
+        }
+      }
     });
   }
-  if(page==='categorias'){
-    const labels = d.catMp.map(m=>m.label);
-    new Chart(document.getElementById('catDetailChart'),{
-      type:'bar',
-      data:{
-        labels,
-        datasets:[
-          {label:'GR',   data:d.catMp.map(m=>m.linhas.find(l=>l.cat==='GR')?.fat||0),   backgroundColor:'#34d399',borderRadius:4},
-          {label:'SALA', data:d.catMp.map(m=>m.linhas.find(l=>l.cat==='SALA')?.fat||0), backgroundColor:'#fb7185',borderRadius:4},
-          {label:'COMP', data:d.catMp.map(m=>m.linhas.find(l=>l.cat==='COMP')?.fat||0), backgroundColor:'#818cf8',borderRadius:4},
+
+  if (page === 'categorias') {
+    // Cat detail grouped bar
+    new Chart(document.getElementById('catDetailChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Shopee','Merc.Livre','Magalu','Madeira','Via'],
+        datasets: [
+          { label: 'GR', data: [2742962.81, 1183746.57, 1541097.22, 55977.76, 86480.78], backgroundColor: '#34d399', borderRadius: 4 },
+          { label: 'SALA', data: [1021129.53, 152786.74, 193515.22, 12816.31, 4130.84], backgroundColor: '#fb7185', borderRadius: 4 },
+          { label: 'COMP', data: [604664.11, 194960.86, 40762.44, 28262.02, 12437.04], backgroundColor: '#818cf8', borderRadius: 4 },
         ]
       },
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:legCfg},
-        scales:{
-          x:{grid:gridCfg,ticks:tickCfg},
-          y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1e6).toFixed(1)+'M'}}
-        }}
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: legendCfg },
+        scales: {
+          x: { grid: gridCfg, ticks: tickCfg },
+          y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1e6).toFixed(1) + 'M' } }
+        }
+      }
     });
   }
-  if(page==='diario'){
-    const labels = d.daily.map(r=>r.d);
-    const vals   = d.daily.map(r=>r.g);
-    new Chart(document.getElementById('dailyChart'),{
-      type:'bar',
-      data:{
+
+  if (page === 'diario') {
+    const labels = daily.map(d => d.d);
+    const vals = daily.map(d => d.g);
+    const avg = vals.reduce((a,b)=>a+b,0)/vals.length;
+    const colors = vals.map(v => v >= avg ? 'rgba(34,197,94,.75)' : 'rgba(239,68,68,.75)');
+
+    new Chart(document.getElementById('dailyChart'), {
+      type: 'bar',
+      data: {
         labels,
-        datasets:[
-          {label:'Vendas Gerais', data:vals,
-            backgroundColor:vals.map(v=>v>=dailyAvg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),
-            borderRadius:5, order:2},
-          {label:'Média Diária', data:Array(d.daily.length).fill(dailyAvg), type:'line',
-            borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}
+        datasets: [
+          {
+            label: 'Vendas Gerais',
+            data: vals,
+            backgroundColor: colors,
+            borderRadius: 5,
+            order: 2,
+          },
+          {
+            label: 'Média Diária',
+            data: Array(25).fill(avg),
+            type: 'line',
+            borderColor: '#38bdf8',
+            borderWidth: 2,
+            borderDash: [6,4],
+            pointRadius: 0,
+            fill: false,
+            order: 1,
+          }
         ]
       },
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:legCfg},
-        scales:{
-          x:{grid:gridCfg,ticks:tickCfg},
-          y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}
-        }}
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: legendCfg },
+        scales: {
+          x: { grid: gridCfg, ticks: tickCfg },
+          y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$'+(v/1000).toFixed(0)+'K' } }
+        }
+      }
     });
   }
 }
 
 buildCharts('visao');
-chartsBuilt['visao']=true;
+chartsBuilt['visao'] = true;
+
+// ══════════════════════════════════════════════
+// DADOS — ANÁLISE DE PRODUTOS
+// ══════════════════════════════════════════════
+const PRODUTOS = {
+
+  // ── GERAL ──
+  shopee: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:991250.00,  q:980},
+    {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras. Apogeu Veludo Creme Amêndoa/Off White',          v:261163.22,  q:187},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:249437.49,  q:259},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:240177.49,  q:240},
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',                                   v:195843.11,  q:264},
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                                            v:173614.69,  q:251},
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                                           v:129196.13,  q:164},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',                                    v:117675.84,  q:112},
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off',        v:116257.25,  q:84 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White',                    v:112238.18,  q:112},
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                                         v:110518.97,  q:245},
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',                            v:110021.35,  q:68 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',                                    v:93281.17,   q:92 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Veludo Liso Capuccino Amendoa Clean/off White',                       v:87642.77,   q:88 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                                          v:85934.02,   q:86 },
+  ],
+
+  ml: [
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',                            v:434578.97,  q:272},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:358507.27,  q:367},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:76823.68,   q:77 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                                          v:75238.92,   q:76 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                                         v:74759.83,   q:170},
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                                                  v:50673.97,   q:70 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                                           v:38387.38,   q:48 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',                                    v:32553.77,   q:31 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',                          v:27608.40,   q:26 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                                           v:26398.10,   q:25 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',                                    v:23587.32,   q:23 },
+    {n:'Guarda-Roupa Casal Toronto 2 Portas com Espelho Branco',                                                   v:19498.72,   q:9  },
+    {n:'Comoda 8 Gavetas Easy Like Branco',                                                                        v:17124.80,   q:21 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White',                    v:16788.57,   q:17 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Salvia',                                                              v:16395.48,   q:21 },
+  ],
+
+  magalu: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',                          v:725689.08,  q:680},
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                                            v:449278.47,  q:636},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',                                    v:182211.97,  q:169},
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off',        v:178209.65,  q:128},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                                              v:94645.68,   q:91 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:77670.41,   q:74 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:32484.17,   q:32 },
+    {n:'Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco',                                                  v:14499.30,   q:7  },
+    {n:'Guarda-Roupa Casal Toronto 2 Portas com Espelho Branco',                                                   v:13714.92,   q:9  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                                           v:13320.88,   q:16 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                                              v:11728.75,   q:12 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                                          v:11148.49,   q:10 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',                                v:11004.80,   q:12 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                                           v:9451.46,    q:9  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos e Pés Amendoa Clean',                         v:7481.70,    q:3  },
+  ],
+
+  via: [
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',                                v:31956.62,   q:35 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:16678.61,   q:14 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:10139.16,   q:9  },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White',                                      v:6459.32,    q:7  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',                          v:6099.50,    q:5  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like com Pés Amendoa Clean/Off White',                          v:4659.80,    q:2  },
+    {n:'Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco',                                                  v:3887.82,    q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',                                    v:3185.70,    q:3  },
+    {n:'Sapateira Giratoria Esthela Com Espelho Amendoa Clean Lopas',                                              v:2584.53,    q:5  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like Amendoa Clean/Salvia',                                     v:2329.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos e Pés Amendoa Clean',                         v:2321.91,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like Amendoa Clean/Salvia',                                     v:2078.91,    q:1  },
+    {n:'Sapateira Giratoria Esthela Com Espelho Branco Lopas',                                                     v:2034.63,    q:4  },
+    {n:'Conjunto Sala de Jantar Mesa Easy Pop 170x90cm c/ 6 Cadeiras Seat Boucle Bege',                           v:1819.90,    q:1  },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                                            v:1576.81,    q:2  },
+  ],
+
+  madeira: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:13796.01,   q:12 },
+    {n:'Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco',                                                  v:8531.61,    q:4  },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',                            v:5789.70,    q:3  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Move 2,40 Amendoa Clean',                                       v:5789.70,    q:3  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean',                                                      v:5370.12,    q:13 },
+    {n:'Conjunto Mesa de Jantar Celebrare 1,20 Tampo MDF/Vidro 4 cadeiras Apogeu Linho Bege',                     v:4995.35,    q:4  },
+    {n:'Cabeceira Casal Calitan 263,9cm Tecido Korino Preto Com Led Amendoa Clean/Preto Fosco',                   v:3699.60,    q:2  },
+    {n:'Comoda 8 Gavetas Easy Like Amendoa Clean',                                                                 v:3420.60,    q:4  },
+    {n:'Guarda-Roupa Casal Solteiro 100%MDF Alonzo 4 portas Amêndoa Clean',                                       v:2949.70,    q:2  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos Frassino',                                    v:2679.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos Amendoa Clean/Off White',                     v:2679.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos Amendoa Clean',                               v:2679.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos e Pés Amendoa Clean',                         v:2579.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow Amendoa Clean',                                            v:2509.90,    q:1  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Salvia',                                                              v:2479.60,    q:1  },
+  ],
+
+  // ── SÃO PAULO ──
+  shopee_sp: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:369306.04,  q:365},
+    {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras. Apogeu Veludo Creme Amêndoa/Off White',          v:121964.17,  q:87 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:91405.48,   q:91 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White',                    v:72928.45,   q:73 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                                            v:68212.70,   q:71 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',                                   v:58472.64,   q:79 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Veludo Liso Capuccino Amendoa Clean/off White',                       v:57700.72,   q:58 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                                         v:56054.47,   q:124},
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                                           v:51966.38,   q:66 },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu Suede Animale Amêndoa/Off',                                            v:47320.82,   q:34 },
+  ],
+
+  ml_sp: [
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',                            v:224066.81,  q:140},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:141078.36,  q:145},
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                                         v:40342.39,   q:92 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:35989.08,   q:36 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                                          v:32782.46,   q:33 },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                                                  v:26263.54,   q:36 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                                           v:16657.02,   q:21 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                                           v:15851.60,   q:15 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',                                    v:12579.07,   q:12 },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow Amendoa Clean',                                            v:11099.50,   q:5  },
+  ],
+
+  magalu_sp: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',                          v:273371.19,  q:257},
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                                            v:148602.04,  q:212},
+    {n:'Conjunto Mesa de Jantar 170 Apogeu Suede Animale Amêndoa/Off',                                            v:68593.51,   q:49 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',                                    v:62771.15,   q:58 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:33386.23,   q:32 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                                              v:21411.80,   q:20 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:13341.47,   q:13 },
+    {n:'Guarda-Roupa Casal Toronto 2 Portas com Espelho Branco',                                                   v:10936.80,   q:7  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                                          v:7938.72,    q:8  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos e Pés Amendoa Clean',                         v:7481.70,    q:3  },
+  ],
+
+  via_sp: [
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',                                v:12829.64,   q:14 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:5999.50,    q:5  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:3599.70,    q:3  },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White',                                      v:2754.71,    q:3  },
+    {n:'Sapateira Giratoria Esthela Com Espelho Amendoa Clean Lopas',                                              v:2584.53,    q:5  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',                          v:2439.80,    q:2  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like com Pés Amendoa Clean/Off White',                          v:2329.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos e Pés Amendoa Clean',                         v:2321.91,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like Amendoa Clean/Salvia',                                     v:2078.91,    q:1  },
+    {n:'Conjunto Sala de Jantar Mesa Easy Pop 170x90cm c/ 6 Cadeiras Seat Boucle Bege',                           v:1819.90,    q:1  },
+  ],
+
+  madeira_sp: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:11598.83,   q:10 },
+    {n:'Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco',                                                  v:8531.61,    q:4  },
+    {n:'Conjunto Mesa de Jantar Celebrare 1,20 Tampo MDF/Vidro 4 cadeiras Apogeu Linho Bege',                     v:4995.35,    q:4  },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',                            v:3859.80,    q:2  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos Amendoa Clean',                               v:2679.90,    q:1  },
+    {n:'Comoda 8 Gavetas Easy Like Amendoa Clean',                                                                 v:2580.70,    q:3  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos e Pés Amendoa Clean/Off White',               v:2579.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow Amendoa Clean',                                            v:2509.90,    q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',                          v:2439.80,    q:2  },
+    {n:'Cama Solteiro Athenas com cama auxiliar Amêndoa Clean/off - Móveis Lopas',                                v:2331.45,    q:3  },
+  ],
+
+  // ── MINAS GERAIS ──
+  shopee_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:628828.47,  q:622},
+    {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras. Apogeu Veludo Creme Amêndoa/Off White',          v:201502.85,  q:144},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:148090.17,  q:148},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                                            v:137924.76,  q:143},
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',                                   v:134270.45,  q:181},
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                                            v:115451.02,  q:167},
+    {n:'Conjunto Mesa de Jantar 170 Apogeu Suede Animale Amêndoa/Off',                                            v:93976.98,   q:68 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                                           v:92892.09,   q:118},
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White',                    v:88174.16,   q:88 },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',                            v:82602.50,   q:51 },
+  ],
+
+  ml_mg: [
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',                            v:103340.40,  q:65 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:92803.15,   q:95 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                                          v:26556.97,   q:27 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                                         v:19468.83,   q:44 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',                                    v:15696.59,   q:15 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:15056.84,   q:15 },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                                                  v:13802.35,   q:19 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',                          v:12559.80,   q:12 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                                           v:11305.12,   q:14 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',                                    v:7179.31,    q:7  },
+  ],
+
+  magalu_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',                          v:298636.58,  q:279},
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                                            v:169460.37,  q:237},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',                                    v:97151.80,   q:90 },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu Suede Animale Amêndoa/Off',                                            v:82889.07,   q:60 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                                              v:61029.53,   q:59 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:10420.62,   q:9  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:9276.08,    q:9  },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',                                v:6445.33,    q:7  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                                           v:6197.75,    q:6  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                                          v:5977.12,    q:5  },
+  ],
+
+  via_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:3479.71,    q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:3299.73,    q:3  },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',                                v:2819.70,    q:3  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like com Pés Amendoa Clean/Salvia',                             v:2329.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like com Pés Amendoa Clean/Off White',                          v:2329.90,    q:1  },
+    {n:'Guarda-Roupa Casal Solteiro Alonzo 4 portas com Pés Amendoa Clean',                                       v:1109.90,    q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',                                    v:1079.90,    q:1  },
+    {n:'Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White',                                      v:949.90,     q:1  },
+  ],
+
+  madeira_mg: [
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Move 2,40 Amendoa Clean',                                       v:3859.80,    q:2  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean',                                                      v:2254.50,    q:4  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Salvia',                                                              v:1589.70,    q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',                                    v:1149.90,    q:1  },
+  ],
+
+  // ── RIO DE JANEIRO ──
+  shopee_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:356660.49,  q:352},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Clean/Off White',                                                    v:109638.32,  q:114},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:85309.88,   q:85 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',                                   v:60883.37,   q:82 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                                            v:58163.67,   q:84 },
+    {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras. Apogeu Veludo Creme Amêndoa/Off White',          v:56877.07,   q:41 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                                           v:33977.53,   q:43 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',                                    v:33684.37,   q:32 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',                                    v:33460.36,   q:33 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                                          v:32022.00,   q:32 },
+  ],
+
+  ml_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:124625.76,  q:127},
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',                            v:107171.76,  q:67 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:25777.76,   q:26 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                                          v:15899.49,   q:16 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                                         v:14948.61,   q:34 },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                                                  v:10608.08,   q:15 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                                           v:10425.24,   q:13 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',                                    v:8349.20,    q:8  },
+    {n:'Guarda-roupa Casal Toronto 2 Portas com Espelho Branco',                                                   v:6349.20,    q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                                           v:6346.90,    q:6  },
+  ],
+
+  magalu_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',                          v:153681.31,  q:144},
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                                            v:131216.06,  q:187},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:33863.56,   q:33 },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu Suede Animale Amêndoa/Off',                                            v:26727.07,   q:19 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',                                    v:22289.02,   q:21 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                                              v:12204.35,   q:12 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:9866.62,    q:10 },
+    {n:'Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco',                                                  v:6139.70,    q:3  },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',                            v:3459.80,    q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                                           v:3253.71,    q:3  },
+  ],
+
+  via_rj: [
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',                                v:16307.28,   q:18 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:7199.40,    q:6  },
+    {n:'Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco',                                                  v:3887.82,    q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',                          v:3659.70,    q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                                                 v:3239.73,    q:3  },
+    {n:'Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White',                                      v:2754.71,    q:3  },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                                            v:1576.81,    q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Branco',                                                     v:1149.90,    q:1  },
+    {n:'Sapateira Giratoria Esthela Com Espelho Branco Lopas',                                                     v:1044.81,    q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',                                    v:1025.90,    q:1  },
+  ],
+
+  madeira_rj: [
+    {n:'Guarda-Roupa Casal Solteiro 100%MDF Alonzo 4 portas Amêndoa Clean',                                       v:2949.70,    q:2  },
+    {n:'Cabeceira Casal Calitan 263,9cm Tecido Korino Preto Com Led Amendoa Clean/Preto Fosco',                   v:2949.70,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos Frassino',                                    v:2679.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos Amendoa Clean/Off White',                     v:2679.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like Amendoa Clean/Salvia',                                     v:2309.90,    q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',                                v:2197.18,    q:2  },
+    {n:'Guarda-Roupa Casal 100% MDF 2 Portas 6 Gavetas Easy Max Amendoa/Off White',                               v:1929.90,    q:1  },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',                            v:1929.90,    q:1  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean',                                                      v:1399.60,    q:4  },
+    {n:'Conjunto Sala de Jantar Mesa Easy Pop 170x90cm c/ 6 Cadeiras Confort Suede Animale Bege',                 v:1343.40,    q:1  },
+  ],
+
+};
+
+// ── Renderiza tabelas de produtos ──
+function rankClass(i) {
+  if(i===0) return 'prod-rank prod-rank-1';
+  if(i===1) return 'prod-rank prod-rank-2';
+  if(i===2) return 'prod-rank prod-rank-3';
+  return 'prod-rank prod-rank-n';
+}
+
+function renderProdTable(tbodyId, data) {
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  // Rep. do item no canal = valor do item NO CANAL ÷ total GERAL do item (planilha consolidada)
+  tbody.innerHTML = data.map((p,i) => {
+    const totalGeralItem = TOP15_GERAL_MAP[normKey(p.n)];
+    let cellRep;
+    if (totalGeralItem) {
+      const rep = p.v / totalGeralItem;
+      const barW = Math.min(rep * 100 / 20 * 100, 100).toFixed(1); // escala: 20% = barra cheia
+      cellRep = `<td><div class="prod-rep-cell">
+        <div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${barW}%"></div></div>
+        <span class="prod-rep-pct">${fmtRep(rep)}</span>
+      </div></td>`;
+    } else {
+      cellRep = '<td class="mono" style="color:var(--muted);text-align:right;font-size:.7rem">—</td>';
+    }
+    return `<tr>
+      <td style="width:32px;"><span class="${rankClass(i)}">${i+1}</span></td>
+      <td><div class="prod-name-text">${p.n}</div></td>
+      <td class="mono">R$ ${p.v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td class="qty">${p.q}</td>
+      ${cellRep}
+    </tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// TOP 15 GERAL — dados da planilha consolidada
+// ══════════════════════════════════════════════
+const TOP15_GERAL = [
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',           v:1457902.30, q:1447, rep:0.17471},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',     v:821152.51,  q:769,  rep:0.09840},
+  {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                       v:624469.97,  q:889,  rep:0.07483},
+  {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',        v:555479.72,  q:346,  rep:0.06657},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                             v:361964.30,  q:360,  rep:0.04338},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',               v:333641.48,  q:313,  rep:0.03998},
+  {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:298807.05, q:215, rep:0.03581},
+  {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras. Apogeu Veludo Creme Amêndoa/Off White',   v:264073.02, q:189, rep:0.03165},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                       v:257877.59,  q:267,  rep:0.03090},
+  {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',              v:203129.61,  q:273,  rep:0.02434},
+  {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                     v:187078.42,  q:419,  rep:0.02242},
+  {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                       v:183574.09,  q:231,  rep:0.02200},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                     v:173461.33,  q:173,  rep:0.02079},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                         v:142333.77,  q:138,  rep:0.01706},
+  {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White', v:134247.27, q:134,  rep:0.01609},
+];
+
+
+// Mapa de total GERAL por item (para cálculo de representatividade no canal)
+const TOP15_GERAL_MAP = {};
+TOP15_GERAL.forEach(p => { TOP15_GERAL_MAP[normKey(p.n)] = p.v; });
+
+const REP_MAP = {};
+TOP15_GERAL.forEach(p => {
+  const key = p.n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
+  REP_MAP[key] = p.rep;
+});
+
+function normKey(str) {
+  return (str||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
+}
+
+function getRep(nome) {
+  const k = normKey(nome);
+  if(REP_MAP[k] !== undefined) return REP_MAP[k];
+  for(const [key, val] of Object.entries(REP_MAP)) {
+    if(k.length>=40 && key.length>=40 && k.substring(0,40)===key.substring(0,40)) return val;
+  }
+  return null;
+}
+
+function fmtRep(r) { return (r*100).toFixed(2).replace('.',',')+' %'; }
+
+function repCell(rep) {
+  if(rep===null) return '<td class="mono" style="color:var(--muted);font-size:.7rem;text-align:right">—</td>';
+  const w = Math.min(rep/0.175*100,100).toFixed(1);
+  return `<td><div class="prod-rep-cell"><div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${w}%"></div></div><span class="prod-rep-pct">${fmtRep(rep)}</span></div></td>`;
+}
+
+(function renderTop15(){
+  const tbody = document.getElementById('top15-geral');
+  if(!tbody) return;
+  tbody.innerHTML = TOP15_GERAL.map((p,i)=>{
+    const barW = (p.rep/0.175*100).toFixed(1);
+    return `<tr>
+      <td style="width:32px;"><span class="${rankClass(i)}">${i+1}</span></td>
+      <td><div class="prod-name-text">${p.n}</div></td>
+      <td class="mono">R$ ${p.v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td class="qty">${p.q.toLocaleString('pt-BR')}</td>
+      <td><div class="prod-rep-cell">
+        <div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${barW}%;background:linear-gradient(90deg,var(--accent),var(--comp))"></div></div>
+        <span class="prod-rep-pct" style="color:var(--accent);font-weight:700">${fmtRep(p.rep)}</span>
+      </div></td>
+    </tr>`;
+  }).join('');
+})();
+
+renderProdTable('prod-magalu-geral',  PRODUTOS.magalu);
+// SP
+renderProdTable('prod-magalu-sp',     PRODUTOS.magalu_sp);
+// MG
+renderProdTable('prod-magalu-mg',     PRODUTOS.magalu_mg);
+// RJ
+renderProdTable('prod-magalu-rj',     PRODUTOS.magalu_rj);
+// Geral
+renderProdTable('prod-shopee-geral',   PRODUTOS.shopee);
+renderProdTable('prod-ml-geral',       PRODUTOS.ml);
+renderProdTable('prod-via-geral',      PRODUTOS.via);
+renderProdTable('prod-madeira-geral',  PRODUTOS.madeira);
+// SP
+renderProdTable('prod-shopee-sp',      PRODUTOS.shopee_sp);
+renderProdTable('prod-ml-sp',          PRODUTOS.ml_sp);
+renderProdTable('prod-via-sp',         PRODUTOS.via_sp);
+renderProdTable('prod-madeira-sp',     PRODUTOS.madeira_sp);
+// MG
+renderProdTable('prod-shopee-mg',      PRODUTOS.shopee_mg);
+renderProdTable('prod-ml-mg',          PRODUTOS.ml_mg);
+renderProdTable('prod-via-mg',         PRODUTOS.via_mg);
+renderProdTable('prod-madeira-mg',     PRODUTOS.madeira_mg);
+// RJ
+renderProdTable('prod-shopee-rj',      PRODUTOS.shopee_rj);
+renderProdTable('prod-ml-rj',          PRODUTOS.ml_rj);
+renderProdTable('prod-via-rj',         PRODUTOS.via_rj);
+renderProdTable('prod-madeira-rj',     PRODUTOS.madeira_rj);
+
+// ── Tabs de estado ──
+function showEstado(id, e) {
+  document.querySelectorAll('.estado-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.estado-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('estado-'+id).classList.add('active');
+  if(e && e.currentTarget) e.currentTarget.classList.add('active');
+}
 </script>
 </body>
 </html>
