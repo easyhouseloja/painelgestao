@@ -178,9 +178,9 @@ body::before {
 
 .brand-overlay {
   position: absolute;
-  top: 0; left: 0;
-  width: 58px;
-  height: 58px;
+  top: 8px; right: 0;
+  width: 64px;
+  height: 64px;
   border-radius: 10px;
   background: rgba(0,0,0,0.72);
   border: 1px solid rgba(204,40,40,0.6);
@@ -1719,6 +1719,7 @@ const USUARIOS = {
   'lucaslopes@grupolopas.com.br':     'EH-LL1',
   'easyhouseloja@gmail.com':          'EH-ADM2',
   'romulooliveira@grupolopas.com.br': 'EH-RL1',
+  'sabrinaleitao@grupolopas.com.br':  'EH-SL1',
 };
 
 const LS_KEY = 'eh_painel_auth';
@@ -1808,6 +1809,7 @@ const NOMES = {
   'lucaslopes@grupolopas.com.br':    'Lucas',
   'easyhouseloja@gmail.com':         'Easy House',
   'romulooliveira@grupolopas.com.br':'Rômulo',
+  'sabrinaleitao@grupolopas.com.br': 'Sabrina',
 };
 
 // ── LOG DE ACESSOS ───────────────────────────────────────────────────
@@ -2101,10 +2103,15 @@ function switchChannel(ch) {
     }
   });
 
-  // remove reputacao button
-  const rep = document.querySelector('[class*="reput"]');
-  if(rep){
-    rep.style.display = is3p ? '' : 'none';
+  // remove reputacao button (apenas visível no painel Easy House / 3P)
+  const brandLink = document.getElementById('brandLink');
+  if(brandLink){
+    brandLink.style.pointerEvents = is3p ? '' : 'none';
+    // oculta o overlay de reputação no painel 1P
+    const brandOverlay = brandLink.querySelector('.brand-overlay');
+    if(brandOverlay){
+      brandOverlay.style.display = is3p ? '' : 'none';
+    }
   }
 
   const eyebrow = document.querySelector('.header-eyebrow');
