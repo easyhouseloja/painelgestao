@@ -30,6 +30,8 @@
   --glow-blue: rgba(45,125,210,0.18);
   --accent-purple: #9c6fff;
   --glow-purple: rgba(156,111,255,0.18);
+  --accent-financeiro: #22c55e;
+  --glow-financeiro: rgba(34,197,94,0.16);
 }
 
 *, *::before, *::after {
@@ -552,6 +554,9 @@ body::before {
 .card-comercial:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(45,125,210,0.15), 0 -2px 20px var(--glow-blue) inset; }
 .card-mm1p:hover     { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(156,111,255,0.15), 0 -2px 20px var(--glow-purple) inset; }
 
+.card-financeiro::before { background: var(--accent-financeiro); box-shadow: 0 0 20px var(--glow-financeiro); }
+.card-financeiro:hover   { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(34,197,94,0.15), 0 -2px 20px var(--glow-financeiro) inset; }
+
 /* ── ICON WRAPPER ── */
 .icon-wrap {
   width: 52px;
@@ -580,11 +585,14 @@ body::before {
 .card-comercial .icon-wrap { background: rgba(45,125,210,0.1); border: 1px solid rgba(45,125,210,0.25); }
 .card-mm1p  .icon-wrap { background: rgba(156,111,255,0.1); border: 1px solid rgba(156,111,255,0.25); }
 
+.card-financeiro .icon-wrap { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); }
+
 .card-estoque .icon-wrap i { color: var(--accent-amber); }
 .card-astec   .icon-wrap i { color: var(--accent-orange); }
 .card-sla     .icon-wrap i { color: var(--accent-green); }
 .card-comercial .icon-wrap i { color: var(--accent-blue); }
 .card-mm1p  .icon-wrap i { color: var(--accent-purple); }
+.card-financeiro .icon-wrap i { color: var(--accent-financeiro); }
 
 /* ── CARD TEXT ── */
 .card-tag {
@@ -600,6 +608,7 @@ body::before {
 .card-sla     .card-tag { color: var(--accent-green); }
 .card-comercial .card-tag { color: var(--accent-blue); }
 .card-mm1p  .card-tag { color: var(--accent-purple); }
+.card-financeiro .card-tag { color: var(--accent-financeiro); }
 
 .card h2 {
   font-family: 'Syne', sans-serif;
@@ -1414,6 +1423,25 @@ body::before {
   --accent-red2: #ff8c1a;
 }
 
+/* Forçar 5 cards do painel 3P em uma única linha */
+#panel-3p .dashboard {
+  grid-template-columns: repeat(5, 1fr);
+}
+#panel-3p .card {
+  padding: 26px 20px;
+}
+#panel-3p .card h2 {
+  font-size: 17px;
+}
+#panel-3p .card p {
+  font-size: 12.5px;
+}
+#panel-3p .icon-wrap {
+  margin-bottom: 18px;
+  width: 46px;
+  height: 46px;
+}
+
 .body-1p .header-eyebrow {
   color: #ff7a00;
 }
@@ -1613,6 +1641,19 @@ body::before {
           <div class="card-tag">Comercial</div>
           <h2>Vendas & Faturamento</h2>
           <p>Faturamento por marketplace, desempenho por categoria de produto, evolução diária de vendas e comparativo mensal com projeção de meta.</p>
+          <div class="card-footer">
+            Acessar dashboard <i data-lucide="arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- FINANCEIRO -->
+        <a class="card card-financeiro" href="financeiro.html">
+          <div class="icon-wrap">
+            <i data-lucide="bar-chart-2" style="width:22px;height:22px"></i>
+          </div>
+          <div class="card-tag">Financeiro</div>
+          <h2>Gestão de Cobranças</h2>
+          <p>Acompanhamento de cartas de débito, conciliação de valores recebidos e pendentes por transportadora.</p>
           <div class="card-footer">
             Acessar dashboard <i data-lucide="arrow-right"></i>
           </div>
