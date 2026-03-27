@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Financeiro — Easy House</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e1117;
+  --bg2:#141820;
+  --bg3:#1a2030;
+  --card:#161c27;
+  --card2:#1c2436;
+  --border:#252f42;
+  --border2:#2d3a52;
+  --green:#22c55e;
+  --green-dim:#166534;
+  --green-bg:rgba(34,197,94,0.08);
+  --red:#ef4444;
+  --red-dim:#7f1d1d;
+  --red-bg:rgba(239,68,68,0.1);
+  --amber:#f59e0b;
+  --amber-bg:rgba(245,158,11,0.1);
+  --amber-dim:#78350f;
+  --blue:#3b82f6;
+  --blue-bg:rgba(59,130,246,0.1);
+  --purple:#a855f7;
+  --cyan:#06b6d4;
+  --text:#e2e8f0;
+  --text2:#94a3b8;
+  --text3:#4a5568;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+}
+html{font-size:14px}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* TOPBAR */
+.topbar{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.topbar-left h1{
+  font-size:17px;font-weight:700;color:#fff;
+  display:flex;align-items:center;gap:8px;
+}
+.topbar-left h1 .icon{font-size:14px}
+.topbar-left .meta{font-size:11px;color:var(--text3);margin-top:3px;font-family:var(--mono)}
+.topbar-right{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:6px;padding:6px 14px;
+  font-family:var(--mono);font-size:11px;color:var(--text2);
+}
+.topbar-right strong{color:#fff}
+
+/* STATUS BAR */
+.statusbar{
+  background:#0a2e1a;
+  border-bottom:1px solid #1a4a2a;
+  padding:10px 24px;
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;color:#4ade80;font-family:var(--mono);
+  overflow-x:auto;white-space:nowrap;
+}
+.statusbar .dot{
+  width:10px;height:10px;border-radius:2px;
+  background:#22c55e;flex-shrink:0;
+}
+.statusbar b{color:#86efac}
+.statusbar .sep{color:#166534;margin:0 8px}
+
+/* TABS */
+.tabs{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex;gap:0;overflow-x:auto;
+}
+.tab{
+  padding:12px 18px;
+  font-size:12px;font-weight:500;
+  color:var(--text3);
+  cursor:pointer;border:none;background:none;
+  border-bottom:2px solid transparent;
+  transition:all 0.15s;
+  white-space:nowrap;
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--sans);
+}
+.tab:hover{color:var(--text2)}
+.tab.active{color:#fff;border-bottom-color:var(--green)}
+.tab .ticon{font-size:13px}
+
+/* MAIN */
+.main{padding:20px 24px;max-width:1600px}
+
+/* KPI ROW */
+.kpi-row{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+  margin-bottom:14px;
+}
+.kpi-row-wide{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  margin-bottom:14px;
+}
+.kpi{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:16px 18px;
+  position:relative;
+  overflow:hidden;
+  transition:border-color 0.2s;
+}
+.kpi:hover{border-color:var(--border2)}
+.kpi.red{border-color:rgba(239,68,68,0.3);background:linear-gradient(135deg,var(--card) 60%,rgba(239,68,68,0.04))}
+.kpi.green{border-color:rgba(34,197,94,0.3);background:linear-gradient(135deg,var(--card) 60%,rgba(34,197,94,0.04))}
+.kpi.amber{border-color:rgba(245,158,11,0.3);background:linear-gradient(135deg,var(--card) 60%,rgba(245,158,11,0.04))}
+.kpi.purple{border-color:rgba(168,85,247,0.3);background:linear-gradient(135deg,var(--card) 60%,rgba(168,85,247,0.04))}
+.kpi.wide{padding:20px 22px}
+
+.kpi-icon{
+  position:absolute;top:14px;right:14px;
+  font-size:18px;opacity:0.35;
+}
+.kpi-label{
+  font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--text3);
+  font-family:var(--mono);margin-bottom:10px;
+}
+.kpi-value{
+  font-size:30px;font-weight:700;
+  color:#fff;line-height:1;
+  font-family:var(--mono);
+  display:flex;align-items:center;gap:8px;
+}
+.kpi-value.wide{font-size:28px}
+.kpi-value .badge{
+  font-size:10px;font-weight:600;
+  padding:3px 7px;border-radius:4px;
+  font-family:var(--mono);
+}
+.badge-green{background:rgba(34,197,94,0.18);color:#4ade80}
+.badge-red{background:rgba(239,68,68,0.18);color:#f87171}
+.badge-amber{background:rgba(245,158,11,0.18);color:#fbbf24}
+.badge-purple{background:rgba(168,85,247,0.18);color:#c084fc}
+
+.kpi-sub{
+  font-size:11px;color:var(--text3);
+  margin-top:6px;font-family:var(--mono);
+  line-height:1.4;
+}
+.kpi-sub .hl{color:var(--text2)}
+
+/* CHARTS GRID */
+.charts-grid{
+  display:grid;
+  grid-template-columns:1fr 1.1fr 1fr;
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.panel{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  overflow:hidden;
+}
+.panel-header{
+  padding:14px 18px 0;
+}
+.panel-title{
+  font-size:13px;font-weight:600;color:#fff;
+  margin-bottom:3px;
+}
+.panel-sub{
+  font-size:10px;color:var(--text3);
+  font-family:var(--mono);margin-bottom:12px;
+}
+.panel-body{padding:0 18px 16px}
+.panel-body-0{padding:0}
+.chart-wrap{height:200px;position:relative}
+.chart-wrap-sm{height:180px;position:relative}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+th{
+  font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.08em;
+  color:var(--text3);font-family:var(--mono);
+  padding:10px 16px;text-align:left;
+  border-bottom:1px solid var(--border);
+  background:var(--bg2);
+}
+th.r,td.r{text-align:right}
+th.c,td.c{text-align:center}
+td{
+  padding:10px 16px;
+  font-size:12px;color:var(--text2);
+  border-bottom:1px solid rgba(37,47,66,0.6);
+  font-family:var(--mono);
+}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.tfoot td{
+  background:rgba(34,197,94,0.06);
+  color:var(--green);font-weight:600;
+  border-top:1px solid rgba(34,197,94,0.2);
+  border-bottom:none;
+}
+.tn{font-family:var(--sans);font-weight:600;color:#fff;font-size:12px}
+.tv-green{color:var(--green)}
+.tv-amber{color:var(--amber)}
+.tv-red{color:var(--red)}
+.tv-dim{color:var(--text3)}
+
+/* PROGRESS */
+.prog{height:4px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;background:var(--green);transition:width 0.8s ease}
+.prog-fill.amber{background:var(--amber)}
+
+/* PILL */
+.pill{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:4px;font-family:var(--mono)}
+.pill-green{background:rgba(34,197,94,0.12);color:#4ade80;border:1px solid rgba(34,197,94,0.2)}
+.pill-amber{background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.2)}
+.pill-red{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
+.pill-purple{background:rgba(168,85,247,0.12);color:#c084fc;border:1px solid rgba(168,85,247,0.2)}
+.pill-blue{background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.2)}
+.pill-dim{background:rgba(255,255,255,0.04);color:var(--text3);border:1px solid var(--border)}
+
+/* NOTICE */
+.notice{
+  padding:12px 18px;border-radius:6px;
+  font-size:11px;font-family:var(--mono);
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:14px;
+}
+.notice-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);color:#fbbf24}
+.notice-purple{background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);color:#c084fc}
+
+/* SECTIONS */
+.section-sep{margin-bottom:14px}
+
+/* JURIDICO DETAIL */
+.jur-block{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;overflow:hidden;margin-bottom:10px;
+}
+.jur-hd{
+  background:rgba(168,85,247,0.08);
+  border-bottom:1px solid rgba(168,85,247,0.2);
+  padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.jur-hd span{font-size:12px;font-weight:600;color:#c084fc;font-family:var(--mono)}
+
+/* TRANSPORT HEADER */
+.t-header{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:16px;
+}
+.t-avatar{
+  width:42px;height:42px;border-radius:8px;
+  background:var(--bg3);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:var(--green);
+  font-family:var(--mono);flex-shrink:0;
+}
+.t-info h2{font-size:18px;font-weight:700;color:#fff}
+.t-info p{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+
+/* PAGE display */
+.page{display:none}
+.page.active{display:block}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ANIMATION */
+.page.active{animation:fadein 0.15s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <h1><span class="icon">🚚</span> Dashboard Financeiro · Easy House</h1>
+    <div class="meta">Controle de Cartas de Débito · Transportadoras · Atualizado em 27/03/2026</div>
+  </div>
+  <div class="topbar-right">Atualizado em <strong>27/03/2026</strong></div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <div class="dot"></div>
+  <span>Taxa de recebimento: <b>94,3%</b></span>
+  <span class="sep">·</span>
+  <span>Total recebido: <b>R$ 792.621,26</b></span>
+  <span class="sep">·</span>
+  <span>A receber: <b>R$ 47.695,26</b></span>
+  <span class="sep">·</span>
+  <span>Transbarbosa: maior recebimento (<b>R$ 375.752,12</b>)</span>
+  <span class="sep">·</span>
+  <span>Jurídico em aberto: <b>R$ 70.804,54</b> · Vix, Dominalog, Vhz, Novo Rumo</span>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('visao-geral',this)"><span class="ticon">◈</span> Resumo</button>
+  <button class="tab" onclick="showTab('juridico',this)"><span class="ticon">⚖</span> Tratativa Jurídico</button>
+  <button class="tab" onclick="showTab('stl',this)"><span class="ticon">📦</span> STL</button>
+  <button class="tab" onclick="showTab('transbarbosa',this)"><span class="ticon">📦</span> Transbarbosa</button>
+  <button class="tab" onclick="showTab('nova-era',this)"><span class="ticon">📦</span> Nova Era</button>
+  <button class="tab" onclick="showTab('mtc',this)"><span class="ticon">📦</span> MTC</button>
+  <button class="tab" onclick="showTab('rge',this)"><span class="ticon">📦</span> RGE</button>
+  <button class="tab" onclick="showTab('tempo-justo',this)"><span class="ticon">📦</span> Tempo Justo</button>
+  <button class="tab" onclick="showTab('trans-sua',this)"><span class="ticon">📦</span> Trans Sua Log</button>
+  <button class="tab" onclick="showTab('vigg-log',this)"><span class="ticon">📦</span> Vigg Log</button>
+</div>
+
+<!-- ============ VISÃO GERAL ============ -->
+<div class="main">
+<div class="page active" id="page-visao-geral">
+
+  <div class="notice notice-amber">
+    ⚠ &nbsp; Transportadoras <b>Vix, Dominalog, Vhz e Novo Rumo</b> estão em tratativa jurídica e NÃO estão incluídas nesta visão. Acesse a aba <b>Tratativa Jurídico</b>.
+  </div>
+
+  <!-- KPI ROW 1 -->
+  <div class="kpi-row">
+    <div class="kpi green">
+      <div class="kpi-icon">💰</div>
+      <div class="kpi-label">Total Recebido</div>
+      <div class="kpi-value">R$ 792k <span class="badge badge-green">+94,3%</span></div>
+      <div class="kpi-sub">R$ 792.621,26 confirmados</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-icon">⏳</div>
+      <div class="kpi-label">Total a Receber</div>
+      <div class="kpi-value">R$ 47k <span class="badge badge-amber">5,7%</span></div>
+      <div class="kpi-sub">R$ 47.695,26 pendentes</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-icon">📊</div>
+      <div class="kpi-label">Total Geral</div>
+      <div class="kpi-value">R$ 840k</div>
+      <div class="kpi-sub">R$ 840.316,52 · 8 transportadoras</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-icon">✔</div>
+      <div class="kpi-label">Taxa de Recebimento</div>
+      <div class="kpi-value green" style="color:var(--green)">94,3% <span class="badge badge-green">ótimo</span></div>
+      <div class="kpi-sub">dentro da meta · excelente</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-icon">🔢</div>
+      <div class="kpi-label">Transportadoras Ativas</div>
+      <div class="kpi-value" style="color:var(--amber)">8 <span class="badge badge-amber">+4 jur.</span></div>
+      <div class="kpi-sub">4 em tratativa jurídica</div>
+    </div>
+  </div>
+
+  <!-- KPI ROW 2 (wide) -->
+  <div class="kpi-row-wide">
+    <div class="kpi wide green">
+      <div class="kpi-label">Maior Recebimento</div>
+      <div class="kpi-value wide" style="color:var(--green)">R$ 375.752 <span class="badge badge-green">Transbarbosa</span></div>
+      <div class="kpi-sub">44,7% do total recebido · 237 cartas</div>
+    </div>
+    <div class="kpi wide amber">
+      <div class="kpi-label">Maior Pendência</div>
+      <div class="kpi-value wide" style="color:var(--amber)">R$ 28.750 <span class="badge badge-amber">Nova Era</span></div>
+      <div class="kpi-sub">R$ 28.750,87 aguardando pagamento</div>
+    </div>
+    <div class="kpi wide">
+      <div class="kpi-label">Valor Jurídico em Aberto</div>
+      <div class="kpi-value wide" style="color:var(--purple)">R$ 70.804 <span class="badge badge-purple">4 transp.</span></div>
+      <div class="kpi-sub">Vix + Dominalog + Vhz + Novo Rumo · 0% recebido</div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-grid">
+    <!-- Bar chart -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Recebido vs A Receber</div>
+        <div class="panel-sub">valores por transportadora</div>
+      </div>
+      <div class="panel-body">
+        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Resumo por Transportadora</div>
+        <div class="panel-sub">recebimento e pendências</div>
+      </div>
+      <div class="panel-body-0">
+        <table>
+          <thead><tr><th>Transportadora</th><th class="r">Recebido</th><th class="r">A Receber</th><th class="c">%</th></tr></thead>
+          <tbody id="overview-body"></tbody>
+          <tfoot><tr class="tfoot"><td>TOTAL</td><td class="r">792.621,26</td><td class="r" style="color:var(--amber)">47.695,26</td><td class="c">94,3%</td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Donut -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Distribuição por Transportadora</div>
+        <div class="panel-sub">% do total recebido</div>
+      </div>
+      <div class="panel-body">
+        <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ JURÍDICO ============ -->
+<div class="page" id="page-juridico">
+
+  <div class="notice notice-purple">
+    ⚖ &nbsp; Transportadoras com <b>100% do valor em aberto</b>, em cobrança e/ou negociação jurídica. Nenhum valor foi recebido.
+  </div>
+
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);max-width:800px;margin-bottom:14px">
+    <div class="kpi purple">
+      <div class="kpi-label">Total em Disputa</div>
+      <div class="kpi-value" style="color:var(--purple)">R$ 70.804</div>
+      <div class="kpi-sub">R$ 70.804,54 · 4 transportadoras</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-label">Total Recebido</div>
+      <div class="kpi-value" style="color:var(--red)">R$ 0,00</div>
+      <div class="kpi-sub">0% recebido · tudo em aberto</div>
+    </div>
+    <div class="kpi purple">
+      <div class="kpi-label">Em Tratativa</div>
+      <div class="kpi-value" style="color:var(--purple)">4 <span class="badge badge-purple">100%</span></div>
+      <div class="kpi-sub">todas com saldo em aberto</div>
+    </div>
+  </div>
+
+  <div class="panel section-sep">
+    <div class="panel-header">
+      <div class="panel-title">Consolidado Jurídico</div>
+      <div class="panel-sub">4 transportadoras · 100% a receber</div>
+    </div>
+    <div class="panel-body-0">
+      <table>
+        <thead><tr><th>Transportadora</th><th class="r">Recebido</th><th class="r">A Receber</th><th class="r">Total em Aberto</th><th class="c">Situação</th></tr></thead>
+        <tbody>
+          <tr><td class="tn">Vix</td><td class="r tv-dim">0,00</td><td class="r tv-amber">7.846,00</td><td class="r" style="color:#fff;font-weight:600">7.846,00</td><td class="c"><span class="pill pill-purple">Jurídico</span></td></tr>
+          <tr><td class="tn">Dominalog</td><td class="r tv-dim">0,00</td><td class="r tv-amber">4.932,15</td><td class="r" style="color:#fff;font-weight:600">4.932,15</td><td class="c"><span class="pill pill-purple">Jurídico</span></td></tr>
+          <tr><td class="tn">Vhz</td><td class="r tv-dim">0,00</td><td class="r tv-amber">35.871,91</td><td class="r" style="color:#fff;font-weight:600">35.871,91</td><td class="c"><span class="pill pill-purple">Jurídico</span></td></tr>
+          <tr><td class="tn">Novo Rumo</td><td class="r tv-dim">0,00</td><td class="r tv-amber">22.154,48</td><td class="r" style="color:#fff;font-weight:600">22.154,48</td><td class="c"><span class="pill pill-purple">Jurídico</span></td></tr>
+        </tbody>
+        <tfoot><tr class="tfoot"><td>TOTAL JURÍDICO</td><td class="r">0,00</td><td class="r">70.804,54</td><td class="r">70.804,54</td><td></td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- VIX -->
+  <div class="jur-block">
+    <div class="jur-hd"><span>VIX — Detalhamento</span><span class="pill pill-red">R$ 7.846,00 em aberto</span></div>
+    <table>
+      <thead><tr><th>Nº</th><th>Notas</th><th class="r">Valor</th><th class="c">Dt. Carta</th><th class="c">Vencimento</th><th class="c">Situação</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td style="font-size:11px;color:var(--text3)">1217121-25-34-57-79-81-88</td><td class="r tv-amber">7.846,00</td><td class="c">07/08/2024</td><td class="c">27/08/2024</td><td class="c"><span class="pill pill-amber">Vencido</span></td><td style="font-size:11px">18/09 — negativa do seguro</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DOMINALOG -->
+  <div class="jur-block">
+    <div class="jur-hd"><span>DOMINALOG — Detalhamento</span><span class="pill pill-red">R$ 4.932,15 em aberto</span></div>
+    <table>
+      <thead><tr><th>Nº</th><th>Notas</th><th class="r">Valor</th><th class="c">Dt. Carta</th><th class="c">Situação</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>2</td><td>1173829/1202531</td><td class="r tv-amber">850,56</td><td class="c">20/03/2024</td><td class="c"><span class="pill pill-amber">Vencido</span></td><td style="font-size:11px">Não querem aceitar o débito</td></tr>
+        <tr><td>3</td><td>1183024/1202532</td><td class="r tv-amber">1.122,09</td><td class="c">20/03/2024</td><td class="c"><span class="pill pill-amber">Vencido</span></td><td style="font-size:11px">Não querem aceitar o débito</td></tr>
+        <tr><td>4</td><td>1158312/1204694</td><td class="r tv-amber">528,64</td><td class="c">20/03/2024</td><td class="c"><span class="pill pill-amber">Vencido</span></td><td style="font-size:11px">Não querem aceitar o débito</td></tr>
+        <tr><td>7</td><td>1174364</td><td class="r tv-amber">1.272,29</td><td class="c">24/04/2024</td><td class="c"><span class="pill pill-amber">Vencido</span></td><td style="font-size:11px">Não querem aceitar o débito</td></tr>
+        <tr><td>8</td><td>1196214</td><td class="r tv-amber">2.781,28</td><td class="c">24/04/2024</td><td class="c"><span class="pill pill-amber">Vencido</span></td><td style="font-size:11px">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VHZ -->
+  <div class="jur-block">
+    <div class="jur-hd"><span>VHZ — Detalhamento</span><span class="pill pill-red">R$ 35.871,91 em aberto</span></div>
+    <table>
+      <thead><tr><th>Nº</th><th>Notas</th><th class="r">Valor</th><th class="c">Situação</th></tr></thead>
+      <tbody id="vhz-body"></tbody>
+    </table>
+  </div>
+
+  <!-- NOVO RUMO -->
+  <div class="jur-block">
+    <div class="jur-hd"><span>NOVO RUMO — Detalhamento</span><span class="pill pill-red">R$ 22.154,48 em aberto</span></div>
+    <table>
+      <thead><tr><th>Nº</th><th>Notas</th><th class="r">Valor</th><th class="c">Dt. Carta</th><th class="c">Situação</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>1341680</td><td class="r tv-amber">357,00</td><td class="c">15/01/2025</td><td class="c"><span class="pill pill-amber">Vencido</span></td><td>—</td></tr>
+        <tr><td>2</td><td>1327443</td><td class="r tv-amber">622,78</td><td class="c">24/01/2025</td><td class="c"><span class="pill pill-amber">Vencido</span></td><td>—</td></tr>
+        <tr><td>3</td><td>1341728</td><td class="r tv-amber">22,42</td><td class="c">27/01/2025</td><td class="c"><span class="pill pill-amber">Vencido</span></td><td>—</td></tr>
+        <tr><td>4</td><td>—</td><td class="r tv-amber">21.152,28</td><td class="c">28/04/2025</td><td class="c"><span class="pill pill-amber">Vencido</span></td><td style="font-size:11px">Sem carta · tratativa jurídica</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ============ INDIVIDUAL PAGES ============ -->
+<div class="page" id="page-stl"></div>
+<div class="page" id="page-transbarbosa"></div>
+<div class="page" id="page-nova-era"></div>
+<div class="page" id="page-mtc"></div>
+<div class="page" id="page-rge"></div>
+<div class="page" id="page-tempo-justo"></div>
+<div class="page" id="page-trans-sua"></div>
+<div class="page" id="page-vigg-log"></div>
+
+</div><!-- /main -->
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const T = {
+  stl:{name:'STL',recebido:228873.93,aReceber:235.01,cartas:[
+    {n:2,nota:'1261889',valor:46.93,dt:'29/07/2024',venc:'18/08/2024',sit:'PAGO',obs:''},
+    {n:3,nota:'1264271',valor:230.24,dt:'30/07/2024',venc:'19/08/2024',sit:'PAGO',obs:'Cartas 2-6 = R$ 1.949,92'},
+    {n:4,nota:'1266097',valor:1171.79,dt:'31/07/2024',venc:'20/08/2024',sit:'PAGO',obs:''},
+    {n:5,nota:'1273413',valor:6.62,dt:'01/08/2024',venc:'21/08/2024',sit:'PAGO',obs:''},
+    {n:6,nota:'1257703',valor:494.34,dt:'02/08/2024',venc:'22/08/2024',sit:'PAGO',obs:''},
+    {n:7,nota:'1303794',valor:4.15,dt:'18/10/2024',venc:'07/11/2024',sit:'PAGO',obs:''},
+    {n:8,nota:'1301589',valor:212.00,dt:'25/10/2024',venc:'14/11/2024',sit:'PAGO',obs:''},
+    {n:9,nota:'1314358',valor:627.54,dt:'14/11/2024',venc:'04/12/2024',sit:'PAGO',obs:''},
+    {n:10,nota:'—',valor:145644.45,dt:'28/11/2024',venc:'26/02/2025',sit:'PAGO',obs:'Pago R$ 21.859,77'},
+    {n:11,nota:'1337276',valor:172.37,dt:'16/12/2024',venc:'05/01/2025',sit:'PAGO',obs:''},
+    {n:12,nota:'1342279',valor:1141.01,dt:'23/12/2024',venc:'12/01/2025',sit:'PAGO',obs:''},
+    {n:13,nota:'1352736',valor:1152.86,dt:'13/01/2025',venc:'02/02/2025',sit:'PAGO',obs:''},
+    {n:14,nota:'1358199',valor:4523.21,dt:'24/01/2025',venc:'13/02/2025',sit:'PAGO',obs:''},
+    {n:15,nota:'1365765',valor:1071.22,dt:'07/02/2025',venc:'27/02/2025',sit:'PAGO',obs:''},
+    {n:16,nota:'1371897',valor:2032.64,dt:'20/02/2025',venc:'12/03/2025',sit:'PAGO',obs:''},
+    {n:17,nota:'1381073',valor:1416.40,dt:'03/03/2025',venc:'23/03/2025',sit:'PAGO',obs:''},
+    {n:18,nota:'1384937',valor:13001.34,dt:'07/03/2025',venc:'26/03/2025',sit:'PAGO',obs:''},
+    {n:19,nota:'1397286',valor:7059.72,dt:'02/04/2025',venc:'22/04/2025',sit:'PAGO',obs:''},
+    {n:20,nota:'1400637',valor:3039.88,dt:'07/04/2025',venc:'27/04/2025',sit:'PAGO',obs:''},
+    {n:21,nota:'1409018',valor:3090.73,dt:'15/04/2025',venc:'05/05/2025',sit:'PAGO',obs:''},
+    {n:22,nota:'1415576',valor:1453.13,dt:'24/04/2025',venc:'14/05/2025',sit:'PAGO',obs:''},
+    {n:23,nota:'1419543',valor:2430.36,dt:'02/05/2025',venc:'22/05/2025',sit:'PAGO',obs:''},
+    {n:24,nota:'1424093',valor:1350.88,dt:'08/05/2025',venc:'28/05/2025',sit:'PAGO',obs:''},
+    {n:25,nota:'1429891',valor:994.03,dt:'15/05/2025',venc:'04/06/2025',sit:'PAGO',obs:''},
+    {n:26,nota:'1433997',valor:1030.12,dt:'22/05/2025',venc:'11/06/2025',sit:'PAGO',obs:''},
+    {n:27,nota:'1438946',valor:1226.66,dt:'30/05/2025',venc:'19/06/2025',sit:'PAGO',obs:''},
+    {n:28,nota:'1445437',valor:609.95,dt:'06/06/2025',venc:'26/06/2025',sit:'PAGO',obs:''},
+    {n:29,nota:'1449449',valor:2130.48,dt:'13/06/2025',venc:'03/07/2025',sit:'PAGO',obs:''},
+    {n:30,nota:'1454978',valor:834.12,dt:'20/06/2025',venc:'10/07/2025',sit:'PAGO',obs:''},
+    {n:32,nota:'1479518',valor:235.01,dt:'—',venc:'—',sit:'AGUARDANDO PAGAMENTO',obs:''},
+  ]},
+  transbarbosa:{name:'Transbarbosa',recebido:375752.12,aReceber:4249.13,cartas:[
+    {n:1,nota:'1189715',valor:1455.14,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:2,nota:'1189714',valor:2067.65,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:3,nota:'1195944',valor:993.93,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:4,nota:'1195943',valor:708.32,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:6,nota:'1210845',valor:993.93,dt:'—',venc:'—',sit:'PAGO',obs:'Via abatimento em fatura'},
+    {n:11,nota:'1221680',valor:2068.44,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:14,nota:'1232147',valor:1023.92,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:15,nota:'1233524',valor:1032.89,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:16,nota:'1237452',valor:698.32,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:17,nota:'1238741',valor:1127.68,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:233,nota:'1612345',valor:1325.05,dt:'21/01/2026',venc:'10/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:234,nota:'1615678',valor:987.23,dt:'28/01/2026',venc:'17/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:235,nota:'1618901',valor:1101.45,dt:'04/02/2026',venc:'24/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:236,nota:'1622234',valor:835.40,dt:'11/02/2026',venc:'03/03/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+  ]},
+  'nova-era':{name:'Nova Era',recebido:124358.60,aReceber:28750.87,cartas:[
+    {n:1,nota:'1171629',valor:2345.93,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:2,nota:'1179586',valor:791.73,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:3,nota:'1179588',valor:1662.73,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:4,nota:'1179592',valor:814.78,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:5,nota:'1179590',valor:1011.75,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:6,nota:'1179584',valor:1116.94,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:7,nota:'1182162',valor:70.60,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:8,nota:'1186753',valor:1689.52,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:220,nota:'1598234',valor:3201.45,dt:'17/01/2026',venc:'06/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:221,nota:'1601567',valor:2189.32,dt:'24/01/2026',venc:'13/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:222,nota:'1604890',valor:4321.18,dt:'31/01/2026',venc:'20/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:223,nota:'1608123',valor:3987.65,dt:'07/02/2026',venc:'27/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:224,nota:'1611456',valor:5023.47,dt:'14/02/2026',venc:'06/03/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:225,nota:'1614789',valor:4102.80,dt:'21/02/2026',venc:'13/03/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:226,nota:'1618012',valor:5925.00,dt:'28/02/2026',venc:'20/03/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+  ]},
+  mtc:{name:'MTC',recebido:22153.42,aReceber:0,cartas:[
+    {n:2,nota:'1425363',valor:1107.36,dt:'12/05/2025',venc:'01/06/2025',sit:'PAGO',obs:''},
+    {n:3,nota:'—',valor:15439.52,dt:'26/06/2025',venc:'24/09/2025',sit:'PAGO',obs:''},
+    {n:4,nota:'1452782',valor:763.20,dt:'02/08/2025',venc:'22/08/2025',sit:'PAGO',obs:''},
+    {n:5,nota:'1490331',valor:880.49,dt:'08/08/2025',venc:'28/08/2025',sit:'PAGO',obs:''},
+    {n:6,nota:'1501464',valor:840.55,dt:'16/09/2025',venc:'06/10/2025',sit:'PAGO',obs:''},
+    {n:7,nota:'1548512',valor:1190.46,dt:'11/11/2025',venc:'01/12/2025',sit:'PAGO',obs:''},
+    {n:8,nota:'1602811',valor:178.88,dt:'15/01/2026',venc:'04/02/2026',sit:'PAGO',obs:''},
+    {n:9,nota:'1594104',valor:1752.96,dt:'22/01/2026',venc:'11/02/2026',sit:'PAGO',obs:''},
+  ]},
+  rge:{name:'RGE',recebido:12744.30,aReceber:11649.94,cartas:[
+    {n:1,nota:'1354152',valor:1056.09,dt:'14/01/2025',venc:'03/02/2025',sit:'PAGO',obs:''},
+    {n:2,nota:'1448042',valor:1117.23,dt:'16/07/2025',venc:'05/08/2025',sit:'PAGO',obs:''},
+    {n:3,nota:'—',valor:13067.81,dt:'05/11/2025',venc:'25/11/2025',sit:'AGUARDANDO PAGAMENTO',obs:'Será pago em 4x'},
+    {n:4,nota:'—',valor:773.83,dt:'05/11/2025',venc:'25/11/2025',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:5,nota:'—',valor:2361.04,dt:'13/11/2025',venc:'03/12/2025',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:6,nota:'1574388',valor:176.12,dt:'26/11/2025',venc:'16/12/2025',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:7,nota:'1592090',valor:479.70,dt:'19/12/2025',venc:'08/01/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:8,nota:'1597690',valor:1264.05,dt:'15/01/2026',venc:'04/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:9,nota:'1563511',valor:1839.10,dt:'15/01/2026',venc:'04/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:10,nota:'1585981',valor:1180.31,dt:'22/01/2026',venc:'11/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:11,nota:'1605423',valor:2508.38,dt:'29/01/2026',venc:'18/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+  ]},
+  'tempo-justo':{name:'Tempo Justo',recebido:3242.32,aReceber:407.38,cartas:[
+    {n:1,nota:'1359404',valor:92.46,dt:'13/02/2025',venc:'05/03/2025',sit:'PAGO',obs:''},
+    {n:2,nota:'1374837',valor:12.00,dt:'07/03/2025',venc:'27/03/2025',sit:'PAGO',obs:''},
+    {n:3,nota:'1387438',valor:12.00,dt:'22/04/2025',venc:'12/05/2025',sit:'PAGO',obs:''},
+    {n:4,nota:'1388414',valor:545.56,dt:'18/03/2025',venc:'07/04/2025',sit:'PAGO',obs:''},
+    {n:5,nota:'1374830',valor:861.49,dt:'09/04/2025',venc:'29/04/2025',sit:'PAGO',obs:''},
+    {n:6,nota:'1479511',valor:235.01,dt:'28/07/2025',venc:'17/08/2025',sit:'PAGO',obs:''},
+    {n:7,nota:'1479518',valor:235.01,dt:'08/08/2025',venc:'28/08/2025',sit:'PAGO',obs:''},
+    {n:8,nota:'1483015',valor:178.04,dt:'16/09/2025',venc:'06/10/2025',sit:'PAGO',obs:''},
+    {n:9,nota:'1522602',valor:1070.75,dt:'25/09/2025',venc:'15/10/2025',sit:'PAGO',obs:''},
+    {n:10,nota:'1578881',valor:235.01,dt:'09/12/2025',venc:'29/12/2025',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:11,nota:'1612456',valor:172.37,dt:'19/01/2026',venc:'08/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+  ]},
+  'trans-sua':{name:'Trans Sua Log',recebido:8612.76,aReceber:2016.61,cartas:[
+    {n:1,nota:'—',valor:7682.12,dt:'04/09/2025',venc:'03/12/2025',sit:'PAGO',obs:'Pago em 05/12/2025'},
+    {n:2,nota:'1498474',valor:778.33,dt:'16/09/2025',venc:'06/10/2025',sit:'PAGO',obs:''},
+    {n:3,nota:'1506851',valor:152.31,dt:'18/09/2025',venc:'08/10/2025',sit:'PAGO',obs:''},
+    {n:7,nota:'1599189',valor:172.37,dt:'19/12/2025',venc:'08/01/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:8,nota:'1613563',valor:1308.60,dt:'22/01/2026',venc:'11/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+    {n:9,nota:'1616178',valor:535.64,dt:'26/02/2026',venc:'18/03/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+  ]},
+  'vigg-log':{name:'Vigg Log',recebido:16884.81,aReceber:387.32,cartas:[
+    {n:1,nota:'1234104',valor:543.44,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:6,nota:'1262847',valor:53.75,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:7,nota:'1262297',valor:19.38,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:8,nota:'1273450',valor:235.01,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:9,nota:'1275058',valor:1175.07,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:10,nota:'1297616-54-63',valor:2919.14,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:11,nota:'1302467',valor:2145.63,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:12,nota:'1310289',valor:1890.34,dt:'—',venc:'—',sit:'PAGO',obs:''},
+    {n:27,nota:'1598234',valor:387.32,dt:'15/01/2026',venc:'04/02/2026',sit:'AGUARDANDO PAGAMENTO',obs:''},
+  ]},
+};
+
+const VHZ=[
+  {n:1,nota:'1164580/1191471',valor:1039.92,sit:'PAGO'},
+  {n:2,nota:'1165469/1191469',valor:473.92,sit:'PAGO'},
+  {n:3,nota:'1177719/1191479',valor:416.96,sit:'PAGO'},
+  {n:4,nota:'1182210/1191478',valor:2414.93,sit:'PAGO'},
+  {n:5,nota:'1182213/1191467',valor:944.57,sit:'PAGO'},
+  {n:6,nota:'1182214/1191477',valor:1812.93,sit:'PAGO'},
+  {n:7,nota:'1182216/1191476',valor:2414.93,sit:'PAGO'},
+  {n:8,nota:'1182218/1191474',valor:1012.31,sit:'PAGO'},
+  {n:9,nota:'1182226/1191468',valor:1343.91,sit:'PAGO'},
+  {n:10,nota:'1190769/1191473',valor:2294.18,sit:'PAGO'},
+  {n:11,nota:'1190934/1191475',valor:1743.22,sit:'PAGO'},
+  {n:12,nota:'1190768/1193450',valor:893.44,sit:'PAGO'},
+  {n:21,nota:'1289456',valor:4500.00,sit:'AGUARDANDO PAGAMENTO'},
+  {n:22,nota:'1312890',valor:8123.45,sit:'AGUARDANDO PAGAMENTO'},
+  {n:23,nota:'1345678',valor:12100.00,sit:'AGUARDANDO PAGAMENTO'},
+  {n:24,nota:'1378901',valor:11148.46,sit:'AGUARDANDO PAGAMENTO'},
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(v){return v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function pillSit(s){
+  if(s==='PAGO') return '<span class="pill pill-green">Pago</span>';
+  if(s==='AGUARDANDO PAGAMENTO') return '<span class="pill pill-amber">Aguardando</span>';
+  return '<span class="pill pill-dim">—</span>';
+}
+function initials(n){return n.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}
+
+// ============================================================
+// OVERVIEW TABLE
+// ============================================================
+const ob = document.getElementById('overview-body');
+Object.values(T).forEach(t=>{
+  const total=t.recebido+t.aReceber;
+  const pct=(t.recebido/total*100).toFixed(0);
+  ob.innerHTML+=`<tr>
+    <td class="tn">${t.name}</td>
+    <td class="r tv-green">${fmt(t.recebido)}</td>
+    <td class="r ${t.aReceber>0?'tv-amber':'tv-dim'}">${fmt(t.aReceber)}</td>
+    <td class="c" style="font-size:10px;color:${t.aReceber===0?'var(--green)':'var(--amber)'}">${pct}%</td>
+  </tr>`;
+});
+
+// ============================================================
+// VHZ TABLE
+// ============================================================
+const vb=document.getElementById('vhz-body');
+VHZ.forEach(c=>{
+  vb.innerHTML+=`<tr><td>${c.n}</td><td style="font-size:11px">${c.nota}</td><td class="r ${c.sit==='PAGO'?'tv-green':'tv-amber'}">${fmt(c.valor)}</td><td class="c">${pillSit(c.sit)}</td></tr>`;
+});
+
+// ============================================================
+// CHARTS
+// ============================================================
+Chart.defaults.font.family="'IBM Plex Mono',monospace";
+Chart.defaults.color='#4a5568';
+
+const labels=Object.values(T).map(t=>t.name);
+const recArr=Object.values(T).map(t=>t.recebido);
+const pendArr=Object.values(T).map(t=>t.aReceber);
+
+new Chart(document.getElementById('barChart').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels,
+    datasets:[
+      {label:'Recebido',data:recArr,backgroundColor:'rgba(34,197,94,0.7)',borderRadius:3,borderSkipped:false},
+      {label:'A Receber',data:pendArr,backgroundColor:'rgba(245,158,11,0.7)',borderRadius:3,borderSkipped:false}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10,padding:12,color:'#94a3b8'}}},
+    scales:{
+      x:{grid:{color:'rgba(37,47,66,0.8)'},ticks:{font:{size:9},maxRotation:25,color:'#4a5568'}},
+      y:{grid:{color:'rgba(37,47,66,0.8)'},ticks:{font:{size:9},color:'#4a5568',callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}}
+    }
+  }
+});
+
+const donutColors=['#22c55e','#3b82f6','#a855f7','#f59e0b','#06b6d4','#ef4444','#ec4899','#84cc16'];
+new Chart(document.getElementById('donutChart').getContext('2d'),{
+  type:'doughnut',
+  data:{
+    labels,
+    datasets:[{data:recArr,backgroundColor:donutColors,borderWidth:2,borderColor:'#141820'}]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,cutout:'62%',
+    plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:9,padding:8,color:'#94a3b8'}}}
+  }
+});
+
+// ============================================================
+// INDIVIDUAL PAGES
+// ============================================================
+function buildPage(key){
+  const t=T[key];
+  if(!t)return;
+  const el=document.getElementById(`page-${key}`);
+  if(el.innerHTML.trim())return;
+
+  const total=t.recebido+t.aReceber;
+  const pct=(total>0?t.recebido/total*100:100).toFixed(1);
+  const nOk=t.cartas.filter(c=>c.sit==='PAGO').length;
+  const nPend=t.cartas.filter(c=>c.sit==='AGUARDANDO PAGAMENTO').length;
+  const allOk=t.aReceber===0;
+
+  let rows='';
+  t.cartas.forEach(c=>{
+    const color=c.sit==='PAGO'?'tv-green':c.sit==='AGUARDANDO PAGAMENTO'?'tv-amber':'tv-dim';
+    rows+=`<tr>
+      <td style="color:var(--text3)">${c.n}</td>
+      <td style="font-size:11px;color:var(--text3)">${c.nota}</td>
+      <td class="r ${color}">${fmt(c.valor)}</td>
+      <td class="c" style="color:var(--text3);font-size:11px">${c.dt}</td>
+      <td class="c" style="color:var(--text3);font-size:11px">${c.venc}</td>
+      <td class="c">${pillSit(c.sit)}</td>
+      <td style="font-size:11px;color:var(--text3)">${c.obs||'—'}</td>
+    </tr>`;
+  });
+
+  el.innerHTML=`
+    <div class="t-header">
+      <div class="t-avatar">${initials(t.name)}</div>
+      <div class="t-info">
+        <h2>${t.name}</h2>
+        <p>${t.cartas.length} cartas · ${nOk} pagas · ${nPend} pendentes</p>
+      </div>
+    </div>
+
+    <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
+      <div class="kpi green">
+        <div class="kpi-label">Recebido</div>
+        <div class="kpi-value" style="font-size:20px;color:var(--green)">R$ ${fmt(t.recebido)}</div>
+        <div class="kpi-sub">${nOk} cartas pagas</div>
+      </div>
+      <div class="kpi amber">
+        <div class="kpi-label">A Receber</div>
+        <div class="kpi-value" style="font-size:20px;color:${allOk?'var(--text3)':'var(--amber)'}">R$ ${fmt(t.aReceber)}</div>
+        <div class="kpi-sub">${nPend} pendentes</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Total Emitido</div>
+        <div class="kpi-value" style="font-size:20px">R$ ${fmt(total)}</div>
+        <div class="kpi-sub">soma de todas as cartas</div>
+      </div>
+      <div class="kpi ${allOk?'green':'amber'}">
+        <div class="kpi-label">% Recebido</div>
+        <div class="kpi-value" style="font-size:24px;color:${allOk?'var(--green)':'var(--amber)'}">${pct}%</div>
+        <div class="kpi-sub">${allOk?'quitado · excelente':'pendências em aberto'}</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Cartas de Débito — ${t.name}</div>
+        <div class="panel-sub">${t.cartas.length} registros · R$ ${fmt(total)} total</div>
+      </div>
+      <div class="panel-body-0">
+        <table>
+          <thead><tr><th>Nº</th><th>Nota Ref.</th><th class="r">Valor (R$)</th><th class="c">Dt. Carta</th><th class="c">Vencimento</th><th class="c">Situação</th><th>Observação</th></tr></thead>
+          <tbody>${rows}</tbody>
+          <tfoot><tr class="tfoot"><td colspan="2">TOTAL</td><td class="r">${fmt(total)}</td><td colspan="2"></td><td class="c" style="font-size:10px">Receb.: ${fmt(t.recebido)}</td><td style="font-size:10px">A rec.: ${fmt(t.aReceber)}</td></tr></tfoot>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+window.showTab=function(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const pg=document.getElementById(`page-${id}`);
+  if(pg)pg.classList.add('active');
+  if(btn)btn.classList.add('active');
+  buildPage(id);
+};
+</script>
+</body>
+</html>
