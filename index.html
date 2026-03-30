@@ -557,6 +557,343 @@ body::before {
 .card-financeiro::before { background: var(--accent-financeiro); box-shadow: 0 0 20px var(--glow-financeiro); }
 .card-financeiro:hover   { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(34,197,94,0.15), 0 -2px 20px var(--glow-financeiro) inset; }
 
+/* ── BOTÃO ANYMARKET no card ── */
+.card-anymarket-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: 1px solid rgba(212,160,23,0.35);
+  background: rgba(212,160,23,0.08);
+  color: var(--accent-amber);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-decoration: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.card-anymarket-btn:hover {
+  border-color: rgba(212,160,23,0.7);
+  background: rgba(212,160,23,0.15);
+  box-shadow: 0 0 10px rgba(212,160,23,0.15);
+}
+
+/* ── TELA ANYMARKET (overlay interno) ── */
+#anymarket-view {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg-deep);
+  overflow-y: auto;
+  flex-direction: column;
+}
+#anymarket-view.open { display: flex; }
+
+.any-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 56px;
+  height: 72px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.9);
+  backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.any-header-left { display: flex; align-items: center; gap: 12px; }
+.any-sync-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 8px rgba(31,189,114,0.7);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%,100% { opacity:1; box-shadow:0 0 8px rgba(31,189,114,0.7); }
+  50%      { opacity:0.6; box-shadow:0 0 14px rgba(31,189,114,0.3); }
+}
+.any-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--text-primary);
+}
+.any-sync-time { font-size: 12px; color: var(--text-secondary); }
+.any-divider { width:1px; height:26px; background:rgba(255,255,255,0.08); }
+.any-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.any-header-right { display: flex; align-items: center; gap: 10px; }
+
+.btn-any-sync {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary); font-size: 13px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-any-sync:hover { border-color: rgba(255,255,255,0.2); color: var(--text-primary); background: rgba(255,255,255,0.07); }
+.btn-any-sync.syncing i { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.btn-voltar-painel {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 18px; border-radius: 8px;
+  border: 1px solid rgba(204,40,40,0.5);
+  background: rgba(204,40,40,0.15);
+  color: var(--text-primary); font-size: 13px; font-weight: 700;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  transition: all 0.2s; text-decoration: none;
+}
+.btn-voltar-painel:hover {
+  border-color: rgba(204,40,40,0.85);
+  background: rgba(204,40,40,0.25);
+  box-shadow: 0 0 18px rgba(204,40,40,0.25);
+}
+
+.any-filter-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 56px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.4);
+  flex-wrap: wrap; flex-shrink: 0;
+}
+.any-filter-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-secondary); margin-right: 4px;
+}
+.any-chip {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 13px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: transparent; color: var(--text-secondary);
+  font-size: 12px; font-weight: 500;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.any-chip:hover { border-color: rgba(255,255,255,0.2); color: var(--text-primary); }
+.any-chip.ac-zerado  { border-color:rgba(204,40,40,0.6);  background:rgba(204,40,40,0.12);  color:#e05555; }
+.any-chip.ac-critico { border-color:rgba(212,160,23,0.6); background:rgba(212,160,23,0.1);  color:var(--accent-amber); }
+.any-chip.ac-baixo   { border-color:rgba(45,125,210,0.5); background:rgba(45,125,210,0.1);  color:var(--accent-blue); }
+.any-chip.ac-todos   { border-color:rgba(31,189,114,0.5); background:rgba(31,189,114,0.1);  color:var(--accent-green); }
+.any-chip-cnt {
+  font-size:10px; font-weight:700; padding:1px 6px;
+  border-radius:10px; background:rgba(255,255,255,0.08);
+}
+.any-chip.ac-zerado  .any-chip-cnt { background:rgba(204,40,40,0.25); }
+.any-chip.ac-critico .any-chip-cnt { background:rgba(212,160,23,0.2); }
+.any-chip.ac-baixo   .any-chip-cnt { background:rgba(45,125,210,0.2); }
+.any-chip.ac-todos   .any-chip-cnt { background:rgba(31,189,114,0.18); }
+.any-search-wrap { margin-left:auto; position:relative; }
+.any-search-wrap i { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-secondary); width:14px; height:14px; }
+.any-search {
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px; padding:7px 12px 7px 32px;
+  color:var(--text-primary); font-size:12.5px;
+  font-family:'DM Sans',sans-serif; width:220px;
+  transition:border-color 0.2s; outline:none;
+}
+.any-search::placeholder { color:var(--text-secondary); }
+.any-search:focus { border-color:rgba(204,40,40,0.4); }
+
+.any-main { flex:1; padding:28px 56px; }
+
+.any-banner {
+  display:flex; align-items:center; gap:12px;
+  padding:13px 18px; border-radius:11px;
+  border:1px solid rgba(204,40,40,0.3);
+  background:rgba(204,40,40,0.07);
+  margin-bottom:24px; font-size:13px; color:#e08888; line-height:1.5;
+}
+.any-banner i { color:var(--accent-red); flex-shrink:0; }
+.any-banner strong { color:#ee9999; }
+.any-banner.hidden { display:none; }
+
+.any-kpi-strip {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:14px; margin-bottom:24px;
+}
+.any-kpi {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:14px; padding:18px 20px;
+  display:flex; flex-direction:column; gap:6px;
+  position:relative; overflow:hidden; cursor:pointer;
+  transition:border-color 0.2s;
+}
+.any-kpi::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:2px; border-radius:14px 14px 0 0;
+}
+.any-kpi:hover { border-color:rgba(255,255,255,0.14); }
+.any-kpi-zerado::before  { background:var(--accent-red); }
+.any-kpi-critico::before { background:var(--accent-amber); }
+.any-kpi-baixo::before   { background:var(--accent-blue); }
+.any-kpi-ok::before      { background:var(--accent-green); }
+.any-kpi-lbl { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--text-secondary); }
+.any-kpi-val { font-family:'Syne',sans-serif; font-size:30px; font-weight:800; line-height:1; }
+.any-kpi-zerado  .any-kpi-val { color:#e05555; }
+.any-kpi-critico .any-kpi-val { color:var(--accent-amber); }
+.any-kpi-baixo   .any-kpi-val { color:var(--accent-blue); }
+.any-kpi-ok      .any-kpi-val { color:var(--accent-green); }
+.any-kpi-sub { font-size:11.5px; color:var(--text-secondary); font-weight:300; }
+
+.any-table-wrap { background:var(--bg-card); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
+.any-table-hdr {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 22px; border-bottom:1px solid var(--border);
+}
+.any-table-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; }
+.any-table-cnt { font-size:12px; color:var(--text-secondary); }
+
+.any-table { width:100%; border-collapse:collapse; }
+.any-table thead th {
+  padding:11px 22px; font-size:10px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase; color:var(--text-secondary);
+  text-align:left; border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,0.015); white-space:nowrap;
+}
+.any-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.18s; }
+.any-table tbody tr:last-child { border-bottom:none; }
+.any-table tbody tr:hover { background:rgba(255,255,255,0.025); }
+.any-table tbody td { padding:13px 22px; font-size:13px; color:var(--text-primary); vertical-align:middle; }
+
+.td-prod-nome { font-size:13px; font-weight:500; line-height:1.3; }
+.td-prod-sku  { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+
+.td-canal-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:11.5px; font-weight:500; padding:3px 8px; border-radius:5px; white-space:nowrap;
+}
+.canal-meli   { background:rgba(255,230,0,0.08); color:#ffd000; border:1px solid rgba(255,208,0,0.2); }
+.canal-shopee { background:rgba(235,94,40,0.1);  color:#f55c2c; border:1px solid rgba(235,94,40,0.25); }
+.canal-magalu { background:rgba(30,120,255,0.1); color:#4a8eff; border:1px solid rgba(30,120,255,0.25); }
+.canal-amazon { background:rgba(255,153,0,0.1);  color:#ff9900; border:1px solid rgba(255,153,0,0.25); }
+.canal-outro  { background:rgba(255,255,255,0.05); color:var(--text-secondary); border:1px solid rgba(255,255,255,0.1); }
+
+.est-bar-wrap { display:flex; align-items:center; gap:10px; }
+.est-bar-bg { flex:1; height:5px; border-radius:3px; background:rgba(255,255,255,0.07); overflow:hidden; min-width:60px; }
+.est-bar-fill { height:100%; border-radius:3px; transition:width 0.5s ease; }
+.bar-red   { background:var(--accent-red); }
+.bar-amber { background:var(--accent-amber); }
+.bar-blue  { background:var(--accent-blue); }
+.bar-green { background:var(--accent-green); }
+.est-num { font-size:13px; font-weight:600; min-width:24px; text-align:right; }
+.est-red   { color:#e05555; }
+.est-amber { color:var(--accent-amber); }
+.est-blue  { color:var(--accent-blue); }
+.est-green { color:var(--accent-green); }
+
+.any-status {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:4px 10px; border-radius:6px;
+  font-size:11px; font-weight:600; white-space:nowrap;
+}
+.st-zerado  { background:rgba(204,40,40,0.15); color:#e05555; border:1px solid rgba(204,40,40,0.3); }
+.st-critico { background:rgba(212,160,23,0.12); color:var(--accent-amber); border:1px solid rgba(212,160,23,0.3); }
+.st-baixo   { background:rgba(45,125,210,0.12); color:var(--accent-blue); border:1px solid rgba(45,125,210,0.25); }
+.st-ok      { background:rgba(31,189,114,0.1); color:var(--accent-green); border:1px solid rgba(31,189,114,0.2); }
+
+.btn-repor {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:5px 11px; border-radius:7px;
+  border:1px solid rgba(255,255,255,0.1); background:transparent;
+  color:var(--text-secondary); font-size:11.5px; font-weight:500;
+  font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s;
+}
+.btn-repor:hover { border-color:rgba(212,160,23,0.5); color:var(--accent-amber); background:rgba(212,160,23,0.07); }
+.btn-repor.urgente { border-color:rgba(204,40,40,0.4); color:#e05555; background:rgba(204,40,40,0.07); }
+.btn-repor.urgente:hover { border-color:rgba(204,40,40,0.7); background:rgba(204,40,40,0.14); }
+
+.any-empty {
+  padding:60px 22px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:12px; color:var(--text-secondary);
+}
+.any-empty i { opacity:0.3; }
+.any-empty p { font-size:14px; }
+.any-empty span { font-size:12px; opacity:0.6; }
+
+.any-ticker-wrap {
+  margin:28px 56px;
+  border:1px solid var(--border); border-radius:10px;
+  overflow:hidden; display:flex; align-items:stretch; flex-shrink:0;
+}
+.any-ticker-lbl {
+  background:var(--accent-amber); color:#000;
+  font-size:10.5px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  padding:12px 20px; display:flex; align-items:center; white-space:nowrap; flex-shrink:0;
+}
+.any-ticker-body { overflow:hidden; flex:1; background:rgba(255,255,255,0.025); display:flex; align-items:center; }
+.any-ticker-track {
+  display:flex; white-space:nowrap;
+  animation:ticker 28s linear infinite;
+  font-size:12.5px; color:var(--text-secondary); padding:12px 0;
+}
+.any-ticker-track span { margin-right:48px; }
+.any-ticker-track .sep { color:var(--accent-amber); margin-right:48px; opacity:0.5; }
+
+/* Modal reposição */
+.any-modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(6px); z-index:9000;
+  display:none; align-items:center; justify-content:center;
+}
+.any-modal-overlay.open { display:flex; }
+.any-modal {
+  background:#111; border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px; padding:34px; width:100%; max-width:420px;
+  position:relative; box-shadow:0 32px 80px rgba(0,0,0,0.7);
+  animation:modalIn 0.25s ease;
+}
+@keyframes modalIn { from{opacity:0;transform:translateY(10px) scale(0.97)} to{opacity:1;transform:none} }
+.any-modal-close { position:absolute; top:16px; right:16px; background:transparent; border:none; color:var(--text-secondary); cursor:pointer; padding:4px; transition:color 0.2s; }
+.any-modal-close:hover { color:var(--text-primary); }
+.any-modal-title { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; margin-bottom:5px; }
+.any-modal-sub   { font-size:12px; color:var(--text-secondary); margin-bottom:22px; }
+.any-modal-field { margin-bottom:14px; }
+.any-modal-field label { display:block; font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-secondary); margin-bottom:6px; }
+.any-modal-field input, .any-modal-field select {
+  width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1);
+  border-radius:9px; padding:9px 13px; color:var(--text-primary);
+  font-family:'DM Sans',sans-serif; font-size:13px; outline:none; transition:border-color 0.2s;
+}
+.any-modal-field input:focus, .any-modal-field select:focus { border-color:rgba(212,160,23,0.5); }
+.any-modal-field select option { background:#111; }
+.any-modal-actions { display:flex; gap:10px; margin-top:22px; }
+.any-modal-cancel {
+  flex:1; padding:10px; border-radius:9px;
+  border:1px solid rgba(255,255,255,0.1); background:transparent;
+  color:var(--text-secondary); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;
+}
+.any-modal-cancel:hover { color:var(--text-primary); border-color:rgba(255,255,255,0.2); }
+.any-modal-confirm {
+  flex:2; padding:10px; border-radius:9px;
+  border:1px solid rgba(212,160,23,0.5); background:rgba(212,160,23,0.15);
+  color:var(--accent-amber); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s;
+}
+.any-modal-confirm:hover { border-color:rgba(212,160,23,0.8); background:rgba(212,160,23,0.25); }
+
+/* Toast */
+.any-toast {
+  position:fixed; bottom:26px; left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:#0f0f0f; border:1px solid rgba(31,189,114,0.3);
+  border-radius:10px; padding:11px 20px; font-size:13px;
+  color:var(--accent-green); display:flex; align-items:center; gap:8px;
+  z-index:9999; opacity:0; transition:transform 0.4s ease,opacity 0.4s ease;
+  white-space:nowrap; box-shadow:0 8px 32px rgba(0,0,0,0.5);
+}
+.any-toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
 /* ── ICON WRAPPER ── */
 .icon-wrap {
   width: 52px;
@@ -1595,17 +1932,21 @@ body::before {
       <div class="dashboard">
 
         <!-- ESTOQUE -->
-        <a class="card card-estoque" href="estoque.html">
+        <div class="card card-estoque" onclick="window.location='estoque.html'" style="cursor:pointer;">
           <div class="icon-wrap">
             <i data-lucide="package" style="width:22px;height:22px"></i>
           </div>
           <div class="card-tag">Inventário</div>
           <h2>Estoque</h2>
           <p>Controle e monitoramento de produtos por curvas A e B, com visão de giro e disponibilidade.</p>
-          <div class="card-footer">
+          <button class="card-anymarket-btn" onclick="event.stopPropagation(); abrirAnymarket();">
+            <i data-lucide="alert-triangle" style="width:11px;height:11px"></i>
+            Estoque Anúncios · Anymarket
+          </button>
+          <div class="card-footer" style="margin-top:14px;">
             Acessar dashboard <i data-lucide="arrow-right"></i>
           </div>
-        </a>
+        </div>
 
         <!-- ASSISTÊNCIA TÉCNICA -->
         <a class="card card-astec" href="assistencia.html">
@@ -1927,6 +2268,105 @@ function inicializarNotificacoes() {
   }
 }
 
+// ── ALERTAS DE ESTOQUE NO SINO ───────────────────────────────────────────────
+function anyGerarAlertas(produtos) {
+  if (!produtos || produtos.length === 0) return;
+
+  const zerados  = produtos.filter(p => p.estoque === 0);
+  const criticos = produtos.filter(p => p.estoque > 0 && p.estoque < 20);
+  const baixos   = produtos.filter(p => p.estoque >= 20 && p.estoque < 60);
+
+  const hoje = new Date().toLocaleDateString('pt-BR');
+  const hora = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+  const agora = hoje + ' às ' + hora;
+
+  // Remove alertas de estoque anteriores
+  const semEstoque = NOTIFICACOES_HOJE.filter(n => !n._anymarket);
+
+  const novas = [];
+
+  if (zerados.length > 0) {
+    const nomes = zerados.slice(0,3).map(p => p.nome.split(' ').slice(0,4).join(' ')).join(' · ');
+    const extra = zerados.length > 3 ? ` e mais ${zerados.length - 3}` : '';
+    novas.push({
+      id: 'any_zerado',
+      icon: '🔴',
+      cor: 'rgba(204,40,40,0.18)',
+      titulo: `Estoque Anymarket: ${zerados.length} SKU${zerados.length>1?'s':''} zerado${zerados.length>1?'s':''}`,
+      desc: nomes + extra,
+      hora: agora,
+      lida: false,
+      critico: true,
+      _anymarket: true
+    });
+  }
+
+  if (criticos.length > 0) {
+    const nomes = criticos.slice(0,3).map(p => p.nome.split(' ').slice(0,4).join(' ')).join(' · ');
+    const extra = criticos.length > 3 ? ` e mais ${criticos.length - 3}` : '';
+    novas.push({
+      id: 'any_critico',
+      icon: '🟡',
+      cor: 'rgba(212,160,23,0.18)',
+      titulo: `Estoque Anymarket: ${criticos.length} SKU${criticos.length>1?'s':''} abaixo do mínimo`,
+      desc: nomes + extra,
+      hora: agora,
+      lida: false,
+      critico: true,
+      _anymarket: true
+    });
+  }
+
+  if (baixos.length > 0) {
+    const nomes = baixos.slice(0,3).map(p => p.nome.split(' ').slice(0,4).join(' ')).join(' · ');
+    const extra = baixos.length > 3 ? ` e mais ${baixos.length - 3}` : '';
+    novas.push({
+      id: 'any_baixo',
+      icon: '🔵',
+      cor: 'rgba(45,125,210,0.15)',
+      titulo: `Estoque Anymarket: ${baixos.length} SKU${baixos.length>1?'s':''} abaixo do ideal`,
+      desc: nomes + extra,
+      hora: agora,
+      lida: false,
+      critico: false,
+      _anymarket: true
+    });
+  }
+
+  // Atualiza array global e re-renderiza
+  NOTIFICACOES_HOJE.length = 0;
+  novas.forEach(n => NOTIFICACOES_HOJE.push(n));
+  semEstoque.forEach(n => NOTIFICACOES_HOJE.push(n));
+
+  renderNotificacoes(NOTIFICACOES_HOJE);
+
+  // Atualiza badge e cor do sininho
+  const badge = document.getElementById('notifBadge');
+  const btn   = document.getElementById('notifBtn');
+  const temCritico = NOTIFICACOES_HOJE.some(n => n.critico);
+  const naoLidas = NOTIFICACOES_HOJE.filter(n => !n.lida).length;
+
+  badge.textContent = naoLidas;
+  badge.setAttribute('data-count', naoLidas);
+
+  if (temCritico) {
+    btn.style.borderColor = 'rgba(204,40,40,0.5)';
+    btn.style.color = '#e05555';
+    badge.style.background = 'var(--accent-red)';
+  } else if (novas.length > 0) {
+    btn.style.borderColor = 'rgba(212,160,23,0.4)';
+    btn.style.color = 'var(--accent-amber)';
+    badge.style.background = 'var(--accent-amber)';
+  } else {
+    btn.style.borderColor = 'rgba(31,189,114,0.4)';
+    btn.style.color = 'var(--accent-green)';
+    badge.style.background = 'var(--accent-green)';
+  }
+
+  // Limpa o "visto" para forçar badge aparecer
+  sessionStorage.removeItem('eh_notif_visto');
+}
+
 // Bind notif events once globally (not inside inicializarUI)
 document.getElementById('notifBtn').addEventListener('click', function(e) {
   e.stopPropagation();
@@ -2227,5 +2667,575 @@ document.addEventListener("DOMContentLoaded", ()=>{
 });
 </script>
 
+<!-- ══════════════════════════════════════════
+     TELA ANYMARKET (overlay interno)
+     ══════════════════════════════════════════ -->
+<div id="anymarket-view">
+
+  <!-- Header -->
+  <div class="any-header">
+    <div class="any-header-left">
+      <div class="any-sync-dot"></div>
+      <span class="any-brand">Anymarket</span>
+      <span class="any-sync-time">· sincronizado <span id="anySyncTime">--:--</span></span>
+      <div class="any-divider"></div>
+      <span class="any-label">Estoque de Anúncios</span>
+    </div>
+    <div class="any-header-right">
+      <button class="btn-any-sync" id="btnAnySync" onclick="anymarketSincronizar()">
+        <i data-lucide="refresh-cw" style="width:14px;height:14px" id="anySyncIcon"></i>
+        Sincronizar
+      </button>
+      <button class="btn-voltar-painel" onclick="fecharAnymarket()">
+        <i data-lucide="layout-dashboard" style="width:14px;height:14px"></i>
+        Painel
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="any-filter-bar">
+    <span class="any-filter-label">Filtrar:</span>
+    <button class="any-chip ac-zerado" id="any-chip-zerado" onclick="anySetFiltro('zerado')">
+      <i data-lucide="x-circle" style="width:12px;height:12px"></i>
+      Zerado <span class="any-chip-cnt" id="any-cnt-zerado">0</span>
+    </button>
+    <button class="any-chip" id="any-chip-critico" onclick="anySetFiltro('critico')">
+      <i data-lucide="alert-triangle" style="width:12px;height:12px"></i>
+      Crítico <span class="any-chip-cnt" id="any-cnt-critico">0</span>
+    </button>
+    <button class="any-chip" id="any-chip-baixo" onclick="anySetFiltro('baixo')">
+      <i data-lucide="trending-down" style="width:12px;height:12px"></i>
+      Abaixo ideal <span class="any-chip-cnt" id="any-cnt-baixo">0</span>
+    </button>
+    <button class="any-chip" id="any-chip-todos" onclick="anySetFiltro('todos')">
+      <i data-lucide="list" style="width:12px;height:12px"></i>
+      Todos <span class="any-chip-cnt" id="any-cnt-todos">0</span>
+    </button>
+    <div class="any-search-wrap">
+      <i data-lucide="search"></i>
+      <input type="text" class="any-search" id="anySearch" placeholder="Buscar produto ou SKU..." oninput="anyRenderTabela()">
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="any-main">
+
+    <!-- Banner alerta -->
+    <div class="any-banner hidden" id="anyBanner">
+      <i data-lucide="alert-circle" style="width:18px;height:18px"></i>
+      <span id="anyBannerTxt"></span>
+    </div>
+
+    <!-- KPIs -->
+    <div class="any-kpi-strip">
+      <div class="any-kpi any-kpi-zerado"  onclick="anySetFiltro('zerado')">
+        <div class="any-kpi-lbl">Zerado</div>
+        <div class="any-kpi-val" id="any-kpi-zerado">0</div>
+        <div class="any-kpi-sub">sem estoque · anúncio ativo</div>
+      </div>
+      <div class="any-kpi any-kpi-critico" onclick="anySetFiltro('critico')">
+        <div class="any-kpi-lbl">Crítico</div>
+        <div class="any-kpi-val" id="any-kpi-critico">0</div>
+        <div class="any-kpi-sub">abaixo do mínimo</div>
+      </div>
+      <div class="any-kpi any-kpi-baixo"   onclick="anySetFiltro('baixo')">
+        <div class="any-kpi-lbl">Abaixo ideal</div>
+        <div class="any-kpi-val" id="any-kpi-baixo">0</div>
+        <div class="any-kpi-sub">entre mínimo e ideal</div>
+      </div>
+      <div class="any-kpi any-kpi-ok"      onclick="anySetFiltro('todos')">
+        <div class="any-kpi-lbl">OK</div>
+        <div class="any-kpi-val" id="any-kpi-ok">0</div>
+        <div class="any-kpi-sub">estoque adequado</div>
+      </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="any-table-wrap">
+      <div class="any-table-hdr">
+        <span class="any-table-title">Produtos com anúncios ativos</span>
+        <span class="any-table-cnt" id="anyTableCnt">— itens</span>
+      </div>
+      <table class="any-table">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Canal</th>
+            <th>Estoque atual</th>
+            <th>Mínimo</th>
+            <th>Disponibilidade</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="anyTbody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Ticker -->
+  <div class="any-ticker-wrap">
+    <div class="any-ticker-lbl">ANYMARKET</div>
+    <div class="any-ticker-body">
+      <div class="any-ticker-track">
+        <span>estoque Anymarket em tempo real</span><span class="sep">◆</span>
+        <span>monitore seus anúncios ativos</span><span class="sep">◆</span>
+        <span>estoque Anymarket em tempo real</span><span class="sep">◆</span>
+        <span>monitore seus anúncios ativos</span><span class="sep">◆</span>
+        <span>estoque Anymarket em tempo real</span><span class="sep">◆</span>
+        <span>monitore seus anúncios ativos</span><span class="sep">◆</span>
+        <span>estoque Anymarket em tempo real</span><span class="sep">◆</span>
+        <span>monitore seus anúncios ativos</span><span class="sep">◆</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- fim #anymarket-view -->
+
+<!-- Modal reposição -->
+<div class="any-modal-overlay" id="anyModalOverlay">
+  <div class="any-modal">
+    <button class="any-modal-close" onclick="anyFecharModal()">
+      <i data-lucide="x" style="width:18px;height:18px"></i>
+    </button>
+    <div class="any-modal-title">Solicitar Reposição</div>
+    <div class="any-modal-sub" id="anyModalSub">Produto · SKU</div>
+    <div class="any-modal-field">
+      <label>Quantidade a repor</label>
+      <input type="number" id="anyModalQtd" value="10" min="1">
+    </div>
+    <div class="any-modal-field">
+      <label>Prioridade</label>
+      <select id="anyModalPrioridade">
+        <option value="urgente">🔴 Urgente — produto zerado</option>
+        <option value="alta">🟠 Alta — estoque crítico</option>
+        <option value="normal" selected>🟡 Normal — abaixo do ideal</option>
+      </select>
+    </div>
+    <div class="any-modal-field">
+      <label>Observação (opcional)</label>
+      <input type="text" id="anyModalObs" placeholder="Ex: aguardar chegada de NF">
+    </div>
+    <div class="any-modal-actions">
+      <button class="any-modal-cancel" onclick="anyFecharModal()">Cancelar</button>
+      <button class="any-modal-confirm" onclick="anyConfirmarReposicao()">
+        Confirmar Reposição
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="any-toast" id="anyToast">
+  <i data-lucide="check-circle" style="width:15px;height:15px"></i>
+  <span id="anyToastMsg">OK</span>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  ANYMARKET — lógica integrada
+// ══════════════════════════════════════════
+
+// Dados de exemplo — substitua pelo retorno real da API Anymarket
+// ── CONFIG ANYMARKET ─────────────────────────────────────────────────────────
+const ANY_API = 'https://script.google.com/macros/s/AKfycbzLF6qm5Ou_nfLTGuYWORE4ssd0fvTgN_kXG5xVuIRD39StIzJJIv0-ZSwMVB6eobwy/exec';
+
+const SKUS_MONITORADOS = [
+  '85419.59.636','85419.3.636','45888.52.8','85419.59.650','77020.95.643',
+  '92830.173.640','95550.52.636','85419.3.640','77020.118.643','85419.59.640',
+  '81701.173.636','97434.636','85419.52.636','85419.58.636','76413.636',
+  '85419.58.640','85419.3.650','95550.58.636','42508.52.8','95550.3.636',
+  '77020.368.643','77194.118.636','97434.762','76413.8','100083.173.636',
+  '41595.8','59957.52.8','97433.52.636','41595.640','81701.368.636',
+  '85419.52.640','77194.173.636','45888.59.8','95550.59.636','76413.640',
+  '81701.95.636','100058.570.636','91015.640','42508.228.8','59957.52.653',
+  '97434.8','77194.368.636','97434.640','85419.52.650'
+];
+const MINIMO_PADRAO = 20;
+
+let ANY_PRODUTOS = [];
+let anyFiltro = 'zerado';
+let anyProdutoAtual = null;
+let anyToastTimer;
+let anyCarregado = false;
+const ANY_CACHE_KEY      = 'eh_any_estoque_cache';
+const ANY_CACHE_TIME_KEY = 'eh_any_estoque_time';
+const ANY_AUTO_INTERVAL  = 60 * 60 * 1000; // 60 minutos
+let anyAutoTimer = null;
+
+// ── AUTO-REFRESH EM SEGUNDO PLANO ─────────────────────────────────────────────
+function anyIniciarAutoRefresh() {
+  if (anyAutoTimer) return; // já iniciado
+  anyAutoTimer = setInterval(() => {
+    // Atualiza silenciosamente sem abrir o painel
+    anyBuscarAPI()
+      .then(raw => {
+        ANY_PRODUTOS = anyProcessar(raw);
+        anyCarregado = true;
+        anySalvarCache(ANY_PRODUTOS);
+        anyGerarAlertas(ANY_PRODUTOS);
+        // Se o painel estiver aberto, atualiza a tabela também
+        const view = document.getElementById('anymarket-view');
+        if (view && view.classList.contains('open')) {
+          anyAtualizarHora();
+          anyRenderTabela();
+          anyShowToast('Estoque atualizado automaticamente ✓');
+        }
+      })
+      .catch(() => {}); // falha silenciosa
+  }, ANY_AUTO_INTERVAL);
+}
+
+// ── CARREGA DO SHEETS AO INICIAR A PÁGINA (para todos os usuários) ───────────
+(function anyIniciarCache() {
+  // Busca da planilha em segundo plano ao carregar a página
+  anyBuscarAPI()
+    .then(raw => {
+      ANY_PRODUTOS = anyProcessar(raw);
+      anyCarregado = true;
+      anySalvarCache(ANY_PRODUTOS);
+      anyGerarAlertas(ANY_PRODUTOS);
+      // Se o painel já estiver aberto, atualiza
+      const view = document.getElementById('anymarket-view');
+      if (view && view.classList.contains('open')) {
+        anyAtualizarHora();
+        anyRenderTabela();
+      }
+    })
+    .catch(() => {
+      // Fallback: tenta carregar do cache local
+      const cache = anyCarregarCache();
+      if (cache) {
+        ANY_PRODUTOS = cache.produtos;
+        anyCarregado = true;
+      }
+    });
+  anyIniciarAutoRefresh();
+})();
+
+// ── CLASSIFICAR STATUS ────────────────────────────────────────────────────────
+function anyClassificarStatus(atual, minimo) {
+  if (atual === 0)          return 'zerado';
+  if (atual <= minimo)      return 'critico';
+  if (atual <= minimo * 2)  return 'baixo';
+  return 'ok';
+}
+
+// ── NORMALIZAR CANAL ──────────────────────────────────────────────────────────
+function anyNomeCanal(raw) {
+  if (!raw) return 'Marketplace';
+  const m = {
+    'MERCADO_LIVRE':'Mercado Livre','MERCADOLIVRE':'Mercado Livre',
+    'SHOPEE':'Shopee','MAGAZINE_LUIZA':'Magalu','MAGALU':'Magalu',
+    'AMAZON':'Amazon','B2W':'B2W','VIA_VAREJO':'Via Varejo',
+    'SITE':'Site Próprio'
+  };
+  return m[String(raw).toUpperCase().replace(/[\s-]/g,'_')] || raw;
+}
+
+// ── BUSCAR DO CACHE (Google Sheets) ──────────────────────────────────────────
+async function anyBuscarAPI() {
+  const r    = await fetch(`${ANY_API}?acao=cache`);
+  const json = await r.json();
+
+  if (json.erro) throw new Error(json.erro);
+
+  // Cache vem já processado — retorna direto
+  return json.produtos || [];
+}
+
+function anyProcessar(raw) {
+  const mapa = {};
+
+  raw.forEach(item => {
+    // Suporta tanto formato direto da API quanto do cache do Sheets
+    const sku    = item.sku || item.stockKeepingUnit?.partnerId || '';
+    if (!SKUS_MONITORADOS.includes(sku)) return;
+
+    const atual  = Number(item.estoque ?? item.availableAmount ?? item.amount ?? 0);
+    const minimo = MINIMO_PADRAO;
+    const ideal  = MINIMO_PADRAO * 3;
+    const nome   = item.nome || item.stockKeepingUnit?.title || sku;
+    const status = anyClassificarStatus(atual, minimo);
+
+    if (mapa[sku]) {
+      mapa[sku].estoque += atual;
+      mapa[sku].status   = anyClassificarStatus(mapa[sku].estoque, minimo);
+    } else {
+      mapa[sku] = { nome, sku, canal: 'Estoque Físico', estoque: atual, minimo, ideal, status };
+    }
+  });
+
+  // Garante todos os 44 SKUs — zerado se não encontrado
+  return SKUS_MONITORADOS.map(s => mapa[s] || {
+    nome: s, sku: s, canal: '—', estoque: 0, minimo: MINIMO_PADRAO, ideal: MINIMO_PADRAO * 3, status: 'zerado'
+  });
+}
+
+// ── LOADING ───────────────────────────────────────────────────────────────────
+function anySetLoading(on) {
+  const tbody = document.getElementById('anyTbody');
+  if (on) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="any-empty">
+      <div style="width:28px;height:28px;border:2px solid rgba(212,160,23,0.2);border-top-color:var(--accent-amber);border-radius:50%;animation:spin 0.9s linear infinite;"></div>
+      <p>Buscando dados do Anymarket…</p></div></td></tr>`;
+    if (!document.querySelector('#anySpinStyle')) {
+      const s = document.createElement('style');
+      s.id = 'anySpinStyle';
+      s.textContent = '@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}';
+      document.head.appendChild(s);
+    }
+    lucide.createIcons();
+  }
+}
+
+function anySalvarCache(produtos) {
+  try {
+    localStorage.setItem(ANY_CACHE_KEY, JSON.stringify(produtos));
+    localStorage.setItem(ANY_CACHE_TIME_KEY, new Date().toISOString());
+  } catch(e) {}
+}
+
+function anyCarregarCache() {
+  try {
+    const raw = localStorage.getItem(ANY_CACHE_KEY);
+    const time = localStorage.getItem(ANY_CACHE_TIME_KEY);
+    if (raw && time) return { produtos: JSON.parse(raw), time };
+  } catch(e) {}
+  return null;
+}
+
+function anyFormatarTempo(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+}
+
+function abrirAnymarket() {
+  document.getElementById('anymarket-view').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  if (anyCarregado && ANY_PRODUTOS.length > 0) {
+    // Dados já carregados em background — abre instantâneo
+    const cache = anyCarregarCache();
+    const el = document.getElementById('anySyncTime');
+    if (el && cache) el.textContent = anyFormatarTempo(cache.time);
+    anyRenderTabela();
+    anyGerarAlertas(ANY_PRODUTOS);
+  } else {
+    // Ainda carregando — mostra loading e aguarda
+    anySetLoading(true);
+    const esperar = setInterval(() => {
+      if (anyCarregado && ANY_PRODUTOS.length > 0) {
+        clearInterval(esperar);
+        const cache = anyCarregarCache();
+        const el = document.getElementById('anySyncTime');
+        if (el && cache) el.textContent = anyFormatarTempo(cache.time);
+        anyRenderTabela();
+        anyGerarAlertas(ANY_PRODUTOS);
+      }
+    }, 300);
+    // Timeout de segurança: 30s
+    setTimeout(() => clearInterval(esperar), 30000);
+  }
+  lucide.createIcons();
+}
+
+function fecharAnymarket() {
+  document.getElementById('anymarket-view').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function anyAtualizarHora() {
+  const d = new Date();
+  const h = String(d.getHours()).padStart(2,'0');
+  const m = String(d.getMinutes()).padStart(2,'0');
+  document.getElementById('anySyncTime').textContent = `${h}:${m}`;
+}
+
+function anySetFiltro(f) {
+  anyFiltro = f;
+  ['zerado','critico','baixo','todos'].forEach(k => {
+    const c = document.getElementById(`any-chip-${k}`);
+    c.className = 'any-chip' + (k === f ? ` ac-${k}` : '');
+  });
+  anyRenderTabela();
+}
+
+function anyPct(est, ideal) {
+  if (!ideal) return 0;
+  return Math.min(100, Math.round((est / ideal) * 100));
+}
+
+function anyCanalTag(canal) {
+  const m = { 'Mercado Livre':'canal-meli','Shopee':'canal-shopee','Magalu':'canal-magalu','Amazon':'canal-amazon' };
+  return `<span class="td-canal-badge ${m[canal]||'canal-outro'}">${canal}</span>`;
+}
+
+function anyRenderTabela() {
+  const tbody = document.getElementById('anyTbody');
+  const q = (document.getElementById('anySearch').value||'').toLowerCase();
+
+  // Contadores
+  const cnts = {zerado:0,critico:0,baixo:0,ok:0};
+  ANY_PRODUTOS.forEach(p => cnts[p.status] = (cnts[p.status]||0)+1);
+  ['zerado','critico','baixo','ok'].forEach(k => {
+    const el = document.getElementById(`any-kpi-${k}`);
+    if(el) el.textContent = cnts[k];
+  });
+  ['zerado','critico','baixo'].forEach(k => {
+    const el = document.getElementById(`any-cnt-${k}`);
+    if(el) el.textContent = cnts[k];
+  });
+  const elT = document.getElementById('any-cnt-todos');
+  if(elT) elT.textContent = ANY_PRODUTOS.length;
+
+  // Banner
+  const banner = document.getElementById('anyBanner');
+  const bannerTxt = document.getElementById('anyBannerTxt');
+  if (cnts.zerado > 0) {
+    banner.classList.remove('hidden');
+    bannerTxt.innerHTML = `<strong>${cnts.zerado} produto${cnts.zerado>1?'s':''}</strong> com estoque zerado ${cnts.zerado>1?'estão':'está'} com anúncio ativo. Produtos sem estoque geram cancelamentos e prejudicam a reputação.`;
+  } else {
+    banner.classList.add('hidden');
+  }
+
+  // Filtro + busca
+  let dados = [...ANY_PRODUTOS];
+  if (anyFiltro !== 'todos') dados = dados.filter(p => p.status === anyFiltro);
+  if (q) dados = dados.filter(p => p.nome.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q));
+
+  const cnt = document.getElementById('anyTableCnt');
+  if(cnt) cnt.textContent = `${dados.length} ${dados.length===1?'item':'itens'}`;
+
+  if (dados.length === 0) {
+    const msg = ANY_PRODUTOS.length === 0
+      ? '<p>Nenhum dado carregado ainda.</p><span>Os dados da Anymarket aparecerão aqui após integração.</span>'
+      : '<p>Nenhum produto encontrado.</p><span>Tente outro filtro ou busca.</span>';
+    tbody.innerHTML = `<tr><td colspan="7"><div class="any-empty"><i data-lucide="package-open" style="width:36px;height:36px"></i>${msg}</div></td></tr>`;
+    lucide.createIcons();
+    return;
+  }
+
+  const barCls  = s => ({zerado:'bar-red',critico:'bar-amber',baixo:'bar-blue',ok:'bar-green'}[s]||'bar-green');
+  const numCls  = s => ({zerado:'est-red',critico:'est-amber',baixo:'est-blue',ok:'est-green'}[s]||'est-green');
+  const stCls   = s => ({zerado:'st-zerado',critico:'st-critico',baixo:'st-baixo',ok:'st-ok'}[s]||'st-ok');
+  const stLabel = s => ({zerado:'Zerado',critico:'Crítico',baixo:'Abaixo ideal',ok:'OK'}[s]||s);
+
+  tbody.innerHTML = dados.map((p,i) => {
+    const pct = anyPct(p.estoque, p.ideal);
+    const urg = p.status==='zerado';
+    return `<tr>
+      <td><div class="td-prod-nome">${p.nome}</div><div class="td-prod-sku">${p.sku}</div></td>
+      <td>${anyCanalTag(p.canal)}</td>
+      <td><div class="est-bar-wrap"><div class="est-bar-bg"><div class="est-bar-fill ${barCls(p.status)}" style="width:${pct}%"></div></div><span class="est-num ${numCls(p.status)}">${p.estoque}</span></div></td>
+      <td style="color:var(--text-secondary)">${p.minimo}</td>
+      <td style="color:var(--text-secondary)">${pct}%</td>
+      <td><span class="any-status ${stCls(p.status)}">${stLabel(p.status)}</span></td>
+      <td><button class="btn-repor${urg?' urgente':''}" onclick="anyAbrirModal(${i},'${p.nome.replace(/'/g,"\\'")}','${p.sku}',${urg})">
+        <i data-lucide="plus" style="width:11px;height:11px"></i>${urg?'Urgente':'Repor'}
+      </button></td>
+    </tr>`;
+  }).join('');
+  lucide.createIcons();
+}
+
+async function anyBuscarAPIDirecta() {
+  // Busca direto da API — todas as páginas em paralelo
+  const r0  = await fetch(`${ANY_API}?endpoint=stocks&limit=50&offset=0`);
+  const j0  = await r0.json();
+  const pg0 = (j0.content || []).filter(i => SKUS_MONITORADOS.includes((i.stockKeepingUnit && i.stockKeepingUnit.partnerId) || ''));
+  const totalPages = (j0.page && j0.page.totalPages) ? j0.page.totalPages : 1;
+
+  if (totalPages <= 1) return pg0;
+
+  const promises = [];
+  for (let p = 1; p < totalPages; p++) {
+    promises.push(
+      fetch(`${ANY_API}?endpoint=stocks&limit=50&offset=${p * 50}`)
+        .then(r => r.json())
+        .then(j => (j.content || []).filter(i => SKUS_MONITORADOS.includes((i.stockKeepingUnit && i.stockKeepingUnit.partnerId) || '')))
+        .catch(() => [])
+    );
+  }
+  const resto = await Promise.all(promises);
+  return pg0.concat(resto.flat());
+}
+
+function anymarketSincronizar() {
+  const btn = document.getElementById('btnAnySync');
+  btn.classList.add('syncing'); btn.disabled = true;
+  anySetLoading(true);
+
+  anyBuscarAPIDirecta()
+    .then(raw => {
+      // raw vem no formato da API — normaliza
+      const normalizado = raw.map(function(item) {
+        return {
+          nome: (item.stockKeepingUnit && item.stockKeepingUnit.title) || item.sku || '',
+          sku:  (item.stockKeepingUnit && item.stockKeepingUnit.partnerId) || '',
+          estoque: Number(item.availableAmount || item.amount || 0)
+        };
+      });
+      // Agrupa por SKU somando estoques
+      const mapa = {};
+      normalizado.forEach(function(item) {
+        if (!item.sku) return;
+        if (mapa[item.sku]) {
+          mapa[item.sku].estoque += item.estoque;
+        } else {
+          mapa[item.sku] = { nome: item.nome, sku: item.sku, estoque: item.estoque };
+        }
+      });
+      const produtos = SKUS_MONITORADOS.map(function(s) {
+        return mapa[s] || { nome: s, sku: s, estoque: 0 };
+      });
+
+      ANY_PRODUTOS = anyProcessar(produtos);
+      anyCarregado = true;
+      anySalvarCache(ANY_PRODUTOS);
+      btn.classList.remove('syncing'); btn.disabled = false;
+      anyAtualizarHora();
+      anyRenderTabela();
+      anyGerarAlertas(ANY_PRODUTOS);
+      anyShowToast('Sincronizado em tempo real ✓');
+    })
+    .catch(() => {
+      btn.classList.remove('syncing'); btn.disabled = false;
+      anyShowToast('Erro ao sincronizar. Tente novamente.');
+    });
+}
+
+function anyAbrirModal(idx, nome, sku, urgente) {
+  anyProdutoAtual = {idx, nome, sku};
+  document.getElementById('anyModalSub').textContent = `${nome} · ${sku}`;
+  document.getElementById('anyModalQtd').value = urgente ? 20 : 10;
+  document.getElementById('anyModalPrioridade').value = urgente ? 'urgente' : 'normal';
+  document.getElementById('anyModalObs').value = '';
+  document.getElementById('anyModalOverlay').classList.add('open');
+  lucide.createIcons();
+}
+function anyFecharModal() {
+  document.getElementById('anyModalOverlay').classList.remove('open');
+  anyProdutoAtual = null;
+}
+function anyConfirmarReposicao() {
+  if (!anyProdutoAtual) return;
+  const nome = anyProdutoAtual.nome;
+  anyFecharModal();
+  anyShowToast(`Reposição solicitada · ${nome}`);
+}
+document.getElementById('anyModalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) anyFecharModal();
+});
+
+function anyShowToast(msg) {
+  clearTimeout(anyToastTimer);
+  document.getElementById('anyToastMsg').textContent = msg;
+  const t = document.getElementById('anyToast');
+  t.classList.add('show');
+  anyToastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+</script>
 </body>
-</html>
