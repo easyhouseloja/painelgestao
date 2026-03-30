@@ -3,505 +3,995 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SLA Transporte — Easy House — 27/03/2026</title>
+<title>Dashboard SLA · Easy House · 30/03/2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root{--bg:#0b0f1a;--bg2:#111827;--bg3:#1a2235;--card:#161d2e;--border:#1f2d45;--text:#e8eaf0;--muted:#7a8aab;--green:#22c55e;--red:#ef4444;--yellow:#eab308;--accent:#38bdf8;--comp:#818cf8;--orange:#f97316;--purp:#c084fc;--teal:#2dd4bf;--dev:#a855f7;--focco:#4ade80;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-.header{background:linear-gradient(135deg,#0b0f1a 0%,#0f1f3d 50%,#0b0f1a 100%);border-bottom:1px solid var(--border);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.header h1{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:-.5px;background:linear-gradient(90deg,#fff 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.header-sub{font-size:.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
-.header-badges{display:flex;gap:8px;flex-wrap:wrap;}
-.badge{background:var(--bg3);border:1px solid var(--border);border-radius:999px;padding:5px 14px;font-size:.75rem;font-weight:600;color:var(--accent);}
-.badge.yellow{color:var(--yellow);}.badge.red{color:var(--red);}.badge.green{color:var(--green);}.badge.purp{color:var(--purp);}.badge.focco{color:var(--focco);}
-.tabs{display:flex;gap:2px;padding:0 40px;border-bottom:1px solid var(--border);background:var(--bg);flex-wrap:wrap;}
-.tab{padding:12px 16px;font-family:'Syne',sans-serif;font-size:.75rem;font-weight:600;color:var(--muted);cursor:pointer;border-radius:8px 8px 0 0;border:1px solid transparent;border-bottom:none;letter-spacing:.3px;transition:all .2s;}
-.tab:hover{color:var(--text);background:var(--bg3);}.tab.active{color:var(--accent);background:var(--card);border-color:var(--border);}
-.page{display:none;padding:28px 40px 48px;animation:fadeIn .25s ease;}.page.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.section-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
-.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden;}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c,var(--accent));}
-.kpi-card.blue{--c:var(--accent);}.kpi-card.green{--c:var(--green);}.kpi-card.red{--c:var(--red);}.kpi-card.orange{--c:var(--orange);}.kpi-card.yellow{--c:var(--yellow);}.kpi-card.purple{--c:var(--purp);}.kpi-card.teal{--c:var(--teal);}.kpi-card.focco{--c:var(--focco);}
-.kpi-label{font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;font-weight:600;}
-.kpi-value{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--text);margin-bottom:6px;}
-.kpi-sub{font-size:.76rem;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.kpi-pill{border-radius:999px;padding:2px 8px;font-size:.7rem;font-weight:700;}
-.pill-green{background:rgba(34,197,94,.15);color:var(--green);}.pill-red{background:rgba(239,68,68,.15);color:var(--red);}.pill-yellow{background:rgba(234,179,8,.15);color:var(--yellow);}.pill-orange{background:rgba(249,115,22,.15);color:var(--orange);}.pill-focco{background:rgba(74,222,128,.12);color:var(--focco);}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;}
-.chart-title{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:16px;letter-spacing:.3px;}
-.chart-wrap{position:relative;height:240px;}.chart-wrap.tall{height:320px;}.chart-wrap.xtall{height:420px;}
-.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.prog-label{font-size:.72rem;color:var(--muted);width:140px;flex-shrink:0;}
-.prog-bar-bg{flex:1;height:7px;background:var(--bg3);border-radius:999px;overflow:hidden;}
-.prog-bar-fill{height:100%;border-radius:999px;}
-.prog-val{font-family:'DM Mono',monospace;font-size:.75rem;font-weight:600;width:60px;text-align:right;flex-shrink:0;}
-.axo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
-.axo-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
-.axo-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
-.axo-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;}
-.data-table{width:100%;border-collapse:collapse;}
-.data-table th{background:var(--bg3);padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;}
-.data-table th.r{text-align:right;}.data-table th.c{text-align:center;}
-.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.78rem;}
-.data-table td.r{text-align:right;}.data-table td.c{text-align:center;}
-.data-table tr:last-child td{border-bottom:none;}.data-table tr:hover td{background:rgba(255,255,255,.02);}
-.data-table .total-row td{background:var(--bg3);font-weight:700;color:var(--accent);}
-.tag{display:inline-block;border-radius:6px;padding:2px 8px;font-size:.7rem;font-weight:700;}
-.tag-green{background:rgba(34,197,94,.15);color:var(--green);}.tag-red{background:rgba(239,68,68,.15);color:var(--red);}.tag-yellow{background:rgba(234,179,8,.15);color:var(--yellow);}.tag-blue{background:rgba(56,189,248,.15);color:var(--accent);}.tag-orange{background:rgba(249,115,22,.15);color:var(--orange);}.tag-focco{background:rgba(74,222,128,.12);color:var(--focco);}
-.mkt-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.mkt-name{font-size:.78rem;font-weight:600;width:170px;flex-shrink:0;font-family:'DM Mono',monospace;}
-.mkt-bar-bg{flex:1;height:10px;background:var(--bg3);border-radius:999px;overflow:hidden;}
-.mkt-bar-fill{height:100%;border-radius:999px;}
-.mkt-val{font-family:'DM Mono',monospace;font-size:.75rem;width:56px;text-align:right;flex-shrink:0;}
-.mkt-var{font-size:.72rem;width:84px;text-align:right;flex-shrink:0;}
-.dvd-hdr{display:grid;grid-template-columns:1fr 110px 110px 110px 110px;padding:9px 16px;background:var(--bg3);border-radius:8px 8px 0 0;font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;}
-.dvd-row{display:grid;grid-template-columns:1fr 110px 110px 110px 110px;padding:9px 16px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.78rem;transition:background .1s;}
-.dvd-row:last-child{border-bottom:none;}.dvd-row:hover{background:rgba(255,255,255,.02);}
-.dvd-r{text-align:right;}.dvd-c{text-align:center;}
-.alert-banner{display:flex;align-items:flex-start;gap:12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-left:4px solid var(--red);border-radius:10px;padding:12px 18px;margin-bottom:20px;font-size:.82rem;color:var(--red);}
-.info-banner{display:flex;align-items:flex-start;gap:12px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.25);border-left:4px solid var(--dev);border-radius:10px;padding:12px 18px;margin-bottom:20px;font-size:.82rem;color:var(--dev);}
-.focco-banner{display:flex;align-items:flex-start;gap:12px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-left:4px solid var(--focco);border-radius:10px;padding:12px 18px;margin-bottom:20px;font-size:.82rem;color:var(--focco);}
-.dev-table{width:100%;border-collapse:collapse;}
-.dev-table th{background:rgba(168,85,247,.12);padding:10px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--dev);font-weight:600;}
-.dev-table th.r{text-align:right;}.dev-table th.c{text-align:center;}
-.dev-table td{padding:10px 14px;border-bottom:1px solid rgba(168,85,247,.12);font-family:'DM Mono',monospace;font-size:.78rem;}
-.dev-table tr:last-child td{border-bottom:none;}.dev-table tr:hover td{background:rgba(168,85,247,.04);}
-.uf-header-row{border-radius:8px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.uf-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;}
-.uf-meta{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--muted);}
-@media(max-width:1100px){.kpi-strip,.grid-3,.axo-grid{grid-template-columns:repeat(2,1fr);}.grid-2{grid-template-columns:1fr;}.page{padding:20px 20px 40px;}.header{padding:16px 20px;flex-direction:column;align-items:flex-start;gap:12px;}.tabs{padding:0 20px;}}
+:root{
+  --bg:#0b0f1a;--card:#161d2e;--card2:#1a2236;--border:#1f2d45;
+  --accent:#E8461E;--blue:#2E4A7A;--blue2:#3a5a96;
+  --green:#1E8449;--green2:#27ae60;--red:#C0392B;--yellow:#B7770D;
+  --orange:#D35400;--teal:#1A5276;--purple:#5A1878;--purple2:#7b22a8;
+  --focco:#1A4D0A;--focco2:#2D6E12;--dev:#4A1A7A;
+  --text:#e8edf8;--muted:#8899bb;--dim:#4a5a7a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh}
+/* NAV */
+nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:0;padding:0 20px}
+.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:16px;white-space:nowrap}
+.nav-brand span{color:var(--accent)}
+.nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
+.nav-tab{padding:14px 16px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.nav-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding:14px 0;white-space:nowrap}
+/* LAYOUT */
+.page{display:none;padding:24px 28px;max-width:1400px;margin:0 auto}
+.page.active{display:block}
+/* CARDS */
+.kpi-row{display:grid;gap:16px;margin-bottom:20px}
+.kpi-row.cols3{grid-template-columns:repeat(3,1fr)}
+.kpi-row.cols4{grid-template-columns:repeat(4,1fr)}
+.kpi-row.cols5{grid-template-columns:repeat(5,1fr)}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.kpi-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.kpi-value{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;line-height:1}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:6px}
+.kpi.accent{border-color:rgba(232,70,30,.35);background:rgba(232,70,30,.06)}
+.kpi.green{border-color:rgba(30,132,73,.35);background:rgba(30,132,73,.06)}
+.kpi.warn{border-color:rgba(183,119,13,.35);background:rgba(183,119,13,.06)}
+.kpi.teal{border-color:rgba(26,82,118,.4);background:rgba(26,82,118,.1)}
+.kpi.purple{border-color:rgba(90,24,120,.4);background:rgba(90,24,120,.1)}
+/* MEGA SLA */
+.sla-mega{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden}
+.sla-mega::before{content:'';position:absolute;top:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(30,132,73,.06);pointer-events:none}
+.sla-mega-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.sla-mega-value{font-family:'DM Mono',monospace;font-size:72px;font-weight:500;color:#27ae60;line-height:1}
+.sla-mega-badge{display:inline-block;margin-top:12px;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(30,132,73,.15);color:#27ae60;border:1px solid rgba(30,132,73,.3)}
+.sla-meta{font-size:11px;color:var(--muted);margin-top:8px}
+/* SECTION */
+.section-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+/* TABLE */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+table{width:100%;border-collapse:collapse}
+th{background:#0d1626;padding:10px 14px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:10px 14px;font-size:13px;border-bottom:1px solid rgba(31,45,69,.5)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(46,74,122,.1)}
+.mono{font-family:'DM Mono',monospace;font-size:12px}
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace}
+.badge-green{background:rgba(30,132,73,.15);color:#27ae60;border:1px solid rgba(30,132,73,.3)}
+.badge-yellow{background:rgba(183,119,13,.15);color:#e6a817;border:1px solid rgba(183,119,13,.3)}
+.badge-red{background:rgba(192,57,43,.15);color:#e74c3c;border:1px solid rgba(192,57,43,.3)}
+.badge-orange{background:rgba(211,84,0,.15);color:#e67e22;border:1px solid rgba(211,84,0,.3)}
+/* BAR */
+.bar-wrap{background:rgba(255,255,255,.04);border-radius:4px;height:6px;flex:1}
+.bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.bar-row{display:flex;align-items:center;gap:10px}
+/* CHART CONTAINER */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px}
+.chart-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px}
+.chart-container{position:relative}
+/* GRID 2 */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+/* URGENCIA */
+.urg-venc{color:#e74c3c;font-weight:700}
+.urg-crit{color:#e74c3c;font-weight:700}
+.urg-alert{color:#e6a817;font-weight:600}
+.urg-atenc{color:#e67e22;font-weight:600}
+.urg-ok{color:#27ae60;font-weight:600}
+/* DvD */
+.dvd-up{color:#27ae60;font-weight:700}
+.dvd-down{color:#e74c3c;font-weight:700}
+.dvd-neutral{color:var(--muted)}
+/* FOCCO */
+.focco-header{background:linear-gradient(135deg,var(--focco),var(--focco2));padding:20px 24px;border-radius:10px;margin-bottom:20px}
+.focco-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:4px}
+.focco-sub{font-size:12px;color:rgba(255,255,255,.65)}
+.focco-total{font-family:'DM Mono',monospace;font-size:40px;font-weight:500;color:#aade66;line-height:1}
+.uf-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.uf-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px}
+/* INFO */
+.info-note{background:rgba(30,82,118,.12);border:1px solid rgba(30,82,118,.25);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--muted);margin-bottom:16px}
+/* DEV TABLE */
+.dev-header{background:rgba(74,26,122,.3);border:1px solid rgba(74,26,122,.4);border-radius:10px 10px 0 0;padding:14px 18px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#cc88ff}
+/* SCROLL */
+.tbl-scroll{overflow-x:auto}
+/* SEPARATOR */
+.sep{height:1px;background:var(--border);margin:20px 0}
+/* PAGE HEADER */
+.page-header{margin-bottom:24px}
+.page-header h1{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--text);margin-bottom:4px}
+.page-header p{color:var(--muted);font-size:13px}
+
+@media(max-width:900px){
+  .kpi-row.cols3,.kpi-row.cols4,.kpi-row.cols5{grid-template-columns:repeat(2,1fr)}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .sla-mega-value{font-size:52px}
+}
 </style>
 </head>
 <body>
-<div class="header">
-  <div>
-    <h1>🚚 SLA Transporte</h1>
-    <div class="header-sub">Easy House · 27/03/2026 · Sexta-feira · Fonte: Anymarket + FOCCO</div>
+
+<nav>
+  <div class="nav-brand">Easy <span>House</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('visao')">📊 Visão Geral</button>
+    <button class="nav-tab" onclick="showPage('transp')">🚚 Transportadoras</button>
+    <button class="nav-tab" onclick="showPage('mkt')">🛒 Marketplaces</button>
+    <button class="nav-tab" onclick="showPage('aberto')">⚠️ Em Aberto</button>
+    <button class="nav-tab" onclick="showPage('focco')">🌿 Peso Março</button>
+    <button class="nav-tab" onclick="showPage('dev')">🔄 Devoluções</button>
+    <button class="nav-tab" onclick="showPage('cnpj')">🚫 CNPJ</button>
+    <button class="nav-tab" onclick="showPage('dvd')">📈 Dia vs Dia</button>
   </div>
-  <div class="header-badges">
-    <span class="badge yellow">SLA 95,32%</span>
-    <span class="badge red">▼ 5ª queda consecutiva</span>
-    <span class="badge purp">15 devoluções excluídas</span>
-    <span class="badge focco">🌿 1.194.020 kg · FOCCO real</span>
+  <div class="nav-date">30 / 03 / 2026</div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ABA 1 — VISÃO GERAL -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-visao" class="page active">
+  <div class="page-header">
+    <h1>Dashboard de SLA</h1>
+    <p>Anymarket · Easy House · Ref.: 30/03/2026 · Sem Correios · Sem SC</p>
+  </div>
+
+  <div class="kpi-row cols4">
+    <div class="kpi">
+      <div class="kpi-label">Pedidos na Base</div>
+      <div class="kpi-value mono">4.801</div>
+      <div class="kpi-sub">após remover duplicatas</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">Pedidos Faturados</div>
+      <div class="kpi-value mono" style="color:#27ae60">4.267</div>
+      <div class="kpi-sub">com NF emitida</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">No Prazo</div>
+      <div class="kpi-value mono" style="color:#27ae60">4.086</div>
+      <div class="kpi-sub">dentro da entrega esperada</div>
+    </div>
+    <div class="kpi accent">
+      <div class="kpi-label">Em Atraso</div>
+      <div class="kpi-value mono" style="color:#e74c3c">181</div>
+      <div class="kpi-sub">pedidos fora do prazo</div>
+    </div>
+  </div>
+
+  <div class="sla-mega">
+    <div class="sla-mega-label">Índice de SLA Geral — 30/03/2026</div>
+    <div class="sla-mega-value">95,76%</div>
+    <div class="sla-mega-badge">✅ Meta atingida (≥ 95%)</div>
+    <div class="sla-meta">17 devoluções excluídas · 5 CNPJ em aba separada · Correios e SC excluídos</div>
+  </div>
+
+  <div class="kpi-row cols4">
+    <div class="kpi warn">
+      <div class="kpi-label">Em Aberto (S/Fat.)</div>
+      <div class="kpi-value mono" style="color:#e6a817">501</div>
+      <div class="kpi-sub">pedidos sem NF</div>
+    </div>
+    <div class="kpi warn">
+      <div class="kpi-label">Valor em Aberto</div>
+      <div class="kpi-value mono" style="color:#e6a817;font-size:20px">R$ 504.298</div>
+      <div class="kpi-sub">estimativa</div>
+    </div>
+    <div class="kpi teal">
+      <div class="kpi-label">Peso em Aberto (est.)</div>
+      <div class="kpi-value mono" style="color:#5dade2;font-size:20px">59.329 kg</div>
+      <div class="kpi-sub">R$/kg = 8,50</div>
+    </div>
+    <div class="kpi teal">
+      <div class="kpi-label">Prazo Médio Emissão NF</div>
+      <div class="kpi-value mono" style="color:#27ae60">1,4 d.u.</div>
+      <div class="kpi-sub">média geral</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="chart-card">
+      <div class="chart-title">📈 Histórico de SLA — Março/2026</div>
+      <div class="chart-container"><canvas id="chartHist" height="180"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">⏱ Distribuição de Atrasos por Faixa</div>
+      <div class="chart-container"><canvas id="chartFaixa" height="180"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-title">Resumo por Transportadora</div>
+  <div class="tbl-wrap tbl-scroll">
+    <table>
+      <thead><tr><th>Transportadora</th><th>Total Fat.</th><th>No Prazo</th><th>Em Atraso</th><th>% SLA</th><th style="width:160px">Barra SLA</th></tr></thead>
+      <tbody id="tbody-transp-visao"></tbody>
+    </table>
   </div>
 </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="showPage('visao',this)">Visão Geral</div>
-  <div class="tab" onclick="showPage('transportadoras',this)">Transportadoras</div>
-  <div class="tab" onclick="showPage('marketplaces',this)">Marketplaces</div>
-  <div class="tab" onclick="showPage('aberto',this)">Em Aberto</div>
-  <div class="tab" onclick="showPage('focco',this)">🌿 Peso Março</div>
-  <div class="tab" onclick="showPage('devolucoes',this)">🔄 Devoluções</div>
-  <div class="tab" onclick="showPage('cnpj',this)">🚫 CNPJ</div>
-  <div class="tab" onclick="showPage('dvd',this)">Dia vs Dia</div>
-</div>
-
-<!-- ═══════════ VISÃO GERAL ═══════════ -->
-<div class="page active" id="page-visao">
-  <div class="alert-banner">⚠ SLA em queda pela 5ª sessão consecutiva → <strong>95,32%</strong>. Tempo Justo <strong>91,16%</strong> — pior do período. Nova Era e RGE abaixo de 93%.</div>
-  <div class="info-banner">🔄 <span><strong>15 devoluções</strong> excluídas dos indicadores · <strong>2 pedidos CNPJ</strong> em aba separada · Correios e SC não computam</span></div>
-  <div class="kpi-strip">
-    <div class="kpi-card blue"><div class="kpi-label">Pedidos Faturados</div><div class="kpi-value">4.721</div><div class="kpi-sub">excl. <span class="kpi-pill pill-purp">15 devoluções</span></div></div>
-    <div class="kpi-card green"><div class="kpi-label">Entregas no Prazo</div><div class="kpi-value" style="color:var(--green)">4.500</div><div class="kpi-sub"><span class="kpi-pill pill-yellow">SLA 95,32%</span></div></div>
-    <div class="kpi-card red"><div class="kpi-label">Entregas em Atraso</div><div class="kpi-value" style="color:var(--red)">221</div><div class="kpi-sub">média 6,7d · máx <span class="kpi-pill pill-red">35 dias</span></div></div>
-    <div class="kpi-card orange"><div class="kpi-label">Em Aberto (S/Fat.)</div><div class="kpi-value" style="color:var(--orange)">220</div><div class="kpi-sub"><span class="kpi-pill pill-orange">R$ 220.615</span></div></div>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ABA 2 — TRANSPORTADORAS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-transp" class="page">
+  <div class="page-header">
+    <h1>SLA por Transportadora</h1>
+    <p>Sem Correios · Sem SC · Ref.: 30/03/2026</p>
   </div>
-  <div class="grid-3" style="margin-bottom:28px;">
-    <div class="chart-card" style="border-color:rgba(234,179,8,.3);">
-      <div class="chart-title">🎯 SLA do Dia — Meta ≥ 95%</div>
-      <div style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--yellow);margin-bottom:4px;">95,32%</div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">4.721 fat. · 221 atrasados</div>
-      <div class="prog-row"><div class="prog-label">Realizado</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:95.32%;background:var(--yellow);"></div></div><div class="prog-val" style="color:var(--yellow)">95,32%</div></div>
-      <div class="prog-row"><div class="prog-label">Meta 95%</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:95%;background:rgba(234,179,8,.2);"></div></div><div class="prog-val" style="color:var(--muted)">95,00%</div></div>
-      <div style="margin-top:12px;"><span class="tag tag-yellow">⚡ META ATINGIDA (MARGEM CRÍTICA)</span></div>
+  <div class="grid2">
+    <div class="chart-card">
+      <div class="chart-title">% SLA por Transportadora</div>
+      <div class="chart-container"><canvas id="chartTranspSla" height="260"></canvas></div>
     </div>
-    <div class="chart-card" style="border-color:rgba(74,222,128,.3);">
-      <div class="chart-title">🌿 Peso Março — FOCCO Real</div>
-      <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--focco);margin-bottom:4px;">1.194.020 kg</div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Peso bruto real · 10.088 NFs · 3 estados</div>
-      <div class="prog-row"><div class="prog-label">SP (38,19%)</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:var(--comp);"></div></div><div class="prog-val" style="color:var(--comp)">456.0k kg</div></div>
-      <div class="prog-row"><div class="prog-label">MG (31,49%)</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:82.4%;background:var(--focco);"></div></div><div class="prog-val" style="color:var(--focco)">376.0k kg</div></div>
-      <div class="prog-row"><div class="prog-label">RJ (30,29%)</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:79.4%;background:var(--teal);"></div></div><div class="prog-val" style="color:var(--teal)">361.7k kg</div></div>
-    </div>
-    <div class="chart-card" style="border-color:rgba(45,212,191,.3);">
-      <div class="chart-title">🕒 Emissão de Nota Fiscal</div>
-      <div style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--teal);margin-bottom:4px;">1,3 d.u.</div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Média geral</div>
-      <div class="prog-row"><div class="prog-label">RJ</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:75%;background:var(--orange);"></div></div><div class="prog-val" style="color:var(--orange)">1,5 d.u.</div></div>
-      <div class="prog-row"><div class="prog-label">MG</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:65%;background:var(--yellow);"></div></div><div class="prog-val" style="color:var(--yellow)">1,3 d.u.</div></div>
-      <div class="prog-row"><div class="prog-label">SP</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:55%;background:var(--green);"></div></div><div class="prog-val" style="color:var(--green)">1,1 d.u.</div></div>
-      <div style="margin-top:12px;"><span class="tag tag-yellow">⚠ ATENÇÃO (meta: ≤ 1 d.u.)</span></div>
+    <div class="chart-card">
+      <div class="chart-title">Atrasos por Transportadora (qtd.)</div>
+      <div class="chart-container"><canvas id="chartTranspAtrasos" height="260"></canvas></div>
     </div>
   </div>
-  <div class="grid-2">
-    <div class="chart-card"><div class="chart-title">📊 Distribuição de Atrasos por Faixa</div><div class="chart-wrap"><canvas id="faixaChart"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">🚚 SLA % por Transportadora (sem Correios)</div><div class="chart-wrap tall"><canvas id="transpSlaChart"></canvas></div></div>
+  <div class="tbl-wrap tbl-scroll">
+    <table>
+      <thead><tr><th>Transportadora</th><th>UF</th><th>Total Fat.</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th style="width:140px">Barra SLA</th></tr></thead>
+      <tbody id="tbody-transp-full"></tbody>
+    </table>
   </div>
 </div>
 
-<!-- ═══════════ TRANSPORTADORAS ═══════════ -->
-<div class="page" id="page-transportadoras">
-  <div class="kpi-strip">
-    <div class="kpi-card red"><div class="kpi-label">Nova Era · MG</div><div class="kpi-value" style="color:var(--red)">91,98%</div><div class="kpi-sub"><span class="kpi-pill pill-red">69 atrasos</span> · ▼ -11</div></div>
-    <div class="kpi-card red"><div class="kpi-label">Tempo Justo · SP ⚠ pior</div><div class="kpi-value" style="color:var(--red)">91,16%</div><div class="kpi-sub"><span class="kpi-pill pill-red">32 atrasos</span> · ▲ +5</div></div>
-    <div class="kpi-card red"><div class="kpi-label">RGE · MG</div><div class="kpi-value" style="color:var(--red)">92,98%</div><div class="kpi-sub"><span class="kpi-pill pill-red">59 atrasos</span> · ▼ -2</div></div>
-    <div class="kpi-card green"><div class="kpi-label">Getlar · RJ ✓</div><div class="kpi-value" style="color:var(--green)">98,91%</div><div class="kpi-sub"><span class="kpi-pill pill-green">7 atrasos</span></div></div>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ABA 3 — MARKETPLACES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-mkt" class="page">
+  <div class="page-header">
+    <h1>SLA por Marketplace</h1>
+    <p>Ref.: 30/03/2026 · Todos os canais</p>
   </div>
-  <div class="section-title">SLA e Volume de Atrasos</div>
-  <div class="chart-card" style="margin-bottom:20px;">
-    <div class="chart-title">Atrasos por Transportadora — com % SLA</div>
-    <div style="margin-top:8px;">
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--red)">NOVA ERA · MG</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:100%;background:var(--red);"></div></div><div class="mkt-val">69</div><div class="mkt-var"><span class="tag tag-red">91,98%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--red)">RGE · MG</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:85.5%;background:var(--red);"></div></div><div class="mkt-val">59</div><div class="mkt-var"><span class="tag tag-red">92,98%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--red)">TEMPO JUSTO · SP</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:46.4%;background:var(--orange);"></div></div><div class="mkt-val">32</div><div class="mkt-var"><span class="tag tag-red">91,16%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--yellow)">TRANS SUA LOG · SP</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:37.7%;background:var(--yellow);"></div></div><div class="mkt-val">26</div><div class="mkt-var"><span class="tag tag-yellow">95,16%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--yellow)">TS RJ · RJ</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:30.4%;background:var(--yellow);"></div></div><div class="mkt-val">21</div><div class="mkt-var"><span class="tag tag-green">97,08%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--green)">GETLAR · RJ</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:10.1%;background:var(--green);"></div></div><div class="mkt-val">7</div><div class="mkt-var"><span class="tag tag-green">98,91%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--accent)">TRANSBARBOSA · SP</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:8.7%;background:var(--accent);"></div></div><div class="mkt-val">6</div><div class="mkt-var"><span class="tag tag-green">98,67%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--teal)">MTC · SP</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.1%;background:var(--teal);"></div></div><div class="mkt-val">0</div><div class="mkt-var"><span class="tag tag-green">100%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--teal)">SOUL · MG</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.1%;background:var(--teal);"></div></div><div class="mkt-val">0</div><div class="mkt-var"><span class="tag tag-green">100%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--teal)">TRANS EXPRESS · RJ</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.1%;background:var(--teal);"></div></div><div class="mkt-val">0</div><div class="mkt-var"><span class="tag tag-green">100%</span></div></div>
+  <div class="grid2">
+    <div class="chart-card">
+      <div class="chart-title">% SLA por Canal</div>
+      <div class="chart-container"><canvas id="chartMktSla" height="260"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Volume de Pedidos Faturados por Canal</div>
+      <div class="chart-container"><canvas id="chartMktVol" height="260"></canvas></div>
     </div>
   </div>
-  <div class="section-title">Tabela Completa</div>
-  <div class="chart-card">
-    <table class="data-table">
-      <thead><tr><th>Transportadora · UF</th><th class="r">Faturados</th><th class="r">No Prazo</th><th class="r">Atrasados</th><th class="c">% Atraso</th><th class="c">% SLA</th><th class="c">vs. 26/03</th></tr></thead>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Marketplace</th><th>Total Fat.</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th style="width:140px">Barra SLA</th></tr></thead>
+      <tbody id="tbody-mkt"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ABA 4 — EM ABERTO -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-aberto" class="page">
+  <div class="page-header">
+    <h1>Pedidos em Aberto — Sem Faturamento</h1>
+    <p>Sem Correios · Sem SC · Ref.: 30/03/2026</p>
+  </div>
+  <div class="kpi-row cols5">
+    <div class="kpi warn">
+      <div class="kpi-label">Total em Aberto</div>
+      <div class="kpi-value mono" style="color:#e6a817">501</div>
+    </div>
+    <div class="kpi warn">
+      <div class="kpi-label">Valor Total</div>
+      <div class="kpi-value mono" style="font-size:18px;color:#e6a817">R$ 504.298</div>
+    </div>
+    <div class="kpi accent">
+      <div class="kpi-label">Vencidos + Críticos</div>
+      <div class="kpi-value mono" style="color:#e74c3c">1</div>
+    </div>
+    <div class="kpi warn">
+      <div class="kpi-label">Em Alerta (4-7d)</div>
+      <div class="kpi-value mono" style="color:#e6a817">0</div>
+    </div>
+    <div class="kpi teal">
+      <div class="kpi-label">Em Atenção (8-14d)</div>
+      <div class="kpi-value mono" style="color:#5dade2">5</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="chart-card">
+      <div class="chart-title">Em Aberto por Marketplace</div>
+      <div class="chart-container"><canvas id="chartSfMkt" height="220"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">⚖️ Peso Estimado em Aberto por UF (est. R$/kg 8,50)</div>
+      <div class="chart-container"><canvas id="chartSfUf" height="220"></canvas></div>
+    </div>
+  </div>
+  <div class="section-title">Detalhamento por Marketplace</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Marketplace</th><th>Total em Aberto</th><th>Venc./Crít.</th><th>Próx. Prazo</th><th>Valor Total (R$)</th></tr></thead>
       <tbody>
-        <tr><td><span style="color:var(--red);font-weight:600;">NOVA ERA</span> <span style="color:var(--muted);font-size:.72rem;">· MG</span></td><td class="r">860</td><td class="r">791</td><td class="r">69</td><td class="c">8,02%</td><td class="c"><span class="tag tag-red">91,98%</span></td><td class="c"><span class="tag tag-green">▼ -11</span></td></tr>
-        <tr><td><span style="color:var(--red);font-weight:600;">RGE</span> <span style="color:var(--muted);font-size:.72rem;">· MG</span></td><td class="r">841</td><td class="r">782</td><td class="r">59</td><td class="c">7,02%</td><td class="c"><span class="tag tag-red">92,98%</span></td><td class="c"><span class="tag tag-green">▼ -2</span></td></tr>
-        <tr><td><span style="color:var(--red);font-weight:600;">TEMPO JUSTO ⚠ pior</span> <span style="color:var(--muted);font-size:.72rem;">· SP</span></td><td class="r">362</td><td class="r">330</td><td class="r">32</td><td class="c">8,84%</td><td class="c"><span class="tag tag-red">91,16%</span></td><td class="c"><span class="tag tag-red">▲ +5</span></td></tr>
-        <tr><td><span style="color:var(--yellow);">TRANS SUA LOG</span> <span style="color:var(--muted);font-size:.72rem;">· SP</span></td><td class="r">537</td><td class="r">511</td><td class="r">26</td><td class="c">4,84%</td><td class="c"><span class="tag tag-yellow">95,16%</span></td><td class="c"><span class="tag tag-green">▼ -5</span></td></tr>
-        <tr><td><span style="color:var(--yellow);">TS RJ</span> <span style="color:var(--muted);font-size:.72rem;">· RJ</span></td><td class="r">718</td><td class="r">697</td><td class="r">21</td><td class="c">2,92%</td><td class="c"><span class="tag tag-green">97,08%</span></td><td class="c"><span class="tag tag-blue">→ 0</span></td></tr>
-        <tr><td><span style="color:var(--green);">GETLAR</span> <span style="color:var(--muted);font-size:.72rem;">· RJ</span></td><td class="r">641</td><td class="r">634</td><td class="r">7</td><td class="c">1,09%</td><td class="c"><span class="tag tag-green">98,91%</span></td><td class="c"><span class="tag tag-blue">→ 0</span></td></tr>
-        <tr><td><span style="color:var(--accent);">TRANSBARBOSA</span> <span style="color:var(--muted);font-size:.72rem;">· SP</span></td><td class="r">452</td><td class="r">446</td><td class="r">6</td><td class="c">1,33%</td><td class="c"><span class="tag tag-green">98,67%</span></td><td class="c"><span class="tag tag-green">▼ -7</span></td></tr>
-        <tr><td><span style="color:var(--teal);">MTC</span> <span style="color:var(--muted);font-size:.72rem;">· SP</span></td><td class="r">93</td><td class="r">93</td><td class="r">0</td><td class="c">0,00%</td><td class="c"><span class="tag tag-green">100%</span></td><td class="c"><span class="tag tag-blue">→ 0</span></td></tr>
-        <tr><td><span style="color:var(--teal);">SOUL</span> <span style="color:var(--muted);font-size:.72rem;">· MG</span></td><td class="r">96</td><td class="r">96</td><td class="r">0</td><td class="c">0,00%</td><td class="c"><span class="tag tag-green">100%</span></td><td class="c"><span class="tag tag-blue">→ 0</span></td></tr>
-        <tr><td><span style="color:var(--teal);">TRANS EXPRESS</span> <span style="color:var(--muted);font-size:.72rem;">· RJ</span></td><td class="r">108</td><td class="r">108</td><td class="r">0</td><td class="c">0,00%</td><td class="c"><span class="tag tag-green">100%</span></td><td class="c"><span class="tag tag-blue">→ 0</span></td></tr>
-        <tr class="total-row"><td>TOTAL (sem devoluções)</td><td class="r">4.721</td><td class="r">4.500</td><td class="r">221</td><td class="c">4,68%</td><td class="c">95,32%</td><td class="c">—</td></tr>
+        <tr><td>Shopee</td><td class="mono">324</td><td><span class="badge badge-green">0</span></td><td class="mono">16/04/2026</td><td class="mono">R$ 333.047,00</td></tr>
+        <tr><td>Mercado Livre</td><td class="mono">94</td><td><span class="badge badge-red">1</span></td><td class="mono">01/04/2026</td><td class="mono">R$ 83.528,87</td></tr>
+        <tr><td>Magazine Luiza</td><td class="mono">65</td><td><span class="badge badge-green">0</span></td><td class="mono">13/04/2026</td><td class="mono">R$ 70.043,58</td></tr>
+        <tr><td>Via Varejo</td><td class="mono">13</td><td><span class="badge badge-green">0</span></td><td class="mono">17/04/2026</td><td class="mono">R$ 12.448,20</td></tr>
+        <tr><td>Madeira Madeira</td><td class="mono">5</td><td><span class="badge badge-green">0</span></td><td class="mono">16/04/2026</td><td class="mono">R$ 5.230,51</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section-title">Peso em Aberto por UF</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>UF</th><th>Pedidos</th><th>Valor (R$)</th><th>Peso Est. (kg)</th><th>% do Total</th><th>Médio/Pedido (kg)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SP</strong></td><td class="mono">185</td><td class="mono">R$ 191.934,81</td><td class="mono">22.580,6</td><td><span class="badge badge-green">38,1%</span></td><td class="mono">122,1</td></tr>
+        <tr><td><strong>RJ</strong></td><td class="mono">168</td><td class="mono">R$ 164.242,43</td><td class="mono">19.322,6</td><td><span class="badge badge-yellow">32,6%</span></td><td class="mono">115,0</td></tr>
+        <tr><td><strong>MG</strong></td><td class="mono">148</td><td class="mono">R$ 148.120,92</td><td class="mono">17.426,0</td><td><span class="badge badge-yellow">29,4%</span></td><td class="mono">117,7</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- ═══════════ MARKETPLACES ═══════════ -->
-<div class="page" id="page-marketplaces">
-  <div class="kpi-strip">
-    <div class="kpi-card orange"><div class="kpi-label">Shopee · Maior Volume</div><div class="kpi-value" style="color:var(--orange)">97,17%</div><div class="kpi-sub"><span class="kpi-pill pill-red">78 atrasos</span> · 2.755 fat.</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">Magazine Luiza</div><div class="kpi-value" style="color:var(--accent)">93,20%</div><div class="kpi-sub"><span class="kpi-pill pill-red">74 atrasos</span> · 1.088 fat.</div></div>
-    <div class="kpi-card yellow"><div class="kpi-label">Mercado Livre</div><div class="kpi-value" style="color:var(--yellow)">92,03%</div><div class="kpi-sub"><span class="kpi-pill pill-red">59 atrasos</span> · 740 fat.</div></div>
-    <div class="kpi-card purple"><div class="kpi-label">Web Continental ⚠</div><div class="kpi-value" style="color:var(--purp)">88,89%</div><div class="kpi-sub"><span class="kpi-pill pill-red">1 de 9</span></div></div>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ABA 5 — PESO MARÇO (FOCCO) -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-focco" class="page">
+  <div class="focco-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
+    <div>
+      <div class="focco-title">🌿 Peso Março/2026 — FOCCO</div>
+      <div class="focco-sub">Peso Bruto Real (PESO BRT) · Excluídos: Correios, SC, auxiliares · 30/03/2026</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:4px">TOTAL KG TRANSPORTADO</div>
+      <div class="focco-total">1.213.899 kg</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:4px">10 transp · 10.164 NFs · R$ VLR</div>
+    </div>
   </div>
-  <div class="grid-2">
-    <div class="chart-card"><div class="chart-title">📊 Atrasos por Marketplace</div><div class="chart-wrap"><canvas id="mktAtrasoChart"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">🔵 Distribuição de Faturados</div><div class="chart-wrap"><canvas id="mktFatChart"></canvas></div></div>
+
+  <div class="section-title">📊 Seção 1 — Representatividade Geral</div>
+  <div class="chart-card">
+    <div class="chart-title">Peso Bruto por Transportadora (kg)</div>
+    <div class="chart-container"><canvas id="chartFoccoGeral" height="200"></canvas></div>
+  </div>
+  <div class="tbl-wrap tbl-scroll">
+    <table>
+      <thead><tr><th>Pos.</th><th>Transportadora</th><th>NFs</th><th>Peso Bruto (kg)</th><th>% no Geral</th><th>% Acumulado</th><th style="width:160px">Representatividade</th></tr></thead>
+      <tbody id="tbody-focco-geral"></tbody>
+    </table>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">🗺️ Seção 2 — Peso por Estado</div>
+  <div class="grid3">
+    <div class="kpi" style="border-color:rgba(92,58,16,.6);background:rgba(92,58,16,.15)">
+      <div class="kpi-label" style="color:#e8a84f">São Paulo · SP</div>
+      <div class="kpi-value mono" style="color:#e8a84f;font-size:22px">459.132 kg</div>
+      <div class="kpi-sub">37,82% do total · 4 transp</div>
+    </div>
+    <div class="kpi" style="border-color:rgba(30,77,10,.6);background:rgba(30,77,10,.15)">
+      <div class="kpi-label" style="color:#aade66">Minas Gerais · MG</div>
+      <div class="kpi-value mono" style="color:#aade66;font-size:22px">387.187 kg</div>
+      <div class="kpi-sub">31,90% do total · 3 transp</div>
+    </div>
+    <div class="kpi" style="border-color:rgba(26,58,92,.6);background:rgba(26,58,92,.15)">
+      <div class="kpi-label" style="color:#5dade2">Rio de Janeiro · RJ</div>
+      <div class="kpi-value mono" style="color:#5dade2;font-size:22px">367.294 kg</div>
+      <div class="kpi-sub">30,26% do total · 3 transp</div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Distribuição de Peso por Estado (%)</div>
+    <div class="chart-container" style="max-width:400px;margin:0 auto"><canvas id="chartFoccoUf" height="240"></canvas></div>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">🚚 Seção 3 — Representatividade por Estado</div>
+  <div class="grid3" id="focco-uf-grid"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ABA 6 — DEVOLUÇÕES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-dev" class="page">
+  <div class="page-header">
+    <h1>Pedidos em Devolução</h1>
+    <p>Base do dia 30/03/2026 · Excluídos dos indicadores de SLA</p>
+  </div>
+  <div class="kpi-row cols3">
+    <div class="kpi" style="border-color:rgba(74,26,122,.4);background:rgba(74,26,122,.1)">
+      <div class="kpi-label" style="color:#cc88ff">NFs na lista de devolução</div>
+      <div class="kpi-value mono" style="color:#cc88ff">41</div>
+      <div class="kpi-sub">total na planilha de devoluções</div>
+    </div>
+    <div class="kpi" style="border-color:rgba(74,26,122,.4);background:rgba(74,26,122,.1)">
+      <div class="kpi-label" style="color:#cc88ff">Encontradas na base do dia</div>
+      <div class="kpi-value mono" style="color:#cc88ff">17</div>
+      <div class="kpi-sub">excluídas dos indicadores</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Não encontradas (já canceladas)</div>
+      <div class="kpi-value mono" style="color:var(--muted)">24</div>
+      <div class="kpi-sub">NFs ausentes na base</div>
+    </div>
+  </div>
+  <div class="info-note">ℹ️ Apenas os pedidos presentes na base do dia são exibidos. NFs não encontradas presumivelmente já foram canceladas ou baixadas do sistema.</div>
+  <div class="dev-header">🔄 Pedidos em Devolução — Presentes na Base (17)</div>
+  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px">
+    <table>
+      <thead><tr><th>Nº NF</th><th>Marketplace</th><th>Cliente</th><th>Código Pedido</th><th>UF</th></tr></thead>
+      <tbody id="tbody-dev"></tbody>
+    </table>
   </div>
 </div>
 
-<!-- ═══════════ EM ABERTO ═══════════ -->
-<div class="page" id="page-aberto">
-  <div class="kpi-strip">
-    <div class="kpi-card orange"><div class="kpi-label">Total em Aberto</div><div class="kpi-value" style="color:var(--orange)">220</div><div class="kpi-sub"><span class="kpi-pill pill-green">▼ -23</span> vs. 26/03</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">Valor em Produtos</div><div class="kpi-value" style="color:var(--accent)">R$ 221K</div><div class="kpi-sub"><span class="kpi-pill pill-green">▼ -R$ 19K</span></div></div>
-    <div class="kpi-card teal"><div class="kpi-label">Peso Estimado</div><div class="kpi-value" style="color:var(--teal)">25.955 kg</div><div class="kpi-sub"><span class="kpi-pill pill-green">▼ -2.202 kg</span></div></div>
-    <div class="kpi-card green"><div class="kpi-label">Urgentes (≤ 7d)</div><div class="kpi-value" style="color:var(--green)">0</div><div class="kpi-sub">0 vencidos · 0 críticos · 2 atenção</div></div>
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ABA 7 — CNPJ -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-cnpj" class="page">
+  <div class="page-header">
+    <h1>Pedidos CNPJ — A Cancelar</h1>
+    <p>Ref.: 30/03/2026 · Separados dos indicadores</p>
   </div>
-  <div class="grid-2">
-    <div class="chart-card"><div class="chart-title">⚖ Peso em Aberto por UF</div><div class="chart-wrap"><canvas id="pesoUfChart"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">🚦 Urgência dos Pedidos em Aberto</div>
-      <div style="padding:20px 0;">
-        <div class="prog-row" style="margin-bottom:16px;"><div class="prog-label">Atenção (8-14d)</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:.9%;background:var(--yellow);"></div></div><div class="prog-val" style="color:var(--yellow)">2</div></div>
-        <div class="prog-row"><div class="prog-label">OK (&gt;14d)</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:var(--green);"></div></div><div class="prog-val" style="color:var(--green)">218</div></div>
-        <div style="margin-top:20px;padding:14px 16px;background:var(--bg3);border-radius:10px;font-family:'DM Mono',monospace;font-size:.82rem;color:var(--green);font-weight:700;">✓ 99,1% em prazo OK — sem urgências críticas</div>
+  <div class="kpi-row cols3">
+    <div class="kpi accent">
+      <div class="kpi-label">Pedidos CNPJ a Cancelar</div>
+      <div class="kpi-value mono" style="color:#e74c3c">5</div>
+      <div class="kpi-sub">presentes na base do dia</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Na lista de cancelamento</div>
+      <div class="kpi-value mono">10</div>
+      <div class="kpi-sub">total na planilha</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Não encontrados</div>
+      <div class="kpi-value mono" style="color:var(--muted)">5</div>
+      <div class="kpi-sub">ausentes na base atual</div>
+    </div>
+  </div>
+  <div class="info-note">⚠️ Estes pedidos foram separados dos indicadores de SLA e devem ser cancelados. Verifique com a equipe comercial antes de cancelar.</div>
+  <div class="section-title">Lista de Cancelamento (planilha)</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Código do Pedido</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1</td><td class="mono">S-46597234309</td></tr>
+        <tr><td class="mono">2</td><td class="mono">S-46640401089</td></tr>
+        <tr><td class="mono">3</td><td class="mono">2000015531344294</td></tr>
+        <tr><td class="mono">4</td><td class="mono">2000015591523456</td></tr>
+        <tr><td class="mono">5</td><td class="mono">2000012213461717</td></tr>
+        <tr><td class="mono">6</td><td class="mono">577303</td></tr>
+        <tr><td class="mono">7</td><td class="mono">S-46702819711</td></tr>
+        <tr><td class="mono">8</td><td class="mono">2000015662333224</td></tr>
+        <tr><td class="mono">9</td><td class="mono">S-46725546562</td></tr>
+        <tr><td class="mono">10</td><td class="mono">9584020</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ABA 8 — DIA vs DIA -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="page-dvd" class="page">
+  <div class="page-header">
+    <h1>Comparativo Dia vs Dia</h1>
+    <p>27/03/2026 × 30/03/2026 · Easy House · Sem Correios · Sem SC</p>
+  </div>
+
+  <div class="section-title">📊 KPIs Gerais</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Indicador</th><th>27/03/2026</th><th>30/03/2026</th><th>Variação</th></tr></thead>
+      <tbody id="tbody-dvd-kpi"></tbody>
+    </table>
+  </div>
+
+  <div class="section-title">⚠️ Em Aberto</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Indicador</th><th>27/03/2026</th><th>30/03/2026</th><th>Variação</th></tr></thead>
+      <tbody id="tbody-dvd-sf"></tbody>
+    </table>
+  </div>
+
+  <div class="section-title">🚚 Atrasos por Transportadora</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Transportadora</th><th>Atrasos 27/03</th><th>Atrasos 30/03</th><th>Variação</th><th>% SLA 30/03</th></tr></thead>
+      <tbody id="tbody-dvd-transp"></tbody>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <div class="section-title">📦 SLA por Marketplace</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Marketplace</th><th>SLA 27/03</th><th>SLA 30/03</th><th>Var.</th></tr></thead>
+          <tbody id="tbody-dvd-mkt"></tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">⏱ Faixas de Atraso</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Faixa</th><th>27/03</th><th>30/03</th><th>Var.</th></tr></thead>
+          <tbody id="tbody-dvd-faixa"></tbody>
+        </table>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ═══════════ 🌿 PESO MARÇO (FOCCO REAL) ═══════════ -->
-<div class="page" id="page-focco">
-  <div class="focco-banner">🌿 <span><strong>Peso Março/2026 — Dados Reais FOCCO</strong> · Relatório Logística 023 · Campo: PESO BRT (peso bruto) · Excluídos: Correios, SC e auxiliares · Total: <strong>1.194.020 kg</strong> · 10.088 NFs · R$ 8.013.796,58 valor líquido</span></div>
-
-  <div class="kpi-strip">
-    <div class="kpi-card focco"><div class="kpi-label">Total KG Bruto — Março</div><div class="kpi-value" style="color:var(--focco)">1.194.020</div><div class="kpi-sub">kg · peso bruto real FOCCO</div></div>
-    <div class="kpi-card focco"><div class="kpi-label">Maior Parceiro (Geral)</div><div class="kpi-value" style="color:var(--focco)">16,66%</div><div class="kpi-sub">RGE · MG · 198.886 kg</div></div>
-    <div class="kpi-card purple"><div class="kpi-label">SP — Maior Estado</div><div class="kpi-value" style="color:var(--comp)">38,19%</div><div class="kpi-sub">455.999 kg · 4 transportadoras</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">NFs no mês</div><div class="kpi-value" style="color:var(--accent)">10.088</div><div class="kpi-sub">3 estados (SP · MG · RJ)</div></div>
-  </div>
-
-  <div class="section-title">Seção 1 — Representatividade Geral (Peso Bruto Real)</div>
-  <div class="grid-2">
-    <div class="chart-card">
-      <div class="chart-title">% do Total de KG por Transportadora</div>
-      <div style="margin-top:8px;">
-        <div class="mkt-row"><div class="mkt-name" style="color:var(--focco)">RGE · MG</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:100%;background:var(--focco);"></div></div><div class="mkt-val" style="color:var(--focco);font-weight:700;">16,66%</div></div>
-        <div class="mkt-row"><div class="mkt-name" style="color:var(--teal)">GETLAR · RJ</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:92.3%;background:var(--teal);"></div></div><div class="mkt-val" style="color:var(--teal);font-weight:700;">15,37%</div></div>
-        <div class="mkt-row"><div class="mkt-name" style="color:var(--comp)">TRANSBARBOSA · SP</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:90.5%;background:var(--comp);"></div></div><div class="mkt-val" style="color:var(--comp);font-weight:700;">15,08%</div></div>
-        <div class="mkt-row"><div class="mkt-name" style="color:var(--focco)">NOVA ERA · MG</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:80.5%;background:var(--focco);opacity:.7;"></div></div><div class="mkt-val" style="color:var(--focco);font-weight:700;">13,41%</div></div>
-        <div class="mkt-row"><div class="mkt-name" style="color:var(--accent)">TS RJ · RJ</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:80.0%;background:var(--accent);"></div></div><div class="mkt-val" style="color:var(--accent);font-weight:700;">13,33%</div></div>
-        <div class="mkt-row"><div class="mkt-name" style="color:var(--yellow)">TRANS SUA LOG · SP</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:64.9%;background:var(--yellow);"></div></div><div class="mkt-val" style="color:var(--yellow);font-weight:700;">10,83%</div></div>
-        <div class="mkt-row"><div class="mkt-name" style="color:var(--orange)">TEMPO JUSTO · SP</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:64.6%;background:var(--orange);"></div></div><div class="mkt-val" style="color:var(--orange);font-weight:700;">10,77%</div></div>
-        <div class="mkt-row"><div class="mkt-name" style="color:var(--muted)">SOUL · MG</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:9.3%;background:var(--muted);"></div></div><div class="mkt-val" style="color:var(--muted);">1,55%</div></div>
-        <div class="mkt-row"><div class="mkt-name" style="color:var(--muted)">MTC · SP</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:9.1%;background:var(--muted);opacity:.8;"></div></div><div class="mkt-val" style="color:var(--muted);">1,51%</div></div>
-        <div class="mkt-row"><div class="mkt-name" style="color:var(--muted)">TRANS EXPRESS · RJ</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:9.0%;background:var(--muted);opacity:.6;"></div></div><div class="mkt-val" style="color:var(--muted);">1,50%</div></div>
-      </div>
-    </div>
-    <div class="chart-card"><div class="chart-title">Distribuição de KG por Transportadora</div><div class="chart-wrap"><canvas id="foccoGeral"></canvas></div></div>
-  </div>
-
-  <div class="section-title">Seção 2 — Peso Bruto por Estado</div>
-  <div class="axo-grid" style="grid-template-columns:repeat(3,1fr);">
-    <div class="axo-card" style="border-color:rgba(129,140,248,.3);"><div class="axo-label">SP — São Paulo · 1º</div><div class="axo-val" style="color:var(--comp);">455.999 kg</div><div style="font-size:.75rem;color:var(--muted);margin-top:4px;">38,19% do total · 4 transportadoras</div></div>
-    <div class="axo-card" style="border-color:rgba(74,222,128,.3);"><div class="axo-label">MG — Minas Gerais · 2º</div><div class="axo-val" style="color:var(--focco);">376.032 kg</div><div style="font-size:.75rem;color:var(--muted);margin-top:4px;">31,49% do total · 3 transportadoras</div></div>
-    <div class="axo-card" style="border-color:rgba(45,212,191,.3);"><div class="axo-label">RJ — Rio de Janeiro · 3º</div><div class="axo-val" style="color:var(--teal);">361.703 kg</div><div style="font-size:.75rem;color:var(--muted);margin-top:4px;">30,29% do total · 4 transportadoras</div></div>
-  </div>
-
-  <div class="section-title">Seção 3 — Representatividade dentro de cada Estado</div>
-  <div class="chart-card" style="margin-bottom:20px;">
-    <div class="chart-title">% de cada transportadora no estado em que atua</div>
-    <div class="chart-wrap xtall"><canvas id="foccoEstado"></canvas></div>
-  </div>
-
-  <!-- SP -->
-  <div style="margin-bottom:16px;">
-    <div class="uf-header-row" style="background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);">
-      <div class="uf-title" style="color:var(--comp);">SP — São Paulo · 455.999 kg · 38,19%</div><div class="uf-meta">4 transportadoras · 3.927 NFs</div>
-    </div>
-    <div class="chart-card">
-      <table class="data-table">
-        <thead><tr><th>Transportadora</th><th class="r">NFs</th><th class="r">Peso Bruto (kg)</th><th class="c">% no SP</th><th class="c">% no Geral</th></tr></thead>
-        <tbody>
-          <tr><td style="color:var(--comp);font-weight:600;">TRANSBARBOSA</td><td class="r">1.602</td><td class="r">180.114,37</td><td class="c"><span class="tag tag-focco">39,50%</span></td><td class="c"><span class="tag tag-yellow">15,08%</span></td></tr>
-          <tr><td style="color:var(--yellow);">TRANS SUA LOG</td><td class="r">1.043</td><td class="r">129.252,91</td><td class="c"><span class="tag tag-focco">28,34%</span></td><td class="c"><span class="tag tag-yellow">10,83%</span></td></tr>
-          <tr><td style="color:var(--orange);">TEMPO JUSTO</td><td class="r">1.115</td><td class="r">128.603,67</td><td class="c"><span class="tag tag-blue">28,20%</span></td><td class="c"><span class="tag tag-yellow">10,77%</span></td></tr>
-          <tr><td style="color:var(--muted);">MTC</td><td class="r">167</td><td class="r">18.028,28</td><td class="c"><span class="tag tag-blue">3,95%</span></td><td class="c" style="color:var(--muted)">1,51%</td></tr>
-          <tr class="total-row"><td>TOTAL SP</td><td class="r">3.927</td><td class="r">455.999,24</td><td class="c">100%</td><td class="c">38,19%</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- MG -->
-  <div style="margin-bottom:16px;">
-    <div class="uf-header-row" style="background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);">
-      <div class="uf-title" style="color:var(--focco);">MG — Minas Gerais · 376.032 kg · 31,49%</div><div class="uf-meta">3 transportadoras · 3.159 NFs</div>
-    </div>
-    <div class="chart-card">
-      <table class="data-table">
-        <thead><tr><th>Transportadora</th><th class="r">NFs</th><th class="r">Peso Bruto (kg)</th><th class="c">% no MG</th><th class="c">% no Geral</th></tr></thead>
-        <tbody>
-          <tr><td style="color:var(--focco);font-weight:600;">RGE</td><td class="r">1.579</td><td class="r">198.886,36</td><td class="c"><span class="tag tag-focco">52,89%</span></td><td class="c"><span class="tag tag-yellow">16,66%</span></td></tr>
-          <tr><td style="color:var(--focco);">NOVA ERA</td><td class="r">1.425</td><td class="r">158.663,73</td><td class="c"><span class="tag tag-focco">42,19%</span></td><td class="c"><span class="tag tag-yellow">13,29%</span></td></tr>
-          <tr><td style="color:var(--muted);">SOUL</td><td class="r">155</td><td class="r">18.481,72</td><td class="c"><span class="tag tag-blue">4,91%</span></td><td class="c" style="color:var(--muted)">1,55%</td></tr>
-          <tr class="total-row"><td>TOTAL MG</td><td class="r">3.159</td><td class="r">376.031,81</td><td class="c">100%</td><td class="c">31,49%</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- RJ -->
-  <div style="margin-bottom:16px;">
-    <div class="uf-header-row" style="background:rgba(45,212,191,.07);border:1px solid rgba(45,212,191,.2);">
-      <div class="uf-title" style="color:var(--teal);">RJ — Rio de Janeiro · 361.703 kg · 30,29%</div><div class="uf-meta">4 transportadoras · 2.954 NFs</div>
-    </div>
-    <div class="chart-card">
-      <table class="data-table">
-        <thead><tr><th>Transportadora</th><th class="r">NFs</th><th class="r">Peso Bruto (kg)</th><th class="c">% no RJ</th><th class="c">% no Geral</th></tr></thead>
-        <tbody>
-          <tr><td style="color:var(--teal);font-weight:600;">GETLAR</td><td class="r">1.535</td><td class="r">183.570,67</td><td class="c"><span class="tag tag-focco">50,75%</span></td><td class="c"><span class="tag tag-yellow">15,37%</span></td></tr>
-          <tr><td style="color:var(--accent);">TS RJ</td><td class="r">1.275</td><td class="r">159.148,13</td><td class="c"><span class="tag tag-focco">44,00%</span></td><td class="c"><span class="tag tag-yellow">13,33%</span></td></tr>
-          <tr><td style="color:var(--muted);">TRANS EXPRESS</td><td class="r">136</td><td class="r">17.853,83</td><td class="c"><span class="tag tag-blue">4,94%</span></td><td class="c" style="color:var(--muted)">1,50%</td></tr>
-          <tr><td style="color:var(--muted);">NOVA ERA *</td><td class="r">8</td><td class="r">1.130,80</td><td class="c"><span class="tag tag-blue">0,31%</span></td><td class="c" style="color:var(--muted)">0,09%</td></tr>
-          <tr class="total-row"><td>TOTAL RJ</td><td class="r">2.954</td><td class="r">361.703,43</td><td class="c">100%</td><td class="c">30,29%</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ DEVOLUÇÕES ═══════════ -->
-<div class="page" id="page-devolucoes">
-  <div class="info-banner">🔄 <strong>15 devoluções confirmadas na base 27/03</strong> · +5 novas vs. 26/03 (TS RJ 3, RGE 2)</div>
-  <div class="kpi-strip">
-    <div class="kpi-card dev"><div class="kpi-label">Devoluções hoje</div><div class="kpi-value" style="color:var(--dev)">15</div><div class="kpi-sub"><span class="kpi-pill pill-red">▲ +5</span> vs. 26/03</div></div>
-    <div class="kpi-card yellow"><div class="kpi-label">Novas entradas</div><div class="kpi-value" style="color:var(--yellow)">5</div><div class="kpi-sub">TS RJ (3) + RGE (2)</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">Excluídas do SLA</div><div class="kpi-value" style="color:var(--accent)">15</div><div class="kpi-sub">não contam em nenhum indicador</div></div>
-    <div class="kpi-card focco"><div class="kpi-label">Transportadoras</div><div class="kpi-value" style="color:var(--focco)">5</div><div class="kpi-sub">RGE · Transbarb. · Trans Sua · Nova Era · TS RJ</div></div>
-  </div>
+  <div class="section-title">🌿 Peso FOCCO — Evolução 27/03 → 30/03</div>
   <div class="chart-card">
-    <table class="dev-table">
-      <thead><tr><th>Código Pedido</th><th>NF</th><th>Transportadora · UF</th><th class="c">Novo?</th></tr></thead>
-      <tbody>
-        <tr><td>S-46405684731</td><td>33263</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">TRANS SUA LOG · SP</span></td><td class="c">—</td></tr>
-        <tr><td>557196</td><td>35202</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">NOVA ERA · MG</span></td><td class="c">—</td></tr>
-        <tr><td>LU-1511170099257065-1</td><td>37481</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">RGE · MG</span></td><td class="c">—</td></tr>
-        <tr><td>260212FJ1RWE21</td><td>38115</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">TRANSBARBOSA · SP</span></td><td class="c">—</td></tr>
-        <tr><td>LU-1511570099449795-1</td><td>38311</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">RGE · MG</span></td><td class="c"><span class="tag tag-focco">NOVA</span></td></tr>
-        <tr><td>LU-1511770099529564-1</td><td>38578</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">RGE · MG</span></td><td class="c"><span class="tag tag-focco">NOVA</span></td></tr>
-        <tr><td>260213KP1Q4G87</td><td>38801</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">TS RJ · RJ</span></td><td class="c"><span class="tag tag-focco">NOVA</span></td></tr>
-        <tr><td>S-46464774259</td><td>38780</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">TS RJ · RJ</span></td><td class="c"><span class="tag tag-focco">NOVA</span></td></tr>
-        <tr><td>LU-1512770099828871-1</td><td>45486</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">TRANSBARBOSA · SP</span></td><td class="c">—</td></tr>
-        <tr><td>2000015180403512</td><td>40528</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">RGE · MG</span></td><td class="c"><span class="tag tag-focco">NOVA</span></td></tr>
-        <tr><td>2602195VVEE4E9</td><td>40778</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">TRANS SUA LOG · SP</span></td><td class="c">—</td></tr>
-        <tr><td>26022079MBM1SU</td><td>40863</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">TS RJ · RJ</span></td><td class="c"><span class="tag tag-focco">NOVA</span></td></tr>
-        <tr><td>260305AK7D5N2N</td><td>51068</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">TRANSBARBOSA · SP</span></td><td class="c">—</td></tr>
-        <tr><td>2000015432314112</td><td>53395</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">RGE · MG</span></td><td class="c">—</td></tr>
-        <tr><td>2000015651664096</td><td>67936</td><td><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev);">NOVA ERA · MG</span></td><td class="c">—</td></tr>
-      </tbody>
+    <div class="chart-title">Peso Bruto por Transportadora (kg) — Comparativo</div>
+    <div class="chart-container"><canvas id="chartDvdFocco" height="240"></canvas></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Transportadora</th><th>kg 27/03</th><th>kg 30/03</th><th>Variação</th></tr></thead>
+      <tbody id="tbody-dvd-focco"></tbody>
     </table>
-  </div>
-</div>
-
-<!-- ═══════════ CNPJ ═══════════ -->
-<div class="page" id="page-cnpj">
-  <div class="kpi-strip">
-    <div class="kpi-card orange"><div class="kpi-label">Total CNPJ a Cancelar</div><div class="kpi-value" style="color:var(--orange)">2</div><div class="kpi-sub">Mercado Livre · S/NF</div></div>
-    <div class="kpi-card green"><div class="kpi-label">vs. 26/03</div><div class="kpi-value" style="color:var(--green)">▼ -2</div><div class="kpi-sub">eram 4 pedidos</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">S/Fat. Real</div><div class="kpi-value" style="color:var(--accent)">220</div><div class="kpi-sub">excluídos os 2 CNPJ</div></div>
-    <div class="kpi-card yellow"><div class="kpi-label">Situação</div><div class="kpi-value" style="color:var(--muted)">S/NF</div><div class="kpi-sub">aguardando cancelamento</div></div>
-  </div>
-  <div class="chart-card">
-    <table class="dev-table" style="--dev:var(--orange);">
-      <thead style="background:rgba(249,115,22,.12);"><tr><th style="color:var(--orange);">Código do Pedido</th><th style="color:var(--orange);">Canal</th><th style="color:var(--orange);" class="c">Ação</th></tr></thead>
-      <tbody>
-        <tr><td style="color:var(--orange);">2000015531344294</td><td>Mercado Livre</td><td class="c"><span class="tag tag-orange">CANCELAR</span></td></tr>
-        <tr><td style="color:var(--orange);">2000015591523456</td><td>Mercado Livre</td><td class="c"><span class="tag tag-orange">CANCELAR</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ═══════════ DIA vs DIA ═══════════ -->
-<div class="page" id="page-dvd">
-  <div class="section-title">KPIs Gerais</div>
-  <div class="chart-card" style="margin-bottom:24px;">
-    <div class="dvd-hdr"><span>INDICADOR</span><span class="dvd-r">26/03</span><span class="dvd-r">27/03</span><span class="dvd-r">VARIAÇÃO</span><span class="dvd-c">STATUS</span></div>
-    <div class="dvd-row"><span>Devoluções (na base)</span><span class="dvd-r" style="color:var(--dev)">10</span><span class="dvd-r" style="color:var(--dev)">15</span><span class="dvd-r" style="color:var(--red)">▲ +5</span><span class="dvd-c"><span class="tag" style="background:rgba(168,85,247,.15);color:var(--dev)">EXCLUÍDAS</span></span></div>
-    <div class="dvd-row"><span>SLA Geral (%)</span><span class="dvd-r">95,32%</span><span class="dvd-r" style="color:var(--yellow)">95,32%</span><span class="dvd-r" style="color:var(--muted)">→ Estável</span><span class="dvd-c"><span class="tag tag-yellow">META OK</span></span></div>
-    <div class="dvd-row"><span>Pedidos Faturados</span><span class="dvd-r">5.047</span><span class="dvd-r">4.721</span><span class="dvd-r" style="color:var(--red)">▼ -326</span><span class="dvd-c">—</span></div>
-    <div class="dvd-row"><span>Entregas em Atraso</span><span class="dvd-r">236</span><span class="dvd-r" style="color:var(--green)">221</span><span class="dvd-r" style="color:var(--green)">▼ -15</span><span class="dvd-c"><span class="tag tag-green">MELHORA</span></span></div>
-    <div class="dvd-row"><span>Média Dias Atraso</span><span class="dvd-r">7,1d</span><span class="dvd-r" style="color:var(--green)">6,7d</span><span class="dvd-r" style="color:var(--green)">▼ -0,4d</span><span class="dvd-c"><span class="tag tag-green">MELHORA</span></span></div>
-    <div class="dvd-row"><span>Total em Aberto</span><span class="dvd-r">243</span><span class="dvd-r" style="color:var(--green)">220</span><span class="dvd-r" style="color:var(--green)">▼ -23</span><span class="dvd-c"><span class="tag tag-green">MELHORA</span></span></div>
-  </div>
-  <div class="section-title">Atrasos por Transportadora</div>
-  <div class="chart-card" style="margin-bottom:24px;">
-    <div class="dvd-hdr"><span>TRANSPORTADORA · UF</span><span class="dvd-r">26/03</span><span class="dvd-r">27/03</span><span class="dvd-r">VARIAÇÃO</span><span class="dvd-c">SLA 27/03</span></div>
-    <div class="dvd-row"><span>NOVA ERA · MG</span><span class="dvd-r">80</span><span class="dvd-r" style="color:var(--yellow)">69</span><span class="dvd-r" style="color:var(--green)">▼ -11</span><span class="dvd-c"><span class="tag tag-red">91,98%</span></span></div>
-    <div class="dvd-row"><span>RGE · MG</span><span class="dvd-r">61</span><span class="dvd-r" style="color:var(--yellow)">59</span><span class="dvd-r" style="color:var(--green)">▼ -2</span><span class="dvd-c"><span class="tag tag-red">92,98%</span></span></div>
-    <div class="dvd-row"><span style="color:var(--red);font-weight:600;">TEMPO JUSTO · SP ⚠</span><span class="dvd-r">27</span><span class="dvd-r" style="color:var(--red)">32</span><span class="dvd-r" style="color:var(--red)">▲ +5</span><span class="dvd-c"><span class="tag tag-red">91,16%</span></span></div>
-    <div class="dvd-row"><span>TRANS SUA LOG · SP</span><span class="dvd-r">21</span><span class="dvd-r" style="color:var(--yellow)">26</span><span class="dvd-r" style="color:var(--red)">▲ +5</span><span class="dvd-c"><span class="tag tag-yellow">95,16%</span></span></div>
-    <div class="dvd-row"><span>TS RJ · RJ</span><span class="dvd-r">24</span><span class="dvd-r">21</span><span class="dvd-r" style="color:var(--green)">▼ -3</span><span class="dvd-c"><span class="tag tag-green">97,08%</span></span></div>
-    <div class="dvd-row"><span>GETLAR · RJ</span><span class="dvd-r">7</span><span class="dvd-r">7</span><span class="dvd-r" style="color:var(--muted)">→ 0</span><span class="dvd-c"><span class="tag tag-green">98,91%</span></span></div>
-    <div class="dvd-row"><span>TRANSBARBOSA · SP</span><span class="dvd-r">13</span><span class="dvd-r" style="color:var(--green)">6</span><span class="dvd-r" style="color:var(--green)">▼ -7</span><span class="dvd-c"><span class="tag tag-green">98,67%</span></span></div>
-  </div>
-  <div class="grid-2">
-    <div class="chart-card"><div class="chart-title">📈 Evolução do SLA — Últimas sessões</div><div class="chart-wrap"><canvas id="slaHistChart"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">⚖ Peso em Aberto por UF — DvD</div><div class="chart-wrap"><canvas id="pesoDvdChart"></canvas></div></div>
   </div>
 </div>
 
 <script>
-const built={};
-function showPage(name,el){
+// ── DADOS ─────────────────────────────────────────────────────
+const TRANSP = [
+  {s:'RGE · MG',    uf:'MG', tot:817, at:60,  sla:92.66},
+  {s:'NOVA ERA · MG', uf:'MG', tot:763, at:43, sla:94.36},
+  {s:'TEMPO JUSTO · SP', uf:'SP', tot:341, at:24, sla:92.96},
+  {s:'TRANS SUA LOG · SP', uf:'SP', tot:504, at:21, sla:95.83},
+  {s:'TS RJ · RJ',  uf:'RJ', tot:697, at:14, sla:97.99},
+  {s:'GETLAR · RJ', uf:'RJ', tot:489, at:11, sla:97.75},
+  {s:'TRANSBARBOSA · SP', uf:'SP', tot:377, at:8, sla:97.88},
+  {s:'MTC · SP',    uf:'SP', tot:91,  at:0,  sla:100.00},
+  {s:'SOUL · MG',   uf:'MG', tot:95,  at:0,  sla:100.00},
+  {s:'TRANS EXPRESS · RJ', uf:'RJ', tot:93, at:0, sla:100.00},
+];
+const MKT = [
+  {m:'Shopee',           tot:2552, at:74,  sla:97.10},
+  {m:'Magazine Luiza',   tot:940,  at:56,  sla:94.04},
+  {m:'Mercado Livre',    tot:652,  at:44,  sla:93.25},
+  {m:'Madeira Madeira',  tot:42,   at:4,   sla:90.48},
+  {m:'Via Varejo',       tot:60,   at:1,   sla:98.33},
+  {m:'Zema',             tot:14,   at:1,   sla:92.86},
+  {m:'Web Continental V2', tot:5,  at:1,   sla:80.00},
+  {m:'Casa & Vídeo',     tot:1,    at:0,   sla:100.00},
+  {m:'eFácil',           tot:1,    at:0,   sla:100.00},
+];
+const FAIXAS = [
+  {f:'1-3 dias', q:23}, {f:'4-7 dias', q:69}, {f:'8-14 dias', q:39},
+  {f:'15-30 dias', q:30}, {f:'30+ dias', q:1}
+];
+const HIST = [
+  ['26/02','93.94'],['03/03','93.92'],['04/03','95.68'],['05/03','95.75'],
+  ['06/03','95.78'],['09/03','95.76'],['10/03','96.36'],['12/03','95.91'],
+  ['13/03','95.65'],['17/03','95.85'],['18/03','95.70'],['19/03','96.16'],
+  ['20/03','96.00'],['23/03','95.94'],['24/03','95.84'],['25/03','95.72'],
+  ['26/03','95.32'],['27/03','95.32'],['30/03','95.76']
+];
+const FOCCO_GERAL = [
+  {s:'RGE - MG',          kg:205800.76, pct:16.95, nf:1725},
+  {s:'GETLAR - RJ',       kg:183570.67, pct:15.12, nf:1409},
+  {s:'TRANSBARBOSA - SP', kg:180114.37, pct:14.84, nf:949},
+  {s:'TS RJ - RJ',        kg:164738.93, pct:13.57, nf:1590},
+  {s:'NOVA ERA - MG',     kg:164321.10, pct:13.54, nf:1525},
+  {s:'TRANS SUA LOG - SP',kg:132385.34, pct:10.91, nf:1247},
+  {s:'TEMPO JUSTO - SP',  kg:128603.67, pct:10.59, nf:762},
+  {s:'SOUL - MG',         kg:18481.72,  pct:1.52,  nf:231},
+  {s:'MTC - SP',          kg:18028.28,  pct:1.49,  nf:222},
+  {s:'TRANS EXPRESS - RJ',kg:17853.83,  pct:1.47,  nf:232},
+];
+const FOCCO_UF = {
+  SP:[
+    {s:'TRANSBARBOSA - SP', kg:180114.37, pct_est:39.23, pct_g:14.84},
+    {s:'TRANS SUA LOG - SP',kg:132385.34, pct_est:28.83, pct_g:10.91},
+    {s:'TEMPO JUSTO - SP',  kg:128603.67, pct_est:28.01, pct_g:10.59},
+    {s:'MTC - SP',          kg:18028.28,  pct_est:3.93,  pct_g:1.49},
+  ],
+  MG:[
+    {s:'RGE - MG',      kg:205800.76, pct_est:53.16, pct_g:16.95},
+    {s:'NOVA ERA - MG', kg:164321.10, pct_est:42.44, pct_g:13.54},
+    {s:'SOUL - MG',     kg:18481.72,  pct_est:4.77,  pct_g:1.52},
+  ],
+  RJ:[
+    {s:'GETLAR - RJ',       kg:183570.67, pct_est:49.98, pct_g:15.12},
+    {s:'TS RJ - RJ',        kg:164738.93, pct_est:44.85, pct_g:13.57},
+    {s:'TRANS EXPRESS - RJ',kg:17853.83,  pct_est:4.86,  pct_g:1.47},
+  ],
+};
+const DEV = [
+  {nf:33263, mkt:'Mercado Livre', cli:'leandro aparecido da silva',      cod:'S-46405684731',              uf:'SP'},
+  {nf:33084, mkt:'Magazine Luiza',cli:'Claudia Rabelo Oliveira Amorim',  cod:'LU-1509670098596227-1',       uf:'MG'},
+  {nf:35519, mkt:'Magazine Luiza',cli:'Debora Oliveira',                 cod:'LU-1510170098833915-1',       uf:'MG'},
+  {nf:37481, mkt:'Magazine Luiza',cli:'Romulo Batista Ferreira',         cod:'LU-1511170099257065-1',       uf:'MG'},
+  {nf:38115, mkt:'Shopee',        cli:'Thais Mota Rinke',                cod:'260212FJ1RWE21',              uf:'SP'},
+  {nf:38311, mkt:'Magazine Luiza',cli:'Roniaurea silencio candido',      cod:'LU-1511570099449795-1',       uf:'MG'},
+  {nf:38578, mkt:'Magazine Luiza',cli:'Solange Maria da Silva',          cod:'LU-1511770099529564-1',       uf:'MG'},
+  {nf:45486, mkt:'Magazine Luiza',cli:'Paulo herique dos Santos Silva',  cod:'LU-1512770099828871-1',       uf:'SP'},
+  {nf:40778, mkt:'Shopee',        cli:'Leticia Maria Cappello De Lima',  cod:'2602195VVEE4E9',              uf:'SP'},
+  {nf:40863, mkt:'Shopee',        cli:'Leandro Da Silva Muzy',           cod:'26022079MBM1SU',              uf:'RJ'},
+  {nf:45747, mkt:'Magazine Luiza',cli:'Alexia Carolina Aparecida Fonseca',cod:'LU-1514070100360972-1',     uf:'MG'},
+  {nf:45754, mkt:'Mercado Livre', cli:'claudiasantos8804',               cod:'2000015247324004',            uf:'MG'},
+  {nf:51068, mkt:'Shopee',        cli:'Valdelice Tome De Araujo',        cod:'260305AK7D5N2N',              uf:'SP'},
+  {nf:53395, mkt:'Mercado Livre', cli:'maurilio Alves da silva',         cod:'2000015432314112',            uf:'MG'},
+  {nf:68652, mkt:'Shopee',        cli:'Alcione',                         cod:'260320KE08BACK',              uf:'SP'},
+  {nf:67936, mkt:'Mercado Livre', cli:'Jaci pio',                        cod:'2000015651664096',            uf:'MG'},
+  {nf:68796, mkt:'Mercado Livre', cli:'Rodrigo Aparecido Cunha De Arruda',cod:'2000015661839738',          uf:'SP'},
+];
+const D27 = {
+  total:4958, env:4721, ok:4500, late:221, sla:95.32,
+  dev:15, cnpj:2, sf:220, sf_val:220615, kg:25955,
+  avg_d:8.2, max_d:33, nf_med:1.3, sf_venc:0, sf_crit:0, sf_alrt:0, sf_atc:2,
+  transp:{
+    'RGE - MG':84,'NOVA ERA - MG':50,'TEMPO JUSTO - SP':30,
+    'TRANS SUA LOG - SP':18,'TS RJ - RJ':16,'GETLAR - RJ':9,
+    'TRANSBARBOSA - SP':8,'MTC - SP':0,'SOUL - MG':0,'TRANS EXPRESS - RJ':0,
+  },
+  transp_sla:{
+    'RGE - MG':89.78,'NOVA ERA - MG':93.45,'TEMPO JUSTO - SP':91.24,
+    'TRANS SUA LOG - SP':96.48,'TS RJ - RJ':97.68,'GETLAR - RJ':98.22,
+    'TRANSBARBOSA - SP':97.88,'MTC - SP':100,'SOUL - MG':100,'TRANS EXPRESS - RJ':100,
+  },
+  mkt_sla:{'Shopee':96.90,'Magazine Luiza':93.08,'Mercado Livre':92.50,'Madeira Madeira':88.10,'Via Varejo':97.50,'Zema':100,'Web Continental V2':100,'Casa & Vídeo':100,'eFácil':100},
+  faixas:{  '1-3 dias':28,'4-7 dias':78,'8-14 dias':52,'15-30 dias':40,'30+ dias':2  },
+  kg_uf:{SP:22460, RJ:18900, MG:16200},
+  focco:{
+    'RGE - MG':198886,'GETLAR - RJ':183571,'TRANSBARBOSA - SP':180114,
+    'TS RJ - RJ':159148,'NOVA ERA - MG':160080,'TRANS SUA LOG - SP':129253,
+    'TEMPO JUSTO - SP':128604,'SOUL - MG':18482,'MTC - SP':18028,'TRANS EXPRESS - RJ':17854,
+  },
+};
+
+// ── HELPERS ───────────────────────────────────────────────────
+function slaColor(v){ return v>=95?'#27ae60':v>=90?'#e6a817':'#e74c3c' }
+function slaBadge(v){
+  let cls=v>=95?'badge-green':v>=90?'badge-yellow':'badge-red';
+  return `<span class="badge ${cls}">${v.toFixed(2)}%</span>`;
+}
+function slaBar(v,w=120){
+  let c=v>=95?'#27ae60':v>=90?'#e6a817':'#e74c3c';
+  return `<div class="bar-row" style="max-width:${w}px">
+    <div class="bar-wrap"><div class="bar-fill" style="width:${v}%;background:${c}"></div></div>
+    <span style="font-family:'DM Mono',monospace;font-size:11px;color:${c};min-width:42px">${v.toFixed(1)}%</span>
+  </div>`;
+}
+function varCell(a,b,inv=false,fmt='n'){
+  if(a===undefined||b===undefined||a===null||b===null) return '<td class="dvd-neutral mono">—</td>';
+  let na=parseFloat(String(a).replace(/[^0-9.\-]/g,'')),nb=parseFloat(String(b).replace(/[^0-9.\-]/g,''));
+  if(isNaN(na)||isNaN(nb)) return '<td class="dvd-neutral mono">—</td>';
+  let d=nb-na,cls,txt;
+  if(d===0){cls='dvd-neutral';txt='→ 0'}
+  else if(d>0){cls=inv?'dvd-down':'dvd-up';txt=fmt==='pp'?`▲ +${d.toFixed(2)} pp`:fmt==='brl'?`▲ +R$ ${d.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}`:fmt==='kg'?`▲ +${d.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')} kg`:`▲ +${Math.round(d)}`}
+  else{cls=inv?'dvd-up':'dvd-down';txt=fmt==='pp'?`▼ ${d.toFixed(2)} pp`:fmt==='brl'?`▼ R$ ${Math.abs(d).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}`:fmt==='kg'?`▼ ${Math.abs(d).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')} kg`:`▼ ${Math.round(d)}`}
+  return `<td class="${cls} mono" style="font-weight:700">${txt}</td>`;
+}
+
+// ── POPULANDO TABELAS ──────────────────────────────────────────
+function buildTranspVisao(){
+  const tb=document.getElementById('tbody-transp-visao');
+  TRANSP.forEach((t,i)=>{
+    const p=t.at/t.tot*100;
+    tb.innerHTML+=`<tr>
+      <td><strong>${t.s}</strong></td>
+      <td class="mono">${t.tot}</td>
+      <td class="mono" style="color:#27ae60">${t.tot-t.at}</td>
+      <td class="mono" style="color:${t.at>0?'#e74c3c':'#27ae60'}">${t.at}</td>
+      <td>${slaBadge(t.sla)}</td>
+      <td>${slaBar(t.sla)}</td>
+    </tr>`;
+  });
+}
+function buildTranspFull(){
+  const tb=document.getElementById('tbody-transp-full');
+  TRANSP.forEach(t=>{
+    const p=(t.at/t.tot*100).toFixed(2);
+    tb.innerHTML+=`<tr>
+      <td><strong>${t.s.split('·')[0].trim()}</strong></td>
+      <td><span class="badge ${t.uf==='MG'?'badge-green':t.uf==='SP'?'badge-yellow':'badge-red'}" style="font-size:10px">${t.uf}</span></td>
+      <td class="mono">${t.tot}</td>
+      <td class="mono" style="color:#27ae60">${t.tot-t.at}</td>
+      <td class="mono" style="color:${t.at>0?'#e74c3c':'#888'}">${t.at}</td>
+      <td class="mono" style="color:${t.at>0?'#e74c3c':'#888'}">${p}%</td>
+      <td>${slaBadge(t.sla)}</td>
+      <td>${slaBar(t.sla)}</td>
+    </tr>`;
+  });
+}
+function buildMkt(){
+  const tb=document.getElementById('tbody-mkt');
+  MKT.forEach(m=>{
+    const p=(m.at/m.tot*100).toFixed(2);
+    tb.innerHTML+=`<tr>
+      <td><strong>${m.m}</strong></td>
+      <td class="mono">${m.tot}</td>
+      <td class="mono" style="color:#27ae60">${m.tot-m.at}</td>
+      <td class="mono" style="color:${m.at>0?'#e74c3c':'#888'}">${m.at}</td>
+      <td class="mono" style="color:${m.at>0?'#e74c3c':'#888'}">${p}%</td>
+      <td>${slaBadge(m.sla)}</td>
+      <td>${slaBar(m.sla)}</td>
+    </tr>`;
+  });
+}
+function buildDev(){
+  const tb=document.getElementById('tbody-dev');
+  DEV.forEach((d,i)=>{
+    tb.innerHTML+=`<tr>
+      <td class="mono" style="color:#cc88ff">${d.nf}</td>
+      <td>${d.mkt}</td>
+      <td>${d.cli}</td>
+      <td class="mono" style="font-size:11px">${d.cod}</td>
+      <td><span class="badge ${d.uf==='MG'?'badge-green':d.uf==='SP'?'badge-yellow':'badge-red'}">${d.uf}</span></td>
+    </tr>`;
+  });
+}
+function buildFoccoGeral(){
+  const tb=document.getElementById('tbody-focco-geral');
+  let acum=0;
+  FOCCO_GERAL.forEach((f,i)=>{
+    acum+=f.pct;
+    const c=f.pct>=14?'#27ae60':f.pct>=8?'#e6a817':'#e67e22';
+    tb.innerHTML+=`<tr>
+      <td class="mono" style="color:var(--muted)">${i+1}º</td>
+      <td><strong>${f.s}</strong></td>
+      <td class="mono">${f.nf.toLocaleString('pt-BR')}</td>
+      <td class="mono" style="color:#aade66">${f.kg.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})} kg</td>
+      <td class="mono" style="color:${c};font-weight:700">${f.pct.toFixed(2)}%</td>
+      <td class="mono" style="color:var(--muted)">${acum.toFixed(2)}%</td>
+      <td><div class="bar-row"><div class="bar-wrap"><div class="bar-fill" style="width:${f.pct/17*100}%;background:${c}"></div></div><span style="font-size:11px;color:${c};font-family:'DM Mono',monospace;min-width:38px">${f.pct.toFixed(1)}%</span></div></td>
+    </tr>`;
+  });
+}
+function buildFoccoUfGrid(){
+  const g=document.getElementById('focco-uf-grid');
+  const ufs=[
+    {code:'SP',name:'São Paulo',kg:459131.67,pct:37.82,clr:'#e8a84f',data:FOCCO_UF.SP},
+    {code:'MG',name:'Minas Gerais',kg:387186.97,pct:31.90,clr:'#aade66',data:FOCCO_UF.MG},
+    {code:'RJ',name:'Rio de Janeiro',kg:367294.23,pct:30.26,clr:'#5dade2',data:FOCCO_UF.RJ},
+  ];
+  ufs.forEach(u=>{
+    let rows='';
+    u.data.forEach(t=>{
+      const c=t.pct_est>=40?'#27ae60':t.pct_est>=20?'#e6a817':'#e67e22';
+      rows+=`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+        <span>${t.s}</span>
+        <div style="text-align:right">
+          <span class="mono" style="color:${c};font-weight:700">${t.pct_est.toFixed(1)}%</span>
+          <span class="mono" style="color:var(--muted);font-size:11px;margin-left:8px">${t.kg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</span>
+        </div>
+      </div>`;
+    });
+    g.innerHTML+=`<div class="uf-card">
+      <div class="uf-name" style="color:${u.clr}">${u.code} — ${u.name}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:${u.clr};margin-bottom:4px">${u.kg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">${u.pct.toFixed(2)}% do total geral</div>
+      ${rows}
+    </div>`;
+  });
+}
+function buildDvD(){
+  // KPIs
+  const kd=document.getElementById('tbody-dvd-kpi');
+  const rows=[
+    ['Total pedidos na base',4958,4801,true,'n'],
+    ['Pedidos Faturados',4721,4267,true,'n'],
+    ['Entregas no Prazo',4500,4086,false,'n'],
+    ['Entregas em Atraso',221,181,true,'n'],
+    ['SLA Geral (%)',`${D27.sla}%`,`95.76%`,false,'pp'],
+    ['Devoluções excluídas',15,17,false,'n'],
+    ['CNPJ a cancelar',2,5,false,'n'],
+    ['Média dias atraso',D27.avg_d,6.4,true,'n'],
+    ['Prazo médio NF (d.u.)',D27.nf_med,1.4,true,'n'],
+  ];
+  rows.forEach((r,i)=>{
+    const bg=i%2===1?'rgba(255,255,255,.02)':'';
+    kd.innerHTML+=`<tr style="background:${bg}">
+      <td><strong>${r[0]}</strong></td>
+      <td class="mono">${r[1]}</td>
+      <td class="mono">${r[2]}</td>
+      ${varCell(r[1],r[2],r[3],r[4])}
+    </tr>`;
+  });
+  // SF
+  const sd=document.getElementById('tbody-dvd-sf');
+  const sfrows=[
+    ['Total em Aberto',220,501,true,'n'],
+    ['Valor (R$)','R$ 220.615','R$ 504.298',true,'brl'],
+    ['Peso Est. (kg)','25.955','59.329',true,'kg'],
+    ['Vencidos + Críticos',0,1,true,'n'],
+    ['Em Alerta (4-7d)',0,0,true,'n'],
+    ['Em Atenção (8-14d)',2,5,true,'n'],
+  ];
+  sfrows.forEach((r,i)=>{
+    const bg=i%2===1?'rgba(255,255,255,.02)':'';
+    sd.innerHTML+=`<tr style="background:${bg}">
+      <td><strong>${r[0]}</strong></td>
+      <td class="mono">${r[1]}</td>
+      <td class="mono">${r[2]}</td>
+      ${varCell(r[1],r[2],r[3],r[4])}
+    </tr>`;
+  });
+  // Transp
+  const td=document.getElementById('tbody-dvd-transp');
+  const d30_at={'RGE - MG':60,'NOVA ERA - MG':43,'TEMPO JUSTO - SP':24,'TRANS SUA LOG - SP':21,'TS RJ - RJ':14,'GETLAR - RJ':11,'TRANSBARBOSA - SP':8,'MTC - SP':0,'SOUL - MG':0,'TRANS EXPRESS - RJ':0};
+  const d30_sla={'RGE - MG':92.66,'NOVA ERA - MG':94.36,'TEMPO JUSTO - SP':92.96,'TRANS SUA LOG - SP':95.83,'TS RJ - RJ':97.99,'GETLAR - RJ':97.75,'TRANSBARBOSA - SP':97.88,'MTC - SP':100,'SOUL - MG':100,'TRANS EXPRESS - RJ':100};
+  Object.keys(d30_at).forEach((k,i)=>{
+    const a27=D27.transp[k]??0, a30=d30_at[k]??0;
+    const diff=a30-a27, cls=diff>0?'dvd-down':diff<0?'dvd-up':'dvd-neutral';
+    const sla30=d30_sla[k];
+    const bg=i%2===1?'rgba(255,255,255,.02)':'';
+    td.innerHTML+=`<tr style="background:${bg}">
+      <td><strong>${k}</strong></td>
+      <td class="mono">${a27}</td>
+      <td class="mono">${a30}</td>
+      <td class="${cls} mono" style="font-weight:700">${diff>0?'▲ +':diff<0?'▼ ':'→ '}${Math.abs(diff)||0}</td>
+      <td>${slaBadge(sla30)}</td>
+    </tr>`;
+  });
+  // MKT
+  const md=document.getElementById('tbody-dvd-mkt');
+  const d30_mkt={'Shopee':97.10,'Magazine Luiza':94.04,'Mercado Livre':93.25,'Madeira Madeira':90.48,'Via Varejo':98.33,'Zema':92.86,'Web Continental V2':80,'Casa & Vídeo':100,'eFácil':100};
+  Object.keys(d30_mkt).forEach((k,i)=>{
+    const s27=D27.mkt_sla[k]??100, s30=d30_mkt[k];
+    const d=s30-s27,cls=d>0?'dvd-up':d<0?'dvd-down':'dvd-neutral';
+    const bg=i%2===1?'rgba(255,255,255,.02)':'';
+    md.innerHTML+=`<tr style="background:${bg}">
+      <td>${k}</td>
+      <td class="mono" style="color:${slaColor(s27)}">${s27}%</td>
+      <td class="mono" style="color:${slaColor(s30)}">${s30}%</td>
+      <td class="${cls} mono">${d>0?'▲ +':d<0?'▼ ':'→'}${d===0?'0':Math.abs(d).toFixed(2)+' pp'}</td>
+    </tr>`;
+  });
+  // Faixas
+  const fd=document.getElementById('tbody-dvd-faixa');
+  const faixas27={'1-3 dias':28,'4-7 dias':78,'8-14 dias':52,'15-30 dias':40,'30+ dias':2};
+  const faixas30={'1-3 dias':23,'4-7 dias':69,'8-14 dias':39,'15-30 dias':30,'30+ dias':1};
+  Object.keys(faixas30).forEach((k,i)=>{
+    const a=faixas27[k]??0, b=faixas30[k]??0, d=b-a;
+    const cls=d>0?'dvd-down':d<0?'dvd-up':'dvd-neutral';
+    const bg=i%2===1?'rgba(255,255,255,.02)':'';
+    fd.innerHTML+=`<tr style="background:${bg}">
+      <td>${k}</td>
+      <td class="mono">${a}</td>
+      <td class="mono">${b}</td>
+      <td class="${cls} mono">${d>0?'▲ +':d<0?'▼ ':'→'}${Math.abs(d)||0}</td>
+    </tr>`;
+  });
+  // FOCCO DvD
+  const fcd=document.getElementById('tbody-dvd-focco');
+  const f27=D27.focco;
+  FOCCO_GERAL.forEach((f,i)=>{
+    const v27=f27[f.s]??0, v30=f.kg, d=v30-v27;
+    const cls=d>0?'dvd-up':d<0?'dvd-down':'dvd-neutral';
+    const bg=i%2===1?'rgba(255,255,255,.02)':'';
+    fcd.innerHTML+=`<tr style="background:${bg}">
+      <td><strong>${f.s}</strong></td>
+      <td class="mono">${v27.toLocaleString('pt-BR',{maximumFractionDigits:0})}</td>
+      <td class="mono">${v30.toLocaleString('pt-BR',{maximumFractionDigits:0})}</td>
+      <td class="${cls} mono" style="font-weight:700">${d>=0?'▲ +':'▼ '}${Math.abs(d).toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</td>
+    </tr>`;
+  });
+}
+
+// ── CHARTS ────────────────────────────────────────────────────
+const chartDefaults={
+  plugins:{legend:{labels:{color:'#8899bb',font:{size:11,family:'DM Sans'}}},tooltip:{backgroundColor:'#1a2236',borderColor:'#2e4a7a',borderWidth:1,titleColor:'#e8edf8',bodyColor:'#8899bb'}},
+  scales:{x:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}},y:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}}}
+};
+
+function buildCharts(){
+  // Histórico
+  new Chart(document.getElementById('chartHist'),{
+    type:'line',
+    data:{
+      labels:HIST.map(h=>h[0]),
+      datasets:[{
+        label:'% SLA',data:HIST.map(h=>parseFloat(h[1])),
+        borderColor:'#27ae60',backgroundColor:'rgba(30,132,73,.1)',
+        pointBackgroundColor:HIST.map(h=>parseFloat(h[1])>=95?'#27ae60':'#e74c3c'),
+        pointRadius:4,tension:.3,fill:true,
+      },{
+        label:'Meta 95%',data:HIST.map(()=>95),
+        borderColor:'rgba(232,70,30,.5)',borderDash:[6,3],pointRadius:0,fill:false,
+      }]
+    },
+    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{...chartDefaults.plugins.legend,display:true}},scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,min:93,max:97,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+'%'}}}}
+  });
+
+  // Faixas
+  new Chart(document.getElementById('chartFaixa'),{
+    type:'bar',
+    data:{labels:FAIXAS.map(f=>f.f),datasets:[{label:'Qtd.',data:FAIXAS.map(f=>f.q),backgroundColor:['#27ae60','#e6a817','#e67e22','#e74c3c','#8e1a0e'],borderRadius:5}]},
+    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{display:false}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 11px DM Mono';ctx.textAlign='center';ctx.fillText(d.data[i],bar.x,bar.y-5)})})}}},
+  });
+
+  // Transp SLA
+  new Chart(document.getElementById('chartTranspSla'),{
+    type:'bar',
+    data:{labels:TRANSP.map(t=>t.s.split('·')[0].trim()),datasets:[{label:'% SLA',data:TRANSP.map(t=>t.sla),backgroundColor:TRANSP.map(t=>t.sla>=95?'rgba(30,132,73,.7)':t.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},
+    options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins,legend:{display:false}},scales:{x:{...chartDefaults.scales.x,min:88,max:101,ticks:{callback:v=>v+'%'}},y:{...chartDefaults.scales.y}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(d.data[i]+'%',bar.x+4,bar.y+4)})})}}}
+  });
+
+  // Transp Atrasos
+  new Chart(document.getElementById('chartTranspAtrasos'),{
+    type:'bar',
+    data:{labels:TRANSP.map(t=>t.s.split('·')[0].trim()),datasets:[{label:'Atrasos',data:TRANSP.map(t=>t.at),backgroundColor:'rgba(232,70,30,.65)',borderRadius:4}]},
+    options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins,legend:{display:false}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{if(d.data[i]>0){ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(d.data[i],bar.x+4,bar.y+4)}})})}}}
+  });
+
+  // MKT SLA
+  new Chart(document.getElementById('chartMktSla'),{
+    type:'bar',
+    data:{labels:MKT.map(m=>m.m),datasets:[{label:'% SLA',data:MKT.map(m=>m.sla),backgroundColor:MKT.map(m=>m.sla>=95?'rgba(30,132,73,.7)':m.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},
+    options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins,legend:{display:false}},scales:{x:{...chartDefaults.scales.x,min:75,max:102,ticks:{callback:v=>v+'%'}},y:{...chartDefaults.scales.y}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(d.data[i]+'%',bar.x+4,bar.y+4)})})}}}
+  });
+
+  // MKT Volume
+  new Chart(document.getElementById('chartMktVol'),{
+    type:'doughnut',
+    data:{labels:MKT.map(m=>m.m),datasets:[{data:MKT.map(m=>m.tot),backgroundColor:['#2E4A7A','#1A5276','#27ae60','#B7770D','#5A1878','#D35400','#7B1111','#888','#aaa'],borderColor:'#161d2e',borderWidth:2}]},
+    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{...chartDefaults.plugins.legend,position:'right',labels:{...chartDefaults.plugins.legend.labels,padding:12,font:{size:10}}}}}
+  });
+
+  // SF MKT
+  new Chart(document.getElementById('chartSfMkt'),{
+    type:'bar',
+    data:{labels:['Shopee','Mercado Livre','Magazine Luiza','Via Varejo','Madeira Madeira'],datasets:[{label:'Em Aberto',data:[324,94,65,13,5],backgroundColor:'rgba(183,119,13,.65)',borderRadius:4}]},
+    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{display:false}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='center';ctx.fillText(d.data[i],bar.x,bar.y-5)})})}}}
+  });
+
+  // SF UF
+  new Chart(document.getElementById('chartSfUf'),{
+    type:'doughnut',
+    data:{labels:['SP','RJ','MG'],datasets:[{data:[22580.6,19322.6,17426.0],backgroundColor:['rgba(183,119,13,.75)','rgba(26,82,118,.75)','rgba(30,132,73,.75)'],borderColor:'#161d2e',borderWidth:2}]},
+    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{...chartDefaults.plugins.legend,position:'right'},tooltip:{...chartDefaults.plugins.tooltip,callbacks:{label:function(c){return ` ${c.label}: ${c.raw.toLocaleString('pt-BR')} kg (${(c.raw/59329.2*100).toFixed(1)}%)`}}}}}
+  });
+
+  // FOCCO Geral
+  new Chart(document.getElementById('chartFoccoGeral'),{
+    type:'bar',
+    data:{labels:FOCCO_GERAL.map(f=>f.s),datasets:[{label:'Peso Bruto (kg)',data:FOCCO_GERAL.map(f=>f.kg),backgroundColor:FOCCO_GERAL.map(f=>f.pct>=14?'rgba(30,132,73,.7)':f.pct>=8?'rgba(183,119,13,.7)':'rgba(211,84,0,.7)'),borderRadius:4}]},
+    options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins,legend:{display:false}},scales:{x:{...chartDefaults.scales.x,ticks:{callback:v=>v>=1000?Math.round(v/1000)+'k':v}},y:{...chartDefaults.scales.y}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(Math.round(d.data[i]/1000)+'k kg  '+FOCCO_GERAL[i].pct+'%',bar.x+5,bar.y+4)})})}}}
+  });
+
+  // FOCCO UF Donut
+  new Chart(document.getElementById('chartFoccoUf'),{
+    type:'doughnut',
+    data:{labels:['SP (37,82%)','MG (31,90%)','RJ (30,26%)'],datasets:[{data:[459131.67,387186.97,367294.23],backgroundColor:['rgba(183,119,13,.8)','rgba(30,132,73,.8)','rgba(26,82,118,.8)'],borderColor:'#161d2e',borderWidth:3}]},
+    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{...chartDefaults.plugins.legend,position:'right'},tooltip:{...chartDefaults.plugins.tooltip,callbacks:{label:c=>` ${c.label}: ${Math.round(c.raw).toLocaleString('pt-BR')} kg`}}}}
+  });
+
+  // DvD FOCCO Chart
+  const focco30=FOCCO_GERAL.map(f=>f.kg);
+  const focco27=FOCCO_GERAL.map(f=>D27.focco[f.s]??0);
+  new Chart(document.getElementById('chartDvdFocco'),{
+    type:'bar',
+    data:{labels:FOCCO_GERAL.map(f=>f.s),datasets:[
+      {label:'27/03',data:focco27,backgroundColor:'rgba(46,74,122,.6)',borderRadius:3},
+      {label:'30/03',data:focco30,backgroundColor:'rgba(30,132,73,.65)',borderRadius:3},
+    ]},
+    options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins,legend:{...chartDefaults.plugins.legend,display:true}},scales:{x:{...chartDefaults.scales.x,ticks:{callback:v=>Math.round(v/1000)+'k'}},y:{...chartDefaults.scales.y}}}
+  });
+}
+
+// ── NAV ───────────────────────────────────────────────────────
+function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  el.classList.add('active');
-  buildCharts(name);
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  event.target.classList.add('active');
 }
-function buildCharts(page){
-  if(built[page])return; built[page]=true;
-  const grid={color:'rgba(31,45,69,.8)'};
-  const tick={color:'#7a8aab',font:{size:11,family:'DM Mono'}};
-  const leg={labels:{color:'#7a8aab',font:{size:11,family:'DM Mono'}}};
 
-  if(page==='visao'){
-    new Chart(document.getElementById('faixaChart'),{type:'doughnut',
-      data:{labels:['1-3d (96)','4-7d (25)','8-14d (52)','15-30d (33)','30+d (1)'],
-        datasets:[{data:[96,25,52,33,1],backgroundColor:['#eab308','#f97316','#ef4444','#b91c1c','#7f1d1d'],borderWidth:0,hoverOffset:8}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:leg}}});
-    new Chart(document.getElementById('transpSlaChart'),{type:'bar',
-      data:{labels:['TEMPO JUSTO · SP','NOVA ERA · MG','RGE · MG','TRANS SUA · SP','TS RJ · RJ','TRANSBARB. · SP','GETLAR · RJ','MTC · SP','SOUL · MG','T.EXPRESS · RJ'],
-        datasets:[{data:[91.16,91.98,92.98,95.16,97.08,98.67,98.91,100,100,100],
-          backgroundColor:['#ef4444','#ef4444','#ef4444','#eab308','#22c55e','#22c55e','#22c55e','#2dd4bf','#2dd4bf','#2dd4bf'],borderRadius:4,barThickness:22}]},
-      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' SLA: '+ctx.raw.toFixed(2)+'%'}}},
-        scales:{x:{min:88,max:103,grid:grid,ticks:{...tick,callback:v=>v<=100?v+'%':''}},y:{grid:{display:false},ticks:{...tick,font:{size:10,family:'DM Mono'}}}},
-        animation:{onComplete:function(){
-          const ctx=this.ctx; ctx.save(); ctx.font='bold 11px DM Mono'; ctx.textAlign='left'; ctx.textBaseline='middle';
-          this.data.datasets.forEach((ds,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8eaf0';ctx.fillText(ds.data[i].toFixed(2)+'%',bar.x+4,bar.y);});});
-          ctx.restore();
-        }}
-      }
-    });
-  }
-  if(page==='marketplaces'){
-    new Chart(document.getElementById('mktAtrasoChart'),{type:'bar',
-      data:{labels:['Shopee','Magalu','Merc.Livre','Via V.','Mad.Mad.','Zema','Web Cont.'],
-        datasets:[{data:[78,74,59,4,4,1,1],backgroundColor:['#f97316','#38bdf8','#eab308','#22c55e','#64748b','#c084fc','#818cf8'],borderRadius:5,barThickness:30}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:grid,ticks:tick},y:{grid:grid,ticks:tick}}}});
-    new Chart(document.getElementById('mktFatChart'),{type:'doughnut',
-      data:{labels:['Shopee (2.755)','Magalu (1.088)','Merc.Livre (740)','Via Varejo (66)','Outros (72)'],
-        datasets:[{data:[2755,1088,740,66,72],backgroundColor:['#f97316','#38bdf8','#eab308','#c084fc','#64748b'],borderWidth:0,hoverOffset:6}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:leg}}});
-  }
-  if(page==='aberto'){
-    new Chart(document.getElementById('pesoUfChart'),{type:'bar',
-      data:{labels:['SP','RJ','MG','ES'],datasets:[{label:'Peso (kg)',data:[9432.6,8324.1,8095.8,102.2],backgroundColor:['#818cf8','#38bdf8','#4ade80','#7a8aab'],borderRadius:6,barThickness:52}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:tick},y:{grid:grid,ticks:{...tick,callback:v=>(v/1000).toFixed(0)+'K kg'}}}}});
-  }
-  if(page==='focco'){
-    // DADOS REAIS FOCCO
-    new Chart(document.getElementById('foccoGeral'),{type:'doughnut',
-      data:{labels:['RGE-MG (16,66%)','GETLAR-RJ (15,37%)','TRANSBARB-SP (15,08%)','NOVA ERA-MG (13,41%)','TS RJ-RJ (13,33%)','TRANS SUA-SP (10,83%)','TEMPO J-SP (10,77%)','Outros (4,56%)'],
-        datasets:[{data:[198886,183571,180114,160080,159148,129253,128604,54364],
-          backgroundColor:['#4ade80','#2dd4bf','#818cf8','#86efac','#38bdf8','#eab308','#f97316','#64748b'],borderWidth:0,hoverOffset:8}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:leg}}});
-
-    new Chart(document.getElementById('foccoEstado'),{type:'bar',
-      data:{
-        labels:['SP — Transbarbosa','SP — Trans Sua','SP — Tempo Justo','SP — MTC','MG — RGE','MG — Nova Era','MG — Soul','RJ — Getlar','RJ — TS RJ','RJ — Trans Express'],
-        datasets:[{label:'% no Estado',
-          data:[39.50,28.34,28.20,3.95,52.89,42.19,4.91,50.75,44.00,4.94],
-          backgroundColor:['#818cf8','#a78bfa','#c084fc','#ddd6fe','#4ade80','#86efac','#bbf7d0','#2dd4bf','#38bdf8','#7dd3fc'],
-          borderRadius:5,barThickness:22}]
-      },
-      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.raw.toFixed(2)+'%'}}},
-        scales:{x:{min:0,max:60,grid:grid,ticks:{...tick,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...tick,font:{size:10,family:'DM Mono'}}}},
-        animation:{onComplete:function(){
-          const ctx=this.ctx; ctx.save(); ctx.font='bold 11px DM Mono'; ctx.textAlign='left'; ctx.textBaseline='middle';
-          this.data.datasets.forEach((ds,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8eaf0';ctx.fillText(ds.data[i].toFixed(2)+'%',bar.x+4,bar.y);});});
-          ctx.restore();
-        }}
-      }
-    });
-  }
-  if(page==='dvd'){
-    new Chart(document.getElementById('slaHistChart'),{type:'line',
-      data:{labels:['20/03','23/03','24/03','25/03','26/03','27/03'],
-        datasets:[
-          {label:'SLA %',data:[96.00,95.94,95.84,95.72,95.32,95.32],borderColor:'#38bdf8',backgroundColor:'rgba(56,189,248,.08)',borderWidth:2.5,pointRadius:5,pointBackgroundColor:['#22c55e','#22c55e','#eab308','#eab308','#f97316','#f97316'],fill:true,tension:0.3},
-          {label:'Meta 95%',data:[95,95,95,95,95,95],borderColor:'rgba(239,68,68,.5)',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}
-        ]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:leg},scales:{x:{grid:grid,ticks:tick},y:{min:94.5,max:97,grid:grid,ticks:{...tick,callback:v=>v.toFixed(2)+'%'}}}}});
-    new Chart(document.getElementById('pesoDvdChart'),{type:'bar',
-      data:{labels:['SP','MG','RJ','ES'],
-        datasets:[
-          {label:'26/03',data:[11906.4,8652.5,7495.7,102.2],backgroundColor:'rgba(56,189,248,.3)',borderRadius:4},
-          {label:'27/03',data:[9432.6,8095.8,8324.1,102.2],backgroundColor:'#38bdf8',borderRadius:4}
-        ]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:leg},scales:{x:{grid:{display:false},ticks:tick},y:{grid:grid,ticks:{...tick,callback:v=>(v/1000).toFixed(0)+'K'}}}}});
-  }
-}
-buildCharts('visao'); built['visao']=true;
+// ── INIT ──────────────────────────────────────────────────────
+buildTranspVisao();
+buildTranspFull();
+buildMkt();
+buildDev();
+buildFoccoGeral();
+buildFoccoUfGrid();
+buildDvD();
+buildCharts();
 </script>
 </body>
 </html>
