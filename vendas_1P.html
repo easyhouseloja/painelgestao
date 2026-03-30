@@ -604,7 +604,7 @@ function renderAll(){
   const mxmDelta=d.fat_ant>0?(d.fat_real-d.fat_ant)/d.fat_ant*100:0;
 
   // topbar
-  document.getElementById('top-period').textContent=(targetMes?monthLabel(targetMes):'')+(recs.length>1?' · '+recs.length+' clientes':'')+(d.dias_trab?' · Período 01–'+String(d.dias_trab).padStart(2,'0'):'');
+  document.getElementById('top-period').textContent=(targetMes?monthLabel(targetMes):'')+(recs.length>1?' · '+recs.length+' clientes':'')+(d.dias_trab?' · Período 01/03 a 29/03':'');
   document.getElementById('tb-fat').textContent=BRLM(d.fat_real);
   document.getElementById('tb-meta').textContent=PCT(metaPct)+' da Meta';
   document.getElementById('tb-proj').textContent='Proj. '+BRLM(d.fat_proj);
@@ -704,42 +704,54 @@ function switchTab(n){
 }
 
 // ─── INIT ─────────────────────────────────────────────────────
-// Load sample data if empty
-if(!store.records.length){
-  store.clients=['Cliente 1P'];
-  store.records=[{
-    cliente:'Cliente 1P', mes:'2026-03',
-    dias_uteis:22, dias_trab:17,
-    fat_ant:2855900.60, fat_real:2859186.37, fat_meta:3742142.66,
-    venda_real:2779114, venda_meta:3742142.66, venda_proj:5067796.12,
-    fat_proj:2859186.37/17*22,
-    ano_ant:1982196.80, ano_atual:2798834.32, ano_cresc:41,
-    cats:{
-      COMP:{fat:882375.19,meta:823271.39,venda:865807.81,proj:1074195.88},
-      GR:{fat:1803510.87,meta:2394971.30,venda:1837156.32,proj:2195578.45},
-      SALA:{fat:170014.54,meta:523899.97,venda:156222.24,proj:206974.22}
-    },
-    daily:[
-      {dia:2,orc_fat:170097.36,real_fat:0,orc_venda:120714.27,real_venda:107980},
-      {dia:3,orc_fat:170097.36,real_fat:228637.14,orc_venda:120714.27,real_venda:183842},
-      {dia:4,orc_fat:170097.36,real_fat:174818.21,orc_venda:120714.27,real_venda:121084},
-      {dia:5,orc_fat:170097.36,real_fat:153135.27,orc_venda:120714.27,real_venda:118573},
-      {dia:6,orc_fat:170097.36,real_fat:176828.55,orc_venda:120714.27,real_venda:129339},
-      {dia:9,orc_fat:170097.36,real_fat:197866,orc_venda:120714.27,real_venda:136754},
-      {dia:10,orc_fat:170097.36,real_fat:197807.38,orc_venda:120714.27,real_venda:131557},
-      {dia:11,orc_fat:170097.36,real_fat:136407.03,orc_venda:120714.27,real_venda:149050},
-      {dia:12,orc_fat:170097.36,real_fat:138157.94,orc_venda:120714.27,real_venda:120202},
-      {dia:13,orc_fat:170097.36,real_fat:498844.25,orc_venda:120714.27,real_venda:105629},
-      {dia:16,orc_fat:170097.36,real_fat:38118.78,orc_venda:120714.27,real_venda:115353},
-      {dia:17,orc_fat:170097.36,real_fat:33121.79,orc_venda:120714.27,real_venda:123734},
-      {dia:18,orc_fat:170097.36,real_fat:143951.84,orc_venda:120714.27,real_venda:89598},
-      {dia:19,orc_fat:170097.36,real_fat:146255.59,orc_venda:120714.27,real_venda:98924},
-      {dia:20,orc_fat:170097.36,real_fat:466496.12,orc_venda:120714.27,real_venda:82390},
-      {dia:23,orc_fat:170097.36,real_fat:125136.89,orc_venda:120714.27,real_venda:86022}
-    ]
-  }];
-  saveStore();
-}
+// Dados atualizados em 29/03/2026 — forçar atualização sempre
+store.clients=['Cliente 1P'];
+store.records=[{
+  cliente:'Cliente 1P', mes:'2026-03',
+  dias_uteis:22, dias_trab:21,
+  fat_ant:2757509.37, fat_real:3348038.58, fat_meta:3742142.66,
+  venda_real:3140526.00, venda_meta:3742142.66, venda_proj:5726841.53,
+  fat_proj:4075873.05,
+  ano_ant:1298606.28, ano_atual:3348038.58, ano_cresc:158,
+  cats:{
+    COMP:{fat:995254.08,  meta:823271.39,  venda:985514.81,  proj:1211613.66},
+    GR:  {fat:2137731.79, meta:2394971.30, venda:2111817.80, proj:2602456.09},
+    SALA:{fat:215052.71,  meta:523899.97,  venda:204309.78,  proj:261803.30}
+  },
+  daily:[
+    {dia:2, orc_fat:170097.36,real_fat:0,          orc_venda:120714.27,real_venda:107980.00},
+    {dia:3, orc_fat:170097.36,real_fat:228637.14,   orc_venda:120714.27,real_venda:183842.00},
+    {dia:4, orc_fat:170097.36,real_fat:174818.21,   orc_venda:120714.27,real_venda:121084.00},
+    {dia:5, orc_fat:170097.36,real_fat:153135.27,   orc_venda:120714.27,real_venda:118573.00},
+    {dia:6, orc_fat:170097.36,real_fat:176828.55,   orc_venda:120714.27,real_venda:129339.00},
+    {dia:7, orc_fat:170097.36,real_fat:0,           orc_venda:120714.27,real_venda:103925.00},
+    {dia:8, orc_fat:170097.36,real_fat:0,           orc_venda:120714.27,real_venda:130647.00},
+    {dia:9, orc_fat:170097.36,real_fat:197866.00,   orc_venda:120714.27,real_venda:136754.00},
+    {dia:10,orc_fat:170097.36,real_fat:197807.38,   orc_venda:120714.27,real_venda:131557.00},
+    {dia:11,orc_fat:170097.36,real_fat:136407.03,   orc_venda:120714.27,real_venda:149050.00},
+    {dia:12,orc_fat:170097.36,real_fat:138157.94,   orc_venda:120714.27,real_venda:120202.00},
+    {dia:13,orc_fat:170097.36,real_fat:498844.25,   orc_venda:120714.27,real_venda:105629.00},
+    {dia:14,orc_fat:170097.36,real_fat:0,           orc_venda:120714.27,real_venda:119836.00},
+    {dia:15,orc_fat:170097.36,real_fat:0,           orc_venda:120714.27,real_venda:249047.00},
+    {dia:16,orc_fat:170097.36,real_fat:38118.78,    orc_venda:120714.27,real_venda:115353.00},
+    {dia:17,orc_fat:170097.36,real_fat:33121.79,    orc_venda:120714.27,real_venda:123734.00},
+    {dia:18,orc_fat:170097.36,real_fat:143951.84,   orc_venda:120714.27,real_venda:89598.00},
+    {dia:19,orc_fat:170097.36,real_fat:146255.59,   orc_venda:120714.27,real_venda:98924.00},
+    {dia:20,orc_fat:170097.36,real_fat:466496.12,   orc_venda:120714.27,real_venda:82390.00},
+    {dia:21,orc_fat:170097.36,real_fat:0,           orc_venda:120714.27,real_venda:84439.00},
+    {dia:22,orc_fat:170097.36,real_fat:0,           orc_venda:120714.27,real_venda:82723.00},
+    {dia:23,orc_fat:170097.36,real_fat:125136.89,   orc_venda:120714.27,real_venda:89680.00},
+    {dia:24,orc_fat:170097.36,real_fat:153528.60,   orc_venda:120714.27,real_venda:83068.00},
+    {dia:25,orc_fat:170097.36,real_fat:177606.82,   orc_venda:120714.27,real_venda:84783.00},
+    {dia:26,orc_fat:170097.36,real_fat:82869.24,    orc_venda:120714.27,real_venda:61109.00},
+    {dia:27,orc_fat:170097.36,real_fat:78133.32,    orc_venda:120714.27,real_venda:67129.00},
+    {dia:28,orc_fat:170097.36,real_fat:0,           orc_venda:120714.27,real_venda:63448.00},
+    {dia:29,orc_fat:170097.36,real_fat:0,           orc_venda:120714.27,real_venda:45434.00},
+    {dia:30,orc_fat:170097.36,real_fat:0,           orc_venda:120714.27,real_venda:0},
+    {dia:31,orc_fat:170097.36,real_fat:0,           orc_venda:120714.27,real_venda:0}
+  ]
+}];
+saveStore();
 
 rebuildClientSelects();
 renderAll();
