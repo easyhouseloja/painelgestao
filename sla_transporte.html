@@ -1,39 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard SLA · Easy House · 30/03/2026</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard SLA · Easy House · 31/03/2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root{
-  --bg:#0b0f1a;--card:#161d2e;--card2:#1a2236;--border:#1f2d45;
-  --accent:#E8461E;--blue:#2E4A7A;--blue2:#3a5a96;
-  --green:#1E8449;--green2:#27ae60;--red:#C0392B;--yellow:#B7770D;
-  --orange:#D35400;--teal:#1A5276;--purple:#5A1878;--purple2:#7b22a8;
-  --focco:#1A4D0A;--focco2:#2D6E12;--dev:#4A1A7A;
-  --text:#e8edf8;--muted:#8899bb;--dim:#4a5a7a;
-}
+:root{--bg:#0b0f1a;--card:#161d2e;--card2:#1a2236;--border:#1f2d45;--accent:#E8461E;--blue:#2E4A7A;--green:#1E8449;--red:#C0392B;--yellow:#B7770D;--orange:#D35400;--teal:#1A5276;--purple:#5A1878;--focco:#1A4D0A;--focco2:#2D6E12;--dev:#4A1A7A;--text:#e8edf8;--muted:#8899bb}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh}
-/* NAV */
-nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:0;padding:0 20px}
-.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:16px;white-space:nowrap}
-.nav-brand span{color:var(--accent)}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px}
+nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0 20px}
+.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:16px;white-space:nowrap}.nav-brand span{color:var(--accent)}
 .nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
-.nav-tab{padding:14px 16px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
-.nav-tab:hover{color:var(--text)}
-.nav-tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.nav-tab{padding:14px 13px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
+.nav-tab:hover{color:var(--text)}.nav-tab.active{color:var(--text);border-bottom-color:var(--accent)}
 .nav-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding:14px 0;white-space:nowrap}
-/* LAYOUT */
-.page{display:none;padding:24px 28px;max-width:1400px;margin:0 auto}
-.page.active{display:block}
-/* CARDS */
+.page{display:none;padding:24px 28px;max-width:1400px;margin:0 auto}.page.active{display:block}
 .kpi-row{display:grid;gap:16px;margin-bottom:20px}
-.kpi-row.cols3{grid-template-columns:repeat(3,1fr)}
-.kpi-row.cols4{grid-template-columns:repeat(4,1fr)}
-.kpi-row.cols5{grid-template-columns:repeat(5,1fr)}
+.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}.c5{grid-template-columns:repeat(5,1fr)}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
 .kpi-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .kpi-value{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;line-height:1}
@@ -43,955 +27,327 @@ nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top
 .kpi.warn{border-color:rgba(183,119,13,.35);background:rgba(183,119,13,.06)}
 .kpi.teal{border-color:rgba(26,82,118,.4);background:rgba(26,82,118,.1)}
 .kpi.purple{border-color:rgba(90,24,120,.4);background:rgba(90,24,120,.1)}
-/* MEGA SLA */
-.sla-mega{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden}
-.sla-mega::before{content:'';position:absolute;top:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(30,132,73,.06);pointer-events:none}
+.kpi.focco{border-color:rgba(26,77,10,.5);background:rgba(26,77,10,.12)}
+.sla-mega{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;text-align:center;margin-bottom:20px}
 .sla-mega-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
 .sla-mega-value{font-family:'DM Mono',monospace;font-size:72px;font-weight:500;color:#27ae60;line-height:1}
 .sla-mega-badge{display:inline-block;margin-top:12px;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(30,132,73,.15);color:#27ae60;border:1px solid rgba(30,132,73,.3)}
 .sla-meta{font-size:11px;color:var(--muted);margin-top:8px}
-/* SECTION */
 .section-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
-/* TABLE */
-.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}.tbl-scroll{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
 th{background:#0d1626;padding:10px 14px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:1px solid var(--border)}
 td{padding:10px 14px;font-size:13px;border-bottom:1px solid rgba(31,45,69,.5)}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(46,74,122,.1)}
+tr:last-child td{border-bottom:none}tr:hover td{background:rgba(46,74,122,.1)}
 .mono{font-family:'DM Mono',monospace;font-size:12px}
-/* BADGES */
 .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace}
-.badge-green{background:rgba(30,132,73,.15);color:#27ae60;border:1px solid rgba(30,132,73,.3)}
-.badge-yellow{background:rgba(183,119,13,.15);color:#e6a817;border:1px solid rgba(183,119,13,.3)}
-.badge-red{background:rgba(192,57,43,.15);color:#e74c3c;border:1px solid rgba(192,57,43,.3)}
-.badge-orange{background:rgba(211,84,0,.15);color:#e67e22;border:1px solid rgba(211,84,0,.3)}
-/* BAR */
+.bg{background:rgba(30,132,73,.15);color:#27ae60;border:1px solid rgba(30,132,73,.3)}
+.by{background:rgba(183,119,13,.15);color:#e6a817;border:1px solid rgba(183,119,13,.3)}
+.br{background:rgba(192,57,43,.15);color:#e74c3c;border:1px solid rgba(192,57,43,.3)}
 .bar-wrap{background:rgba(255,255,255,.04);border-radius:4px;height:6px;flex:1}
-.bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.bar-fill{height:100%;border-radius:4px}
 .bar-row{display:flex;align-items:center;gap:10px}
-/* CHART CONTAINER */
 .chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px}
 .chart-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px}
-.chart-container{position:relative}
-/* GRID 2 */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
-/* URGENCIA */
-.urg-venc{color:#e74c3c;font-weight:700}
-.urg-crit{color:#e74c3c;font-weight:700}
-.urg-alert{color:#e6a817;font-weight:600}
-.urg-atenc{color:#e67e22;font-weight:600}
-.urg-ok{color:#27ae60;font-weight:600}
-/* DvD */
-.dvd-up{color:#27ae60;font-weight:700}
-.dvd-down{color:#e74c3c;font-weight:700}
-.dvd-neutral{color:var(--muted)}
-/* FOCCO */
-.focco-header{background:linear-gradient(135deg,var(--focco),var(--focco2));padding:20px 24px;border-radius:10px;margin-bottom:20px}
-.focco-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:4px}
-.focco-sub{font-size:12px;color:rgba(255,255,255,.65)}
-.focco-total{font-family:'DM Mono',monospace;font-size:40px;font-weight:500;color:#aade66;line-height:1}
-.uf-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:16px}
-.uf-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px}
-/* INFO */
-.info-note{background:rgba(30,82,118,.12);border:1px solid rgba(30,82,118,.25);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--muted);margin-bottom:16px}
-/* DEV TABLE */
-.dev-header{background:rgba(74,26,122,.3);border:1px solid rgba(74,26,122,.4);border-radius:10px 10px 0 0;padding:14px 18px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#cc88ff}
-/* SCROLL */
-.tbl-scroll{overflow-x:auto}
-/* SEPARATOR */
-.sep{height:1px;background:var(--border);margin:20px 0}
-/* PAGE HEADER */
 .page-header{margin-bottom:24px}
 .page-header h1{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--text);margin-bottom:4px}
 .page-header p{color:var(--muted);font-size:13px}
-
-@media(max-width:900px){
-  .kpi-row.cols3,.kpi-row.cols4,.kpi-row.cols5{grid-template-columns:repeat(2,1fr)}
-  .grid2,.grid3{grid-template-columns:1fr}
-  .sla-mega-value{font-size:52px}
-}
+.focco-header{background:linear-gradient(135deg,var(--focco),var(--focco2));padding:20px 24px;border-radius:10px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.focco-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:4px}
+.focco-sub{font-size:12px;color:rgba(255,255,255,.65)}
+.focco-total{font-family:'DM Mono',monospace;font-size:36px;font-weight:500;color:#aade66;line-height:1}
+.dev-mkt-hdr{background:rgba(74,26,122,.3);border:1px solid rgba(74,26,122,.4);padding:12px 18px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#cc88ff;border-radius:10px 10px 0 0}
+.info-note{background:rgba(30,82,118,.12);border:1px solid rgba(30,82,118,.25);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--muted);margin-bottom:16px}
+.dvd-up{color:#27ae60;font-weight:700}.dvd-down{color:#e74c3c;font-weight:700}.dvd-neutral{color:var(--muted)}
+.uf-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.focco-diff{background:rgba(30,77,10,.2);border:1px solid rgba(102,255,153,.25);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px}
 </style>
 </head>
 <body>
-
 <nav>
   <div class="nav-brand">Easy <span>House</span></div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('visao')">📊 Visão Geral</button>
-    <button class="nav-tab" onclick="showPage('transp')">🚚 Transportadoras</button>
-    <button class="nav-tab" onclick="showPage('mkt')">🛒 Marketplaces</button>
-    <button class="nav-tab" onclick="showPage('aberto')">⚠️ Em Aberto</button>
-    <button class="nav-tab" onclick="showPage('focco')">🌿 Peso Março</button>
-    <button class="nav-tab" onclick="showPage('dev')">🔄 Devoluções</button>
-    <button class="nav-tab" onclick="showPage('cnpj')">🚫 CNPJ</button>
-    <button class="nav-tab" onclick="showPage('dvd')">📈 Dia vs Dia</button>
+    <button class="nav-tab active" onclick="showPage('visao',this)">📊 Visão Geral</button>
+    <button class="nav-tab" onclick="showPage('transp',this)">🚚 Transportadoras</button>
+    <button class="nav-tab" onclick="showPage('mkt',this)">🛒 Marketplaces</button>
+    <button class="nav-tab" onclick="showPage('aberto',this)">⚠️ Em Aberto</button>
+    <button class="nav-tab" onclick="showPage('focco',this)">🌿 Peso Março</button>
+    <button class="nav-tab" onclick="showPage('dev',this)">🔄 Devoluções</button>
+    <button class="nav-tab" onclick="showPage('cnpj',this)">🚫 CNPJ</button>
+    <button class="nav-tab" onclick="showPage('dvd',this)">📈 Dia vs Dia</button>
   </div>
-  <div class="nav-date">30 / 03 / 2026</div>
+  <div class="nav-date">31 / 03 / 2026</div>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- ABA 1 — VISÃO GERAL -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div id="page-visao" class="page active">
-  <div class="page-header">
-    <h1>Dashboard de SLA</h1>
-    <p>Anymarket · Easy House · Ref.: 30/03/2026 · Sem Correios · Sem SC</p>
+  <div class="page-header"><h1>Dashboard de SLA</h1><p>Anymarket · Easy House · 31/03/2026 · Sem Correios · Sem SC</p></div>
+  <div class="kpi-row c4">
+    <div class="kpi"><div class="kpi-label">Pedidos na Base</div><div class="kpi-value mono">4.475</div><div class="kpi-sub">após remover duplicatas</div></div>
+    <div class="kpi green"><div class="kpi-label">Pedidos Faturados</div><div class="kpi-value mono" style="color:#27ae60">4.234</div><div class="kpi-sub">com NF emitida</div></div>
+    <div class="kpi green"><div class="kpi-label">No Prazo</div><div class="kpi-value mono" style="color:#27ae60">4.048</div><div class="kpi-sub">dentro da entrega esperada</div></div>
+    <div class="kpi accent"><div class="kpi-label">Em Atraso</div><div class="kpi-value mono" style="color:#e74c3c">186</div><div class="kpi-sub">pedidos fora do prazo</div></div>
   </div>
-
-  <div class="kpi-row cols4">
-    <div class="kpi">
-      <div class="kpi-label">Pedidos na Base</div>
-      <div class="kpi-value mono">4.801</div>
-      <div class="kpi-sub">após remover duplicatas</div>
-    </div>
-    <div class="kpi green">
-      <div class="kpi-label">Pedidos Faturados</div>
-      <div class="kpi-value mono" style="color:#27ae60">4.267</div>
-      <div class="kpi-sub">com NF emitida</div>
-    </div>
-    <div class="kpi green">
-      <div class="kpi-label">No Prazo</div>
-      <div class="kpi-value mono" style="color:#27ae60">4.086</div>
-      <div class="kpi-sub">dentro da entrega esperada</div>
-    </div>
-    <div class="kpi accent">
-      <div class="kpi-label">Em Atraso</div>
-      <div class="kpi-value mono" style="color:#e74c3c">181</div>
-      <div class="kpi-sub">pedidos fora do prazo</div>
-    </div>
-  </div>
-
   <div class="sla-mega">
-    <div class="sla-mega-label">Índice de SLA Geral — 30/03/2026</div>
-    <div class="sla-mega-value">95,76%</div>
+    <div class="sla-mega-label">Índice de SLA Geral — 31/03/2026</div>
+    <div class="sla-mega-value">95,61%</div>
     <div class="sla-mega-badge">✅ Meta atingida (≥ 95%)</div>
-    <div class="sla-meta">17 devoluções excluídas · 5 CNPJ em aba separada · Correios e SC excluídos</div>
+    <div class="sla-meta">19 devoluções excluídas · 5 CNPJ em aba separada · Correios e SC excluídos</div>
   </div>
-
-  <div class="kpi-row cols4">
-    <div class="kpi warn">
-      <div class="kpi-label">Em Aberto (S/Fat.)</div>
-      <div class="kpi-value mono" style="color:#e6a817">501</div>
-      <div class="kpi-sub">pedidos sem NF</div>
-    </div>
-    <div class="kpi warn">
-      <div class="kpi-label">Valor em Aberto</div>
-      <div class="kpi-value mono" style="color:#e6a817;font-size:20px">R$ 504.298</div>
-      <div class="kpi-sub">estimativa</div>
-    </div>
-    <div class="kpi teal">
-      <div class="kpi-label">Peso em Aberto (est.)</div>
-      <div class="kpi-value mono" style="color:#5dade2;font-size:20px">59.329 kg</div>
-      <div class="kpi-sub">R$/kg = 8,50</div>
-    </div>
-    <div class="kpi teal">
-      <div class="kpi-label">Prazo Médio Emissão NF</div>
-      <div class="kpi-value mono" style="color:#27ae60">1,4 d.u.</div>
-      <div class="kpi-sub">média geral</div>
-    </div>
+  <div class="kpi-row c4">
+    <div class="kpi warn"><div class="kpi-label">Em Aberto (S/Fat.)</div><div class="kpi-value mono" style="color:#e6a817">208</div><div class="kpi-sub">pedidos sem NF</div></div>
+    <div class="kpi warn"><div class="kpi-label">Valor em Aberto</div><div class="kpi-value mono" style="color:#e6a817;font-size:20px">R$ 218.607</div><div class="kpi-sub">estimativa</div></div>
+    <div class="kpi teal"><div class="kpi-label">Peso em Aberto (est.)</div><div class="kpi-value mono" style="color:#5dade2;font-size:20px">25.718 kg</div><div class="kpi-sub">R$/kg = 8,50</div></div>
+    <div class="kpi teal"><div class="kpi-label">Prazo Médio NF</div><div class="kpi-value mono" style="color:#27ae60">1,3 d.u.</div><div class="kpi-sub">média geral</div></div>
   </div>
-
   <div class="grid2">
-    <div class="chart-card">
-      <div class="chart-title">📈 Histórico de SLA — Março/2026</div>
-      <div class="chart-container"><canvas id="chartHist" height="180"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">⏱ Distribuição de Atrasos por Faixa</div>
-      <div class="chart-container"><canvas id="chartFaixa" height="180"></canvas></div>
-    </div>
+    <div class="chart-card"><div class="chart-title">📈 Histórico SLA — Março/2026</div><canvas id="chartHist" height="180"></canvas></div>
+    <div class="chart-card"><div class="chart-title">⏱ Distribuição de Atrasos por Faixa</div><canvas id="chartFaixa" height="180"></canvas></div>
   </div>
-
   <div class="section-title">Resumo por Transportadora</div>
-  <div class="tbl-wrap tbl-scroll">
-    <table>
-      <thead><tr><th>Transportadora</th><th>Total Fat.</th><th>No Prazo</th><th>Em Atraso</th><th>% SLA</th><th style="width:160px">Barra SLA</th></tr></thead>
-      <tbody id="tbody-transp-visao"></tbody>
-    </table>
-  </div>
+  <div class="tbl-wrap tbl-scroll"><table><thead><tr><th>Transportadora</th><th>Total NFs</th><th>No Prazo</th><th>Em Atraso</th><th>% SLA</th><th>Barra</th></tr></thead><tbody id="tb-tv"></tbody></table></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- ABA 2 — TRANSPORTADORAS -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div id="page-transp" class="page">
-  <div class="page-header">
-    <h1>SLA por Transportadora</h1>
-    <p>Sem Correios · Sem SC · Ref.: 30/03/2026</p>
-  </div>
+  <div class="page-header"><h1>SLA por Transportadora</h1><p>Sem Correios · Sem SC · 31/03/2026</p></div>
   <div class="grid2">
-    <div class="chart-card">
-      <div class="chart-title">% SLA por Transportadora</div>
-      <div class="chart-container"><canvas id="chartTranspSla" height="260"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Atrasos por Transportadora (qtd.)</div>
-      <div class="chart-container"><canvas id="chartTranspAtrasos" height="260"></canvas></div>
-    </div>
+    <div class="chart-card"><div class="chart-title">% SLA por Transportadora</div><canvas id="chartTSla" height="260"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Atrasos por Transportadora (qtd.)</div><canvas id="chartTAt" height="260"></canvas></div>
   </div>
-  <div class="tbl-wrap tbl-scroll">
-    <table>
-      <thead><tr><th>Transportadora</th><th>UF</th><th>Total Fat.</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th style="width:140px">Barra SLA</th></tr></thead>
-      <tbody id="tbody-transp-full"></tbody>
-    </table>
-  </div>
+  <div class="tbl-wrap tbl-scroll"><table><thead><tr><th>Transportadora</th><th>UF</th><th>Total NFs</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th>Barra</th></tr></thead><tbody id="tb-tf"></tbody></table></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- ABA 3 — MARKETPLACES -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div id="page-mkt" class="page">
-  <div class="page-header">
-    <h1>SLA por Marketplace</h1>
-    <p>Ref.: 30/03/2026 · Todos os canais</p>
-  </div>
+  <div class="page-header"><h1>SLA por Marketplace</h1><p>31/03/2026</p></div>
   <div class="grid2">
-    <div class="chart-card">
-      <div class="chart-title">% SLA por Canal</div>
-      <div class="chart-container"><canvas id="chartMktSla" height="260"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Volume de Pedidos Faturados por Canal</div>
-      <div class="chart-container"><canvas id="chartMktVol" height="260"></canvas></div>
-    </div>
+    <div class="chart-card"><div class="chart-title">% SLA por Canal</div><canvas id="chartMSla" height="260"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Volume por Canal</div><canvas id="chartMVol" height="260"></canvas></div>
   </div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Marketplace</th><th>Total Fat.</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th style="width:140px">Barra SLA</th></tr></thead>
-      <tbody id="tbody-mkt"></tbody>
-    </table>
-  </div>
+  <div class="tbl-wrap"><table><thead><tr><th>Marketplace</th><th>Total Fat.</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th>Barra</th></tr></thead><tbody id="tb-mkt"></tbody></table></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- ABA 4 — EM ABERTO -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div id="page-aberto" class="page">
-  <div class="page-header">
-    <h1>Pedidos em Aberto — Sem Faturamento</h1>
-    <p>Sem Correios · Sem SC · Ref.: 30/03/2026</p>
-  </div>
-  <div class="kpi-row cols5">
-    <div class="kpi warn">
-      <div class="kpi-label">Total em Aberto</div>
-      <div class="kpi-value mono" style="color:#e6a817">501</div>
-    </div>
-    <div class="kpi warn">
-      <div class="kpi-label">Valor Total</div>
-      <div class="kpi-value mono" style="font-size:18px;color:#e6a817">R$ 504.298</div>
-    </div>
-    <div class="kpi accent">
-      <div class="kpi-label">Vencidos + Críticos</div>
-      <div class="kpi-value mono" style="color:#e74c3c">1</div>
-    </div>
-    <div class="kpi warn">
-      <div class="kpi-label">Em Alerta (4-7d)</div>
-      <div class="kpi-value mono" style="color:#e6a817">0</div>
-    </div>
-    <div class="kpi teal">
-      <div class="kpi-label">Em Atenção (8-14d)</div>
-      <div class="kpi-value mono" style="color:#5dade2">5</div>
-    </div>
+  <div class="page-header"><h1>Pedidos em Aberto</h1><p>Sem Faturamento · 31/03/2026</p></div>
+  <div class="kpi-row c5">
+    <div class="kpi warn"><div class="kpi-label">Total em Aberto</div><div class="kpi-value mono" style="color:#e6a817">208</div></div>
+    <div class="kpi warn"><div class="kpi-label">Valor Total</div><div class="kpi-value mono" style="font-size:18px;color:#e6a817">R$ 218.607</div></div>
+    <div class="kpi accent"><div class="kpi-label">Vencidos+Críticos</div><div class="kpi-value mono" style="color:#e74c3c">0</div></div>
+    <div class="kpi warn"><div class="kpi-label">Em Alerta (4-7d)</div><div class="kpi-value mono" style="color:#e6a817">1</div></div>
+    <div class="kpi teal"><div class="kpi-label">Em Atenção (8-14d)</div><div class="kpi-value mono" style="color:#5dade2">5</div></div>
   </div>
   <div class="grid2">
-    <div class="chart-card">
-      <div class="chart-title">Em Aberto por Marketplace</div>
-      <div class="chart-container"><canvas id="chartSfMkt" height="220"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">⚖️ Peso Estimado em Aberto por UF (est. R$/kg 8,50)</div>
-      <div class="chart-container"><canvas id="chartSfUf" height="220"></canvas></div>
-    </div>
-  </div>
-  <div class="section-title">Detalhamento por Marketplace</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Marketplace</th><th>Total em Aberto</th><th>Venc./Crít.</th><th>Próx. Prazo</th><th>Valor Total (R$)</th></tr></thead>
-      <tbody>
-        <tr><td>Shopee</td><td class="mono">324</td><td><span class="badge badge-green">0</span></td><td class="mono">16/04/2026</td><td class="mono">R$ 333.047,00</td></tr>
-        <tr><td>Mercado Livre</td><td class="mono">94</td><td><span class="badge badge-red">1</span></td><td class="mono">01/04/2026</td><td class="mono">R$ 83.528,87</td></tr>
-        <tr><td>Magazine Luiza</td><td class="mono">65</td><td><span class="badge badge-green">0</span></td><td class="mono">13/04/2026</td><td class="mono">R$ 70.043,58</td></tr>
-        <tr><td>Via Varejo</td><td class="mono">13</td><td><span class="badge badge-green">0</span></td><td class="mono">17/04/2026</td><td class="mono">R$ 12.448,20</td></tr>
-        <tr><td>Madeira Madeira</td><td class="mono">5</td><td><span class="badge badge-green">0</span></td><td class="mono">16/04/2026</td><td class="mono">R$ 5.230,51</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="section-title">Peso em Aberto por UF</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>UF</th><th>Pedidos</th><th>Valor (R$)</th><th>Peso Est. (kg)</th><th>% do Total</th><th>Médio/Pedido (kg)</th></tr></thead>
-      <tbody>
-        <tr><td><strong>SP</strong></td><td class="mono">185</td><td class="mono">R$ 191.934,81</td><td class="mono">22.580,6</td><td><span class="badge badge-green">38,1%</span></td><td class="mono">122,1</td></tr>
-        <tr><td><strong>RJ</strong></td><td class="mono">168</td><td class="mono">R$ 164.242,43</td><td class="mono">19.322,6</td><td><span class="badge badge-yellow">32,6%</span></td><td class="mono">115,0</td></tr>
-        <tr><td><strong>MG</strong></td><td class="mono">148</td><td class="mono">R$ 148.120,92</td><td class="mono">17.426,0</td><td><span class="badge badge-yellow">29,4%</span></td><td class="mono">117,7</td></tr>
-      </tbody>
-    </table>
+    <div class="chart-card"><div class="chart-title">Em Aberto por Marketplace</div><canvas id="chartSfM" height="220"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Peso Estimado por UF</div><canvas id="chartSfU" height="220"></canvas></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- ABA 5 — PESO MARÇO (FOCCO) -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div id="page-focco" class="page">
-  <div class="focco-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
-    <div>
-      <div class="focco-title">🌿 Peso Março/2026 — FOCCO</div>
-      <div class="focco-sub">Peso Bruto Real (PESO BRT) · Excluídos: Correios, SC, auxiliares · 30/03/2026</div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:4px">TOTAL KG TRANSPORTADO</div>
-      <div class="focco-total">1.213.899 kg</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:4px">10 transp · 10.164 NFs · R$ VLR</div>
-    </div>
+  <div class="focco-header">
+    <div><div class="focco-title">🌿 Peso Março/2026 — FOCCO REAL</div><div class="focco-sub">PESO BRT · Sem Correios, SC e auxiliares · Base FOCCO 31/03/2026 (até 30/03)</div></div>
+    <div style="text-align:right"><div style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:4px">TOTAL KG — MARÇO 2026</div><div class="focco-total">1.273.980 kg</div><div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:4px">10 transportadoras · 10.715 NFs</div></div>
   </div>
-
+  <!-- CARDS PRINCIPAIS -->
+  <div class="kpi-row c3">
+    <div class="kpi focco"><div class="kpi-label" style="color:#88CC66">Total KG Março</div><div class="kpi-value" style="color:#aade66;font-size:22px;font-family:'DM Mono',monospace">1.273.980 kg</div><div class="kpi-sub" style="color:#66aa44">+60.081 kg vs base 30/03</div></div>
+    <div class="kpi focco" style="border-color:rgba(102,255,153,.4);background:rgba(26,77,10,.2)"><div class="kpi-label" style="color:#66FF99">Média por Dia Útil (23 d.u.)</div><div class="kpi-value" style="color:#66FF99;font-size:22px;font-family:'DM Mono',monospace">55.390 kg/d.u.</div><div class="kpi-sub">1.273.980 ÷ 23 dias úteis</div></div>
+    <div class="kpi focco"><div class="kpi-label" style="color:#88CC66">NFs no Mês</div><div class="kpi-value" style="color:#aade66;font-size:22px;font-family:'DM Mono',monospace">10.715</div><div class="kpi-sub">+610 NFs vs base 30/03</div></div>
+  </div>
+  <div class="focco-diff">
+    <strong style="color:#66FF99">📊 Alterações com o FOCCO correto (31/03 vs base 30/03):</strong><br>
+    <span style="color:#aaddaa">Total KG: +60.081 kg (+4,9%) &nbsp;·&nbsp; NFs: +610 &nbsp;·&nbsp; Média/d.u.: 55.390 vs 54.268 (+1.122 kg)</span><br>
+    <span style="color:#88bb88">Maiores variações: TRANSBARBOSA +21.578 kg · TRANS EXPRESS +9.898 kg · TS RJ +8.931 kg · NOVA ERA +10.514 kg · RGE +8.912 kg</span>
+  </div>
   <div class="section-title">📊 Seção 1 — Representatividade Geral</div>
-  <div class="chart-card">
-    <div class="chart-title">Peso Bruto por Transportadora (kg)</div>
-    <div class="chart-container"><canvas id="chartFoccoGeral" height="200"></canvas></div>
-  </div>
-  <div class="tbl-wrap tbl-scroll">
-    <table>
-      <thead><tr><th>Pos.</th><th>Transportadora</th><th>NFs</th><th>Peso Bruto (kg)</th><th>% no Geral</th><th>% Acumulado</th><th style="width:160px">Representatividade</th></tr></thead>
-      <tbody id="tbody-focco-geral"></tbody>
-    </table>
-  </div>
-
-  <div class="section-title" style="margin-top:24px">🗺️ Seção 2 — Peso por Estado</div>
+  <div class="chart-card"><div class="chart-title">Peso Bruto por Transportadora (kg) — FOCCO REAL 31/03</div><canvas id="chartFG" height="200"></canvas></div>
+  <div class="tbl-wrap tbl-scroll"><table><thead><tr><th>Pos.</th><th>Transportadora</th><th>NFs</th><th>Peso Bruto (kg)</th><th>% Geral</th><th>% Acumulado</th><th>Média/Dia Útil</th></tr></thead><tbody id="tb-fg"></tbody></table></div>
+  <div class="section-title" style="margin-top:24px">🗺️ Seção 2 — Por Estado</div>
   <div class="grid3">
-    <div class="kpi" style="border-color:rgba(92,58,16,.6);background:rgba(92,58,16,.15)">
-      <div class="kpi-label" style="color:#e8a84f">São Paulo · SP</div>
-      <div class="kpi-value mono" style="color:#e8a84f;font-size:22px">459.132 kg</div>
-      <div class="kpi-sub">37,82% do total · 4 transp</div>
-    </div>
-    <div class="kpi" style="border-color:rgba(30,77,10,.6);background:rgba(30,77,10,.15)">
-      <div class="kpi-label" style="color:#aade66">Minas Gerais · MG</div>
-      <div class="kpi-value mono" style="color:#aade66;font-size:22px">387.187 kg</div>
-      <div class="kpi-sub">31,90% do total · 3 transp</div>
-    </div>
-    <div class="kpi" style="border-color:rgba(26,58,92,.6);background:rgba(26,58,92,.15)">
-      <div class="kpi-label" style="color:#5dade2">Rio de Janeiro · RJ</div>
-      <div class="kpi-value mono" style="color:#5dade2;font-size:22px">367.294 kg</div>
-      <div class="kpi-sub">30,26% do total · 3 transp</div>
-    </div>
+    <div class="kpi" style="border-color:rgba(92,58,16,.6);background:rgba(92,58,16,.15)"><div class="kpi-label" style="color:#e8a84f">São Paulo · SP</div><div class="kpi-value mono" style="color:#e8a84f;font-size:20px">480.710 kg</div><div class="kpi-sub">37,73% · Média: <strong style="color:#e8a84f">20.901 kg/d.u.</strong></div></div>
+    <div class="kpi" style="border-color:rgba(30,77,10,.6);background:rgba(30,77,10,.15)"><div class="kpi-label" style="color:#aade66">Minas Gerais · MG</div><div class="kpi-value mono" style="color:#aade66;font-size:20px">406.613 kg</div><div class="kpi-sub">31,92% · Média: <strong style="color:#aade66">17.679 kg/d.u.</strong></div></div>
+    <div class="kpi" style="border-color:rgba(26,58,92,.6);background:rgba(26,58,92,.15)"><div class="kpi-label" style="color:#5dade2">Rio de Janeiro · RJ</div><div class="kpi-value mono" style="color:#5dade2;font-size:20px">386.371 kg</div><div class="kpi-sub">30,33% · Média: <strong style="color:#5dade2">16.799 kg/d.u.</strong></div></div>
   </div>
-  <div class="chart-card">
-    <div class="chart-title">Distribuição de Peso por Estado (%)</div>
-    <div class="chart-container" style="max-width:400px;margin:0 auto"><canvas id="chartFoccoUf" height="240"></canvas></div>
-  </div>
-
-  <div class="section-title" style="margin-top:24px">🚚 Seção 3 — Representatividade por Estado</div>
-  <div class="grid3" id="focco-uf-grid"></div>
+  <div class="chart-card"><div class="chart-title">Distribuição por Estado</div><div style="max-width:400px;margin:0 auto"><canvas id="chartFU" height="240"></canvas></div></div>
+  <div class="section-title" style="margin-top:24px">🚚 Seção 3 — Por Estado Detalhado</div>
+  <div class="grid3" id="uf-grid"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- ABA 6 — DEVOLUÇÕES -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div id="page-dev" class="page">
-  <div class="page-header">
-    <h1>Pedidos em Devolução</h1>
-    <p>Base do dia 30/03/2026 · Excluídos dos indicadores de SLA</p>
+  <div class="page-header"><h1>Pedidos em Devolução</h1><p>Base 31/03/2026 · Por marketplace · Excluídos dos indicadores</p></div>
+  <div class="kpi-row c3">
+    <div class="kpi" style="border-color:rgba(74,26,122,.4);background:rgba(74,26,122,.1)"><div class="kpi-label" style="color:#cc88ff">NFs na lista</div><div class="kpi-value mono" style="color:#cc88ff">49</div></div>
+    <div class="kpi" style="border-color:rgba(74,26,122,.4);background:rgba(74,26,122,.1)"><div class="kpi-label" style="color:#cc88ff">Encontradas na base</div><div class="kpi-value mono" style="color:#cc88ff">19</div></div>
+    <div class="kpi"><div class="kpi-label">Não encontradas</div><div class="kpi-value mono" style="color:var(--muted)">30</div></div>
   </div>
-  <div class="kpi-row cols3">
-    <div class="kpi" style="border-color:rgba(74,26,122,.4);background:rgba(74,26,122,.1)">
-      <div class="kpi-label" style="color:#cc88ff">NFs na lista de devolução</div>
-      <div class="kpi-value mono" style="color:#cc88ff">41</div>
-      <div class="kpi-sub">total na planilha de devoluções</div>
-    </div>
-    <div class="kpi" style="border-color:rgba(74,26,122,.4);background:rgba(74,26,122,.1)">
-      <div class="kpi-label" style="color:#cc88ff">Encontradas na base do dia</div>
-      <div class="kpi-value mono" style="color:#cc88ff">17</div>
-      <div class="kpi-sub">excluídas dos indicadores</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Não encontradas (já canceladas)</div>
-      <div class="kpi-value mono" style="color:var(--muted)">24</div>
-      <div class="kpi-sub">NFs ausentes na base</div>
-    </div>
-  </div>
-  <div class="info-note">ℹ️ Apenas os pedidos presentes na base do dia são exibidos. NFs não encontradas presumivelmente já foram canceladas ou baixadas do sistema.</div>
-  <div class="dev-header">🔄 Pedidos em Devolução — Presentes na Base (17)</div>
-  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px">
-    <table>
-      <thead><tr><th>Nº NF</th><th>Marketplace</th><th>Cliente</th><th>Código Pedido</th><th>UF</th></tr></thead>
-      <tbody id="tbody-dev"></tbody>
-    </table>
-  </div>
+  <div class="dev-mkt-hdr">🛒 MAGAZINE LUIZA — 10 pedidos</div>
+  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px"><table><thead><tr><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead><tbody id="tb-devM"></tbody></table></div>
+  <div class="dev-mkt-hdr">🛒 MERCADO LIVRE — 5 pedidos</div>
+  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px"><table><thead><tr><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead><tbody id="tb-devL"></tbody></table></div>
+  <div class="dev-mkt-hdr">🛒 SHOPEE — 4 pedidos</div>
+  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px"><table><thead><tr><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead><tbody id="tb-devS"></tbody></table></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- ABA 7 — CNPJ -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div id="page-cnpj" class="page">
   <div class="page-header">
-    <h1>Pedidos CNPJ — A Cancelar</h1>
-    <p>Ref.: 30/03/2026 · Separados dos indicadores</p>
+    <h1>Pedidos CNPJ — Detectados Automaticamente</h1>
+    <p>Identificados via coluna CPF/CNPJ do Anymarket (14 dígitos) · 31/03/2026</p>
   </div>
-  <div class="kpi-row cols3">
-    <div class="kpi accent">
-      <div class="kpi-label">Pedidos CNPJ a Cancelar</div>
-      <div class="kpi-value mono" style="color:#e74c3c">5</div>
-      <div class="kpi-sub">presentes na base do dia</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Na lista de cancelamento</div>
-      <div class="kpi-value mono">10</div>
-      <div class="kpi-sub">total na planilha</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Não encontrados</div>
-      <div class="kpi-value mono" style="color:var(--muted)">5</div>
-      <div class="kpi-sub">ausentes na base atual</div>
-    </div>
+  <div class="kpi-row c3">
+    <div class="kpi accent"><div class="kpi-label">CNPJs detectados</div><div class="kpi-value mono" style="color:#e74c3c">5</div><div class="kpi-sub">identificados automaticamente</div></div>
+    <div class="kpi"><div class="kpi-label">Mercado Livre</div><div class="kpi-value mono">4</div><div class="kpi-sub">pedidos com CNPJ</div></div>
+    <div class="kpi"><div class="kpi-label">Madeira Madeira</div><div class="kpi-value mono">1</div><div class="kpi-sub">pedido com CNPJ</div></div>
   </div>
-  <div class="info-note">⚠️ Estes pedidos foram separados dos indicadores de SLA e devem ser cancelados. Verifique com a equipe comercial antes de cancelar.</div>
-  <div class="section-title">Lista de Cancelamento (planilha)</div>
-  <div class="tbl-wrap">
+  <div class="info-note">ℹ️ CNPJs identificados automaticamente pela coluna CPF/CNPJ do arquivo Anymarket. Qualquer valor com 14 dígitos é tratado como CNPJ e separado para cancelamento.</div>
+
+  <!-- MERCADO LIVRE -->
+  <div class="dev-mkt-hdr">🛒 MERCADO LIVRE — 4 pedidos</div>
+  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px">
     <table>
-      <thead><tr><th>#</th><th>Código do Pedido</th></tr></thead>
-      <tbody>
-        <tr><td class="mono">1</td><td class="mono">S-46597234309</td></tr>
-        <tr><td class="mono">2</td><td class="mono">S-46640401089</td></tr>
-        <tr><td class="mono">3</td><td class="mono">2000015531344294</td></tr>
-        <tr><td class="mono">4</td><td class="mono">2000015591523456</td></tr>
-        <tr><td class="mono">5</td><td class="mono">2000012213461717</td></tr>
-        <tr><td class="mono">6</td><td class="mono">577303</td></tr>
-        <tr><td class="mono">7</td><td class="mono">S-46702819711</td></tr>
-        <tr><td class="mono">8</td><td class="mono">2000015662333224</td></tr>
-        <tr><td class="mono">9</td><td class="mono">S-46725546562</td></tr>
-        <tr><td class="mono">10</td><td class="mono">9584020</td></tr>
-      </tbody>
+      <thead><tr><th>CNPJ</th><th>Cliente</th><th>Código Pedido</th><th>Data Pedido</th><th>Prazo Entrega</th><th>Dias p/ Prazo</th><th>Urgência</th><th>UF</th><th>Valor (R$)</th></tr></thead>
+      <tbody id="tb-cnpj-ml"></tbody>
+    </table>
+  </div>
+
+  <!-- MADEIRA MADEIRA -->
+  <div class="dev-mkt-hdr" style="background:rgba(92,58,16,.3);border-color:rgba(92,58,16,.4);color:#e8a84f">🛒 MADEIRA MADEIRA — 1 pedido</div>
+  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px">
+    <table>
+      <thead><tr><th>CNPJ</th><th>Cliente</th><th>Código Pedido</th><th>Data Pedido</th><th>Prazo Entrega</th><th>Dias p/ Prazo</th><th>Urgência</th><th>UF</th><th>Valor (R$)</th></tr></thead>
+      <tbody id="tb-cnpj-mad"></tbody>
     </table>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<!-- ABA 8 — DIA vs DIA -->
-<!-- ═══════════════════════════════════════════════════════ -->
 <div id="page-dvd" class="page">
-  <div class="page-header">
-    <h1>Comparativo Dia vs Dia</h1>
-    <p>27/03/2026 × 30/03/2026 · Easy House · Sem Correios · Sem SC</p>
-  </div>
-
+  <div class="page-header"><h1>Comparativo Dia vs Dia</h1><p>30/03/2026 × 31/03/2026</p></div>
   <div class="section-title">📊 KPIs Gerais</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Indicador</th><th>27/03/2026</th><th>30/03/2026</th><th>Variação</th></tr></thead>
-      <tbody id="tbody-dvd-kpi"></tbody>
-    </table>
-  </div>
-
-  <div class="section-title">⚠️ Em Aberto</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Indicador</th><th>27/03/2026</th><th>30/03/2026</th><th>Variação</th></tr></thead>
-      <tbody id="tbody-dvd-sf"></tbody>
-    </table>
-  </div>
-
-  <div class="section-title">🚚 Atrasos por Transportadora</div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Transportadora</th><th>Atrasos 27/03</th><th>Atrasos 30/03</th><th>Variação</th><th>% SLA 30/03</th></tr></thead>
-      <tbody id="tbody-dvd-transp"></tbody>
-    </table>
-  </div>
-
+  <div class="tbl-wrap"><table><thead><tr><th>Indicador</th><th>30/03/2026</th><th>31/03/2026</th><th>Variação</th></tr></thead><tbody id="tb-kpi"></tbody></table></div>
+  <div class="section-title">🚚 Atrasos por Transportadora (com Total de NFs)</div>
+  <div class="tbl-wrap tbl-scroll"><table><thead><tr><th>Transportadora</th><th>Total NFs 30/03</th><th>Total NFs 31/03</th><th>Atrasos 30/03</th><th>Atrasos 31/03</th><th>% SLA 31/03</th></tr></thead><tbody id="tb-dtr"></tbody></table></div>
   <div class="grid2">
-    <div>
-      <div class="section-title">📦 SLA por Marketplace</div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Marketplace</th><th>SLA 27/03</th><th>SLA 30/03</th><th>Var.</th></tr></thead>
-          <tbody id="tbody-dvd-mkt"></tbody>
-        </table>
-      </div>
-    </div>
-    <div>
-      <div class="section-title">⏱ Faixas de Atraso</div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Faixa</th><th>27/03</th><th>30/03</th><th>Var.</th></tr></thead>
-          <tbody id="tbody-dvd-faixa"></tbody>
-        </table>
-      </div>
-    </div>
+    <div><div class="section-title">📦 SLA por Marketplace</div><div class="tbl-wrap"><table><thead><tr><th>Marketplace</th><th>SLA 30/03</th><th>SLA 31/03</th><th>Var.</th></tr></thead><tbody id="tb-dmkt"></tbody></table></div></div>
+    <div><div class="section-title">⏱ Faixas de Atraso</div><div class="tbl-wrap"><table><thead><tr><th>Faixa</th><th>30/03</th><th>31/03</th><th>Var.</th></tr></thead><tbody id="tb-dfx"></tbody></table></div></div>
   </div>
-
-  <div class="section-title">🌿 Peso FOCCO — Evolução 27/03 → 30/03</div>
-  <div class="chart-card">
-    <div class="chart-title">Peso Bruto por Transportadora (kg) — Comparativo</div>
-    <div class="chart-container"><canvas id="chartDvdFocco" height="240"></canvas></div>
-  </div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>Transportadora</th><th>kg 27/03</th><th>kg 30/03</th><th>Variação</th></tr></thead>
-      <tbody id="tbody-dvd-focco"></tbody>
-    </table>
-  </div>
+  <div class="section-title">🌿 Peso FOCCO — Comparativo 30/03 → 31/03 (DADOS REAIS)</div>
+  <div class="focco-diff"><strong style="color:#66FF99">Total: 1.213.899 kg → 1.273.980 kg &nbsp;·&nbsp; +60.081 kg (+4,9%) &nbsp;·&nbsp; +610 NFs adicionais (até 30/03)</strong></div>
+  <div class="chart-card"><div class="chart-title">Peso Bruto por Transportadora — 30/03 vs 31/03</div><canvas id="chartDvdF" height="240"></canvas></div>
+  <div class="tbl-wrap"><table><thead><tr><th>Transportadora</th><th>kg 30/03</th><th>kg 31/03</th><th>Variação</th></tr></thead><tbody id="tb-dfocco"></tbody></table></div>
 </div>
 
 <script>
-// ── DADOS ─────────────────────────────────────────────────────
-const TRANSP = [
-  {s:'RGE · MG',    uf:'MG', tot:817, at:60,  sla:92.66},
-  {s:'NOVA ERA · MG', uf:'MG', tot:763, at:43, sla:94.36},
-  {s:'TEMPO JUSTO · SP', uf:'SP', tot:341, at:24, sla:92.96},
-  {s:'TRANS SUA LOG · SP', uf:'SP', tot:504, at:21, sla:95.83},
-  {s:'TS RJ · RJ',  uf:'RJ', tot:697, at:14, sla:97.99},
-  {s:'GETLAR · RJ', uf:'RJ', tot:489, at:11, sla:97.75},
-  {s:'TRANSBARBOSA · SP', uf:'SP', tot:377, at:8, sla:97.88},
-  {s:'MTC · SP',    uf:'SP', tot:91,  at:0,  sla:100.00},
-  {s:'SOUL · MG',   uf:'MG', tot:95,  at:0,  sla:100.00},
-  {s:'TRANS EXPRESS · RJ', uf:'RJ', tot:93, at:0, sla:100.00},
-];
-const MKT = [
-  {m:'Shopee',           tot:2552, at:74,  sla:97.10},
-  {m:'Magazine Luiza',   tot:940,  at:56,  sla:94.04},
-  {m:'Mercado Livre',    tot:652,  at:44,  sla:93.25},
-  {m:'Madeira Madeira',  tot:42,   at:4,   sla:90.48},
-  {m:'Via Varejo',       tot:60,   at:1,   sla:98.33},
-  {m:'Zema',             tot:14,   at:1,   sla:92.86},
-  {m:'Web Continental V2', tot:5,  at:1,   sla:80.00},
-  {m:'Casa & Vídeo',     tot:1,    at:0,   sla:100.00},
-  {m:'eFácil',           tot:1,    at:0,   sla:100.00},
-];
-const FAIXAS = [
-  {f:'1-3 dias', q:23}, {f:'4-7 dias', q:69}, {f:'8-14 dias', q:39},
-  {f:'15-30 dias', q:30}, {f:'30+ dias', q:1}
-];
-const HIST = [
-  ['26/02','93.94'],['03/03','93.92'],['04/03','95.68'],['05/03','95.75'],
-  ['06/03','95.78'],['09/03','95.76'],['10/03','96.36'],['12/03','95.91'],
-  ['13/03','95.65'],['17/03','95.85'],['18/03','95.70'],['19/03','96.16'],
-  ['20/03','96.00'],['23/03','95.94'],['24/03','95.84'],['25/03','95.72'],
-  ['26/03','95.32'],['27/03','95.32'],['30/03','95.76']
-];
-const FOCCO_GERAL = [
-  {s:'RGE - MG',          kg:205800.76, pct:16.95, nf:1725},
-  {s:'GETLAR - RJ',       kg:183570.67, pct:15.12, nf:1409},
-  {s:'TRANSBARBOSA - SP', kg:180114.37, pct:14.84, nf:949},
-  {s:'TS RJ - RJ',        kg:164738.93, pct:13.57, nf:1590},
-  {s:'NOVA ERA - MG',     kg:164321.10, pct:13.54, nf:1525},
-  {s:'TRANS SUA LOG - SP',kg:132385.34, pct:10.91, nf:1247},
-  {s:'TEMPO JUSTO - SP',  kg:128603.67, pct:10.59, nf:762},
-  {s:'SOUL - MG',         kg:18481.72,  pct:1.52,  nf:231},
-  {s:'MTC - SP',          kg:18028.28,  pct:1.49,  nf:222},
-  {s:'TRANS EXPRESS - RJ',kg:17853.83,  pct:1.47,  nf:232},
-];
-const FOCCO_UF = {
-  SP:[
-    {s:'TRANSBARBOSA - SP', kg:180114.37, pct_est:39.23, pct_g:14.84},
-    {s:'TRANS SUA LOG - SP',kg:132385.34, pct_est:28.83, pct_g:10.91},
-    {s:'TEMPO JUSTO - SP',  kg:128603.67, pct_est:28.01, pct_g:10.59},
-    {s:'MTC - SP',          kg:18028.28,  pct_est:3.93,  pct_g:1.49},
-  ],
-  MG:[
-    {s:'RGE - MG',      kg:205800.76, pct_est:53.16, pct_g:16.95},
-    {s:'NOVA ERA - MG', kg:164321.10, pct_est:42.44, pct_g:13.54},
-    {s:'SOUL - MG',     kg:18481.72,  pct_est:4.77,  pct_g:1.52},
-  ],
-  RJ:[
-    {s:'GETLAR - RJ',       kg:183570.67, pct_est:49.98, pct_g:15.12},
-    {s:'TS RJ - RJ',        kg:164738.93, pct_est:44.85, pct_g:13.57},
-    {s:'TRANS EXPRESS - RJ',kg:17853.83,  pct_est:4.86,  pct_g:1.47},
-  ],
-};
-const DEV = [
-  {nf:33263, mkt:'Mercado Livre', cli:'leandro aparecido da silva',      cod:'S-46405684731',              uf:'SP'},
-  {nf:33084, mkt:'Magazine Luiza',cli:'Claudia Rabelo Oliveira Amorim',  cod:'LU-1509670098596227-1',       uf:'MG'},
-  {nf:35519, mkt:'Magazine Luiza',cli:'Debora Oliveira',                 cod:'LU-1510170098833915-1',       uf:'MG'},
-  {nf:37481, mkt:'Magazine Luiza',cli:'Romulo Batista Ferreira',         cod:'LU-1511170099257065-1',       uf:'MG'},
-  {nf:38115, mkt:'Shopee',        cli:'Thais Mota Rinke',                cod:'260212FJ1RWE21',              uf:'SP'},
-  {nf:38311, mkt:'Magazine Luiza',cli:'Roniaurea silencio candido',      cod:'LU-1511570099449795-1',       uf:'MG'},
-  {nf:38578, mkt:'Magazine Luiza',cli:'Solange Maria da Silva',          cod:'LU-1511770099529564-1',       uf:'MG'},
-  {nf:45486, mkt:'Magazine Luiza',cli:'Paulo herique dos Santos Silva',  cod:'LU-1512770099828871-1',       uf:'SP'},
-  {nf:40778, mkt:'Shopee',        cli:'Leticia Maria Cappello De Lima',  cod:'2602195VVEE4E9',              uf:'SP'},
-  {nf:40863, mkt:'Shopee',        cli:'Leandro Da Silva Muzy',           cod:'26022079MBM1SU',              uf:'RJ'},
-  {nf:45747, mkt:'Magazine Luiza',cli:'Alexia Carolina Aparecida Fonseca',cod:'LU-1514070100360972-1',     uf:'MG'},
-  {nf:45754, mkt:'Mercado Livre', cli:'claudiasantos8804',               cod:'2000015247324004',            uf:'MG'},
-  {nf:51068, mkt:'Shopee',        cli:'Valdelice Tome De Araujo',        cod:'260305AK7D5N2N',              uf:'SP'},
-  {nf:53395, mkt:'Mercado Livre', cli:'maurilio Alves da silva',         cod:'2000015432314112',            uf:'MG'},
-  {nf:68652, mkt:'Shopee',        cli:'Alcione',                         cod:'260320KE08BACK',              uf:'SP'},
-  {nf:67936, mkt:'Mercado Livre', cli:'Jaci pio',                        cod:'2000015651664096',            uf:'MG'},
-  {nf:68796, mkt:'Mercado Livre', cli:'Rodrigo Aparecido Cunha De Arruda',cod:'2000015661839738',          uf:'SP'},
-];
-const D27 = {
-  total:4958, env:4721, ok:4500, late:221, sla:95.32,
-  dev:15, cnpj:2, sf:220, sf_val:220615, kg:25955,
-  avg_d:8.2, max_d:33, nf_med:1.3, sf_venc:0, sf_crit:0, sf_alrt:0, sf_atc:2,
-  transp:{
-    'RGE - MG':84,'NOVA ERA - MG':50,'TEMPO JUSTO - SP':30,
-    'TRANS SUA LOG - SP':18,'TS RJ - RJ':16,'GETLAR - RJ':9,
-    'TRANSBARBOSA - SP':8,'MTC - SP':0,'SOUL - MG':0,'TRANS EXPRESS - RJ':0,
-  },
-  transp_sla:{
-    'RGE - MG':89.78,'NOVA ERA - MG':93.45,'TEMPO JUSTO - SP':91.24,
-    'TRANS SUA LOG - SP':96.48,'TS RJ - RJ':97.68,'GETLAR - RJ':98.22,
-    'TRANSBARBOSA - SP':97.88,'MTC - SP':100,'SOUL - MG':100,'TRANS EXPRESS - RJ':100,
-  },
-  mkt_sla:{'Shopee':96.90,'Magazine Luiza':93.08,'Mercado Livre':92.50,'Madeira Madeira':88.10,'Via Varejo':97.50,'Zema':100,'Web Continental V2':100,'Casa & Vídeo':100,'eFácil':100},
-  faixas:{  '1-3 dias':28,'4-7 dias':78,'8-14 dias':52,'15-30 dias':40,'30+ dias':2  },
-  kg_uf:{SP:22460, RJ:18900, MG:16200},
-  focco:{
-    'RGE - MG':198886,'GETLAR - RJ':183571,'TRANSBARBOSA - SP':180114,
-    'TS RJ - RJ':159148,'NOVA ERA - MG':160080,'TRANS SUA LOG - SP':129253,
-    'TEMPO JUSTO - SP':128604,'SOUL - MG':18482,'MTC - SP':18028,'TRANS EXPRESS - RJ':17854,
-  },
-};
+const TRANSP=[{s:'RGE · MG',uf:'MG',tot:806,at:57,sla:92.93},{s:'NOVA ERA · MG',uf:'MG',tot:728,at:39,sla:94.64},{s:'TEMPO JUSTO · SP',uf:'SP',tot:316,at:25,sla:92.09},{s:'TRANS SUA LOG · SP',uf:'SP',tot:440,at:24,sla:94.55},{s:'TS RJ · RJ',uf:'RJ',tot:738,at:20,sla:97.29},{s:'GETLAR · RJ',uf:'RJ',tot:417,at:11,sla:97.36},{s:'TRANSBARBOSA · SP',uf:'SP',tot:448,at:10,sla:97.77},{s:'MTC · SP',uf:'SP',tot:89,at:0,sla:100},{s:'SOUL · MG',uf:'MG',tot:95,at:0,sla:100},{s:'TRANS EXPRESS · RJ',uf:'RJ',tot:157,at:0,sla:100}];
+const MKT=[{m:'Shopee',tot:2554,at:76,sla:97.02},{m:'Magazine Luiza',tot:899,at:57,sla:93.66},{m:'Mercado Livre',tot:655,at:46,sla:92.98},{m:'Madeira Madeira',tot:42,at:4,sla:90.48},{m:'Via Varejo',tot:67,at:2,sla:97.01},{m:'Zema',tot:12,at:1,sla:91.67},{m:'Casa & Vídeo',tot:1,at:0,sla:100},{m:'Web Continental V2',tot:3,at:0,sla:100},{m:'eFácil',tot:1,at:0,sla:100}];
+const FAIXAS=[{f:'1-3 dias',q:38},{f:'4-7 dias',q:71},{f:'8-14 dias',q:37},{f:'15-30 dias',q:26},{f:'30+ dias',q:0}];
+const HIST=[['26/02','93.94'],['03/03','93.92'],['04/03','95.68'],['05/03','95.75'],['06/03','95.78'],['09/03','95.76'],['10/03','96.36'],['12/03','95.91'],['13/03','95.65'],['17/03','95.85'],['18/03','95.70'],['19/03','96.16'],['20/03','96.00'],['23/03','95.94'],['24/03','95.84'],['25/03','95.72'],['26/03','95.32'],['27/03','95.32'],['30/03','95.76'],['31/03','95.61']];
+// FOCCO REAL 31/03
+const FOCCO=[{s:'RGE - MG',kg:214713.07,pct:16.85,nf:1709},{s:'TRANSBARBOSA - SP',kg:201692.51,pct:15.83,nf:1789},{s:'GETLAR - RJ',kg:183818.55,pct:14.43,nf:1537},{s:'NOVA ERA - MG',kg:174835.22,pct:13.72,nf:1549},{s:'TS RJ - RJ',kg:173669.88,pct:13.63,nf:1394},{s:'TRANS SUA LOG - SP',kg:132385.34,pct:10.39,nf:1074},{s:'TEMPO JUSTO - SP',kg:128603.67,pct:10.09,nf:1115},{s:'TRANS EXPRESS - RJ',kg:27751.87,pct:2.18,nf:226},{s:'SOUL - MG',kg:18481.72,pct:1.45,nf:155},{s:'MTC - SP',kg:18028.28,pct:1.42,nf:167}];
+const FOCCO30={s:'RGE - MG',kg30:205800.76,'TRANSBARBOSA - SP':180114.37,'GETLAR - RJ':183570.67,'NOVA ERA - MG':164321.10,'TS RJ - RJ':164738.93,'TRANS SUA LOG - SP':132385.34,'TEMPO JUSTO - SP':128603.67,'TRANS EXPRESS - RJ':17853.83,'SOUL - MG':18481.72,'MTC - SP':18028.28};
+const F30_MAP={'RGE - MG':205800.76,'TRANSBARBOSA - SP':180114.37,'GETLAR - RJ':183570.67,'NOVA ERA - MG':164321.10,'TS RJ - RJ':164738.93,'TRANS SUA LOG - SP':132385.34,'TEMPO JUSTO - SP':128603.67,'TRANS EXPRESS - RJ':17853.83,'SOUL - MG':18481.72,'MTC - SP':18028.28};
+const FOCCO_UF={SP:[{s:'TRANSBARBOSA - SP',kg:201692.51,pe:41.96},{s:'TRANS SUA LOG - SP',kg:132385.34,pe:27.54},{s:'TEMPO JUSTO - SP',kg:128603.67,pe:26.75},{s:'MTC - SP',kg:18028.28,pe:3.75}],MG:[{s:'RGE - MG',kg:214713.07,pe:52.80},{s:'NOVA ERA - MG',kg:174835.22,pe:42.99},{s:'SOUL - MG',kg:18481.72,pe:4.54}],RJ:[{s:'GETLAR - RJ',kg:183818.55,pe:47.58},{s:'TS RJ - RJ',kg:173669.88,pe:44.96},{s:'TRANS EXPRESS - RJ',kg:27751.87,pe:7.18}]};
+const TKM30=1213899,TKM31=1273980,DU=23;
+const D30t={'RGE - MG':{tot:817,at:60},'NOVA ERA - MG':{tot:763,at:43},'TEMPO JUSTO - SP':{tot:341,at:24},'TRANS SUA LOG - SP':{tot:504,at:21},'TS RJ - RJ':{tot:697,at:14},'GETLAR - RJ':{tot:489,at:11},'TRANSBARBOSA - SP':{tot:377,at:8},'MTC - SP':{tot:91,at:0},'SOUL - MG':{tot:95,at:0},'TRANS EXPRESS - RJ':{tot:93,at:0}};
+const D31t={'RGE - MG':{tot:806,at:57,sla:92.93},'NOVA ERA - MG':{tot:728,at:39,sla:94.64},'TEMPO JUSTO - SP':{tot:316,at:25,sla:92.09},'TRANS SUA LOG - SP':{tot:440,at:24,sla:94.55},'TS RJ - RJ':{tot:738,at:20,sla:97.29},'GETLAR - RJ':{tot:417,at:11,sla:97.36},'TRANSBARBOSA - SP':{tot:448,at:10,sla:97.77},'MTC - SP':{tot:89,at:0,sla:100},'SOUL - MG':{tot:95,at:0,sla:100},'TRANS EXPRESS - RJ':{tot:157,at:0,sla:100}};
+const MKT30={'Shopee':97.10,'Magazine Luiza':94.04,'Mercado Livre':93.25,'Madeira Madeira':90.48,'Via Varejo':98.33,'Zema':92.86};
+const MKT31={'Shopee':97.02,'Magazine Luiza':93.66,'Mercado Livre':92.98,'Madeira Madeira':90.48,'Via Varejo':97.01,'Zema':91.67};
+const F30x={'1-3 dias':23,'4-7 dias':69,'8-14 dias':39,'15-30 dias':30,'30+ dias':1};
+const F31x={'1-3 dias':38,'4-7 dias':71,'8-14 dias':37,'15-30 dias':26,'30+ dias':0};
+const DEV_MAG=[{nf:33084,cod:'LU-1509670098596227-1',cli:'Claudia Rabelo Oliveira Amorim',uf:'MG'},{nf:35519,cod:'LU-1510170098833915-1',cli:'Debora Oliveira',uf:'MG'},{nf:37481,cod:'LU-1511170099257065-1',cli:'Romulo Batista Ferreira',uf:'MG'},{nf:38311,cod:'LU-1511570099449795-1',cli:'Roniaurea silencio candido',uf:'MG'},{nf:38578,cod:'LU-1511770099529564-1',cli:'Solange Maria da Silva',uf:'MG'},{nf:43805,cod:'LU-1513170100020649-1',cli:'Jaqueline Santos',uf:'MG'},{nf:45486,cod:'LU-1512770099828871-1',cli:'Paulo herique dos Santos Silva',uf:'SP'},{nf:40545,cod:'LU-1512270099633485-1',cli:'Maria Aparecida Sousa',uf:'MG'},{nf:46911,cod:'LU-1514470100532881-1',cli:'Fernanda Lima',uf:'MG'},{nf:45747,cod:'LU-1514070100360972-1',cli:'Alexia Carolina Aparecida Fonseca',uf:'MG'}];
+const DEV_ML=[{nf:33263,cod:'S-46405684731',cli:'leandro aparecido da silva',uf:'SP'},{nf:50070,cod:'2000015247324004',cli:'cliente mercado livre',uf:'MG'},{nf:53395,cod:'2000015432314112',cli:'maurilio Alves da silva',uf:'MG'},{nf:67936,cod:'2000015651664096',cli:'Jaci pio',uf:'MG'},{nf:68796,cod:'2000015661839738',cli:'Rodrigo Aparecido Cunha De Arruda',uf:'SP'}];
+const DEV_SH=[{nf:38115,cod:'260212FJ1RWE21',cli:'Thais Mota Rinke',uf:'SP'},{nf:40778,cod:'2602195VVEE4E9',cli:'Leticia Maria Cappello De Lima',uf:'SP'},{nf:40863,cod:'26022079MBM1SU',cli:'Leandro Da Silva Muzy',uf:'RJ'},{nf:68652,cod:'260320KE08BACK',cli:'Alcione',uf:'SP'}];
+const CNPJ=['S-46597234309','S-46640401089','2000015531344294','2000015591523456','2000012213461717','577303','S-46702819711','2000015662333224','S-46725546562','9584020','2000012281435573','2000015728838808','2000015756689568','46738037077'];
+const D30kpi={total:4801,env:4267,ok:4086,late:181,sla:95.76,dev:17,cnpj:5,sf:501,sfv:504298,kg:59329,avgd:5.2,nfmed:1.4};
+const D31kpi={total:4475,env:4234,ok:4048,late:186,sla:95.61,dev:19,cnpj:5,sf:208,sfv:218607,kg:25718,avgd:4.8,nfmed:1.3};
 
-// ── HELPERS ───────────────────────────────────────────────────
-function slaColor(v){ return v>=95?'#27ae60':v>=90?'#e6a817':'#e74c3c' }
-function slaBadge(v){
-  let cls=v>=95?'badge-green':v>=90?'badge-yellow':'badge-red';
-  return `<span class="badge ${cls}">${v.toFixed(2)}%</span>`;
-}
-function slaBar(v,w=120){
-  let c=v>=95?'#27ae60':v>=90?'#e6a817':'#e74c3c';
-  return `<div class="bar-row" style="max-width:${w}px">
-    <div class="bar-wrap"><div class="bar-fill" style="width:${v}%;background:${c}"></div></div>
-    <span style="font-family:'DM Mono',monospace;font-size:11px;color:${c};min-width:42px">${v.toFixed(1)}%</span>
-  </div>`;
-}
-function varCell(a,b,inv=false,fmt='n'){
-  if(a===undefined||b===undefined||a===null||b===null) return '<td class="dvd-neutral mono">—</td>';
+function slaC(v){return v>=95?'#27ae60':v>=90?'#e6a817':'#e74c3c'}
+function slaBadge(v){let c=v>=95?'bg':v>=90?'by':'br';return`<span class="badge ${c}">${v.toFixed(2)}%</span>`}
+function slaBar(v){let c=v>=95?'#27ae60':v>=90?'#e6a817':'#e74c3c';return`<div class="bar-row" style="max-width:120px"><div class="bar-wrap"><div class="bar-fill" style="width:${v}%;background:${c}"></div></div><span class="mono" style="color:${c};min-width:42px;font-size:11px">${v.toFixed(1)}%</span></div>`}
+function varC(a,b,inv=false,fmt='n'){
   let na=parseFloat(String(a).replace(/[^0-9.\-]/g,'')),nb=parseFloat(String(b).replace(/[^0-9.\-]/g,''));
-  if(isNaN(na)||isNaN(nb)) return '<td class="dvd-neutral mono">—</td>';
+  if(isNaN(na)||isNaN(nb))return'<td class="dvd-neutral mono">—</td>';
   let d=nb-na,cls,txt;
   if(d===0){cls='dvd-neutral';txt='→ 0'}
-  else if(d>0){cls=inv?'dvd-down':'dvd-up';txt=fmt==='pp'?`▲ +${d.toFixed(2)} pp`:fmt==='brl'?`▲ +R$ ${d.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}`:fmt==='kg'?`▲ +${d.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')} kg`:`▲ +${Math.round(d)}`}
-  else{cls=inv?'dvd-up':'dvd-down';txt=fmt==='pp'?`▼ ${d.toFixed(2)} pp`:fmt==='brl'?`▼ R$ ${Math.abs(d).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}`:fmt==='kg'?`▼ ${Math.abs(d).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')} kg`:`▼ ${Math.round(d)}`}
-  return `<td class="${cls} mono" style="font-weight:700">${txt}</td>`;
+  else if(d>0){cls=inv?'dvd-down':'dvd-up';txt=fmt==='pp'?`▲ +${d.toFixed(2)} pp`:fmt==='brl'?`▲ +R$ ${Math.round(d).toLocaleString('pt-BR')}`:fmt==='kg'?`▲ +${Math.round(d).toLocaleString('pt-BR')} kg`:`▲ +${Math.round(d)}`}
+  else{cls=inv?'dvd-up':'dvd-down';txt=fmt==='pp'?`▼ ${d.toFixed(2)} pp`:fmt==='brl'?`▼ R$ ${Math.round(Math.abs(d)).toLocaleString('pt-BR')}`:fmt==='kg'?`▼ ${Math.round(Math.abs(d)).toLocaleString('pt-BR')} kg`:`▼ ${Math.round(Math.abs(d))}`}
+  return`<td class="${cls} mono" style="font-weight:700">${txt}</td>`
 }
 
-// ── POPULANDO TABELAS ──────────────────────────────────────────
-function buildTranspVisao(){
-  const tb=document.getElementById('tbody-transp-visao');
-  TRANSP.forEach((t,i)=>{
-    const p=t.at/t.tot*100;
+
+const CNPJ_ML=[
+  {cnpj:'62430743000159',cli:'Studiovip Be',cod:'S-46597234309',dp:'06/03/2026 12:44',ee:'02/04/2026',dias:2,urg:'🔴 Crítico (0-3d)',uf:'MG',vlr:0},
+  {cnpj:'41761996000135',cli:'Rodrigo Jose Martini',cod:'S-46640401089',dp:'12/03/2026 16:35',ee:'06/04/2026',dias:6,urg:'🟡 Alerta (4-7d)',uf:'SP',vlr:0},
+  {cnpj:'56053993000114',cli:'Luciana Ajala Nery Soares',cod:'S-46702819711',dp:'22/03/2026 12:20',ee:'16/04/2026',dias:16,urg:'🟢 OK (>14d)',uf:'SP',vlr:0},
+  {cnpj:'52315697000193',cli:'Jeniffer Salandini',cod:'2000015662333224',dp:'22/03/2026 22:33',ee:'16/04/2026',dias:16,urg:'🟢 OK (>14d)',uf:'SP',vlr:0},
+];
+const CNPJ_MAD=[
+  {cnpj:'50780717000929',cli:'ASSOCIACAO DAS TESTEMUNHAS CRISTAS DE JEOVA',cod:'9584020',dp:'26/03/2026 14:21',ee:'17/04/2026',dias:17,urg:'🟢 OK (>14d)',uf:'MG',vlr:0},
+];
+const UrgClr={'🔴 Vencido':'#e74c3c','🔴 Crítico (0-3d)':'#e74c3c','🟡 Alerta (4-7d)':'#e6a817','🟠 Atenção (8-14d)':'#e67e22','🟢 OK (>14d)':'#27ae60','⚪ Sem Prazo':'#888'};
+function buildCnpjRows(arr,id){
+  const tb=document.getElementById(id);
+  arr.forEach((r,i)=>{
+    const cls=r.urg.includes('Vencido')||r.urg.includes('Crítico')?'br':r.urg.includes('Alerta')?'by':'bg';
     tb.innerHTML+=`<tr>
-      <td><strong>${t.s}</strong></td>
-      <td class="mono">${t.tot}</td>
-      <td class="mono" style="color:#27ae60">${t.tot-t.at}</td>
-      <td class="mono" style="color:${t.at>0?'#e74c3c':'#27ae60'}">${t.at}</td>
-      <td>${slaBadge(t.sla)}</td>
-      <td>${slaBar(t.sla)}</td>
+      <td class="mono" style="color:#ff9966">${r.cnpj}</td>
+      <td>${r.cli}</td>
+      <td class="mono" style="font-size:11px">${r.cod}</td>
+      <td class="mono">${r.dp}</td>
+      <td class="mono">${r.ee}</td>
+      <td class="mono" style="color:${UrgClr[r.urg]||'#888'};font-weight:700">${r.dias}</td>
+      <td style="color:${UrgClr[r.urg]||'#888'};font-weight:600;font-size:12px">${r.urg}</td>
+      <td><span class="badge ${r.uf==='MG'?'bg':r.uf==='SP'?'by':'br'}">${r.uf}</span></td>
+      <td class="mono">${r.vlr>0?'R$ '+r.vlr.toLocaleString('pt-BR',{minimumFractionDigits:2}):'S/NF'}</td>
     </tr>`;
   });
 }
-function buildTranspFull(){
-  const tb=document.getElementById('tbody-transp-full');
+function init(){
   TRANSP.forEach(t=>{
-    const p=(t.at/t.tot*100).toFixed(2);
-    tb.innerHTML+=`<tr>
-      <td><strong>${t.s.split('·')[0].trim()}</strong></td>
-      <td><span class="badge ${t.uf==='MG'?'badge-green':t.uf==='SP'?'badge-yellow':'badge-red'}" style="font-size:10px">${t.uf}</span></td>
-      <td class="mono">${t.tot}</td>
-      <td class="mono" style="color:#27ae60">${t.tot-t.at}</td>
-      <td class="mono" style="color:${t.at>0?'#e74c3c':'#888'}">${t.at}</td>
-      <td class="mono" style="color:${t.at>0?'#e74c3c':'#888'}">${p}%</td>
-      <td>${slaBadge(t.sla)}</td>
-      <td>${slaBar(t.sla)}</td>
-    </tr>`;
+    document.getElementById('tb-tv').innerHTML+=`<tr><td><strong>${t.s}</strong></td><td class="mono">${t.tot}</td><td class="mono" style="color:#27ae60">${t.tot-t.at}</td><td class="mono" style="color:${t.at>0?'#e74c3c':'#888'}">${t.at}</td><td>${slaBadge(t.sla)}</td><td>${slaBar(t.sla)}</td></tr>`;
+    document.getElementById('tb-tf').innerHTML+=`<tr><td><strong>${t.s.split('·')[0].trim()}</strong></td><td><span class="badge ${t.uf==='MG'?'bg':t.uf==='SP'?'by':'br'}" style="font-size:10px">${t.uf}</span></td><td class="mono">${t.tot}</td><td class="mono" style="color:#27ae60">${t.tot-t.at}</td><td class="mono" style="color:${t.at>0?'#e74c3c':'#888'}">${t.at}</td><td class="mono">${(t.at/t.tot*100).toFixed(2)}%</td><td>${slaBadge(t.sla)}</td><td>${slaBar(t.sla)}</td></tr>`;
   });
-}
-function buildMkt(){
-  const tb=document.getElementById('tbody-mkt');
-  MKT.forEach(m=>{
-    const p=(m.at/m.tot*100).toFixed(2);
-    tb.innerHTML+=`<tr>
-      <td><strong>${m.m}</strong></td>
-      <td class="mono">${m.tot}</td>
-      <td class="mono" style="color:#27ae60">${m.tot-m.at}</td>
-      <td class="mono" style="color:${m.at>0?'#e74c3c':'#888'}">${m.at}</td>
-      <td class="mono" style="color:${m.at>0?'#e74c3c':'#888'}">${p}%</td>
-      <td>${slaBadge(m.sla)}</td>
-      <td>${slaBar(m.sla)}</td>
-    </tr>`;
-  });
-}
-function buildDev(){
-  const tb=document.getElementById('tbody-dev');
-  DEV.forEach((d,i)=>{
-    tb.innerHTML+=`<tr>
-      <td class="mono" style="color:#cc88ff">${d.nf}</td>
-      <td>${d.mkt}</td>
-      <td>${d.cli}</td>
-      <td class="mono" style="font-size:11px">${d.cod}</td>
-      <td><span class="badge ${d.uf==='MG'?'badge-green':d.uf==='SP'?'badge-yellow':'badge-red'}">${d.uf}</span></td>
-    </tr>`;
-  });
-}
-function buildFoccoGeral(){
-  const tb=document.getElementById('tbody-focco-geral');
-  let acum=0;
-  FOCCO_GERAL.forEach((f,i)=>{
-    acum+=f.pct;
-    const c=f.pct>=14?'#27ae60':f.pct>=8?'#e6a817':'#e67e22';
-    tb.innerHTML+=`<tr>
-      <td class="mono" style="color:var(--muted)">${i+1}º</td>
-      <td><strong>${f.s}</strong></td>
-      <td class="mono">${f.nf.toLocaleString('pt-BR')}</td>
-      <td class="mono" style="color:#aade66">${f.kg.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})} kg</td>
-      <td class="mono" style="color:${c};font-weight:700">${f.pct.toFixed(2)}%</td>
-      <td class="mono" style="color:var(--muted)">${acum.toFixed(2)}%</td>
-      <td><div class="bar-row"><div class="bar-wrap"><div class="bar-fill" style="width:${f.pct/17*100}%;background:${c}"></div></div><span style="font-size:11px;color:${c};font-family:'DM Mono',monospace;min-width:38px">${f.pct.toFixed(1)}%</span></div></td>
-    </tr>`;
-  });
-}
-function buildFoccoUfGrid(){
-  const g=document.getElementById('focco-uf-grid');
-  const ufs=[
-    {code:'SP',name:'São Paulo',kg:459131.67,pct:37.82,clr:'#e8a84f',data:FOCCO_UF.SP},
-    {code:'MG',name:'Minas Gerais',kg:387186.97,pct:31.90,clr:'#aade66',data:FOCCO_UF.MG},
-    {code:'RJ',name:'Rio de Janeiro',kg:367294.23,pct:30.26,clr:'#5dade2',data:FOCCO_UF.RJ},
-  ];
-  ufs.forEach(u=>{
-    let rows='';
-    u.data.forEach(t=>{
-      const c=t.pct_est>=40?'#27ae60':t.pct_est>=20?'#e6a817':'#e67e22';
-      rows+=`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
-        <span>${t.s}</span>
-        <div style="text-align:right">
-          <span class="mono" style="color:${c};font-weight:700">${t.pct_est.toFixed(1)}%</span>
-          <span class="mono" style="color:var(--muted);font-size:11px;margin-left:8px">${t.kg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</span>
-        </div>
-      </div>`;
-    });
-    g.innerHTML+=`<div class="uf-card">
-      <div class="uf-name" style="color:${u.clr}">${u.code} — ${u.name}</div>
-      <div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:${u.clr};margin-bottom:4px">${u.kg.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">${u.pct.toFixed(2)}% do total geral</div>
-      ${rows}
-    </div>`;
-  });
-}
-function buildDvD(){
-  // KPIs
-  const kd=document.getElementById('tbody-dvd-kpi');
-  const rows=[
-    ['Total pedidos na base',4958,4801,true,'n'],
-    ['Pedidos Faturados',4721,4267,true,'n'],
-    ['Entregas no Prazo',4500,4086,false,'n'],
-    ['Entregas em Atraso',221,181,true,'n'],
-    ['SLA Geral (%)',`${D27.sla}%`,`95.76%`,false,'pp'],
-    ['Devoluções excluídas',15,17,false,'n'],
-    ['CNPJ a cancelar',2,5,false,'n'],
-    ['Média dias atraso',D27.avg_d,6.4,true,'n'],
-    ['Prazo médio NF (d.u.)',D27.nf_med,1.4,true,'n'],
-  ];
-  rows.forEach((r,i)=>{
-    const bg=i%2===1?'rgba(255,255,255,.02)':'';
-    kd.innerHTML+=`<tr style="background:${bg}">
-      <td><strong>${r[0]}</strong></td>
-      <td class="mono">${r[1]}</td>
-      <td class="mono">${r[2]}</td>
-      ${varCell(r[1],r[2],r[3],r[4])}
-    </tr>`;
-  });
-  // SF
-  const sd=document.getElementById('tbody-dvd-sf');
-  const sfrows=[
-    ['Total em Aberto',220,501,true,'n'],
-    ['Valor (R$)','R$ 220.615','R$ 504.298',true,'brl'],
-    ['Peso Est. (kg)','25.955','59.329',true,'kg'],
-    ['Vencidos + Críticos',0,1,true,'n'],
-    ['Em Alerta (4-7d)',0,0,true,'n'],
-    ['Em Atenção (8-14d)',2,5,true,'n'],
-  ];
-  sfrows.forEach((r,i)=>{
-    const bg=i%2===1?'rgba(255,255,255,.02)':'';
-    sd.innerHTML+=`<tr style="background:${bg}">
-      <td><strong>${r[0]}</strong></td>
-      <td class="mono">${r[1]}</td>
-      <td class="mono">${r[2]}</td>
-      ${varCell(r[1],r[2],r[3],r[4])}
-    </tr>`;
-  });
-  // Transp
-  const td=document.getElementById('tbody-dvd-transp');
-  const d30_at={'RGE - MG':60,'NOVA ERA - MG':43,'TEMPO JUSTO - SP':24,'TRANS SUA LOG - SP':21,'TS RJ - RJ':14,'GETLAR - RJ':11,'TRANSBARBOSA - SP':8,'MTC - SP':0,'SOUL - MG':0,'TRANS EXPRESS - RJ':0};
-  const d30_sla={'RGE - MG':92.66,'NOVA ERA - MG':94.36,'TEMPO JUSTO - SP':92.96,'TRANS SUA LOG - SP':95.83,'TS RJ - RJ':97.99,'GETLAR - RJ':97.75,'TRANSBARBOSA - SP':97.88,'MTC - SP':100,'SOUL - MG':100,'TRANS EXPRESS - RJ':100};
-  Object.keys(d30_at).forEach((k,i)=>{
-    const a27=D27.transp[k]??0, a30=d30_at[k]??0;
-    const diff=a30-a27, cls=diff>0?'dvd-down':diff<0?'dvd-up':'dvd-neutral';
-    const sla30=d30_sla[k];
-    const bg=i%2===1?'rgba(255,255,255,.02)':'';
-    td.innerHTML+=`<tr style="background:${bg}">
-      <td><strong>${k}</strong></td>
-      <td class="mono">${a27}</td>
-      <td class="mono">${a30}</td>
-      <td class="${cls} mono" style="font-weight:700">${diff>0?'▲ +':diff<0?'▼ ':'→ '}${Math.abs(diff)||0}</td>
-      <td>${slaBadge(sla30)}</td>
-    </tr>`;
-  });
-  // MKT
-  const md=document.getElementById('tbody-dvd-mkt');
-  const d30_mkt={'Shopee':97.10,'Magazine Luiza':94.04,'Mercado Livre':93.25,'Madeira Madeira':90.48,'Via Varejo':98.33,'Zema':92.86,'Web Continental V2':80,'Casa & Vídeo':100,'eFácil':100};
-  Object.keys(d30_mkt).forEach((k,i)=>{
-    const s27=D27.mkt_sla[k]??100, s30=d30_mkt[k];
-    const d=s30-s27,cls=d>0?'dvd-up':d<0?'dvd-down':'dvd-neutral';
-    const bg=i%2===1?'rgba(255,255,255,.02)':'';
-    md.innerHTML+=`<tr style="background:${bg}">
-      <td>${k}</td>
-      <td class="mono" style="color:${slaColor(s27)}">${s27}%</td>
-      <td class="mono" style="color:${slaColor(s30)}">${s30}%</td>
-      <td class="${cls} mono">${d>0?'▲ +':d<0?'▼ ':'→'}${d===0?'0':Math.abs(d).toFixed(2)+' pp'}</td>
-    </tr>`;
-  });
-  // Faixas
-  const fd=document.getElementById('tbody-dvd-faixa');
-  const faixas27={'1-3 dias':28,'4-7 dias':78,'8-14 dias':52,'15-30 dias':40,'30+ dias':2};
-  const faixas30={'1-3 dias':23,'4-7 dias':69,'8-14 dias':39,'15-30 dias':30,'30+ dias':1};
-  Object.keys(faixas30).forEach((k,i)=>{
-    const a=faixas27[k]??0, b=faixas30[k]??0, d=b-a;
-    const cls=d>0?'dvd-down':d<0?'dvd-up':'dvd-neutral';
-    const bg=i%2===1?'rgba(255,255,255,.02)':'';
-    fd.innerHTML+=`<tr style="background:${bg}">
-      <td>${k}</td>
-      <td class="mono">${a}</td>
-      <td class="mono">${b}</td>
-      <td class="${cls} mono">${d>0?'▲ +':d<0?'▼ ':'→'}${Math.abs(d)||0}</td>
-    </tr>`;
-  });
-  // FOCCO DvD
-  const fcd=document.getElementById('tbody-dvd-focco');
-  const f27=D27.focco;
-  FOCCO_GERAL.forEach((f,i)=>{
-    const v27=f27[f.s]??0, v30=f.kg, d=v30-v27;
-    const cls=d>0?'dvd-up':d<0?'dvd-down':'dvd-neutral';
-    const bg=i%2===1?'rgba(255,255,255,.02)':'';
-    fcd.innerHTML+=`<tr style="background:${bg}">
-      <td><strong>${f.s}</strong></td>
-      <td class="mono">${v27.toLocaleString('pt-BR',{maximumFractionDigits:0})}</td>
-      <td class="mono">${v30.toLocaleString('pt-BR',{maximumFractionDigits:0})}</td>
-      <td class="${cls} mono" style="font-weight:700">${d>=0?'▲ +':'▼ '}${Math.abs(d).toLocaleString('pt-BR',{maximumFractionDigits:0})} kg</td>
-    </tr>`;
-  });
+  MKT.forEach(m=>{document.getElementById('tb-mkt').innerHTML+=`<tr><td><strong>${m.m}</strong></td><td class="mono">${m.tot}</td><td class="mono" style="color:#27ae60">${m.tot-m.at}</td><td class="mono" style="color:${m.at>0?'#e74c3c':'#888'}">${m.at}</td><td class="mono">${(m.at/m.tot*100).toFixed(2)}%</td><td>${slaBadge(m.sla)}</td><td>${slaBar(m.sla)}</td></tr>`});
+  let ac=0;
+  FOCCO.forEach((f,i)=>{ac+=f.pct;let c=f.pct>=14?'#27ae60':f.pct>=8?'#e6a817':'#e67e22';let md=Math.round(f.kg/DU);document.getElementById('tb-fg').innerHTML+=`<tr><td class="mono" style="color:var(--muted)">${i+1}º</td><td><strong>${f.s}</strong></td><td class="mono">${f.nf.toLocaleString('pt-BR')}</td><td class="mono" style="color:#aade66">${Math.round(f.kg).toLocaleString('pt-BR')} kg</td><td class="mono" style="color:${c};font-weight:700">${f.pct.toFixed(2)}%</td><td class="mono" style="color:var(--muted)">${ac.toFixed(2)}%</td><td class="mono" style="color:#66FF99;font-weight:700">${md.toLocaleString('pt-BR')} kg</td></tr>`});
+  const ufg=document.getElementById('uf-grid');
+  [{c:'SP',n:'São Paulo',kg:480709.81,pct:37.73,clr:'#e8a84f',d:FOCCO_UF.SP},{c:'MG',n:'Minas Gerais',kg:406613.40,pct:31.92,clr:'#aade66',d:FOCCO_UF.MG},{c:'RJ',n:'Rio de Janeiro',kg:386371.10,pct:30.33,clr:'#5dade2',d:FOCCO_UF.RJ}].forEach(u=>{let rows='';u.d.forEach(t=>{let c=t.pe>=40?'#27ae60':t.pe>=20?'#e6a817':'#e67e22';rows+=`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${t.s}</span><div style="text-align:right"><span class="mono" style="color:${c};font-weight:700">${t.pe.toFixed(1)}%</span><span class="mono" style="color:var(--muted);font-size:11px;margin-left:8px">${Math.round(t.kg).toLocaleString('pt-BR')} kg</span></div></div>`});ufg.innerHTML+=`<div class="uf-card"><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:${u.clr};margin-bottom:12px">${u.c} — ${u.n}</div><div class="mono" style="font-size:20px;font-weight:500;color:${u.clr};margin-bottom:4px">${Math.round(u.kg).toLocaleString('pt-BR')} kg</div><div style="font-size:11px;color:var(--muted);margin-bottom:12px">${u.pct}% · Média: <strong style="color:${u.clr}">${Math.round(u.kg/DU).toLocaleString('pt-BR')} kg/d.u.</strong></div>${rows}</div>`});
+  [DEV_MAG,DEV_ML,DEV_SH].forEach((arr,idx)=>{let id=['tb-devM','tb-devL','tb-devS'][idx];arr.forEach(d=>{document.getElementById(id).innerHTML+=`<tr><td class="mono" style="color:#cc88ff">${d.nf}</td><td class="mono" style="font-size:11px">${d.cod}</td><td>${d.cli}</td><td><span class="badge ${d.uf==='MG'?'bg':d.uf==='SP'?'by':'br'}">${d.uf}</span></td></tr>`})});
+  buildCnpjRows(CNPJ_ML,'tb-cnpj-ml');
+  buildCnpjRows(CNPJ_MAD,'tb-cnpj-mad');
+  // DvD KPI
+  [['Total pedidos',D30kpi.total,D31kpi.total,true,'n'],['Pedidos Faturados',D30kpi.env,D31kpi.env,true,'n'],['No Prazo',D30kpi.ok,D31kpi.ok,false,'n'],['Em Atraso',D30kpi.late,D31kpi.late,true,'n'],['SLA Geral',`${D30kpi.sla}%`,`${D31kpi.sla}%`,false,'pp'],['Devoluções',D30kpi.dev,D31kpi.dev,false,'n'],['CNPJ',D30kpi.cnpj,D31kpi.cnpj,false,'n'],['Em Aberto (S/Fat.)',D30kpi.sf,D31kpi.sf,true,'n'],['Valor em Aberto',`R$ ${D30kpi.sfv.toLocaleString('pt-BR')}`,`R$ ${D31kpi.sfv.toLocaleString('pt-BR')}`,true,'brl'],['Peso em Aberto (est.)',D30kpi.kg,D31kpi.kg,true,'kg'],['Prazo médio NF',D30kpi.nfmed,D31kpi.nfmed,true,'n']].forEach((r,i)=>{document.getElementById('tb-kpi').innerHTML+=`<tr style="background:${i%2===1?'rgba(255,255,255,.02)':''}"><td><strong>${r[0]}</strong></td><td class="mono">${r[1]}</td><td class="mono">${r[2]}</td>${varC(r[1],r[2],r[3],r[4])}</tr>`});
+  // DvD Transp
+  Object.keys(D31t).forEach((k,i)=>{let t30=D30t[k],t31=D31t[k],bg=i%2===1?'rgba(255,255,255,.02)':'';let dT=t31.tot-t30.tot,dA=t31.at-t30.at,clsT=dT<0?'dvd-up':dT>0?'dvd-down':'dvd-neutral',clsA=dA>0?'dvd-down':dA<0?'dvd-up':'dvd-neutral';document.getElementById('tb-dtr').innerHTML+=`<tr style="background:${bg}"><td><strong>${k}</strong></td><td class="mono">${t30.tot}</td><td class="mono ${clsT}">${t31.tot}</td><td class="mono">${t30.at}</td><td class="mono ${clsA}" style="font-weight:700">${t31.at}</td><td>${slaBadge(t31.sla)}</td></tr>`});
+  Object.keys(MKT31).forEach((k,i)=>{let s30=MKT30[k]??100,s31=MKT31[k],d=s31-s30,cls=d>0?'dvd-up':d<0?'dvd-down':'dvd-neutral',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dmkt').innerHTML+=`<tr style="background:${bg}"><td>${k}</td><td class="mono" style="color:${slaC(s30)}">${s30}%</td><td class="mono" style="color:${slaC(s31)}">${s31}%</td><td class="${cls} mono">${d>0?'▲ +':d<0?'▼ ':'→'}${d===0?'0':Math.abs(d).toFixed(2)+' pp'}</td></tr>`});
+  Object.keys(F31x).forEach((k,i)=>{let a=F30x[k]??0,b=F31x[k]??0,d=b-a,cls=d>0?'dvd-down':d<0?'dvd-up':'dvd-neutral',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dfx').innerHTML+=`<tr style="background:${bg}"><td>${k}</td><td class="mono">${a}</td><td class="mono">${b}</td><td class="${cls} mono">${d>0?'▲ +':d<0?'▼ ':'→'}${Math.abs(d)}</td></tr>`});
+  FOCCO.forEach((f,i)=>{let v30=F30_MAP[f.s]??0,v31=f.kg,d=v31-v30,cls=d>0?'dvd-up':d<0?'dvd-down':'dvd-neutral',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dfocco').innerHTML+=`<tr style="background:${bg}"><td><strong>${f.s}</strong></td><td class="mono">${Math.round(v30).toLocaleString('pt-BR')}</td><td class="mono">${Math.round(v31).toLocaleString('pt-BR')}</td><td class="${cls} mono" style="font-weight:700">${d>=0?'▲ +':'▼ '}${Math.round(Math.abs(d)).toLocaleString('pt-BR')} kg</td></tr>`});
+  document.getElementById('tb-dfocco').innerHTML+=`<tr style="background:#0D1F07"><td style="color:#aade66;font-weight:700">TOTAL GERAL</td><td class="mono" style="color:#aade66;font-weight:700">${TKM30.toLocaleString('pt-BR')}</td><td class="mono" style="color:#66FF99;font-weight:700">${TKM31.toLocaleString('pt-BR')}</td><td class="dvd-up mono" style="font-weight:700">▲ +${(TKM31-TKM30).toLocaleString('pt-BR')} kg (+4,9%)</td></tr>`;
 }
 
-// ── CHARTS ────────────────────────────────────────────────────
-const chartDefaults={
-  plugins:{legend:{labels:{color:'#8899bb',font:{size:11,family:'DM Sans'}}},tooltip:{backgroundColor:'#1a2236',borderColor:'#2e4a7a',borderWidth:1,titleColor:'#e8edf8',bodyColor:'#8899bb'}},
-  scales:{x:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}},y:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}}}
-};
+const CD={plugins:{legend:{labels:{color:'#8899bb',font:{size:11,family:'DM Sans'}}},tooltip:{backgroundColor:'#1a2236',borderColor:'#2e4a7a',borderWidth:1,titleColor:'#e8edf8',bodyColor:'#8899bb'}},scales:{x:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}},y:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}}}};
+function topLbl(){return{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{if(d.data[i]!==0){ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='center';ctx.fillText(d.data[i],bar.x,bar.y-5)}})})}}}
+function rLbl(s=''){return{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(d.data[i]+s,bar.x+4,bar.y+4)})})}}}
 
-function buildCharts(){
-  // Histórico
-  new Chart(document.getElementById('chartHist'),{
-    type:'line',
-    data:{
-      labels:HIST.map(h=>h[0]),
-      datasets:[{
-        label:'% SLA',data:HIST.map(h=>parseFloat(h[1])),
-        borderColor:'#27ae60',backgroundColor:'rgba(30,132,73,.1)',
-        pointBackgroundColor:HIST.map(h=>parseFloat(h[1])>=95?'#27ae60':'#e74c3c'),
-        pointRadius:4,tension:.3,fill:true,
-      },{
-        label:'Meta 95%',data:HIST.map(()=>95),
-        borderColor:'rgba(232,70,30,.5)',borderDash:[6,3],pointRadius:0,fill:false,
-      }]
-    },
-    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{...chartDefaults.plugins.legend,display:true}},scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,min:93,max:97,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+'%'}}}}
-  });
-
-  // Faixas
-  new Chart(document.getElementById('chartFaixa'),{
-    type:'bar',
-    data:{labels:FAIXAS.map(f=>f.f),datasets:[{label:'Qtd.',data:FAIXAS.map(f=>f.q),backgroundColor:['#27ae60','#e6a817','#e67e22','#e74c3c','#8e1a0e'],borderRadius:5}]},
-    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{display:false}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 11px DM Mono';ctx.textAlign='center';ctx.fillText(d.data[i],bar.x,bar.y-5)})})}}},
-  });
-
-  // Transp SLA
-  new Chart(document.getElementById('chartTranspSla'),{
-    type:'bar',
-    data:{labels:TRANSP.map(t=>t.s.split('·')[0].trim()),datasets:[{label:'% SLA',data:TRANSP.map(t=>t.sla),backgroundColor:TRANSP.map(t=>t.sla>=95?'rgba(30,132,73,.7)':t.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},
-    options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins,legend:{display:false}},scales:{x:{...chartDefaults.scales.x,min:88,max:101,ticks:{callback:v=>v+'%'}},y:{...chartDefaults.scales.y}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(d.data[i]+'%',bar.x+4,bar.y+4)})})}}}
-  });
-
-  // Transp Atrasos
-  new Chart(document.getElementById('chartTranspAtrasos'),{
-    type:'bar',
-    data:{labels:TRANSP.map(t=>t.s.split('·')[0].trim()),datasets:[{label:'Atrasos',data:TRANSP.map(t=>t.at),backgroundColor:'rgba(232,70,30,.65)',borderRadius:4}]},
-    options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins,legend:{display:false}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{if(d.data[i]>0){ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(d.data[i],bar.x+4,bar.y+4)}})})}}}
-  });
-
-  // MKT SLA
-  new Chart(document.getElementById('chartMktSla'),{
-    type:'bar',
-    data:{labels:MKT.map(m=>m.m),datasets:[{label:'% SLA',data:MKT.map(m=>m.sla),backgroundColor:MKT.map(m=>m.sla>=95?'rgba(30,132,73,.7)':m.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},
-    options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins,legend:{display:false}},scales:{x:{...chartDefaults.scales.x,min:75,max:102,ticks:{callback:v=>v+'%'}},y:{...chartDefaults.scales.y}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(d.data[i]+'%',bar.x+4,bar.y+4)})})}}}
-  });
-
-  // MKT Volume
-  new Chart(document.getElementById('chartMktVol'),{
-    type:'doughnut',
-    data:{labels:MKT.map(m=>m.m),datasets:[{data:MKT.map(m=>m.tot),backgroundColor:['#2E4A7A','#1A5276','#27ae60','#B7770D','#5A1878','#D35400','#7B1111','#888','#aaa'],borderColor:'#161d2e',borderWidth:2}]},
-    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{...chartDefaults.plugins.legend,position:'right',labels:{...chartDefaults.plugins.legend.labels,padding:12,font:{size:10}}}}}
-  });
-
-  // SF MKT
-  new Chart(document.getElementById('chartSfMkt'),{
-    type:'bar',
-    data:{labels:['Shopee','Mercado Livre','Magazine Luiza','Via Varejo','Madeira Madeira'],datasets:[{label:'Em Aberto',data:[324,94,65,13,5],backgroundColor:'rgba(183,119,13,.65)',borderRadius:4}]},
-    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{display:false}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='center';ctx.fillText(d.data[i],bar.x,bar.y-5)})})}}}
-  });
-
-  // SF UF
-  new Chart(document.getElementById('chartSfUf'),{
-    type:'doughnut',
-    data:{labels:['SP','RJ','MG'],datasets:[{data:[22580.6,19322.6,17426.0],backgroundColor:['rgba(183,119,13,.75)','rgba(26,82,118,.75)','rgba(30,132,73,.75)'],borderColor:'#161d2e',borderWidth:2}]},
-    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{...chartDefaults.plugins.legend,position:'right'},tooltip:{...chartDefaults.plugins.tooltip,callbacks:{label:function(c){return ` ${c.label}: ${c.raw.toLocaleString('pt-BR')} kg (${(c.raw/59329.2*100).toFixed(1)}%)`}}}}}
-  });
-
-  // FOCCO Geral
-  new Chart(document.getElementById('chartFoccoGeral'),{
-    type:'bar',
-    data:{labels:FOCCO_GERAL.map(f=>f.s),datasets:[{label:'Peso Bruto (kg)',data:FOCCO_GERAL.map(f=>f.kg),backgroundColor:FOCCO_GERAL.map(f=>f.pct>=14?'rgba(30,132,73,.7)':f.pct>=8?'rgba(183,119,13,.7)':'rgba(211,84,0,.7)'),borderRadius:4}]},
-    options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins,legend:{display:false}},scales:{x:{...chartDefaults.scales.x,ticks:{callback:v=>v>=1000?Math.round(v/1000)+'k':v}},y:{...chartDefaults.scales.y}},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(Math.round(d.data[i]/1000)+'k kg  '+FOCCO_GERAL[i].pct+'%',bar.x+5,bar.y+4)})})}}}
-  });
-
-  // FOCCO UF Donut
-  new Chart(document.getElementById('chartFoccoUf'),{
-    type:'doughnut',
-    data:{labels:['SP (37,82%)','MG (31,90%)','RJ (30,26%)'],datasets:[{data:[459131.67,387186.97,367294.23],backgroundColor:['rgba(183,119,13,.8)','rgba(30,132,73,.8)','rgba(26,82,118,.8)'],borderColor:'#161d2e',borderWidth:3}]},
-    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{...chartDefaults.plugins.legend,position:'right'},tooltip:{...chartDefaults.plugins.tooltip,callbacks:{label:c=>` ${c.label}: ${Math.round(c.raw).toLocaleString('pt-BR')} kg`}}}}
-  });
-
-  // DvD FOCCO Chart
-  const focco30=FOCCO_GERAL.map(f=>f.kg);
-  const focco27=FOCCO_GERAL.map(f=>D27.focco[f.s]??0);
-  new Chart(document.getElementById('chartDvdFocco'),{
-    type:'bar',
-    data:{labels:FOCCO_GERAL.map(f=>f.s),datasets:[
-      {label:'27/03',data:focco27,backgroundColor:'rgba(46,74,122,.6)',borderRadius:3},
-      {label:'30/03',data:focco30,backgroundColor:'rgba(30,132,73,.65)',borderRadius:3},
-    ]},
-    options:{...chartDefaults,indexAxis:'y',plugins:{...chartDefaults.plugins,legend:{...chartDefaults.plugins.legend,display:true}},scales:{x:{...chartDefaults.scales.x,ticks:{callback:v=>Math.round(v/1000)+'k'}},y:{...chartDefaults.scales.y}}}
-  });
+function initCharts(){
+  new Chart(document.getElementById('chartHist'),{type:'line',data:{labels:HIST.map(h=>h[0]),datasets:[{label:'% SLA',data:HIST.map(h=>parseFloat(h[1])),borderColor:'#27ae60',backgroundColor:'rgba(30,132,73,.1)',pointBackgroundColor:HIST.map(h=>parseFloat(h[1])>=95?'#27ae60':'#e74c3c'),pointRadius:4,tension:.3,fill:true},{label:'Meta 95%',data:HIST.map(()=>95),borderColor:'rgba(232,70,30,.5)',borderDash:[6,3],pointRadius:0,fill:false}]},options:{...CD,scales:{...CD.scales,y:{...CD.scales.y,min:93,max:97,ticks:{callback:v=>v+'%'}}}}});
+  new Chart(document.getElementById('chartFaixa'),{type:'bar',data:{labels:FAIXAS.map(f=>f.f),datasets:[{data:FAIXAS.map(f=>f.q),backgroundColor:['#27ae60','#e6a817','#e67e22','#e74c3c','#8e1a0e'],borderRadius:5}]},options:{...CD,plugins:{...CD.plugins,legend:{display:false}},animation:topLbl()}});
+  new Chart(document.getElementById('chartTSla'),{type:'bar',data:{labels:TRANSP.map(t=>t.s.split('·')[0].trim()),datasets:[{data:TRANSP.map(t=>t.sla),backgroundColor:TRANSP.map(t=>t.sla>=95?'rgba(30,132,73,.7)':t.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,min:88,max:101,ticks:{callback:v=>v+'%'}},y:CD.scales.y},animation:rLbl('%')}});
+  new Chart(document.getElementById('chartTAt'),{type:'bar',data:{labels:TRANSP.map(t=>t.s.split('·')[0].trim()),datasets:[{data:TRANSP.map(t=>t.at),backgroundColor:'rgba(232,70,30,.65)',borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},animation:rLbl()}});
+  new Chart(document.getElementById('chartMSla'),{type:'bar',data:{labels:MKT.map(m=>m.m),datasets:[{data:MKT.map(m=>m.sla),backgroundColor:MKT.map(m=>m.sla>=95?'rgba(30,132,73,.7)':m.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,min:75,max:102,ticks:{callback:v=>v+'%'}},y:CD.scales.y},animation:rLbl('%')}});
+  new Chart(document.getElementById('chartMVol'),{type:'doughnut',data:{labels:MKT.map(m=>m.m),datasets:[{data:MKT.map(m=>m.tot),backgroundColor:['#2E4A7A','#1A5276','#27ae60','#B7770D','#5A1878','#D35400','#888','#aaa','#ccc'],borderColor:'#161d2e',borderWidth:2}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right',labels:{...CD.plugins.legend.labels,padding:12,font:{size:10}}}}}});
+  new Chart(document.getElementById('chartSfM'),{type:'bar',data:{labels:['Shopee','Mercado Livre','Magazine Luiza','Via Varejo','Madeira Madeira'],datasets:[{data:[108,60,28,8,4],backgroundColor:'rgba(183,119,13,.65)',borderRadius:4}]},options:{...CD,plugins:{...CD.plugins,legend:{display:false}},animation:topLbl()}});
+  new Chart(document.getElementById('chartSfU'),{type:'doughnut',data:{labels:['SP (40,4%)','RJ (33,3%)','MG (26,2%)'],datasets:[{data:[10401,8570,6747],backgroundColor:['rgba(183,119,13,.75)','rgba(26,82,118,.75)','rgba(30,132,73,.75)'],borderColor:'#161d2e',borderWidth:2}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right'}}}});
+  new Chart(document.getElementById('chartFG'),{type:'bar',data:{labels:FOCCO.map(f=>f.s),datasets:[{label:'Peso Bruto (kg)',data:FOCCO.map(f=>f.kg),backgroundColor:FOCCO.map(f=>f.pct>=14?'rgba(30,132,73,.7)':f.pct>=8?'rgba(183,119,13,.7)':'rgba(211,84,0,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,ticks:{callback:v=>Math.round(v/1000)+'k'}},y:CD.scales.y},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(Math.round(d.data[i]/1000)+'k  '+FOCCO[i].pct+'%',bar.x+4,bar.y+4)})})}}}});
+  new Chart(document.getElementById('chartFU'),{type:'doughnut',data:{labels:['SP 37,73%','MG 31,92%','RJ 30,33%'],datasets:[{data:[480710,406613,386371],backgroundColor:['rgba(183,119,13,.8)','rgba(30,132,73,.8)','rgba(26,82,118,.8)'],borderColor:'#161d2e',borderWidth:3}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right'}}}});
+  new Chart(document.getElementById('chartDvdF'),{type:'bar',data:{labels:FOCCO.map(f=>f.s),datasets:[{label:'30/03',data:FOCCO.map(f=>F30_MAP[f.s]??0),backgroundColor:'rgba(46,74,122,.6)',borderRadius:3},{label:'31/03',data:FOCCO.map(f=>f.kg),backgroundColor:'rgba(30,132,73,.65)',borderRadius:3}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{...CD.plugins.legend,display:true}},scales:{x:{...CD.scales.x,ticks:{callback:v=>Math.round(v/1000)+'k'}},y:CD.scales.y}}});
 }
 
-// ── NAV ───────────────────────────────────────────────────────
-function showPage(id){
+function showPage(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  event.target.classList.add('active');
+  el.classList.add('active');
 }
-
-// ── INIT ──────────────────────────────────────────────────────
-buildTranspVisao();
-buildTranspFull();
-buildMkt();
-buildDev();
-buildFoccoGeral();
-buildFoccoUfGrid();
-buildDvD();
-buildCharts();
+init(); initCharts();
 </script>
 </body>
 </html>
