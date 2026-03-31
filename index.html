@@ -582,6 +582,225 @@ body::before {
 }
 
 /* ── TELA ANYMARKET (overlay interno) ── */
+/* ── BARRA FLUTUANTE ANYMARKET ── */
+.any-float-bar {
+  margin: 0 56px 20px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0 24px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+}
+.any-float-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 16px;
+}
+.any-float-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.any-float-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.any-float-sep { color: var(--border); }
+.any-float-sub { font-size: 12px; color: var(--text-secondary); }
+.any-float-btns { display: flex; gap: 8px; }
+.any-float-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 16px; border-radius: 8px;
+  font-size: 12.5px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer; transition: all 0.2s;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.any-float-btn-amber {
+  border-color: rgba(212,160,23,0.35);
+  background: rgba(212,160,23,0.08);
+  color: var(--accent-amber);
+}
+.any-float-btn-amber:hover {
+  border-color: rgba(212,160,23,0.65);
+  background: rgba(212,160,23,0.16);
+  box-shadow: 0 0 12px rgba(212,160,23,0.2);
+}
+.any-float-btn-blue {
+  border-color: rgba(45,125,210,0.35);
+  background: rgba(45,125,210,0.08);
+  color: var(--accent-blue);
+}
+.any-float-btn-blue:hover {
+  border-color: rgba(45,125,210,0.65);
+  background: rgba(45,125,210,0.16);
+  box-shadow: 0 0 12px rgba(45,125,210,0.2);
+}
+
+/* ── PEDIDOS VIEW ── */
+#pedidos-view {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: var(--bg-deep); overflow-y: auto; flex-direction: column;
+}
+#pedidos-view.open { display: flex; }
+
+.ped-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 56px; height: 72px; border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.9); backdrop-filter: blur(20px);
+  position: sticky; top: 0; z-index: 10; gap: 16px; flex-shrink: 0;
+}
+.ped-header-left { display: flex; align-items: center; gap: 12px; }
+.ped-sync-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent-blue); box-shadow: 0 0 8px rgba(45,125,210,0.7);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+.ped-brand { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; color:var(--text-primary); }
+.ped-sync-time { font-size:12px; color:var(--text-secondary); }
+.ped-divider { width:1px; height:26px; background:rgba(255,255,255,0.08); }
+.ped-label { font-size:11px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:var(--accent-blue); }
+
+.ped-sync-btn {
+  display:flex; align-items:center; gap:7px; padding:9px 18px;
+  border-radius:9px; border:1px solid rgba(45,125,210,0.35);
+  background:rgba(45,125,210,0.08); color:var(--text-primary);
+  font-size:13px; font-weight:600; font-family:'DM Sans',sans-serif;
+  cursor:pointer; transition:all 0.2s;
+}
+.ped-sync-btn:hover { border-color:rgba(45,125,210,0.7); background:rgba(45,125,210,0.15); }
+.ped-sync-btn.syncing i { animation:spin 1s linear infinite; }
+
+.ped-painel-btn {
+  display:flex; align-items:center; gap:7px; padding:9px 18px;
+  border-radius:9px; border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.04); color:var(--text-primary);
+  font-size:13px; font-weight:600; font-family:'DM Sans',sans-serif;
+  cursor:pointer; transition:all 0.2s; text-decoration:none;
+}
+.ped-painel-btn:hover { border-color:rgba(45,125,210,0.4); background:rgba(45,125,210,0.08); }
+
+.ped-main { flex:1; padding:32px 56px 48px; }
+
+/* KPIs */
+.ped-kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+.ped-kpi {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:14px;
+  padding:20px 22px; display:flex; flex-direction:column; gap:8px;
+  position:relative; overflow:hidden; transition:border-color 0.3s, transform 0.2s;
+}
+.ped-kpi::before { content:""; position:absolute; top:0; left:0; right:0; height:2px; border-radius:14px 14px 0 0; opacity:0; transition:opacity 0.3s; }
+.ped-kpi:hover { transform:translateY(-2px); }
+.ped-kpi:hover::before { opacity:1; }
+.ped-kpi-pendente::before { background:var(--accent-amber); box-shadow:0 0 16px var(--glow-amber); }
+.ped-kpi-pago::before     { background:var(--accent-green);  box-shadow:0 0 16px var(--glow-green); }
+.ped-kpi-valor::before    { background:var(--accent-blue);   box-shadow:0 0 16px var(--glow-blue); }
+.ped-kpi-antigo::before   { background:var(--accent-red);    box-shadow:0 0 16px var(--glow-red); }
+.ped-kpi-lbl { font-size:10.5px; font-weight:600; letter-spacing:2px; text-transform:uppercase; }
+.ped-kpi-pendente .ped-kpi-lbl { color:var(--accent-amber); }
+.ped-kpi-pago     .ped-kpi-lbl { color:var(--accent-green); }
+.ped-kpi-valor    .ped-kpi-lbl { color:var(--accent-blue); }
+.ped-kpi-antigo   .ped-kpi-lbl { color:var(--accent-red); }
+.ped-kpi-val { font-family:'Syne',sans-serif; font-size:34px; font-weight:800; letter-spacing:-1px; line-height:1; }
+.ped-kpi-pendente .ped-kpi-val { color:var(--accent-amber); }
+.ped-kpi-pago     .ped-kpi-val { color:var(--accent-green); }
+.ped-kpi-valor    .ped-kpi-val { color:var(--accent-blue); font-size:24px; }
+.ped-kpi-antigo   .ped-kpi-val { color:var(--accent-red); }
+.ped-kpi-sub { font-size:11.5px; color:var(--text-secondary); }
+
+/* Period filter */
+.ped-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:24px; flex-wrap:wrap; }
+.ped-period-btn {
+  padding:6px 14px; border-radius:20px; border:1px solid var(--border);
+  background:transparent; color:var(--text-secondary); font-size:12px;
+  font-weight:500; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s;
+}
+.ped-period-btn:hover, .ped-period-btn.active {
+  border-color:rgba(45,125,210,0.5); color:var(--accent-blue); background:rgba(45,125,210,0.08);
+}
+.ped-search {
+  margin-left:auto; background:rgba(255,255,255,0.04); border:1px solid var(--border);
+  border-radius:10px; padding:8px 14px 8px 36px; font-size:13px;
+  font-family:'DM Sans',sans-serif; color:var(--text-primary); outline:none;
+  width:240px; transition:border-color 0.25s;
+}
+.ped-search:focus { border-color:rgba(45,125,210,0.45); }
+.ped-search-wrap { position:relative; }
+.ped-search-wrap i { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-secondary); pointer-events:none; width:14px; height:14px; }
+
+/* Canal cards */
+.ped-canais { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:28px; }
+.ped-canal-card {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:14px;
+  padding:18px 20px; transition:border-color 0.25s, transform 0.2s;
+}
+.ped-canal-card:hover { border-color:rgba(45,125,210,0.25); transform:translateY(-2px); }
+.ped-canal-name { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; margin-bottom:12px; color:var(--text-primary); display:flex; align-items:center; gap:8px; }
+.ped-canal-stats { display:flex; gap:12px; }
+.ped-canal-stat { flex:1; background:rgba(255,255,255,0.03); border-radius:8px; padding:10px 12px; }
+.ped-canal-stat-lbl { font-size:9.5px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-secondary); margin-bottom:4px; }
+.ped-canal-stat-val { font-size:20px; font-weight:700; font-family:'Syne',sans-serif; }
+.ped-canal-stat-sub { font-size:10.5px; color:var(--text-secondary); margin-top:2px; }
+.ped-stat-pendente .ped-canal-stat-val { color:var(--accent-amber); }
+.ped-stat-pago     .ped-canal-stat-val { color:var(--accent-green); }
+
+/* Tabela pedidos */
+.ped-table-wrap { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+.ped-table-title { padding:16px 22px; border-bottom:1px solid var(--border); font-family:'Syne',sans-serif; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:space-between; }
+.ped-table-cnt { font-size:12px; font-weight:400; color:var(--text-secondary); font-family:'DM Sans',sans-serif; }
+.ped-thead { display:grid; grid-template-columns:140px 1fr 120px 110px 90px 100px; gap:0; padding:11px 22px; background:rgba(255,255,255,0.02); border-bottom:1px solid var(--border); }
+.ped-th { font-size:9.5px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-secondary); }
+.ped-tbody {}
+.ped-row {
+  display:grid; grid-template-columns:140px 1fr 120px 110px 90px 100px;
+  gap:0; padding:13px 22px; border-bottom:1px solid var(--border);
+  align-items:center; transition:background 0.2s;
+}
+.ped-row:last-child { border-bottom:none; }
+.ped-row:hover { background:rgba(255,255,255,0.02); }
+.ped-num { font-size:12px; font-family:monospace; color:var(--accent-blue); font-weight:600; }
+.ped-sku { font-size:9.5px; font-weight:600; color:var(--text-secondary); letter-spacing:0.5px; margin-bottom:2px; }
+.ped-cliente { font-size:10.5px; color:var(--text-secondary); margin-top:3px; opacity:0.75; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ped-prod { font-size:13px; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:12px; }
+.ped-canal-badge { font-size:10px; font-weight:700; padding:3px 8px; border-radius:5px; letter-spacing:0.5px; text-transform:uppercase; white-space:nowrap; display:inline-block; }
+.canal-mm       { background:rgba(156,111,255,0.12); color:#9c6fff; border:1px solid rgba(156,111,255,0.2); }
+.canal-web      { background:rgba(45,210,180,0.1);  color:#2dd4bf; border:1px solid rgba(45,210,180,0.2); }
+.canal-b2w      { background:rgba(255,60,60,0.1);   color:#ff5a5a; border:1px solid rgba(255,60,60,0.2); }
+.canal-via      { background:rgba(255,140,0,0.1);   color:#ff8c00; border:1px solid rgba(255,140,0,0.2); }
+.canal-cnova    { background:rgba(100,180,255,0.1); color:#64b4ff; border:1px solid rgba(100,180,255,0.2); }
+.canal-netshoes { background:rgba(255,200,0,0.1);   color:#ffc800; border:1px solid rgba(255,200,0,0.2); }
+.canal-zema     { background:rgba(0,200,100,0.1);   color:#00c864; border:1px solid rgba(0,200,100,0.2); }
+.canal-outro    { background:rgba(255,255,255,0.06); color:var(--text-secondary); border:1px solid var(--border); }
+.ped-valor { font-size:13px; font-weight:600; color:var(--text-primary); }
+.ped-dias { font-size:12px; }
+.ped-dias-ok  { color:var(--accent-green); }
+.ped-dias-med { color:var(--accent-amber); }
+.ped-dias-old { color:var(--accent-red); font-weight:700; }
+.ped-status-badge { font-size:10.5px; font-weight:600; padding:4px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+.ped-st-pendente { background:rgba(212,160,23,0.12); color:var(--accent-amber); border:1px solid rgba(212,160,23,0.25); }
+.ped-st-pago     { background:rgba(31,189,114,0.1);  color:var(--accent-green); border:1px solid rgba(31,189,114,0.2); }
+
+.ped-empty { padding:48px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px; color:var(--text-secondary); font-size:13px; }
+
+/* Ticker pedidos */
+.ped-ticker-wrap { display:flex; align-items:stretch; border-top:1px solid var(--border); flex-shrink:0; overflow:hidden; height:42px; }
+.ped-ticker-lbl { background:var(--accent-blue); color:white; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:0 20px; display:flex; align-items:center; white-space:nowrap; flex-shrink:0; }
+.ped-ticker-body { overflow:hidden; flex:1; background:rgba(255,255,255,0.02); display:flex; align-items:center; }
+.ped-ticker-track { display:flex; white-space:nowrap; animation:ticker 32s linear infinite; font-size:12.5px; color:var(--text-secondary); }
+.ped-ticker-track span { margin-right:48px; }
+.ped-ticker-track .sep { color:var(--accent-blue); margin-right:48px; opacity:0.5; }
+
+/* Toast pedidos */
+#pedToast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#0f0f0f; border:1px solid rgba(45,125,210,0.3); border-radius:10px; padding:12px 20px; font-size:12.5px; color:var(--accent-blue); display:flex; align-items:center; gap:8px; z-index:9998; opacity:0; transition:transform 0.4s ease, opacity 0.4s ease; white-space:nowrap; box-shadow:0 8px 32px rgba(0,0,0,0.4); }
+#pedToast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
 #anymarket-view {
   display: none;
   position: fixed;
@@ -2038,6 +2257,24 @@ body::before {
 
   </main>
 
+  <!-- BARRA FLUTUANTE ANYMARKET -->
+  <div class="any-float-bar" id="anyFloatBar">
+    <div class="any-float-inner">
+      <div class="any-float-left">
+        <i data-lucide="shopping-bag" style="width:14px;height:14px;color:var(--accent-blue);"></i>
+        <span class="any-float-title">Anymarket</span>
+        <span class="any-float-sep">·</span>
+        <span class="any-float-sub">Pedidos do mês atual</span>
+      </div>
+      <div class="any-float-btns">
+        <button class="any-float-btn any-float-btn-blue" onclick="abrirPedidos()">
+          <i data-lucide="shopping-bag" style="width:13px;height:13px;"></i>
+          Pedidos · Pendente & Pago
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- TICKER -->
   <div class="ticker-wrap">
     <div class="ticker-label" id="tickerLabel">EASY HOUSE</div>
@@ -2232,11 +2469,11 @@ function inicializarUI(email) {
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────────
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 const NOTIFICACOES_HOJE = [
-  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 11 variações em alerta ⚠️',desc:'85,2% reservado · GR 4PTS EASY LIKE BRANCO (0%) · GR IMPERATORE 6PTS FRASSINO/OFF WH (0%) · CADEIRA TESSERA LINHO MOSAICO (0%) e mais 8.',hora:'27/03/2026',lida:false,link:'estoque.html',critico:true},
-  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: 3 transportadoras críticas ⚠️',desc:'220 em aberto · R$ 220.615 · SLA geral 95,32% · Pior: TEMPO JUSTO (91,16%) · NOVA ERA 91,98% · RGE 92,98%',hora:'27/03/2026',lida:false,link:'sla_transporte.html',critico:true},
-  {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: 110,64% da Meta ✓',desc:'01 a 26/Mar · +25,39% vs Fev · +284% Ano x Ano · Média diária ~R$175K',hora:'27/03/2026',lida:false,link:'comercial.html',critico:false},
-  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: 94,3% recebido ✓',desc:'Cartas de Débito · R$ 792k recebido · R$ 47k pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'27/03/2026',lida:false,link:'financeiro.html',critico:false},
-  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado ⚠️',desc:'45 itens · 41 no prazo (91,1%) · 4 em atraso (8,9%) · 1 moderado 31d (pedido #86772) · 0 críticos',hora:'27/03/2026',lida:false,link:'assistencia.html',critico:false},
+  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 9 variações em alerta ⚠️',desc:'83,5% reservado · Imperatore (Frassino/Off Wh 0% · Branco 0%) · Easy Move (Amendoa CL/Off Wh 0% · Amendoa 20%) · Easy Slim Branco (19%) · Toronto Amendoa (0%) · Tessera Linho Mosaico (0%) e mais 3.',hora:'30/03/2026',lida:false,link:'estoque.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: 3 transportadoras críticas ⚠️',desc:'181 em atraso · R$ 504.298 em aberto · SLA geral 95,76% · Pior: RGE (92,66%) · TEMPO JUSTO 92,96% · NOVA ERA 94,36%',hora:'30/03/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: 119,43% da Meta ✓',desc:'R$ 10,27M faturado · +35,36% vs Fev · +290% Ano x Ano · Média diária R$ 345K',hora:'30/03/2026',lida:false,link:'comercial.html',critico:false},
+  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: 93,8% recebido ✓',desc:'Cartas de Débito · R$ 793k recebido · R$ 52k pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'30/03/2026',lida:false,link:'financeiro.html',critico:false},
+  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado ⚠️',desc:'65 itens · 44 pedidos · 52 no prazo · 4 em atraso · 1 moderado 34d (pedido #86772) · 0 críticos',hora:'30/03/2026',lida:false,link:'assistencia.html',critico:false},
   {id:5,icon:'❌',cor:'rgba(204,40,40,0.12)',titulo:'Cancelamentos: 655 no período',desc:'Shopee 443 · Magazine Luiza 127 · Mercado Livre 69 · R$ 707K total',hora:'27/03/2026',lida:false,link:'cancelamentos.html',critico:false}
 ];
 const TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
@@ -2605,9 +2842,11 @@ function switchChannel(ch) {
     if(logo) { logo.src = "./easyhouse.png"; logo.style.height = "82px"; logo.style.maxHeight = "82px"; }
   }
 
-  // Ocultar sininho de notificações no painel da Madeira Madeira (exclusivo da Easy House)
+  // Ocultar sininho e barra Anymarket no painel da Madeira Madeira
   const notifWrap = document.getElementById('notifWrap');
   if (notifWrap) notifWrap.style.display = is3p ? '' : 'none';
+  const floatBar = document.getElementById('anyFloatBar');
+  if (floatBar) floatBar.style.display = is3p ? '' : 'none';
 
   // Persistir escolha na sessão
   sessionStorage.setItem('eh_canal_ativo', ch);
@@ -2794,6 +3033,125 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
 </div><!-- fim #anymarket-view -->
 
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!--  PAINEL DE PEDIDOS                                                     -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div id="pedidos-view">
+
+  <!-- Header -->
+  <header class="ped-header">
+    <div class="ped-header-left">
+      <div class="ped-sync-dot"></div>
+      <span class="ped-brand">Anymarket</span>
+      <span class="ped-sync-time">· sincronizado <span id="pedSyncTime">--:--</span></span>
+      <div class="ped-divider"></div>
+      <span class="ped-label">Pedidos · Pendente & Pago</span>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="ped-sync-btn" id="btnPedSync" onclick="pedSincronizar()">
+        <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Sincronizar
+      </button>
+      <button class="ped-painel-btn" onclick="fecharPedidos()">
+        <i data-lucide="layout-grid" style="width:14px;height:14px;"></i> Painel
+      </button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <div class="ped-main">
+
+    <!-- KPIs -->
+    <div class="ped-kpi-row">
+      <div class="ped-kpi ped-kpi-pendente">
+        <div class="ped-kpi-lbl">Pendente</div>
+        <div class="ped-kpi-val" id="ped-kpi-pendente">—</div>
+        <div class="ped-kpi-sub">pedidos aguardando</div>
+      </div>
+      <div class="ped-kpi ped-kpi-pago">
+        <div class="ped-kpi-lbl">Pago</div>
+        <div class="ped-kpi-val" id="ped-kpi-pago">—</div>
+        <div class="ped-kpi-sub">pedidos confirmados</div>
+      </div>
+      <div class="ped-kpi ped-kpi-valor">
+        <div class="ped-kpi-lbl">Valor Total</div>
+        <div class="ped-kpi-val" id="ped-kpi-valor">—</div>
+        <div class="ped-kpi-sub">pendente + pago</div>
+      </div>
+      <div class="ped-kpi ped-kpi-antigo">
+        <div class="ped-kpi-lbl">Mais Antigo</div>
+        <div class="ped-kpi-val" id="ped-kpi-antigo">—</div>
+        <div class="ped-kpi-sub">dias em pendente</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="ped-toolbar">
+      <button class="ped-period-btn" onclick="pedSetPeriodo('hoje', this)">Hoje</button>
+      <button class="ped-period-btn" onclick="pedSetPeriodo('7d', this)">7 dias</button>
+      <button class="ped-period-btn active" id="ped-btn-mes" onclick="pedSetPeriodo('mes', this)">Mês atual</button>
+      <div style="display:flex;align-items:center;gap:8px;margin-left:8px;">
+        <button class="ped-period-btn" id="ped-btn-pendente" onclick="pedSetStatus('PENDENTE', this)" style="border-color:rgba(212,160,23,0.4);color:var(--accent-amber);">Pendente</button>
+        <button class="ped-period-btn" id="ped-btn-pago" onclick="pedSetStatus('PAGO', this)" style="border-color:rgba(31,189,114,0.4);color:var(--accent-green);">Pago</button>
+        <button class="ped-period-btn active" id="ped-btn-todos-st" onclick="pedSetStatus('TODOS', this)">Todos</button>
+      </div>
+      <div class="ped-search-wrap">
+        <i data-lucide="search"></i>
+        <input class="ped-search" id="pedSearch" placeholder="Buscar número ou canal..." oninput="pedRenderTabela()">
+      </div>
+    </div>
+
+    <!-- Cards por canal -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <span id="pedCanaisLabel" style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);">Por canal</span>
+      <button id="btnLimparFiltros" onclick="pedLimparFiltros()" style="display:none;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;border:1px solid rgba(255,80,80,0.35);background:rgba(255,80,80,0.08);color:#ff6b6b;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;white-space:nowrap;">
+        <i data-lucide="x-circle" style="width:13px;height:13px;"></i> Limpar filtros
+      </button>
+    </div>
+    <div class="ped-canais" id="pedCanais"></div>
+
+    <!-- Tabela -->
+    <div class="ped-table-wrap">
+      <div class="ped-table-title">
+        Lista de Pedidos
+        <span class="ped-table-cnt" id="pedTableCnt">— itens</span>
+      </div>
+      <div class="ped-thead">
+        <div class="ped-th">Nº Pedido</div>
+        <div class="ped-th">SKU · Produto · Cliente</div>
+        <div class="ped-th">Canal</div>
+        <div class="ped-th">Valor</div>
+        <div class="ped-th">Data</div>
+        <div class="ped-th">Status</div>
+      </div>
+      <div class="ped-tbody" id="pedTbody">
+        <div class="ped-empty">
+          <i data-lucide="shopping-bag" style="width:36px;height:36px;opacity:0.3;"></i>
+          <p>Clique em Sincronizar para carregar os pedidos.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ticker -->
+  <div class="ped-ticker-wrap">
+    <div class="ped-ticker-lbl">PEDIDOS</div>
+    <div class="ped-ticker-body">
+      <div class="ped-ticker-track">
+        <span>pendente = receita em espera</span><span class="sep">◆</span>
+        <span>pago = pronto para expedir</span><span class="sep">◆</span>
+        <span>acompanhe seu SLA de pagamento</span><span class="sep">◆</span>
+        <span>pendente = receita em espera</span><span class="sep">◆</span>
+        <span>pago = pronto para expedir</span><span class="sep">◆</span>
+        <span>acompanhe seu SLA de pagamento</span><span class="sep">◆</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- fim #pedidos-view -->
+
+<div id="pedToast"><i data-lucide="check-circle" style="width:14px;height:14px;"></i><span id="pedToastMsg"></span></div>
+
 <!-- Modal reposição -->
 <div class="any-modal-overlay" id="anyModalOverlay">
   <div class="any-modal">
@@ -2843,6 +3201,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
 const ANY_API = 'https://script.google.com/macros/s/AKfycbzLF6qm5Ou_nfLTGuYWORE4ssd0fvTgN_kXG5xVuIRD39StIzJJIv0-ZSwMVB6eobwy/exec';
 
 const SKUS_MONITORADOS = [
+  // SKUs originais
   '85419.59.636','85419.3.636','45888.52.8','85419.59.650','77020.95.643',
   '92830.173.640','95550.52.636','85419.3.640','77020.118.643','85419.59.640',
   '81701.173.636','97434.636','85419.52.636','85419.58.636','76413.636',
@@ -2851,7 +3210,16 @@ const SKUS_MONITORADOS = [
   '41595.8','59957.52.8','97433.52.636','41595.640','81701.368.636',
   '85419.52.640','77194.173.636','45888.59.8','95550.59.636','76413.640',
   '81701.95.636','100058.570.636','91015.640','42508.228.8','59957.52.653',
-  '97434.8','77194.368.636','97434.640','85419.52.650'
+  '97434.8','77194.368.636','97434.640','85419.52.650',
+  // Novos SKUs
+  '87162[90910]','87162[94609]','87162[90909]',
+  '97328[100737]','97328[100738]',
+  '95045[99324]','95045[99325]','95045[99328]',
+  '87138[90803]','87138[90804]',
+  '87471[91621]','87141[90816]',
+  '87096[90667]','87096[90666]',
+  '102313.500.8','102313.502.640','102313.504.640',
+  '97435.8'
 ];
 const MINIMO_PADRAO = 20;
 
@@ -2890,14 +3258,14 @@ function anyIniciarAutoRefresh() {
 
 // ── CARREGA DO SHEETS AO INICIAR A PÁGINA (para todos os usuários) ───────────
 (function anyIniciarCache() {
-  // Busca da planilha em segundo plano ao carregar a página
+  // Só executa após o login — aguarda o DOM estar pronto
   anyBuscarAPI()
     .then(raw => {
       ANY_PRODUTOS = anyProcessar(raw);
       anyCarregado = true;
       anySalvarCache(ANY_PRODUTOS);
-      anyGerarAlertas(ANY_PRODUTOS);
-      // Se o painel já estiver aberto, atualiza
+      // Gera alertas só se o sino existir (após login)
+      try { anyGerarAlertas(ANY_PRODUTOS); } catch(e) {}
       const view = document.getElementById('anymarket-view');
       if (view && view.classList.contains('open')) {
         anyAtualizarHora();
@@ -2905,12 +3273,10 @@ function anyIniciarAutoRefresh() {
       }
     })
     .catch(() => {
-      // Fallback: tenta carregar do cache local
-      const cache = anyCarregarCache();
-      if (cache) {
-        ANY_PRODUTOS = cache.produtos;
-        anyCarregado = true;
-      }
+      try {
+        const cache = anyCarregarCache();
+        if (cache) { ANY_PRODUTOS = cache.produtos; anyCarregado = true; }
+      } catch(e) {}
     });
   anyIniciarAutoRefresh();
 })();
@@ -3236,6 +3602,394 @@ function anyShowToast(msg) {
   const t = document.getElementById('anyToast');
   t.classList.add('show');
   anyToastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── PEDIDOS ──────────────────────────────────────────────────────────────────
+const PED_API = 'https://script.google.com/macros/s/AKfycbzLF6qm5Ou_nfLTGuYWORE4ssd0fvTgN_kXG5xVuIRD39StIzJJIv0-ZSwMVB6eobwy/exec';
+
+let PED_TODOS = [];
+let pedPeriodo = 'mes';
+let pedStatus  = 'TODOS';
+let pedCanalAtivo = '';
+let pedToastTimer;
+
+const CANAL_NOMES_PED = {
+  'MERCADO_LIVRE':'Mercado Livre','MERCADOLIVRE':'Mercado Livre',
+  'SHOPEE':'Shopee','MAGAZINE_LUIZA':'Magalu','MAGALU':'Magalu',
+  'AMAZON':'Amazon','B2W':'B2W / Americanas','VIA_VAREJO':'Via Varejo',
+  'SITE':'Site Proprio','NETSHOES':'Netshoes'
+};
+
+function pedNomeCanal(raw) {
+  if (!raw) return 'Marketplace';
+  return CANAL_NOMES_PED[String(raw).toUpperCase().replace(/[\s\-]/g,'_')] || raw;
+}
+
+function pedCanalClass(c) {
+  const m = {
+    'Mercado Livre':'canal-meli',
+    'MERCADO_LIVRE':'canal-meli',
+    'Shopee':'canal-shopee',
+    'SHOPEE':'canal-shopee',
+    'Magalu':'canal-magalu',
+    'MAGALU':'canal-magalu',
+    'MAGAZINE_LUIZA':'canal-magalu',
+    'Amazon':'canal-amazon',
+    'AMAZON':'canal-amazon',
+    'Madeira Madeira':'canal-mm',
+    'MADEIRA_MADEIRA':'canal-mm',
+    'Web Continental':'canal-web',
+    'WEB_CONTINENTAL_V2':'canal-web',
+    'WEB_CONTINENTAL':'canal-web',
+    'B2W / Americanas':'canal-b2w',
+    'B2W':'canal-b2w',
+    'Via Varejo':'canal-via',
+    'VIA_VAREJO':'canal-via',
+    'Cnova':'canal-cnova',
+    'CNOVA':'canal-cnova',
+    'Netshoes':'canal-netshoes',
+    'NETSHOES':'canal-netshoes',
+    'Zema':'canal-zema',
+    'ZEMA':'canal-zema'
+  };
+  return m[c] || 'canal-outro';
+}
+
+function pedDiasAtras(dateStr) {
+  if (!dateStr) return 0;
+  return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
+}
+
+function pedFiltrarPeriodo(pedidos) {
+  const agora = new Date();
+  return pedidos.filter(function(p) {
+    const d = new Date(p.data);
+    if (pedPeriodo === 'hoje') return d.toDateString() === agora.toDateString();
+    if (pedPeriodo === '7d')  return (agora - d) <= 7 * 86400000;
+    return d.getMonth() === agora.getMonth() && d.getFullYear() === agora.getFullYear();
+  });
+}
+
+// Status que consideramos "Pendente" e "Pago" na Anymarket
+const STATUS_PENDENTE = ['PENDING','WAITING_PAYMENT']; // Aguardando pagamento
+const STATUS_PAGO     = ['PAID','PAID_WAITING_SHIP','NEW']; // NEW = pago mas marketplace ainda não atualizou
+
+function pedNormalizarStatus(st) {
+  if (!st) return null;
+  const s = st.toUpperCase().trim();
+  if (STATUS_PENDENTE.indexOf(s) !== -1) return 'PENDENTE';
+  if (STATUS_PAGO.indexOf(s) !== -1)     return 'PAGO';
+  return null; // ignora SENT, DELIVERED, CANCELLED, etc
+}
+
+// Lê do cache da planilha (abertura do painel)
+async function pedBuscarCache() {
+  const r    = await fetch(PED_API + '?acao=pedidos');
+  const json = await r.json();
+  if (json.erro) throw new Error(json.erro);
+  return (json.pedidos || []).map(function(p) {
+    return {
+      numero:  p.numero,
+      produto: p.produto || p.numero,
+      sku:     p.sku || '-',
+      cliente: p.cliente || '-',
+      cpf:     p.cpf || '-',
+      canal:   pedNomeCanal(p.canal),
+      valor:   Number(p.valor || 0),
+      status:  p.status,
+      data:    p.data || '',
+      estado:  p.estado || '-',
+      peso:    Number(p.peso || 0)
+    };
+  });
+}
+
+// Busca direta da API — filtra por data do mês, sem filtro de status
+// (o filtro de status ignora createdAfter na API do Anymarket)
+function pedMontarItem(o, stNorm) {
+  const numero = o.marketPlaceNumber || o.marketPlaceId || String(o.id) || '-';
+  var produto = '-', sku = '-', cliente = '-', cpf = '-';
+  if (o.items && o.items[0]) {
+    var it = o.items[0];
+    produto = (it.product && it.product.title) ? it.product.title
+            : (it.sku && it.sku.title) ? it.sku.title
+            : it.title || '-';
+    sku = (it.sku && it.sku.partnerId) ? it.sku.partnerId
+        : (it.product && it.product.partnerId) ? it.product.partnerId : '-';
+  }
+  if (produto === '-' && o.skus && o.skus[0]) produto = o.skus[0].title || '-';
+  if (produto === '-') produto = numero;
+  if (o.buyer) { cliente = o.buyer.name || '-'; cpf = o.buyer.document || '-'; }
+  if (cliente === '-') cliente = o.shipmentUserName || o.receiverName || '-';
+  if (cpf === '-')     cpf     = o.shipmentUserDocument || '-';
+  return {
+    numero: numero, produto: produto, sku: sku,
+    cliente: cliente, cpf: cpf,
+    canal:   pedNomeCanal(o.marketPlace || ''),
+    valor:   Number(o.total || o.gross || o.grossAmount || 0),
+    status:  stNorm, data: o.createdAt || '',
+    estado:  (o.anymarketAddress && o.anymarketAddress.state) || '-',
+    peso:    Number((o.items && o.items[0] && o.items[0].weight) || 0)
+  };
+}
+
+async function pedBuscarPagosPorStatus(status) {
+  const agora   = new Date();
+  const inicio  = new Date(agora.getFullYear(), agora.getMonth(), 1).getTime();
+  const todos   = [];
+  let offset = 0, temMais = true, paginasAntigas = 0;
+
+  while (temMais) {
+    const url  = PED_API + '?endpoint=orders&limit=50&offset=' + offset + '&status=' + status;
+    const r    = await fetch(url);
+    const json = await r.json();
+    const itens = json.content || [];
+    let foraMes = 0;
+
+    itens.forEach(function(o) {
+      const dataP = o.createdAt ? new Date(o.createdAt).getTime() : 0;
+      if (dataP && dataP < inicio) { foraMes++; return; } // ignora fora do mês
+      todos.push(pedMontarItem(o, 'PAGO'));
+    });
+
+    // Para se 3 páginas seguidas fora do mês
+    if (foraMes >= itens.length * 0.8) { paginasAntigas++; if (paginasAntigas >= 3) break; }
+    else paginasAntigas = 0;
+
+    const totalPages  = (json.page && json.page.totalPages) ? json.page.totalPages : 1;
+    const currentPage = (json.page && json.page.number != null) ? json.page.number : 0;
+    temMais = (currentPage + 1) < totalPages && itens.length > 0;
+    offset += 50;
+  }
+  return todos;
+}
+
+async function pedBuscarAPI() {
+  // Pendentes: do cache (rápido, são poucos)
+  const cachePend = await pedBuscarCache();
+  const pendentes = cachePend.filter(function(p){ return p.status === 'PENDENTE'; });
+
+  // Pagos: busca por status em tempo real (sem filtro de data — status transitório)
+  const [pagos1, pagos2, pagos3] = await Promise.all([
+    pedBuscarPagosPorStatus('PAID_WAITING_SHIP'),
+    pedBuscarPagosPorStatus('NEW'),
+    pedBuscarPagosPorStatus('PAID')
+  ]);
+
+  const mapa = {};
+  [...pendentes, ...pagos1, ...pagos2, ...pagos3].forEach(function(p) {
+    if (!mapa[p.numero] || new Date(p.data) > new Date(mapa[p.numero].data)) mapa[p.numero] = p;
+  });
+  return Object.values(mapa);
+}
+
+function pedLimparFiltros() {
+  pedCanalAtivo = '';
+  pedStatus = 'TODOS';
+  document.getElementById('pedSearch').value = '';
+  ['ped-btn-pendente','ped-btn-pago','ped-btn-todos-st'].forEach(function(id){
+    const b = document.getElementById(id);
+    if (b) b.classList.remove('active');
+  });
+  const todos = document.getElementById('ped-btn-todos-st');
+  if (todos) todos.classList.add('active');
+  pedRenderTabela();
+}
+
+function pedAtualizarBotaoLimpar() {
+  const btn = document.getElementById('btnLimparFiltros');
+  if (!btn) return;
+  const temFiltro = pedCanalAtivo || pedStatus !== 'TODOS' || (document.getElementById('pedSearch') && document.getElementById('pedSearch').value);
+  btn.style.display = temFiltro ? 'flex' : 'none';
+}
+
+function pedFiltrarCanal(canal) {
+  if (pedCanalAtivo === canal) {
+    pedCanalAtivo = '';
+  } else {
+    pedCanalAtivo = canal;
+  }
+  pedRenderTabela();
+  const tabela = document.getElementById('pedTbody');
+  if (tabela) tabela.closest('.ped-table-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function pedAtualizarHora() {
+  const d = new Date();
+  const el = document.getElementById('pedSyncTime');
+  if (el) el.textContent = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+
+function pedSetPeriodo(p, el) {
+  pedPeriodo = p;
+  pedCanalAtivo = '';
+  document.querySelectorAll('.ped-period-btn').forEach(function(b){
+    if (b.id && b.id.startsWith('ped-btn-')) return;
+    b.classList.remove('active');
+  });
+  el.classList.add('active');
+  pedRenderTabela();
+}
+
+function pedSetStatus(s, el) {
+  pedStatus = s; // PENDENTE, PAGO, ou TODOS
+  ['ped-btn-pendente','ped-btn-pago','ped-btn-todos-st'].forEach(function(id){
+    const b = document.getElementById(id);
+    if (b) b.classList.remove('active');
+  });
+  el.classList.add('active');
+  pedRenderTabela();
+}
+
+function pedSetLoading(on) {
+  if (!on) return;
+  document.getElementById('pedTbody').innerHTML =
+    '<div class="ped-empty">' +
+    '<div style="width:28px;height:28px;border:2px solid rgba(45,125,210,0.2);border-top-color:var(--accent-blue);border-radius:50%;animation:spin 0.9s linear infinite;"></div>' +
+    '<p>Buscando pedidos do Anymarket...</p></div>';
+  lucide.createIcons();
+}
+
+function pedRenderTabela() {
+  if (PED_TODOS.length === 0) return;
+  let dados = pedFiltrarPeriodo(PED_TODOS);
+  if (pedStatus !== 'TODOS') dados = dados.filter(function(p){ return p.status === pedStatus; });
+  if (pedCanalAtivo) dados = dados.filter(function(p){ return p.canal === pedCanalAtivo || p.canal.toUpperCase() === pedCanalAtivo.toUpperCase(); });
+  const q = (document.getElementById('pedSearch').value || '').toLowerCase();
+  if (q) dados = dados.filter(function(p){
+    return String(p.numero).toLowerCase().includes(q) || p.canal.toLowerCase().includes(q) || p.produto.toLowerCase().includes(q);
+  });
+
+  const pendentes  = dados.filter(function(p){ return p.status === 'PENDENTE'; });
+  const pagos      = dados.filter(function(p){ return p.status === 'PAGO'; });
+  const valorTotal = dados.reduce(function(s,p){ return s + p.valor; }, 0);
+  const diasMax    = pendentes.reduce(function(m,p){ return Math.max(m, pedDiasAtras(p.data)); }, 0);
+
+  document.getElementById('ped-kpi-pendente').textContent = pendentes.length;
+  document.getElementById('ped-kpi-pago').textContent     = pagos.length;
+  document.getElementById('ped-kpi-valor').textContent    = 'R$ ' + valorTotal.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+  document.getElementById('ped-kpi-antigo').textContent   = diasMax || '0';
+
+  // Cards por canal
+  const canais = {};
+  dados.forEach(function(p) {
+    if (!canais[p.canal]) canais[p.canal] = {pendente:0, pago:0, valor:0};
+    if (p.status === 'PENDENTE') canais[p.canal].pendente++;
+    else canais[p.canal].pago++;
+    canais[p.canal].valor += p.valor;
+  });
+
+  const canaisArr = Object.entries(canais).sort(function(a,b){ return (b[1].pendente+b[1].pago)-(a[1].pendente+a[1].pago); });
+  document.getElementById('pedCanais').innerHTML = canaisArr.map(function(entry) {
+    const nome = entry[0]; const c = entry[1];
+    const isAtivo = pedCanalAtivo === nome;
+    const nomeEsc = nome.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<div class="ped-canal-card" onclick="pedFiltrarCanal(\'' + nomeEsc + '\')" style="cursor:pointer;' + (isAtivo ? 'border-color:rgba(45,125,210,0.5);box-shadow:0 0 0 1px rgba(45,125,210,0.15);' : '') + '">' +
+      '<div class="ped-canal-name">' +
+        '<span class="ped-canal-badge ' + pedCanalClass(nome) + '">' + nome + '</span>' +
+        (isAtivo ? '<span style="margin-left:auto;font-size:10px;color:var(--accent-blue);font-weight:600;">▼ filtrado</span>' : '<span style="margin-left:auto;font-size:10px;color:var(--text-secondary);">clique para filtrar</span>') +
+      '</div>' +
+      '<div class="ped-canal-stats">' +
+        '<div class="ped-canal-stat ped-stat-pendente"><div class="ped-canal-stat-lbl">Pendente</div><div class="ped-canal-stat-val">' + c.pendente + '</div><div class="ped-canal-stat-sub">pedidos</div></div>' +
+        '<div class="ped-canal-stat ped-stat-pago"><div class="ped-canal-stat-lbl">Pago</div><div class="ped-canal-stat-val">' + c.pago + '</div><div class="ped-canal-stat-sub">pedidos</div></div>' +
+        '<div class="ped-canal-stat"><div class="ped-canal-stat-lbl">Valor</div><div class="ped-canal-stat-val" style="font-size:13px;color:var(--accent-blue);">R$ ' + c.valor.toLocaleString('pt-BR',{minimumFractionDigits:0}) + '</div><div class="ped-canal-stat-sub">total</div></div>' +
+      '</div></div>';
+  }).join('');
+
+  const ordenados = dados.slice().sort(function(a,b){ return new Date(a.data) - new Date(b.data); });
+  document.getElementById('pedTableCnt').textContent = dados.length + (dados.length === 1 ? ' item' : ' itens');
+
+  const tbody = document.getElementById('pedTbody');
+  if (ordenados.length === 0) {
+    tbody.innerHTML = '<div class="ped-empty"><i data-lucide="package-check" style="width:32px;height:32px;opacity:0.3;"></i><p>Nenhum pedido encontrado.</p></div>';
+    lucide.createIcons(); return;
+  }
+
+  tbody.innerHTML = ordenados.map(function(p) {
+    const dias    = pedDiasAtras(p.data);
+    const diasCls = dias >= 5 ? 'ped-dias-old' : dias >= 2 ? 'ped-dias-med' : 'ped-dias-ok';
+    const stCls   = p.status === 'PENDENTE' ? 'ped-st-pendente' : 'ped-st-pago';
+    const stLabel = p.status === 'PENDENTE' ? 'Pendente' : 'Pago';
+    const produto = (p.produto && p.produto !== '-') ? p.produto : p.numero;
+    const sku     = (p.sku && p.sku !== '-') ? p.sku : '';
+    const cliente = p.cliente || '';
+    const cpf     = p.cpf ? p.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : '';
+    const clienteInfo = [cliente, cpf].filter(Boolean).join(' · ');
+    const dataFmt = p.data ? new Date(p.data).toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'2-digit'}) : '—';
+    return '<div class="ped-row">' +
+      '<span class="ped-num">#' + p.numero + '</span>' +
+      '<div style="overflow:hidden;padding-right:12px;">' +
+        (sku && sku !== '-' ? '<div class="ped-sku">' + sku + '</div>' : '') +
+        '<div class="ped-prod" title="' + produto + '">' + produto + '</div>' +
+        (clienteInfo ? '<div class="ped-cliente" title="' + clienteInfo + '">' + clienteInfo + '</div>' : '') +
+      '</div>' +
+      '<span><span class="ped-canal-badge ' + pedCanalClass(p.canal) + '">' + p.canal + '</span></span>' +
+      '<span class="ped-valor">R$ ' + p.valor.toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</span>' +
+      '<span class="ped-dias ' + diasCls + '" title="' + dias + ' dias">' + dataFmt + '</span>' +
+      '<span class="ped-status-badge ' + stCls + '">' + stLabel + '</span>' +
+    '</div>';
+  }).join('');
+  lucide.createIcons();
+  pedAtualizarBotaoLimpar();
+}
+
+function pedShowToast(msg) {
+  clearTimeout(pedToastTimer);
+  document.getElementById('pedToastMsg').textContent = msg;
+  const t = document.getElementById('pedToast');
+  t.classList.add('show');
+  pedToastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3200);
+}
+
+function pedSincronizar() {
+  const btn = document.getElementById('btnPedSync');
+  btn.innerHTML = '<i data-lucide="loader-circle" style="width:14px;height:14px;animation:spin 1s linear infinite;"></i> Buscando...';
+  btn.disabled = true;
+  lucide.createIcons();
+  pedBuscarAPI()
+    .then(function(dados) {
+      PED_TODOS = dados;
+      btn.innerHTML = '<i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Sincronizar';
+      btn.disabled = false;
+      lucide.createIcons();
+      pedAtualizarHora();
+      pedRenderTabela();
+      pedShowToast('Sincronizado: ' + dados.length + ' pedidos');
+    })
+    .catch(function() {
+      btn.innerHTML = '<i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Sincronizar';
+      btn.disabled = false;
+      lucide.createIcons();
+      pedShowToast('Erro ao sincronizar. Tente novamente.');
+    });
+}
+
+function abrirPedidos() {
+  document.getElementById('pedidos-view').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  pedAtualizarHora();
+  if (PED_TODOS.length === 0) {
+    pedSetLoading(true);
+    pedBuscarCache()
+      .then(function(dados) {
+        PED_TODOS = dados;
+        pedAtualizarHora();
+        pedRenderTabela();
+      })
+      .catch(function() {
+        document.getElementById('pedTbody').innerHTML =
+          '<div class="ped-empty"><i data-lucide="wifi-off" style="width:32px;height:32px;color:var(--accent-red);opacity:0.5;"></i><p>Erro ao conectar. Clique em Sincronizar.</p></div>';
+        lucide.createIcons();
+      });
+  } else {
+    pedRenderTabela();
+  }
+  lucide.createIcons();
+}
+
+function fecharPedidos() {
+  document.getElementById('pedidos-view').classList.remove('open');
+  document.body.style.overflow = '';
 }
 </script>
 </body>
