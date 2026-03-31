@@ -1979,6 +1979,202 @@ body::before {
   --accent-red2: #ff8c1a;
 }
 
+/* ── BOTÃO LOGS ── */
+.btn-logs {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(156,111,255,0.4);
+  background: rgba(156,111,255,0.08);
+  color: var(--accent-purple);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-logs:hover {
+  background: rgba(156,111,255,0.18);
+  border-color: rgba(156,111,255,0.7);
+  box-shadow: 0 0 14px rgba(156,111,255,0.2);
+}
+
+/* ── MODAL LOGS DE ACESSO ── */
+.logs-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.logs-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.logs-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 520px;
+  max-width: calc(100vw - 48px);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+.logs-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.logs-modal-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logs-modal-close {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.logs-modal-close:hover {
+  background: rgba(204,40,40,0.15);
+  color: var(--accent-red);
+  border-color: rgba(204,40,40,0.4);
+}
+.logs-modal-body {
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 0;
+}
+.log-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s;
+}
+.log-item:hover { background: rgba(255,255,255,0.03); }
+.log-item:last-child { border-bottom: none; }
+.log-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(45,125,210,0.15);
+  border: 1px solid rgba(45,125,210,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-blue);
+  flex-shrink: 0;
+  font-family: 'Syne', sans-serif;
+}
+.log-info { flex: 1; overflow: hidden; }
+.log-nome {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.log-email {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.log-hora {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.logs-empty {
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.logs-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.logs-period-pills {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+.logs-pill {
+  padding: 5px 11px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.logs-pill:hover {
+  border-color: rgba(156,111,255,0.4);
+  color: var(--accent-purple);
+  background: rgba(156,111,255,0.08);
+}
+.logs-pill.active {
+  border-color: rgba(156,111,255,0.6);
+  background: rgba(156,111,255,0.15);
+  color: var(--accent-purple);
+}
+.logs-user-select {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  outline: none;
+  max-width: 160px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.logs-user-select:focus, .logs-user-select:hover {
+  border-color: rgba(156,111,255,0.45);
+  color: var(--text-primary);
+}
+.logs-user-select option { background: #1a1a2e; color: var(--text-primary); }
+
 /* Forçar 5 cards do painel 3P em uma única linha */
 #panel-3p .dashboard {
   grid-template-columns: repeat(5, 1fr);
@@ -2113,6 +2309,10 @@ body::before {
         </div>
       </div>
       <!-- USUÁRIO + NAV + SAIR -->
+      <button class="btn-logs" id="btnLogs" onclick="abrirLogs()">
+        <i data-lucide="activity" style="width:13px;height:13px"></i>
+        Logs
+      </button>
       <div class="user-greeting" id="userGreeting" style="display:none">
         <div class="user-avatar" id="userAvatar"></div>
         <div class="user-info">
@@ -2434,6 +2634,15 @@ const NOMES = {
 // ── LOG DE ACESSOS ───────────────────────────────────────────────────
 function registrarAcesso(email) {
   const log = JSON.parse(localStorage.getItem('eh_access_log') || '[]');
+  // Evitar duplicatas: ignorar se o último acesso deste usuário foi há menos de 60 segundos
+  const ultimo = log.find(function(l) { return l.email === email; });
+  if (ultimo) {
+    var partes = (ultimo.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
+    if (partes) {
+      var dUltimo = new Date(+partes[3], +partes[2]-1, +partes[1], +partes[4], +partes[5], +partes[6]);
+      if ((new Date() - dUltimo) < 60000) return; // menos de 60s, não registra
+    }
+  }
   log.unshift({ email, nome: NOMES[email] || email, hora: new Date().toLocaleString('pt-BR') });
   if (log.length > 50) log.pop();
   localStorage.setItem('eh_access_log', JSON.stringify(log));
@@ -2454,6 +2663,10 @@ function inicializarUI(email) {
   document.getElementById('userName').textContent = nome;
   greet.style.display = 'flex';
   document.getElementById('btnLogout').style.display = 'flex';
+
+  // Logs de acesso (somente para usuários autorizados)
+  const USUARIOS_LOGS = ['lucaslopes@grupolopas.com.br', 'comercial@lojaeasyhouse.com.br'];
+  document.getElementById('btnLogs').style.display = USUARIOS_LOGS.includes(email) ? 'flex' : 'none';
 
   // Log de acesso
   registrarAcesso(email);
@@ -3182,6 +3395,33 @@ document.addEventListener("DOMContentLoaded", ()=>{
         Confirmar Reposição
       </button>
     </div>
+  </div>
+</div>
+
+<!-- Modal Logs de Acesso -->
+<div class="logs-modal-overlay" id="logsModalOverlay">
+  <div class="logs-modal">
+    <div class="logs-modal-header">
+      <div class="logs-modal-title">
+        <i data-lucide="activity" style="width:15px;height:15px;color:var(--accent-purple)"></i>
+        Logs de Acesso
+      </div>
+      <button class="logs-modal-close" onclick="fecharLogs()">
+        <i data-lucide="x" style="width:14px;height:14px"></i>
+      </button>
+    </div>
+    <div class="logs-filters">
+      <div class="logs-period-pills">
+        <button class="logs-pill active" data-period="hoje" onclick="setLogPeriod(this)">Hoje</button>
+        <button class="logs-pill" data-period="7dias" onclick="setLogPeriod(this)">Últ. 7 dias</button>
+        <button class="logs-pill" data-period="mes" onclick="setLogPeriod(this)">Este mês</button>
+        <button class="logs-pill" data-period="todos" onclick="setLogPeriod(this)">Todos</button>
+      </div>
+      <select class="logs-user-select" id="logsUserSelect" onchange="renderLogs()">
+        <option value="">Todos os usuários</option>
+      </select>
+    </div>
+    <div class="logs-modal-body" id="logsModalBody"></div>
   </div>
 </div>
 
@@ -3991,5 +4231,108 @@ function fecharPedidos() {
   document.getElementById('pedidos-view').classList.remove('open');
   document.body.style.overflow = '';
 }
+
+// ── LOGS DE ACESSO ────────────────────────────────────────────────────
+var _logsData = [];
+var _logPeriod = 'hoje';
+
+function abrirLogs() {
+  var OCULTOS = ['lucaslopes@grupolopas.com.br', 'comercial@lojaeasyhouse.com.br'];
+  _logsData = JSON.parse(localStorage.getItem('eh_access_log') || '[]').filter(function(l) {
+    return !OCULTOS.includes(l.email);
+  });
+
+  // Popular select de usuários
+  var sel = document.getElementById('logsUserSelect');
+  var usuarios = {};
+  _logsData.forEach(function(l) { usuarios[l.email] = l.nome || l.email; });
+  sel.innerHTML = '<option value="">Todos os usuários</option>';
+  Object.keys(usuarios).sort().forEach(function(email) {
+    var opt = document.createElement('option');
+    opt.value = email;
+    opt.textContent = usuarios[email];
+    sel.appendChild(opt);
+  });
+
+  // Resetar pill para "Hoje"
+  _logPeriod = 'hoje';
+  document.querySelectorAll('.logs-pill').forEach(function(p) {
+    p.classList.toggle('active', p.dataset.period === 'hoje');
+  });
+  sel.value = '';
+
+  renderLogs();
+  document.getElementById('logsModalOverlay').classList.add('open');
+  lucide.createIcons();
+}
+
+function setLogPeriod(btn) {
+  _logPeriod = btn.dataset.period;
+  document.querySelectorAll('.logs-pill').forEach(function(p) { p.classList.remove('active'); });
+  btn.classList.add('active');
+  renderLogs();
+}
+
+function renderLogs() {
+  var now = new Date();
+  var usuarioFiltro = document.getElementById('logsUserSelect').value;
+
+  // Deduplicar: remover entradas do mesmo usuário com menos de 60s de diferença
+  var seen = {};
+  var deduped = _logsData.filter(function(l) {
+    var partes = (l.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
+    var ts = partes ? new Date(+partes[3], +partes[2]-1, +partes[1], +partes[4], +partes[5], +partes[6]).getTime() : 0;
+    if (seen[l.email] !== undefined && Math.abs(seen[l.email] - ts) < 60000) return false;
+    seen[l.email] = ts;
+    return true;
+  });
+
+  var filtered = deduped.filter(function(l) {
+    // Filtro usuário
+    if (usuarioFiltro && l.email !== usuarioFiltro) return false;
+
+    // Filtro período — hora formato esperado: "31/03/2026, 09:08:42"
+    if (_logPeriod !== 'todos') {
+      var partes = (l.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
+      if (!partes) return false;
+      var d = new Date(+partes[3], +partes[2]-1, +partes[1], +partes[4], +partes[5], +partes[6]);
+      if (_logPeriod === 'hoje') {
+        if (d.getFullYear() !== now.getFullYear() || d.getMonth() !== now.getMonth() || d.getDate() !== now.getDate()) return false;
+      } else if (_logPeriod === '7dias') {
+        var diff = (now - d) / (1000 * 60 * 60 * 24);
+        if (diff > 7) return false;
+      } else if (_logPeriod === 'mes') {
+        if (d.getFullYear() !== now.getFullYear() || d.getMonth() !== now.getMonth()) return false;
+      }
+    }
+    return true;
+  });
+
+  var body = document.getElementById('logsModalBody');
+  if (filtered.length === 0) {
+    body.innerHTML = '<div class="logs-empty"><i data-lucide="inbox" style="width:28px;height:28px;opacity:0.3;display:block;margin:0 auto 10px;"></i>Nenhum acesso encontrado para este filtro.</div>';
+  } else {
+    body.innerHTML = filtered.map(function(entry) {
+      var iniciais = (entry.nome || '?').split(' ').map(function(p){ return p[0] || ''; }).join('').slice(0,2).toUpperCase();
+      return '<div class="log-item">' +
+        '<div class="log-avatar">' + iniciais + '</div>' +
+        '<div class="log-info">' +
+          '<div class="log-nome">' + (entry.nome || entry.email) + '</div>' +
+          '<div class="log-email">' + entry.email + '</div>' +
+        '</div>' +
+        '<div class="log-hora">' + entry.hora + '</div>' +
+      '</div>';
+    }).join('');
+  }
+  lucide.createIcons();
+}
+
+function fecharLogs() {
+  document.getElementById('logsModalOverlay').classList.remove('open');
+}
+
+document.getElementById('logsModalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) fecharLogs();
+});
 </script>
 </body>
