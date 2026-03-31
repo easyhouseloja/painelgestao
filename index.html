@@ -44,7 +44,6 @@ body {
   background: var(--bg-deep);
   color: var(--text-primary);
   font-family: 'DM Sans', sans-serif;
-  overflow-x: hidden;
 }
 
 /* ── NOISE TEXTURE OVERLAY ── */
@@ -91,6 +90,7 @@ body::before {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
 /* ── HEADER ── */
@@ -341,8 +341,9 @@ body::before {
 /* ── MAIN ── */
 .main {
   flex: 1;
-  padding: 32px 56px 0px;
+  padding: 18px 56px 0px;
   margin-bottom: -60px;
+  overflow: visible;
 }
 
 .section-header {
@@ -494,6 +495,9 @@ body::before {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
+  overflow: visible;
+  padding-top: 8px;
+  margin-top: -8px;
 }
 
 /* ── CARD BASE ── */
@@ -535,6 +539,8 @@ body::before {
 .card:hover {
   transform: translateY(-6px);
   border-color: var(--border-hover);
+  z-index: 2;
+  position: relative;
 }
 
 .card:hover::before {
@@ -548,14 +554,14 @@ body::before {
 .card-comercial::before { background: var(--accent-blue);  box-shadow: 0 0 20px var(--glow-blue); }
 .card-mm1p::before     { background: var(--accent-purple); box-shadow: 0 0 20px var(--glow-purple); }
 
-.card-estoque:hover  { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(212,160,23,0.15),  0 -2px 20px var(--glow-amber) inset; }
-.card-astec:hover    { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(217,94,16,0.15),   0 -2px 20px var(--glow-orange) inset; }
-.card-sla:hover      { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(31,189,114,0.12),  0 -2px 20px var(--glow-green) inset; }
-.card-comercial:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(45,125,210,0.15), 0 -2px 20px var(--glow-blue) inset; }
-.card-mm1p:hover     { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(156,111,255,0.15), 0 -2px 20px var(--glow-purple) inset; }
+.card-estoque:hover  { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(212,160,23,0.15),  0 -2px 20px var(--glow-amber) inset; transform: translateY(-6px); }
+.card-astec:hover    { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(217,94,16,0.15),   0 -2px 20px var(--glow-orange) inset; transform: translateY(-6px); }
+.card-sla:hover      { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(31,189,114,0.12),  0 -2px 20px var(--glow-green) inset; transform: translateY(-6px); }
+.card-comercial:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(45,125,210,0.15), 0 -2px 20px var(--glow-blue) inset; transform: translateY(-6px); }
+.card-mm1p:hover     { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(156,111,255,0.15), 0 -2px 20px var(--glow-purple) inset; transform: translateY(-6px); }
 
 .card-financeiro::before { background: var(--accent-financeiro); box-shadow: 0 0 20px var(--glow-financeiro); }
-.card-financeiro:hover   { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(34,197,94,0.15), 0 -2px 20px var(--glow-financeiro) inset; }
+.card-financeiro:hover   { box-shadow: 0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(34,197,94,0.15), 0 -2px 20px var(--glow-financeiro) inset; transform: translateY(-6px); }
 
 /* ── BOTÃO ANYMARKET no card ── */
 .card-anymarket-btn {
@@ -2194,6 +2200,55 @@ body::before {
   height: 46px;
 }
 
+/* Sub-links dentro do card Pós-venda */
+.card-posvendasub {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+.card-posvendasub-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+}
+.card-posvendasub-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.14);
+}
+.card-posvendasub-btn-orange {
+  border-color: rgba(217,94,16,0.25);
+  color: var(--accent-orange);
+}
+.card-posvendasub-btn-orange:hover {
+  border-color: rgba(217,94,16,0.55);
+  background: rgba(217,94,16,0.08);
+  box-shadow: 0 0 10px rgba(217,94,16,0.12);
+  color: var(--accent-orange);
+}
+.card-posvendasub-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+  opacity: 0.7;
+}
+
 .body-1p .header-eyebrow {
   color: #ff7a00;
 }
@@ -2367,18 +2422,28 @@ body::before {
           </div>
         </div>
 
-        <!-- ASSISTÊNCIA TÉCNICA -->
-        <a class="card card-astec" href="assistencia.html">
+        <!-- PÓS-VENDA (Assistência + Devoluções) -->
+        <div class="card card-astec" style="cursor:default;">
           <div class="icon-wrap">
-            <i data-lucide="wrench" style="width:22px;height:22px"></i>
+            <i data-lucide="repeat-2" style="width:22px;height:22px"></i>
           </div>
           <div class="card-tag">Pós-venda</div>
-          <h2>Assistência Técnica</h2>
-          <p>Gestão centralizada de solicitações, chamados e acompanhamento de status de assistência.</p>
-          <div class="card-footer">
-            Acessar dashboard <i data-lucide="arrow-right"></i>
+          <h2>Pós-venda</h2>
+          <p>Gestão de assistência técnica e acompanhamento de devoluções por marketplace.</p>
+          <div class="card-posvendasub">
+            <div class="card-posvendasub-label">Acessar</div>
+            <a class="card-posvendasub-btn" href="assistencia.html">
+              <i data-lucide="wrench" style="width:13px;height:13px;flex-shrink:0;"></i>
+              Assistência Técnica
+              <i data-lucide="arrow-right" style="width:11px;height:11px;margin-left:auto;opacity:0.5;"></i>
+            </a>
+            <a class="card-posvendasub-btn card-posvendasub-btn-orange" href="devolucao.html">
+              <i data-lucide="undo-2" style="width:13px;height:13px;flex-shrink:0;"></i>
+              Devoluções
+              <i data-lucide="arrow-right" style="width:11px;height:11px;margin-left:auto;opacity:0.5;"></i>
+            </a>
           </div>
-        </a>
+        </div>
 
         <!-- SLA TRANSPORTE -->
         <a class="card card-sla" href="sla_transporte.html">
