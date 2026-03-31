@@ -4237,8 +4237,22 @@ var _logsData = [];
 var _logPeriod = 'hoje';
 
 function abrirLogs() {
-  var OCULTOS = ['lucaslopes@grupolopas.com.br', 'comercial@lojaeasyhouse.com.br'];
-  _logsData = JSON.parse(localStorage.getItem('eh_access_log') || '[]').filter(function(l) {
+  var OCULTOS = ['lucaslopes@grupolopas.com.br', 'comercial@lojaeasyhouse.com.br', 'easyhouseloja@gmail.com'];
+
+  // Limpar acessos anteriores a hoje do localStorage (controle inicia hoje)
+  var hoje = new Date();
+  var todosLogs = JSON.parse(localStorage.getItem('eh_access_log') || '[]');
+  var logsFiltrados = todosLogs.filter(function(l) {
+    var partes = (l.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
+    if (!partes) return false;
+    var d = new Date(+partes[3], +partes[2]-1, +partes[1]);
+    return d.getFullYear() === hoje.getFullYear() &&
+           d.getMonth()    === hoje.getMonth()    &&
+           d.getDate()     === hoje.getDate();
+  });
+  localStorage.setItem('eh_access_log', JSON.stringify(logsFiltrados));
+
+  _logsData = logsFiltrados.filter(function(l) {
     return !OCULTOS.includes(l.email);
   });
 
