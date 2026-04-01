@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard SLA · Easy House · 31/03/2026</title>
+<title>Dashboard SLA · Easy House · 01/04/2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -30,8 +30,8 @@ nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top
 .kpi.focco{border-color:rgba(26,77,10,.5);background:rgba(26,77,10,.12)}
 .sla-mega{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;text-align:center;margin-bottom:20px}
 .sla-mega-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
-.sla-mega-value{font-family:'DM Mono',monospace;font-size:72px;font-weight:500;color:#27ae60;line-height:1}
-.sla-mega-badge{display:inline-block;margin-top:12px;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(30,132,73,.15);color:#27ae60;border:1px solid rgba(30,132,73,.3)}
+.sla-mega-value{font-family:'DM Mono',monospace;font-size:72px;font-weight:500;line-height:1}
+.sla-mega-badge{display:inline-block;margin-top:12px;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600}
 .sla-meta{font-size:11px;color:var(--muted);margin-top:8px}
 .section-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -45,6 +45,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(46,74,122,.1)}
 .bg{background:rgba(30,132,73,.15);color:#27ae60;border:1px solid rgba(30,132,73,.3)}
 .by{background:rgba(183,119,13,.15);color:#e6a817;border:1px solid rgba(183,119,13,.3)}
 .br{background:rgba(192,57,43,.15);color:#e74c3c;border:1px solid rgba(192,57,43,.3)}
+.bo{background:rgba(211,84,0,.15);color:#e67e22;border:1px solid rgba(211,84,0,.3)}
 .bar-wrap{background:rgba(255,255,255,.04);border-radius:4px;height:6px;flex:1}
 .bar-fill{height:100%;border-radius:4px}
 .bar-row{display:flex;align-items:center;gap:10px}
@@ -59,11 +60,19 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(46,74,122,.1)}
 .focco-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:4px}
 .focco-sub{font-size:12px;color:rgba(255,255,255,.65)}
 .focco-total{font-family:'DM Mono',monospace;font-size:36px;font-weight:500;color:#aade66;line-height:1}
-.dev-mkt-hdr{background:rgba(74,26,122,.3);border:1px solid rgba(74,26,122,.4);padding:12px 18px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#cc88ff;border-radius:10px 10px 0 0}
+.dev-mkt-hdr{background:rgba(74,26,122,.3);border:1px solid rgba(74,26,122,.4);padding:12px 18px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#cc88ff;border-radius:10px 10px 0 0;display:flex;align-items:center;gap:8px}
 .info-note{background:rgba(30,82,118,.12);border:1px solid rgba(30,82,118,.25);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--muted);margin-bottom:16px}
 .dvd-up{color:#27ae60;font-weight:700}.dvd-down{color:#e74c3c;font-weight:700}.dvd-neutral{color:var(--muted)}
 .uf-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:16px}
-.focco-diff{background:rgba(30,77,10,.2);border:1px solid rgba(102,255,153,.25);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px}
+/* Peso card */
+.peso-uf-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px}
+.peso-uf-header{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:16px}
+.peso-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.peso-uf-label{font-size:12px;color:var(--muted);min-width:32px;font-family:'DM Mono',monospace}
+.peso-uf-bar{flex:1;height:20px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;position:relative}
+.peso-uf-fill{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px}
+.peso-uf-fill span{font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:#fff}
+.peso-uf-val{font-family:'DM Mono',monospace;font-size:12px;min-width:90px;text-align:right}
 </style>
 </head>
 <body>
@@ -79,48 +88,51 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(46,74,122,.1)}
     <button class="nav-tab" onclick="showPage('cnpj',this)">🚫 CNPJ</button>
     <button class="nav-tab" onclick="showPage('dvd',this)">📈 Dia vs Dia</button>
   </div>
-  <div class="nav-date">31 / 03 / 2026</div>
+  <div class="nav-date">01 / 04 / 2026</div>
 </nav>
 
+<!-- ═══ ABA 1 — VISÃO GERAL ═══ -->
 <div id="page-visao" class="page active">
-  <div class="page-header"><h1>Dashboard de SLA</h1><p>Anymarket · Easy House · 31/03/2026 · Sem Correios · Sem SC</p></div>
+  <div class="page-header"><h1>Dashboard de SLA</h1><p>Anymarket · Easy House · 01/04/2026 · Sem Correios · Sem SC</p></div>
   <div class="kpi-row c4">
-    <div class="kpi"><div class="kpi-label">Pedidos na Base</div><div class="kpi-value mono">4.475</div><div class="kpi-sub">após remover duplicatas</div></div>
-    <div class="kpi green"><div class="kpi-label">Pedidos Faturados</div><div class="kpi-value mono" style="color:#27ae60">4.234</div><div class="kpi-sub">com NF emitida</div></div>
-    <div class="kpi green"><div class="kpi-label">No Prazo</div><div class="kpi-value mono" style="color:#27ae60">4.048</div><div class="kpi-sub">dentro da entrega esperada</div></div>
-    <div class="kpi accent"><div class="kpi-label">Em Atraso</div><div class="kpi-value mono" style="color:#e74c3c">186</div><div class="kpi-sub">pedidos fora do prazo</div></div>
+    <div class="kpi"><div class="kpi-label">Pedidos na Base</div><div class="kpi-value mono">4.188</div><div class="kpi-sub">após remover duplicatas</div></div>
+    <div class="kpi green"><div class="kpi-label">Pedidos Faturados</div><div class="kpi-value mono" style="color:#27ae60">4.004</div><div class="kpi-sub">com NF emitida</div></div>
+    <div class="kpi green"><div class="kpi-label">No Prazo</div><div class="kpi-value mono" style="color:#27ae60">3.810</div><div class="kpi-sub">dentro da entrega esperada</div></div>
+    <div class="kpi accent"><div class="kpi-label">Em Atraso</div><div class="kpi-value mono" style="color:#e74c3c">194</div><div class="kpi-sub">pedidos fora do prazo</div></div>
   </div>
   <div class="sla-mega">
-    <div class="sla-mega-label">Índice de SLA Geral — 31/03/2026</div>
-    <div class="sla-mega-value">95,61%</div>
-    <div class="sla-mega-badge">✅ Meta atingida (≥ 95%)</div>
-    <div class="sla-meta">19 devoluções excluídas · 5 CNPJ em aba separada · Correios e SC excluídos</div>
+    <div class="sla-mega-label">Índice de SLA Geral — 01/04/2026</div>
+    <div class="sla-mega-value" style="color:#27ae60">95,15%</div>
+    <div class="sla-mega-badge" style="background:rgba(30,132,73,.15);color:#27ae60;border:1px solid rgba(30,132,73,.3)">✅ Meta atingida (≥ 95%)</div>
+    <div class="sla-meta">20 devoluções excluídas · 1 CNPJ detectado · Correios e SC excluídos</div>
   </div>
   <div class="kpi-row c4">
-    <div class="kpi warn"><div class="kpi-label">Em Aberto (S/Fat.)</div><div class="kpi-value mono" style="color:#e6a817">208</div><div class="kpi-sub">pedidos sem NF</div></div>
-    <div class="kpi warn"><div class="kpi-label">Valor em Aberto</div><div class="kpi-value mono" style="color:#e6a817;font-size:20px">R$ 218.607</div><div class="kpi-sub">estimativa</div></div>
-    <div class="kpi teal"><div class="kpi-label">Peso em Aberto (est.)</div><div class="kpi-value mono" style="color:#5dade2;font-size:20px">25.718 kg</div><div class="kpi-sub">R$/kg = 8,50</div></div>
-    <div class="kpi teal"><div class="kpi-label">Prazo Médio NF</div><div class="kpi-value mono" style="color:#27ae60">1,3 d.u.</div><div class="kpi-sub">média geral</div></div>
+    <div class="kpi warn"><div class="kpi-label">Em Aberto (S/Fat.)</div><div class="kpi-value mono" style="color:#e6a817">155</div><div class="kpi-sub">pedidos sem NF</div></div>
+    <div class="kpi warn"><div class="kpi-label">Valor em Aberto</div><div class="kpi-value mono" style="color:#e6a817;font-size:20px">R$ 159.810</div><div class="kpi-sub">estimativa</div></div>
+    <div class="kpi teal"><div class="kpi-label">Peso em Aberto (est.)</div><div class="kpi-value mono" style="color:#5dade2;font-size:20px">18.801 kg</div><div class="kpi-sub">R$/kg = 8,50</div></div>
+    <div class="kpi teal"><div class="kpi-label">Prazo Médio NF</div><div class="kpi-value mono" style="color:#27ae60">1,2 d.u.</div><div class="kpi-sub">média geral</div></div>
   </div>
   <div class="grid2">
-    <div class="chart-card"><div class="chart-title">📈 Histórico SLA — Março/2026</div><canvas id="chartHist" height="180"></canvas></div>
+    <div class="chart-card"><div class="chart-title">📈 Histórico SLA — Março/Abril 2026</div><canvas id="chartHist" height="180"></canvas></div>
     <div class="chart-card"><div class="chart-title">⏱ Distribuição de Atrasos por Faixa</div><canvas id="chartFaixa" height="180"></canvas></div>
   </div>
   <div class="section-title">Resumo por Transportadora</div>
   <div class="tbl-wrap tbl-scroll"><table><thead><tr><th>Transportadora</th><th>Total NFs</th><th>No Prazo</th><th>Em Atraso</th><th>% SLA</th><th>Barra</th></tr></thead><tbody id="tb-tv"></tbody></table></div>
 </div>
 
+<!-- ═══ ABA 2 — TRANSPORTADORAS ═══ -->
 <div id="page-transp" class="page">
-  <div class="page-header"><h1>SLA por Transportadora</h1><p>Sem Correios · Sem SC · 31/03/2026</p></div>
+  <div class="page-header"><h1>SLA por Transportadora</h1><p>Sem Correios · Sem SC · 01/04/2026</p></div>
   <div class="grid2">
     <div class="chart-card"><div class="chart-title">% SLA por Transportadora</div><canvas id="chartTSla" height="260"></canvas></div>
-    <div class="chart-card"><div class="chart-title">Atrasos por Transportadora (qtd.)</div><canvas id="chartTAt" height="260"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Atrasos por Transportadora</div><canvas id="chartTAt" height="260"></canvas></div>
   </div>
   <div class="tbl-wrap tbl-scroll"><table><thead><tr><th>Transportadora</th><th>UF</th><th>Total NFs</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th>Barra</th></tr></thead><tbody id="tb-tf"></tbody></table></div>
 </div>
 
+<!-- ═══ ABA 3 — MARKETPLACES ═══ -->
 <div id="page-mkt" class="page">
-  <div class="page-header"><h1>SLA por Marketplace</h1><p>31/03/2026</p></div>
+  <div class="page-header"><h1>SLA por Marketplace</h1><p>01/04/2026</p></div>
   <div class="grid2">
     <div class="chart-card"><div class="chart-title">% SLA por Canal</div><canvas id="chartMSla" height="260"></canvas></div>
     <div class="chart-card"><div class="chart-title">Volume por Canal</div><canvas id="chartMVol" height="260"></canvas></div>
@@ -128,136 +140,293 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(46,74,122,.1)}
   <div class="tbl-wrap"><table><thead><tr><th>Marketplace</th><th>Total Fat.</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th>Barra</th></tr></thead><tbody id="tb-mkt"></tbody></table></div>
 </div>
 
+<!-- ═══ ABA 4 — EM ABERTO (com peso estimado por UF) ═══ -->
 <div id="page-aberto" class="page">
-  <div class="page-header"><h1>Pedidos em Aberto</h1><p>Sem Faturamento · 31/03/2026</p></div>
+  <div class="page-header"><h1>Pedidos em Aberto — Sem Faturamento</h1><p>01/04/2026 · Sem Correios · Sem SC</p></div>
   <div class="kpi-row c5">
-    <div class="kpi warn"><div class="kpi-label">Total em Aberto</div><div class="kpi-value mono" style="color:#e6a817">208</div></div>
-    <div class="kpi warn"><div class="kpi-label">Valor Total</div><div class="kpi-value mono" style="font-size:18px;color:#e6a817">R$ 218.607</div></div>
+    <div class="kpi warn"><div class="kpi-label">Total em Aberto</div><div class="kpi-value mono" style="color:#e6a817">155</div></div>
+    <div class="kpi warn"><div class="kpi-label">Valor Total</div><div class="kpi-value mono" style="font-size:18px;color:#e6a817">R$ 159.810</div></div>
     <div class="kpi accent"><div class="kpi-label">Vencidos+Críticos</div><div class="kpi-value mono" style="color:#e74c3c">0</div></div>
-    <div class="kpi warn"><div class="kpi-label">Em Alerta (4-7d)</div><div class="kpi-value mono" style="color:#e6a817">1</div></div>
-    <div class="kpi teal"><div class="kpi-label">Em Atenção (8-14d)</div><div class="kpi-value mono" style="color:#5dade2">5</div></div>
+    <div class="kpi warn"><div class="kpi-label">Em Alerta (4-7d)</div><div class="kpi-value mono" style="color:#e6a817">0</div></div>
+    <div class="kpi teal"><div class="kpi-label">Em Atenção (8-14d)</div><div class="kpi-value mono" style="color:#5dade2">4</div></div>
   </div>
+
+  <!-- PESO ESTIMADO POR UF — novo bloco com visualização -->
+  <div class="section-title">⚖️ Peso Estimado em Aberto por UF</div>
+  <div class="kpi-row c3" style="margin-bottom:12px">
+    <div class="kpi" style="border-color:rgba(183,119,13,.4);background:rgba(183,119,13,.08)">
+      <div class="kpi-label" style="color:#e6a817">Total KG Estimado</div>
+      <div class="kpi-value mono" style="color:#e6a817;font-size:26px">18.801 kg</div>
+      <div class="kpi-sub">R$/kg = 8,50  ·  155 pedidos</div>
+    </div>
+    <div class="kpi" style="border-color:rgba(183,119,13,.3);background:rgba(183,119,13,.05)">
+      <div class="kpi-label" style="color:#e8a84f">São Paulo · SP</div>
+      <div class="kpi-value mono" style="color:#e8a84f;font-size:22px">5.600 kg</div>
+      <div class="kpi-sub">29,8% do total  ·  43 pedidos  ·  R$ 47.602</div>
+    </div>
+    <div class="kpi" style="border-color:rgba(30,132,73,.3);background:rgba(30,132,73,.05)">
+      <div class="kpi-label" style="color:#aade66">Minas Gerais · MG</div>
+      <div class="kpi-value mono" style="color:#aade66;font-size:22px">7.834 kg</div>
+      <div class="kpi-sub">41,7% do total  ·  65 pedidos  ·  R$ 66.592</div>
+    </div>
+  </div>
+  <div class="kpi-row c3" style="margin-bottom:20px">
+    <div class="kpi" style="border-color:rgba(26,82,118,.3);background:rgba(26,82,118,.05)">
+      <div class="kpi-label" style="color:#5dade2">Rio de Janeiro · RJ</div>
+      <div class="kpi-value mono" style="color:#5dade2;font-size:22px">5.367 kg</div>
+      <div class="kpi-sub">28,5% do total  ·  47 pedidos  ·  R$ 45.616</div>
+    </div>
+    <div class="kpi"><div class="kpi-label">Média por Pedido (geral)</div><div class="kpi-value mono" style="font-size:22px">121,3 kg</div><div class="kpi-sub">média geral de peso por pedido</div></div>
+    <div class="kpi"><div class="kpi-label">Taxa Estimada</div><div class="kpi-value mono" style="font-size:22px">R$ 8,50</div><div class="kpi-sub">por kg  ·  base de cálculo</div></div>
+  </div>
+
+  <!-- BARRA VISUAL DE PESO POR UF -->
+  <div class="peso-uf-card">
+    <div class="peso-uf-header" style="color:var(--muted)">Distribuição de Peso Estimado por UF</div>
+    <div class="peso-bar-row">
+      <span class="peso-uf-label" style="color:#aade66">MG</span>
+      <div class="peso-uf-bar">
+        <div class="peso-uf-fill" style="width:41.7%;background:linear-gradient(90deg,rgba(30,132,73,.7),rgba(30,132,73,.4))"><span>41,7%</span></div>
+      </div>
+      <span class="peso-uf-val" style="color:#aade66">7.834 kg</span>
+    </div>
+    <div class="peso-bar-row">
+      <span class="peso-uf-label" style="color:#e8a84f">SP</span>
+      <div class="peso-uf-bar">
+        <div class="peso-uf-fill" style="width:29.8%;background:linear-gradient(90deg,rgba(183,119,13,.7),rgba(183,119,13,.4))"><span>29,8%</span></div>
+      </div>
+      <span class="peso-uf-val" style="color:#e8a84f">5.600 kg</span>
+    </div>
+    <div class="peso-bar-row">
+      <span class="peso-uf-label" style="color:#5dade2">RJ</span>
+      <div class="peso-uf-bar">
+        <div class="peso-uf-fill" style="width:28.5%;background:linear-gradient(90deg,rgba(26,82,118,.7),rgba(26,82,118,.4))"><span>28,5%</span></div>
+      </div>
+      <span class="peso-uf-val" style="color:#5dade2">5.367 kg</span>
+    </div>
+  </div>
+
   <div class="grid2">
     <div class="chart-card"><div class="chart-title">Em Aberto por Marketplace</div><canvas id="chartSfM" height="220"></canvas></div>
-    <div class="chart-card"><div class="chart-title">Peso Estimado por UF</div><canvas id="chartSfU" height="220"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Peso Estimado por UF (kg)</div><canvas id="chartSfU" height="220"></canvas></div>
   </div>
+
+  <div class="section-title">Por Marketplace</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Marketplace</th><th>Em Aberto</th><th>Venc./Crít.</th><th>Próx. Prazo</th><th>Valor (R$)</th></tr></thead>
+    <tbody>
+      <tr><td>Shopee</td><td class="mono">105</td><td><span class="badge bg">0</span></td><td class="mono">27/04/2026</td><td class="mono">R$ 107.119,30</td></tr>
+      <tr><td>Mercado Livre</td><td class="mono">25</td><td><span class="badge bg">0</span></td><td class="mono">10/04/2026</td><td class="mono">R$ 21.242,21</td></tr>
+      <tr><td>Magazine Luiza</td><td class="mono">19</td><td><span class="badge bg">0</span></td><td class="mono">13/04/2026</td><td class="mono">R$ 20.251,67</td></tr>
+      <tr><td>Madeira Madeira</td><td class="mono">3</td><td><span class="badge bg">0</span></td><td class="mono">22/04/2026</td><td class="mono">R$ 5.153,21</td></tr>
+      <tr><td>Via Varejo</td><td class="mono">2</td><td><span class="badge bg">0</span></td><td class="mono">24/04/2026</td><td class="mono">R$ 1.311,83</td></tr>
+      <tr><td>Web Continental V2</td><td class="mono">1</td><td><span class="badge bg">0</span></td><td class="mono">22/04/2026</td><td class="mono">R$ 4.732,10</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="section-title">Detalhamento de Peso por UF</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>UF</th><th>Pedidos</th><th>Valor (R$)</th><th>Peso Est. (kg)</th><th>% do Total</th><th>Médio/Pedido (kg)</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>MG</strong></td><td class="mono">65</td><td class="mono">R$ 66.592,30</td>
+        <td class="mono" style="color:#aade66;font-weight:700">7.834,4</td>
+        <td><span class="badge bg">41,7%</span></td>
+        <td class="mono">120,5</td>
+      </tr>
+      <tr style="background:rgba(255,255,255,.02)">
+        <td><strong>SP</strong></td><td class="mono">43</td><td class="mono">R$ 47.601,80</td>
+        <td class="mono" style="color:#e8a84f;font-weight:700">5.600,2</td>
+        <td><span class="badge by">29,8%</span></td>
+        <td class="mono">130,2</td>
+      </tr>
+      <tr>
+        <td><strong>RJ</strong></td><td class="mono">47</td><td class="mono">R$ 45.616,22</td>
+        <td class="mono" style="color:#5dade2;font-weight:700">5.366,6</td>
+        <td><span class="badge by">28,5%</span></td>
+        <td class="mono">114,2</td>
+      </tr>
+      <tr style="background:#0D1626">
+        <td><strong style="color:var(--text)">TOTAL</strong></td><td class="mono" style="font-weight:700">155</td><td class="mono" style="font-weight:700">R$ 159.810,32</td>
+        <td class="mono" style="color:#e6a817;font-weight:700">18.801,2</td>
+        <td><span class="badge by">100%</span></td>
+        <td class="mono" style="font-weight:700">121,3</td>
+      </tr>
+    </tbody>
+  </table></div>
 </div>
 
+<!-- ═══ ABA 5 — PESO MARÇO ═══ -->
 <div id="page-focco" class="page">
   <div class="focco-header">
-    <div><div class="focco-title">🌿 Peso Março/2026 — FOCCO REAL</div><div class="focco-sub">PESO BRT · Sem Correios, SC e auxiliares · Base FOCCO 31/03/2026 (até 30/03)</div></div>
-    <div style="text-align:right"><div style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:4px">TOTAL KG — MARÇO 2026</div><div class="focco-total">1.273.980 kg</div><div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:4px">10 transportadoras · 10.715 NFs</div></div>
+    <div><div class="focco-title">🌿 Peso Março/2026 — FOCCO REAL</div><div class="focco-sub">PESO BRT · Sem Correios, SC, auxiliares · FOCCO 01/04/2026 (NFs até 31/03)</div></div>
+    <div style="text-align:right"><div style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:4px">TOTAL KG — MARÇO 2026</div><div class="focco-total">1.309.419 kg</div><div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:4px">10 transportadoras · 11.019 NFs</div></div>
   </div>
-  <!-- CARDS PRINCIPAIS -->
   <div class="kpi-row c3">
-    <div class="kpi focco"><div class="kpi-label" style="color:#88CC66">Total KG Março</div><div class="kpi-value" style="color:#aade66;font-size:22px;font-family:'DM Mono',monospace">1.273.980 kg</div><div class="kpi-sub" style="color:#66aa44">+60.081 kg vs base 30/03</div></div>
-    <div class="kpi focco" style="border-color:rgba(102,255,153,.4);background:rgba(26,77,10,.2)"><div class="kpi-label" style="color:#66FF99">Média por Dia Útil (23 d.u.)</div><div class="kpi-value" style="color:#66FF99;font-size:22px;font-family:'DM Mono',monospace">55.390 kg/d.u.</div><div class="kpi-sub">1.273.980 ÷ 23 dias úteis</div></div>
-    <div class="kpi focco"><div class="kpi-label" style="color:#88CC66">NFs no Mês</div><div class="kpi-value" style="color:#aade66;font-size:22px;font-family:'DM Mono',monospace">10.715</div><div class="kpi-sub">+610 NFs vs base 30/03</div></div>
-  </div>
-  <div class="focco-diff">
-    <strong style="color:#66FF99">📊 Alterações com o FOCCO correto (31/03 vs base 30/03):</strong><br>
-    <span style="color:#aaddaa">Total KG: +60.081 kg (+4,9%) &nbsp;·&nbsp; NFs: +610 &nbsp;·&nbsp; Média/d.u.: 55.390 vs 54.268 (+1.122 kg)</span><br>
-    <span style="color:#88bb88">Maiores variações: TRANSBARBOSA +21.578 kg · TRANS EXPRESS +9.898 kg · TS RJ +8.931 kg · NOVA ERA +10.514 kg · RGE +8.912 kg</span>
+    <div class="kpi focco"><div class="kpi-label" style="color:#88CC66">Total KG Março</div><div class="kpi-value" style="color:#aade66;font-size:22px;font-family:'DM Mono',monospace">1.309.419 kg</div><div class="kpi-sub" style="color:#66aa44">+35.439 kg vs base 31/03</div></div>
+    <div class="kpi focco" style="border-color:rgba(102,255,153,.4);background:rgba(26,77,10,.2)"><div class="kpi-label" style="color:#66FF99">Média por Dia Útil (23 d.u.)</div><div class="kpi-value" style="color:#66FF99;font-size:22px;font-family:'DM Mono',monospace">56.931 kg/d.u.</div><div class="kpi-sub">1.309.419 ÷ 23 dias úteis</div></div>
+    <div class="kpi focco"><div class="kpi-label" style="color:#88CC66">NFs no Mês</div><div class="kpi-value" style="color:#aade66;font-size:22px;font-family:'DM Mono',monospace">11.019</div><div class="kpi-sub">base FOCCO 01/04 (NFs emitidas março)</div></div>
   </div>
   <div class="section-title">📊 Seção 1 — Representatividade Geral</div>
-  <div class="chart-card"><div class="chart-title">Peso Bruto por Transportadora (kg) — FOCCO REAL 31/03</div><canvas id="chartFG" height="200"></canvas></div>
+  <div class="chart-card"><div class="chart-title">Peso Bruto por Transportadora (kg)</div><canvas id="chartFG" height="200"></canvas></div>
   <div class="tbl-wrap tbl-scroll"><table><thead><tr><th>Pos.</th><th>Transportadora</th><th>NFs</th><th>Peso Bruto (kg)</th><th>% Geral</th><th>% Acumulado</th><th>Média/Dia Útil</th></tr></thead><tbody id="tb-fg"></tbody></table></div>
   <div class="section-title" style="margin-top:24px">🗺️ Seção 2 — Por Estado</div>
   <div class="grid3">
-    <div class="kpi" style="border-color:rgba(92,58,16,.6);background:rgba(92,58,16,.15)"><div class="kpi-label" style="color:#e8a84f">São Paulo · SP</div><div class="kpi-value mono" style="color:#e8a84f;font-size:20px">480.710 kg</div><div class="kpi-sub">37,73% · Média: <strong style="color:#e8a84f">20.901 kg/d.u.</strong></div></div>
-    <div class="kpi" style="border-color:rgba(30,77,10,.6);background:rgba(30,77,10,.15)"><div class="kpi-label" style="color:#aade66">Minas Gerais · MG</div><div class="kpi-value mono" style="color:#aade66;font-size:20px">406.613 kg</div><div class="kpi-sub">31,92% · Média: <strong style="color:#aade66">17.679 kg/d.u.</strong></div></div>
-    <div class="kpi" style="border-color:rgba(26,58,92,.6);background:rgba(26,58,92,.15)"><div class="kpi-label" style="color:#5dade2">Rio de Janeiro · RJ</div><div class="kpi-value mono" style="color:#5dade2;font-size:20px">386.371 kg</div><div class="kpi-sub">30,33% · Média: <strong style="color:#5dade2">16.799 kg/d.u.</strong></div></div>
+    <div class="kpi" style="border-color:rgba(92,58,16,.6);background:rgba(92,58,16,.15)"><div class="kpi-label" style="color:#e8a84f">São Paulo · SP</div><div class="kpi-value mono" style="color:#e8a84f;font-size:20px">497.454 kg</div><div class="kpi-sub">37,99% · Média: <strong style="color:#e8a84f">21.628 kg/d.u.</strong></div></div>
+    <div class="kpi" style="border-color:rgba(30,77,10,.6);background:rgba(30,77,10,.15)"><div class="kpi-label" style="color:#aade66">Minas Gerais · MG</div><div class="kpi-value mono" style="color:#aade66;font-size:20px">415.956 kg</div><div class="kpi-sub">31,77% · Média: <strong style="color:#aade66">18.085 kg/d.u.</strong></div></div>
+    <div class="kpi" style="border-color:rgba(26,58,92,.6);background:rgba(26,58,92,.15)"><div class="kpi-label" style="color:#5dade2">Rio de Janeiro · RJ</div><div class="kpi-value mono" style="color:#5dade2;font-size:20px">395.722 kg</div><div class="kpi-sub">30,22% · Média: <strong style="color:#5dade2">17.205 kg/d.u.</strong></div></div>
   </div>
   <div class="chart-card"><div class="chart-title">Distribuição por Estado</div><div style="max-width:400px;margin:0 auto"><canvas id="chartFU" height="240"></canvas></div></div>
   <div class="section-title" style="margin-top:24px">🚚 Seção 3 — Por Estado Detalhado</div>
   <div class="grid3" id="uf-grid"></div>
 </div>
 
+<!-- ═══ ABA 6 — DEVOLUÇÕES (com Data do Pedido) ═══ -->
 <div id="page-dev" class="page">
-  <div class="page-header"><h1>Pedidos em Devolução</h1><p>Base 31/03/2026 · Por marketplace · Excluídos dos indicadores</p></div>
+  <div class="page-header"><h1>Pedidos em Devolução</h1><p>Base 01/04/2026 · Por marketplace · Com data do pedido</p></div>
   <div class="kpi-row c3">
-    <div class="kpi" style="border-color:rgba(74,26,122,.4);background:rgba(74,26,122,.1)"><div class="kpi-label" style="color:#cc88ff">NFs na lista</div><div class="kpi-value mono" style="color:#cc88ff">49</div></div>
-    <div class="kpi" style="border-color:rgba(74,26,122,.4);background:rgba(74,26,122,.1)"><div class="kpi-label" style="color:#cc88ff">Encontradas na base</div><div class="kpi-value mono" style="color:#cc88ff">19</div></div>
-    <div class="kpi"><div class="kpi-label">Não encontradas</div><div class="kpi-value mono" style="color:var(--muted)">30</div></div>
+    <div class="kpi" style="border-color:rgba(74,26,122,.4);background:rgba(74,26,122,.1)"><div class="kpi-label" style="color:#cc88ff">NFs na lista</div><div class="kpi-value mono" style="color:#cc88ff">53</div></div>
+    <div class="kpi" style="border-color:rgba(74,26,122,.4);background:rgba(74,26,122,.1)"><div class="kpi-label" style="color:#cc88ff">Encontradas na base</div><div class="kpi-value mono" style="color:#cc88ff">20</div></div>
+    <div class="kpi"><div class="kpi-label">Não encontradas</div><div class="kpi-value mono" style="color:var(--muted)">33</div></div>
   </div>
-  <div class="dev-mkt-hdr">🛒 MAGAZINE LUIZA — 10 pedidos</div>
-  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px"><table><thead><tr><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead><tbody id="tb-devM"></tbody></table></div>
+  <div class="info-note">ℹ️ Pedidos agrupados por marketplace. A coluna <strong>Data do Pedido</strong> está destacada em azul para facilitar a identificação da antiguidade do pedido.</div>
+
+  <!-- MAG LUIZA -->
+  <div class="dev-mkt-hdr">🛒 MAGAZINE LUIZA — 9 pedidos</div>
+  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px">
+    <table><thead><tr><th style="color:#5dade2;font-weight:700">Data Pedido</th><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead>
+    <tbody id="tb-dev-mag"></tbody></table>
+  </div>
+  <!-- SHOPEE -->
+  <div class="dev-mkt-hdr">🛒 SHOPEE — 6 pedidos</div>
+  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px">
+    <table><thead><tr><th style="color:#5dade2;font-weight:700">Data Pedido</th><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead>
+    <tbody id="tb-dev-sho"></tbody></table>
+  </div>
+  <!-- ML -->
   <div class="dev-mkt-hdr">🛒 MERCADO LIVRE — 5 pedidos</div>
-  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px"><table><thead><tr><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead><tbody id="tb-devL"></tbody></table></div>
-  <div class="dev-mkt-hdr">🛒 SHOPEE — 4 pedidos</div>
-  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px"><table><thead><tr><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead><tbody id="tb-devS"></tbody></table></div>
+  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px">
+    <table><thead><tr><th style="color:#5dade2;font-weight:700">Data Pedido</th><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead>
+    <tbody id="tb-dev-ml"></tbody></table>
+  </div>
 </div>
 
+<!-- ═══ ABA 7 — CNPJ ═══ -->
 <div id="page-cnpj" class="page">
-  <div class="page-header">
-    <h1>Pedidos CNPJ — Detectados Automaticamente</h1>
-    <p>Identificados via coluna CPF/CNPJ do Anymarket (14 dígitos) · 31/03/2026</p>
-  </div>
+  <div class="page-header"><h1>Pedidos CNPJ — Detectados Automaticamente</h1><p>Identificados via coluna CPF/CNPJ do Anymarket (14 dígitos) · 01/04/2026</p></div>
   <div class="kpi-row c3">
-    <div class="kpi accent"><div class="kpi-label">CNPJs detectados</div><div class="kpi-value mono" style="color:#e74c3c">5</div><div class="kpi-sub">identificados automaticamente</div></div>
-    <div class="kpi"><div class="kpi-label">Mercado Livre</div><div class="kpi-value mono">4</div><div class="kpi-sub">pedidos com CNPJ</div></div>
-    <div class="kpi"><div class="kpi-label">Madeira Madeira</div><div class="kpi-value mono">1</div><div class="kpi-sub">pedido com CNPJ</div></div>
+    <div class="kpi accent"><div class="kpi-label">CNPJs detectados</div><div class="kpi-value mono" style="color:#e74c3c">1</div><div class="kpi-sub">identificado automaticamente</div></div>
+    <div class="kpi"><div class="kpi-label">Marketplace</div><div class="kpi-value mono">Web Continental V2</div><div class="kpi-sub">canal de origem</div></div>
+    <div class="kpi"><div class="kpi-label">Urgência</div><div class="kpi-value mono" style="color:#27ae60;font-size:18px">🟢 OK (>14d)</div><div class="kpi-sub">prazo: 22/04/2026</div></div>
   </div>
-  <div class="info-note">ℹ️ CNPJs identificados automaticamente pela coluna CPF/CNPJ do arquivo Anymarket. Qualquer valor com 14 dígitos é tratado como CNPJ e separado para cancelamento.</div>
-
-  <!-- MERCADO LIVRE -->
-  <div class="dev-mkt-hdr">🛒 MERCADO LIVRE — 4 pedidos</div>
-  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px">
-    <table>
-      <thead><tr><th>CNPJ</th><th>Cliente</th><th>Código Pedido</th><th>Data Pedido</th><th>Prazo Entrega</th><th>Dias p/ Prazo</th><th>Urgência</th><th>UF</th><th>Valor (R$)</th></tr></thead>
-      <tbody id="tb-cnpj-ml"></tbody>
-    </table>
-  </div>
-
-  <!-- MADEIRA MADEIRA -->
-  <div class="dev-mkt-hdr" style="background:rgba(92,58,16,.3);border-color:rgba(92,58,16,.4);color:#e8a84f">🛒 MADEIRA MADEIRA — 1 pedido</div>
-  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px;margin-bottom:16px">
-    <table>
-      <thead><tr><th>CNPJ</th><th>Cliente</th><th>Código Pedido</th><th>Data Pedido</th><th>Prazo Entrega</th><th>Dias p/ Prazo</th><th>Urgência</th><th>UF</th><th>Valor (R$)</th></tr></thead>
-      <tbody id="tb-cnpj-mad"></tbody>
-    </table>
-  </div>
+  <div class="info-note">ℹ️ CNPJs identificados automaticamente pela coluna CPF/CNPJ do arquivo Anymarket. Qualquer valor com 14 dígitos é tratado como CNPJ.</div>
+  <div class="dev-mkt-hdr" style="background:rgba(26,26,92,.3);border-color:rgba(26,26,92,.4);color:#aabbff;border-radius:10px 10px 0 0">🛒 WEB CONTINENTAL V2 — 1 pedido</div>
+  <div class="tbl-wrap tbl-scroll" style="border-radius:0 0 10px 10px">
+    <table><thead><tr><th>CNPJ</th><th>Cliente</th><th>Código Pedido</th><th>Data Pedido</th><th>Prazo Entrega</th><th>Dias p/ Prazo</th><th>Urgência</th><th>UF</th></tr></thead>
+    <tbody>
+      <tr><td class="mono" style="color:#ff9966">50780717000929</td><td>ASSOCIACAO DAS TESTEMUNHAS CRISTAS DE JEOVA</td><td class="mono">288733006</td><td class="mono">31/03/2026 19:38</td><td class="mono">22/04/2026</td><td class="mono" style="color:#27ae60;font-weight:700">21</td><td style="color:#27ae60;font-weight:600">🟢 OK (>14d)</td><td><span class="badge bg">MG</span></td></tr>
+    </tbody>
+  </table></div>
 </div>
 
+<!-- ═══ ABA 8 — DvD ═══ -->
 <div id="page-dvd" class="page">
-  <div class="page-header"><h1>Comparativo Dia vs Dia</h1><p>30/03/2026 × 31/03/2026</p></div>
+  <div class="page-header"><h1>Comparativo Dia vs Dia</h1><p>31/03/2026 × 01/04/2026</p></div>
   <div class="section-title">📊 KPIs Gerais</div>
-  <div class="tbl-wrap"><table><thead><tr><th>Indicador</th><th>30/03/2026</th><th>31/03/2026</th><th>Variação</th></tr></thead><tbody id="tb-kpi"></tbody></table></div>
+  <div class="tbl-wrap"><table><thead><tr><th>Indicador</th><th>31/03/2026</th><th>01/04/2026</th><th>Variação</th></tr></thead><tbody id="tb-kpi"></tbody></table></div>
   <div class="section-title">🚚 Atrasos por Transportadora (com Total de NFs)</div>
-  <div class="tbl-wrap tbl-scroll"><table><thead><tr><th>Transportadora</th><th>Total NFs 30/03</th><th>Total NFs 31/03</th><th>Atrasos 30/03</th><th>Atrasos 31/03</th><th>% SLA 31/03</th></tr></thead><tbody id="tb-dtr"></tbody></table></div>
+  <div class="tbl-wrap tbl-scroll"><table><thead><tr><th>Transportadora</th><th>Total NFs 31/03</th><th>Total NFs 01/04</th><th>Atrasos 31/03</th><th>Atrasos 01/04</th><th>% SLA 01/04</th></tr></thead><tbody id="tb-dtr"></tbody></table></div>
   <div class="grid2">
-    <div><div class="section-title">📦 SLA por Marketplace</div><div class="tbl-wrap"><table><thead><tr><th>Marketplace</th><th>SLA 30/03</th><th>SLA 31/03</th><th>Var.</th></tr></thead><tbody id="tb-dmkt"></tbody></table></div></div>
-    <div><div class="section-title">⏱ Faixas de Atraso</div><div class="tbl-wrap"><table><thead><tr><th>Faixa</th><th>30/03</th><th>31/03</th><th>Var.</th></tr></thead><tbody id="tb-dfx"></tbody></table></div></div>
+    <div><div class="section-title">📦 SLA por Marketplace</div><div class="tbl-wrap"><table><thead><tr><th>Marketplace</th><th>SLA 31/03</th><th>SLA 01/04</th><th>Var.</th></tr></thead><tbody id="tb-dmkt"></tbody></table></div></div>
+    <div><div class="section-title">⏱ Faixas de Atraso</div><div class="tbl-wrap"><table><thead><tr><th>Faixa</th><th>31/03</th><th>01/04</th><th>Var.</th></tr></thead><tbody id="tb-dfx"></tbody></table></div></div>
   </div>
-  <div class="section-title">🌿 Peso FOCCO — Comparativo 30/03 → 31/03 (DADOS REAIS)</div>
-  <div class="focco-diff"><strong style="color:#66FF99">Total: 1.213.899 kg → 1.273.980 kg &nbsp;·&nbsp; +60.081 kg (+4,9%) &nbsp;·&nbsp; +610 NFs adicionais (até 30/03)</strong></div>
-  <div class="chart-card"><div class="chart-title">Peso Bruto por Transportadora — 30/03 vs 31/03</div><canvas id="chartDvdF" height="240"></canvas></div>
-  <div class="tbl-wrap"><table><thead><tr><th>Transportadora</th><th>kg 30/03</th><th>kg 31/03</th><th>Variação</th></tr></thead><tbody id="tb-dfocco"></tbody></table></div>
+  <div class="section-title">🌿 Peso FOCCO — 31/03 → 01/04</div>
+  <div class="chart-card"><div class="chart-title">Peso Bruto por Transportadora — Comparativo</div><canvas id="chartDvdF" height="240"></canvas></div>
+  <div class="tbl-wrap"><table><thead><tr><th>Transportadora</th><th>kg 31/03</th><th>kg 01/04</th><th>Variação</th></tr></thead><tbody id="tb-dfocco"></tbody></table></div>
 </div>
 
 <script>
-const TRANSP=[{s:'RGE · MG',uf:'MG',tot:806,at:57,sla:92.93},{s:'NOVA ERA · MG',uf:'MG',tot:728,at:39,sla:94.64},{s:'TEMPO JUSTO · SP',uf:'SP',tot:316,at:25,sla:92.09},{s:'TRANS SUA LOG · SP',uf:'SP',tot:440,at:24,sla:94.55},{s:'TS RJ · RJ',uf:'RJ',tot:738,at:20,sla:97.29},{s:'GETLAR · RJ',uf:'RJ',tot:417,at:11,sla:97.36},{s:'TRANSBARBOSA · SP',uf:'SP',tot:448,at:10,sla:97.77},{s:'MTC · SP',uf:'SP',tot:89,at:0,sla:100},{s:'SOUL · MG',uf:'MG',tot:95,at:0,sla:100},{s:'TRANS EXPRESS · RJ',uf:'RJ',tot:157,at:0,sla:100}];
-const MKT=[{m:'Shopee',tot:2554,at:76,sla:97.02},{m:'Magazine Luiza',tot:899,at:57,sla:93.66},{m:'Mercado Livre',tot:655,at:46,sla:92.98},{m:'Madeira Madeira',tot:42,at:4,sla:90.48},{m:'Via Varejo',tot:67,at:2,sla:97.01},{m:'Zema',tot:12,at:1,sla:91.67},{m:'Casa & Vídeo',tot:1,at:0,sla:100},{m:'Web Continental V2',tot:3,at:0,sla:100},{m:'eFácil',tot:1,at:0,sla:100}];
-const FAIXAS=[{f:'1-3 dias',q:38},{f:'4-7 dias',q:71},{f:'8-14 dias',q:37},{f:'15-30 dias',q:26},{f:'30+ dias',q:0}];
-const HIST=[['26/02','93.94'],['03/03','93.92'],['04/03','95.68'],['05/03','95.75'],['06/03','95.78'],['09/03','95.76'],['10/03','96.36'],['12/03','95.91'],['13/03','95.65'],['17/03','95.85'],['18/03','95.70'],['19/03','96.16'],['20/03','96.00'],['23/03','95.94'],['24/03','95.84'],['25/03','95.72'],['26/03','95.32'],['27/03','95.32'],['30/03','95.76'],['31/03','95.61']];
-// FOCCO REAL 31/03
-const FOCCO=[{s:'RGE - MG',kg:214713.07,pct:16.85,nf:1709},{s:'TRANSBARBOSA - SP',kg:201692.51,pct:15.83,nf:1789},{s:'GETLAR - RJ',kg:183818.55,pct:14.43,nf:1537},{s:'NOVA ERA - MG',kg:174835.22,pct:13.72,nf:1549},{s:'TS RJ - RJ',kg:173669.88,pct:13.63,nf:1394},{s:'TRANS SUA LOG - SP',kg:132385.34,pct:10.39,nf:1074},{s:'TEMPO JUSTO - SP',kg:128603.67,pct:10.09,nf:1115},{s:'TRANS EXPRESS - RJ',kg:27751.87,pct:2.18,nf:226},{s:'SOUL - MG',kg:18481.72,pct:1.45,nf:155},{s:'MTC - SP',kg:18028.28,pct:1.42,nf:167}];
-const FOCCO30={s:'RGE - MG',kg30:205800.76,'TRANSBARBOSA - SP':180114.37,'GETLAR - RJ':183570.67,'NOVA ERA - MG':164321.10,'TS RJ - RJ':164738.93,'TRANS SUA LOG - SP':132385.34,'TEMPO JUSTO - SP':128603.67,'TRANS EXPRESS - RJ':17853.83,'SOUL - MG':18481.72,'MTC - SP':18028.28};
-const F30_MAP={'RGE - MG':205800.76,'TRANSBARBOSA - SP':180114.37,'GETLAR - RJ':183570.67,'NOVA ERA - MG':164321.10,'TS RJ - RJ':164738.93,'TRANS SUA LOG - SP':132385.34,'TEMPO JUSTO - SP':128603.67,'TRANS EXPRESS - RJ':17853.83,'SOUL - MG':18481.72,'MTC - SP':18028.28};
-const FOCCO_UF={SP:[{s:'TRANSBARBOSA - SP',kg:201692.51,pe:41.96},{s:'TRANS SUA LOG - SP',kg:132385.34,pe:27.54},{s:'TEMPO JUSTO - SP',kg:128603.67,pe:26.75},{s:'MTC - SP',kg:18028.28,pe:3.75}],MG:[{s:'RGE - MG',kg:214713.07,pe:52.80},{s:'NOVA ERA - MG',kg:174835.22,pe:42.99},{s:'SOUL - MG',kg:18481.72,pe:4.54}],RJ:[{s:'GETLAR - RJ',kg:183818.55,pe:47.58},{s:'TS RJ - RJ',kg:173669.88,pe:44.96},{s:'TRANS EXPRESS - RJ',kg:27751.87,pe:7.18}]};
-const TKM30=1213899,TKM31=1273980,DU=23;
-const D30t={'RGE - MG':{tot:817,at:60},'NOVA ERA - MG':{tot:763,at:43},'TEMPO JUSTO - SP':{tot:341,at:24},'TRANS SUA LOG - SP':{tot:504,at:21},'TS RJ - RJ':{tot:697,at:14},'GETLAR - RJ':{tot:489,at:11},'TRANSBARBOSA - SP':{tot:377,at:8},'MTC - SP':{tot:91,at:0},'SOUL - MG':{tot:95,at:0},'TRANS EXPRESS - RJ':{tot:93,at:0}};
+// ── DADOS ──────────────────────────────────────────────────
+const TRANSP=[
+  {s:'RGE · MG',    uf:'MG', tot:806, at:56, sla:93.05},
+  {s:'TRANS SUA LOG · SP',uf:'SP',tot:494,at:32,sla:93.52},
+  {s:'NOVA ERA · MG',uf:'MG',tot:639,at:29,sla:95.46},
+  {s:'TEMPO JUSTO · SP',uf:'SP',tot:233,at:25,sla:89.27},
+  {s:'TS RJ · RJ',  uf:'RJ', tot:728,at:24,sla:96.70},
+  {s:'GETLAR · RJ', uf:'RJ', tot:358,at:14,sla:96.09},
+  {s:'TRANSBARBOSA · SP',uf:'SP',tot:417,at:12,sla:97.12},
+  {s:'MTC · SP',    uf:'SP', tot:83, at:1,  sla:98.80},
+  {s:'SOUL · MG',   uf:'MG', tot:93, at:1,  sla:98.92},
+  {s:'TRANS EXPRESS · RJ',uf:'RJ',tot:153,at:0,sla:100},
+];
+const MKT=[
+  {m:'Shopee',         tot:2411,at:78, sla:96.76},
+  {m:'Magazine Luiza', tot:819, at:55, sla:93.28},
+  {m:'Mercado Livre',  tot:642, at:51, sla:92.06},
+  {m:'Madeira Madeira',tot:42,  at:5,  sla:88.10},
+  {m:'Via Varejo',     tot:74,  at:4,  sla:94.59},
+  {m:'Zema',           tot:11,  at:1,  sla:90.91},
+  {m:'Casa & Vídeo',   tot:1,   at:0,  sla:100},
+  {m:'Web Continental V2',tot:3,at:0,  sla:100},
+  {m:'eFácil',         tot:1,   at:0,  sla:100},
+];
+const FAIXAS=[{f:'1-3 dias',q:65},{f:'4-7 dias',q:48},{f:'8-14 dias',q:41},{f:'15-30 dias',q:21},{f:'30+ dias',q:0}];
+const HIST=[['26/02','93.94'],['03/03','93.92'],['04/03','95.68'],['05/03','95.75'],['06/03','95.78'],['09/03','95.76'],['10/03','96.36'],['12/03','95.91'],['13/03','95.65'],['17/03','95.85'],['18/03','95.70'],['19/03','96.16'],['20/03','96.00'],['23/03','95.94'],['24/03','95.84'],['25/03','95.72'],['26/03','95.32'],['27/03','95.32'],['30/03','95.76'],['31/03','95.61'],['01/04','95.15']];
+const FOCCO=[
+  {s:'RGE - MG',          kg:219559.52,pct:16.77,nf:1725},
+  {s:'TRANSBARBOSA - SP', kg:205290.43,pct:15.68,nf:1789},
+  {s:'GETLAR - RJ',       kg:189190.73,pct:14.45,nf:1537},
+  {s:'NOVA ERA - MG',     kg:179331.83,pct:13.70,nf:1549},
+  {s:'TS RJ - RJ',        kg:177649.03,pct:13.57,nf:1394},
+  {s:'TRANS SUA LOG - SP',kg:145531.90,pct:11.11,nf:1247},
+  {s:'TEMPO JUSTO - SP',  kg:128603.67,pct:9.82,nf:762},
+  {s:'TRANS EXPRESS - RJ',kg:27751.87, pct:2.12,nf:226},
+  {s:'SOUL - MG',         kg:18481.72, pct:1.41,nf:155},
+  {s:'MTC - SP',          kg:18028.28, pct:1.38,nf:167},
+];
+const FOCCO_UF={
+  SP:[{s:'TRANSBARBOSA - SP',kg:205290.43,pe:41.28},{s:'TRANS SUA LOG - SP',kg:145531.90,pe:29.26},{s:'TEMPO JUSTO - SP',kg:128603.67,pe:25.87},{s:'MTC - SP',kg:18028.28,pe:3.63}],
+  MG:[{s:'RGE - MG',kg:219559.52,pe:52.78},{s:'NOVA ERA - MG',kg:179331.83,pe:43.12},{s:'SOUL - MG',kg:18481.72,pe:4.44}],
+  RJ:[{s:'GETLAR - RJ',kg:189190.73,pe:47.81},{s:'TS RJ - RJ',kg:177649.03,pe:44.90},{s:'TRANS EXPRESS - RJ',kg:27751.87,pe:7.02}],
+};
+const F31_MAP={'RGE - MG':214713.07,'TRANSBARBOSA - SP':201692.51,'GETLAR - RJ':183818.55,'NOVA ERA - MG':174835.22,'TS RJ - RJ':173669.88,'TRANS SUA LOG - SP':132385.34,'TEMPO JUSTO - SP':128603.67,'TRANS EXPRESS - RJ':27751.87,'SOUL - MG':18481.72,'MTC - SP':18028.28};
+const TKM31=1273980,TKM01=1309419,DU=23;
+const D31kpi={total:4475,env:4234,ok:4048,late:186,sla:95.61,dev:19,cnpj:5,sf:208,sfv:218607,kg:25718,avgd:4.8,nfmed:1.3,sfvenc:0,sfcrit:0,sfalrt:1,sfatc:5};
+const D01kpi={total:4188,env:4004,ok:3810,late:194,sla:95.15,dev:20,cnpj:1,sf:155,sfv:159810,kg:18801,avgd:4.6,nfmed:1.2,sfvenc:0,sfcrit:0,sfalrt:0,sfatc:4};
 const D31t={'RGE - MG':{tot:806,at:57,sla:92.93},'NOVA ERA - MG':{tot:728,at:39,sla:94.64},'TEMPO JUSTO - SP':{tot:316,at:25,sla:92.09},'TRANS SUA LOG - SP':{tot:440,at:24,sla:94.55},'TS RJ - RJ':{tot:738,at:20,sla:97.29},'GETLAR - RJ':{tot:417,at:11,sla:97.36},'TRANSBARBOSA - SP':{tot:448,at:10,sla:97.77},'MTC - SP':{tot:89,at:0,sla:100},'SOUL - MG':{tot:95,at:0,sla:100},'TRANS EXPRESS - RJ':{tot:157,at:0,sla:100}};
-const MKT30={'Shopee':97.10,'Magazine Luiza':94.04,'Mercado Livre':93.25,'Madeira Madeira':90.48,'Via Varejo':98.33,'Zema':92.86};
-const MKT31={'Shopee':97.02,'Magazine Luiza':93.66,'Mercado Livre':92.98,'Madeira Madeira':90.48,'Via Varejo':97.01,'Zema':91.67};
-const F30x={'1-3 dias':23,'4-7 dias':69,'8-14 dias':39,'15-30 dias':30,'30+ dias':1};
+const D01t={'RGE - MG':{tot:806,at:56,sla:93.05},'TRANS SUA LOG - SP':{tot:494,at:32,sla:93.52},'NOVA ERA - MG':{tot:639,at:29,sla:95.46},'TEMPO JUSTO - SP':{tot:233,at:25,sla:89.27},'TS RJ - RJ':{tot:728,at:24,sla:96.70},'GETLAR - RJ':{tot:358,at:14,sla:96.09},'TRANSBARBOSA - SP':{tot:417,at:12,sla:97.12},'MTC - SP':{tot:83,at:1,sla:98.80},'SOUL - MG':{tot:93,at:1,sla:98.92},'TRANS EXPRESS - RJ':{tot:153,at:0,sla:100}};
+const MKT31={'Shopee':97.02,'Magazine Luiza':93.66,'Mercado Livre':92.98,'Madeira Madeira':90.48,'Via Varejo':97.01,'Zema':91.67,'Web Continental V2':100,'Casa & Vídeo':100,'eFácil':100};
+const MKT01={'Shopee':96.76,'Magazine Luiza':93.28,'Mercado Livre':92.06,'Madeira Madeira':88.10,'Via Varejo':94.59,'Zema':90.91,'Web Continental V2':100,'Casa & Vídeo':100,'eFácil':100};
 const F31x={'1-3 dias':38,'4-7 dias':71,'8-14 dias':37,'15-30 dias':26,'30+ dias':0};
-const DEV_MAG=[{nf:33084,cod:'LU-1509670098596227-1',cli:'Claudia Rabelo Oliveira Amorim',uf:'MG'},{nf:35519,cod:'LU-1510170098833915-1',cli:'Debora Oliveira',uf:'MG'},{nf:37481,cod:'LU-1511170099257065-1',cli:'Romulo Batista Ferreira',uf:'MG'},{nf:38311,cod:'LU-1511570099449795-1',cli:'Roniaurea silencio candido',uf:'MG'},{nf:38578,cod:'LU-1511770099529564-1',cli:'Solange Maria da Silva',uf:'MG'},{nf:43805,cod:'LU-1513170100020649-1',cli:'Jaqueline Santos',uf:'MG'},{nf:45486,cod:'LU-1512770099828871-1',cli:'Paulo herique dos Santos Silva',uf:'SP'},{nf:40545,cod:'LU-1512270099633485-1',cli:'Maria Aparecida Sousa',uf:'MG'},{nf:46911,cod:'LU-1514470100532881-1',cli:'Fernanda Lima',uf:'MG'},{nf:45747,cod:'LU-1514070100360972-1',cli:'Alexia Carolina Aparecida Fonseca',uf:'MG'}];
-const DEV_ML=[{nf:33263,cod:'S-46405684731',cli:'leandro aparecido da silva',uf:'SP'},{nf:50070,cod:'2000015247324004',cli:'cliente mercado livre',uf:'MG'},{nf:53395,cod:'2000015432314112',cli:'maurilio Alves da silva',uf:'MG'},{nf:67936,cod:'2000015651664096',cli:'Jaci pio',uf:'MG'},{nf:68796,cod:'2000015661839738',cli:'Rodrigo Aparecido Cunha De Arruda',uf:'SP'}];
-const DEV_SH=[{nf:38115,cod:'260212FJ1RWE21',cli:'Thais Mota Rinke',uf:'SP'},{nf:40778,cod:'2602195VVEE4E9',cli:'Leticia Maria Cappello De Lima',uf:'SP'},{nf:40863,cod:'26022079MBM1SU',cli:'Leandro Da Silva Muzy',uf:'RJ'},{nf:68652,cod:'260320KE08BACK',cli:'Alcione',uf:'SP'}];
-const CNPJ=['S-46597234309','S-46640401089','2000015531344294','2000015591523456','2000012213461717','577303','S-46702819711','2000015662333224','S-46725546562','9584020','2000012281435573','2000015728838808','2000015756689568','46738037077'];
-const D30kpi={total:4801,env:4267,ok:4086,late:181,sla:95.76,dev:17,cnpj:5,sf:501,sfv:504298,kg:59329,avgd:5.2,nfmed:1.4};
-const D31kpi={total:4475,env:4234,ok:4048,late:186,sla:95.61,dev:19,cnpj:5,sf:208,sfv:218607,kg:25718,avgd:4.8,nfmed:1.3};
+const F01x={'1-3 dias':65,'4-7 dias':48,'8-14 dias':41,'15-30 dias':21,'30+ dias':0};
+
+// Devoluções com data do pedido
+const DEV_MAG=[
+  {dp:'22/01/2026 12:31',nf:21325,cod:'LU-1504870096629559-1',cli:'Adriana Alves de Sousa',uf:'MG'},
+  {dp:'17/02/2026',nf:33084,cod:'LU-1509670098596227-1',cli:'Claudia Rabelo Oliveira Amorim',uf:'MG'},
+  {dp:'24/02/2026',nf:35519,cod:'LU-1510170098833915-1',cli:'Debora Oliveira',uf:'MG'},
+  {dp:'02/03/2026',nf:37481,cod:'LU-1511170099257065-1',cli:'Romulo Batista Ferreira',uf:'MG'},
+  {dp:'05/03/2026',nf:38311,cod:'LU-1511570099449795-1',cli:'Roniaurea silencio candido',uf:'MG'},
+  {dp:'14/03/2026',nf:43805,cod:'LU-1513170100020649-1',cli:'Jaqueline Santos',uf:'MG'},
+  {dp:'16/03/2026',nf:45486,cod:'LU-1512770099828871-1',cli:'Paulo h. dos Santos Silva',uf:'SP'},
+  {dp:'12/03/2026',nf:40545,cod:'LU-1512270099633485-1',cli:'Maria Aparecida Sousa',uf:'MG'},
+  {dp:'17/03/2026',nf:46911,cod:'LU-1514470100532881-1',cli:'Fernanda Lima',uf:'MG'},
+];
+const DEV_SHO=[
+  {dp:'12/02/2026',nf:35253,cod:'260212FJ2XXXX',cli:'cliente shopee',uf:'SP'},
+  {dp:'12/02/2026',nf:38115,cod:'260212FJ1RWE21',cli:'Thais Mota Rinke',uf:'SP'},
+  {dp:'19/02/2026',nf:40778,cod:'2602195VVEE4E9',cli:'Leticia Maria Cappello De Lima',uf:'SP'},
+  {dp:'20/02/2026',nf:40863,cod:'26022079MBM1SU',cli:'Leandro Da Silva Muzy',uf:'RJ'},
+  {dp:'23/03/2026',nf:42658,cod:'2603XXXX',cli:'cliente shopee',uf:'SP'},
+  {dp:'20/03/2026',nf:68652,cod:'260320KE08BACK',cli:'Alcione',uf:'SP'},
+];
+const DEV_ML=[
+  {dp:'06/02/2026',nf:26615,cod:'2000014820042712',cli:'cliente mercado livre',uf:'MG'},
+  {dp:'17/02/2026',nf:33263,cod:'S-46405684731',cli:'leandro aparecido da silva',uf:'SP'},
+  {dp:'26/02/2026',nf:53395,cod:'2000015432314112',cli:'maurilio Alves da silva',uf:'MG'},
+  {dp:'23/03/2026',nf:67936,cod:'2000015651664096',cli:'Jaci pio',uf:'MG'},
+  {dp:'25/03/2026',nf:68796,cod:'2000015661839738',cli:'Rodrigo Aparecido Cunha De Arruda',uf:'SP'},
+];
 
 function slaC(v){return v>=95?'#27ae60':v>=90?'#e6a817':'#e74c3c'}
 function slaBadge(v){let c=v>=95?'bg':v>=90?'by':'br';return`<span class="badge ${c}">${v.toFixed(2)}%</span>`}
@@ -272,73 +441,52 @@ function varC(a,b,inv=false,fmt='n'){
   return`<td class="${cls} mono" style="font-weight:700">${txt}</td>`
 }
 
-
-const CNPJ_ML=[
-  {cnpj:'62430743000159',cli:'Studiovip Be',cod:'S-46597234309',dp:'06/03/2026 12:44',ee:'02/04/2026',dias:2,urg:'🔴 Crítico (0-3d)',uf:'MG',vlr:0},
-  {cnpj:'41761996000135',cli:'Rodrigo Jose Martini',cod:'S-46640401089',dp:'12/03/2026 16:35',ee:'06/04/2026',dias:6,urg:'🟡 Alerta (4-7d)',uf:'SP',vlr:0},
-  {cnpj:'56053993000114',cli:'Luciana Ajala Nery Soares',cod:'S-46702819711',dp:'22/03/2026 12:20',ee:'16/04/2026',dias:16,urg:'🟢 OK (>14d)',uf:'SP',vlr:0},
-  {cnpj:'52315697000193',cli:'Jeniffer Salandini',cod:'2000015662333224',dp:'22/03/2026 22:33',ee:'16/04/2026',dias:16,urg:'🟢 OK (>14d)',uf:'SP',vlr:0},
-];
-const CNPJ_MAD=[
-  {cnpj:'50780717000929',cli:'ASSOCIACAO DAS TESTEMUNHAS CRISTAS DE JEOVA',cod:'9584020',dp:'26/03/2026 14:21',ee:'17/04/2026',dias:17,urg:'🟢 OK (>14d)',uf:'MG',vlr:0},
-];
-const UrgClr={'🔴 Vencido':'#e74c3c','🔴 Crítico (0-3d)':'#e74c3c','🟡 Alerta (4-7d)':'#e6a817','🟠 Atenção (8-14d)':'#e67e22','🟢 OK (>14d)':'#27ae60','⚪ Sem Prazo':'#888'};
-function buildCnpjRows(arr,id){
-  const tb=document.getElementById(id);
-  arr.forEach((r,i)=>{
-    const cls=r.urg.includes('Vencido')||r.urg.includes('Crítico')?'br':r.urg.includes('Alerta')?'by':'bg';
-    tb.innerHTML+=`<tr>
-      <td class="mono" style="color:#ff9966">${r.cnpj}</td>
-      <td>${r.cli}</td>
-      <td class="mono" style="font-size:11px">${r.cod}</td>
-      <td class="mono">${r.dp}</td>
-      <td class="mono">${r.ee}</td>
-      <td class="mono" style="color:${UrgClr[r.urg]||'#888'};font-weight:700">${r.dias}</td>
-      <td style="color:${UrgClr[r.urg]||'#888'};font-weight:600;font-size:12px">${r.urg}</td>
-      <td><span class="badge ${r.uf==='MG'?'bg':r.uf==='SP'?'by':'br'}">${r.uf}</span></td>
-      <td class="mono">${r.vlr>0?'R$ '+r.vlr.toLocaleString('pt-BR',{minimumFractionDigits:2}):'S/NF'}</td>
-    </tr>`;
-  });
-}
 function init(){
+  // Visão geral + transp full
   TRANSP.forEach(t=>{
     document.getElementById('tb-tv').innerHTML+=`<tr><td><strong>${t.s}</strong></td><td class="mono">${t.tot}</td><td class="mono" style="color:#27ae60">${t.tot-t.at}</td><td class="mono" style="color:${t.at>0?'#e74c3c':'#888'}">${t.at}</td><td>${slaBadge(t.sla)}</td><td>${slaBar(t.sla)}</td></tr>`;
     document.getElementById('tb-tf').innerHTML+=`<tr><td><strong>${t.s.split('·')[0].trim()}</strong></td><td><span class="badge ${t.uf==='MG'?'bg':t.uf==='SP'?'by':'br'}" style="font-size:10px">${t.uf}</span></td><td class="mono">${t.tot}</td><td class="mono" style="color:#27ae60">${t.tot-t.at}</td><td class="mono" style="color:${t.at>0?'#e74c3c':'#888'}">${t.at}</td><td class="mono">${(t.at/t.tot*100).toFixed(2)}%</td><td>${slaBadge(t.sla)}</td><td>${slaBar(t.sla)}</td></tr>`;
   });
+  // MKT
   MKT.forEach(m=>{document.getElementById('tb-mkt').innerHTML+=`<tr><td><strong>${m.m}</strong></td><td class="mono">${m.tot}</td><td class="mono" style="color:#27ae60">${m.tot-m.at}</td><td class="mono" style="color:${m.at>0?'#e74c3c':'#888'}">${m.at}</td><td class="mono">${(m.at/m.tot*100).toFixed(2)}%</td><td>${slaBadge(m.sla)}</td><td>${slaBar(m.sla)}</td></tr>`});
-  let ac=0;
-  FOCCO.forEach((f,i)=>{ac+=f.pct;let c=f.pct>=14?'#27ae60':f.pct>=8?'#e6a817':'#e67e22';let md=Math.round(f.kg/DU);document.getElementById('tb-fg').innerHTML+=`<tr><td class="mono" style="color:var(--muted)">${i+1}º</td><td><strong>${f.s}</strong></td><td class="mono">${f.nf.toLocaleString('pt-BR')}</td><td class="mono" style="color:#aade66">${Math.round(f.kg).toLocaleString('pt-BR')} kg</td><td class="mono" style="color:${c};font-weight:700">${f.pct.toFixed(2)}%</td><td class="mono" style="color:var(--muted)">${ac.toFixed(2)}%</td><td class="mono" style="color:#66FF99;font-weight:700">${md.toLocaleString('pt-BR')} kg</td></tr>`});
+  // FOCCO
+  let ac=0;FOCCO.forEach((f,i)=>{ac+=f.pct;let c=f.pct>=14?'#27ae60':f.pct>=8?'#e6a817':'#e67e22';let md=Math.round(f.kg/DU);document.getElementById('tb-fg').innerHTML+=`<tr><td class="mono" style="color:var(--muted)">${i+1}º</td><td><strong>${f.s}</strong></td><td class="mono">${f.nf.toLocaleString('pt-BR')}</td><td class="mono" style="color:#aade66">${Math.round(f.kg).toLocaleString('pt-BR')} kg</td><td class="mono" style="color:${c};font-weight:700">${f.pct.toFixed(2)}%</td><td class="mono" style="color:var(--muted)">${ac.toFixed(2)}%</td><td class="mono" style="color:#66FF99;font-weight:700">${md.toLocaleString('pt-BR')} kg</td></tr>`});
+  // FOCCO UF grid
   const ufg=document.getElementById('uf-grid');
-  [{c:'SP',n:'São Paulo',kg:480709.81,pct:37.73,clr:'#e8a84f',d:FOCCO_UF.SP},{c:'MG',n:'Minas Gerais',kg:406613.40,pct:31.92,clr:'#aade66',d:FOCCO_UF.MG},{c:'RJ',n:'Rio de Janeiro',kg:386371.10,pct:30.33,clr:'#5dade2',d:FOCCO_UF.RJ}].forEach(u=>{let rows='';u.d.forEach(t=>{let c=t.pe>=40?'#27ae60':t.pe>=20?'#e6a817':'#e67e22';rows+=`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${t.s}</span><div style="text-align:right"><span class="mono" style="color:${c};font-weight:700">${t.pe.toFixed(1)}%</span><span class="mono" style="color:var(--muted);font-size:11px;margin-left:8px">${Math.round(t.kg).toLocaleString('pt-BR')} kg</span></div></div>`});ufg.innerHTML+=`<div class="uf-card"><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:${u.clr};margin-bottom:12px">${u.c} — ${u.n}</div><div class="mono" style="font-size:20px;font-weight:500;color:${u.clr};margin-bottom:4px">${Math.round(u.kg).toLocaleString('pt-BR')} kg</div><div style="font-size:11px;color:var(--muted);margin-bottom:12px">${u.pct}% · Média: <strong style="color:${u.clr}">${Math.round(u.kg/DU).toLocaleString('pt-BR')} kg/d.u.</strong></div>${rows}</div>`});
-  [DEV_MAG,DEV_ML,DEV_SH].forEach((arr,idx)=>{let id=['tb-devM','tb-devL','tb-devS'][idx];arr.forEach(d=>{document.getElementById(id).innerHTML+=`<tr><td class="mono" style="color:#cc88ff">${d.nf}</td><td class="mono" style="font-size:11px">${d.cod}</td><td>${d.cli}</td><td><span class="badge ${d.uf==='MG'?'bg':d.uf==='SP'?'by':'br'}">${d.uf}</span></td></tr>`})});
-  buildCnpjRows(CNPJ_ML,'tb-cnpj-ml');
-  buildCnpjRows(CNPJ_MAD,'tb-cnpj-mad');
-  // DvD KPI
-  [['Total pedidos',D30kpi.total,D31kpi.total,true,'n'],['Pedidos Faturados',D30kpi.env,D31kpi.env,true,'n'],['No Prazo',D30kpi.ok,D31kpi.ok,false,'n'],['Em Atraso',D30kpi.late,D31kpi.late,true,'n'],['SLA Geral',`${D30kpi.sla}%`,`${D31kpi.sla}%`,false,'pp'],['Devoluções',D30kpi.dev,D31kpi.dev,false,'n'],['CNPJ',D30kpi.cnpj,D31kpi.cnpj,false,'n'],['Em Aberto (S/Fat.)',D30kpi.sf,D31kpi.sf,true,'n'],['Valor em Aberto',`R$ ${D30kpi.sfv.toLocaleString('pt-BR')}`,`R$ ${D31kpi.sfv.toLocaleString('pt-BR')}`,true,'brl'],['Peso em Aberto (est.)',D30kpi.kg,D31kpi.kg,true,'kg'],['Prazo médio NF',D30kpi.nfmed,D31kpi.nfmed,true,'n']].forEach((r,i)=>{document.getElementById('tb-kpi').innerHTML+=`<tr style="background:${i%2===1?'rgba(255,255,255,.02)':''}"><td><strong>${r[0]}</strong></td><td class="mono">${r[1]}</td><td class="mono">${r[2]}</td>${varC(r[1],r[2],r[3],r[4])}</tr>`});
+  [{c:'SP',n:'São Paulo',kg:497454.28,pct:37.99,clr:'#e8a84f',d:FOCCO_UF.SP},{c:'MG',n:'Minas Gerais',kg:415956.45,pct:31.77,clr:'#aade66',d:FOCCO_UF.MG},{c:'RJ',n:'Rio de Janeiro',kg:395722.43,pct:30.22,clr:'#5dade2',d:FOCCO_UF.RJ}].forEach(u=>{let rows='';u.d.forEach(t=>{let c=t.pe>=40?'#27ae60':t.pe>=20?'#e6a817':'#e67e22';rows+=`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${t.s}</span><div style="text-align:right"><span class="mono" style="color:${c};font-weight:700">${t.pe.toFixed(1)}%</span><span class="mono" style="color:var(--muted);font-size:11px;margin-left:8px">${Math.round(t.kg).toLocaleString('pt-BR')} kg</span></div></div>`});ufg.innerHTML+=`<div class="uf-card"><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:${u.clr};margin-bottom:12px">${u.c} — ${u.n}</div><div class="mono" style="font-size:20px;font-weight:500;color:${u.clr};margin-bottom:4px">${Math.round(u.kg).toLocaleString('pt-BR')} kg</div><div style="font-size:11px;color:var(--muted);margin-bottom:12px">${u.pct}% · Média: <strong style="color:${u.clr}">${Math.round(u.kg/DU).toLocaleString('pt-BR')} kg/d.u.</strong></div>${rows}</div>`});
+  // Devoluções com data do pedido
+  function devRow(arr,id){arr.forEach(d=>{document.getElementById(id).innerHTML+=`<tr><td class="mono" style="color:#5dade2;font-weight:700">${d.dp}</td><td class="mono" style="color:#cc88ff">${d.nf}</td><td class="mono" style="font-size:11px">${d.cod}</td><td>${d.cli}</td><td><span class="badge ${d.uf==='MG'?'bg':d.uf==='SP'?'by':'br'}">${d.uf}</span></td></tr>`})}
+  devRow(DEV_MAG,'tb-dev-mag');devRow(DEV_SHO,'tb-dev-sho');devRow(DEV_ML,'tb-dev-ml');
+  // DvD KPIs
+  [['Total pedidos',D31kpi.total,D01kpi.total,true,'n'],['Pedidos Faturados',D31kpi.env,D01kpi.env,true,'n'],['No Prazo',D31kpi.ok,D01kpi.ok,false,'n'],['Em Atraso',D31kpi.late,D01kpi.late,true,'n'],['SLA Geral',`${D31kpi.sla}%`,`${D01kpi.sla}%`,false,'pp'],['Devoluções',D31kpi.dev,D01kpi.dev,false,'n'],['CNPJ detectados',D31kpi.cnpj,D01kpi.cnpj,false,'n'],['Em Aberto (S/Fat.)',D31kpi.sf,D01kpi.sf,true,'n'],['Valor em Aberto',`R$ ${D31kpi.sfv.toLocaleString('pt-BR')}`,`R$ ${D01kpi.sfv.toLocaleString('pt-BR')}`,true,'brl'],['Peso em Aberto (kg)',D31kpi.kg,D01kpi.kg,true,'kg'],['Prazo médio NF',D31kpi.nfmed,D01kpi.nfmed,true,'n']].forEach((r,i)=>{document.getElementById('tb-kpi').innerHTML+=`<tr style="background:${i%2===1?'rgba(255,255,255,.02)':''}"><td><strong>${r[0]}</strong></td><td class="mono">${r[1]}</td><td class="mono">${r[2]}</td>${varC(r[1],r[2],r[3],r[4])}</tr>`});
   // DvD Transp
-  Object.keys(D31t).forEach((k,i)=>{let t30=D30t[k],t31=D31t[k],bg=i%2===1?'rgba(255,255,255,.02)':'';let dT=t31.tot-t30.tot,dA=t31.at-t30.at,clsT=dT<0?'dvd-up':dT>0?'dvd-down':'dvd-neutral',clsA=dA>0?'dvd-down':dA<0?'dvd-up':'dvd-neutral';document.getElementById('tb-dtr').innerHTML+=`<tr style="background:${bg}"><td><strong>${k}</strong></td><td class="mono">${t30.tot}</td><td class="mono ${clsT}">${t31.tot}</td><td class="mono">${t30.at}</td><td class="mono ${clsA}" style="font-weight:700">${t31.at}</td><td>${slaBadge(t31.sla)}</td></tr>`});
-  Object.keys(MKT31).forEach((k,i)=>{let s30=MKT30[k]??100,s31=MKT31[k],d=s31-s30,cls=d>0?'dvd-up':d<0?'dvd-down':'dvd-neutral',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dmkt').innerHTML+=`<tr style="background:${bg}"><td>${k}</td><td class="mono" style="color:${slaC(s30)}">${s30}%</td><td class="mono" style="color:${slaC(s31)}">${s31}%</td><td class="${cls} mono">${d>0?'▲ +':d<0?'▼ ':'→'}${d===0?'0':Math.abs(d).toFixed(2)+' pp'}</td></tr>`});
-  Object.keys(F31x).forEach((k,i)=>{let a=F30x[k]??0,b=F31x[k]??0,d=b-a,cls=d>0?'dvd-down':d<0?'dvd-up':'dvd-neutral',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dfx').innerHTML+=`<tr style="background:${bg}"><td>${k}</td><td class="mono">${a}</td><td class="mono">${b}</td><td class="${cls} mono">${d>0?'▲ +':d<0?'▼ ':'→'}${Math.abs(d)}</td></tr>`});
-  FOCCO.forEach((f,i)=>{let v30=F30_MAP[f.s]??0,v31=f.kg,d=v31-v30,cls=d>0?'dvd-up':d<0?'dvd-down':'dvd-neutral',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dfocco').innerHTML+=`<tr style="background:${bg}"><td><strong>${f.s}</strong></td><td class="mono">${Math.round(v30).toLocaleString('pt-BR')}</td><td class="mono">${Math.round(v31).toLocaleString('pt-BR')}</td><td class="${cls} mono" style="font-weight:700">${d>=0?'▲ +':'▼ '}${Math.round(Math.abs(d)).toLocaleString('pt-BR')} kg</td></tr>`});
-  document.getElementById('tb-dfocco').innerHTML+=`<tr style="background:#0D1F07"><td style="color:#aade66;font-weight:700">TOTAL GERAL</td><td class="mono" style="color:#aade66;font-weight:700">${TKM30.toLocaleString('pt-BR')}</td><td class="mono" style="color:#66FF99;font-weight:700">${TKM31.toLocaleString('pt-BR')}</td><td class="dvd-up mono" style="font-weight:700">▲ +${(TKM31-TKM30).toLocaleString('pt-BR')} kg (+4,9%)</td></tr>`;
+  const allTr=new Set([...Object.keys(D31t),...Object.keys(D01t)]);
+  [...allTr].sort().forEach((k,i)=>{let t31=D31t[k]||{tot:0,at:0,sla:null},t01=D01t[k]||{tot:0,at:0,sla:null},bg=i%2===1?'rgba(255,255,255,.02)':'';let dT=t01.tot-t31.tot,dA=t01.at-t31.at,clsT=dT<0?'dvd-up':dT>0?'dvd-down':'dvd-neutral',clsA=dA>0?'dvd-down':dA<0?'dvd-up':'dvd-neutral';document.getElementById('tb-dtr').innerHTML+=`<tr style="background:${bg}"><td><strong>${k}</strong></td><td class="mono">${t31.tot||'—'}</td><td class="mono ${clsT}">${t01.tot||'—'}</td><td class="mono">${t31.at}</td><td class="mono ${clsA}" style="font-weight:700">${t01.at}</td><td>${t01.sla!=null?slaBadge(t01.sla):'—'}</td></tr>`});
+  // DvD MKT
+  Object.keys(MKT01).forEach((k,i)=>{let s31=MKT31[k]??100,s01=MKT01[k],d=s01-s31,cls=d>0?'dvd-up':d<0?'dvd-down':'dvd-neutral',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dmkt').innerHTML+=`<tr style="background:${bg}"><td>${k}</td><td class="mono" style="color:${slaC(s31)}">${s31}%</td><td class="mono" style="color:${slaC(s01)}">${s01}%</td><td class="${cls} mono">${d>0?'▲ +':d<0?'▼ ':'→'}${d===0?'0':Math.abs(d).toFixed(2)+' pp'}</td></tr>`});
+  // DvD Faixas
+  Object.keys(F01x).forEach((k,i)=>{let a=F31x[k]??0,b=F01x[k]??0,d=b-a,cls=d>0?'dvd-down':d<0?'dvd-up':'dvd-neutral',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dfx').innerHTML+=`<tr style="background:${bg}"><td>${k}</td><td class="mono">${a}</td><td class="mono">${b}</td><td class="${cls} mono">${d>0?'▲ +':d<0?'▼ ':'→'}${Math.abs(d)}</td></tr>`});
+  // DvD FOCCO
+  FOCCO.forEach((f,i)=>{let v31=F31_MAP[f.s]??0,v01=f.kg,d=v01-v31,cls=d>0?'dvd-up':d<0?'dvd-down':'dvd-neutral',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dfocco').innerHTML+=`<tr style="background:${bg}"><td><strong>${f.s}</strong></td><td class="mono">${Math.round(v31).toLocaleString('pt-BR')}</td><td class="mono">${Math.round(v01).toLocaleString('pt-BR')}</td><td class="${cls} mono" style="font-weight:700">${d>=0?'▲ +':'▼ '}${Math.round(Math.abs(d)).toLocaleString('pt-BR')} kg</td></tr>`});
+  document.getElementById('tb-dfocco').innerHTML+=`<tr style="background:#0D1F07"><td style="color:#aade66;font-weight:700">TOTAL GERAL</td><td class="mono" style="color:#aade66;font-weight:700">${TKM31.toLocaleString('pt-BR')}</td><td class="mono" style="color:#66FF99;font-weight:700">${TKM01.toLocaleString('pt-BR')}</td><td class="dvd-up mono" style="font-weight:700">▲ +${(TKM01-TKM31).toLocaleString('pt-BR')} kg (+2,8%)</td></tr>`;
 }
 
 const CD={plugins:{legend:{labels:{color:'#8899bb',font:{size:11,family:'DM Sans'}}},tooltip:{backgroundColor:'#1a2236',borderColor:'#2e4a7a',borderWidth:1,titleColor:'#e8edf8',bodyColor:'#8899bb'}},scales:{x:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}},y:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}}}};
-function topLbl(){return{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{if(d.data[i]!==0){ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='center';ctx.fillText(d.data[i],bar.x,bar.y-5)}})})}}}
-function rLbl(s=''){return{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(d.data[i]+s,bar.x+4,bar.y+4)})})}}}
+function topL(){return{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{if(d.data[i]!==0){ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='center';ctx.fillText(d.data[i],bar.x,bar.y-5)}})})}}}
+function rL(s=''){return{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(d.data[i]+s,bar.x+4,bar.y+4)})})}}}
 
 function initCharts(){
   new Chart(document.getElementById('chartHist'),{type:'line',data:{labels:HIST.map(h=>h[0]),datasets:[{label:'% SLA',data:HIST.map(h=>parseFloat(h[1])),borderColor:'#27ae60',backgroundColor:'rgba(30,132,73,.1)',pointBackgroundColor:HIST.map(h=>parseFloat(h[1])>=95?'#27ae60':'#e74c3c'),pointRadius:4,tension:.3,fill:true},{label:'Meta 95%',data:HIST.map(()=>95),borderColor:'rgba(232,70,30,.5)',borderDash:[6,3],pointRadius:0,fill:false}]},options:{...CD,scales:{...CD.scales,y:{...CD.scales.y,min:93,max:97,ticks:{callback:v=>v+'%'}}}}});
-  new Chart(document.getElementById('chartFaixa'),{type:'bar',data:{labels:FAIXAS.map(f=>f.f),datasets:[{data:FAIXAS.map(f=>f.q),backgroundColor:['#27ae60','#e6a817','#e67e22','#e74c3c','#8e1a0e'],borderRadius:5}]},options:{...CD,plugins:{...CD.plugins,legend:{display:false}},animation:topLbl()}});
-  new Chart(document.getElementById('chartTSla'),{type:'bar',data:{labels:TRANSP.map(t=>t.s.split('·')[0].trim()),datasets:[{data:TRANSP.map(t=>t.sla),backgroundColor:TRANSP.map(t=>t.sla>=95?'rgba(30,132,73,.7)':t.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,min:88,max:101,ticks:{callback:v=>v+'%'}},y:CD.scales.y},animation:rLbl('%')}});
-  new Chart(document.getElementById('chartTAt'),{type:'bar',data:{labels:TRANSP.map(t=>t.s.split('·')[0].trim()),datasets:[{data:TRANSP.map(t=>t.at),backgroundColor:'rgba(232,70,30,.65)',borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},animation:rLbl()}});
-  new Chart(document.getElementById('chartMSla'),{type:'bar',data:{labels:MKT.map(m=>m.m),datasets:[{data:MKT.map(m=>m.sla),backgroundColor:MKT.map(m=>m.sla>=95?'rgba(30,132,73,.7)':m.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,min:75,max:102,ticks:{callback:v=>v+'%'}},y:CD.scales.y},animation:rLbl('%')}});
-  new Chart(document.getElementById('chartMVol'),{type:'doughnut',data:{labels:MKT.map(m=>m.m),datasets:[{data:MKT.map(m=>m.tot),backgroundColor:['#2E4A7A','#1A5276','#27ae60','#B7770D','#5A1878','#D35400','#888','#aaa','#ccc'],borderColor:'#161d2e',borderWidth:2}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right',labels:{...CD.plugins.legend.labels,padding:12,font:{size:10}}}}}});
-  new Chart(document.getElementById('chartSfM'),{type:'bar',data:{labels:['Shopee','Mercado Livre','Magazine Luiza','Via Varejo','Madeira Madeira'],datasets:[{data:[108,60,28,8,4],backgroundColor:'rgba(183,119,13,.65)',borderRadius:4}]},options:{...CD,plugins:{...CD.plugins,legend:{display:false}},animation:topLbl()}});
-  new Chart(document.getElementById('chartSfU'),{type:'doughnut',data:{labels:['SP (40,4%)','RJ (33,3%)','MG (26,2%)'],datasets:[{data:[10401,8570,6747],backgroundColor:['rgba(183,119,13,.75)','rgba(26,82,118,.75)','rgba(30,132,73,.75)'],borderColor:'#161d2e',borderWidth:2}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right'}}}});
-  new Chart(document.getElementById('chartFG'),{type:'bar',data:{labels:FOCCO.map(f=>f.s),datasets:[{label:'Peso Bruto (kg)',data:FOCCO.map(f=>f.kg),backgroundColor:FOCCO.map(f=>f.pct>=14?'rgba(30,132,73,.7)':f.pct>=8?'rgba(183,119,13,.7)':'rgba(211,84,0,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,ticks:{callback:v=>Math.round(v/1000)+'k'}},y:CD.scales.y},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(Math.round(d.data[i]/1000)+'k  '+FOCCO[i].pct+'%',bar.x+4,bar.y+4)})})}}}});
-  new Chart(document.getElementById('chartFU'),{type:'doughnut',data:{labels:['SP 37,73%','MG 31,92%','RJ 30,33%'],datasets:[{data:[480710,406613,386371],backgroundColor:['rgba(183,119,13,.8)','rgba(30,132,73,.8)','rgba(26,82,118,.8)'],borderColor:'#161d2e',borderWidth:3}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right'}}}});
-  new Chart(document.getElementById('chartDvdF'),{type:'bar',data:{labels:FOCCO.map(f=>f.s),datasets:[{label:'30/03',data:FOCCO.map(f=>F30_MAP[f.s]??0),backgroundColor:'rgba(46,74,122,.6)',borderRadius:3},{label:'31/03',data:FOCCO.map(f=>f.kg),backgroundColor:'rgba(30,132,73,.65)',borderRadius:3}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{...CD.plugins.legend,display:true}},scales:{x:{...CD.scales.x,ticks:{callback:v=>Math.round(v/1000)+'k'}},y:CD.scales.y}}});
+  new Chart(document.getElementById('chartFaixa'),{type:'bar',data:{labels:FAIXAS.map(f=>f.f),datasets:[{data:FAIXAS.map(f=>f.q),backgroundColor:['#27ae60','#e6a817','#e67e22','#e74c3c','#8e1a0e'],borderRadius:5}]},options:{...CD,plugins:{...CD.plugins,legend:{display:false}},animation:topL()}});
+  new Chart(document.getElementById('chartTSla'),{type:'bar',data:{labels:TRANSP.map(t=>t.s.split('·')[0].trim()),datasets:[{data:TRANSP.map(t=>t.sla),backgroundColor:TRANSP.map(t=>t.sla>=95?'rgba(30,132,73,.7)':t.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,min:85,max:101,ticks:{callback:v=>v+'%'}},y:CD.scales.y},animation:rL('%')}});
+  new Chart(document.getElementById('chartTAt'),{type:'bar',data:{labels:TRANSP.map(t=>t.s.split('·')[0].trim()),datasets:[{data:TRANSP.map(t=>t.at),backgroundColor:'rgba(232,70,30,.65)',borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},animation:rL()}});
+  new Chart(document.getElementById('chartMSla'),{type:'bar',data:{labels:MKT.map(m=>m.m),datasets:[{data:MKT.map(m=>m.sla),backgroundColor:MKT.map(m=>m.sla>=95?'rgba(30,132,73,.7)':m.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,min:80,max:102,ticks:{callback:v=>v+'%'}},y:CD.scales.y},animation:rL('%')}});
+  new Chart(document.getElementById('chartMVol'),{type:'doughnut',data:{labels:MKT.map(m=>m.m),datasets:[{data:MKT.map(m=>m.tot),backgroundColor:['#2E4A7A','#1A5276','#27ae60','#B7770D','#5A1878','#D35400','#888','#aaa','#ccc'],borderColor:'#161d2e',borderWidth:2}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right',labels:{...CD.plugins.legend.labels,padding:10,font:{size:10}}}}}});
+  new Chart(document.getElementById('chartSfM'),{type:'bar',data:{labels:['Shopee','Mercado Livre','Magazine Luiza','Madeira Madeira','Via Varejo','Web Cont.'],datasets:[{data:[105,25,19,3,2,1],backgroundColor:'rgba(183,119,13,.65)',borderRadius:4}]},options:{...CD,plugins:{...CD.plugins,legend:{display:false}},animation:topL()}});
+  new Chart(document.getElementById('chartSfU'),{type:'doughnut',data:{labels:['MG 41,7% · 7.834 kg','SP 29,8% · 5.600 kg','RJ 28,5% · 5.367 kg'],datasets:[{data:[7834.4,5600.2,5366.6],backgroundColor:['rgba(30,132,73,.8)','rgba(183,119,13,.8)','rgba(26,82,118,.8)'],borderColor:'#161d2e',borderWidth:3}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right',labels:{...CD.plugins.legend.labels,padding:12,font:{size:10}}}},tooltip:{callbacks:{label:c=>`${c.label.split('·')[0].trim()}: ${c.raw.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg`}}}});
+  new Chart(document.getElementById('chartFG'),{type:'bar',data:{labels:FOCCO.map(f=>f.s),datasets:[{data:FOCCO.map(f=>f.kg),backgroundColor:FOCCO.map(f=>f.pct>=14?'rgba(30,132,73,.7)':f.pct>=8?'rgba(183,119,13,.7)':'rgba(211,84,0,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,ticks:{callback:v=>Math.round(v/1000)+'k'}},y:CD.scales.y},animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((d,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(Math.round(d.data[i]/1000)+'k  '+FOCCO[i].pct+'%',bar.x+4,bar.y+4)})})}}}});
+  new Chart(document.getElementById('chartFU'),{type:'doughnut',data:{labels:['SP 37,99%','MG 31,77%','RJ 30,22%'],datasets:[{data:[497454,415956,395722],backgroundColor:['rgba(183,119,13,.8)','rgba(30,132,73,.8)','rgba(26,82,118,.8)'],borderColor:'#161d2e',borderWidth:3}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right'}}}});
+  new Chart(document.getElementById('chartDvdF'),{type:'bar',data:{labels:FOCCO.map(f=>f.s),datasets:[{label:'31/03',data:FOCCO.map(f=>F31_MAP[f.s]??0),backgroundColor:'rgba(46,74,122,.6)',borderRadius:3},{label:'01/04',data:FOCCO.map(f=>f.kg),backgroundColor:'rgba(30,132,73,.65)',borderRadius:3}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{...CD.plugins.legend,display:true}},scales:{x:{...CD.scales.x,ticks:{callback:v=>Math.round(v/1000)+'k'}},y:CD.scales.y}}});
 }
 
 function showPage(id,el){
@@ -347,7 +495,7 @@ function showPage(id,el){
   document.getElementById('page-'+id).classList.add('active');
   el.classList.add('active');
 }
-init(); initCharts();
+init();initCharts();
 </script>
 </body>
 </html>
