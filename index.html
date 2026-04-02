@@ -4046,12 +4046,21 @@ function pedCanalIcon(canal) { return ''; }
 const PED_CACHE_KEY = 'eh_ped_cache';
 
 function pedSalvarCache(dados) {
+  // Salva localmente (carregamento instantâneo)
   try {
     localStorage.setItem(PED_CACHE_KEY, JSON.stringify({
       ts: Date.now(),
       tsReal: PED_ATUALIZADO_EM ? PED_ATUALIZADO_EM.toISOString() : null,
       dados: dados
     }));
+  } catch(e) {}
+  // Salva no Firebase (compartilhado entre todos os usuários)
+  try {
+    db.ref('cache/pedidos').set({
+      ts: Date.now(),
+      tsReal: PED_ATUALIZADO_EM ? PED_ATUALIZADO_EM.toISOString() : null,
+      dados: dados
+    });
   } catch(e) {}
 }
 
@@ -4080,16 +4089,48 @@ function pedPreCarregar() {
     pedAtualizarHora();
   }
 
-  // 2. Busca dados frescos em background
-  pedBuscarCache().then(function(dados) {
-    PED_TODOS = dados;
-    pedSalvarCache(dados);
-    pedAtualizarHora();
-    // Se painel já estiver aberto, atualiza silenciosamente
-    if (document.getElementById('pedidos-view').classList.contains('open')) {
-      pedRenderTabela();
+  // 2. Verifica cache do Firebase (compartilhado entre usuários)
+  db.ref('cache/pedidos').once('value', function(snap) {
+    var cacheFirebase = snap.val();
+    var TTL = 2 * 60 * 60 * 1000; // 2 horas
+
+    if (cacheFirebase && cacheFirebase.dados && (Date.now() - cacheFirebase.ts) < TTL) {
+      // Cache do Firebase ainda válido — usa sem chamar a API
+      var dadosFirebase = cacheFirebase.dados;
+
+      // Só atualiza se o Firebase tiver dados mais recentes que o local
+      var tsLocal = cacheLocal ? (JSON.parse(localStorage.getItem(PED_CACHE_KEY) || '{}').ts || 0) : 0;
+      if (cacheFirebase.ts > tsLocal) {
+        PED_TODOS = dadosFirebase;
+        if (cacheFirebase.tsReal && !PED_ATUALIZADO_EM) {
+          var d = new Date(cacheFirebase.tsReal);
+          if (!isNaN(d)) PED_ATUALIZADO_EM = d;
+        }
+        // Atualiza cache local com os dados do Firebase
+        try {
+          localStorage.setItem(PED_CACHE_KEY, JSON.stringify({
+            ts: cacheFirebase.ts,
+            tsReal: cacheFirebase.tsReal,
+            dados: dadosFirebase
+          }));
+        } catch(e) {}
+        pedAtualizarHora();
+        if (document.getElementById('pedidos-view').classList.contains('open')) {
+          pedRenderTabela();
+        }
+      }
+    } else {
+      // Cache expirado ou inexistente — busca da API e salva no Firebase para todos
+      pedBuscarCache().then(function(dados) {
+        PED_TODOS = dados;
+        pedSalvarCache(dados); // salva no localStorage E no Firebase
+        pedAtualizarHora();
+        if (document.getElementById('pedidos-view').classList.contains('open')) {
+          pedRenderTabela();
+        }
+      }).catch(function() {});
     }
-  }).catch(function() {});
+  });
 }
 
 const CANAL_NOMES_PED = {
@@ -4436,14 +4477,15 @@ function pedSincronizar() {
   btn.disabled = true;
   lucide.createIcons();
 
-  // Limpa cache local para forçar dados frescos
+  // Limpa cache local e do Firebase para forçar dados frescos
   try { localStorage.removeItem(PED_CACHE_KEY); } catch(e) {}
+  try { db.ref('cache/pedidos').remove(); } catch(e) {}
   PED_TODOS = [];
 
   pedBuscarCache()
     .then(function(dados) {
       PED_TODOS = dados;
-      pedSalvarCache(dados);
+      pedSalvarCache(dados); // salva no localStorage E no Firebase
       btn.innerHTML = '<i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Sincronizar';
       btn.disabled = false;
       lucide.createIcons();
