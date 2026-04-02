@@ -3105,6 +3105,68 @@ function inicializarNotificacoes() {
     badge.textContent = NOTIFICACOES_HOJE.length;
     badge.setAttribute('data-count', NOTIFICACOES_HOJE.length);
   }
+
+  // Listener em tempo real para alertas da Anymarket via Firebase
+  inicializarAlertasFirebase();
+}
+
+// ── ALERTAS ANYMARKET VIA FIREBASE ──────────────────────────────────────────
+function inicializarAlertasFirebase() {
+  db.ref('alertas').on('value', function(snap) {
+    var alertas = snap.val() || {};
+
+    // Remove alertas anteriores do Firebase do array
+    NOTIFICACOES_HOJE = NOTIFICACOES_HOJE.filter(function(n) { return !n._firebase; });
+
+    // Processa cada alerta ativo
+    Object.keys(alertas).forEach(function(key) {
+      var a = alertas[key];
+      if (!a || !a.ativo) return;
+
+      var cor = 'rgba(204,40,40,0.18)';
+      var critico = true;
+      if (a.tipo === 'lento') { cor = 'rgba(212,160,23,0.18)'; critico = false; }
+      if (a.tipo === 'instabilidade') { cor = 'rgba(212,160,23,0.18)'; critico = true; }
+
+      NOTIFICACOES_HOJE.unshift({
+        id: 'firebase_' + key,
+        icon: a.tipo === 'lento' ? '🐢' : a.tipo === 'instabilidade' ? '⚡' : '🔴',
+        cor: cor,
+        titulo: a.titulo || 'Alerta Anymarket',
+        desc: a.descricao || '',
+        hora: a.hora || '',
+        lida: false,
+        critico: critico,
+        _firebase: true,
+        link: 'https://status.anymarket.com.br'
+      });
+    });
+
+    renderNotificacoes(NOTIFICACOES_HOJE);
+
+    // Atualiza badge e cor do sininho
+    var badge = document.getElementById('notifBadge');
+    var btn   = document.getElementById('notifBtn');
+    var naoLidas  = NOTIFICACOES_HOJE.filter(function(n){ return !n.lida; }).length;
+    var temCritico = NOTIFICACOES_HOJE.some(function(n){ return n.critico && !n.lida; });
+
+    badge.textContent = naoLidas;
+    badge.setAttribute('data-count', naoLidas);
+
+    if (temCritico) {
+      btn.style.borderColor = 'rgba(204,40,40,0.5)';
+      btn.style.color = '#e05555';
+      badge.style.background = 'var(--accent-red)';
+    } else if (naoLidas > 0) {
+      btn.style.borderColor = 'rgba(212,160,23,0.4)';
+      btn.style.color = 'var(--accent-amber)';
+      badge.style.background = 'var(--accent-amber)';
+    } else {
+      btn.style.borderColor = 'rgba(31,189,114,0.4)';
+      btn.style.color = 'var(--accent-green)';
+      badge.style.background = 'var(--accent-green)';
+    }
+  });
 }
 
 // ── ALERTAS DE ESTOQUE NO SINO ───────────────────────────────────────────────
