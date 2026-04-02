@@ -2106,6 +2106,207 @@ body::before {
   border-color: rgba(156,111,255,0.7);
   box-shadow: 0 0 14px rgba(156,111,255,0.2);
 }
+.btn-mural {
+  border-color: rgba(31,189,114,0.4);
+  background: rgba(31,189,114,0.08);
+  color: var(--accent-green);
+  position: relative;
+}
+.btn-mural:hover {
+  background: rgba(31,189,114,0.18) !important;
+  border-color: rgba(31,189,114,0.7) !important;
+  box-shadow: 0 0 14px rgba(31,189,114,0.2) !important;
+}
+.mural-badge {
+  position: absolute;
+  top: -5px; right: -5px;
+  background: var(--accent-green);
+  color: #000;
+  font-size: 9px;
+  font-weight: 800;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── MODAL MURAL ── */
+.mural-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.mural-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.mural-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 520px;
+  max-width: 95vw;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  animation: logsSlideUp 0.28s ease;
+}
+.mural-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.mural-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mural-close {
+  background: none; border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex; align-items: center;
+  transition: color 0.2s;
+}
+.mural-close:hover { color: var(--text-primary); }
+.mural-input-area {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.mural-textarea {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  resize: none;
+  min-height: 42px;
+  max-height: 100px;
+  outline: none;
+  transition: border-color 0.2s;
+  line-height: 1.5;
+}
+.mural-textarea:focus {
+  border-color: rgba(31,189,114,0.5);
+}
+.mural-textarea::placeholder { color: var(--text-secondary); }
+.mural-send-btn {
+  padding: 10px 18px;
+  border-radius: 9px;
+  border: 1px solid rgba(31,189,114,0.5);
+  background: rgba(31,189,114,0.12);
+  color: var(--accent-green);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  display: flex; align-items: center; gap: 6px;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.mural-send-btn:hover {
+  background: rgba(31,189,114,0.22);
+  border-color: rgba(31,189,114,0.8);
+  box-shadow: 0 0 14px rgba(31,189,114,0.2);
+}
+.mural-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 24px 20px;
+}
+.mural-body::-webkit-scrollbar { width: 4px; }
+.mural-body::-webkit-scrollbar-track { background: transparent; }
+.mural-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+.mural-empty {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 32px 0;
+}
+.mural-note {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.mural-note:hover { border-color: rgba(255,255,255,0.12); }
+.mural-note-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.mural-note-author {
+  display: flex; align-items: center; gap: 8px;
+}
+.mural-note-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(31,189,114,0.18);
+  border: 1px solid rgba(31,189,114,0.3);
+  color: var(--accent-green);
+  font-size: 10px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.mural-note-nome {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.mural-note-hora {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.mural-note-text {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.mural-note-del {
+  background: none; border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 5px;
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+  display: flex; align-items: center;
+}
+.mural-note:hover .mural-note-del { opacity: 1; }
+.mural-note-del:hover { color: var(--accent-red2); }
 
 /* ── MODAL LOGS DE ACESSO ── */
 .logs-modal-overlay {
@@ -2474,6 +2675,11 @@ body::before {
       <button class="btn-logs" id="btnLogs" onclick="abrirLogs()">
         <i data-lucide="activity" style="width:13px;height:13px"></i>
         Logs
+      </button>
+      <button class="btn-logs btn-mural" id="btnMural" onclick="abrirMural()" style="display:none">
+        <i data-lucide="message-square" style="width:13px;height:13px"></i>
+        Mural
+        <span class="mural-badge" id="muralBadge" style="display:none">0</span>
       </button>
       <div class="user-greeting" id="userGreeting" style="display:none">
         <div class="user-avatar" id="userAvatar"></div>
@@ -2847,6 +3053,9 @@ function inicializarUI(email) {
   // Log de acesso
   registrarAcesso(email);
   mostrarToastAcesso(nome);
+
+  // Mural
+  inicializarMural(email);
 
   // Notificações
   inicializarNotificacoes();
@@ -3579,6 +3788,32 @@ document.addEventListener("DOMContentLoaded", ()=>{
       <button class="any-modal-confirm" onclick="anyConfirmarReposicao()">
         Confirmar Reposição
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Mural de Recados -->
+<div class="mural-overlay" id="muralOverlay">
+  <div class="mural-modal">
+    <div class="mural-header">
+      <div class="mural-title">
+        <i data-lucide="message-square" style="width:15px;height:15px;color:var(--accent-green)"></i>
+        Mural da Equipe
+      </div>
+      <button class="mural-close" onclick="fecharMural()">
+        <i data-lucide="x" style="width:14px;height:14px"></i>
+      </button>
+    </div>
+    <div class="mural-input-area">
+      <textarea class="mural-textarea" id="muralTexto" placeholder="Deixe um recado para a equipe..." rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarNota();}"></textarea>
+      <button class="mural-send-btn" onclick="enviarNota()">
+        <i data-lucide="send" style="width:12px;height:12px"></i>
+        Enviar
+      </button>
+    </div>
+    <div class="mural-body" id="muralBody">
+      <div class="mural-empty">Carregando...</div>
     </div>
   </div>
 </div>
@@ -4546,6 +4781,132 @@ function fecharPedidos() {
   document.getElementById('pedidos-view').classList.remove('open');
   document.body.style.overflow = '';
 }
+
+// ── MURAL DE RECADOS ────────────────────────────────────────────────
+var _muralEmail = '';
+var _muralNome  = '';
+var _muralListener = null;
+var _muralVisto = 0; // timestamp da última vez que abriu
+
+function inicializarMural(email) {
+  _muralEmail = email;
+  _muralNome  = NOMES[email] || email.split('@')[0];
+
+  // Mostra botão para todos os usuários logados
+  document.getElementById('btnMural').style.display = 'flex';
+
+  // Listener para badge de novas notas
+  db.ref('mural').orderByChild('ts').limitToLast(50).on('value', function(snap) {
+    var visto = parseInt(localStorage.getItem('eh_mural_visto') || '0');
+    var novas = 0;
+    snap.forEach(function(c) { if (c.val().ts > visto) novas++; });
+    var badge = document.getElementById('muralBadge');
+    if (novas > 0) {
+      badge.textContent = novas > 9 ? '9+' : novas;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  });
+}
+
+function abrirMural() {
+  document.getElementById('muralOverlay').classList.add('open');
+  lucide.createIcons();
+
+  // Marca como visto agora
+  var agora = Date.now();
+  localStorage.setItem('eh_mural_visto', String(agora));
+  document.getElementById('muralBadge').style.display = 'none';
+
+  // Cancelar listener anterior
+  if (_muralListener) {
+    db.ref('mural').off('value', _muralListener);
+    _muralListener = null;
+  }
+
+  // Listener em tempo real
+  _muralListener = db.ref('mural').orderByChild('ts').limitToLast(50).on('value', function(snap) {
+    var notas = [];
+    snap.forEach(function(c) {
+      notas.push(Object.assign({ _key: c.key }, c.val()));
+    });
+    notas.sort(function(a, b) { return b.ts - a.ts });
+    renderMural(notas);
+  });
+
+  setTimeout(function() {
+    document.getElementById('muralTexto').focus();
+  }, 100);
+}
+
+function fecharMural() {
+  document.getElementById('muralOverlay').classList.remove('open');
+  if (_muralListener) {
+    db.ref('mural').off('value', _muralListener);
+    _muralListener = null;
+  }
+}
+
+function enviarNota() {
+  var texto = (document.getElementById('muralTexto').value || '').trim();
+  if (!texto) return;
+
+  db.ref('mural').push({
+    email: _muralEmail,
+    nome:  _muralNome,
+    texto: texto,
+    hora:  new Date().toLocaleString('pt-BR'),
+    ts:    Date.now()
+  });
+
+  document.getElementById('muralTexto').value = '';
+  document.getElementById('muralTexto').style.height = 'auto';
+}
+
+function deletarNota(key, emailAutor) {
+  if (emailAutor !== _muralEmail) return;
+  if (!confirm('Remover este recado?')) return;
+  db.ref('mural/' + key).remove();
+}
+
+function renderMural(notas) {
+  var body = document.getElementById('muralBody');
+  if (notas.length === 0) {
+    body.innerHTML = '<div class="mural-empty"><i data-lucide="message-square" style="width:28px;height:28px;opacity:0.2;display:block;margin:0 auto 10px;"></i>Nenhum recado ainda.<br>Seja o primeiro a deixar uma mensagem!</div>';
+    lucide.createIcons();
+    return;
+  }
+
+  body.innerHTML = notas.map(function(n) {
+    var iniciais = (n.nome || '?').split(' ').map(function(p){ return p[0]||''; }).join('').slice(0,2).toUpperCase();
+    var ehMeu = n.email === _muralEmail;
+    return '<div class="mural-note">' +
+      '<div class="mural-note-header">' +
+        '<div class="mural-note-author">' +
+          '<div class="mural-note-avatar">' + iniciais + '</div>' +
+          '<div>' +
+            '<div class="mural-note-nome">' + (n.nome || n.email) + '</div>' +
+            '<div class="mural-note-hora">' + n.hora + '</div>' +
+          '</div>' +
+        '</div>' +
+        (ehMeu ? '<button class="mural-note-del" onclick="deletarNota(\'' + n._key + '\',\'' + n.email + '\')" title="Remover"><i data-lucide="trash-2" style="width:12px;height:12px"></i></button>' : '') +
+      '</div>' +
+      '<div class="mural-note-text">' + n.texto.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>' +
+    '</div>';
+  }).join('');
+  lucide.createIcons();
+}
+
+document.getElementById('muralOverlay').addEventListener('click', function(e) {
+  if (e.target === this) fecharMural();
+});
+
+// Auto-resize textarea
+document.getElementById('muralTexto').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+});
 
 // ── LOGS DE ACESSO ────────────────────────────────────────────────────
 var _logsData = [];
