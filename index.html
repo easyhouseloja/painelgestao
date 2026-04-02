@@ -8,6 +8,22 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyC4krP9uAnApsZl0GgBkHdEwcEZg8e2QTQ",
+    authDomain: "easyhouse-logs.firebaseapp.com",
+    databaseURL: "https://easyhouse-logs-default-rtdb.firebaseio.com",
+    projectId: "easyhouse-logs",
+    storageBucket: "easyhouse-logs.firebasestorage.app",
+    messagingSenderId: "205222626958",
+    appId: "1:205222626958:web:949d7438096201b62eebdf"
+  };
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.database();
+</script>
 <style>
 :root {
   --bg-deep:    #000000;
@@ -2793,19 +2809,19 @@ const NOMES = {
 
 // ── LOG DE ACESSOS ───────────────────────────────────────────────────
 function registrarAcesso(email) {
-  const log = JSON.parse(localStorage.getItem('eh_access_log') || '[]');
-  // Evitar duplicatas: ignorar se o último acesso deste usuário foi há menos de 60 segundos
-  const ultimo = log.find(function(l) { return l.email === email; });
-  if (ultimo) {
-    var partes = (ultimo.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
-    if (partes) {
-      var dUltimo = new Date(+partes[3], +partes[2]-1, +partes[1], +partes[4], +partes[5], +partes[6]);
-      if ((new Date() - dUltimo) < 60000) return; // menos de 60s, não registra
-    }
-  }
-  log.unshift({ email, nome: NOMES[email] || email, hora: new Date().toLocaleString('pt-BR') });
-  if (log.length > 50) log.pop();
-  localStorage.setItem('eh_access_log', JSON.stringify(log));
+  var nome = NOMES[email] || email;
+  var agora = new Date();
+  var hora = agora.toLocaleString('pt-BR');
+  var ts = agora.getTime();
+
+  // Evitar duplicata: checa último acesso deste usuário no Firebase
+  db.ref('logs').orderByChild('email').equalTo(email).limitToLast(1).once('value', function(snap) {
+    var ultimo = null;
+    snap.forEach(function(c) { ultimo = c.val(); });
+    if (ultimo && ts - ultimo.ts < 60000) return; // menos de 60s, não registra
+
+    db.ref('logs').push({ email: email, nome: nome, hora: hora, ts: ts });
+  });
 }
 
 function mostrarToastAcesso(nome) {
@@ -4496,63 +4512,61 @@ var _logPeriod = 'hoje';
 function abrirLogs() {
   var OCULTOS = ['lucaslopes@grupolopas.com.br', 'comercial@lojaeasyhouse.com.br', 'easyhouseloja@gmail.com'];
 
-  // Limpar acessos anteriores a hoje do localStorage (controle inicia hoje)
-  var hoje = new Date();
-  var todosLogs = JSON.parse(localStorage.getItem('eh_access_log') || '[]');
-  var logsFiltrados = todosLogs.filter(function(l) {
-    var partes = (l.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
-    if (!partes) return false;
-    var d = new Date(+partes[3], +partes[2]-1, +partes[1]);
-    return d.getFullYear() === hoje.getFullYear() &&
-           d.getMonth()    === hoje.getMonth()    &&
-           d.getDate()     === hoje.getDate();
-  });
-
-  // Remover logs de teste: operacao@lojaeasyhouse.com.br em 31/03/2026 a partir das 16:19
-  // + entradas específicas de teste: 08:19, 09:20 e 09:32
-  var REMOVER_HORARIOS = ['08:19', '09:20', '09:32'];
-  logsFiltrados = logsFiltrados.filter(function(l) {
-    if (l.email !== 'operacao@lojaeasyhouse.com.br') return true;
-    var partes = (l.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
-    if (!partes) return true;
-    var dia = +partes[1], mes = +partes[2], ano = +partes[3];
-    var hora = +partes[4], min = +partes[5];
-    if (ano === 2026 && mes === 3 && dia === 31) {
-      if (hora * 60 + min >= 16 * 60 + 19) return false;
-      var hm = partes[4] + ':' + partes[5];
-      if (REMOVER_HORARIOS.indexOf(hm) !== -1) return false;
-    }
-    return true;
-  });
-
-  localStorage.setItem('eh_access_log', JSON.stringify(logsFiltrados));
-
-  _logsData = logsFiltrados.filter(function(l) {
-    return !OCULTOS.includes(l.email);
-  });
-
-  // Popular select de usuários
-  var sel = document.getElementById('logsUserSelect');
-  var usuarios = {};
-  _logsData.forEach(function(l) { usuarios[l.email] = l.nome || l.email; });
-  sel.innerHTML = '<option value="">Todos os usuários</option>';
-  Object.keys(usuarios).sort().forEach(function(email) {
-    var opt = document.createElement('option');
-    opt.value = email;
-    opt.textContent = usuarios[email];
-    sel.appendChild(opt);
-  });
+  document.getElementById('logsModalOverlay').classList.add('open');
+  lucide.createIcons();
 
   // Resetar pill para "Hoje"
   _logPeriod = 'hoje';
   document.querySelectorAll('.logs-pill').forEach(function(p) {
     p.classList.toggle('active', p.dataset.period === 'hoje');
   });
-  sel.value = '';
+  document.getElementById('logsUserSelect').value = '';
 
-  renderLogs();
-  document.getElementById('logsModalOverlay').classList.add('open');
+  // Mostrar loading
+  document.getElementById('logsModalBody').innerHTML =
+    '<div class="logs-empty"><i data-lucide="loader-circle" style="width:24px;height:24px;opacity:0.4;display:block;margin:0 auto 10px;animation:spin 1s linear infinite;"></i>Carregando logs...</div>';
   lucide.createIcons();
+
+  // Buscar logs do Firebase (últimos 500)
+  db.ref('logs').orderByChild('ts').limitToLast(500).once('value', function(snap) {
+    var todos = [];
+    snap.forEach(function(c) { todos.push(c.val()); });
+
+    // Mais recentes primeiro
+    todos.sort(function(a, b) { return b.ts - a.ts; });
+
+    // Filtrar ocultos e entradas de teste
+    var REMOVER_HORARIOS = ['08:19', '09:20', '09:32'];
+    _logsData = todos.filter(function(l) {
+      if (OCULTOS.includes(l.email)) return false;
+      // Remover entradas de teste de 31/03/2026
+      if (l.email === 'operacao@lojaeasyhouse.com.br') {
+        var partes = (l.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
+        if (partes) {
+          var dia = +partes[1], mes = +partes[2], ano = +partes[3], hora = +partes[4], min = +partes[5];
+          if (ano === 2026 && mes === 3 && dia === 31) {
+            if (hora * 60 + min >= 16 * 60 + 19) return false;
+            if (REMOVER_HORARIOS.indexOf(partes[4] + ':' + partes[5]) !== -1) return false;
+          }
+        }
+      }
+      return true;
+    });
+
+    // Popular select de usuários
+    var sel = document.getElementById('logsUserSelect');
+    var usuarios = {};
+    _logsData.forEach(function(l) { usuarios[l.email] = l.nome || l.email; });
+    sel.innerHTML = '<option value="">Todos os usuários</option>';
+    Object.keys(usuarios).sort().forEach(function(email) {
+      var opt = document.createElement('option');
+      opt.value = email;
+      opt.textContent = usuarios[email];
+      sel.appendChild(opt);
+    });
+
+    renderLogs();
+  });
 }
 
 function setLogPeriod(btn) {
@@ -4569,27 +4583,22 @@ function renderLogs() {
   // Deduplicar: remover entradas do mesmo usuário com menos de 60s de diferença
   var seen = {};
   var deduped = _logsData.filter(function(l) {
-    var partes = (l.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
-    var ts = partes ? new Date(+partes[3], +partes[2]-1, +partes[1], +partes[4], +partes[5], +partes[6]).getTime() : 0;
+    var ts = l.ts || 0;
     if (seen[l.email] !== undefined && Math.abs(seen[l.email] - ts) < 60000) return false;
     seen[l.email] = ts;
     return true;
   });
 
   var filtered = deduped.filter(function(l) {
-    // Filtro usuário
     if (usuarioFiltro && l.email !== usuarioFiltro) return false;
 
-    // Filtro período — hora formato esperado: "31/03/2026, 09:08:42"
     if (_logPeriod !== 'todos') {
-      var partes = (l.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
-      if (!partes) return false;
-      var d = new Date(+partes[3], +partes[2]-1, +partes[1], +partes[4], +partes[5], +partes[6]);
+      var d = l.ts ? new Date(l.ts) : null;
+      if (!d) return false;
       if (_logPeriod === 'hoje') {
         if (d.getFullYear() !== now.getFullYear() || d.getMonth() !== now.getMonth() || d.getDate() !== now.getDate()) return false;
       } else if (_logPeriod === '7dias') {
-        var diff = (now - d) / (1000 * 60 * 60 * 24);
-        if (diff > 7) return false;
+        if ((now - d) / (1000 * 60 * 60 * 24) > 7) return false;
       } else if (_logPeriod === 'mes') {
         if (d.getFullYear() !== now.getFullYear() || d.getMonth() !== now.getMonth()) return false;
       }
