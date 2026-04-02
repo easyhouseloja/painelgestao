@@ -4527,8 +4527,14 @@ function abrirLogs() {
     '<div class="logs-empty"><i data-lucide="loader-circle" style="width:24px;height:24px;opacity:0.4;display:block;margin:0 auto 10px;animation:spin 1s linear infinite;"></i>Carregando logs...</div>';
   lucide.createIcons();
 
-  // Buscar logs do Firebase (últimos 500)
-  db.ref('logs').orderByChild('ts').limitToLast(500).once('value', function(snap) {
+  // Cancelar listener anterior se existir
+  if (window._logsListener) {
+    db.ref('logs').off('value', window._logsListener);
+    window._logsListener = null;
+  }
+
+  // Listener em tempo real — atualiza automaticamente quando novo acesso chega
+  window._logsListener = db.ref('logs').orderByChild('ts').limitToLast(500).on('value', function(snap) {
     var todos = [];
     snap.forEach(function(c) { todos.push(c.val()); });
 
@@ -4539,7 +4545,6 @@ function abrirLogs() {
     var REMOVER_HORARIOS = ['08:19', '09:20', '09:32'];
     _logsData = todos.filter(function(l) {
       if (OCULTOS.includes(l.email)) return false;
-      // Remover entradas de teste de 31/03/2026
       if (l.email === 'operacao@lojaeasyhouse.com.br') {
         var partes = (l.hora || '').match(/(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})/);
         if (partes) {
@@ -4553,8 +4558,9 @@ function abrirLogs() {
       return true;
     });
 
-    // Popular select de usuários
+    // Popular select mantendo seleção atual
     var sel = document.getElementById('logsUserSelect');
+    var selAtual = sel.value;
     var usuarios = {};
     _logsData.forEach(function(l) { usuarios[l.email] = l.nome || l.email; });
     sel.innerHTML = '<option value="">Todos os usuários</option>';
@@ -4564,6 +4570,7 @@ function abrirLogs() {
       opt.textContent = usuarios[email];
       sel.appendChild(opt);
     });
+    sel.value = selAtual;
 
     renderLogs();
   });
@@ -4627,6 +4634,11 @@ function renderLogs() {
 
 function fecharLogs() {
   document.getElementById('logsModalOverlay').classList.remove('open');
+  // Cancelar listener em tempo real ao fechar
+  if (window._logsListener) {
+    db.ref('logs').off('value', window._logsListener);
+    window._logsListener = null;
+  }
 }
 
 document.getElementById('logsModalOverlay').addEventListener('click', function(e) {
