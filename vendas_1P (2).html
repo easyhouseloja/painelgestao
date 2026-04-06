@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Vendas · Diretoria</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg-base:#0d1117; --bg-card:#161b24; --bg-card2:#1a2030; --bg-modal:rgba(0,0,0,.85);
+  --border:#ffffff12; --border-med:#ffffff20;
+  --green:#00e676; --green-dim:#00e67620; --green-b:#00e67640;
+  --orange:#ff9100; --orange-dim:#ff910020; --orange-b:#ff910040;
+  --blue:#29b6f6; --blue-dim:#29b6f620; --blue-b:#29b6f640;
+  --purple:#b388ff; --purple-dim:#b388ff20; --purple-b:#b388ff40;
+  --pink:#ff4081; --pink-dim:#ff408120; --pink-b:#ff408140;
+  --yellow:#ffd740; --yellow-dim:#ffd74020;
+  --red:#ff5252; --red-dim:#ff525220;
+  --txt:#e8eaf0; --txt2:#8892a4; --txt3:#3a4558;
+  --fd:'Barlow Condensed',sans-serif; --fb:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-base);font-family:var(--fb);color:var(--txt);min-height:100vh}
+.db{max-width:1500px;margin:0 auto;padding:24px 24px 60px}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.topbar-left h1{font-family:var(--fd);font-size:34px;font-weight:800;color:var(--blue);display:flex;align-items:center;gap:10px}
+.icon-sq{width:28px;height:28px;background:var(--txt);border-radius:4px;flex-shrink:0}
+.period{font-size:11px;color:var(--txt2);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tb{padding:5px 14px;border-radius:20px;font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.04em;border:1.5px solid;white-space:nowrap}
+.tb-blue{color:var(--blue);border-color:var(--blue);background:var(--blue-dim)}
+.tb-green{color:var(--green);border-color:var(--green);background:var(--green-dim)}
+.tb-orange{color:var(--orange);border-color:var(--orange);background:var(--orange-dim)}
+.tb-purple{color:var(--purple);border-color:var(--purple);background:var(--purple-dim)}
+.btn-update{padding:7px 18px;border-radius:6px;background:var(--blue-dim);border:1.5px solid var(--blue);color:var(--blue);font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.06em;cursor:pointer;text-transform:uppercase;transition:.2s}
+.btn-update:hover{background:var(--blue);color:#000}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:22px;gap:0;overflow-x:auto}
+.tab{padding:11px 22px;font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--txt2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:.2s}
+.tab:hover{color:var(--txt)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* FILTER BAR */
+.filter-bar{background:var(--bg-card);border:1px solid var(--border);border-top:2px solid var(--blue);border-radius:10px;padding:14px 20px;margin-bottom:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.filter-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--txt2);font-weight:600;white-space:nowrap}
+.filter-select{background:var(--bg-base);border:1px solid var(--blue-b);color:var(--txt);font-size:13px;font-family:var(--fb);padding:8px 14px;border-radius:6px;cursor:pointer;min-width:200px}
+.filter-select:focus{outline:none;border-color:var(--blue)}
+.filter-select option{background:#161b24}
+
+/* SECTION */
+.section-lbl{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--txt3);margin-bottom:12px;margin-top:24px}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:4px}
+.kpi-card{background:var(--bg-card);border-radius:10px;padding:18px 20px;border:1px solid var(--border);border-top:2px solid;animation:fadeUp .5s ease both}
+.kpi-card:nth-child(1){border-top-color:var(--blue);animation-delay:.04s}
+.kpi-card:nth-child(2){border-top-color:var(--green);animation-delay:.08s}
+.kpi-card:nth-child(3){border-top-color:var(--orange);animation-delay:.12s}
+.kpi-card:nth-child(4){border-top-color:var(--purple);animation-delay:.16s}
+.kpi-lbl{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--txt2);margin-bottom:8px}
+.kpi-val{font-family:var(--fd);font-size:42px;font-weight:800;line-height:1;margin-bottom:8px}
+.kpi-card:nth-child(1) .kpi-val{color:var(--txt)}
+.kpi-card:nth-child(2) .kpi-val{color:var(--green)}
+.kpi-card:nth-child(3) .kpi-val{color:var(--orange)}
+.kpi-card:nth-child(4) .kpi-val{color:var(--purple)}
+.kpi-sub{font-size:11px;color:var(--txt2);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.badge-sm{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700}
+.bg-green{background:var(--green-dim);color:var(--green)}
+.bg-red{background:var(--red-dim);color:var(--red)}
+.bg-orange{background:var(--orange-dim);color:var(--orange)}
+.bg-yellow{background:var(--yellow-dim);color:var(--yellow)}
+.bg-blue{background:var(--blue-dim);color:var(--blue)}
+
+/* CAT CARDS */
+.cat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cat-card{background:var(--bg-card);border-radius:10px;padding:20px;border:1px solid var(--border);animation:fadeUp .5s ease both}
+.cat-card:nth-child(1){border-top:2px solid var(--green);animation-delay:.06s}
+.cat-card:nth-child(2){border-top:2px solid var(--pink);animation-delay:.10s}
+.cat-card:nth-child(3){border-top:2px solid var(--purple);animation-delay:.14s}
+.cat-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.cat-icon{font-size:16px}
+.cat-title{font-family:var(--fd);font-size:16px;font-weight:700;letter-spacing:.02em}
+.cat-val{font-family:var(--fd);font-size:40px;font-weight:800;line-height:1;margin-bottom:6px}
+.cat-card:nth-child(1) .cat-val{color:var(--green)}
+.cat-card:nth-child(2) .cat-val{color:var(--pink)}
+.cat-card:nth-child(3) .cat-val{color:var(--purple)}
+.cat-meta{font-size:11px;color:var(--txt2);margin-bottom:12px}
+.prog-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.prog-lbl{font-size:10px;color:var(--txt2);min-width:58px}
+.prog-track{flex:1;height:6px;background:#ffffff08;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;transition:width 1s}
+.fill-green{background:var(--green)}
+.fill-pink{background:var(--pink)}
+.fill-purple{background:var(--purple)}
+.prog-pct{font-family:var(--fd);font-size:13px;font-weight:700;min-width:50px;text-align:right}
+.cat-card:nth-child(1) .prog-pct{color:var(--green)}
+.cat-card:nth-child(2) .prog-pct{color:var(--pink)}
+.cat-card:nth-child(3) .prog-pct{color:var(--purple)}
+.cat-badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+.badge-bat{background:#00e67618;color:var(--green);border:1px solid #00e67630;padding:3px 9px;border-radius:4px;font-size:10px;font-weight:700}
+.badge-prog{background:var(--yellow-dim);color:var(--yellow);border:1px solid #ffd74030;padding:3px 9px;border-radius:4px;font-size:10px;font-weight:700}
+.badge-alert{background:var(--red-dim);color:var(--red);border:1px solid #ff525230;padding:3px 9px;border-radius:4px;font-size:10px;font-weight:700}
+.badge-tend{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue-b);padding:3px 9px;border-radius:4px;font-size:10px;font-weight:700}
+
+/* COMP GRID */
+.comp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.comp-card{background:var(--bg-card);border-radius:10px;padding:20px;border:1px solid var(--border);text-align:center;animation:fadeUp .5s ease both}
+.comp-card:nth-child(1){animation-delay:.06s}
+.comp-card:nth-child(2){animation-delay:.10s}
+.comp-card:nth-child(3){animation-delay:.14s}
+.comp-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--txt2);margin-bottom:12px;font-weight:600}
+.comp-val{font-family:var(--fd);font-size:38px;font-weight:800;line-height:1;margin-bottom:8px}
+.comp-card:nth-child(1) .comp-val{color:var(--txt)}
+.comp-card:nth-child(2) .comp-val{color:var(--blue)}
+.comp-card:nth-child(3) .comp-val{color:var(--green)}
+.comp-sub{font-size:11px;color:var(--txt2);display:flex;align-items:center;justify-content:center;gap:6px}
+
+/* CHARTS */
+.chart-row{display:grid;grid-template-columns:1.4fr 1fr;gap:12px}
+.chart-card{background:var(--bg-card);border-radius:10px;padding:20px;border:1px solid var(--border);border-top:2px solid var(--blue);animation:fadeUp .5s ease .1s both}
+.chart-title{font-size:13px;font-weight:600;color:var(--txt);margin-bottom:4px}
+.chart-sub{font-size:10px;color:var(--txt2);margin-bottom:16px;letter-spacing:.05em}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:11px;color:var(--txt2)}
+.leg-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:middle}
+
+/* DAILY TABLE */
+.daily-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.daily-card{background:var(--bg-card);border-radius:10px;border:1px solid var(--border);border-top:2px solid var(--orange);overflow:hidden;animation:fadeUp .5s ease .05s both}
+.daily-head{padding:16px 18px 12px;border-bottom:1px solid var(--border)}
+.daily-title{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--orange);margin-bottom:2px}
+.daily-meta{font-size:11px;color:var(--txt2)}
+.daily-table-wrap{overflow-x:auto;max-height:480px;overflow-y:auto}
+.daily-table-wrap::-webkit-scrollbar{width:4px}
+.daily-table-wrap::-webkit-scrollbar-track{background:#0d1117}
+.daily-table-wrap::-webkit-scrollbar-thumb{background:#29b6f640;border-radius:2px}
+table.dt{width:100%;border-collapse:collapse;font-size:12px}
+table.dt thead tr{border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-card)}
+table.dt thead th{padding:8px 12px;text-align:right;font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase;font-weight:600;white-space:nowrap}
+table.dt thead th:first-child{text-align:center}
+table.dt tbody tr{border-bottom:1px solid #ffffff04}
+table.dt tbody tr:hover{background:#ffffff03}
+table.dt tbody td{padding:8px 12px;text-align:right;vertical-align:middle;font-family:'Barlow Condensed',sans-serif;font-size:13px}
+table.dt tbody td:first-child{text-align:center;font-size:12px;color:var(--txt2);font-family:var(--fb)}
+.td-orc{color:var(--txt2)}
+.td-hit{color:var(--green);font-weight:700}
+.td-miss{color:var(--red);font-weight:700}
+.td-zero{color:var(--txt3)}
+.td-proj{color:var(--orange);font-weight:700}
+.td-total{background:#29b6f610;font-weight:700}
+.td-total td{color:var(--blue)!important;border-top:1px solid var(--blue-b)!important}
+
+/* PAGE SECTION */
+.page{display:none}
+.page.active{display:block}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:var(--bg-modal);z-index:1000;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:#161b24;border:1px solid var(--blue-b);border-radius:14px;width:100%;max-width:860px;padding:28px 32px;animation:fadeUp .3s ease}
+.modal h2{font-family:var(--fd);font-size:24px;font-weight:800;color:var(--blue);margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--txt2);margin-bottom:24px;letter-spacing:.04em}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt2);font-weight:600}
+.form-input{background:#0d1117;border:1px solid var(--border-med);color:var(--txt);font-size:13px;font-family:var(--fb);padding:9px 12px;border-radius:6px;transition:.2s}
+.form-input:focus{outline:none;border-color:var(--blue)}
+.form-input::placeholder{color:var(--txt3)}
+.form-section{font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);grid-column:1/-1;padding-top:8px;border-top:1px solid var(--border);margin-top:4px}
+.form-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;grid-column:1/-1}
+.form-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;grid-column:1/-1}
+.modal-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.btn-save{padding:10px 28px;border-radius:6px;background:var(--green-dim);border:1.5px solid var(--green);color:var(--green);font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:.2s}
+.btn-save:hover{background:var(--green);color:#000}
+.btn-cancel{padding:10px 22px;border-radius:6px;background:transparent;border:1.5px solid var(--border-med);color:var(--txt2);font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:.2s}
+.btn-cancel:hover{border-color:var(--txt);color:var(--txt)}
+.btn-add-cli{padding:6px 14px;border-radius:6px;background:var(--purple-dim);border:1px solid var(--purple-b);color:var(--purple);font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:.2s}
+.btn-add-cli:hover{background:var(--purple);color:#000}
+
+/* DAILY INPUT */
+.daily-input-grid{grid-column:1/-1;display:grid;gap:6px}
+.daily-input-row{display:grid;grid-template-columns:60px 1fr 1fr 1fr;gap:8px;align-items:center}
+.daily-input-row .day-lbl{font-size:11px;color:var(--txt2);text-align:center}
+.form-input-sm{background:#0d1117;border:1px solid var(--border);color:var(--txt);font-size:12px;font-family:var(--fb);padding:5px 8px;border-radius:4px;width:100%;text-align:right}
+.form-input-sm:focus{outline:none;border-color:var(--blue)}
+
+/* MISC */
+.divider{height:1px;background:var(--border);margin:28px 0 0}
+.no-data{padding:40px;text-align:center;color:var(--txt3);font-size:13px;letter-spacing:.08em}
+.tag-cli{display:inline-block;padding:2px 8px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.tag-cli-0{background:#29b6f618;color:var(--blue);border:1px solid var(--blue-b)}
+.tag-cli-1{background:#00e67618;color:var(--green);border:1px solid var(--green-b)}
+.tag-cli-2{background:#b388ff18;color:var(--purple);border:1px solid var(--purple-b)}
+.tag-cli-3{background:#ff910018;color:var(--orange);border:1px solid var(--orange-b)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:1100px){.kpi-grid,.cat-grid,.comp-grid,.chart-row,.daily-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.kpi-grid,.cat-grid,.comp-grid,.chart-row,.daily-grid{grid-template-columns:1fr}.topbar-left h1{font-size:24px}.db{padding:14px 14px 40px}.form-grid,.form-row,.form-row-4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="db">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1><span class="icon-sq"></span>Dashboard Vendas</h1>
+      <div class="period" id="top-period">—</div>
+    </div>
+    <div class="topbar-right">
+      <span class="tb tb-blue" id="tb-fat">R$ —</span>
+      <span class="tb tb-green" id="tb-meta">— da Meta</span>
+      <span class="tb tb-orange" id="tb-proj">Proj. R$ —</span>
+      <span class="tb tb-purple" id="tb-ano">— Ano x Ano</span>
+      <button class="btn-update" onclick="openModal()">＋ Atualizar Dados</button>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <span class="filter-label">Cliente</span>
+    <select class="filter-select" id="cli-select" onchange="renderAll()">
+      <option value="ALL">Todos os clientes</option>
+    </select>
+    <span class="filter-label" style="margin-left:8px">Mês</span>
+    <select class="filter-select" id="month-select" style="min-width:160px" onchange="renderAll()">
+      <option value="0">Mais recente</option>
+    </select>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(0)">Visão Geral</div>
+    <div class="tab" onclick="switchTab(1)">Vendas Diárias</div>
+    <div class="tab" onclick="switchTab(2)">Performance Categorias</div>
+    <div class="tab" onclick="switchTab(3)">Comparativos</div>
+  </div>
+
+  <!-- PAGE 0: VISÃO GERAL -->
+  <div class="page active" id="page-0">
+    <div class="section-lbl">Indicadores do Período</div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-lbl">Faturamento Realizado</div><div class="kpi-val" id="kpi-fat">—</div><div class="kpi-sub" id="kpi-fat-sub">—</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">% Meta Atingida</div><div class="kpi-val" id="kpi-meta">—</div><div class="kpi-sub" id="kpi-meta-sub">—</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">Projeção do Mês</div><div class="kpi-val" id="kpi-proj">—</div><div class="kpi-sub" id="kpi-proj-sub">—</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">Crescimento Ano x Ano</div><div class="kpi-val" id="kpi-ano">—</div><div class="kpi-sub" id="kpi-ano-sub">—</div></div>
+    </div>
+    <div class="section-lbl">Performance por Categoria</div>
+    <div class="cat-grid" id="cat-grid"></div>
+    <div class="section-lbl">Gráficos</div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">Faturamento por Categoria</div>
+        <div class="chart-sub">Realizado · Meta · Projeção</div>
+        <div class="chart-legend" id="legend-cat"></div>
+        <div style="position:relative;height:260px"><canvas id="chartCat"></canvas></div>
+      </div>
+      <div class="chart-card" style="border-top-color:var(--orange)">
+        <div class="chart-title">Vendas Diárias</div>
+        <div class="chart-sub">Orçado vs Realizado</div>
+        <div style="position:relative;height:280px"><canvas id="chartDaily"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 1: VENDAS DIÁRIAS -->
+  <div class="page" id="page-1">
+    <div class="section-lbl">Orçado x Realizado por Dia</div>
+    <div class="daily-grid" id="daily-tables"></div>
+  </div>
+
+  <!-- PAGE 2: CATEGORIAS -->
+  <div class="page" id="page-2">
+    <div class="section-lbl">Performance Detalhada por Categoria</div>
+    <div class="cat-grid" id="cat-grid-2"></div>
+    <div class="section-lbl">Ranking de Categorias</div>
+    <div class="chart-card" style="margin-top:0">
+      <div class="chart-title">Realizado vs Meta por Categoria</div>
+      <div style="position:relative;height:300px"><canvas id="chartCat2"></canvas></div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: COMPARATIVOS -->
+  <div class="page" id="page-3">
+    <div class="section-lbl">Mês x Mês</div>
+    <div class="comp-grid">
+      <div class="comp-card"><div class="comp-lbl">Mês Anterior</div><div class="comp-val" id="comp-ant">—</div><div class="comp-sub" id="comp-ant-lbl">—</div></div>
+      <div class="comp-card"><div class="comp-lbl">Mês Atual</div><div class="comp-val" id="comp-atual">—</div><div class="comp-sub" id="comp-atual-delta">—</div></div>
+      <div class="comp-card"><div class="comp-lbl">Variação</div><div class="comp-val" id="comp-var">—</div><div class="comp-sub" id="comp-var-sub">mês x mês</div></div>
+    </div>
+    <div class="section-lbl">Ano x Ano</div>
+    <div class="comp-grid">
+      <div class="comp-card"><div class="comp-lbl">Mesmo Período 2025</div><div class="comp-val" id="ano-2025">—</div><div class="comp-sub">janeiro–período atual</div></div>
+      <div class="comp-card"><div class="comp-lbl">2026 Acumulado</div><div class="comp-val" id="ano-2026">—</div><div class="comp-sub">período atual</div></div>
+      <div class="comp-card"><div class="comp-lbl">Crescimento</div><div class="comp-val" id="ano-cresc">—</div><div class="comp-sub">ano x ano</div></div>
+    </div>
+    <div class="section-lbl">Histórico de Faturamento</div>
+    <div class="chart-card">
+      <div class="chart-title">Evolução Mensal</div>
+      <div class="chart-sub">Faturamento realizado por mês</div>
+      <div style="position:relative;height:280px"><canvas id="chartHistory"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Atualizar Dados</h2>
+    <div class="modal-sub">Preencha os campos abaixo para inserir ou atualizar o período. Os dados anteriores são preservados automaticamente.</div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Cliente</label>
+        <select class="form-input" id="f-cliente">
+          <option value="">Selecione ou crie novo...</option>
+        </select>
+      </div>
+      <div class="form-group" style="align-self:flex-end">
+        <button class="btn-add-cli" onclick="addClientPrompt()">+ Novo Cliente</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Mês de Referência</label>
+        <input class="form-input" type="month" id="f-mes" value="">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dias Úteis no Mês</label>
+        <input class="form-input" type="number" id="f-dias-uteis" placeholder="Ex: 22">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dias Trabalhados até hoje</label>
+        <input class="form-input" type="number" id="f-dias-trab" placeholder="Ex: 17">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dias Restantes</label>
+        <input class="form-input" type="number" id="f-dias-rest" placeholder="Calculado automaticamente" readonly>
+      </div>
+
+      <div class="form-section">Faturamento</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">FAT Mês Anterior (R$)</label>
+          <input class="form-input" type="text" id="f-fat-ant" placeholder="Ex: 2.855.900,60">
+        </div>
+        <div class="form-group">
+          <label class="form-label">FAT Realizado (R$)</label>
+          <input class="form-input" type="text" id="f-fat-real" placeholder="Ex: 2.859.186,37">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Meta FAT (R$)</label>
+          <input class="form-input" type="text" id="f-fat-meta" placeholder="Ex: 3.742.142,66">
+        </div>
+      </div>
+
+      <div class="form-section">Vendas</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Venda Realizada (R$)</label>
+          <input class="form-input" type="text" id="f-venda-real" placeholder="Ex: 2.779.114,00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Meta Venda (R$)</label>
+          <input class="form-input" type="text" id="f-venda-meta" placeholder="Ex: 3.742.142,66">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Projeção Venda (R$)</label>
+          <input class="form-input" type="text" id="f-venda-proj" placeholder="Ex: 5.067.796,12">
+        </div>
+      </div>
+
+      <div class="form-section">Comparativo Ano x Ano</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Realizado 2025 (R$)</label>
+          <input class="form-input" type="text" id="f-ano-ant" placeholder="Ex: 1.982.196,80">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Realizado 2026 (R$)</label>
+          <input class="form-input" type="text" id="f-ano-atual" placeholder="Ex: 2.798.834,32">
+        </div>
+        <div class="form-group">
+          <label class="form-label">% Crescimento Ano x Ano</label>
+          <input class="form-input" type="text" id="f-ano-cresc" placeholder="Calculado auto">
+        </div>
+      </div>
+
+      <div class="form-section">Categorias (Faturamento)</div>
+      <div class="form-row-4">
+        <div class="form-group"><label class="form-label">COMP — FAT (R$)</label><input class="form-input" type="text" id="f-comp-fat" placeholder="Ex: 882.375,19"></div>
+        <div class="form-group"><label class="form-label">COMP — Meta (R$)</label><input class="form-input" type="text" id="f-comp-meta" placeholder="Ex: 823.271,39"></div>
+        <div class="form-group"><label class="form-label">COMP — Venda (R$)</label><input class="form-input" type="text" id="f-comp-venda" placeholder="Ex: 865.807,81"></div>
+        <div class="form-group"><label class="form-label">COMP — Proj. (R$)</label><input class="form-input" type="text" id="f-comp-proj" placeholder="Ex: 1.074.195,88"></div>
+      </div>
+      <div class="form-row-4">
+        <div class="form-group"><label class="form-label">GR — FAT (R$)</label><input class="form-input" type="text" id="f-gr-fat" placeholder="Ex: 1.803.510,87"></div>
+        <div class="form-group"><label class="form-label">GR — Meta (R$)</label><input class="form-input" type="text" id="f-gr-meta" placeholder="Ex: 2.394.971,30"></div>
+        <div class="form-group"><label class="form-label">GR — Venda (R$)</label><input class="form-input" type="text" id="f-gr-venda" placeholder="Ex: 1.837.156,32"></div>
+        <div class="form-group"><label class="form-label">GR — Proj. (R$)</label><input class="form-input" type="text" id="f-gr-proj" placeholder="Ex: 2.195.578,45"></div>
+      </div>
+      <div class="form-row-4">
+        <div class="form-group"><label class="form-label">SALA — FAT (R$)</label><input class="form-input" type="text" id="f-sala-fat" placeholder="Ex: 170.014,54"></div>
+        <div class="form-group"><label class="form-label">SALA — Meta (R$)</label><input class="form-input" type="text" id="f-sala-meta" placeholder="Ex: 523.899,97"></div>
+        <div class="form-group"><label class="form-label">SALA — Venda (R$)</label><input class="form-input" type="text" id="f-sala-venda" placeholder="Ex: 156.222,24"></div>
+        <div class="form-group"><label class="form-label">SALA — Proj. (R$)</label><input class="form-input" type="text" id="f-sala-proj" placeholder="Ex: 206.974,22"></div>
+      </div>
+
+      <div class="form-section">Vendas Diárias — Orçado x Realizado</div>
+      <div class="form-group full">
+        <label class="form-label">Cole abaixo os dados diários no formato: dia | orçado_fat | realizado_fat | orçado_venda | realizado_venda (um por linha, separado por ponto-e-vírgula)</label>
+        <textarea class="form-input" id="f-daily" rows="12" placeholder="Exemplo:&#10;2;170097.36;0;120714.27;107980.00&#10;3;170097.36;228637.14;120714.27;183842.00&#10;4;170097.36;174818.21;120714.27;121084.00&#10;(dia;orc_fat;real_fat;orc_venda;real_venda)"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveData()">Salvar Dados</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA STORE ───────────────────────────────────────────────
+let store = JSON.parse(localStorage.getItem('dash_vendas_v3') || '{"clients":[],"records":[]}');
+
+function saveStore(){ localStorage.setItem('dash_vendas_v3', JSON.stringify(store)); }
+
+// ─── UTILS ───────────────────────────────────────────────────
+const BRL = v => 'R$ ' + parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const BRLM = v => { v=parseFloat(v||0); if(v>=1e6) return 'R$ '+(v/1e6).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'M'; if(v>=1e3) return 'R$ '+(v/1e3).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})+'K'; return BRL(v); }
+const PCT = v => parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
+const parseBR = s => parseFloat(String(s||'0').replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,''))||0;
+
+function pctBadge(v){ return v>=100?`<span class="badge-sm bg-green">▲ ${PCT(v)}</span>`:`<span class="badge-sm bg-red">▼ ${PCT(v)}</span>`; }
+function deltaBadge(v){ return v>=0?`<span class="badge-sm bg-green">▲ +${PCT(v)}</span>`:`<span class="badge-sm bg-red">▼ ${PCT(v)}</span>`; }
+function tendLabel(v){ if(v>=100) return '<span class="badge-bat">✓ Meta Batida</span>'; if(v>=80) return '<span class="badge-prog">⚠ Em progresso</span>'; return '<span class="badge-alert">✗ Atenção</span>'; }
+
+const MONTH_NAMES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function monthLabel(ym){ const [y,m]=ym.split('-'); return MONTH_NAMES[parseInt(m)-1]+' '+y; }
+
+// ─── DIAS ÚTEIS CALC ─────────────────────────────────────────
+document.getElementById('f-dias-uteis').addEventListener('input',calcRestantes);
+document.getElementById('f-dias-trab').addEventListener('input',calcRestantes);
+function calcRestante(){ const u=parseInt(document.getElementById('f-dias-uteis').value)||0; const t=parseInt(document.getElementById('f-dias-trab').value)||0; document.getElementById('f-dias-rest').value=Math.max(0,u-t); }
+function calcRestantes(){ calcRestante(); autoCalcAnoCresc(); }
+document.getElementById('f-ano-ant').addEventListener('input',autoCalcAnoCresc);
+document.getElementById('f-ano-atual').addEventListener('input',autoCalcAnoCresc);
+function autoCalcAnoCresc(){ const ant=parseBR(document.getElementById('f-ano-ant').value); const atu=parseBR(document.getElementById('f-ano-atual').value); if(ant>0&&atu>0) document.getElementById('f-ano-cresc').value=((atu-ant)/ant*100).toFixed(2).replace('.',',')+'%'; }
+
+// ─── MODAL ───────────────────────────────────────────────────
+function openModal(){
+  rebuildClientSelects();
+  document.getElementById('modal').classList.add('open');
+  const now=new Date(); document.getElementById('f-mes').value=now.getFullYear()+'-'+(String(now.getMonth()+1).padStart(2,'0'));
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click',e=>{ if(e.target===document.getElementById('modal')) closeModal(); });
+
+function addClientPrompt(){
+  const n=prompt('Nome do novo cliente:');
+  if(!n||!n.trim()) return;
+  if(!store.clients.includes(n.trim())) { store.clients.push(n.trim()); saveStore(); }
+  rebuildClientSelects();
+  document.getElementById('f-cliente').value=n.trim();
+}
+
+function rebuildClientSelects(){
+  const sel=document.getElementById('f-cliente');
+  sel.innerHTML='<option value="">Selecione...</option>'+store.clients.map(c=>`<option value="${c}">${c}</option>`).join('');
+  const main=document.getElementById('cli-select');
+  main.innerHTML='<option value="ALL">Todos os clientes</option>'+store.clients.map(c=>`<option value="${c}">${c}</option>`).join('');
+  const ms=document.getElementById('month-select');
+  const months=[...new Set(store.records.map(r=>r.mes))].sort().reverse();
+  ms.innerHTML='<option value="0">Mais recente</option>'+months.map(m=>`<option value="${m}">${monthLabel(m)}</option>`).join('');
+}
+
+function saveData(){
+  const cli=document.getElementById('f-cliente').value;
+  const mes=document.getElementById('f-mes').value;
+  if(!cli){ alert('Selecione ou cadastre um cliente.'); return; }
+  if(!mes){ alert('Informe o mês de referência.'); return; }
+
+  // parse daily
+  const dailyRaw=document.getElementById('f-daily').value.trim();
+  const daily=dailyRaw?dailyRaw.split('\n').filter(l=>l.trim()).map(l=>{ const p=l.split(';'); return {dia:parseInt(p[0]),orc_fat:parseFloat(p[1])||0,real_fat:parseFloat(p[2])||0,orc_venda:parseFloat(p[3])||0,real_venda:parseFloat(p[4])||0}; }):[];
+
+  const rec={
+    cliente:cli, mes,
+    dias_uteis:parseInt(document.getElementById('f-dias-uteis').value)||0,
+    dias_trab:parseInt(document.getElementById('f-dias-trab').value)||0,
+    fat_ant:parseBR(document.getElementById('f-fat-ant').value),
+    fat_real:parseBR(document.getElementById('f-fat-real').value),
+    fat_meta:parseBR(document.getElementById('f-fat-meta').value),
+    venda_real:parseBR(document.getElementById('f-venda-real').value),
+    venda_meta:parseBR(document.getElementById('f-venda-meta').value),
+    venda_proj:parseBR(document.getElementById('f-venda-proj').value),
+    fat_proj:parseBR(document.getElementById('f-fat-real').value)/(parseInt(document.getElementById('f-dias-trab').value)||1)*(parseInt(document.getElementById('f-dias-uteis').value)||1),
+    ano_ant:parseBR(document.getElementById('f-ano-ant').value),
+    ano_atual:parseBR(document.getElementById('f-ano-atual').value),
+    ano_cresc:parseBR(document.getElementById('f-ano-cresc').value),
+    cats:{
+      COMP:{fat:parseBR(document.getElementById('f-comp-fat').value),meta:parseBR(document.getElementById('f-comp-meta').value),venda:parseBR(document.getElementById('f-comp-venda').value),proj:parseBR(document.getElementById('f-comp-proj').value)},
+      GR:{fat:parseBR(document.getElementById('f-gr-fat').value),meta:parseBR(document.getElementById('f-gr-meta').value),venda:parseBR(document.getElementById('f-gr-venda').value),proj:parseBR(document.getElementById('f-gr-proj').value)},
+      SALA:{fat:parseBR(document.getElementById('f-sala-fat').value),meta:parseBR(document.getElementById('f-sala-meta').value),venda:parseBR(document.getElementById('f-sala-venda').value),proj:parseBR(document.getElementById('f-sala-proj').value)}
+    },
+    daily
+  };
+
+  // upsert
+  const idx=store.records.findIndex(r=>r.cliente===cli&&r.mes===mes);
+  if(idx>=0) store.records[idx]=rec; else store.records.push(rec);
+  if(!store.clients.includes(cli)) store.clients.push(cli);
+  saveStore();
+  rebuildClientSelects();
+  renderAll();
+  closeModal();
+}
+
+// ─── GET FILTERED RECORDS ─────────────────────────────────────
+function getRecords(){
+  const cli=document.getElementById('cli-select').value;
+  const mes=document.getElementById('month-select').value;
+  let recs=store.records;
+  if(cli!=='ALL') recs=recs.filter(r=>r.cliente===cli);
+  const months=[...new Set(recs.map(r=>r.mes))].sort().reverse();
+  const targetMes=mes==='0'?(months[0]||null):mes;
+  if(targetMes) recs=recs.filter(r=>r.mes===targetMes);
+  return {recs, targetMes, months};
+}
+
+function mergeRecs(recs){
+  if(!recs.length) return null;
+  const m={fat_ant:0,fat_real:0,fat_meta:0,venda_real:0,venda_meta:0,venda_proj:0,fat_proj:0,ano_ant:0,ano_atual:0,dias_uteis:0,dias_trab:0,cats:{COMP:{fat:0,meta:0,venda:0,proj:0},GR:{fat:0,meta:0,venda:0,proj:0},SALA:{fat:0,meta:0,venda:0,proj:0}},daily:[]};
+  recs.forEach(r=>{
+    m.fat_ant+=r.fat_ant||0; m.fat_real+=r.fat_real||0; m.fat_meta+=r.fat_meta||0;
+    m.venda_real+=r.venda_real||0; m.venda_meta+=r.venda_meta||0; m.venda_proj+=r.venda_proj||0;
+    m.fat_proj+=r.fat_proj||0; m.ano_ant+=r.ano_ant||0; m.ano_atual+=r.ano_atual||0;
+    m.dias_uteis=Math.max(m.dias_uteis,r.dias_uteis||0);
+    m.dias_trab=Math.max(m.dias_trab,r.dias_trab||0);
+    ['COMP','GR','SALA'].forEach(c=>{ if(r.cats&&r.cats[c]){ m.cats[c].fat+=r.cats[c].fat||0; m.cats[c].meta+=r.cats[c].meta||0; m.cats[c].venda+=r.cats[c].venda||0; m.cats[c].proj+=r.cats[c].proj||0; } });
+    if(r.daily) r.daily.forEach(d=>{
+      const ex=m.daily.find(x=>x.dia===d.dia);
+      if(ex){ex.orc_fat+=d.orc_fat;ex.real_fat+=d.real_fat;ex.orc_venda+=d.orc_venda;ex.real_venda+=d.real_venda;}
+      else m.daily.push({...d});
+    });
+  });
+  m.daily.sort((a,b)=>a.dia-b.dia);
+  m.ano_cresc=m.ano_ant>0?((m.ano_atual-m.ano_ant)/m.ano_ant*100):0;
+  return m;
+}
+
+// ─── CHARTS ──────────────────────────────────────────────────
+let charts={};
+function destroyChart(id){ if(charts[id]){charts[id].destroy();delete charts[id];} }
+
+function buildCatChart(canvasId, d){
+  destroyChart(canvasId);
+  const cats=['GR','SALA','COMP']; const labels=['Guarda-Roupa (GR)','Sala de Jantar (SALA)','Complementos (COMP)'];
+  const real=cats.map(c=>d.cats[c].fat); const meta=cats.map(c=>d.cats[c].meta); const proj=cats.map(c=>d.cats[c].proj);
+  charts[canvasId]=new Chart(document.getElementById(canvasId),{type:'bar',data:{labels,datasets:[{label:'Realizado',data:real,backgroundColor:'#00e67680',borderColor:'#00e676',borderWidth:1.5,borderRadius:4},{label:'Meta',data:meta,backgroundColor:'#ff408160',borderColor:'#ff4081',borderWidth:1.5,borderRadius:4},{label:'Projeção',data:proj,backgroundColor:'#b388ff60',borderColor:'#b388ff',borderWidth:1.5,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#ffffff08'},ticks:{color:'#8892a4',font:{size:11}}},y:{grid:{color:'#ffffff08'},ticks:{color:'#8892a4',callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}}}}});
+}
+
+function buildDailyChart(canvasId, d){
+  destroyChart(canvasId);
+  if(!d.daily.length){return;}
+  const labels=d.daily.map(x=>'Dia '+x.dia);
+  const orc=d.daily.map(x=>x.orc_fat); const real=d.daily.map(x=>x.real_fat);
+  charts[canvasId]=new Chart(document.getElementById(canvasId),{type:'bar',data:{labels,datasets:[{label:'Orçado',data:orc,backgroundColor:'#29b6f640',borderColor:'#29b6f6',borderWidth:1,borderRadius:3},{label:'Realizado',data:real,backgroundColor:real.map((r,i)=>r>=orc[i]?'#00e67660':'#ff525260'),borderColor:real.map((r,i)=>r>=orc[i]?'#00e676':'#ff5252'),borderWidth:1.5,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#ffffff06'},ticks:{color:'#8892a4',font:{size:10},maxRotation:45}},y:{grid:{color:'#ffffff08'},ticks:{color:'#8892a4',callback:v=>v>=1e3?(v/1e3).toFixed(0)+'K':v}}}}});
+}
+
+function buildHistoryChart(canvasId, cli){
+  destroyChart(canvasId);
+  let recs=store.records;
+  if(cli!=='ALL') recs=recs.filter(r=>r.cliente===cli);
+  const months=[...new Set(recs.map(r=>r.mes))].sort();
+  if(!months.length) return;
+  const data=months.map(m=>{ const rs=recs.filter(r=>r.mes===m); return rs.reduce((s,r)=>s+(r.fat_real||0),0); });
+  charts[canvasId]=new Chart(document.getElementById(canvasId),{type:'line',data:{labels:months.map(m=>{ const[y,mo]=m.split('-'); return MONTH_NAMES[parseInt(mo)-1].substring(0,3)+'/'+y.substring(2); }),datasets:[{label:'Faturamento',data,borderColor:'#29b6f6',backgroundColor:'#29b6f620',borderWidth:2,pointBackgroundColor:'#29b6f6',pointRadius:4,tension:.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#ffffff08'},ticks:{color:'#8892a4'}},y:{grid:{color:'#ffffff08'},ticks:{color:'#8892a4',callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}}}}});
+}
+
+// ─── RENDER ───────────────────────────────────────────────────
+function renderAll(){
+  const {recs, targetMes} = getRecords();
+  const cli=document.getElementById('cli-select').value;
+
+  if(!recs.length){
+    document.getElementById('top-period').textContent='Sem dados para o período selecionado';
+    ['kpi-fat','kpi-meta','kpi-proj','kpi-ano'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('cat-grid').innerHTML='<div class="no-data">Nenhum dado disponível. Clique em "Atualizar Dados" para começar.</div>';
+    document.getElementById('cat-grid-2').innerHTML='';
+    document.getElementById('daily-tables').innerHTML='';
+    return;
+  }
+
+  const d=mergeRecs(recs);
+  const metaPct=d.fat_meta>0?d.fat_real/d.fat_meta*100:0;
+  const projDelta=d.fat_meta>0?(d.fat_proj-d.fat_meta)/d.fat_meta*100:0;
+  const anoCresca=d.ano_cresc;
+  const mxmDelta=d.fat_ant>0?(d.fat_real-d.fat_ant)/d.fat_ant*100:0;
+
+  // topbar
+  document.getElementById('top-period').textContent=(targetMes?monthLabel(targetMes):'')+(recs.length>1?' · '+recs.length+' clientes':'')+(d.dias_trab?' · Período 01/03 a 29/03':'');
+  document.getElementById('tb-fat').textContent=BRLM(d.fat_real);
+  document.getElementById('tb-meta').textContent=PCT(metaPct)+' da Meta';
+  document.getElementById('tb-proj').textContent='Proj. '+BRLM(d.fat_proj);
+  document.getElementById('tb-ano').textContent=(anoCresca>=0?'+':'')+PCT(anoCresca)+' Ano x Ano';
+
+  // KPIs
+  document.getElementById('kpi-fat').textContent=BRLM(d.fat_real);
+  document.getElementById('kpi-fat-sub').innerHTML=deltaBadge(mxmDelta)+' vs mês anterior';
+  document.getElementById('kpi-meta').textContent=PCT(metaPct);
+  document.getElementById('kpi-meta-sub').innerHTML='Meta: '+BRLM(d.fat_meta)+(d.dias_uteis?` <span class="badge-sm bg-yellow">${d.dias_uteis} dias úteis</span>`:'');
+  document.getElementById('kpi-proj').textContent=BRLM(d.fat_proj);
+  document.getElementById('kpi-proj-sub').innerHTML=deltaBadge(projDelta)+' sobre meta';
+  document.getElementById('kpi-ano').textContent=(anoCresca>=0?'+':'')+PCT(anoCresca);
+  document.getElementById('kpi-ano-sub').textContent='2025: '+BRLM(d.ano_ant)+' → 2026: '+BRLM(d.ano_atual);
+
+  // Categories
+  const catCfg=[
+    {key:'GR',label:'Guarda-Roupa (GR)',icon:'🚪',fill:'fill-green',pClass:'prog-pct'},
+    {key:'SALA',label:'Sala de Jantar (SALA)',icon:'🪑',fill:'fill-pink',pClass:'prog-pct'},
+    {key:'COMP',label:'Complementos (COMP)',icon:'📦',fill:'fill-purple',pClass:'prog-pct'}
+  ];
+  const catHTML=catCfg.map(cc=>{
+    const c=d.cats[cc.key];
+    const pct=c.meta>0?c.fat/c.meta*100:0;
+    const tend=c.meta>0?(c.fat/d.dias_trab*d.dias_uteis-c.meta)/c.meta*100:0;
+    return `<div class="cat-card">
+      <div class="cat-head"><span class="cat-icon">${cc.icon}</span><span class="cat-title">${cc.label}</span></div>
+      <div class="cat-val">${BRLM(c.fat)}</div>
+      <div class="cat-meta">Meta: ${BRLM(c.meta)} · Projeção: ${BRLM(c.proj)}</div>
+      <div class="prog-row"><span class="prog-lbl">Realizado</span><div class="prog-track"><div class="prog-fill ${cc.fill}" style="width:${Math.min(pct,100)}%"></div></div><span class="prog-pct">${PCT(pct)}</span></div>
+      <div class="cat-badges">${tendLabel(pct)}<span class="badge-tend">${tend>=0?'+':''}${PCT(tend)} tend.</span></div>
+    </div>`;
+  }).join('');
+  document.getElementById('cat-grid').innerHTML=catHTML;
+  document.getElementById('cat-grid-2').innerHTML=catHTML;
+
+  // Charts
+  buildCatChart('chartCat', d);
+  buildCatChart('chartCat2', d);
+  buildDailyChart('chartDaily', d);
+  buildHistoryChart('chartHistory', cli);
+
+  // Legend cat
+  document.getElementById('legend-cat').innerHTML=`<span><span class="leg-dot" style="background:#00e676"></span>GR</span><span><span class="leg-dot" style="background:#ff4081"></span>SALA</span><span><span class="leg-dot" style="background:#b388ff"></span>COMP</span>`;
+
+  // Daily tables
+  renderDailyTables(d);
+
+  // Comparativos
+  document.getElementById('comp-ant').textContent=BRLM(d.fat_ant);
+  document.getElementById('comp-ant-lbl').textContent='mês anterior';
+  document.getElementById('comp-atual').textContent=BRLM(d.fat_real);
+  document.getElementById('comp-atual-delta').innerHTML=deltaBadge(mxmDelta)+' vs anterior';
+  const varV=d.fat_real-d.fat_ant;
+  document.getElementById('comp-var').textContent=(varV>=0?'+':'')+BRLM(Math.abs(varV));
+  document.getElementById('comp-var').style.color=varV>=0?'var(--green)':'var(--red)';
+  document.getElementById('ano-2025').textContent=BRLM(d.ano_ant);
+  document.getElementById('ano-2026').textContent=BRLM(d.ano_atual);
+  document.getElementById('ano-cresc').textContent=(anoCresca>=0?'+':'')+PCT(anoCresca);
+  document.getElementById('ano-cresc').style.color=anoCresca>=0?'var(--green)':'var(--red)';
+}
+
+function renderDailyTables(d){
+  const mkTable=(title, meta, dias)=>{
+    const totalOrc=dias.reduce((s,x)=>s+x[0],0);
+    const totalReal=dias.filter(x=>x[1]>0).reduce((s,x)=>s+x[1],0);
+    const rows=dias.map((x,i)=>{
+      const day=x[2]; const orc=x[0]; const real=x[1]; const hasReal=real>0;
+      const cls=!hasReal?'td-zero':real>=orc?'td-hit':'td-miss';
+      const realTxt=!hasReal?'<span class="td-zero">—</span>':`<span class="${cls}">${BRL(real)}</span>`;
+      return `<tr><td>${day}</td><td class="td-orc">${BRL(orc)}</td><td>${realTxt}</td></tr>`;
+    }).join('');
+    return `<div class="daily-card">
+      <div class="daily-head">
+        <div class="daily-title">${title}</div>
+        <div class="daily-meta">Total Orçado: ${BRL(totalOrc)} · Realizado: ${BRL(totalReal)}</div>
+      </div>
+      <div class="daily-table-wrap">
+        <table class="dt">
+          <thead><tr><th style="text-align:center">Dia</th><th>Orçado</th><th>Realizado</th></tr></thead>
+          <tbody>${rows}</tbody>
+          <tr class="td-total"><td colspan="3" style="padding:8px 12px;text-align:center;font-size:11px;color:var(--blue)">Total ${d.dias_trab} dias trabalhados</td></tr>
+        </table>
+      </div>
+    </div>`;
+  };
+
+  const fatDias=d.daily.map(x=>[x.orc_fat,x.real_fat,x.dia]);
+  const vdDias=d.daily.map(x=>[x.orc_venda,x.real_venda,x.dia]);
+  document.getElementById('daily-tables').innerHTML=(fatDias.length?mkTable('Orçado × Realizado — Faturamento',0,fatDias)+mkTable('Orçado × Realizado — Venda',0,vdDias):'<div class="no-data">Nenhum dado diário disponível.</div>');
+}
+
+// ─── TAB SWITCH ───────────────────────────────────────────────
+function switchTab(n){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===n));
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+// Dados atualizados em 05/04/2026 — forçar atualização sempre
+store.clients=['Cliente 1P'];
+store.records=[{
+  cliente:'Cliente 1P', mes:'2026-04',
+  dias_uteis:20, dias_trab:5,
+  fat_ant:733419.17, fat_real:78415.85, fat_meta:3140865.47,
+  venda_real:470755.91, venda_meta:3140865.47, venda_proj:2698632.00,
+  fat_proj:95462.77,
+  ano_ant:398315.85, ano_atual:78415.85, ano_cresc:-80,
+  cats:{
+    COMP:{fat:20710.18, meta:690990.40,  venda:114829.81, proj:25212.39},
+    GR:  {fat:51172.18, meta:2010153.90, venda:332205.33, proj:62296.57},
+    SALA:{fat:6533.49,  meta:439721.17,  venda:23720.77,  proj:7953.81}
+  },
+  daily:[
+    {dia:1, orc_fat:157043.27,real_fat:25347.01,  orc_venda:104695.51,real_venda:93578.00},
+    {dia:2, orc_fat:157043.27,real_fat:19705.11,  orc_venda:104695.51,real_venda:72455.00},
+    {dia:3, orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:63982.00},
+    {dia:4, orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:143667.00},
+    {dia:5, orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:76090.00},
+    {dia:6, orc_fat:157043.27,real_fat:33363.73,  orc_venda:104695.51,real_venda:0},
+    {dia:7, orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:8, orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:9, orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:10,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:13,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:14,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:15,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:16,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:17,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:22,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:23,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:24,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:28,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:29,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:30,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0}
+  ]
+}];
+saveStore();
+
+rebuildClientSelects();
+renderAll();
+</script>
+</body>
+</html>
