@@ -2897,13 +2897,34 @@ body::before {
 
 <script>
 lucide.createIcons();
-(function() {
-  const dias = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
-  const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-  const hoje = new Date();
-  const txt = `${dias[hoje.getDay()]}, ${hoje.getDate()} de ${meses[hoje.getMonth()]} de ${hoje.getFullYear()}`;
-  document.getElementById('datetext').textContent = txt;
-})();
+// Lê a data da última atualização real salva no Firebase
+// Se não existir ainda, usa o timestamp do cache de pedidos como fallback
+function exibirDataAtualizacao(ts) {
+  if (!ts) return;
+  var d = new Date(ts);
+  if (isNaN(d)) return;
+  var dias  = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  document.getElementById('datetext').textContent =
+    dias[d.getDay()] + ', ' + d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+}
+
+db.ref('painel/ultimaAtualizacao').once('value', function(snap) {
+  var ts = snap.val();
+  if (ts) {
+    exibirDataAtualizacao(ts);
+  } else {
+    // Fallback: usa o timestamp do cache de pedidos (já existia antes da feature)
+    db.ref('cache/pedidos').once('value', function(snap2) {
+      var cache = snap2.val();
+      if (cache && cache.ts) {
+        exibirDataAtualizacao(cache.ts);
+        // Migra para o novo nó para não precisar de fallback nas próximas vezes
+        db.ref('painel/ultimaAtualizacao').set(cache.ts);
+      }
+    });
+  }
+});
 
 // ══════════════════════════════════════════
 //  CADASTRO DE USUÁRIOS
@@ -3070,13 +3091,14 @@ function inicializarUI(email) {
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────────
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 const NOTIFICACOES_HOJE = [
-  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 6 variações em alerta ⚠️',desc:'84,2% reservado · Imperatore (Frassino/Off Wh 0% · Branco 0%) · Easy Move (Amendoa CL/Off Wh 0%) · Tessera Linho Mosaico 0% · Toronto Amendoa CL/Off Wh 0%',hora:'31/03/2026',lida:false,link:'estoque.html',critico:true},
-  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: 3 transportadoras críticas ⚠️',desc:'186 em atraso · R$ 218.607 em aberto · SLA geral 95,61% · Pior: TEMPO JUSTO (92,09%) · RGE 92,93% · NOVA ERA 94,64%',hora:'31/03/2026',lida:false,link:'sla_transporte.html',critico:true},
-  {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: 119,43% da Meta ✓',desc:'R$ 10,27M faturado · +35,36% vs Fev · +290% Ano x Ano · Média diária R$ 345K',hora:'30/03/2026',lida:false,link:'comercial.html',critico:false},
-  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: 93,8% recebido ✓',desc:'Cartas de Débito · R$ 793k recebido · R$ 52k pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'30/03/2026',lida:false,link:'financeiro.html',critico:false},
-  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado ⚠️',desc:'45 itens · 30 pedidos · 4 em atraso (8,9%) · Atraso médio 6,2d · 1 moderado 34d (pedido #86772) · 0 críticos',hora:'31/03/2026',lida:false,link:'assistencia.html',critico:false},
+  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 8 variações em alerta ⚠️',desc:'82,7% reservado · Imperatore (Frassino/Off Wh 0% · Branco 0%) · Easy Move (Amendoa CL/Off Wh 0% · Amendoa 20%) · Easy Slim Branco (19%) · Toronto Amendoa 0% · Tessera Linho Mosaico 0% · Lopas Atlas Amendoa (21%)',hora:'06/04/2026',lida:false,link:'estoque.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 94,30%',desc:'194 em atraso · R$ 1.155.807 em aberto (acúmulo fim de semana) · Pior transp.: TEMPO JUSTO 79,07% · MTC 91,38% · RGE 92,73% · Magalu 89,51% · Via Varejo 89,39%',hora:'06/04/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: 117,23% da Meta ✓',desc:'R$ 10,08M faturado · +41,40% vs Fev · +283% Ano x Ano · Projeção R$ 10,42M',hora:'06/04/2026',lida:false,link:'comercial.html',critico:false},
+  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: 92,9% recebido ✓',desc:'Cartas de Débito · R$ 793k recebido · R$ 61k pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'06/04/2026',lida:false,link:'financeiro.html',critico:false},
+  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado 41d ⚠️',desc:'137 itens · 99 pedidos · 4 em atraso (4,4%) · Atraso médio 7,2d · 1 moderado 41d (pedido #86772) · 0 críticos · ⚠️ Cruza faixa Crítico em 4 dias',hora:'06/04/2026',lida:false,link:'assistencia.html',critico:false},
   {id:5,icon:'❌',cor:'rgba(204,40,40,0.12)',titulo:'Cancelamentos: 726 no período',desc:'Shopee 494 · Magazine Luiza 131 · Mercado Livre 84 · R$ 786K total',hora:'31/03/2026',lida:false,link:'cancelamentos.html',critico:false},
-  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 339 no período',desc:'Março: 159 notas · R$ 162,6K · Top motivo: Desistência (61) · Nova Era 48 notas · Jan–Mar: R$ 362,9K',hora:'31/03/2026',lida:false,link:'devolucao.html',critico:false}
+  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 340 no período',desc:'Jan–Mar: R$ 363,9K · 340 notas · Março: 160 notas · R$ 163,6K · Top motivo: Desistência (33,5% · 114 notas) · Nova Era 80 notas',hora:'06/04/2026',lida:false,link:'devolucao.html',critico:false},
+  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: ML laranja ⚠️ · Shopee verde ✓',desc:'Magalu 4,6 Ótimo ✓ · Mercado Livre 2,39 Amarelo ⚠️ · Madeira 1,75 Laranja 🔴 · Shopee 4,8 Ótimo ✓ · Via Varejo 3,1 Amarelo ⚠️',hora:'06/04/2026',lida:false,link:'reputacao.html',critico:false}
 ];
 const TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
 
@@ -4251,6 +4273,17 @@ async function anyBuscarAPIDirecta() {
   return pg0.concat(resto.flat());
 }
 
+// ── REGISTRA DATA DA ÚLTIMA ATUALIZAÇÃO REAL ─────────────────────────────────
+function registrarAtualizacao() {
+  var ts = Date.now();
+  db.ref('painel/ultimaAtualizacao').set(ts);
+  var d = new Date(ts);
+  var dias  = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  document.getElementById('datetext').textContent =
+    dias[d.getDay()] + ', ' + d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+}
+
 function anymarketSincronizar() {
   const btn = document.getElementById('btnAnySync');
   btn.classList.add('syncing'); btn.disabled = true;
@@ -4285,6 +4318,7 @@ function anymarketSincronizar() {
       anySalvarCache(ANY_PRODUTOS);
       btn.classList.remove('syncing'); btn.disabled = false;
       anyAtualizarHora();
+      registrarAtualizacao();
       anyRenderTabela();
       anyGerarAlertas(ANY_PRODUTOS);
       anyShowToast('Sincronizado em tempo real ✓');
@@ -4787,6 +4821,7 @@ function pedSincronizar() {
       btn.disabled = false;
       lucide.createIcons();
       pedAtualizarHora();
+      registrarAtualizacao();
       pedRenderTabela();
       pedShowToast('Sincronizado: ' + dados.length + ' pedidos');
     })
