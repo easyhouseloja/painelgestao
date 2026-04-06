@@ -5,7 +5,417 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Vendas — Março 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js">
+
+// ══════════════════════════════════════════════
+// SELETOR DE MÊS
+// ══════════════════════════════════════════════
+function showMonth(month, el) {
+  document.querySelectorAll('.month-dashboard').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('month-' + month).classList.add('active');
+  el.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// ABRIL — TABS
+// ══════════════════════════════════════════════
+function showAprPage(id, e) {
+  const apr = document.getElementById('month-april');
+  apr.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  apr.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('apr-page-' + id).classList.add('active');
+  if (e && e.currentTarget) e.currentTarget.classList.add('active');
+  if (!aprChartsBuilt[id]) { buildAprCharts(id); aprChartsBuilt[id] = true; }
+}
+
+function showAprEstado(id, e) {
+  document.querySelectorAll('[id^="apr-estado-"]').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#apr-estado-tabs .estado-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('apr-estado-' + id).classList.add('active');
+  if (e && e.currentTarget) e.currentTarget.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// ABRIL — DADOS DIÁRIOS
+// img2: g, sh, me, ma, mad, via, web
+// ══════════════════════════════════════════════
+const aprDaily = [
+  {d:'01/04', g:253416.39, sh:146724.96, me:42006.63, ma:35042.06, mad:25998.11, via:2782.80,  web:0},
+  {d:'02/04', g:228769.86, sh:135276.95, me:32319.04, ma:38305.19, mad:6275.91,  via:10263.67, web:5268.41},
+  {d:'03/04', g:209618.35, sh:109335.30, me:34421.72, ma:43901.11, mad:7827.84,  via:11847.09, web:2279.29},
+  {d:'04/04', g:511907.67, sh:388640.17, me:45620.90, ma:61309.33, mad:7143.83,  via:3755.32,  web:2109.98},
+  {d:'05/04', g:250554.42, sh:147369.25, me:37621.18, ma:49740.69, mad:4944.25,  via:5553.87,  web:5325.18},
+];
+
+// ── Tabela diária Abril ──
+(function() {
+  const tbody = document.getElementById('aprDailyTbody');
+  if (!tbody) return;
+  const keys = ['g','sh','me','ma','mad','via','web'];
+  const avg = aprDaily.reduce((a,r)=>a+r.g,0)/aprDaily.length;
+  aprDaily.forEach(row => {
+    const tr = document.createElement('tr');
+    const ok = row.g >= avg;
+    tr.innerHTML = `<td style="font-family:'DM Mono',monospace;color:var(--muted)">${row.d}</td>`
+      + keys.map(k=>`<td style="${k==='g'?(ok?'color:var(--green)':'color:var(--red)'):''}">${row[k]>0?'R$ '+row[k].toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}</td>`).join('');
+    tbody.appendChild(tr);
+  });
+  const totals = keys.map(k=>aprDaily.reduce((a,r)=>a+r[k],0));
+  const trT = document.createElement('tr'); trT.className='total-row';
+  trT.innerHTML = `<td>TOTAL</td>`+totals.map(t=>`<td>R$ ${t.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
+  tbody.appendChild(trT);
+  const trA = document.createElement('tr'); trA.style.background='var(--bg3)';
+  trA.innerHTML = `<td style="color:var(--muted);font-size:.7rem">MÉDIA/DIA</td>`
+    +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">R$ ${(t/5).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
+  tbody.appendChild(trA);
+})();
+
+// ══════════════════════════════════════════════
+// ABRIL — DADOS PRODUTOS
+// ══════════════════════════════════════════════
+const APR_TOP15 = [
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',           v:185981.81, q:172, rep:0.132038},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',     v:126056.55, q:113, rep:0.089494},
+  {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                     v:50719.20,  q:108, rep:0.036008},
+  {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                        v:72422.32,  q:98,  rep:0.051416},
+  {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                       v:61355.63,  q:69,  rep:0.043559},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                             v:52751.45,  q:49,  rep:0.037451},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                        v:42700.33,  q:41,  rep:0.030315},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',               v:44711.18,  q:40,  rep:0.031743},
+  {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White', v:41336.10, q:39,  rep:0.029347},
+  {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',        v:65904.12,  q:39,  rep:0.046789},
+  {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White', v:53276.40, q:36, rep:0.037824},
+  {n:'Comoda 8 Gavetas Easy Like Branco',                                                    v:27691.50,  q:33,  rep:0.019660},
+  {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:46084.80, q:32, rep:0.032718},
+  {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                              v:23397.00,  q:30,  rep:0.016611},
+  {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',              v:19967.50,  q:25,  rep:0.014176},
+];
+
+const APR_TOP15_MAP = {};
+APR_TOP15.forEach(p => {
+  const key = p.n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
+  APR_TOP15_MAP[key] = p.v;
+});
+
+function aprNormKey(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim(); }
+function aprGetRep(nome){
+  const k = aprNormKey(nome);
+  if(APR_TOP15_MAP[k]!==undefined) return APR_TOP15_MAP[k];
+  for(const [key,val] of Object.entries(APR_TOP15_MAP)){
+    if(k.length>=40&&key.length>=40&&k.substring(0,40)===key.substring(0,40)) return val;
+  }
+  return null;
+}
+function aprFmtRep(r){ return (r*100).toFixed(2).replace('.',',')+' %'; }
+function aprRepCell(totalCanal, itemVal){
+  if(!totalCanal||totalCanal===0) return '<td class="mono" style="color:var(--muted)">—</td>';
+  const rep = itemVal/totalCanal;
+  const barW = Math.min(rep*100,100).toFixed(1);
+  return `<td><div class="prod-rep-cell"><div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${barW}%"></div></div><span class="prod-rep-pct">${aprFmtRep(rep)}</span></div></td>`;
+}
+
+const APR_PRODUTOS = {
+  shopee: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',         v:131097.90, q:121},
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:33593.00,  q:70 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:45304.00,  q:60 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:45354.60,  q:54 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                      v:41676.00,  q:40 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White', v:41336.10, q:39},
+    {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White', v:53276.40, q:36},
+    {n:'Comoda 8 Gavetas Easy Like Branco',                                                  v:26876.80,  q:32 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:32417.00,  q:30 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:28447.50,  q:25 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',            v:18307.70,  q:23 },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:17157.80,  q:22 },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:28118.10, q:19},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:20428.20,  q:18 },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:29498.30,  q:17 },
+  ],
+  ml: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',         v:41726.10,  q:39 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:16646.30,  q:37 },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:36405.82,  q:22 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:8210.00,   q:8  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:5698.00,   q:7  },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:5459.30,   q:7  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                   v:5132.89,   q:5  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:4477.80,   q:4  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',              v:4319.60,   q:4  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:3292.50,   q:3  },
+    {n:'Comoda 6 Gavetas Maggiore Amendoa Clean Lopas',                                      v:1359.80,   q:2  },
+    {n:'Conjunto Jantar Easy Pop 170x90 Vidro/MDF 6 Cadeiras Linho Cinza Amêndoa/Off White', v:3219.80,  q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:2239.80,   q:2  },
+    {n:'Comoda 6 Gavetas Maggiore Frassino Lopas',                                           v:1319.00,   q:2  },
+    {n:'Mesa De Cabeceira Easy Like Amendoa Clean/Off White',                                v:658.00,    q:2  },
+  ],
+  magalu: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:93131.25,  q:84 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:27118.32,  q:38 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:22043.18,  q:20 },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:17966.70, q:13},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                        v:11651.82,  q:11 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:6381.37,   q:6  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:6484.91,   q:6  },
+    {n:'Conjunto Mesa de jantar Celebrare 1,20 com vidro e 4 Cadeiras Apogeu Veludo Liso Capuccino Amendoa', v:3286.59, q:3},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:3269.70,   q:2  },
+    {n:'Conjunto Mesa de Jantar Celebrare 120 Tampo MDF/Vidro 4 cadeiras Apogeu Veludo Creme Amendoa/off', v:2319.80, q:2},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',              v:2144.81,   q:2  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:1595.82,   q:2  },
+    {n:'Dormitório Completo Casal Easy Like Amendoa Clean/Off White',                        v:4639.90,   q:1  },
+    {n:'Conjunto Mesa de Jantar Celebrare 1,20 Tampo MDF/Vidro 4 cadeiras Apogeu Linho Bege Amendoa/off White', v:1159.90, q:1},
+  ],
+  via: [
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',          v:7707.20,   q:9  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:5639.54,   q:5  },
+    {n:'Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White',                v:5081.97,   q:4  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:3299.73,   q:3  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:1779.80,   q:2  },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',            v:869.90,    q:1  },
+    {n:'Conjunto Sala de Jantar Mesa Easy Pop 120x80cm Tampo MDF com 4 Cadeiras Confort Linho Mosaico Cinza Amêndoa/Off White', v:953.91, q:1},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:1119.90,   q:1  },
+    {n:'Sapateira Giratoria Esthela Com Espelho Amendoa Clean Lopas',                        v:549.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like Amendoa Clean/Off White',             v:2309.90,   q:1  },
+    {n:'Guarda-Roupa Casal 2 Portas 2 Gavetas Easy Light Amendoa Clean/off White/Amendoa Clean', v:1079.90, q:1},
+  ],
+  madeira: [
+    {n:'Comoda 8 Gavetas Easy Like Amendoa Clean',                                           v:5929.82,   q:4  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:6037.51,   q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:2339.81,   q:2  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean/Off White',                      v:3160.02,   q:2  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Move 2,40 Amendoa Clean',                 v:4603.21,   q:2  },
+    {n:'Mesa De Cabeceira Easy Like Amendoa Clean/Off White',                                v:699.80,    q:2  },
+    {n:'Cama Lopas Solteiro 0,90 Athenas Com cama Auxiliar Branco',                         v:750.41,    q:1  },
+    {n:'Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco',                            v:2159.90,   q:1  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Space Amendoa Clean/Off White -Lopas',    v:4299.70,   q:1  },
+    {n:'Sapateira Giratoria Esthela Com Espelho Branco Lopas',                               v:522.41,    q:1  },
+  ],
+  // SP
+  shopee_sp: [
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:19196.00,  q:40 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:36816.60,  q:34 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White', v:21198.00, q:20},
+    {n:'Comoda 8 Gavetas Easy Like Branco',                                                  v:15118.20,  q:18 },
+    {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White', v:26638.20, q:18},
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:15118.20,  q:18 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:8308.90,   q:11 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:8679.20,   q:8  },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Veludo Liso Capuccino Amendoa Clean/off White', v:7419.30,   q:7  },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:5459.30,   q:7  },
+  ],
+  ml_sp: [
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:8548.10,   q:19 },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:19857.72,  q:12 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:12838.80,  q:12 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:2442.00,   q:3  },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:2339.70,   q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                   v:2054.14,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:2206.20,   q:2  },
+    {n:'Conjunto Jantar Easy Pop 170x90 Vidro/MDF 6 Cadeiras Linho Cinza Amêndoa/Off White', v:3219.80,  q:2  },
+    {n:'Mesa De Cabeceira Easy Like Amendoa Clean/Off White',                                v:658.00,    q:2  },
+    {n:'Guarda-Roupa Casal 100%MDF Alonzo 6 Portas 4 Gavetas Amêndoa/Off White',            v:1549.90,   q:1  },
+  ],
+  magalu_sp: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:43366.38,  q:39 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:9962.72,   q:14 },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:11089.61, q:8},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:6546.97,   q:6  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:4201.57,   q:4  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                        v:1595.82,   q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:3215.21,   q:3  },
+    {n:'Conjunto Mesa de Jantar Celebrare 120 Tampo MDF/Vidro 4 cadeiras Apogeu Veludo Creme Amendoa/off', v:2319.80, q:2},
+    {n:'Conjunto Mesa de jantar Celebrare 1,20 com vidro e 4 Cadeiras Apogeu Veludo Liso Capuccino Amendoa', v:2184.68, q:2},
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:1099.90,   q:1  },
+  ],
+  via_sp: [
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',          v:4135.58,   q:5  },
+    {n:'Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White',                v:4227.06,   q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:1019.92,   q:1  },
+    {n:'Conjunto Sala de Jantar Mesa Easy Pop 120x80cm Tampo MDF com 4 Cadeiras Confort Linho Mosaico Cinza Amêndoa/Off White', v:953.91, q:1},
+  ],
+  madeira_sp: [
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:6037.51,   q:3  },
+    {n:'Comoda 8 Gavetas Easy Like Amendoa Clean',                                           v:2029.70,   q:2  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean/Off White',                      v:699.80,    q:2  },
+    {n:'Guarda-Roupa Casal Toronto 2 Portas 6 Gavetas Com Espelho Branco',                   v:2399.90,   q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Pés Frassino',                   v:2529.90,   q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like Branco',                             v:2299.90,   q:1  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Move 2,40 Amendoa Clean',                 v:1833.41,   q:1  },
+    {n:'Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco',                            v:2159.90,   q:1  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean/Off White',                      v:2029.70,   q:1  },
+    {n:'Cama Lopas Solteiro 0,90 Athenas Com cama Auxiliar Branco',                         v:750.41,    q:1  },
+  ],
+  // MG
+  shopee_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:38996.40,  q:36 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:17367.70,  q:23 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:17637.90,  q:21 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                      v:18738.20,  q:18 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:7678.40,   q:16 },
+    {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White', v:20718.60, q:14},
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',            v:11118.60,  q:14 },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:20818.80,  q:12 },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:8578.90,   q:11 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:11319.00,  q:10 },
+  ],
+  ml_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:17118.40,  q:16 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:3599.20,   q:8  },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:8274.05,   q:5  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',              v:2159.80,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:2239.80,   q:2  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:1628.00,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                   v:2052.50,   q:2  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean',                                v:329.70,    q:1  },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:779.90,    q:1  },
+    {n:'Cabeceira Box 1,60 Easy Glow Tecido Corano Bege Com Led Amendoa Clean',              v:705.00,    q:1  },
+  ],
+  magalu_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:29906.06,  q:27 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:11419.08,  q:16 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:14346.31,  q:13 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                        v:9452.02,   q:9  },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:4163.70, q:3},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',              v:2144.81,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:2299.80,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:2179.80,   q:2  },
+    {n:'Conjunto Mesa de Jantar Celebrare 1,20 Tampo MDF/Vidro 4 cadeiras Apogeu Linho Bege Amendoa/off White', v:1159.90, q:1},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:1089.90,   q:1  },
+  ],
+  via_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:2219.82,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:1199.90,   q:1  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:889.90,    q:1  },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',            v:869.90,    q:1  },
+  ],
+  madeira_mg: [
+    {n:'Sapateira Giratoria Esthela Com Espelho Branco Lopas',                               v:522.41,    q:1  },
+  ],
+  // RJ
+  shopee_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:55284.90,  q:51 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:19627.40,  q:26 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                      v:18758.20,  q:18 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:12598.50,  q:15 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:6718.60,   q:14 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:13988.70,  q:13 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:12558.90,  q:11 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White', v:9539.10, q:9},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:7959.30,   q:7  },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:8879.40, q:6},
+  ],
+  ml_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:11769.90,  q:11 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:4499.00,   q:10 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:6157.50,   q:6  },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:8274.05,   q:5  },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:2339.70,   q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:3358.80,   q:3  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:1628.00,   q:2  },
+    {n:'Comoda 6 Gavetas Maggiore Amendoa Clean Lopas',                                      v:1359.80,   q:2  },
+    {n:'Comoda 8 Gavetas Easy Like Amendoa Clean',                                           v:814.70,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 2 Portas 6 Gavetas Easy Max Amendoa/Off White',         v:1759.90,   q:1  },
+  ],
+  magalu_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:19858.81,  q:18 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:5736.52,   q:8  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                   v:2179.80,   q:2  },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:2713.39, q:2},
+    {n:'Dormitório Completo Casal Easy Like Amendoa Clean/Off White',                        v:4639.90,   q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:1089.90,   q:1  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Move 2,40 Amendoa Clean',                 v:1929.90,   q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:1089.90,   q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:1149.90,   q:1  },
+  ],
+  via_rj: [
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',          v:3571.62,   q:4  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:3419.72,   q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:1119.90,   q:1  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:889.90,    q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:1079.91,   q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like Amendoa Clean/Off White',             v:2309.90,   q:1  },
+    {n:'Sapateira Giratoria Esthela Com Espelho Amendoa Clean Lopas',                        v:549.90,    q:1  },
+    {n:'Guarda-Roupa Casal 2 Portas 2 Gavetas Easy Light Amendoa Clean/off White/Amendoa Clean', v:1079.90, q:1},
+    {n:'Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White',                v:854.91,    q:1  },
+  ],
+  madeira_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:2339.81,   q:2  },
+    {n:'Comoda 8 Gavetas Easy Like Amendoa Clean',                                           v:3900.12,   q:2  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean',                                v:1130.32,   q:1  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Move 2,40 Amendoa Clean',                 v:2769.80,   q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos Amendoa Clean/Off White', v:2679.90,  q:1  },
+  ],
+};
+
+// ── Renderização Abril Top15 ──
+(function renderAprTop15(){
+  const tbody = document.getElementById('apr-top15-geral');
+  if(!tbody) return;
+  const maxRep = APR_TOP15[0].rep;
+  tbody.innerHTML = APR_TOP15.map((p,i)=>{
+    const barW = (p.rep/maxRep*100).toFixed(1);
+    return `<tr>
+      <td style="width:32px;"><span class="${rankClass(i)}">${i+1}</span></td>
+      <td><div class="prod-name-text">${p.n}</div></td>
+      <td class="mono">R$ ${p.v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td class="qty">${p.q.toLocaleString('pt-BR')}</td>
+      <td><div class="prod-rep-cell"><div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${barW}%;background:linear-gradient(90deg,var(--accent),var(--comp))"></div></div>
+      <span class="prod-rep-pct" style="color:var(--accent);font-weight:700">${aprFmtRep(p.rep)}</span></div></td>
+    </tr>`;
+  }).join('');
+})();
+
+// ── Renderização tabelas Abril por canal ──
+function renderAprProdTable(tbodyId, data) {
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  const totalCanal = data.reduce((acc,p)=>acc+p.v,0);
+  const maxRep = totalCanal>0 ? data[0].v/totalCanal : 1;
+  tbody.innerHTML = data.map((p,i)=>{
+    const repCanal = totalCanal>0 ? p.v/totalCanal : 0;
+    const barW = Math.min(repCanal/maxRep*100,100).toFixed(1);
+    return `<tr>
+      <td style="width:32px;"><span class="${rankClass(i)}">${i+1}</span></td>
+      <td><div class="prod-name-text">${p.n}</div></td>
+      <td class="mono">R$ ${p.v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td class="qty">${p.q}</td>
+      <td><div class="prod-rep-cell"><div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${barW}%"></div></div>
+      <span class="prod-rep-pct">${aprFmtRep(repCanal)}</span></div></td>
+    </tr>`;
+  }).join('');
+}
+
+// Renderizar todas as tabelas
+['shopee','ml','magalu','via','madeira'].forEach(k=>renderAprProdTable('apr-prod-'+k+'-geral', APR_PRODUTOS[k]));
+['sp','mg','rj'].forEach(est=>{
+  ['shopee','ml','magalu','via','madeira'].forEach(k=>{
+    const key = k+'_'+est;
+    if(APR_PRODUTOS[key]) renderAprProdTable('apr-prod-'+k+'-'+est, APR_PRODUTOS[key]);
+  });
+});
+
+// ══════════════════════════════════════════════
+// ABRIL — CHARTS
+// ══════════════════════════════════════════════
+const aprChartsBuilt = {};
+function buildAprCharts(page) {
+  if(page==='visao'){
+    new Chart(document.getElementById('aprCatChart'),{type:'doughnut',data:{labels:['GR','SALA','COMP'],datasets:[{data:[230129.38,85979.47,69373.80],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
+    new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{data:[253475.82,58174.44,49108.88,16780.76,3691.59],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+  }
+  if(page==='categorias'){
+    new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[132781.79,40355.11,38680.38,11609.12,3194.83],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[70482.91,8095.30,7401.27,0,0],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[50211.12,9724.04,3027.23,5171.64,496.77],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+  }
+  if(page==='diario'){
+    const labels=aprDaily.map(d=>d.d);
+    const vals=aprDaily.map(d=>d.g);
+    const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+    new Chart(document.getElementById('aprDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(5).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+  }
+}
+
+</script>
 <style>
 :root {
   --bg:      #0b0f1a;
@@ -247,11 +657,42 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 @media(max-width:640px){
   .kpi-strip,.grid-3,.axo-grid{grid-template-columns:1fr;}
 }
+
+/* ── SELETOR DE MÊS ── */
+.month-selector {
+  display: flex; gap: 8px; margin-bottom: 0;
+  padding: 12px 40px 0;
+  background: var(--bg);
+  border-bottom: 2px solid var(--border);
+}
+.month-btn {
+  padding: 10px 28px; font-family: 'Syne', sans-serif; font-size: .85rem; font-weight: 700;
+  cursor: pointer; border-radius: 10px 10px 0 0; border: 1px solid var(--border);
+  border-bottom: none; background: var(--bg3); color: var(--muted);
+  letter-spacing: .5px; transition: all .2s; position: relative; bottom: -2px;
+}
+.month-btn:hover { color: var(--text); background: var(--card); }
+.month-btn.active { color: var(--accent); background: var(--card); border-color: var(--accent); border-bottom: 2px solid var(--card); }
+.month-btn.march { --accent: #34d399; }
+.month-btn.april  { --accent: #f97316; }
+.month-dashboard { display: none; }
+.month-dashboard.active { display: block; }
+@media(max-width:640px){ .month-selector { padding: 10px 16px 0; } .month-btn { padding: 8px 16px; font-size:.75rem; } }
+
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
+
+<!-- SELETOR DE MÊS -->
+<div class="month-selector">
+  <div class="month-btn march active" onclick="showMonth('march', this)">📅 Março 2026</div>
+  <div class="month-btn april"        onclick="showMonth('april', this)">📅 Abril 2026</div>
+</div>
+
+<!-- ═══════════════ MÊS: MARÇO 2026 ═══════════════ -->
+<div class="month-dashboard active" id="month-march">
 <div class="header">
   <div>
     <h1>📊 Dashboard Vendas</h1>
@@ -995,6 +1436,409 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 </div><!-- /page-produtos -->
 
+
+</div><!-- /month-march -->
+
+<!-- ═══════════════ MÊS: ABRIL 2026 ═══════════════ -->
+<div class="month-dashboard" id="month-april">
+
+<div class="header">
+  <div>
+    <h1>📊 Dashboard Vendas</h1>
+    <div class="header-sub" id="apr-hdr-periodo">Abril 2026 · Período 01/04 a 05/04</div>
+  </div>
+  <div class="header-badges">
+    <span class="badge" style="color:#f97316">5,38% da Meta</span>
+    <span class="badge red" style="color:var(--red)">-80,78% vs Mar</span>
+    <span class="badge orange" style="color:#a78bfa">-3% Ano x Ano</span>
+  </div>
+</div>
+
+<div class="tabs" id="apr-tabs">
+  <div class="tab active" onclick="showAprPage('visao',event)">Visão Geral</div>
+  <div class="tab" onclick="showAprPage('marketplaces',event)">Marketplaces</div>
+  <div class="tab" onclick="showAprPage('categorias',event)">Categorias</div>
+  <div class="tab" onclick="showAprPage('diario',event)">Vendas Diárias</div>
+  <div class="tab" onclick="showAprPage('produtos',event)">Análise de Produtos</div>
+</div>
+
+<!-- ═══ ABRIL: VISÃO GERAL ═══ -->
+<div class="page active" id="apr-page-visao">
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Faturamento Total</div>
+      <div class="kpi-value">R$ 385K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-80,78%</span> vs mês anterior</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--yellow)">
+      <div class="kpi-label">% Meta Atingida</div>
+      <div class="kpi-value" style="color:var(--yellow)">5,38%</div>
+      <div class="kpi-sub">Meta: R$ 7,16M · <span class="kpi-pill pill-yellow">5 dias</span></div>
+    </div>
+    <div class="kpi-card" style="--c:var(--shopee)">
+      <div class="kpi-label">Projeção do Mês</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 2,31M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-68%</span> abaixo da meta</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Crescimento Ano x Ano</div>
+      <div class="kpi-value" style="color:var(--comp)">-3%</div>
+      <div class="kpi-sub">2025: R$ 399K → 2026: R$ 385K</div>
+    </div>
+  </div>
+
+  <div class="section-title">Performance por Categoria</div>
+  <div class="grid-3">
+    <div class="chart-card" style="border-color:rgba(52,211,153,.3);">
+      <div class="chart-title">🛋️ Guarda-Roupa (GR)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gr);margin-bottom:4px;">R$ 230K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 4,58M · Projeção: R$ 1,38M</div>
+      <div class="prog-row">
+        <div class="prog-label">Realizado</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:5.02%;background:var(--gr);"></div></div>
+        <div class="prog-val" style="color:var(--red)">5,02%</div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-label">Projeção</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:30.1%;background:rgba(52,211,153,.3);"></div></div>
+        <div class="prog-val" style="color:var(--gr)">30,1%</div>
+      </div>
+      <div style="margin-top:12px;"><span class="tag tag-red">⚠ ABAIXO DA META</span></div>
+    </div>
+    <div class="chart-card" style="border-color:rgba(251,113,133,.3);">
+      <div class="chart-title">🪑 Sala de Jantar (SALA)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--sala);margin-bottom:4px;">R$ 86K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,58M · Projeção: R$ 516K</div>
+      <div class="prog-row">
+        <div class="prog-label">Realizado</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:5.46%;background:var(--sala);"></div></div>
+        <div class="prog-val" style="color:var(--red)">5,46%</div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-label">Projeção</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:32.7%;background:rgba(251,113,133,.3);"></div></div>
+        <div class="prog-val" style="color:var(--sala)">32,7%</div>
+      </div>
+      <div style="margin-top:12px;"><span class="tag tag-red">⚠ ABAIXO DA META</span></div>
+    </div>
+    <div class="chart-card" style="border-color:rgba(129,140,248,.3);">
+      <div class="chart-title">🪞 Complementos (COMP)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--comp);margin-bottom:4px;">R$ 69K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,00M · Projeção: R$ 416K</div>
+      <div class="prog-row">
+        <div class="prog-label">Realizado</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:6.92%;background:var(--comp);"></div></div>
+        <div class="prog-val" style="color:var(--red)">6,92%</div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-label">Projeção</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:41.5%;background:rgba(129,140,248,.3);"></div></div>
+        <div class="prog-val" style="color:var(--comp)">41,5%</div>
+      </div>
+      <div style="margin-top:12px;"><span class="tag tag-red">⚠ ABAIXO DA META</span></div>
+    </div>
+  </div>
+
+  <div class="axo-grid">
+    <div class="axo-card" style="border-color:rgba(239,68,68,.3);">
+      <div class="axo-label">Mês Anterior (Mar/26)</div>
+      <div class="axo-val" style="color:var(--muted);">R$ 2,01M</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">R$ 2.005.933,32</div>
+    </div>
+    <div class="axo-card" style="border-color:rgba(239,68,68,.3);">
+      <div class="axo-label">Mês Atual vs Anterior</div>
+      <div class="axo-val" style="color:var(--red);">▼ -80,78%</div>
+      <div style="font-size:.75rem;color:var(--red);margin-top:4px;">R$ 385K vs R$ 2,01M (5 dias)</div>
+    </div>
+    <div class="axo-card" style="border-color:rgba(239,68,68,.3);">
+      <div class="axo-label">Crescimento Ano x Ano</div>
+      <div class="axo-val" style="color:var(--red);">▼ -3%</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">Abr/25: R$ 399K</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">📈 Faturamento por Categoria</div>
+      <div class="chart-wrap"><canvas id="aprCatChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🛒 Faturamento por Marketplace</div>
+      <div class="chart-wrap"><canvas id="aprMktChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ABRIL: MARKETPLACES ═══ -->
+<div class="page" id="apr-page-marketplaces">
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Shopee · Líder</div>
+      <div class="kpi-value" style="color:var(--shopee);">R$ 253K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-77% M×M</span> · 66% do total</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--ml)">
+      <div class="kpi-label">Mercado Livre</div>
+      <div class="kpi-value" style="color:var(--ml);">R$ 58K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-87% M×M</span> · 15%</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Magalu</div>
+      <div class="kpi-value" style="color:var(--magalu);">R$ 49K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-86% M×M</span> · 13%</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Outros Canais</div>
+      <div class="kpi-value" style="color:var(--comp);">R$ 21K</div>
+      <div class="kpi-sub">Via + Madeira · ~5%</div>
+    </div>
+  </div>
+
+  <div class="section-title">Participação & Comparativo por Canal</div>
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-title">Distribuição do Faturamento — Realizado (01 a 05/Abr)</div>
+    <div style="margin-top:8px;">
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--shopee)">🟠 Shopee</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:66%;background:var(--shopee);"></div></div><div class="mkt-val">R$ 253.475,82</div><div class="mkt-var"><span class="tag tag-red">-77%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--ml)">🟡 Merc.Livre</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:15%;background:var(--ml);"></div></div><div class="mkt-val">R$ 58.174,44</div><div class="mkt-var"><span class="tag tag-red">-87%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--magalu)">🔵 Magalu</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:13%;background:var(--magalu);"></div></div><div class="mkt-val">R$ 49.108,88</div><div class="mkt-var"><span class="tag tag-red">-86%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--madeira)">🪵 Madeira</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:4.4%;background:var(--madeira);"></div></div><div class="mkt-val">R$ 16.780,76</div><div class="mkt-var"><span class="tag tag-red">-45%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--via)">🟣 Via Varejo</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1%;background:var(--via);"></div></div><div class="mkt-val">R$ 3.691,59</div><div class="mkt-var"><span class="tag tag-red">-90%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--web)">⚪ Web Cont.</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.001%;background:var(--web);"></div></div><div class="mkt-val">R$ 0,00</div><div class="mkt-var"><span class="tag tag-red">-100%</span></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Tabela Completa por Marketplace</div>
+  <div class="chart-card">
+    <table class="data-table">
+      <thead><tr><th>Canal</th><th>Mês Atual</th><th>Mês Anterior</th><th>Ano Anterior</th><th>Var. M×M</th><th>Var. A×A</th><th>Projeção</th><th>Part. %</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--shopee);font-weight:700;">🟠 Shopee</td><td>R$ 253.475,82</td><td>R$ 1.126.543,74</td><td>R$ 21.266,24</td><td><span class="tag tag-red">-77%</span></td><td><span class="tag tag-green">+1.092%</span></td><td style="color:var(--green)">R$ 1.520.854,91</td><td>66%</td></tr>
+        <tr><td style="color:var(--ml);font-weight:700;">🟡 Merc.Livre</td><td>R$ 58.174,44</td><td>R$ 460.688,91</td><td>R$ 140.052,53</td><td><span class="tag tag-red">-87%</span></td><td><span class="tag tag-red">-58%</span></td><td>R$ 349.046,65</td><td>15%</td></tr>
+        <tr><td style="color:var(--magalu);font-weight:700;">🔵 Magalu</td><td>R$ 49.108,88</td><td>R$ 344.381,80</td><td>R$ 80.635,70</td><td><span class="tag tag-red">-86%</span></td><td><span class="tag tag-red">-39%</span></td><td>R$ 294.653,29</td><td>13%</td></tr>
+        <tr><td style="color:var(--madeira);font-weight:700;">🪵 Madeira</td><td>R$ 16.780,76</td><td>R$ 30.263,64</td><td>R$ 110.365,69</td><td><span class="tag tag-red">-45%</span></td><td><span class="tag tag-red">-85%</span></td><td>R$ 100.684,58</td><td>4%</td></tr>
+        <tr><td style="color:var(--via);font-weight:700;">🟣 Via Varejo</td><td>R$ 3.691,59</td><td>R$ 35.493,95</td><td>R$ 39.696,20</td><td><span class="tag tag-red">-90%</span></td><td><span class="tag tag-red">-91%</span></td><td>R$ 22.149,55</td><td>1%</td></tr>
+        <tr><td style="color:var(--web);font-weight:700;">⚪ Web Cont.</td><td>R$ 0,00</td><td>R$ 3.922,23</td><td>R$ 5.570,10</td><td><span class="tag tag-red">-100%</span></td><td><span class="tag tag-red">-100%</span></td><td>R$ —</td><td>0%</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 385.482,66</td><td>R$ 2.005.933,32</td><td>R$ 399.363,08</td><td><span class="tag tag-red">-81%</span></td><td><span class="tag tag-red">-3%</span></td><td>R$ 2.312.895,95</td><td>100%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ ABRIL: CATEGORIAS ═══ -->
+<div class="page" id="apr-page-categorias">
+  <div class="section-title">Faturado × Meta × Projeção por Categoria e Marketplace</div>
+  <div class="cat-grid-mp">
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--shopee);"><div class="cat-mp-name" style="color:var(--shopee);">🟠 Shopee</div><div class="cat-mp-total">Total: R$ 253.475,82</div></div>
+      <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+        <tr><td>COMP</td><td>R$ 50.211,12</td><td>R$ 560.000,00</td><td><span class="tag tag-red">8,97%</span></td><td>R$ 301.266,74</td></tr>
+        <tr><td>GR</td><td>R$ 132.781,79</td><td>R$ 2.560.000,00</td><td><span class="tag tag-red">5,19%</span></td><td>R$ 796.690,73</td></tr>
+        <tr><td>SALA</td><td>R$ 70.482,91</td><td>R$ 880.000,00</td><td><span class="tag tag-red">8,01%</span></td><td>R$ 422.897,44</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 253.475,82</td><td>R$ 4.000.000,00</td><td><span class="tag tag-red">6,34%</span></td><td>R$ 1.520.854,91</td></tr>
+      </tbody></table>
+    </div>
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--ml);"><div class="cat-mp-name" style="color:var(--ml);">🟡 Mercado Livre</div><div class="cat-mp-total">Total: R$ 58.174,44</div></div>
+      <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+        <tr><td>COMP</td><td>R$ 9.724,04</td><td>R$ 420.000,00</td><td><span class="tag tag-red">2,32%</span></td><td>R$ 58.344,23</td></tr>
+        <tr><td>GR</td><td>R$ 40.355,11</td><td>R$ 1.920.000,00</td><td><span class="tag tag-red">2,10%</span></td><td>R$ 242.130,64</td></tr>
+        <tr><td>SALA</td><td>R$ 8.095,30</td><td>R$ 660.000,00</td><td><span class="tag tag-red">1,23%</span></td><td>R$ 48.571,77</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 58.174,44</td><td>R$ 3.000.000,00</td><td><span class="tag tag-red">1,94%</span></td><td>R$ 349.046,65</td></tr>
+      </tbody></table>
+    </div>
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--magalu);"><div class="cat-mp-name" style="color:var(--magalu);">🔵 Magalu</div><div class="cat-mp-total">Total: R$ 49.108,88</div></div>
+      <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+        <tr><td>COMP</td><td>R$ 3.027,23</td><td>R$ 210.000,00</td><td><span class="tag tag-red">1,44%</span></td><td>R$ 18.163,40</td></tr>
+        <tr><td>GR</td><td>R$ 38.680,38</td><td>R$ 960.000,00</td><td><span class="tag tag-red">4,03%</span></td><td>R$ 232.082,27</td></tr>
+        <tr><td>SALA</td><td>R$ 7.401,27</td><td>R$ 330.000,00</td><td><span class="tag tag-red">2,24%</span></td><td>R$ 44.407,61</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 49.108,88</td><td>R$ 1.500.000,00</td><td><span class="tag tag-red">3,27%</span></td><td>R$ 294.653,29</td></tr>
+      </tbody></table>
+    </div>
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--madeira);"><div class="cat-mp-name" style="color:var(--madeira);">🪵 Madeira</div><div class="cat-mp-total">Total: R$ 16.780,76</div></div>
+      <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+        <tr><td>COMP</td><td>R$ 5.171,64</td><td>R$ 21.000,00</td><td><span class="tag tag-yellow">24,63%</span></td><td>R$ 31.029,84</td></tr>
+        <tr><td>GR</td><td>R$ 11.609,12</td><td>R$ 96.000,00</td><td><span class="tag tag-red">12,09%</span></td><td>R$ 69.654,74</td></tr>
+        <tr><td>SALA</td><td>R$ 0,00</td><td>R$ 33.000,00</td><td><span class="tag tag-red">0,00%</span></td><td>R$ —</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 16.780,76</td><td>R$ 150.000,00</td><td><span class="tag tag-red">11,19%</span></td><td>R$ 100.684,58</td></tr>
+      </tbody></table>
+    </div>
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--via);"><div class="cat-mp-name" style="color:var(--via);">🟣 Via Varejo</div><div class="cat-mp-total">Total: R$ 3.691,59</div></div>
+      <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+        <tr><td>COMP</td><td>R$ 496,77</td><td>R$ 21.000,00</td><td><span class="tag tag-red">2,37%</span></td><td>R$ 2.980,59</td></tr>
+        <tr><td>GR</td><td>R$ 3.194,83</td><td>R$ 96.000,00</td><td><span class="tag tag-red">3,33%</span></td><td>R$ 19.168,96</td></tr>
+        <tr><td>SALA</td><td>R$ 0,00</td><td>R$ 33.000,00</td><td><span class="tag tag-red">0,00%</span></td><td>R$ —</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 3.691,59</td><td>R$ 150.000,00</td><td><span class="tag tag-red">2,46%</span></td><td>R$ 22.149,55</td></tr>
+      </tbody></table>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">📊 Fat. por Categoria — Todos Canais (Abr)</div>
+      <div class="chart-wrap"><canvas id="aprCatDetailChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ABRIL: VENDAS DIÁRIAS ═══ -->
+<div class="page" id="apr-page-diario">
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Total Vendas (Geral)</div>
+      <div class="kpi-value">R$ 1,45M</div>
+      <div class="kpi-sub">01/04 a 05/04 · 5 dias</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--yellow)">
+      <div class="kpi-label">Média Diária</div>
+      <div class="kpi-value" style="color:var(--yellow)">R$ 291K</div>
+      <div class="kpi-sub">R$ 290.853,34 / dia (geral vendas)</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--red)">
+      <div class="kpi-label">Melhor Dia</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 512K</div>
+      <div class="kpi-sub">04/04 · R$ 511.907,67</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Projeção Shopee</div>
+      <div class="kpi-value" style="color:var(--comp)">R$ 1,52M</div>
+      <div class="kpi-sub">R$ 1.520.854,91 projetado</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">📅 Vendas Diárias Gerais — Realizado (01 a 05/Abr)</div>
+    <div style="position:relative;height:280px;"><canvas id="aprDailyChart"></canvas></div>
+  </div>
+
+  <div class="section-title">Detalhe Diário por Marketplace</div>
+  <div class="daily-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th style="color:var(--text)">Geral</th>
+          <th style="color:var(--shopee)">Shopee</th>
+          <th style="color:var(--ml)">Meili/ML</th>
+          <th style="color:var(--magalu)">Magalu</th>
+          <th style="color:var(--madeira)">Madeira</th>
+          <th style="color:var(--via)">Via</th>
+          <th style="color:var(--web)">Web</th>
+        </tr>
+      </thead>
+      <tbody id="aprDailyTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ ABRIL: ANÁLISE DE PRODUTOS ═══ -->
+<div class="page" id="apr-page-produtos">
+  <div class="kpi-strip" style="grid-template-columns:repeat(5,1fr);">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Top Produto — Shopee</div>
+      <div class="kpi-value" style="color:var(--shopee);font-size:1.0rem;line-height:1.3">GR Easy Slim 8P Espelho Amendoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">121 un</span> · R$ 131.097,90</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--ml)">
+      <div class="kpi-label">Top Produto — Merc. Livre</div>
+      <div class="kpi-value" style="color:var(--ml);font-size:1.0rem;line-height:1.3">GR Easy Slim 8P Espelho Amendoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">39 un</span> · R$ 41.726,10</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Top Produto — Magalu</div>
+      <div class="kpi-value" style="color:var(--magalu);font-size:1.0rem;line-height:1.3">GR Easy Slim 8P Espelho e Pés Amendoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">84 un</span> · R$ 93.131,25</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Top Produto — Via Varejo</div>
+      <div class="kpi-value" style="color:var(--via);font-size:1.0rem;line-height:1.3">GR 6P Easy Slim Espelho e Pés Amendoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">9 un</span> · R$ 7.707,20</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--madeira)">
+      <div class="kpi-label">Top Produto — Madeira</div>
+      <div class="kpi-value" style="color:var(--madeira);font-size:1.0rem;line-height:1.3">Comoda 8 Gavetas Easy Like Amendoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">4 un</span> · R$ 5.929,82</div>
+    </div>
+  </div>
+
+  <div class="section-title">📊 Top 15 Produtos — Visão Geral (Todos os Canais · Abr)</div>
+  <div class="top15-card">
+    <div class="top15-header">
+      <div>
+        <div class="top15-title">Itens mais vendidos · Base consolidada todos os marketplaces — Abril 2026</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">Representatividade calculada sobre faturamento total geral · R$ 1.408.636,78 (base planilha abril)</div>
+      </div>
+      <div class="top15-summary">
+        <div><div class="top15-stat-val">64,91%</div><div class="top15-stat-label">Rep. acumulada top 15</div></div>
+        <div><div class="top15-stat-val">889 un</div><div class="top15-stat-label">Qtd total top 15</div></div>
+        <div><div class="top15-stat-val">R$ 914K</div><div class="top15-stat-label">Valor top 15</div></div>
+      </div>
+    </div>
+    <table class="prod-table" style="width:100%">
+      <thead><tr><th style="width:32px">#</th><th>Produto</th><th class="right">Valor Total</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. Geral</th></tr></thead>
+      <tbody id="apr-top15-geral"></tbody>
+    </table>
+  </div>
+
+  <div class="section-title">🏆 Top Produtos por Marketplace — Geral (Abr)</div>
+  <div class="prod-mp-grid">
+    <div class="prod-mp-card">
+      <div class="prod-mp-header" style="border-left:3px solid var(--shopee);"><div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee</div><div class="prod-mp-header-sub">Top produtos</div></div>
+      <table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-shopee-geral"></tbody></table>
+    </div>
+    <div class="prod-mp-card">
+      <div class="prod-mp-header" style="border-left:3px solid var(--ml);"><div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre</div><div class="prod-mp-header-sub">Top produtos</div></div>
+      <table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-ml-geral"></tbody></table>
+    </div>
+    <div class="prod-mp-card">
+      <div class="prod-mp-header" style="border-left:3px solid var(--magalu);"><div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu</div><div class="prod-mp-header-sub">Top produtos</div></div>
+      <table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-magalu-geral"></tbody></table>
+    </div>
+    <div class="prod-mp-card">
+      <div class="prod-mp-header" style="border-left:3px solid var(--via);"><div class="prod-mp-header-title" style="color:var(--via);">🟣 Via Varejo</div><div class="prod-mp-header-sub">Top produtos</div></div>
+      <table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-via-geral"></tbody></table>
+    </div>
+    <div class="prod-mp-card">
+      <div class="prod-mp-header" style="border-left:3px solid var(--madeira);"><div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira</div><div class="prod-mp-header-sub">Top produtos</div></div>
+      <table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-madeira-geral"></tbody></table>
+    </div>
+  </div>
+
+  <div class="section-title">📍 Top Produtos por Estado — Abril 2026</div>
+  <div class="estado-tabs" id="apr-estado-tabs">
+    <div class="estado-tab active" onclick="showAprEstado('sp',event)">🏙️ São Paulo</div>
+    <div class="estado-tab" onclick="showAprEstado('mg',event)">⛰️ Minas Gerais</div>
+    <div class="estado-tab" onclick="showAprEstado('rj',event)">🌊 Rio de Janeiro</div>
+  </div>
+  <div class="estado-page active" id="apr-estado-sp">
+    <div class="estado-grid">
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--shopee);"><div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee — São Paulo</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-shopee-sp"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--ml);"><div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre — São Paulo</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-ml-sp"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--magalu);"><div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu — São Paulo</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-magalu-sp"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--via);"><div class="prod-mp-header-title" style="color:var(--via);">🟣 Via — São Paulo</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-via-sp"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--madeira);"><div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira — São Paulo</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-madeira-sp"></tbody></table></div>
+    </div>
+  </div>
+  <div class="estado-page" id="apr-estado-mg">
+    <div class="estado-grid">
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--shopee);"><div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee — Minas Gerais</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-shopee-mg"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--ml);"><div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre — Minas Gerais</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-ml-mg"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--magalu);"><div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu — Minas Gerais</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-magalu-mg"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--via);"><div class="prod-mp-header-title" style="color:var(--via);">🟣 Via — Minas Gerais</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-via-mg"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--madeira);"><div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira — Minas Gerais</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-madeira-mg"></tbody></table></div>
+    </div>
+  </div>
+  <div class="estado-page" id="apr-estado-rj">
+    <div class="estado-grid">
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--shopee);"><div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee — Rio de Janeiro</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-shopee-rj"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--ml);"><div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre — Rio de Janeiro</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-ml-rj"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--magalu);"><div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu — Rio de Janeiro</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-magalu-rj"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--via);"><div class="prod-mp-header-title" style="color:var(--via);">🟣 Via — Rio de Janeiro</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-via-rj"></tbody></table></div>
+      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--madeira);"><div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira — Rio de Janeiro</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-madeira-rj"></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /month-april -->
 <script>
 // ── DATA ──
 const daily = [
@@ -1625,6 +2469,416 @@ function showEstado(id, e) {
   document.getElementById('estado-'+id).classList.add('active');
   if(e && e.currentTarget) e.currentTarget.classList.add('active');
 }
+
+
+// ══════════════════════════════════════════════
+// SELETOR DE MÊS
+// ══════════════════════════════════════════════
+function showMonth(month, el) {
+  document.querySelectorAll('.month-dashboard').forEach(d => d.classList.remove('active'));
+  document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('month-' + month).classList.add('active');
+  el.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// ABRIL — TABS
+// ══════════════════════════════════════════════
+function showAprPage(id, e) {
+  const apr = document.getElementById('month-april');
+  apr.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  apr.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('apr-page-' + id).classList.add('active');
+  if (e && e.currentTarget) e.currentTarget.classList.add('active');
+  if (!aprChartsBuilt[id]) { buildAprCharts(id); aprChartsBuilt[id] = true; }
+}
+
+function showAprEstado(id, e) {
+  document.querySelectorAll('[id^="apr-estado-"]').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#apr-estado-tabs .estado-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('apr-estado-' + id).classList.add('active');
+  if (e && e.currentTarget) e.currentTarget.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// ABRIL — DADOS DIÁRIOS
+// img2: g, sh, me, ma, mad, via, web
+// ══════════════════════════════════════════════
+const aprDaily = [
+  {d:'01/04', g:253416.39, sh:146724.96, me:42006.63, ma:35042.06, mad:25998.11, via:2782.80,  web:0},
+  {d:'02/04', g:228769.86, sh:135276.95, me:32319.04, ma:38305.19, mad:6275.91,  via:10263.67, web:5268.41},
+  {d:'03/04', g:209618.35, sh:109335.30, me:34421.72, ma:43901.11, mad:7827.84,  via:11847.09, web:2279.29},
+  {d:'04/04', g:511907.67, sh:388640.17, me:45620.90, ma:61309.33, mad:7143.83,  via:3755.32,  web:2109.98},
+  {d:'05/04', g:250554.42, sh:147369.25, me:37621.18, ma:49740.69, mad:4944.25,  via:5553.87,  web:5325.18},
+];
+
+// ── Tabela diária Abril ──
+(function() {
+  const tbody = document.getElementById('aprDailyTbody');
+  if (!tbody) return;
+  const keys = ['g','sh','me','ma','mad','via','web'];
+  const avg = aprDaily.reduce((a,r)=>a+r.g,0)/aprDaily.length;
+  aprDaily.forEach(row => {
+    const tr = document.createElement('tr');
+    const ok = row.g >= avg;
+    tr.innerHTML = `<td style="font-family:'DM Mono',monospace;color:var(--muted)">${row.d}</td>`
+      + keys.map(k=>`<td style="${k==='g'?(ok?'color:var(--green)':'color:var(--red)'):''}">${row[k]>0?'R$ '+row[k].toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}</td>`).join('');
+    tbody.appendChild(tr);
+  });
+  const totals = keys.map(k=>aprDaily.reduce((a,r)=>a+r[k],0));
+  const trT = document.createElement('tr'); trT.className='total-row';
+  trT.innerHTML = `<td>TOTAL</td>`+totals.map(t=>`<td>R$ ${t.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
+  tbody.appendChild(trT);
+  const trA = document.createElement('tr'); trA.style.background='var(--bg3)';
+  trA.innerHTML = `<td style="color:var(--muted);font-size:.7rem">MÉDIA/DIA</td>`
+    +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">R$ ${(t/5).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
+  tbody.appendChild(trA);
+})();
+
+// ══════════════════════════════════════════════
+// ABRIL — DADOS PRODUTOS
+// ══════════════════════════════════════════════
+const APR_TOP15 = [
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',           v:185981.81, q:172, rep:0.132038},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',     v:126056.55, q:113, rep:0.089494},
+  {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                     v:50719.20,  q:108, rep:0.036008},
+  {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                        v:72422.32,  q:98,  rep:0.051416},
+  {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                       v:61355.63,  q:69,  rep:0.043559},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                             v:52751.45,  q:49,  rep:0.037451},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                        v:42700.33,  q:41,  rep:0.030315},
+  {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',               v:44711.18,  q:40,  rep:0.031743},
+  {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White', v:41336.10, q:39,  rep:0.029347},
+  {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',        v:65904.12,  q:39,  rep:0.046789},
+  {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White', v:53276.40, q:36, rep:0.037824},
+  {n:'Comoda 8 Gavetas Easy Like Branco',                                                    v:27691.50,  q:33,  rep:0.019660},
+  {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:46084.80, q:32, rep:0.032718},
+  {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                              v:23397.00,  q:30,  rep:0.016611},
+  {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',              v:19967.50,  q:25,  rep:0.014176},
+];
+
+const APR_TOP15_MAP = {};
+APR_TOP15.forEach(p => {
+  const key = p.n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
+  APR_TOP15_MAP[key] = p.v;
+});
+
+function aprNormKey(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim(); }
+function aprGetRep(nome){
+  const k = aprNormKey(nome);
+  if(APR_TOP15_MAP[k]!==undefined) return APR_TOP15_MAP[k];
+  for(const [key,val] of Object.entries(APR_TOP15_MAP)){
+    if(k.length>=40&&key.length>=40&&k.substring(0,40)===key.substring(0,40)) return val;
+  }
+  return null;
+}
+function aprFmtRep(r){ return (r*100).toFixed(2).replace('.',',')+' %'; }
+function aprRepCell(totalCanal, itemVal){
+  if(!totalCanal||totalCanal===0) return '<td class="mono" style="color:var(--muted)">—</td>';
+  const rep = itemVal/totalCanal;
+  const barW = Math.min(rep*100,100).toFixed(1);
+  return `<td><div class="prod-rep-cell"><div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${barW}%"></div></div><span class="prod-rep-pct">${aprFmtRep(rep)}</span></div></td>`;
+}
+
+const APR_PRODUTOS = {
+  shopee: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',         v:131097.90, q:121},
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:33593.00,  q:70 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:45304.00,  q:60 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:45354.60,  q:54 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                      v:41676.00,  q:40 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White', v:41336.10, q:39},
+    {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White', v:53276.40, q:36},
+    {n:'Comoda 8 Gavetas Easy Like Branco',                                                  v:26876.80,  q:32 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:32417.00,  q:30 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:28447.50,  q:25 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',            v:18307.70,  q:23 },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:17157.80,  q:22 },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:28118.10, q:19},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:20428.20,  q:18 },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:29498.30,  q:17 },
+  ],
+  ml: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',         v:41726.10,  q:39 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:16646.30,  q:37 },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:36405.82,  q:22 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:8210.00,   q:8  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:5698.00,   q:7  },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:5459.30,   q:7  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                   v:5132.89,   q:5  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:4477.80,   q:4  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',              v:4319.60,   q:4  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:3292.50,   q:3  },
+    {n:'Comoda 6 Gavetas Maggiore Amendoa Clean Lopas',                                      v:1359.80,   q:2  },
+    {n:'Conjunto Jantar Easy Pop 170x90 Vidro/MDF 6 Cadeiras Linho Cinza Amêndoa/Off White', v:3219.80,  q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:2239.80,   q:2  },
+    {n:'Comoda 6 Gavetas Maggiore Frassino Lopas',                                           v:1319.00,   q:2  },
+    {n:'Mesa De Cabeceira Easy Like Amendoa Clean/Off White',                                v:658.00,    q:2  },
+  ],
+  magalu: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:93131.25,  q:84 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:27118.32,  q:38 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:22043.18,  q:20 },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:17966.70, q:13},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                        v:11651.82,  q:11 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:6381.37,   q:6  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:6484.91,   q:6  },
+    {n:'Conjunto Mesa de jantar Celebrare 1,20 com vidro e 4 Cadeiras Apogeu Veludo Liso Capuccino Amendoa', v:3286.59, q:3},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:3269.70,   q:2  },
+    {n:'Conjunto Mesa de Jantar Celebrare 120 Tampo MDF/Vidro 4 cadeiras Apogeu Veludo Creme Amendoa/off', v:2319.80, q:2},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',              v:2144.81,   q:2  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:1595.82,   q:2  },
+    {n:'Dormitório Completo Casal Easy Like Amendoa Clean/Off White',                        v:4639.90,   q:1  },
+    {n:'Conjunto Mesa de Jantar Celebrare 1,20 Tampo MDF/Vidro 4 cadeiras Apogeu Linho Bege Amendoa/off White', v:1159.90, q:1},
+  ],
+  via: [
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',          v:7707.20,   q:9  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:5639.54,   q:5  },
+    {n:'Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White',                v:5081.97,   q:4  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:3299.73,   q:3  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:1779.80,   q:2  },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',            v:869.90,    q:1  },
+    {n:'Conjunto Sala de Jantar Mesa Easy Pop 120x80cm Tampo MDF com 4 Cadeiras Confort Linho Mosaico Cinza Amêndoa/Off White', v:953.91, q:1},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:1119.90,   q:1  },
+    {n:'Sapateira Giratoria Esthela Com Espelho Amendoa Clean Lopas',                        v:549.90,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like Amendoa Clean/Off White',             v:2309.90,   q:1  },
+    {n:'Guarda-Roupa Casal 2 Portas 2 Gavetas Easy Light Amendoa Clean/off White/Amendoa Clean', v:1079.90, q:1},
+  ],
+  madeira: [
+    {n:'Comoda 8 Gavetas Easy Like Amendoa Clean',                                           v:5929.82,   q:4  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:6037.51,   q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:2339.81,   q:2  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean/Off White',                      v:3160.02,   q:2  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Move 2,40 Amendoa Clean',                 v:4603.21,   q:2  },
+    {n:'Mesa De Cabeceira Easy Like Amendoa Clean/Off White',                                v:699.80,    q:2  },
+    {n:'Cama Lopas Solteiro 0,90 Athenas Com cama Auxiliar Branco',                         v:750.41,    q:1  },
+    {n:'Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco',                            v:2159.90,   q:1  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Space Amendoa Clean/Off White -Lopas',    v:4299.70,   q:1  },
+    {n:'Sapateira Giratoria Esthela Com Espelho Branco Lopas',                               v:522.41,    q:1  },
+  ],
+  // SP
+  shopee_sp: [
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:19196.00,  q:40 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:36816.60,  q:34 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White', v:21198.00, q:20},
+    {n:'Comoda 8 Gavetas Easy Like Branco',                                                  v:15118.20,  q:18 },
+    {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White', v:26638.20, q:18},
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:15118.20,  q:18 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:8308.90,   q:11 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:8679.20,   q:8  },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Veludo Liso Capuccino Amendoa Clean/off White', v:7419.30,   q:7  },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:5459.30,   q:7  },
+  ],
+  ml_sp: [
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:8548.10,   q:19 },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:19857.72,  q:12 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:12838.80,  q:12 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:2442.00,   q:3  },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:2339.70,   q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                   v:2054.14,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:2206.20,   q:2  },
+    {n:'Conjunto Jantar Easy Pop 170x90 Vidro/MDF 6 Cadeiras Linho Cinza Amêndoa/Off White', v:3219.80,  q:2  },
+    {n:'Mesa De Cabeceira Easy Like Amendoa Clean/Off White',                                v:658.00,    q:2  },
+    {n:'Guarda-Roupa Casal 100%MDF Alonzo 6 Portas 4 Gavetas Amêndoa/Off White',            v:1549.90,   q:1  },
+  ],
+  magalu_sp: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:43366.38,  q:39 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:9962.72,   q:14 },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:11089.61, q:8},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:6546.97,   q:6  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:4201.57,   q:4  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                        v:1595.82,   q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:3215.21,   q:3  },
+    {n:'Conjunto Mesa de Jantar Celebrare 120 Tampo MDF/Vidro 4 cadeiras Apogeu Veludo Creme Amendoa/off', v:2319.80, q:2},
+    {n:'Conjunto Mesa de jantar Celebrare 1,20 com vidro e 4 Cadeiras Apogeu Veludo Liso Capuccino Amendoa', v:2184.68, q:2},
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:1099.90,   q:1  },
+  ],
+  via_sp: [
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',          v:4135.58,   q:5  },
+    {n:'Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White',                v:4227.06,   q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:1019.92,   q:1  },
+    {n:'Conjunto Sala de Jantar Mesa Easy Pop 120x80cm Tampo MDF com 4 Cadeiras Confort Linho Mosaico Cinza Amêndoa/Off White', v:953.91, q:1},
+  ],
+  madeira_sp: [
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:6037.51,   q:3  },
+    {n:'Comoda 8 Gavetas Easy Like Amendoa Clean',                                           v:2029.70,   q:2  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean/Off White',                      v:699.80,    q:2  },
+    {n:'Guarda-Roupa Casal Toronto 2 Portas 6 Gavetas Com Espelho Branco',                   v:2399.90,   q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Pés Frassino',                   v:2529.90,   q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like Branco',                             v:2299.90,   q:1  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Move 2,40 Amendoa Clean',                 v:1833.41,   q:1  },
+    {n:'Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco',                            v:2159.90,   q:1  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean/Off White',                      v:2029.70,   q:1  },
+    {n:'Cama Lopas Solteiro 0,90 Athenas Com cama Auxiliar Branco',                         v:750.41,    q:1  },
+  ],
+  // MG
+  shopee_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:38996.40,  q:36 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:17367.70,  q:23 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:17637.90,  q:21 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                      v:18738.20,  q:18 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:7678.40,   q:16 },
+    {n:'Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White', v:20718.60, q:14},
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',            v:11118.60,  q:14 },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:20818.80,  q:12 },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:8578.90,   q:11 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:11319.00,  q:10 },
+  ],
+  ml_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:17118.40,  q:16 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:3599.20,   q:8  },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:8274.05,   q:5  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',              v:2159.80,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:2239.80,   q:2  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:1628.00,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                   v:2052.50,   q:2  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean',                                v:329.70,    q:1  },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:779.90,    q:1  },
+    {n:'Cabeceira Box 1,60 Easy Glow Tecido Corano Bege Com Led Amendoa Clean',              v:705.00,    q:1  },
+  ],
+  magalu_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:29906.06,  q:27 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:11419.08,  q:16 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:14346.31,  q:13 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean',                        v:9452.02,   q:9  },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:4163.70, q:3},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White',              v:2144.81,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:2299.80,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:2179.80,   q:2  },
+    {n:'Conjunto Mesa de Jantar Celebrare 1,20 Tampo MDF/Vidro 4 cadeiras Apogeu Linho Bege Amendoa/off White', v:1159.90, q:1},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:1089.90,   q:1  },
+  ],
+  via_mg: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:2219.82,   q:2  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:1199.90,   q:1  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:889.90,    q:1  },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Ccom Pés Amendoa Clean/off White',            v:869.90,    q:1  },
+  ],
+  madeira_mg: [
+    {n:'Sapateira Giratoria Esthela Com Espelho Branco Lopas',                               v:522.41,    q:1  },
+  ],
+  // RJ
+  shopee_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:55284.90,  q:51 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:19627.40,  q:26 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White',                      v:18758.20,  q:18 },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:12598.50,  q:15 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:6718.60,   q:14 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:13988.70,  q:13 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:12558.90,  q:11 },
+    {n:'Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White', v:9539.10, q:9},
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:7959.30,   q:7  },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:8879.40, q:6},
+  ],
+  ml_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:11769.90,  q:11 },
+    {n:'Conjunto Sala de Jantar com 4 Cadeiras Easy Line',                                   v:4499.00,   q:10 },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:6157.50,   q:6  },
+    {n:'Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco',      v:8274.05,   q:5  },
+    {n:'Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White',                            v:2339.70,   q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:3358.80,   q:3  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:1628.00,   q:2  },
+    {n:'Comoda 6 Gavetas Maggiore Amendoa Clean Lopas',                                      v:1359.80,   q:2  },
+    {n:'Comoda 8 Gavetas Easy Like Amendoa Clean',                                           v:814.70,    q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 2 Portas 6 Gavetas Easy Max Amendoa/Off White',         v:1759.90,   q:1  },
+  ],
+  magalu_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White',   v:19858.81,  q:18 },
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White',                      v:5736.52,   q:8  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean',                   v:2179.80,   q:2  },
+    {n:'Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa/Off', v:2713.39, q:2},
+    {n:'Dormitório Completo Casal Easy Like Amendoa Clean/Off White',                        v:4639.90,   q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:1089.90,   q:1  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Move 2,40 Amendoa Clean',                 v:1929.90,   q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:1089.90,   q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean',             v:1149.90,   q:1  },
+  ],
+  via_rj: [
+    {n:'Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White',          v:3571.62,   q:4  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White',          v:3419.72,   q:3  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco',                    v:1119.90,   q:1  },
+    {n:'Comoda Lopas Easy Like Amendoa Clean/Off White',                                     v:889.90,    q:1  },
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:1079.91,   q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 6 Portas Easy Like Amendoa Clean/Off White',             v:2309.90,   q:1  },
+    {n:'Sapateira Giratoria Esthela Com Espelho Amendoa Clean Lopas',                        v:549.90,    q:1  },
+    {n:'Guarda-Roupa Casal 2 Portas 2 Gavetas Easy Light Amendoa Clean/off White/Amendoa Clean', v:1079.90, q:1},
+    {n:'Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White',                v:854.91,    q:1  },
+  ],
+  madeira_rj: [
+    {n:'Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco',                           v:2339.81,   q:2  },
+    {n:'Comoda 8 Gavetas Easy Like Amendoa Clean',                                           v:3900.12,   q:2  },
+    {n:'Mesa De Cabeceira 2 Gavetas Easy Like Amendoa Clean',                                v:1130.32,   q:1  },
+    {n:'Guarda Roupa Casal 100% MDF 6 Portas Easy Move 2,40 Amendoa Clean',                 v:2769.80,   q:1  },
+    {n:'Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos Amendoa Clean/Off White', v:2679.90,  q:1  },
+  ],
+};
+
+// ── Renderização Abril Top15 ──
+(function renderAprTop15(){
+  const tbody = document.getElementById('apr-top15-geral');
+  if(!tbody) return;
+  const maxRep = APR_TOP15[0].rep;
+  tbody.innerHTML = APR_TOP15.map((p,i)=>{
+    const barW = (p.rep/maxRep*100).toFixed(1);
+    return `<tr>
+      <td style="width:32px;"><span class="${rankClass(i)}">${i+1}</span></td>
+      <td><div class="prod-name-text">${p.n}</div></td>
+      <td class="mono">R$ ${p.v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td class="qty">${p.q.toLocaleString('pt-BR')}</td>
+      <td><div class="prod-rep-cell"><div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${barW}%;background:linear-gradient(90deg,var(--accent),var(--comp))"></div></div>
+      <span class="prod-rep-pct" style="color:var(--accent);font-weight:700">${aprFmtRep(p.rep)}</span></div></td>
+    </tr>`;
+  }).join('');
+})();
+
+// ── Renderização tabelas Abril por canal ──
+function renderAprProdTable(tbodyId, data) {
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  const totalCanal = data.reduce((acc,p)=>acc+p.v,0);
+  const maxRep = totalCanal>0 ? data[0].v/totalCanal : 1;
+  tbody.innerHTML = data.map((p,i)=>{
+    const repCanal = totalCanal>0 ? p.v/totalCanal : 0;
+    const barW = Math.min(repCanal/maxRep*100,100).toFixed(1);
+    return `<tr>
+      <td style="width:32px;"><span class="${rankClass(i)}">${i+1}</span></td>
+      <td><div class="prod-name-text">${p.n}</div></td>
+      <td class="mono">R$ ${p.v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+      <td class="qty">${p.q}</td>
+      <td><div class="prod-rep-cell"><div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${barW}%"></div></div>
+      <span class="prod-rep-pct">${aprFmtRep(repCanal)}</span></div></td>
+    </tr>`;
+  }).join('');
+}
+
+// Renderizar todas as tabelas
+['shopee','ml','magalu','via','madeira'].forEach(k=>renderAprProdTable('apr-prod-'+k+'-geral', APR_PRODUTOS[k]));
+['sp','mg','rj'].forEach(est=>{
+  ['shopee','ml','magalu','via','madeira'].forEach(k=>{
+    const key = k+'_'+est;
+    if(APR_PRODUTOS[key]) renderAprProdTable('apr-prod-'+k+'-'+est, APR_PRODUTOS[key]);
+  });
+});
+
+// ══════════════════════════════════════════════
+// ABRIL — CHARTS
+// ══════════════════════════════════════════════
+const aprChartsBuilt = {};
+function buildAprCharts(page) {
+  if(page==='visao'){
+    new Chart(document.getElementById('aprCatChart'),{type:'doughnut',data:{labels:['GR','SALA','COMP'],datasets:[{data:[230129.38,85979.47,69373.80],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
+    new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{data:[253475.82,58174.44,49108.88,16780.76,3691.59],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+  }
+  if(page==='categorias'){
+    new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[132781.79,40355.11,38680.38,11609.12,3194.83],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[70482.91,8095.30,7401.27,0,0],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[50211.12,9724.04,3027.23,5171.64,496.77],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+  }
+  if(page==='diario'){
+    const labels=aprDaily.map(d=>d.d);
+    const vals=aprDaily.map(d=>d.g);
+    const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+    new Chart(document.getElementById('aprDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(5).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+  }
+}
+
 </script>
 </body>
 </html>
