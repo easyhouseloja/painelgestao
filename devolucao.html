@@ -18,6 +18,7 @@
     --purple: #bc8cff;
     --yellow: #e3b341;
     --red: #f85149;
+    --teal: #39d353;
     --text: #e6edf3;
     --text2: #8b949e;
     --text3: #6e7681;
@@ -26,6 +27,7 @@
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:var(--bg); color:var(--text); font-family:'Barlow',sans-serif; min-height:100vh; }
 
+  /* ── HEADER ── */
   .header {
     background: linear-gradient(135deg,#1a0a02 0%,var(--bg2) 50%,#0d1117 100%);
     border-bottom:1px solid var(--border);
@@ -44,10 +46,7 @@
     border-radius:10px; display:flex; align-items:center; justify-content:center;
     font-size:22px; box-shadow:0 0 20px rgba(224,90,43,0.4); flex-shrink:0;
   }
-  .header h1 {
-    font-family:'Barlow Condensed',sans-serif;
-    font-size:22px; font-weight:700; letter-spacing:0.5px; color:var(--text);
-  }
+  .header h1 { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:700; letter-spacing:0.5px; }
   .header-sub { font-size:13px; color:var(--text2); margin-top:2px; }
   .header-right { margin-left:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
   .header-badge {
@@ -61,6 +60,17 @@
     font-size:12px; font-weight:600; letter-spacing:0.3px; white-space:nowrap;
   }
 
+  /* ── OBSERVAÇÃO BANNER ── */
+  .obs-banner {
+    background: rgba(227,179,65,0.08);
+    border-bottom: 1px solid rgba(227,179,65,0.2);
+    padding: 9px 32px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: #c9a227;
+  }
+  .obs-banner strong { color: var(--yellow); }
+
+  /* ── TABS ── */
   .tabs-bar {
     background:var(--bg2); border-bottom:1px solid var(--border);
     padding:0 32px; display:flex; gap:4px; overflow-x:auto;
@@ -74,13 +84,15 @@
   }
   .tab:hover { color:var(--text); background:rgba(255,255,255,0.03); }
   .tab.active { color:var(--accent2); border-bottom-color:var(--accent); }
-  .tab-dot { width:7px; height:7px; border-radius:50%; background:var(--text3); }
+  .tab-dot { width:7px; height:7px; border-radius:50%; background:var(--text3); flex-shrink:0; }
   .tab.active .tab-dot { background:var(--accent); box-shadow:0 0 8px rgba(224,90,43,0.6); }
 
+  /* ── PAGES ── */
   .page { display:none; padding:28px 32px; max-width:1600px; }
   .page.active { display:block; }
 
-  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px; margin-bottom:24px; }
+  /* ── KPI ── */
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:16px; margin-bottom:24px; }
   .kpi {
     background:var(--bg2); border:1px solid var(--border); border-radius:12px;
     padding:20px; position:relative; overflow:hidden;
@@ -99,8 +111,43 @@
   .kpi-sub   { font-size:12px; color:var(--text2); margin-top:6px; }
   .kpi-icon  { position:absolute; right:16px; top:50%; transform:translateY(-50%); font-size:28px; opacity:0.12; }
 
+  /* ── FATURAMENTO % BADGE inside KPI ── */
+  .kpi-fat {
+    margin-top:8px; display:inline-flex; align-items:center; gap:5px;
+    background:rgba(227,179,65,0.12); border:1px solid rgba(227,179,65,0.25);
+    border-radius:6px; padding:3px 8px;
+    font-size:11px; font-weight:600; color:var(--yellow);
+  }
+
+  /* ── FATURAMENTO TABLE CARD ── */
+  .fat-table { width:100%; border-collapse:collapse; }
+  .fat-table th {
+    font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase;
+    color:var(--text3); padding:10px 14px; border-bottom:1px solid var(--border);
+    text-align:left;
+  }
+  .fat-table td { padding:11px 14px; font-size:13px; color:var(--text); border-bottom:1px solid rgba(48,54,61,0.5); }
+  .fat-table tr:last-child td { border-bottom:none; }
+  .fat-table tr:hover td { background:rgba(255,255,255,0.02); }
+  .fat-pct {
+    display:inline-block; padding:2px 8px; border-radius:8px;
+    font-size:12px; font-weight:700;
+  }
+  .fat-pct.low    { background:rgba(63,185,80,0.15);  color:var(--green); }
+  .fat-pct.mid    { background:rgba(227,179,65,0.15); color:var(--yellow); }
+  .fat-pct.high   { background:rgba(248,81,73,0.15);  color:var(--red); }
+  .fat-pct-bar { height:5px; background:var(--bg3); border-radius:3px; margin-top:5px; overflow:hidden; width:100%; }
+  .fat-pct-fill { height:100%; border-radius:3px; }
+  .fat-obs {
+    margin-top:12px; padding:10px 14px;
+    background:rgba(227,179,65,0.07); border-left:3px solid var(--yellow);
+    border-radius:0 6px 6px 0; font-size:12px; color:#c9a227; line-height:1.6;
+  }
+
+  /* ── GRIDS ── */
   .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
 
+  /* ── CARD ── */
   .card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
   .card-header {
     padding:16px 20px; border-bottom:1px solid var(--border);
@@ -115,6 +162,7 @@
   .card-badge { font-size:11px; font-weight:600; padding:3px 8px; border-radius:10px; }
   .card-body { padding:20px; }
 
+  /* ── BARS ── */
   .bar-list { display:flex; flex-direction:column; gap:10px; }
   .bar-meta { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px; }
   .bar-name  { font-size:13px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:78%; }
@@ -122,18 +170,21 @@
   .bar-track { height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; }
   .bar-fill  { height:100%; border-radius:3px; transition:width 0.8s cubic-bezier(0.4,0,0.2,1); }
 
+  /* ── PIE ── */
   .pie-container { display:flex; align-items:center; gap:24px; }
   .pie-svg { flex-shrink:0; }
   .pie-legend { flex:1; display:flex; flex-direction:column; gap:8px; }
   .legend-item { display:flex; align-items:center; gap:8px; }
-  .legend-dot  { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+  .legend-dot   { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
   .legend-label { font-size:12px; color:var(--text2); flex:1; }
   .legend-val   { font-size:12px; font-weight:600; color:var(--text); }
   .legend-pct   { font-size:11px; color:var(--text3); min-width:38px; text-align:right; }
 
+  /* ── ALMOX CARDS ── */
   .almox-grid { display:grid; gap:16px; margin-bottom:16px; }
   .almox-3 { grid-template-columns:repeat(3,1fr); }
   .almox-2 { grid-template-columns:repeat(2,1fr); }
+  .almox-4 { grid-template-columns:repeat(4,1fr); }
   .almox-card {
     background:var(--bg2); border:1px solid var(--border); border-radius:12px;
     padding:20px; text-align:center; position:relative; overflow:hidden;
@@ -142,14 +193,17 @@
   .almox-101::after { background:linear-gradient(90deg,var(--blue),#79c0ff); }
   .almox-103::after { background:linear-gradient(90deg,var(--green),#7ee787); }
   .almox-105::after { background:linear-gradient(90deg,var(--yellow),#ffdf5d); }
+  .almox-out::after { background:linear-gradient(90deg,var(--text3),#6e7681); }
   .almox-num { font-family:'Barlow Condensed',sans-serif; font-size:38px; font-weight:700; line-height:1; }
   .almox-101 .almox-num { color:var(--blue); }
   .almox-103 .almox-num { color:var(--green); }
   .almox-105 .almox-num { color:var(--yellow); }
+  .almox-out .almox-num { color:var(--text3); }
   .almox-label { font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; color:var(--text2); margin:6px 0 4px; }
   .almox-desc  { font-size:12px; color:var(--text3); }
   .almox-val   { font-size:13px; font-weight:600; color:var(--text2); margin-top:8px; }
 
+  /* ── SECTION DIVIDER ── */
   .section-divider { display:flex; align-items:center; gap:12px; margin:24px 0 16px; }
   .section-divider-title {
     font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:600;
@@ -157,17 +211,19 @@
   }
   .section-divider-line { flex:1; height:1px; background:var(--border); }
 
+  /* ── RESPONSIVE ── */
   @media(max-width:900px){
-    .grid-2,.almox-3,.almox-2{grid-template-columns:1fr;}
+    .grid-2,.almox-3,.almox-2,.almox-4{grid-template-columns:1fr;}
     .page{padding:16px;}
     .header{padding:16px;flex-wrap:wrap;}
-    .tabs-bar{padding:0 16px;}
+    .tabs-bar,.obs-banner{padding:0 16px;}
+    .obs-banner{padding:9px 16px;}
   }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- ── HEADER ── -->
 <div class="header">
   <div class="header-icon">📦</div>
   <div>
@@ -175,51 +231,61 @@
     <div class="header-sub">Relatório consolidado · Comercial + Suprimentos</div>
   </div>
   <div class="header-right">
-    <div class="header-period">📅 01/01/2026 a 31/03/2026</div>
-    <div class="header-badge">340 REGISTROS</div>
+    <div class="header-period">📅 01/01/2026 a 06/04/2026</div>
+    <div class="header-badge">372 REGISTROS</div>
   </div>
 </div>
 
-<!-- TABS -->
+<!-- ── OBSERVAÇÃO ── -->
+<div class="obs-banner">
+  <span>⚠️</span>
+  <span><strong>Observação:</strong> Haverá uma pequena divergência nos percentuais de devolução sobre faturamento, visto que o valor de devolução considera o <strong>valor total da nota fiscal</strong> e o faturamento está sendo considerado pelo <strong>valor líquido</strong>.</span>
+</div>
+
+<!-- ── TABS ── -->
 <div class="tabs-bar">
   <div class="tab active" onclick="showTab('geral')"><div class="tab-dot"></div>Visão Geral</div>
   <div class="tab" onclick="showTab('jan')"><div class="tab-dot"></div>Janeiro 2026</div>
   <div class="tab" onclick="showTab('fev')"><div class="tab-dot"></div>Fevereiro 2026</div>
   <div class="tab" onclick="showTab('mar')"><div class="tab-dot"></div>Março 2026</div>
+  <div class="tab" onclick="showTab('abr')"><div class="tab-dot"></div>Abril 2026</div>
 </div>
 
 
-<!-- ========== VISÃO GERAL ========== -->
+<!-- ══════════════════════════════════════════
+     VISÃO GERAL
+══════════════════════════════════════════ -->
 <div class="page active" id="page-geral">
 
   <div class="kpis">
     <div class="kpi orange">
       <div class="kpi-label">Total Devolvido</div>
-      <div class="kpi-value">R$ 363,9K</div>
-      <div class="kpi-sub">01/01 a 31/03/2026</div>
+      <div class="kpi-value">R$ 394,4K</div>
+      <div class="kpi-sub">01/01 a 06/04/2026</div>
+      <div class="kpi-fat">📊 1,51% do faturamento</div>
       <div class="kpi-icon">💰</div>
     </div>
     <div class="kpi blue">
       <div class="kpi-label">Total de Notas</div>
-      <div class="kpi-value">340</div>
+      <div class="kpi-value">372</div>
       <div class="kpi-sub">Comercial + Suprimentos</div>
       <div class="kpi-icon">📄</div>
     </div>
     <div class="kpi green">
       <div class="kpi-label">Ticket Médio</div>
-      <div class="kpi-value">R$ 1.070</div>
+      <div class="kpi-value">R$ 1.060</div>
       <div class="kpi-sub">Por devolução</div>
       <div class="kpi-icon">📊</div>
     </div>
     <div class="kpi purple">
       <div class="kpi-label">Principal Motivo</div>
-      <div class="kpi-value">33,5%</div>
-      <div class="kpi-sub">Desistência · 114 notas</div>
+      <div class="kpi-value">36,6%</div>
+      <div class="kpi-sub">Desistência · 136 notas</div>
       <div class="kpi-icon">🔍</div>
     </div>
     <div class="kpi yellow">
       <div class="kpi-label">Top Transportadora</div>
-      <div class="kpi-value">80 notas</div>
+      <div class="kpi-value">104 notas</div>
       <div class="kpi-sub">Nova Era Express</div>
       <div class="kpi-icon">🚚</div>
     </div>
@@ -231,30 +297,143 @@
     </div>
   </div>
 
-  <div class="section-divider"><div class="section-divider-title">Por Tipo de Almoxarifado</div><div class="section-divider-line"></div></div>
-  <div class="almox-grid almox-3">
-    <div class="almox-card almox-101">
-      <div class="almox-num">26</div>
-      <div class="almox-label">ALM 101 — Repasse</div>
-      <div class="almox-desc">Notas repassadas</div>
-      <div class="almox-val">R$ 24.262,09</div>
+  <!-- FATURAMENTO -->
+  <div class="section-divider"><div class="section-divider-title">Devolução vs. Faturamento</div><div class="section-divider-line"></div></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span>📊</span> % Devolução / Faturamento por Mês</div>
+        <div class="card-badge" style="background:rgba(227,179,65,0.15);color:var(--yellow);">Mensal</div>
+      </div>
+      <div class="card-body">
+        <table class="fat-table">
+          <thead>
+            <tr>
+              <th>Mês</th>
+              <th>Devolução</th>
+              <th>Faturamento</th>
+              <th>% Dev/Fat</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Janeiro</strong></td>
+              <td>R$ 86.457,91</td>
+              <td>R$ 7.375.533,00</td>
+              <td><span class="fat-pct low">1,17%</span><div class="fat-pct-bar"><div class="fat-pct-fill" style="width:55%;background:var(--green)"></div></div></td>
+            </tr>
+            <tr>
+              <td><strong>Fevereiro</strong></td>
+              <td>R$ 113.853,43</td>
+              <td>R$ 7.135.124,00</td>
+              <td><span class="fat-pct mid">1,60%</span><div class="fat-pct-bar"><div class="fat-pct-fill" style="width:76%;background:var(--yellow)"></div></div></td>
+            </tr>
+            <tr>
+              <td><strong>Março</strong></td>
+              <td>R$ 163.621,42</td>
+              <td>R$ 10.081.434,00</td>
+              <td><span class="fat-pct mid">1,62%</span><div class="fat-pct-bar"><div class="fat-pct-fill" style="width:77%;background:var(--yellow)"></div></div></td>
+            </tr>
+            <tr>
+              <td><strong>Abril</strong> <span style="font-size:10px;color:var(--text3)">(até 06/04)</span></td>
+              <td>R$ 30.486,20</td>
+              <td>R$ 1.444.004,49</td>
+              <td><span class="fat-pct high">2,11%</span><div class="fat-pct-bar"><div class="fat-pct-fill" style="width:100%;background:var(--red)"></div></div></td>
+            </tr>
+            <tr style="background:rgba(255,255,255,0.02)">
+              <td><strong>Total Período</strong></td>
+              <td><strong>R$ 394.418,96</strong></td>
+              <td><strong>R$ 26.036.095,49</strong></td>
+              <td><span class="fat-pct mid">1,51%</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="fat-obs">
+          ⚠️ Os percentuais apresentam pequena divergência pois o valor de devolução considera o <strong>valor total da NF</strong> e o faturamento utiliza o <strong>valor líquido</strong>.
+        </div>
+      </div>
     </div>
-    <div class="almox-card almox-103">
-      <div class="almox-num">166</div>
-      <div class="almox-label">ALM 103 — Retorno</div>
-      <div class="almox-desc">Notas retornaram para a empresa</div>
-      <div class="almox-val">R$ 184.424,85</div>
-    </div>
-    <div class="almox-card almox-105">
-      <div class="almox-num">148</div>
-      <div class="almox-label">ALM 105 — Em Coleta</div>
-      <div class="almox-desc">Notas em processo de coleta</div>
-      <div class="almox-val">R$ 155.245,82</div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span>📈</span> Evolução Mensal</div>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+              <span style="font-size:13px;color:var(--text);font-weight:600">Janeiro</span>
+              <span style="font-size:13px;color:var(--text2)">80 notas · <strong style="color:var(--blue)">R$ 86,5K</strong></span>
+            </div>
+            <div style="height:28px;background:var(--bg3);border-radius:6px;overflow:hidden;position:relative">
+              <div style="height:100%;width:50%;background:linear-gradient(90deg,#1f6feb,var(--blue));border-radius:6px;display:flex;align-items:center;padding-left:10px">
+                <span style="font-size:11px;color:white;font-weight:600">50% do pico</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+              <span style="font-size:13px;color:var(--text);font-weight:600">Fevereiro</span>
+              <span style="font-size:13px;color:var(--text2)">100 notas · <strong style="color:var(--purple)">R$ 113,9K</strong></span>
+            </div>
+            <div style="height:28px;background:var(--bg3);border-radius:6px;overflow:hidden">
+              <div style="height:100%;width:63%;background:linear-gradient(90deg,#7c3aed,var(--purple));border-radius:6px;display:flex;align-items:center;padding-left:10px">
+                <span style="font-size:11px;color:white;font-weight:600">63% do pico</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+              <span style="font-size:13px;color:var(--text);font-weight:600">Março</span>
+              <span style="font-size:13px;color:var(--text2)">160 notas · <strong style="color:var(--accent2)">R$ 163,6K</strong></span>
+            </div>
+            <div style="height:28px;background:var(--bg3);border-radius:6px;overflow:hidden">
+              <div style="height:100%;width:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:6px;display:flex;align-items:center;padding-left:10px">
+                <span style="font-size:11px;color:white;font-weight:600">100% — pico</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+              <span style="font-size:13px;color:var(--text);font-weight:600">Abril <span style="font-size:11px;color:var(--text3)">(até 06/04)</span></span>
+              <span style="font-size:13px;color:var(--text2)">32 notas · <strong style="color:var(--green)">R$ 30,5K</strong></span>
+            </div>
+            <div style="height:28px;background:var(--bg3);border-radius:6px;overflow:hidden">
+              <div style="height:100%;width:19%;background:linear-gradient(90deg,#238636,var(--green));border-radius:6px;display:flex;align-items:center;padding-left:10px">
+                <span style="font-size:11px;color:white;font-weight:600">19%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="section-divider"><div class="section-divider-title">Análise Detalhada</div><div class="section-divider-line"></div></div>
+  <!-- ALMOXARIFADO GERAL -->
+  <div class="section-divider"><div class="section-divider-title">Por Tipo de Almoxarifado</div><div class="section-divider-line"></div></div>
+  <div class="almox-grid almox-3">
+    <div class="almox-card almox-101">
+      <div class="almox-num">27</div>
+      <div class="almox-label">ALM 101 — Repasse</div>
+      <div class="almox-desc">Notas repassadas</div>
+      <div class="almox-val">R$ 25.298,31</div>
+    </div>
+    <div class="almox-card almox-103">
+      <div class="almox-num">186</div>
+      <div class="almox-label">ALM 103 — Retorno</div>
+      <div class="almox-desc">Notas retornaram para a empresa</div>
+      <div class="almox-val">R$ 203.624,78</div>
+    </div>
+    <div class="almox-card almox-105">
+      <div class="almox-num">158</div>
+      <div class="almox-label">ALM 105 — Em Coleta</div>
+      <div class="almox-desc">Notas em processo de coleta</div>
+      <div class="almox-val">R$ 164.043,27</div>
+    </div>
+  </div>
 
+  <!-- ANÁLISE -->
+  <div class="section-divider"><div class="section-divider-title">Análise Detalhada</div><div class="section-divider-line"></div></div>
   <div class="grid-2">
     <div class="card">
       <div class="card-header">
@@ -276,7 +455,6 @@
       </div>
     </div>
   </div>
-
   <div class="grid-2">
     <div class="card">
       <div class="card-header">
@@ -299,56 +477,22 @@
     </div>
   </div>
 
-  <!-- EVOLUÇÃO MENSAL -->
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-header">
-      <div class="card-title"><span>📈</span> Evolução Mensal · 01/01/2026 a 31/03/2026</div>
-    </div>
-    <div class="card-body">
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
-        <div style="text-align:center">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">JANEIRO</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:700;color:var(--blue)">80</div>
-          <div style="font-size:13px;color:var(--text2)">devoluções</div>
-          <div style="font-size:18px;font-weight:700;color:var(--text);margin-top:6px">R$ 86.457,91</div>
-          <div style="margin-top:12px;background:var(--bg3);border-radius:4px;height:8px;overflow:hidden">
-            <div style="width:50%;height:100%;background:linear-gradient(90deg,#1f6feb,var(--blue));border-radius:4px"></div>
-          </div>
-          <div style="font-size:11px;color:var(--text3);margin-top:4px">50% vs pico</div>
-        </div>
-        <div style="text-align:center;border-left:1px solid var(--border);border-right:1px solid var(--border)">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">FEVEREIRO</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:700;color:var(--purple)">100</div>
-          <div style="font-size:13px;color:var(--text2)">devoluções</div>
-          <div style="font-size:18px;font-weight:700;color:var(--text);margin-top:6px">R$ 113.853,43</div>
-          <div style="margin-top:12px;background:var(--bg3);border-radius:4px;height:8px;overflow:hidden">
-            <div style="width:63%;height:100%;background:linear-gradient(90deg,#7c3aed,var(--purple));border-radius:4px"></div>
-          </div>
-          <div style="font-size:11px;color:var(--text3);margin-top:4px">63% vs pico</div>
-        </div>
-        <div style="text-align:center">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">MARÇO</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:700;color:var(--accent2)">160</div>
-          <div style="font-size:13px;color:var(--text2)">devoluções</div>
-          <div style="font-size:18px;font-weight:700;color:var(--text);margin-top:6px">R$ 163.621,42</div>
-          <div style="margin-top:12px;background:var(--bg3);border-radius:4px;height:8px;overflow:hidden">
-            <div style="width:100%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px"></div>
-          </div>
-          <div style="font-size:11px;color:var(--text3);margin-top:4px">100% — pico do período</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div><!-- /geral -->
 
 
-<!-- ========== JANEIRO ========== -->
+<!-- ══════════════════════════════════════════
+     JANEIRO
+══════════════════════════════════════════ -->
 <div class="page" id="page-jan">
   <div class="kpis">
     <div class="kpi blue"><div class="kpi-label">Total de Notas</div><div class="kpi-value">80</div><div class="kpi-sub">Janeiro 2026</div><div class="kpi-icon">📄</div></div>
-    <div class="kpi orange"><div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 86,5K</div><div class="kpi-sub">Janeiro 2026</div><div class="kpi-icon">💰</div></div>
-    <div class="kpi green"><div class="kpi-label">Ticket Médio</div><div class="kpi-value">R$ 1.081</div><div class="kpi-sub">Por devolução</div><div class="kpi-icon">📊</div></div>
+    <div class="kpi orange">
+      <div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 86,5K</div>
+      <div class="kpi-sub">Janeiro 2026</div>
+      <div class="kpi-fat">📊 1,17% do faturamento</div>
+      <div class="kpi-icon">💰</div>
+    </div>
+    <div class="kpi green"><div class="kpi-label">Faturamento</div><div class="kpi-value">R$ 7,38M</div><div class="kpi-sub">Janeiro 2026</div><div class="kpi-icon">🏦</div></div>
     <div class="kpi purple"><div class="kpi-label">Principal Motivo</div><div class="kpi-value">Avaria</div><div class="kpi-sub">43 notas · 53,8%</div><div class="kpi-icon">🔍</div></div>
   </div>
 
@@ -369,44 +513,29 @@
   </div>
 
   <div class="grid-2">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>🚚</span> Transportadoras — Jan</div></div>
-      <div class="card-body"><div class="bar-list" id="transp-jan"></div></div>
-    </div>
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>🔎</span> Motivos — Jan</div></div>
-      <div class="card-body">
-        <div class="pie-container">
-          <svg class="pie-svg" id="pie-motivos-jan" width="150" height="150" viewBox="0 0 150 150"></svg>
-          <div class="pie-legend" id="legend-motivos-jan"></div>
-        </div>
-      </div>
-    </div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>🚚</span> Transportadoras — Jan</div></div><div class="card-body"><div class="bar-list" id="transp-jan"></div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>🔎</span> Motivos — Jan</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-motivos-jan" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-motivos-jan"></div></div></div></div>
   </div>
   <div class="grid-2" style="margin-top:16px">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>🛒</span> Marketplace — Jan</div></div>
-      <div class="card-body">
-        <div class="pie-container">
-          <svg class="pie-svg" id="pie-mkt-jan" width="150" height="150" viewBox="0 0 150 150"></svg>
-          <div class="pie-legend" id="legend-mkt-jan"></div>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>📦</span> Produtos — Jan</div></div>
-      <div class="card-body"><div class="bar-list" id="prod-jan"></div></div>
-    </div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>🛒</span> Marketplace — Jan</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-mkt-jan" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-mkt-jan"></div></div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>📦</span> Produtos — Jan</div></div><div class="card-body"><div class="bar-list" id="prod-jan"></div></div></div>
   </div>
 </div><!-- /jan -->
 
 
-<!-- ========== FEVEREIRO ========== -->
+<!-- ══════════════════════════════════════════
+     FEVEREIRO
+══════════════════════════════════════════ -->
 <div class="page" id="page-fev">
   <div class="kpis">
     <div class="kpi blue"><div class="kpi-label">Total de Notas</div><div class="kpi-value">100</div><div class="kpi-sub">Fevereiro 2026</div><div class="kpi-icon">📄</div></div>
-    <div class="kpi orange"><div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 113,9K</div><div class="kpi-sub">Fevereiro 2026</div><div class="kpi-icon">💰</div></div>
-    <div class="kpi green"><div class="kpi-label">Ticket Médio</div><div class="kpi-value">R$ 1.139</div><div class="kpi-sub">Por devolução</div><div class="kpi-icon">📊</div></div>
+    <div class="kpi orange">
+      <div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 113,9K</div>
+      <div class="kpi-sub">Fevereiro 2026</div>
+      <div class="kpi-fat">📊 1,60% do faturamento</div>
+      <div class="kpi-icon">💰</div>
+    </div>
+    <div class="kpi green"><div class="kpi-label">Faturamento</div><div class="kpi-value">R$ 7,14M</div><div class="kpi-sub">Fevereiro 2026</div><div class="kpi-icon">🏦</div></div>
     <div class="kpi purple"><div class="kpi-label">Principal Motivo</div><div class="kpi-value">Atraso</div><div class="kpi-sub">42 notas · 42%</div><div class="kpi-icon">🔍</div></div>
   </div>
 
@@ -427,44 +556,29 @@
   </div>
 
   <div class="grid-2">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>🚚</span> Transportadoras — Fev</div></div>
-      <div class="card-body"><div class="bar-list" id="transp-fev"></div></div>
-    </div>
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>🔎</span> Motivos — Fev</div></div>
-      <div class="card-body">
-        <div class="pie-container">
-          <svg class="pie-svg" id="pie-motivos-fev" width="150" height="150" viewBox="0 0 150 150"></svg>
-          <div class="pie-legend" id="legend-motivos-fev"></div>
-        </div>
-      </div>
-    </div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>🚚</span> Transportadoras — Fev</div></div><div class="card-body"><div class="bar-list" id="transp-fev"></div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>🔎</span> Motivos — Fev</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-motivos-fev" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-motivos-fev"></div></div></div></div>
   </div>
   <div class="grid-2" style="margin-top:16px">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>🛒</span> Marketplace — Fev</div></div>
-      <div class="card-body">
-        <div class="pie-container">
-          <svg class="pie-svg" id="pie-mkt-fev" width="150" height="150" viewBox="0 0 150 150"></svg>
-          <div class="pie-legend" id="legend-mkt-fev"></div>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>📦</span> Produtos — Fev</div></div>
-      <div class="card-body"><div class="bar-list" id="prod-fev"></div></div>
-    </div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>🛒</span> Marketplace — Fev</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-mkt-fev" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-mkt-fev"></div></div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>📦</span> Produtos — Fev</div></div><div class="card-body"><div class="bar-list" id="prod-fev"></div></div></div>
   </div>
 </div><!-- /fev -->
 
 
-<!-- ========== MARÇO ========== -->
+<!-- ══════════════════════════════════════════
+     MARÇO
+══════════════════════════════════════════ -->
 <div class="page" id="page-mar">
   <div class="kpis">
     <div class="kpi blue"><div class="kpi-label">Total de Notas</div><div class="kpi-value">160</div><div class="kpi-sub">Março 2026</div><div class="kpi-icon">📄</div></div>
-    <div class="kpi orange"><div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 163,6K</div><div class="kpi-sub">Março 2026</div><div class="kpi-icon">💰</div></div>
-    <div class="kpi green"><div class="kpi-label">Ticket Médio</div><div class="kpi-value">R$ 1.023</div><div class="kpi-sub">Por devolução</div><div class="kpi-icon">📊</div></div>
+    <div class="kpi orange">
+      <div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 163,6K</div>
+      <div class="kpi-sub">Março 2026</div>
+      <div class="kpi-fat">📊 1,62% do faturamento</div>
+      <div class="kpi-icon">💰</div>
+    </div>
+    <div class="kpi green"><div class="kpi-label">Faturamento</div><div class="kpi-value">R$ 10,08M</div><div class="kpi-sub">Março 2026</div><div class="kpi-icon">🏦</div></div>
     <div class="kpi purple"><div class="kpi-label">Principal Motivo</div><div class="kpi-value">Desistência</div><div class="kpi-sub">61 notas · 38,1%</div><div class="kpi-icon">🔍</div></div>
   </div>
 
@@ -491,75 +605,109 @@
   </div>
 
   <div class="grid-2">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>🚚</span> Transportadoras — Mar</div></div>
-      <div class="card-body"><div class="bar-list" id="transp-mar"></div></div>
-    </div>
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>🔎</span> Motivos — Mar</div></div>
-      <div class="card-body">
-        <div class="pie-container">
-          <svg class="pie-svg" id="pie-motivos-mar" width="150" height="150" viewBox="0 0 150 150"></svg>
-          <div class="pie-legend" id="legend-motivos-mar"></div>
-        </div>
-      </div>
-    </div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>🚚</span> Transportadoras — Mar</div></div><div class="card-body"><div class="bar-list" id="transp-mar"></div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>🔎</span> Motivos — Mar</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-motivos-mar" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-motivos-mar"></div></div></div></div>
   </div>
   <div class="grid-2" style="margin-top:16px">
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>🛒</span> Marketplace — Mar</div></div>
-      <div class="card-body">
-        <div class="pie-container">
-          <svg class="pie-svg" id="pie-mkt-mar" width="150" height="150" viewBox="0 0 150 150"></svg>
-          <div class="pie-legend" id="legend-mkt-mar"></div>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header"><div class="card-title"><span>📦</span> Produtos — Mar</div></div>
-      <div class="card-body"><div class="bar-list" id="prod-mar"></div></div>
-    </div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>🛒</span> Marketplace — Mar</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-mkt-mar" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-mkt-mar"></div></div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>📦</span> Produtos — Mar</div></div><div class="card-body"><div class="bar-list" id="prod-mar"></div></div></div>
   </div>
 </div><!-- /mar -->
 
 
+<!-- ══════════════════════════════════════════
+     ABRIL
+══════════════════════════════════════════ -->
+<div class="page" id="page-abr">
+  <div class="kpis">
+    <div class="kpi blue"><div class="kpi-label">Total de Notas</div><div class="kpi-value">32</div><div class="kpi-sub">Abril · até 06/04/2026</div><div class="kpi-icon">📄</div></div>
+    <div class="kpi orange">
+      <div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 30,5K</div>
+      <div class="kpi-sub">Abril · até 06/04/2026</div>
+      <div class="kpi-fat">📊 2,11% do faturamento</div>
+      <div class="kpi-icon">💰</div>
+    </div>
+    <div class="kpi green"><div class="kpi-label">Faturamento</div><div class="kpi-value">R$ 1,44M</div><div class="kpi-sub">Abril · parcial</div><div class="kpi-icon">🏦</div></div>
+    <div class="kpi purple"><div class="kpi-label">Principal Motivo</div><div class="kpi-value">Desistência</div><div class="kpi-sub">22 notas · 68,8%</div><div class="kpi-icon">🔍</div></div>
+  </div>
+
+  <div class="section-divider"><div class="section-divider-title">Almoxarifado — Abril</div><div class="section-divider-line"></div></div>
+  <div class="almox-grid almox-4">
+    <div class="almox-card almox-101">
+      <div class="almox-num">1</div>
+      <div class="almox-label">ALM 101 — Repasse</div>
+      <div class="almox-desc">Notas repassadas</div>
+      <div class="almox-val">R$ 1.036,22</div>
+    </div>
+    <div class="almox-card almox-103">
+      <div class="almox-num">20</div>
+      <div class="almox-label">ALM 103 — Retorno</div>
+      <div class="almox-desc">Notas retornaram para a empresa</div>
+      <div class="almox-val">R$ 19.199,94</div>
+    </div>
+    <div class="almox-card almox-105">
+      <div class="almox-num">10</div>
+      <div class="almox-label">ALM 105 — Em Coleta</div>
+      <div class="almox-desc">Notas em processo de coleta</div>
+      <div class="almox-val">R$ 8.797,45</div>
+    </div>
+    <div class="almox-card almox-out">
+      <div class="almox-num">1</div>
+      <div class="almox-label">Outros</div>
+      <div class="almox-desc">Código não mapeado</div>
+      <div class="almox-val">R$ 1.452,59</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card"><div class="card-header"><div class="card-title"><span>🚚</span> Transportadoras — Abr</div></div><div class="card-body"><div class="bar-list" id="transp-abr"></div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>🔎</span> Motivos — Abr</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-motivos-abr" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-motivos-abr"></div></div></div></div>
+  </div>
+  <div class="grid-2" style="margin-top:16px">
+    <div class="card"><div class="card-header"><div class="card-title"><span>🛒</span> Marketplace — Abr</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-mkt-abr" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-mkt-abr"></div></div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title"><span>📦</span> Produtos — Abr</div></div><div class="card-body"><div class="bar-list" id="prod-abr"></div></div></div>
+  </div>
+</div><!-- /abr -->
+
+
 <script>
+/* ── DATA ── */
 const DATA = {
   geral: {
     transp:[
-      {name:'Nova Era Express Transportes Ltda',count:80},
-      {name:'Trans Sua Log Transporte e Logistica Ltda',count:67},
-      {name:'Transbarbosa Soluções Logistica Ltda',count:46},
-      {name:'Getlar Transp e Serv de Armazenagem',count:40},
-      {name:'Tempo Justo Transportes Logistica',count:34},
+      {name:'Nova Era Express Transportes Ltda',count:104},
+      {name:'Trans Sua Log Transporte e Logistica Ltda',count:69},
+      {name:'Transbarbosa Soluções Logistica Ltda',count:48},
+      {name:'Getlar Transp e Serv de Armazenagem',count:41},
+      {name:'Tempo Justo Transportes Logistica',count:36},
       {name:'TS RJ Transportes Logistica e Soluções',count:33},
-      {name:'RGE Soluções Ltda',count:19},
+      {name:'RGE Soluções Ltda',count:20},
       {name:'RGE Transportadora Ltda',count:8},
     ],
     motivos:[
-      {name:'Desistência',count:114},
-      {name:'Avaria',count:97},
-      {name:'Atraso na Entrega',count:82},
-      {name:'Entrega Incorreta',count:20},
-      {name:'Refaturamento de Notas',count:6},
+      {name:'Desistência',count:136},
+      {name:'Avaria',count:100},
+      {name:'Atraso na Entrega',count:84},
+      {name:'Entrega Incorreta',count:23},
+      {name:'Refaturamento de Notas',count:7},
     ],
     mkt:[
-      {name:'N/A (Suprimentos)',count:194},
-      {name:'Shopee',count:74},
-      {name:'Mercado Livre',count:34},
-      {name:'Magazine Luiza',count:31},
+      {name:'N/A (Suprimentos)',count:197},
+      {name:'Shopee',count:91},
+      {name:'Magazine Luiza',count:39},
+      {name:'Mercado Livre',count:37},
       {name:'Madeira Madeira',count:5},
       {name:'Zema',count:2},
     ],
     prod:[
-      {name:'Guarda Roupa Easy Slim 8 Pts',count:155},
-      {name:'Guarda Roupa 06 Pts Easy Slim 2025',count:25},
+      {name:'Guarda Roupa Easy Slim 8 Pts',count:168},
+      {name:'Guarda Roupa 06 Pts Easy Slim 2025',count:29},
       {name:'Comoda Lopas Easy Like',count:20},
+      {name:'Conj Mesa 1,70 Apogeu 2023 c/06 Cad.',count:15},
       {name:'Guarda Roupa Toronto 2 Pts Plus',count:15},
-      {name:'Conj Mesa 1,70 Apogeu 2023 c/06 Cad.',count:13},
-      {name:'Mesa Easy Line c/4 Cad Easy Line',count:11},
-      {name:'Conj Mesa 0,90 Celebrare 2023 c/04 Cad.',count:10},
-      {name:'Guarda Roupa Spazio 3 Pts 2,70',count:9},
+      {name:'Mesa Easy Line c/4 Cad Easy Line',count:14},
+      {name:'Conj Mesa 0,90 Celebrare 2023 c/04 Cad.',count:11},
+      {name:'Comoda Vedra 7GAV 2 Pts',count:10},
     ]
   },
   jan: {
@@ -655,19 +803,52 @@ const DATA = {
       {name:'Guarda Roupa Toronto 2 Pts Plus',count:6},
       {name:'Comoda Vedra 7GAV 2 Pts',count:5},
     ]
+  },
+  abr: {
+    transp:[
+      {name:'Nova Era Express Transportes Ltda',count:24},
+      {name:'Trans Sua Log Transporte e Logistica Ltda',count:2},
+      {name:'Tempo Justo Transportes Logistica',count:2},
+      {name:'Transbarbosa Soluções Logistica Ltda',count:2},
+      {name:'RGE Soluções Ltda',count:1},
+      {name:'Getlar Transp e Serv de Armazenagem',count:1},
+    ],
+    motivos:[
+      {name:'Desistência',count:22},
+      {name:'Entrega Incorreta',count:3},
+      {name:'Avaria',count:3},
+      {name:'Atraso na Entrega',count:2},
+      {name:'Refaturamento de Notas',count:1},
+    ],
+    mkt:[
+      {name:'Shopee',count:17},
+      {name:'Magazine Luiza',count:8},
+      {name:'Mercado Livre',count:3},
+      {name:'N/A (Suprimentos)',count:3},
+    ],
+    prod:[
+      {name:'Guarda Roupa Easy Slim 8 Pts',count:13},
+      {name:'Guarda Roupa 06 Pts Easy Slim 2025',count:4},
+      {name:'Conj Mesa 1,20 Celebrare 2023 c/04 Cad.',count:3},
+      {name:'Mesa Easy Line c/4 Cad Easy Line',count:3},
+      {name:'Conj Mesa 1,70 Apogeu 2023 c/06 Cad.',count:2},
+      {name:'Comoda Vedra 7GAV 2 Pts',count:2},
+    ]
   }
 };
 
+/* ── COLORS ── */
 const C_TRANSP  = ['#388bfd','#3fb950','#bc8cff','#e3b341','#e05a2b','#f85149','#79c0ff','#7ee787'];
 const C_MOTIVOS = ['#f85149','#e3b341','#388bfd','#3fb950','#bc8cff'];
 const C_MKT     = ['#6e7681','#e05a2b','#f0883e','#bc8cff','#3fb950','#388bfd'];
 const C_PROD    = ['#388bfd','#3fb950','#bc8cff','#e3b341','#e05a2b','#f85149','#79c0ff','#7ee787'];
 
+/* ── RENDERERS ── */
 function renderBars(id, items, colors) {
   const el = document.getElementById(id);
   if (!el) return;
   const max = Math.max(...items.map(i => i.count));
-  el.innerHTML = items.map((item,i) => `
+  el.innerHTML = items.map((item, i) => `
     <div class="bar-item">
       <div class="bar-meta">
         <span class="bar-name" title="${item.name}">${item.name}</span>
@@ -689,14 +870,14 @@ function renderPie(svgId, legendId, items, colors) {
   items.forEach((item,idx) => {
     const sw = (item.count/total)*2*Math.PI;
     const end = a+sw;
-    const x1=cx+R*Math.cos(a), y1=cy+R*Math.sin(a);
+    const x1=cx+R*Math.cos(a),   y1=cy+R*Math.sin(a);
     const x2=cx+R*Math.cos(end), y2=cy+R*Math.sin(end);
     const ix1=cx+r*Math.cos(end), iy1=cy+r*Math.sin(end);
     const ix2=cx+r*Math.cos(a),   iy2=cy+r*Math.sin(a);
     const lg = sw>Math.PI?1:0;
     const c = colors[idx%colors.length];
     paths += `<path d="M${x1},${y1} A${R},${R} 0 ${lg},1 ${x2},${y2} L${ix1},${iy1} A${r},${r} 0 ${lg},0 ${ix2},${iy2} Z" fill="${c}" opacity="0.9"/>`;
-    a=end;
+    a = end;
   });
   svgEl.innerHTML = paths +
     `<text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="18" font-weight="700" fill="#e6edf3">${total}</text>`;
@@ -709,16 +890,18 @@ function renderPie(svgId, legendId, items, colors) {
     </div>`).join('');
 }
 
+/* ── INIT ── */
 function initAll() {
-  ['geral','jan','fev','mar'].forEach(k => {
+  ['geral','jan','fev','mar','abr'].forEach(k => {
     renderBars(`transp-${k}`, DATA[k].transp, C_TRANSP);
     renderBars(`prod-${k}`,   DATA[k].prod,   C_PROD);
-    renderPie(`pie-motivos-${k}`,`legend-motivos-${k}`,DATA[k].motivos,C_MOTIVOS);
-    renderPie(`pie-mkt-${k}`,    `legend-mkt-${k}`,    DATA[k].mkt,    C_MKT);
+    renderPie(`pie-motivos-${k}`, `legend-motivos-${k}`, DATA[k].motivos, C_MOTIVOS);
+    renderPie(`pie-mkt-${k}`,     `legend-mkt-${k}`,     DATA[k].mkt,     C_MKT);
   });
 }
 
-const TAB_IDS = ['geral','jan','fev','mar'];
+/* ── TABS ── */
+const TAB_IDS = ['geral','jan','fev','mar','abr'];
 function showTab(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
