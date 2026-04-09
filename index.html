@@ -2231,8 +2231,10 @@ body::before {
 
   /* FLOAT BAR */
   #anyFloatBar {
-    position: sticky !important;
+    position: fixed !important;
     bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
     z-index: 500 !important;
     margin: 0 !important;
     border-radius: 0 !important;
@@ -2242,8 +2244,10 @@ body::before {
     font-size: 10px !important;
     padding: 5px 12px !important;
     gap: 8px !important;
-    height: 44px !important;
+    height: 48px !important;
   }
+  /* Empurra o conteúdo da página para não ficar sob a barra */
+  body { padding-bottom: 48px !important; }
   .any-sync-info { display: none !important; }
   .any-float-action { display: none !important; }
   .any-float-inner { gap: 8px !important; }
@@ -3849,6 +3853,36 @@ function iframeAbrir(url, titulo) {
             padding: 6px 14px !important;
           }
           /* NÃO sobrescreve grids do comercial — ele já tem @media próprio correto */
+
+          /* ══ COMERCIAL: reduz fontes grandes dos cards ══ */
+          /* .kpi-value é 1.8rem — corta em cards de 2 colunas */
+          .kpi-value {
+            font-size: 1.1rem !important;
+            line-height: 1.2 !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+          }
+          /* .axo-val é 1.4rem */
+          .axo-val {
+            font-size: 1.0rem !important;
+            line-height: 1.2 !important;
+          }
+          /* .header-title é 1.6rem */
+          .header-title {
+            font-size: 1.1rem !important;
+          }
+          /* Fontes inline grandes (style="font-size:1.8rem") */
+          [style*="font-size:1.8rem"], [style*="font-size: 1.8rem"],
+          [style*="font-size:1.6rem"], [style*="font-size: 1.6rem"],
+          [style*="font-size:1.4rem"], [style*="font-size: 1.4rem"] {
+            font-size: 1.0rem !important;
+            line-height: 1.3 !important;
+          }
+          /* Garante que texto não vaze para fora do card */
+          .kpi-card, .kpi-strip > * {
+            overflow: hidden !important;
+            min-width: 0 !important;
+          }
 
           /* ══ SLA: nav-tabs e grids ══ */
           .nav-tabs {
