@@ -396,6 +396,7 @@ body::before {
 
 /* ── CHANNEL SWITCHER (header) ── */
 .channel-switcher {
+  padding: 8px 24px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -2130,177 +2131,149 @@ body::before {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  /* ── HEADER MOBILE ───────────────────────────────────────── */
+
+  /* ── OVERFLOW FIX GLOBAL ─────────────────────── */
+  html, body { overflow-x: hidden !important; max-width: 100vw !important; }
+  * { box-sizing: border-box !important; }
+
+  /* ── LOGIN ───────────────────────────────────── */
+  #login-screen {
+    padding: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+  .login-box {
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+    padding: 28px 20px !important;
+    border-radius: 16px !important;
+    margin: 0 16px !important;
+  }
+  .login-brand-block { gap: 10px; margin-bottom: 20px; }
+  .login-logo { height: 52px !important; width: 52px !important; max-height: 52px !important; }
+  .login-brand-name .brand-title { font-size: 20px !important; }
+  .login-brand-name .brand-sub { font-size: 9px !important; }
+  .login-title { font-size: 18px !important; }
+  .login-glow, .login-glow-2, .login-glow-3, .login-particle { display: none !important; }
+  .login-input-wrap { min-width: 0 !important; width: 100% !important; }
+
+  /* ── HEADER ──────────────────────────────────── */
   .header {
     padding: 10px 16px !important;
-    gap: 0 !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     justify-content: space-between !important;
+    min-height: 56px !important;
+    overflow: hidden !important;
   }
-  .header-left { flex-shrink: 0; }
-  .header-left .brand-link img { height: 44px !important; }
-  .header-left .header-eyebrow { font-size: 9px !important; }
-  .header-left .header-title { font-size: 14px !important; }
-
-  /* Oculta botões secundários no mobile */
+  .header-left { flex-shrink: 0; max-width: 50vw; }
+  .header-left img.brand { height: 40px !important; max-height: 40px !important; }
+  .header-eyebrow { font-size: 8px !important; }
+  .header-title { font-size: 13px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .header-right {
+    display: flex !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+  }
+  /* Oculta botões secundários */
   .btn-logs, .btn-health, .btn-fin, .btn-tv-mode,
-  #btnLogs, #btnMural, #btnHealthStatus, #btnFinanceiro,
-  #btnTVMode, .user-greeting { display: none !important; }
+  #btnLogs, #btnMural, #btnHealthStatus, #btnFinanceiro, #btnTVMode,
+  .user-greeting .user-info { display: none !important; }
 
-  /* Notif + avatar + sair compactos */
-  .header-right { gap: 6px !important; flex-wrap: nowrap !important; }
-  .notif-btn { width: 36px !important; height: 36px !important; padding: 0 !important; }
+  .notif-btn { width: 34px !important; height: 34px !important; padding: 0 !important; }
+  .notif-badge { width: 16px !important; height: 16px !important; font-size: 9px !important; }
   .header-btn-logout { padding: 6px 10px !important; font-size: 11px !important; }
-  .user-avatar { width: 32px !important; height: 32px !important; font-size: 12px !important; }
+  .user-avatar { width: 30px !important; height: 30px !important; font-size: 11px !important; }
+  .user-greeting { display: flex !important; }
 
-  /* Channel switcher — esconde texto, fica só ícones+badge */
+  /* ── CHANNEL SWITCHER ────────────────────────── */
   .channel-switcher {
     display: flex !important;
     gap: 0 !important;
-    background: rgba(255,255,255,0.04) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 12px !important;
-    padding: 4px !important;
-    margin: 0 16px 12px !important;
-    overflow: hidden !important;
-  }
-  .ch-btn {
-    flex: 1 !important;
-    padding: 8px 4px !important;
-    border-radius: 8px !important;
-    font-size: 11px !important;
-    gap: 4px !important;
-    justify-content: center !important;
-    min-width: 0 !important;
+    background: var(--bg-card) !important;
     border: none !important;
-    background: transparent !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-radius: 0 !important;
+    padding: 0 16px !important;
+    margin: 0 !important;
+    width: 100% !important;
   }
-  .ch-btn.active-3p, .ch-btn.active-1p, .ch-btn.active-vtex {
-    background: rgba(255,255,255,0.08) !important;
-  }
-  .ch-badge { display: none !important; }
-  .ch-label-sub { display: none !important; }
-  .ch-label-main { font-size: 11px !important; }
-  .ch-dot { width: 6px !important; height: 6px !important; }
 
-  /* Date bar — compacta */
+
+  .ch-dot { width: 6px !important; height: 6px !important; flex-shrink: 0; }
+
+  /* ── DATE BAR ────────────────────────────────── */
   .date-bar {
     font-size: 10px !important;
-    padding: 6px 16px !important;
+    padding: 5px 16px !important;
   }
+  #btnFinanceiroBar, #btnTVModeBar { display: none !important; }
 
-  /* LOGIN SCREEN */
-  #login-screen {
-    align-items: flex-start;
-    padding: 40px 20px 24px;
-    overflow-y: auto;
-  }
-  .login-box {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 32px 24px !important;
-    border-radius: 16px !important;
-    margin: auto 0;
-  }
-  .login-brand-block { gap: 12px; margin-bottom: 24px; }
-  .login-logo { height: 56px !important; width: 56px !important; }
-  .login-brand-name .brand-title { font-size: 22px !important; }
-  .login-title { font-size: 20px !important; }
-
-  /* Layout base */
-  .header, .date-bar, .main, .ticker-wrap, .footer {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-  .ticker-wrap { margin-left: 0; margin-right: 0; }
-  .main { padding-top: 20px; padding-bottom: 20px; }
-  .footer { flex-direction: column; gap: 8px; text-align: center; }
-
-  /* Header */
-  .header { padding-top: 12px; padding-bottom: 12px; gap: 8px; flex-wrap: wrap; }
-  .header-title { font-size: 15px; }
-  .header-right { gap: 6px; flex-wrap: wrap; }
-  .status-pill span { display: none; }
-  .btn-tv-mode { display: none !important; }
-  .user-greeting .user-info { display: none; }
-
-  /* Channel switcher */
-  .channel-switcher { gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
-  .channel-btn { font-size: 11px; padding: 7px 12px; }
-
-  /* Dashboard grid — 2 colunas no mobile */
+  /* ── CARDS GRID ──────────────────────────────── */
+  .main { padding: 16px !important; }
   .dashboard {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: 1fr 1fr !important;
     gap: 10px !important;
     margin-bottom: 16px !important;
   }
-
-  /* Cards */
-  .card { padding: 14px; }
-  .card h2 { font-size: 28px !important; }
-  .icon-wrap { width: 32px !important; height: 32px !important; }
-
-  /* Acesso rápido — empilha no mobile */
-  .dashboard + div[style*="display:flex"][style*="gap:12px"] {
-    flex-direction: column !important;
+  .card {
+    padding: 14px 12px !important;
   }
+  .card h2 {
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+  }
+  .card p {
+    font-size: 11px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+  .card-tag { font-size: 9px !important; letter-spacing: 0.8px !important; }
+  .icon-wrap { width: 34px !important; height: 34px !important; margin-bottom: 10px !important; }
+  .card-footer { font-size: 11px !important; margin-top: 10px !important; }
 
-  /* Modais — tela cheia no mobile */
+  /* ── TICKER ──────────────────────────────────── */
+  .ticker-wrap { margin: 0 !important; border-radius: 0 !important; }
+  .ticker-label { font-size: 9px !important; padding: 0 8px !important; }
+
+  /* ── FLOAT BAR ───────────────────────────────── */
+  #anyFloatBar { font-size: 10px !important; padding: 6px 12px !important; }
+
+  /* ── MODAIS FULLSCREEN ───────────────────────── */
   #vtex-modal, #vtex-analytics-modal {
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    height: 100% !important;
-    top: 0 !important;
-    left: 0 !important;
+    width: 100% !important; max-width: 100% !important;
+    height: 100% !important; max-height: 100% !important;
+    top: 0 !important; left: 0 !important;
     transform: none !important;
     border-radius: 0 !important;
   }
 
-  /* Analytics grid — 1 coluna no mobile */
-  #vtex-analytics-modal .grid-cols-2,
-  #vtex-analytics-modal [style*="grid-template-columns:1fr 1fr"] {
+  /* ── IFRAME TOPBAR ───────────────────────────── */
+  #iframe-topbar { padding: 8px 12px !important; height: 44px !important; }
+  #iframe-back-btn { padding: 5px 10px !important; font-size: 11px !important; }
+  #iframe-page-title { font-size: 11px !important; }
+
+  /* ── VTEX GRID ───────────────────────────────── */
+  .body-vtex .dashboard {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* ── ANALYTICS GRID ──────────────────────────── */
+  [style*="grid-template-columns:1fr 1fr"],
+  [style*="grid-template-columns: 1fr 1fr"] {
     grid-template-columns: 1fr !important;
   }
-
-  /* Tabela de pedidos — scroll horizontal */
-  #vtex-modal table { font-size: 11px; }
-  #vtex-modal th, #vtex-modal td { padding: 8px 10px !important; }
-
-  /* Top produtos — 1 coluna */
-  #vtex-top-produtos [style*="grid-template-columns:1fr 1fr"] {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Mapa */
-  #vtex-mapa-svg { max-height: 280px; }
-
-  /* Charts — altura reduzida */
-  #vtex-chart-diario, #vtex-chart-horas { height: 120px !important; }
-
-  /* Botões de acesso rápido */
-  a[style*="moveislopas"], a[style*="myvtex"] {
-    padding: 12px 14px !important;
-  }
-
-  /* Cards analytics — 1 coluna */
-  [style*="grid-template-columns:1fr 1fr"][style*="gap:20px"] {
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  /* Login screen */
-  .login-box { width: 90% !important; padding: 32px 24px !important; }
-
-  /* Date bar */
-  .date-bar { font-size: 11px; flex-wrap: wrap; gap: 6px; }
-  #btnFinanceiroBar, #btnTVModeBar { display: none !important; }
 }
 
-/* Telas muito pequenas (320px) */
 @media (max-width: 400px) {
   .dashboard { grid-template-columns: 1fr !important; }
+  .card h2 { font-size: 20px !important; }
+}
   .channel-btn span { display: none; }
 }
 
@@ -3142,25 +3115,6 @@ body::before {
       </div>
     </div>
 
-    <!-- CHANNEL SWITCHER (header) -->
-    <div class="channel-switcher" id="channelSwitcher">
-      <button class="ch-btn active-3p" id="btn-3p" onclick="switchChannel('3p')">
-        <span class="ch-dot"></span>
-        <span class="ch-label-main">Easy House</span>
-        <span class="ch-badge">3P</span>
-      </button>
-      <button class="ch-btn" id="btn-1p" onclick="switchChannel('1p')">
-        <span class="ch-dot"></span>
-        <span class="ch-label-main">Madeira</span>
-        <span class="ch-badge">1P</span>
-      </button>
-      <button class="ch-btn" id="btn-vtex" onclick="switchChannel('vtex')">
-        <span class="ch-dot"></span>
-        <span class="ch-label-main">VTEX</span>
-        <span class="ch-badge">Site</span>
-      </button>
-    </div>
-
     <div class="header-right">
       <!-- NOTIFICAÇÕES -->
       <div class="notif-wrap" id="notifWrap">
@@ -3209,6 +3163,25 @@ body::before {
       </button>
     </div>
   </header>
+
+  <!-- CHANNEL SWITCHER -->
+  <div class="channel-switcher" id="channelSwitcher">
+    <button class="ch-btn active-3p" id="btn-3p" onclick="switchChannel('3p')">
+      <span class="ch-dot"></span>
+      <span class="ch-label-main">Easy House</span>
+      <span class="ch-badge">3P</span>
+    </button>
+    <button class="ch-btn" id="btn-1p" onclick="switchChannel('1p')">
+      <span class="ch-dot"></span>
+      <span class="ch-label-main">Madeira</span>
+      <span class="ch-badge">1P</span>
+    </button>
+    <button class="ch-btn" id="btn-vtex" onclick="switchChannel('vtex')">
+      <span class="ch-dot"></span>
+      <span class="ch-label-main">VTEX</span>
+      <span class="ch-badge">Site</span>
+    </button>
+  </div>
 
   <!-- DATE BAR -->
   <div class="date-bar" id="datebar">
