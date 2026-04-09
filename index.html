@@ -3997,11 +3997,7 @@ inicializarUI = function(email) {
   document.dispatchEvent(new Event('eh_ticker_init'));
 };
 
-// Atualiza dados quando pedidos chegam (só regenera conteúdo, sem resetar animação)
-var _pedSalvarCacheTickerOrig = pedSalvarCache;
-pedSalvarCache = function(dados) {
-  _pedSalvarCacheTickerOrig(dados);
-};
+
 </script>
 
 <!-- ══════════════════════════════════════════
@@ -4378,7 +4374,14 @@ const SKUS_MONITORADOS = [
   '87471[91621]','87141[90816]',
   '87096[90667]','87096[90666]',
   '102313.500.8','102313.502.640','102313.504.640',
-  '97435.8'
+  '97435.8',
+  // Adicionados via curva ABC
+  '77020.173.643','97676.498.640','92306.282.640','92307.52.643',
+  '81701.118.636','99097.3.636','99097.52.640','67916.56.8',
+  '97435.636','97435.640','100083.570.636','91015.8',
+  '99097.58.763','92306.282.636','42508.226.8','102743.118.636',
+  '91015.763','92307.52.8','102743.173.636','100083.118.636',
+  '85419.58.650'
 ];
 const MINIMO_PADRAO = 20;
 
@@ -4809,6 +4812,12 @@ function pedSalvarCache(dados) {
     });
   } catch(e) {}
 }
+
+// Atualiza dados quando pedidos chegam (só regenera conteúdo, sem resetar animação)
+var _pedSalvarCacheTickerOrig = pedSalvarCache;
+pedSalvarCache = function(dados) {
+  _pedSalvarCacheTickerOrig(dados);
+};
 
 function pedLerCacheLocal() {
   try {
@@ -5760,8 +5769,8 @@ renderMural=function(notas){
 
 // System Health
 var HEALTH_SERVICES=[
-  {id:'firebase',name:'Firebase Realtime DB',desc:'Mural, logs, cache',link:'https://console.firebase.google.com',checkFn:function(){return new Promise(function(res){var t=setTimeout(function(){res({status:'error',label:'Sem resposta'});},4000);db.ref('.info/connected').once('value',function(s){clearTimeout(t);res(s.val()?{status:'ok',label:'Conectado'}:{status:'warn',label:'Desconectado'});},function(){clearTimeout(t);res({status:'error',label:'Erro'});});});}},
-  {id:'pedapi',name:'Google Apps Script',desc:'Cache de pedidos',link:'https://script.google.com',checkFn:function(){return Promise.race([fetch(PED_API+'?acao=ping').then(function(r){return r.ok?{status:'ok',label:'Operacional'}:{status:'warn',label:'HTTP '+r.status};}),new Promise(function(_,rej){setTimeout(function(){rej(new Error('t'));},6000);})]).catch(function(e){return e.message==='t'?{status:'warn',label:'Resposta lenta'}:{status:'ok',label:'Operacional'};});}},
+  {id:'firebase',name:'Firebase Realtime DB',desc:'Mural, logs, cache',checkFn:function(){return new Promise(function(res){var t=setTimeout(function(){res({status:'error',label:'Sem resposta'});},4000);db.ref('.info/connected').once('value',function(s){clearTimeout(t);res(s.val()?{status:'ok',label:'Conectado'}:{status:'warn',label:'Desconectado'});},function(){clearTimeout(t);res({status:'error',label:'Erro'});});});}},
+  {id:'pedapi',name:'Google Apps Script',desc:'Cache de pedidos',checkFn:function(){return Promise.race([fetch(PED_API+'?acao=ping').then(function(r){return r.ok?{status:'ok',label:'Operacional'}:{status:'warn',label:'HTTP '+r.status};}),new Promise(function(_,rej){setTimeout(function(){rej(new Error('t'));},6000);})]).catch(function(e){return e.message==='t'?{status:'warn',label:'Resposta lenta'}:{status:'ok',label:'Operacional'};});}},
   {id:'alertas',name:'Alertas Anymarket',desc:'Alertas no Firebase',link:'https://status.anymarket.com.br',checkFn:function(){return new Promise(function(res){db.ref('alertas').once('value',function(s){var a=Object.values(s.val()||{}).filter(function(x){return x&&x.ativo;});res(a.length>0?{status:'warn',label:a.length+' alerta(s)',detail:a[0].titulo}:{status:'ok',label:'Sem alertas'});},function(){res({status:'ok',label:'Desconhecido'});});});}},
   {id:'cache',name:'Cache de Pedidos',desc:'Ultima sincronizacao',link:null,checkFn:function(){return new Promise(function(res){try{var r=localStorage.getItem(PED_CACHE_KEY);if(!r)return res({status:'warn',label:'Sem cache'});var o=JSON.parse(r),m=Math.round((Date.now()-o.ts)/60000);res(m>120?{status:'warn',label:'Expirado ('+m+'min)'}:{status:'ok',label:'Ha '+m+'min'});}catch(e){res({status:'warn',label:'Cache invalido'});}});}}
 ];
