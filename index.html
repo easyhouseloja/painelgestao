@@ -3781,110 +3781,117 @@ function iframeAbrir(url, titulo) {
           doc.head.insertBefore(meta, doc.head.firstChild);
         }
         style.textContent = `
+          /* ── BASE ── */
           *, *::before, *::after {
             box-sizing: border-box !important;
             word-break: normal !important;
             overflow-wrap: break-word !important;
-            white-space: normal !important;
             min-width: 0 !important;
           }
           html, body {
             overflow-x: hidden !important;
             max-width: 100vw !important;
-            font-size: 13px !important;
           }
+          img { max-width: 100% !important; height: auto !important; }
 
-          /* ── RESET LARGURAS FIXAS ── */
-          div, section, article, aside, main, header, footer, nav, span, p, td, th, li {
-            max-width: 100% !important;
-          }
-          /* Remove min-width inline que prende colunas estreitas */
-          [style*="min-width"] {
-            min-width: 0 !important;
-          }
-          [style*="width: "] {
-            width: auto !important;
-            max-width: 100% !important;
-          }
-
-          /* ── GRIDS: tudo vira 1 ou 2 colunas ── */
-          [style*="grid-template-columns"],
-          [class*="grid"] {
-            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-          }
-          /* Grids de 1 coluna explícita — mantém 1 */
-          [style*="grid-template-columns: 1fr"],
-          [style*="grid-template-columns:1fr"] {
-            grid-template-columns: 1fr !important;
-          }
-
-          /* ── FLEX ROWS viram wrap ── */
-          [style*="display: flex"],
-          [style*="display:flex"] {
-            flex-wrap: wrap !important;
-          }
-          /* Exceção: flex com direção coluna — não mexe */
-          [style*="flex-direction: column"],
-          [style*="flex-direction:column"] {
-            flex-wrap: nowrap !important;
-          }
-
-          /* ── TABELAS com scroll horizontal ── */
+          /* ── TABELAS: scroll horizontal ── */
           table {
             display: block !important;
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch !important;
             width: 100% !important;
-            font-size: 11px !important;
           }
           th, td {
             white-space: nowrap !important;
-            padding: 6px 8px !important;
             font-size: 11px !important;
+            padding: 5px 7px !important;
           }
 
-          /* ── FONTES: reduz tudo proporcionalmente ── */
-          h1, [style*="font-size: 4"], [style*="font-size:4"],
-          [style*="font-size: 3"], [style*="font-size:3"] {
-            font-size: clamp(18px, 5vw, 28px) !important;
-            line-height: 1.2 !important;
+          /* ── TABS / NAV: scroll horizontal, nunca quebra ── */
+          [class*="tab"], [class*="nav"], [class*="menu"],
+          [role="tablist"] {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            gap: 4px !important;
+            padding-bottom: 4px !important;
           }
-          h2, h3 {
-            font-size: clamp(14px, 4vw, 22px) !important;
-            line-height: 1.3 !important;
-          }
-          /* Fontes inline grandes (em rem/em/px via style) */
-          [style*="font-size: 2"], [style*="font-size:2"] {
-            font-size: clamp(13px, 3.5vw, 20px) !important;
-          }
-          [style*="font-size: 1"], [style*="font-size:1"] {
-            font-size: clamp(11px, 3vw, 16px) !important;
-          }
-
-          /* ── CARDS / KPIs ── */
-          [class*="kpi"], [class*="card"], [class*="stat"],
-          [class*="metric"], [class*="box"] {
-            padding: 10px 8px !important;
-            font-size: 12px !important;
-          }
-
-          /* ── IMAGENS ── */
-          img { max-width: 100% !important; height: auto !important; }
-
-          /* ── PADDING/MARGIN excessivos ── */
-          [style*="padding: 4"], [style*="padding:4"],
-          [style*="padding: 3"], [style*="padding:3"] {
-            padding: 12px !important;
+          [class*="tab"] > *, [class*="nav"] > *,
+          [role="tablist"] > * {
+            flex-shrink: 0 !important;
+            white-space: nowrap !important;
+            font-size: 11px !important;
+            padding: 6px 10px !important;
           }
         `;
         doc.head.appendChild(style);
+
+        // ── JS: corrige grids e flex diretamente nos elementos ──
+        function fixLayouts() {
+          var win = iframe.contentWindow;
+          if (!win) return;
+
+          // 1. Todos os elementos com display:grid — força 2 colunas ou 1 se for estreito
+          var all = doc.querySelectorAll('*');
+          for (var i = 0; i < all.length; i++) {
+            var el = all[i];
+            var cs = win.getComputedStyle(el);
+
+            // Grids com muitas colunas → 2 colunas
+            if (cs.display === 'grid') {
+              var cols = cs.gridTemplateColumns || '';
+              // Conta quantas colunas tem
+              var colCount = cols.split(' ').filter(function(x){ return x && x !== 'none'; }).length;
+              if (colCount >= 3) {
+                el.style.setProperty('grid-template-columns', 'repeat(2, minmax(0, 1fr))', 'important');
+                el.style.setProperty('gap', '8px', 'important');
+              }
+            }
+
+            // Flex rows com itens muito estreitos → wrap
+            if (cs.display === 'flex' && cs.flexDirection !== 'column') {
+              var rect = el.getBoundingClientRect();
+              var children = el.children;
+              if (children.length >= 3 && rect.width > 0) {
+                var avgChildWidth = rect.width / children.length;
+                if (avgChildWidth < 80) {
+                  // Muito estreito — scroll horizontal em vez de wrap
+                  el.style.setProperty('flex-wrap', 'nowrap', 'important');
+                  el.style.setProperty('overflow-x', 'auto', 'important');
+                  el.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
+                  for (var j = 0; j < children.length; j++) {
+                    children[j].style.setProperty('flex-shrink', '0', 'important');
+                    children[j].style.setProperty('min-width', '120px', 'important');
+                    children[j].style.setProperty('white-space', 'normal', 'important');
+                  }
+                } else {
+                  el.style.setProperty('flex-wrap', 'wrap', 'important');
+                }
+              }
+            }
+
+            // Remove white-space:nowrap de textos longos que quebram layout
+            if (cs.whiteSpace === 'nowrap' && el.tagName !== 'TD' && el.tagName !== 'TH') {
+              var textLen = (el.textContent || '').trim().length;
+              if (textLen > 15) {
+                el.style.setProperty('white-space', 'normal', 'important');
+              }
+            }
+          }
+        }
+
+        setTimeout(fixLayouts, 100);
+        setTimeout(fixLayouts, 600);
+        setTimeout(fixLayouts, 1500);
+        setTimeout(fixLayouts, 3000);
+
         return true;
       } catch(e) {
         return false;
       }
     }
     iframe.onload = function() {
-      // Try immediately, then retry multiple times for dynamic content
       injetarCSS();
       setTimeout(injetarCSS, 300);
       setTimeout(injetarCSS, 800);
