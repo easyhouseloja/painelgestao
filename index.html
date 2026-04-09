@@ -3058,8 +3058,8 @@ body::before {
 
         <!-- VENDAS 1P -->
         <a class="card card-mm1p" href="vendas_1P.html">
-          <div class="icon-wrap">
-            <i data-lucide="store" style="width:22px;height:22px"></i>
+          <div class="icon-wrap" style="background:transparent;border:none;padding:0;width:auto;height:auto;">
+            <img src="./logo_madeira.png" style="height:38px;max-width:140px;object-fit:contain;filter:brightness(1.1);opacity:0.92;" alt="Madeira Madeira">
           </div>
           <div class="card-tag">Marketplace · 1P</div>
           <h2>Vendas Madeira Madeira</h2>
@@ -6198,11 +6198,11 @@ function renderTVResumo(el) {
   var pm=(PED_TODOS||[]).filter(fm);
   var fh=function(p){return new Date(p.data).toDateString()===h.toDateString();};
   var ph=(PED_TODOS||[]).filter(fh);
-  var pagos=pm.filter(function(p){return p.status==='PAGO';});
+  var pagos=pm.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO';});
   var pend=pm.filter(function(p){return p.status==='PENDENTE';});
   var rPago=pagos.reduce(function(s,p){return s+p.valor;},0);
   var rPend=pend.reduce(function(s,p){return s+p.valor;},0);
-  var vHoje=ph.filter(function(p){return p.status==='PAGO';}).reduce(function(s,p){return s+p.valor;},0);
+  var vHoje=ph.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO';}).reduce(function(s,p){return s+p.valor;},0);
   var rEnv=_finFirebaseData?(_finFirebaseData.receita||0):0;
   var qtdEnv=_finFirebaseData?(_finFirebaseData.qtd||0):0;
   var rTotal=rPago+rEnv;
@@ -6222,7 +6222,7 @@ function renderTVResumo(el) {
       '<div style="font-size:34px;font-weight:800;color:var(--accent-green);line-height:1;margin-bottom:10px;">'+fmt(rTotal)+'</div>'+
       '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:3px;">✓ Pago: '+fmt(rPago)+' ('+pagos.length+')</div>'+
       '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:3px;">🚚 Env/Entregue: '+fmt(rEnv)+' ('+qtdEnv+')</div>'+
-      '<div style="font-size:12px;color:var(--text-secondary);">📅 Hoje: '+fmt(vHoje)+' ('+ph.filter(function(p){return p.status==="PAGO";}).length+' ped.)</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);">📅 Hoje: '+fmt(vHoje)+' ('+ph.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO';}).length+' ped.)</div>'+
     '</div>'+
     '<div style="background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.3);border-radius:14px;padding:20px;">'+
       '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-amber);margin-bottom:8px;">⏳ EM ABERTO</div>'+
@@ -6259,10 +6259,10 @@ function renderTVResumo(el) {
 function renderTVMadeira(el) {
   el.innerHTML =
     '<div style="padding:28px 44px;width:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;gap:20px;">'+
-    '<div style="font-size:64px;">🏪</div>'+
+    '<img src="./logo_madeira.png" style="height:72px;object-fit:contain;filter:brightness(1.1);opacity:0.92;" alt="Madeira Madeira">'+
     '<div style="font-size:28px;font-weight:800;color:var(--text-primary);">Madeira Madeira</div>'+
     '<div style="font-size:15px;color:var(--text-secondary);max-width:480px;line-height:1.6;">Dados completos de faturamento, metas e projeções disponíveis no dashboard dedicado.</div>'+
-    '<a href="madeira_vendas.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:rgba(156,111,255,0.12);border:1px solid rgba(156,111,255,0.35);border-radius:10px;color:#9c6fff;font-size:15px;font-weight:600;text-decoration:none;margin-top:8px;">'+
+    '<a href="vendas_1P.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:rgba(156,111,255,0.12);border:1px solid rgba(156,111,255,0.35);border-radius:10px;color:#9c6fff;font-size:15px;font-weight:600;text-decoration:none;margin-top:8px;">'+
       'Acessar dashboard Madeira Madeira →'+
     '</a>'+
     '</div>';
