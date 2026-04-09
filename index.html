@@ -1248,7 +1248,8 @@ body::before {
 
 /* ── CARD FOOTER ── */
 .card-footer {
-  margin-top: 28px;
+  margin-top: auto;
+  padding-top: 28px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1293,17 +1294,42 @@ body::before {
   background: rgba(255,255,255,0.025);
   display: flex;
   align-items: center;
+  position: relative;
 }
 
+/* Duas trilhas: uma sempre visível, a outra aguardando */
 .ticker-track {
   display: flex;
   white-space: nowrap;
-  animation: ticker 30s linear infinite;
+  animation: ticker 40s linear infinite;
   font-size: 13px;
   font-weight: 400;
   color: var(--text-secondary);
   padding: 12px 0;
+  position: absolute;
+  transition: opacity 1s ease;
 }
+
+.ticker-track.ticker-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ticker-track.ticker-visible {
+  opacity: 1;
+}
+
+/* Trilha de dados reais — mesma velocidade das frases */
+#tickerTrackData {
+  animation-duration: 40s !important;
+}
+.ticker-track .ticker-data {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.ticker-track .ticker-data-ok    { color: var(--accent-green); font-weight: 700; }
+.ticker-track .ticker-data-warn  { color: var(--accent-amber); font-weight: 700; }
+.ticker-track .ticker-data-alert { color: #e05555; font-weight: 700; }
 
 /* Pausar animações quando a página está oculta */
 .animations-paused .ticker-track,
@@ -2507,7 +2533,8 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 14px;
+  margin-top: auto;
+  padding-top: 14px;
 }
 .card-posvendasub-btn {
   display: flex;
@@ -2622,6 +2649,7 @@ body::before {
 }
 .btn-health:hover { background:rgba(31,189,114,0.18); border-color:rgba(31,189,114,0.7); box-shadow:0 0 12px rgba(31,189,114,0.2); }
 .btn-health.warn { border-color:rgba(212,160,23,0.5); background:rgba(212,160,23,0.08); color:var(--accent-amber); }
+.btn-health.warn:hover { background:rgba(212,160,23,0.18); border-color:rgba(212,160,23,0.7); box-shadow:0 0 12px rgba(212,160,23,0.2); }
 .btn-health.err  { border-color:rgba(204,40,40,0.5);  background:rgba(204,40,40,0.08);  color:#e05555; }
 .health-dot { width:7px; height:7px; border-radius:50%; background:currentColor; box-shadow:0 0 5px currentColor; animation:dotPulse 2s infinite; flex-shrink:0; }
 .health-modal-overlay {
@@ -2667,32 +2695,7 @@ body::before {
 .health-last-check { font-size:10.5px; color:var(--text-secondary); padding:12px 0 0; text-align:right; }
 
 /* ── ALERT HISTORY MODAL ── */
-.btn-hist {
-  display:none; align-items:center; gap:6px;
-  padding:8px 14px; border-radius:8px;
-  border:1px solid rgba(212,160,23,0.4); background:rgba(212,160,23,0.08);
-  color:var(--accent-amber); font-size:12px; font-weight:600;
-  cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif;
-}
-.btn-hist:hover { background:rgba(212,160,23,0.18); border-color:rgba(212,160,23,0.7); }
-.hist-modal-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px);
-  z-index:600; display:flex; align-items:center; justify-content:center;
-  opacity:0; pointer-events:none; transition:opacity 0.25s;
-}
-.hist-modal-overlay.open { opacity:1; pointer-events:auto; }
-.hist-modal {
-  background:var(--bg-card); border:1px solid var(--border); border-radius:18px;
-  width:560px; max-width:96vw; max-height:82vh; display:flex; flex-direction:column;
-  box-shadow:0 28px 70px rgba(0,0,0,0.6); animation:modalIn 0.25s ease; overflow:hidden;
-}
-.hist-modal-hdr {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:20px 26px 16px; border-bottom:1px solid var(--border); flex-shrink:0;
-}
-.hist-modal-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; display:flex; align-items:center; gap:9px; }
-.hist-modal-close { background:none; border:none; color:var(--text-secondary); cursor:pointer; padding:4px; border-radius:6px; display:flex; transition:color 0.2s; }
-.hist-modal-close:hover { color:var(--text-primary); }
+
 .hist-body { overflow-y:auto; flex:1; }
 .hist-item {
   display:flex; align-items:flex-start; gap:12px;
@@ -2723,7 +2726,7 @@ body::before {
 .fin-modal-overlay.open { opacity:1; pointer-events:auto; }
 .fin-modal {
   background:var(--bg-card); border:1px solid var(--border); border-radius:18px;
-  width:640px; max-width:96vw; max-height:84vh; display:flex; flex-direction:column;
+  width:720px; max-width:96vw; max-height:84vh; display:flex; flex-direction:column;
   box-shadow:0 28px 70px rgba(0,0,0,0.6); animation:modalIn 0.25s ease; overflow:hidden;
 }
 .fin-modal-hdr {
@@ -2735,13 +2738,13 @@ body::before {
 .fin-modal-close:hover { color:var(--text-primary); }
 .fin-body { padding:22px 26px; overflow-y:auto; flex:1; }
 .fin-kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
-.fin-kpi { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:16px 18px; position:relative; overflow:hidden; }
+.fin-kpi { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:16px 18px; position:relative; overflow:visible; min-height:80px; }
 .fin-kpi::before { content:""; position:absolute; top:0; left:0; right:0; height:2px; border-radius:12px 12px 0 0; }
 .fin-kpi-receita::before { background:var(--accent-financeiro); }
 .fin-kpi-pendente::before { background:var(--accent-amber); }
 .fin-kpi-ticket::before  { background:var(--accent-blue); }
 .fin-kpi-lbl { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--text-secondary); margin-bottom:6px; }
-.fin-kpi-val { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; }
+.fin-kpi-val { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; line-height:1.15; word-break:break-word; overflow-wrap:break-word; }
 .fin-kpi-sub { font-size:11px; color:var(--text-secondary); margin-top:3px; }
 .fin-kpi-receita .fin-kpi-val  { color:var(--accent-financeiro); }
 .fin-kpi-pendente .fin-kpi-val { color:var(--accent-amber); }
@@ -2754,14 +2757,15 @@ body::before {
   background:rgba(255,255,255,0.02); border:1px solid var(--border); transition:border-color 0.2s;
 }
 .fin-rank-item:hover { border-color:rgba(255,255,255,0.1); }
-.fin-rank-pos { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; min-width:26px; color:var(--text-secondary); }
+.fin-rank-pos { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; min-width:36px; color:var(--text-secondary); line-height:1; }
+.fin-rank-pos:not(.gold):not(.silver):not(.bronze) { font-size:13px; }
 .fin-rank-pos.gold   { color:#ffd700; }
 .fin-rank-pos.silver { color:#b0b8c8; }
 .fin-rank-pos.bronze { color:#cd7f32; }
 .fin-rank-name { flex:1; font-size:13px; font-weight:600; color:var(--text-primary); }
 .fin-rank-bar-bg { flex:2; height:5px; border-radius:3px; background:rgba(255,255,255,0.06); overflow:hidden; }
 .fin-rank-bar-fill { height:100%; border-radius:3px; background:var(--accent-financeiro); transition:width 0.6s ease; }
-.fin-rank-val { font-size:12px; font-weight:700; color:var(--accent-financeiro); min-width:90px; text-align:right; }
+.fin-rank-val { font-size:13px; font-weight:700; color:var(--accent-financeiro); min-width:130px; text-align:right; white-space:nowrap; }
 .fin-rank-pct { font-size:10.5px; color:var(--text-secondary); min-width:36px; text-align:right; }
 .fin-empty { padding:40px; text-align:center; color:var(--text-secondary); font-size:13px; }
 
@@ -2919,14 +2923,11 @@ body::before {
         <div class="health-dot"></div>
         <span id="healthDotLabel">Sistemas OK</span>
       </button>
-      <button id="btnFinanceiro" class="btn-fin" onclick="abrirFinanceiro()" title="Dashboard Financeiro">
+      <button id="btnFinanceiro" class="btn-fin" onclick="abrirFinanceiro()" title="Receita do Mês" style="display:none">
         <i data-lucide="bar-chart-2" style="width:13px;height:13px"></i>
-        Financeiro
+        Receita do Mês
       </button>
-      <button id="btnHistorico" class="btn-hist" onclick="abrirHistorico()" title="Histórico de Alertas">
-        <i data-lucide="clock" style="width:13px;height:13px"></i>
-        Histórico
-      </button>
+
       <button id="btnTVMode" class="btn-tv-mode" style="display:none;" onclick="abrirTVMode()" title="Modo TV">
         <i data-lucide="monitor" style="width:13px;height:13px"></i>
         TV Mode
@@ -2949,15 +2950,15 @@ body::before {
   <div class="date-bar" id="datebar">
     <i data-lucide="calendar" style="width:13px;height:13px;opacity:0.5"></i>
     Atualizado em <span id="datetext">—</span>
-    <div class="datebar-nav">
-      <a href="evolucao_de_vendas.html" class="datebar-btn datebar-btn-green">
-        <i data-lucide="bar-chart-2" style="width:12px;height:12px"></i>
-        Evolução de Vendas
-      </a>
-      <a href="cancelamentos.html" class="datebar-btn datebar-btn-red">
-        <i data-lucide="x-circle" style="width:12px;height:12px"></i>
-        Cancelamentos
-      </a>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+      <button id="btnFinanceiroBar" class="btn-fin" onclick="abrirFinanceiro()" title="Receita do Mês" style="display:none;padding:5px 12px;font-size:12px;">
+        <i data-lucide="trending-up" style="width:12px;height:12px"></i>
+        Receita do Mês
+      </button>
+      <button id="btnTVModeBar" class="btn-tv-mode" onclick="abrirTVMode()" title="Modo TV" style="display:none;padding:5px 12px;font-size:12px;">
+        <i data-lucide="monitor" style="width:12px;height:12px"></i>
+        TV Mode
+      </button>
     </div>
   </div>
 
@@ -2980,7 +2981,7 @@ body::before {
             <i data-lucide="alert-triangle" style="width:11px;height:11px"></i>
             Estoque Anúncios · Anymarket
           </button>
-          <div class="card-footer" style="margin-top:14px;">
+          <div class="card-footer">
             Acessar dashboard <i data-lucide="arrow-right"></i>
           </div>
         </div>
@@ -3112,7 +3113,8 @@ body::before {
   <div class="ticker-wrap">
     <div class="ticker-label" id="tickerLabel">EASY HOUSE</div>
     <div class="ticker-body">
-      <div class="ticker-track" id="tickerTrack">
+      <!-- Trilha A: frases -->
+      <div class="ticker-track ticker-visible" id="tickerTrack">
         <span>o e-commerce não para</span>
         <span class="sep">◆</span>
         <span>vendendo enquanto você lê isso</span>
@@ -3138,6 +3140,10 @@ body::before {
         <span class="sep">◆</span>
         <span>#vender vender vender</span>
         <span class="sep">◆</span>
+      </div>
+      <!-- Trilha B: dados reais -->
+      <div class="ticker-track ticker-hidden" id="tickerTrackData">
+        <span>carregando dados...</span>
       </div>
     </div>
   </div>
@@ -3748,6 +3754,14 @@ function switchChannel(ch) {
     }
   });
 
+  // Ocultar Receita do Mês e Sistemas OK no painel 1P
+  var btnFin    = document.getElementById('btnFinanceiroBar');
+  var btnHealth = document.getElementById('btnHealthStatus');
+  var btnTV     = document.getElementById('btnTVModeBar');
+  if (btnFin)    btnFin.style.display    = is3p ? 'flex' : 'none';
+  if (btnHealth) btnHealth.style.display = is3p ? 'flex' : 'none';
+  if (btnTV)     btnTV.style.display     = 'flex'; // aparece nos dois painéis (3P e 1P)
+
   const filtros = document.querySelectorAll('.chip, .filter, .btn-filter');
   filtros.forEach(el=>{
     if(!is3p){
@@ -3787,6 +3801,11 @@ function switchChannel(ch) {
 
   // Persistir escolha na sessão
   sessionStorage.setItem('eh_canal_ativo', ch);
+
+  // Ticker: no 1P volta para frases imediatamente
+  if (!is3p && typeof _tickerTransicionar === 'function') {
+    _tickerTransicionar('frases');
+  }
 
   // Re-inicializar ícones Lucide para os novos elementos
   lucide.createIcons();
@@ -3841,6 +3860,148 @@ document.addEventListener("DOMContentLoaded", ()=>{
     });
   });
 });
+</script>
+
+<script>
+// ══ TICKER DADOS REAIS ════════════════════════════════════════════════════════
+// Alterna entre frases motivacionais e dados reais a cada 12s
+
+var _tickerModoAtual = 'frases'; // 'frases' | 'dados'
+var _tickerInterval = null;
+
+function _tickerFmt(v) {
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+
+function _tickerGerarDados() {
+  var itens = [];
+  var sep = '<span class="sep">◆</span>';
+
+  // Pedidos
+  if (PED_TODOS && PED_TODOS.length > 0) {
+    var h = new Date();
+    var pm = PED_TODOS.filter(function(p){ var d=new Date(p.data); return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear(); });
+    var pagos   = pm.filter(function(p){ return p.status==='PAGO'; });
+    var pend    = pm.filter(function(p){ return p.status==='PENDENTE'; });
+    var hoje    = PED_TODOS.filter(function(p){ return new Date(p.data).toDateString()===h.toDateString(); });
+    var vPago   = pagos.reduce(function(s,p){ return s+p.valor; }, 0);
+    var vPend   = pend.reduce(function(s,p){ return s+p.valor; }, 0);
+    var vHoje   = hoje.filter(function(p){return p.status==='PAGO';}).reduce(function(s,p){return s+p.valor;},0);
+
+    if (pagos.length > 0)
+      itens.push('<span class="ticker-data-ok">✅ ' + pagos.length + ' pagos aguardando envio</span>');
+    if (pend.length > 0)
+      itens.push('<span class="ticker-data-warn">⏳ ' + pend.length + ' pendentes · ' + _tickerFmt(vPend) + '</span>');
+    if (hoje.length > 0)
+      itens.push('<span class="ticker-data">📅 Hoje: ' + hoje.length + ' pedidos · ' + _tickerFmt(vHoje) + '</span>');
+    if (vPago > 0)
+      itens.push('<span class="ticker-data-ok">💰 Pedidos Pagos: ' + _tickerFmt(vPago) + '</span>');
+  }
+
+  // Estoque Anymarket
+  if (typeof ANY_PRODUTOS !== 'undefined' && ANY_PRODUTOS && ANY_PRODUTOS.length > 0) {
+    var zerados = ANY_PRODUTOS.filter(function(p){ return p.estoque === 0; });
+    var baixos  = ANY_PRODUTOS.filter(function(p){ return p.estoque > 0 && p.estoque <= (typeof MINIMO_PADRAO !== 'undefined' ? MINIMO_PADRAO : 60); });
+    if (zerados.length > 0)
+      itens.push('<span class="ticker-data-alert">🔴 ' + zerados.length + ' SKU' + (zerados.length>1?'s':'') + ' zerado' + (zerados.length>1?'s':'') + ' no estoque</span>');
+    if (baixos.length > 0)
+      itens.push('<span class="ticker-data-warn">⚠️ ' + baixos.length + ' SKU' + (baixos.length>1?'s':'') + ' abaixo do ideal</span>');
+  }
+
+  // Receita total (Firebase)
+  if (typeof _finFirebaseData !== 'undefined' && _finFirebaseData && _finFirebaseData.receita > 0) {
+    var rEnv = _finFirebaseData.receita || 0;
+    var rPago2 = (PED_TODOS||[]).filter(function(p){
+      var d=new Date(p.data), h2=new Date();
+      return p.status==='PAGO' && d.getMonth()===h2.getMonth() && d.getFullYear()===h2.getFullYear();
+    }).reduce(function(s,p){return s+p.valor;},0);
+    itens.push('<span class="ticker-data-ok">📈 Receita do mês: ' + _tickerFmt(rPago2 + rEnv) + '</span>');
+  }
+
+  // Notificações críticas
+  if (typeof NOTIFICACOES_HOJE !== 'undefined' && NOTIFICACOES_HOJE) {
+    var criticas = NOTIFICACOES_HOJE.filter(function(n){ return n.critico && !n.lida; });
+    criticas.slice(0,2).forEach(function(n){
+      itens.push('<span class="ticker-data-alert">🚨 ' + (n.titulo||'').replace(/<[^>]+>/g,'').substring(0,60) + '</span>');
+    });
+  }
+
+  if (itens.length === 0) return null;
+
+  // Monta bloco duplicado para loop contínuo
+  var bloco = itens.map(function(item, i){
+    return item + (i < itens.length-1 ? sep : '');
+  }).join('') + sep;
+
+  return bloco + bloco;
+}
+
+function _tickerTransicionar(para) {
+  var trackFrases = document.getElementById('tickerTrack');
+  var trackDados  = document.getElementById('tickerTrackData');
+  if (!trackFrases || !trackDados) return;
+
+  if (para === 'dados') {
+    var html = _tickerGerarDados();
+    if (!html) return;
+    if (_tickerModoAtual !== 'dados') {
+      trackDados.innerHTML = html;
+      trackDados.style.animationDuration = '50s';
+    }
+    trackFrases.classList.remove('ticker-visible');
+    trackFrases.classList.add('ticker-hidden');
+    trackDados.classList.remove('ticker-hidden');
+    trackDados.classList.add('ticker-visible');
+    _tickerModoAtual = 'dados';
+  } else {
+    trackFrases.classList.remove('ticker-hidden');
+    trackFrases.classList.add('ticker-visible');
+    trackDados.classList.remove('ticker-visible');
+    trackDados.classList.add('ticker-hidden');
+    _tickerModoAtual = 'frases';
+  }
+}
+
+var _tickerJaIniciou = false;
+function _tickerIniciar() {
+  // Garante que só roda UMA vez
+  if (_tickerJaIniciou) return;
+  _tickerJaIniciou = true;
+
+  if (_tickerInterval) clearInterval(_tickerInterval);
+
+  function _alternar() {
+    var canal = sessionStorage.getItem('eh_canal_ativo') || '3p';
+    if (canal !== '3p') {
+      if (_tickerModoAtual !== 'frases') _tickerTransicionar('frases');
+      return;
+    }
+    _tickerTransicionar(_tickerModoAtual === 'frases' ? 'dados' : 'frases');
+  }
+
+  // Primeira troca após 4s, depois a cada 20s
+  setTimeout(function() {
+    _alternar();
+    _tickerInterval = setInterval(_alternar, 20000);
+  }, 4000);
+}
+
+// Inicia após login — usa DOMContentLoaded como fallback de segurança
+document.addEventListener('eh_ticker_init', function() {
+  setTimeout(_tickerIniciar, 2000);
+});
+
+var _iniUITickerOrig = inicializarUI;
+inicializarUI = function(email) {
+  _iniUITickerOrig(email);
+  document.dispatchEvent(new Event('eh_ticker_init'));
+};
+
+// Atualiza dados quando pedidos chegam (só regenera conteúdo, sem resetar animação)
+var _pedSalvarCacheTickerOrig = pedSalvarCache;
+pedSalvarCache = function(dados) {
+  _pedSalvarCacheTickerOrig(dados);
+};
 </script>
 
 <!-- ══════════════════════════════════════════
@@ -5436,29 +5597,13 @@ document.getElementById('logsModalOverlay').addEventListener('click', function(e
   </div>
 </div>
 
-<!-- ══ ALERT HISTORY MODAL ══ -->
-<div class="hist-modal-overlay" id="histModalOverlay">
-  <div class="hist-modal">
-    <div class="hist-modal-hdr">
-      <div class="hist-modal-title">
-        <i data-lucide="clock" style="width:15px;height:15px;color:var(--accent-amber)"></i>
-        Histórico de Alertas
-      </div>
-      <button class="hist-modal-close" onclick="fecharHistorico()"><i data-lucide="x" style="width:15px;height:15px"></i></button>
-    </div>
-    <div class="hist-body" id="histBody">
-      <div class="hist-empty">Carregando histórico...</div>
-    </div>
-  </div>
-</div>
-
 <!-- ══ FINANCIAL DASHBOARD MODAL ══ -->
 <div class="fin-modal-overlay" id="finModalOverlay">
   <div class="fin-modal">
     <div class="fin-modal-hdr">
       <div class="fin-modal-title">
-        <i data-lucide="bar-chart-2" style="width:15px;height:15px;color:var(--accent-financeiro)"></i>
-        Dashboard Financeiro
+        <i data-lucide="trending-up" style="width:16px;height:16px;color:var(--accent-financeiro)"></i>
+        Receita do Mês
       </div>
       <button class="fin-modal-close" onclick="fecharFinanceiro()"><i data-lucide="x" style="width:15px;height:15px"></i></button>
     </div>
@@ -5473,7 +5618,9 @@ document.getElementById('logsModalOverlay').addEventListener('click', function(e
   <div class="tv-header">
     <div class="tv-title">📺 <span id="tvSlideLabel">Painel</span></div>
     <div class="tv-controls">
-      <span class="tv-slide-indicator" id="tvSlideIndicator">1 / 4</span>
+      <button onclick="tvNavAnterior()" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:var(--text-primary);padding:6px 14px;border-radius:7px;cursor:pointer;font-size:13px;">‹ Anterior</button>
+      <span class="tv-slide-indicator" id="tvSlideIndicator">1 / 5</span>
+      <button onclick="tvNavProximo()" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:var(--text-primary);padding:6px 14px;border-radius:7px;cursor:pointer;font-size:13px;">Próximo ›</button>
       <button class="tv-exit-btn" onclick="fecharTVMode()">✕ Sair do TV Mode</button>
     </div>
   </div>
@@ -5613,10 +5760,10 @@ renderMural=function(notas){
 
 // System Health
 var HEALTH_SERVICES=[
-  {id:'firebase',name:'Firebase Realtime DB',desc:'Mural, logs, cache',checkFn:function(){return new Promise(function(res){var t=setTimeout(function(){res({status:'error',label:'Sem resposta'});},4000);db.ref('.info/connected').once('value',function(s){clearTimeout(t);res(s.val()?{status:'ok',label:'Conectado'}:{status:'warn',label:'Desconectado'});},function(){clearTimeout(t);res({status:'error',label:'Erro'});});});}},
-  {id:'pedapi',name:'Google Apps Script',desc:'Cache de pedidos',checkFn:function(){return Promise.race([fetch(PED_API+'?acao=ping').then(function(r){return r.ok?{status:'ok',label:'Operacional'}:{status:'warn',label:'HTTP '+r.status};}),new Promise(function(_,rej){setTimeout(function(){rej(new Error('t'));},6000);})]).catch(function(e){return e.message==='t'?{status:'warn',label:'Resposta lenta'}:{status:'ok',label:'Operacional'};});}},
-  {id:'alertas',name:'Alertas Anymarket',desc:'Alertas no Firebase',checkFn:function(){return new Promise(function(res){db.ref('alertas').once('value',function(s){var a=Object.values(s.val()||{}).filter(function(x){return x&&x.ativo;});res(a.length>0?{status:'warn',label:a.length+' alerta(s)',detail:a[0].titulo}:{status:'ok',label:'Sem alertas'});},function(){res({status:'ok',label:'Desconhecido'});});});}},
-  {id:'cache',name:'Cache de Pedidos',desc:'Ultima sincronizacao',checkFn:function(){return new Promise(function(res){try{var r=localStorage.getItem(PED_CACHE_KEY);if(!r)return res({status:'warn',label:'Sem cache'});var o=JSON.parse(r),m=Math.round((Date.now()-o.ts)/60000);res(m>120?{status:'warn',label:'Expirado ('+m+'min)'}:{status:'ok',label:'Ha '+m+'min'});}catch(e){res({status:'warn',label:'Cache invalido'});}});}}
+  {id:'firebase',name:'Firebase Realtime DB',desc:'Mural, logs, cache',link:'https://console.firebase.google.com',checkFn:function(){return new Promise(function(res){var t=setTimeout(function(){res({status:'error',label:'Sem resposta'});},4000);db.ref('.info/connected').once('value',function(s){clearTimeout(t);res(s.val()?{status:'ok',label:'Conectado'}:{status:'warn',label:'Desconectado'});},function(){clearTimeout(t);res({status:'error',label:'Erro'});});});}},
+  {id:'pedapi',name:'Google Apps Script',desc:'Cache de pedidos',link:'https://script.google.com',checkFn:function(){return Promise.race([fetch(PED_API+'?acao=ping').then(function(r){return r.ok?{status:'ok',label:'Operacional'}:{status:'warn',label:'HTTP '+r.status};}),new Promise(function(_,rej){setTimeout(function(){rej(new Error('t'));},6000);})]).catch(function(e){return e.message==='t'?{status:'warn',label:'Resposta lenta'}:{status:'ok',label:'Operacional'};});}},
+  {id:'alertas',name:'Alertas Anymarket',desc:'Alertas no Firebase',link:'https://status.anymarket.com.br',checkFn:function(){return new Promise(function(res){db.ref('alertas').once('value',function(s){var a=Object.values(s.val()||{}).filter(function(x){return x&&x.ativo;});res(a.length>0?{status:'warn',label:a.length+' alerta(s)',detail:a[0].titulo}:{status:'ok',label:'Sem alertas'});},function(){res({status:'ok',label:'Desconhecido'});});});}},
+  {id:'cache',name:'Cache de Pedidos',desc:'Ultima sincronizacao',link:null,checkFn:function(){return new Promise(function(res){try{var r=localStorage.getItem(PED_CACHE_KEY);if(!r)return res({status:'warn',label:'Sem cache'});var o=JSON.parse(r),m=Math.round((Date.now()-o.ts)/60000);res(m>120?{status:'warn',label:'Expirado ('+m+'min)'}:{status:'ok',label:'Ha '+m+'min'});}catch(e){res({status:'warn',label:'Cache invalido'});}});}}
 ];
 var _healthResults={};
 
@@ -5632,14 +5779,15 @@ document.getElementById('healthModalOverlay').addEventListener('click',function(
 function renderHealthServices(){
   document.getElementById('healthServices').innerHTML=HEALTH_SERVICES.map(function(s){
     var r=_healthResults[s.id],cls=r?'hs-'+r.status:'hs-check',lbl=r?r.label:'Verificando...',det=(r&&r.detail)?r.detail:s.desc;
-    return '<div class="health-service"><div class="health-service-left"><div class="health-service-name">'+s.name+'</div><div class="health-service-desc">'+det+'</div></div><div class="health-status-row '+cls+'"><div class="health-status-dot"></div><span class="health-status-label">'+lbl+'</span></div></div>';
+    var clickAttr = s.link ? 'onclick="window.open(\''+s.link+'\',\'_blank\')" style="cursor:pointer;"' : '';
+    return '<div class="health-service" '+clickAttr+'><div class="health-service-left"><div class="health-service-name">'+s.name+(s.link?' <span style="font-size:10px;opacity:0.4;">↗</span>':'')+'</div><div class="health-service-desc">'+det+'</div></div><div class="health-status-row '+cls+'"><div class="health-status-dot"></div><span class="health-status-label">'+lbl+'</span></div></div>';
   }).join(''); lucide.createIcons();
 }
 function atualizarBotaoHealth(){
   var btn=document.getElementById('btnHealthStatus'); if(!btn) return;
   var v=Object.values(_healthResults);
   if(v.some(function(r){return r.status==='error';})){btn.className='btn-health err';btn.style.display='flex';document.getElementById('healthDotLabel').textContent='Problema';}
-  else if(v.some(function(r){return r.status==='warn';})){btn.className='btn-health warn';btn.style.display='flex';document.getElementById('healthDotLabel').textContent='Atencao';}
+  else if(v.some(function(r){return r.status==='warn';})){btn.className='btn-health warn';btn.style.display='flex';document.getElementById('healthDotLabel').textContent='Atenção';}
   else{btn.className='btn-health';btn.style.display='flex';document.getElementById('healthDotLabel').textContent='Sistemas OK';}
 }
 
@@ -5667,63 +5815,6 @@ anyGerarAlertas=function(produtos){
   if(z.length) anyRegistrarHistoricoAlerta('estoque_zerado','Zerado: '+z.length+' SKU(s)',z.slice(0,3).map(function(p){return p.nome;}).join(', '));
   if(c.length) anyRegistrarHistoricoAlerta('estoque_critico','Critico: '+c.length+' SKU(s)',c.slice(0,3).map(function(p){return p.nome;}).join(', '));
 };
-
-function abrirHistorico(){
-  document.getElementById('histModalOverlay').classList.add('open'); lucide.createIcons();
-  var body=document.getElementById('histBody');
-  body.innerHTML='<div class="hist-empty" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:40px;"><div style="width:22px;height:22px;border:2px solid rgba(212,160,23,0.3);border-top-color:var(--accent-amber);border-radius:50%;animation:spin 0.9s linear infinite;"></div><p>Carregando...</p></div>';
-
-  // Notificacoes locais do painel como fonte imediata
-  var locais = (typeof NOTIFICACOES_HOJE !== 'undefined' ? NOTIFICACOES_HOJE : []).map(function(n){
-    return { tipo: n.critico ? 'painel_critico' : 'painel_info', titulo: n.titulo, descricao: n.desc, hora: n.hora, ts: Date.now() - (Math.random()*1000), _local: true, link: n.link };
-  });
-
-  // Timeout de segurança: se Firebase demorar mais de 5s, mostra só os locais
-  var timeoutId = setTimeout(function(){
-    renderHistoricoItens(body, locais);
-  }, 5000);
-
-  db.ref('historico_alertas').orderByChild('ts').limitToLast(100).once('value', function(snap){
-    clearTimeout(timeoutId);
-    var firebase_itens = [];
-    snap.forEach(function(c){ firebase_itens.push(c.val()); });
-    // Mescla: Firebase + locais (sem duplicar)
-    var todos = firebase_itens.concat(locais);
-    todos.sort(function(a,b){ return b.ts - a.ts; });
-    renderHistoricoItens(body, todos);
-  }, function(){
-    // Erro de leitura: mostra só os locais
-    clearTimeout(timeoutId);
-    renderHistoricoItens(body, locais);
-  });
-}
-
-function renderHistoricoItens(body, itens){
-  if(!itens.length){
-    body.innerHTML='<div class="hist-empty" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:48px;"><i data-lucide="inbox" style="width:30px;height:30px;opacity:0.3;"></i><p>Nenhum alerta registrado ainda.</p><span style="font-size:11px;opacity:0.5;">Alertas aparecem aqui ao sincronizar estoque ou solicitar reposição.</span></div>';
-    lucide.createIcons(); return;
-  }
-  var icM={reposicao:'📦',estoque_zerado:'🔴',estoque_critico:'🟡',sistema:'⚡',painel_critico:'⚠️',painel_info:'📋'};
-  var bgM={reposicao:'rgba(212,160,23,0.15)',estoque_zerado:'rgba(204,40,40,0.15)',estoque_critico:'rgba(212,160,23,0.12)',painel_critico:'rgba(204,40,40,0.12)',painel_info:'rgba(255,255,255,0.06)'};
-  body.innerHTML = itens.map(function(i){
-    var localTag = i._local ? '<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--text-secondary);margin-left:6px;letter-spacing:1px;">HOJE</span>' : '';
-    var linkOpen  = i.link ? '<a href="'+i.link+'" style="text-decoration:none;color:inherit;display:contents;">' : '';
-    var linkClose = i.link ? '</a>' : '';
-    return '<div class="hist-item" style="'+(i._local?'border-left:2px solid rgba(212,160,23,0.3);':'')+'">'+
-      linkOpen+
-      '<div class="hist-icon" style="background:'+(bgM[i.tipo]||'rgba(255,255,255,0.05)')+'">'+(icM[i.tipo]||'📋')+'</div>'+
-      '<div style="flex:1;">'+
-        '<div class="hist-info-title">'+(i.titulo||'Alerta')+localTag+'</div>'+
-        (i.descricao?'<div class="hist-info-desc">'+i.descricao+'</div>':'')+
-        '<div class="hist-info-meta">'+(i.hora||'')+(i.email?' · '+i.email.split('@')[0]:'')+'</div>'+
-      '</div>'+
-      linkClose+
-    '</div>';
-  }).join('');
-  lucide.createIcons();
-}
-function fecharHistorico(){document.getElementById('histModalOverlay').classList.remove('open');}
-document.getElementById('histModalOverlay').addEventListener('click',function(e){if(e.target===this)fecharHistorico();});
 
 // Dashboard Financeiro
 var _finConfirmados = [];
@@ -5773,7 +5864,13 @@ function renderFinanceiro(){
   var ph    = PED_TODOS.filter(function(p){ return new Date(p.data).toDateString()===h.toDateString(); });
   var pgCache = pm.filter(function(p){ return p.status==='PAGO'; });
   var pePend  = pm.filter(function(p){ return p.status==='PENDENTE'; });
-  var fmt = function(v){ return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0}); };
+  var fmt = function(v){ return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+  // Helper: fonte adaptativa para não cortar em nenhum card
+  var fmtKpi = function(v) {
+    var str = fmt(v);
+    var fs = str.length > 17 ? '13px' : str.length > 14 ? '15px' : str.length > 10 ? '16px' : '22px';
+    return '<span style="font-size:'+fs+';white-space:nowrap;display:block;">'+str+'</span>';
+  };
 
   // Receita enviados/entregues vem do Firebase (calculado pelo Apps Script)
   var rEnv   = _finFirebaseData ? (_finFirebaseData.receita || 0) : 0;
@@ -5826,11 +5923,11 @@ function renderFinanceiro(){
 
   body.innerHTML=
     '<div class="fin-kpi-row">'+
-    '<div class="fin-kpi fin-kpi-receita"><div class="fin-kpi-lbl">Receita do Mês</div><div class="fin-kpi-val">'+fmt(rM)+'</div><div class="fin-kpi-sub">'+qtdTot+' pedidos · Hoje: '+fmt(rH)+'</div>'+bkHtml+'</div>'+
-    '<div class="fin-kpi fin-kpi-pendente"><div class="fin-kpi-lbl">Em Aberto (Pendente)</div><div class="fin-kpi-val">'+fmt(rP)+'</div><div class="fin-kpi-sub">'+pePend.length+' pedidos aguardando pagamento</div></div>'+
-    '<div class="fin-kpi fin-kpi-ticket"><div class="fin-kpi-lbl">Ticket Médio</div><div class="fin-kpi-val">'+fmt(tk)+'</div><div class="fin-kpi-sub">pago + enviado + entregue</div></div>'+
+    '<div class="fin-kpi fin-kpi-receita"><div class="fin-kpi-lbl">Receita do Mês</div><div class="fin-kpi-val">'+fmtKpi(rM)+'</div><div class="fin-kpi-sub">'+qtdTot+' pedidos · Hoje: '+fmt(rH)+'</div>'+bkHtml+'</div>'+
+    '<div class="fin-kpi fin-kpi-pendente"><div class="fin-kpi-lbl">Em Aberto (Pendente)</div><div class="fin-kpi-val">'+fmtKpi(rP)+'</div><div class="fin-kpi-sub">'+pePend.length+' pedidos aguardando pagamento</div></div>'+
+    '<div class="fin-kpi fin-kpi-ticket"><div class="fin-kpi-lbl">Ticket Médio</div><div class="fin-kpi-val">'+fmtKpi(tk)+'</div><div class="fin-kpi-sub">pago + enviado + entregue</div></div>'+
     '</div>'+
-    '<div class="fin-section-title">Ranking de Canais — Receita do Mês</div>'+
+    '<div style="display:flex;gap:10px;margin-bottom:16px;"><a href="evolucao_de_vendas.html" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:rgba(31,189,114,0.08);border:1px solid rgba(31,189,114,0.25);border-radius:8px;color:var(--accent-green);font-size:12px;font-weight:600;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Evolução de Vendas</a><a href="cancelamentos.html" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:rgba(204,40,40,0.08);border:1px solid rgba(204,40,40,0.25);border-radius:8px;color:var(--accent-red);font-size:12px;font-weight:600;text-decoration:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Cancelamentos</a></div>'+'<div class="fin-section-title">Ranking de Canais — Receita do Mês</div>'+
     '<div class="fin-ranking">'+
     (rnk.length?rnk.map(function(e,i){
       var n=e[0],c=e[1],pct=tV>0?Math.round((c.v/tV)*100):0,bw=Math.round((c.v/mxV)*100);
@@ -5838,7 +5935,7 @@ function renderFinanceiro(){
         '<div class="fin-rank-pos '+(i<3?['gold','silver','bronze'][i]:'')+'">'+( i<3?md[i]:'#'+(i+1))+'</div>'+
         '<div class="fin-rank-name">'+n+' <span style="font-size:10px;color:var(--text-secondary);">'+c.qtd+' ped.</span></div>'+
         '<div class="fin-rank-bar-bg"><div class="fin-rank-bar-fill" style="width:'+bw+'%"></div></div>'+
-        '<div class="fin-rank-val">'+fmt(c.v)+'</div>'+
+        '<div class="fin-rank-val" style="font-size:13px;min-width:150px;">'+fmt(c.v)+'</div>'+
         '<div class="fin-rank-pct">'+pct+'%</div>'+
       '</div>';
     }).join(''):'<div class="fin-empty">Sem dados de canal.</div>')+
@@ -5846,38 +5943,330 @@ function renderFinanceiro(){
   lucide.createIcons();
 }
 function renderTVFinanceiro(el){
-  var h=new Date(),fm=function(p){var d=new Date(p.data);return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();};
-  var pm=PED_TODOS.filter(fm);
-  var mapaTV={};
-  pm.filter(function(p){return isReceita(p.status);}).forEach(function(p){mapaTV[p.numero]=p;});
-  (_finConfirmados||[]).filter(fm).forEach(function(p){if(!mapaTV[p.numero])mapaTV[p.numero]=p;});
-  var pgTodos=Object.values(mapaTV);
-  var pe=pm.filter(function(p){return isPendente(p.status);});
-  var fmt=function(v){return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0});};
-  var r=pgTodos.reduce(function(s,p){return s+p.valor;},0);
-  var a=pe.reduce(function(s,p){return s+p.valor;},0);
-  var tk=pgTodos.length>0?r/pgTodos.length:0;
-  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">'+
-    '<div style="background:rgba(34,197,94,0.1);border:1px solid var(--border);border-radius:14px;padding:22px 24px;"><div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;">RECEITA DO MÊS</div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--accent-financeiro);">'+fmt(r)+'</div><div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">'+pgTodos.length+' pedidos confirmados</div></div>'+
-    '<div style="background:rgba(212,160,23,0.1);border:1px solid var(--border);border-radius:14px;padding:22px 24px;"><div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;">EM ABERTO</div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--accent-amber);">'+fmt(a)+'</div><div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">'+pe.length+' pendentes</div></div>'+
-    '<div style="background:rgba(45,125,210,0.1);border:1px solid var(--border);border-radius:14px;padding:22px 24px;"><div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;">TICKET MÉDIO</div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--accent-blue);">'+fmt(tk)+'</div></div>'+
-  '</div>';
+  var h=new Date(), fm=function(p){var d=new Date(p.data);return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();};
+  var pm=(PED_TODOS||[]).filter(fm);
+  var pagos=pm.filter(function(p){return p.status==='PAGO';});
+  var pend=pm.filter(function(p){return p.status==='PENDENTE';});
+  var rPago=pagos.reduce(function(s,p){return s+p.valor;},0);
+  var rPend=pend.reduce(function(s,p){return s+p.valor;},0);
+  var fmt=function(v){return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var md=['🥇','🥈','🥉'];
+
+  function _render(rEnv, qtdEnv, porCanal) {
+    var rTotal=rPago+rEnv, qtdTot=pagos.length+qtdEnv;
+    var tk=qtdTot>0?rTotal/qtdTot:0;
+
+    // Ranking de canais: merge cache + Firebase
+    var can={};
+    pagos.forEach(function(p){if(!can[p.canal])can[p.canal]={qtd:0,v:0};can[p.canal].qtd++;can[p.canal].v+=p.valor;});
+    if(porCanal){Object.entries(porCanal).forEach(function(e){var n=pedNomeCanal(e[0])||e[0];if(!can[n])can[n]={qtd:0,v:0};can[n].qtd+=(e[1].qtd||0);can[n].v+=(e[1].valor||0);});}
+    var rnk=Object.entries(can).sort(function(a,b){return b[1].v-a[1].v;}).slice(0,5);
+    var tV=rnk.reduce(function(s,e){return s+e[1].v;},0);
+
+    el.innerHTML=
+      '<div style="padding:24px 44px;width:100%;box-sizing:border-box;">'+
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">'+
+      '<div style="background:rgba(31,189,114,0.08);border:1px solid rgba(31,189,114,0.3);border-radius:14px;padding:20px;">'+
+        '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-green);margin-bottom:8px;">💰 RECEITA DO MÊS</div>'+
+        '<div style="font-size:34px;font-weight:800;color:var(--accent-green);margin-bottom:8px;">'+fmt(rTotal)+'</div>'+
+        '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">✓ Pago: '+fmt(rPago)+' ('+pagos.length+')</div>'+
+        '<div style="font-size:12px;color:var(--text-secondary);">🚚 Env/Entregue: '+fmt(rEnv)+' ('+qtdEnv+')</div></div>'+
+      '<div style="background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.3);border-radius:14px;padding:20px;">'+
+        '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-amber);margin-bottom:8px;">⏳ EM ABERTO</div>'+
+        '<div style="font-size:34px;font-weight:800;color:var(--accent-amber);margin-bottom:8px;">'+fmt(rPago+rPend)+'</div>'+
+        '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">'+pagos.length+' pagos aguard. envio</div>'+
+        '<div style="font-size:12px;color:var(--text-secondary);">'+pend.length+' pendentes</div></div>'+
+      '<div style="background:rgba(45,125,210,0.08);border:1px solid rgba(45,125,210,0.3);border-radius:14px;padding:20px;">'+
+        '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-blue);margin-bottom:8px;">📊 TICKET MÉDIO</div>'+
+        '<div style="font-size:34px;font-weight:800;color:var(--accent-blue);margin-bottom:8px;">'+fmt(tk)+'</div>'+
+        '<div style="font-size:12px;color:var(--text-secondary);">'+qtdTot+' pedidos no total</div></div></div>'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text-secondary);margin-bottom:10px;">RANKING DE CANAIS — RECEITA</div>'+
+      '<div style="display:flex;flex-direction:column;gap:7px;">'+
+      rnk.map(function(e,i){
+        var pct=tV>0?Math.round((e[1].v/tV)*100):0;
+        return '<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;">'+
+          '<div style="width:28px;text-align:center;font-size:16px;">'+(i<3?md[i]:'#'+(i+1))+'</div>'+
+          '<div style="flex:1;font-size:14px;font-weight:600;">'+e[0]+' <span style="font-size:11px;color:var(--text-secondary);">'+e[1].qtd+' ped.</span></div>'+
+          '<div style="width:90px;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--accent-green);border-radius:3px;"></div></div>'+
+          '<div style="font-size:14px;font-weight:700;color:var(--accent-green);min-width:110px;text-align:right;">'+fmt(e[1].v)+'</div>'+
+          '<div style="font-size:12px;color:var(--text-secondary);min-width:34px;text-align:right;">'+pct+'%</div>'+
+        '</div>';
+      }).join('')+'</div></div>';
+  }
+
+  if(_finFirebaseData&&_finFirebaseData.receita){
+    _render(_finFirebaseData.receita,_finFirebaseData.qtd||0,_finFirebaseData.porCanal);
+  } else {
+    db.ref('financeiro/enviados').once('value',function(snap){
+      var d=snap.val();
+      var rEnv=(d&&d.mes===(h.getMonth()+1)&&d.ano===h.getFullYear())?(d.receita||0):0;
+      var qtdEnv=(d&&d.mes===(h.getMonth()+1)&&d.ano===h.getFullYear())?(d.qtd||0):0;
+      var porCanal=(d&&d.porCanal)?d.porCanal:null;
+      if(d)_finFirebaseData=d;
+      _render(rEnv,qtdEnv,porCanal);
+    });
+  }
 }
 function renderTVMural(el){db.ref('mural').orderByChild('ts').limitToLast(4).once('value',function(snap){var ns=[];snap.forEach(function(c){ns.push(Object.assign({_key:c.key},c.val()));});ns.sort(function(a,b){return b.ts-a.ts;});if(!ns.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-secondary);">Nenhum recado ainda.</div>';return;}el.innerHTML=ns.map(function(n){var i=(n.nome||'?').split(' ').map(function(p){return p[0]||'';}).join('').slice(0,2).toUpperCase();return '<div style="display:flex;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid var(--border);margin-bottom:10px;"><div style="width:38px;height:38px;border-radius:50%;background:rgba(31,189,114,0.18);border:1px solid rgba(31,189,114,0.3);color:var(--accent-green);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+i+'</div><div><div style="font-size:13px;font-weight:600;margin-bottom:4px;">'+(n.nome||n.email)+' <span style="font-size:11px;color:var(--text-secondary);">'+(n.hora||'')+'</span></div><div style="font-size:13px;color:var(--text-secondary);">'+(n.texto||'').substring(0,140)+'</div></div></div>';}).join('');});}
 
 // Ligar novos botoes apos login / ocultar no logout
+function mostrarBotoesUI() {
+  ['btnHealthStatus','btnFinanceiroBar','btnTVModeBar'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='flex';});
+  var btnMural = document.getElementById('btnMural');
+  if(btnMural) btnMural.style.display='flex';
+}
 var _iniUIorig=inicializarUI;
 inicializarUI=function(email){
   _iniUIorig(email);
-  ['btnHealthStatus','btnFinanceiro','btnHistorico','btnTVMode'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='flex';});
+  mostrarBotoesUI();
   setTimeout(function(){Promise.all(HEALTH_SERVICES.map(function(s){return s.checkFn().then(function(r){_healthResults[s.id]=r;}).catch(function(){});})).then(function(){atualizarBotaoHealth();});},2500);
 };
 var _logoutOrig=fazerLogout;
 fazerLogout=function(motivo){
   _logoutOrig(motivo);
-  ['btnHealthStatus','btnFinanceiro','btnHistorico','btnTVMode'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['btnHealthStatus','btnFinanceiroBar','btnTVModeBar','btnMural'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
 };
 
+// Se já está logado ao voltar de outra página, mostra botões imediatamente
+(function(){
+  var sess = sessionStorage.getItem('eh_painel_auth');
+  if(sess){ try{ var s=JSON.parse(sess); if(s && s.email){ mostrarBotoesUI(); } }catch(e){} }
+})();
+
+
+// ══ TV MODE ══════════════════════════════════════════════════════════════════
+var tvInterval = null, tvCurrentSlide = 0, tvProgressInterval = null;
+var TV_SLIDE_DURATION = 15000;
+
+var TV_SLIDES = [
+  { label: '📦 Estoque',        render: renderTVEstoque,    canal: '3p' },
+  { label: '🛒 Pedidos',        render: renderTVPedidos,    canal: '3p' },
+  { label: '💰 Receita do Mês', render: renderTVFinanceiro, canal: '3p' },
+  { label: '🏪 Madeira Madeira', render: renderTVMadeira,   canal: '1p' },
+  { label: '💬 Mural',          render: renderTVMural,      canal: 'all' },
+  { label: '📊 Resumo Geral',   render: renderTVResumo,     canal: '3p' }
+];
+
+function abrirTVMode() {
+  var ov = document.getElementById('tv-mode-overlay');
+  if(!ov) return;
+  ov.classList.add('open');
+  tvCurrentSlide = 0;
+  tvMostrarSlide(0);
+  tvIniciarTimer();
+}
+
+function tvNavProximo() {
+  clearInterval(tvInterval); clearInterval(tvProgressInterval);
+  tvCurrentSlide = (tvCurrentSlide+1) % TV_SLIDES.length;
+  tvMostrarSlide(tvCurrentSlide); tvIniciarTimer();
+}
+function tvNavAnterior() {
+  clearInterval(tvInterval); clearInterval(tvProgressInterval);
+  tvCurrentSlide = (tvCurrentSlide-1+TV_SLIDES.length) % TV_SLIDES.length;
+  tvMostrarSlide(tvCurrentSlide); tvIniciarTimer();
+}
+function fecharTVMode() {
+  var ov = document.getElementById('tv-mode-overlay');
+  if(ov) ov.classList.remove('open');
+  clearInterval(tvInterval);
+  clearInterval(tvProgressInterval);
+}
+
+function tvIniciarTimer() {
+  clearInterval(tvInterval);
+  clearInterval(tvProgressInterval);
+  var start = Date.now();
+  tvProgressInterval = setInterval(function() {
+    var pct = Math.min(((Date.now()-start)/TV_SLIDE_DURATION)*100, 100);
+    var pb = document.getElementById('tvProgressBar');
+    if(pb) pb.style.width = pct+'%';
+  }, 100);
+  tvInterval = setInterval(function() {
+    tvCurrentSlide = (tvCurrentSlide+1) % TV_SLIDES.length;
+    tvMostrarSlide(tvCurrentSlide);
+    tvIniciarTimer();
+  }, TV_SLIDE_DURATION);
+}
+
+function tvMostrarSlide(idx) {
+  var slide = TV_SLIDES[idx];
+  var lbl = document.getElementById('tvSlideLabel');
+  var ind = document.getElementById('tvSlideIndicator');
+  var pb  = document.getElementById('tvProgressBar');
+  var el  = document.getElementById('tvContent');
+  if(lbl) lbl.innerHTML = slide.label + (slide.canal==='3p' ? ' <span style="font-size:10px;padding:1px 6px;background:rgba(200,30,30,0.2);border:1px solid rgba(200,30,30,0.4);border-radius:4px;color:#e05555;vertical-align:middle;">3P</span>' : slide.canal==='1p' ? ' <span style="font-size:10px;padding:1px 6px;background:rgba(156,111,255,0.2);border:1px solid rgba(156,111,255,0.4);border-radius:4px;color:#9c6fff;vertical-align:middle;">1P</span>' : '');
+  if(ind) ind.textContent = (idx+1)+' / '+TV_SLIDES.length;
+  if(pb)  pb.style.width = '0%';
+  if(!el) return;
+  el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-secondary);font-size:14px;">Carregando...</div>';
+  slide.render(el);
+}
+
+function _fmtV(v){ return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function _fmtN(n){ return Number(n).toLocaleString('pt-BR'); }
+
+// ── Slide 1: Estoque ──────────────────────────────────────────────────────────
+function renderTVEstoque(el) {
+  if(!ANY_PRODUTOS||!ANY_PRODUTOS.length){ el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text-secondary);">Abra o painel de Estoque primeiro.</div>'; return; }
+  var criticos=ANY_PRODUTOS.filter(function(p){return p.estoque===0;});
+  var baixos=ANY_PRODUTOS.filter(function(p){return p.estoque>0&&p.estoque<=MINIMO_PADRAO;});
+  var total=ANY_PRODUTOS.reduce(function(s,p){return s+p.estoque;},0);
+  var rows=ANY_PRODUTOS.slice().sort(function(a,b){return a.estoque-b.estoque;}).slice(0,18).map(function(p){
+    var cor=p.estoque===0?'var(--accent-red)':p.estoque<=MINIMO_PADRAO?'var(--accent-amber)':'var(--accent-green)';
+    var st=p.estoque===0?'Zerado':p.estoque<=MINIMO_PADRAO?'Baixo':'OK';
+    return '<tr><td style="padding:7px 12px;font-size:13px;">'+( p.nome||p.sku)+'</td>'+
+      '<td style="padding:7px 12px;text-align:center;font-size:14px;font-weight:700;color:'+cor+';">'+_fmtN(p.estoque)+'</td>'+
+      '<td style="padding:7px 12px;text-align:center;font-size:12px;color:'+cor+';">'+st+'</td></tr>';
+  }).join('');
+  el.innerHTML=
+    '<div style="padding:28px 44px;width:100%;box-sizing:border-box;">'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;">'+
+    '<div style="background:rgba(204,40,40,0.1);border:1px solid rgba(204,40,40,0.3);border-radius:12px;padding:18px;text-align:center;">'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-red);margin-bottom:6px;">ZERADOS</div>'+
+      '<div style="font-size:42px;font-weight:800;color:var(--accent-red);">'+criticos.length+'</div></div>'+
+    '<div style="background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.3);border-radius:12px;padding:18px;text-align:center;">'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-amber);margin-bottom:6px;">ABAIXO IDEAL</div>'+
+      '<div style="font-size:42px;font-weight:800;color:var(--accent-amber);">'+baixos.length+'</div></div>'+
+    '<div style="background:rgba(31,189,114,0.08);border:1px solid rgba(31,189,114,0.25);border-radius:12px;padding:18px;text-align:center;">'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-green);margin-bottom:6px;">TOTAL EM ESTOQUE</div>'+
+      '<div style="font-size:42px;font-weight:800;color:var(--accent-green);">'+_fmtN(total)+'</div></div></div>'+
+    '<table style="width:100%;border-collapse:collapse;">'+
+    '<thead><tr style="border-bottom:1px solid var(--border);">'+
+    '<th style="padding:7px 12px;text-align:left;font-size:10px;color:var(--text-secondary);font-weight:600;letter-spacing:1px;">PRODUTO</th>'+
+    '<th style="padding:7px 12px;text-align:center;font-size:10px;color:var(--text-secondary);font-weight:600;letter-spacing:1px;">ESTOQUE</th>'+
+    '<th style="padding:7px 12px;text-align:center;font-size:10px;color:var(--text-secondary);font-weight:600;letter-spacing:1px;">STATUS</th>'+
+    '</tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+
+// ── Slide 2: Pedidos ──────────────────────────────────────────────────────────
+function renderTVPedidos(el) {
+  if(!PED_TODOS||!PED_TODOS.length){ el.innerHTML='<div style="padding:40px;text-align:center;color:var(--text-secondary);">Abra o painel de Pedidos primeiro.</div>'; return; }
+  var h=new Date();
+  var fm=function(p){var d=new Date(p.data);return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();};
+  var fh=function(p){return new Date(p.data).toDateString()===h.toDateString();};
+  var pm=PED_TODOS.filter(fm), ph=PED_TODOS.filter(fh);
+  var pagos=pm.filter(function(p){return p.status==='PAGO';});
+  var pend=pm.filter(function(p){return p.status==='PENDENTE';});
+  var vPend=pend.reduce(function(s,p){return s+p.valor;},0);
+  var vPago=pagos.reduce(function(s,p){return s+p.valor;},0);
+  var vHoje=ph.reduce(function(s,p){return s+p.valor;},0);
+  var tm=pagos.length?vPago/pagos.length:0;
+  var can={};
+  pagos.forEach(function(p){if(!can[p.canal])can[p.canal]={qtd:0,v:0};can[p.canal].qtd++;can[p.canal].v+=p.valor;});
+  var rnk=Object.entries(can).sort(function(a,b){return b[1].v-a[1].v;}).slice(0,5);
+  var tV=rnk.reduce(function(s,e){return s+e[1].v;},0);
+  var md=['🥇','🥈','🥉'];
+  el.innerHTML=
+    '<div style="padding:28px 44px;width:100%;box-sizing:border-box;">'+
+    '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:22px;">'+
+    '<div style="background:rgba(31,189,114,0.08);border:1px solid rgba(31,189,114,0.25);border-radius:12px;padding:20px;">'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-green);margin-bottom:8px;">✅ PAGOS — AGUARDANDO ENVIO</div>'+
+      '<div style="font-size:48px;font-weight:800;color:var(--accent-green);line-height:1;">'+pagos.length+'</div>'+
+      '<div style="font-size:13px;color:var(--text-secondary);margin-top:6px;">'+_fmtV(vPago)+'</div></div>'+
+    '<div style="background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.25);border-radius:12px;padding:20px;">'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-amber);margin-bottom:8px;">⏳ PENDENTES — AGUARDANDO PAGAMENTO</div>'+
+      '<div style="font-size:48px;font-weight:800;color:var(--accent-amber);line-height:1;">'+pend.length+'</div>'+
+      '<div style="font-size:13px;color:var(--text-secondary);margin-top:6px;">'+_fmtV(vPend)+'</div></div>'+
+    '<div style="background:rgba(45,125,210,0.08);border:1px solid rgba(45,125,210,0.25);border-radius:12px;padding:20px;">'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-blue);margin-bottom:8px;">📅 PEDIDOS HOJE</div>'+
+      '<div style="font-size:48px;font-weight:800;color:var(--accent-blue);line-height:1;">'+ph.length+'</div>'+
+      '<div style="font-size:13px;color:var(--text-secondary);margin-top:6px;">'+_fmtV(vHoje)+'</div></div>'+
+    '<div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:20px;">'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text-secondary);margin-bottom:8px;">🎯 TICKET MÉDIO</div>'+
+      '<div style="font-size:38px;font-weight:800;color:var(--text-primary);line-height:1;">'+_fmtV(tm)+'</div>'+
+      '<div style="font-size:13px;color:var(--text-secondary);margin-top:6px;">média por pedido pago</div></div></div>'+
+    '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text-secondary);margin-bottom:10px;">RANKING DE CANAIS — PAGOS</div>'+
+    '<div style="display:flex;flex-direction:column;gap:7px;">'+
+    rnk.map(function(e,i){
+      var pct=tV>0?Math.round((e[1].v/tV)*100):0;
+      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;">'+
+        '<div style="width:30px;text-align:center;font-size:17px;">'+(i<3?md[i]:'#'+(i+1))+'</div>'+
+        '<div style="flex:1;font-size:14px;font-weight:600;">'+e[0]+' <span style="font-size:11px;color:var(--text-secondary);">'+e[1].qtd+' ped.</span></div>'+
+        '<div style="width:100px;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--accent-green);border-radius:3px;"></div></div>'+
+        '<div style="font-size:14px;font-weight:700;color:var(--accent-green);min-width:110px;text-align:right;">'+_fmtV(e[1].v)+'</div>'+
+        '<div style="font-size:12px;color:var(--text-secondary);min-width:34px;text-align:right;">'+pct+'%</div>'+
+      '</div>';
+    }).join('')+'</div></div>';
+}
+
+
+// ── Slide 5: Resumo Geral ─────────────────────────────────────────────────────
+function renderTVResumo(el) {
+  var h=new Date();
+  var fm=function(p){var d=new Date(p.data);return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();};
+  var pm=(PED_TODOS||[]).filter(fm);
+  var fh=function(p){return new Date(p.data).toDateString()===h.toDateString();};
+  var ph=(PED_TODOS||[]).filter(fh);
+  var pagos=pm.filter(function(p){return p.status==='PAGO';});
+  var pend=pm.filter(function(p){return p.status==='PENDENTE';});
+  var rPago=pagos.reduce(function(s,p){return s+p.valor;},0);
+  var rPend=pend.reduce(function(s,p){return s+p.valor;},0);
+  var vHoje=ph.filter(function(p){return p.status==='PAGO';}).reduce(function(s,p){return s+p.valor;},0);
+  var rEnv=_finFirebaseData?(_finFirebaseData.receita||0):0;
+  var qtdEnv=_finFirebaseData?(_finFirebaseData.qtd||0):0;
+  var rTotal=rPago+rEnv;
+  var estZ=(ANY_PRODUTOS||[]).filter(function(p){return p.estoque===0;}).length;
+  var estB=(ANY_PRODUTOS||[]).filter(function(p){return p.estoque>0&&p.estoque<=MINIMO_PADRAO;}).length;
+  var estOK=(ANY_PRODUTOS||[]).length-estZ-estB;
+  var fmt=function(v){return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});};
+
+  el.innerHTML=
+    '<div style="padding:24px 44px;width:100%;box-sizing:border-box;">'+
+    '<div style="font-size:11px;font-weight:700;letter-spacing:2px;color:var(--text-secondary);margin-bottom:16px;">'+
+      h.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}).toUpperCase()+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;">'+
+    '<div style="background:rgba(31,189,114,0.08);border:1px solid rgba(31,189,114,0.3);border-radius:14px;padding:20px;">'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-green);margin-bottom:8px;">💰 RECEITA DO MÊS</div>'+
+      '<div style="font-size:34px;font-weight:800;color:var(--accent-green);line-height:1;margin-bottom:10px;">'+fmt(rTotal)+'</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:3px;">✓ Pago: '+fmt(rPago)+' ('+pagos.length+')</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:3px;">🚚 Env/Entregue: '+fmt(rEnv)+' ('+qtdEnv+')</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);">📅 Hoje: '+fmt(vHoje)+' ('+ph.filter(function(p){return p.status==="PAGO";}).length+' ped.)</div>'+
+    '</div>'+
+    '<div style="background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.3);border-radius:14px;padding:20px;">'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-amber);margin-bottom:8px;">⏳ EM ABERTO</div>'+
+      '<div style="font-size:34px;font-weight:800;color:var(--accent-amber);line-height:1;margin-bottom:10px;">'+fmt(rPago+rPend)+'</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:3px;">'+pagos.length+' pagos aguard. envio</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:3px;">'+pend.length+' pendentes pagamento</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);">Ticket médio: '+fmt((pagos.length+pend.length)>0?(rPago+rPend)/(pagos.length+pend.length):0)+'</div>'+
+    '</div>'+
+    '<div style="background:rgba(204,40,40,0.08);border:1px solid rgba(204,40,40,0.3);border-radius:14px;padding:20px;">'+
+      '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-red);margin-bottom:8px;">📦 ESTOQUE</div>'+
+      '<div style="font-size:34px;font-weight:800;color:var(--accent-red);line-height:1;margin-bottom:10px;">'+estZ+' zerados</div>'+
+      '<div style="font-size:12px;color:var(--accent-amber);margin-bottom:3px;">⚠️ '+estB+' abaixo do ideal</div>'+
+      '<div style="font-size:12px;color:var(--accent-green);">✓ '+estOK+' SKUs OK</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);margin-top:3px;">'+(ANY_PRODUTOS||[]).length+' SKUs monitorados</div>'+
+    '</div></div>'+
+    // Últimos pedidos de hoje
+    '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--text-secondary);margin-bottom:10px;">NOTIFICAÇÕES</div>'+
+    '<div style="display:flex;flex-direction:column;gap:7px;">'+
+    (NOTIFICACOES_HOJE||[]).slice(0,5).map(function(n){
+      return '<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:'+(n.cor||'rgba(255,255,255,0.03)')+';border:1px solid rgba(255,255,255,0.08);border-radius:10px;">'+
+        '<div style="font-size:18px;flex-shrink:0;">'+(n.icon||'🔔')+'</div>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:13px;font-weight:600;margin-bottom:2px;">'+(n.titulo||'')+'</div>'+
+          '<div style="font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(n.desc||'')+'</div>'+
+        '</div>'+
+        (n.critico?'<div style="font-size:10px;color:var(--accent-red);font-weight:700;flex-shrink:0;margin-top:2px;">CRÍTICO</div>':'')+
+      '</div>';
+    }).join('')+
+    '</div></div>';
+}
+
+
+// ── Slide Madeira Madeira (1P) ────────────────────────────────────────────────
+function renderTVMadeira(el) {
+  el.innerHTML =
+    '<div style="padding:28px 44px;width:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;gap:20px;">'+
+    '<div style="font-size:64px;">🏪</div>'+
+    '<div style="font-size:28px;font-weight:800;color:var(--text-primary);">Madeira Madeira</div>'+
+    '<div style="font-size:15px;color:var(--text-secondary);max-width:480px;line-height:1.6;">Dados completos de faturamento, metas e projeções disponíveis no dashboard dedicado.</div>'+
+    '<a href="madeira_vendas.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:rgba(156,111,255,0.12);border:1px solid rgba(156,111,255,0.35);border-radius:10px;color:#9c6fff;font-size:15px;font-weight:600;text-decoration:none;margin-top:8px;">'+
+      'Acessar dashboard Madeira Madeira →'+
+    '</a>'+
+    '</div>';
+}
 </script>
 
 </body>
