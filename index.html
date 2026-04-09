@@ -2130,6 +2130,24 @@ body::before {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
+  /* LOGIN SCREEN */
+  #login-screen {
+    align-items: flex-start;
+    padding: 40px 20px 24px;
+    overflow-y: auto;
+  }
+  .login-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 32px 24px !important;
+    border-radius: 16px !important;
+    margin: auto 0;
+  }
+  .login-brand-block { gap: 12px; margin-bottom: 24px; }
+  .login-logo { height: 56px !important; width: 56px !important; }
+  .login-brand-name .brand-title { font-size: 22px !important; }
+  .login-title { font-size: 20px !important; }
+
   /* Layout base */
   .header, .date-bar, .main, .ticker-wrap, .footer {
     padding-left: 16px;
@@ -3383,8 +3401,8 @@ body::before {
 
         <!-- VENDAS 1P -->
         <a class="card card-mm1p" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/vendas_1P.html" data-title="Vendas 1P · Madeira Madeira" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
-          <div class="icon-wrap" style="background:transparent;border:none;padding:0;width:auto;height:auto;">
-            <img src="./logo_madeira.png" style="height:38px;max-width:140px;object-fit:contain;filter:brightness(1.1);opacity:0.92;" alt="Madeira Madeira">
+          <div class="icon-wrap">
+            <i data-lucide="store" style="width:22px;height:22px;"></i>
           </div>
           <div class="card-tag">Marketplace · 1P</div>
           <h2>Vendas Madeira Madeira</h2>
@@ -4683,12 +4701,15 @@ function switchChannel(ch) {
   const floatBar = document.getElementById('anyFloatBar');
   if (floatBar) floatBar.style.display = is3p ? '' : 'none';
 
+
   // Persistir escolha na sessão
   sessionStorage.setItem('eh_canal_ativo', ch);
 
-  // Ticker: no 1P volta para frases imediatamente
-  if (!is3p && typeof _tickerTransicionar === 'function') {
-    _tickerTransicionar('frases');
+  // Ticker: fora do 3P volta para frases do canal atual
+  if (typeof _tickerTransicionar === 'function') {
+    if (!is3p) {
+      _tickerTransicionar('frases');
+    }
   }
 
   // Re-inicializar ícones Lucide para os novos elementos
