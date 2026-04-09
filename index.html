@@ -3341,7 +3341,7 @@ function inicializarUI(email) {
 
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────────
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
-const NOTIFICACOES_HOJE = [
+let NOTIFICACOES_HOJE = [
   {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 6 variações em alerta ⚠️',desc:'81,8% reservado · Easy Move (2 cores 0%) · Imperatore Branco (0%) · Toronto (0%) · Lopas Atlas (0%) · Sapateira Frassino. Lote do dia (Easy Slim 8PTS + Easy Slim 2025) deve ajudar na cobertura.',hora:'08/04/2026',lida:false,link:'estoque.html',critico:true},
   {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 94,64%',desc:'226 em atraso · R$ 297.062 em aberto · Pior transp.: MTC 88,00% · TEMPO JUSTO 91,41% · RGE 92,30% · TS RJ 93,43% · Transbarbosa 94,92%',hora:'08/04/2026',lida:false,link:'sla_transporte.html',critico:true},
   {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: 117,23% da Meta ✓',desc:'R$ 10,08M faturado · +41,40% vs Fev · +283% Ano x Ano · Projeção R$ 10,42M',hora:'08/04/2026',lida:false,link:'comercial.html',critico:false},
@@ -3351,7 +3351,7 @@ const NOTIFICACOES_HOJE = [
   {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 372 no período',desc:'Jan–Abr: R$ 394,4K · 372 notas · Top motivo: Desistência (36,6% · 136 notas) · Nova Era 104 notas · Ticket médio R$ 1.060',hora:'08/04/2026',lida:false,link:'devolucao.html',critico:false},
   {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: ML laranja ⚠️ · Shopee verde ✓',desc:'Magalu 4,6 Ótimo ✓ · Mercado Livre 2,39 Amarelo ⚠️ · Madeira 1,75 Laranja 🔴 · Shopee 4,8 Ótimo ✓ · Via Varejo 3,1 Amarelo ⚠️',hora:'06/04/2026',lida:false,link:'reputacao.html',critico:false}
 ];
-const TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
+let TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
 
 function inicializarNotificacoes() {
   const visto = sessionStorage.getItem('eh_notif_visto');
