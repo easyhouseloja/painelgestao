@@ -841,7 +841,8 @@ body::before {
 .ped-dias-old { color:var(--accent-red); font-weight:700; }
 .ped-status-badge { font-size:10.5px; font-weight:600; padding:4px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
 .ped-st-pendente { background:rgba(212,160,23,0.12); color:var(--accent-amber); border:1px solid rgba(212,160,23,0.25); }
-.ped-st-pago     { background:rgba(31,189,114,0.1);  color:var(--accent-green); border:1px solid rgba(31,189,114,0.2); }
+.ped-st-pago        { background:rgba(31,189,114,0.1);  color:var(--accent-green); border:1px solid rgba(31,189,114,0.2); }
+.ped-st-confirmado  { background:rgba(45,125,210,0.1);  color:var(--accent-blue);  border:1px solid rgba(45,125,210,0.22); }
 
 .ped-empty { padding:48px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px; color:var(--text-secondary); font-size:13px; }
 
@@ -2558,6 +2559,239 @@ body::before {
   background: #ff7a00 !important;
 }
 
+@keyframes newRowPulse {
+  0%   { background: rgba(45,125,210,0.18); }
+  60%  { background: rgba(45,125,210,0.06); }
+  100% { background: transparent; }
+}
+.ped-row-new { animation: newRowPulse 3.5s ease forwards; }
+
+/* ── EXPORT CSV ── */
+.btn-export-csv {
+  display:flex; align-items:center; gap:6px;
+  padding:6px 14px; border-radius:7px;
+  border:1px solid rgba(31,189,114,0.4); background:rgba(31,189,114,0.08);
+  color:var(--accent-green); font-size:12px; font-weight:600;
+  cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; white-space:nowrap;
+}
+.btn-export-csv:hover { border-color:rgba(31,189,114,0.7); background:rgba(31,189,114,0.16); box-shadow:0 0 12px rgba(31,189,114,0.2); }
+
+/* ── TV MODE ── */
+.btn-tv-mode {
+  display:flex; align-items:center; gap:6px;
+  padding:8px 14px; border-radius:8px;
+  border:1px solid rgba(156,111,255,0.4); background:rgba(156,111,255,0.08);
+  color:var(--accent-purple); font-size:12px; font-weight:600;
+  cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; white-space:nowrap;
+}
+.btn-tv-mode:hover { border-color:rgba(156,111,255,0.7); background:rgba(156,111,255,0.18); box-shadow:0 0 14px rgba(156,111,255,0.25); }
+#tv-mode-overlay {
+  display:none; position:fixed; inset:0; z-index:9000;
+  background:var(--bg-deep); flex-direction:column; overflow:hidden;
+}
+#tv-mode-overlay.open { display:flex; }
+.tv-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 48px; border-bottom:1px solid var(--border);
+  background:rgba(0,0,0,0.9); flex-shrink:0;
+}
+.tv-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--text-primary); }
+.tv-controls { display:flex; align-items:center; gap:12px; }
+.tv-exit-btn {
+  padding:8px 18px; border-radius:8px;
+  border:1px solid rgba(204,40,40,0.5); background:rgba(204,40,40,0.12);
+  color:var(--accent-red2); font-size:13px; font-weight:700;
+  cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s;
+}
+.tv-exit-btn:hover { background:rgba(204,40,40,0.25); border-color:rgba(204,40,40,0.8); }
+.tv-slide-indicator { font-size:12px; color:var(--text-secondary); }
+.tv-content { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.tv-slide { display:none; flex:1; padding:32px 48px; overflow:auto; }
+.tv-slide.active { display:flex; flex-direction:column; }
+.tv-slide-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; margin-bottom:24px; color:var(--text-primary); }
+.tv-progress { height:3px; background:rgba(255,255,255,0.06); flex-shrink:0; }
+.tv-progress-bar { height:100%; background:var(--accent-purple); transition:width 0.4s linear; }
+
+/* ── HEALTH MODAL ── */
+.btn-health {
+  display:none; align-items:center; gap:6px;
+  padding:8px 14px; border-radius:8px;
+  border:1px solid rgba(31,189,114,0.4); background:rgba(31,189,114,0.08);
+  color:var(--accent-green); font-size:12px; font-weight:600;
+  cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif;
+}
+.btn-health:hover { background:rgba(31,189,114,0.18); border-color:rgba(31,189,114,0.7); box-shadow:0 0 12px rgba(31,189,114,0.2); }
+.btn-health.warn { border-color:rgba(212,160,23,0.5); background:rgba(212,160,23,0.08); color:var(--accent-amber); }
+.btn-health.err  { border-color:rgba(204,40,40,0.5);  background:rgba(204,40,40,0.08);  color:#e05555; }
+.health-dot { width:7px; height:7px; border-radius:50%; background:currentColor; box-shadow:0 0 5px currentColor; animation:dotPulse 2s infinite; flex-shrink:0; }
+.health-modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px);
+  z-index:600; display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity 0.25s;
+}
+.health-modal-overlay.open { opacity:1; pointer-events:auto; }
+.health-modal {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:18px;
+  width:540px; max-width:96vw; max-height:80vh; display:flex; flex-direction:column;
+  box-shadow:0 28px 70px rgba(0,0,0,0.6); animation:modalIn 0.25s ease; overflow:hidden;
+}
+.health-modal-hdr {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 26px 16px; border-bottom:1px solid var(--border); flex-shrink:0;
+}
+.health-modal-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; display:flex; align-items:center; gap:9px; }
+.health-modal-close { background:none; border:none; color:var(--text-secondary); cursor:pointer; padding:4px; border-radius:6px; display:flex; transition:color 0.2s; }
+.health-modal-close:hover { color:var(--text-primary); }
+.health-modal-body { padding:20px 26px; overflow-y:auto; flex:1; }
+.health-services { display:flex; flex-direction:column; gap:10px; }
+.health-service {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 18px; border-radius:11px; border:1px solid var(--border);
+  background:rgba(255,255,255,0.02); transition:border-color 0.2s;
+}
+.health-service:hover { border-color:rgba(255,255,255,0.1); }
+.health-service-left {}
+.health-service-name { font-size:13px; font-weight:600; color:var(--text-primary); }
+.health-service-desc { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+.health-status-row { display:flex; align-items:center; gap:7px; }
+.health-status-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.health-status-label { font-size:11.5px; font-weight:600; }
+.hs-ok    .health-status-dot { background:var(--accent-green); box-shadow:0 0 6px rgba(31,189,114,0.7); }
+.hs-ok    .health-status-label { color:var(--accent-green); }
+.hs-warn  .health-status-dot { background:var(--accent-amber); box-shadow:0 0 6px rgba(212,160,23,0.7); }
+.hs-warn  .health-status-label { color:var(--accent-amber); }
+.hs-error .health-status-dot { background:#e05555; box-shadow:0 0 6px rgba(204,40,40,0.7); }
+.hs-error .health-status-label { color:#e05555; }
+.hs-check .health-status-dot { background:var(--text-secondary); animation:pulse 1.5s infinite; }
+.hs-check .health-status-label { color:var(--text-secondary); }
+.health-last-check { font-size:10.5px; color:var(--text-secondary); padding:12px 0 0; text-align:right; }
+
+/* ── ALERT HISTORY MODAL ── */
+.btn-hist {
+  display:none; align-items:center; gap:6px;
+  padding:8px 14px; border-radius:8px;
+  border:1px solid rgba(212,160,23,0.4); background:rgba(212,160,23,0.08);
+  color:var(--accent-amber); font-size:12px; font-weight:600;
+  cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif;
+}
+.btn-hist:hover { background:rgba(212,160,23,0.18); border-color:rgba(212,160,23,0.7); }
+.hist-modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px);
+  z-index:600; display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity 0.25s;
+}
+.hist-modal-overlay.open { opacity:1; pointer-events:auto; }
+.hist-modal {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:18px;
+  width:560px; max-width:96vw; max-height:82vh; display:flex; flex-direction:column;
+  box-shadow:0 28px 70px rgba(0,0,0,0.6); animation:modalIn 0.25s ease; overflow:hidden;
+}
+.hist-modal-hdr {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 26px 16px; border-bottom:1px solid var(--border); flex-shrink:0;
+}
+.hist-modal-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; display:flex; align-items:center; gap:9px; }
+.hist-modal-close { background:none; border:none; color:var(--text-secondary); cursor:pointer; padding:4px; border-radius:6px; display:flex; transition:color 0.2s; }
+.hist-modal-close:hover { color:var(--text-primary); }
+.hist-body { overflow-y:auto; flex:1; }
+.hist-item {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 26px; border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.15s;
+}
+.hist-item:hover { background:rgba(255,255,255,0.02); }
+.hist-item:last-child { border-bottom:none; }
+.hist-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px; }
+.hist-info-title { font-size:12.5px; font-weight:600; color:var(--text-primary); margin-bottom:2px; }
+.hist-info-desc { font-size:11.5px; color:var(--text-secondary); line-height:1.5; }
+.hist-info-meta { font-size:10.5px; color:var(--text-secondary); margin-top:4px; opacity:0.6; }
+.hist-empty { padding:48px; text-align:center; color:var(--text-secondary); font-size:13px; }
+
+/* ── FINANCIAL DASHBOARD MODAL ── */
+.btn-fin {
+  display:none; align-items:center; gap:6px;
+  padding:8px 14px; border-radius:8px;
+  border:1px solid rgba(34,197,94,0.4); background:rgba(34,197,94,0.08);
+  color:var(--accent-financeiro); font-size:12px; font-weight:600;
+  cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif;
+}
+.btn-fin:hover { background:rgba(34,197,94,0.18); border-color:rgba(34,197,94,0.7); }
+.fin-modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px);
+  z-index:600; display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity 0.25s;
+}
+.fin-modal-overlay.open { opacity:1; pointer-events:auto; }
+.fin-modal {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:18px;
+  width:640px; max-width:96vw; max-height:84vh; display:flex; flex-direction:column;
+  box-shadow:0 28px 70px rgba(0,0,0,0.6); animation:modalIn 0.25s ease; overflow:hidden;
+}
+.fin-modal-hdr {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 26px 16px; border-bottom:1px solid var(--border); flex-shrink:0;
+}
+.fin-modal-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; display:flex; align-items:center; gap:9px; }
+.fin-modal-close { background:none; border:none; color:var(--text-secondary); cursor:pointer; padding:4px; border-radius:6px; display:flex; transition:color 0.2s; }
+.fin-modal-close:hover { color:var(--text-primary); }
+.fin-body { padding:22px 26px; overflow-y:auto; flex:1; }
+.fin-kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
+.fin-kpi { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:16px 18px; position:relative; overflow:hidden; }
+.fin-kpi::before { content:""; position:absolute; top:0; left:0; right:0; height:2px; border-radius:12px 12px 0 0; }
+.fin-kpi-receita::before { background:var(--accent-financeiro); }
+.fin-kpi-pendente::before { background:var(--accent-amber); }
+.fin-kpi-ticket::before  { background:var(--accent-blue); }
+.fin-kpi-lbl { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--text-secondary); margin-bottom:6px; }
+.fin-kpi-val { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; }
+.fin-kpi-sub { font-size:11px; color:var(--text-secondary); margin-top:3px; }
+.fin-kpi-receita .fin-kpi-val  { color:var(--accent-financeiro); }
+.fin-kpi-pendente .fin-kpi-val { color:var(--accent-amber); }
+.fin-kpi-ticket .fin-kpi-val   { color:var(--accent-blue); }
+.fin-section-title { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-secondary); margin-bottom:12px; }
+.fin-ranking { display:flex; flex-direction:column; gap:8px; }
+.fin-rank-item {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 14px; border-radius:10px;
+  background:rgba(255,255,255,0.02); border:1px solid var(--border); transition:border-color 0.2s;
+}
+.fin-rank-item:hover { border-color:rgba(255,255,255,0.1); }
+.fin-rank-pos { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; min-width:26px; color:var(--text-secondary); }
+.fin-rank-pos.gold   { color:#ffd700; }
+.fin-rank-pos.silver { color:#b0b8c8; }
+.fin-rank-pos.bronze { color:#cd7f32; }
+.fin-rank-name { flex:1; font-size:13px; font-weight:600; color:var(--text-primary); }
+.fin-rank-bar-bg { flex:2; height:5px; border-radius:3px; background:rgba(255,255,255,0.06); overflow:hidden; }
+.fin-rank-bar-fill { height:100%; border-radius:3px; background:var(--accent-financeiro); transition:width 0.6s ease; }
+.fin-rank-val { font-size:12px; font-weight:700; color:var(--accent-financeiro); min-width:90px; text-align:right; }
+.fin-rank-pct { font-size:10.5px; color:var(--text-secondary); min-width:36px; text-align:right; }
+.fin-empty { padding:40px; text-align:center; color:var(--text-secondary); font-size:13px; }
+
+/* ── MURAL REACTIONS ── */
+.mural-reactions { display:flex; gap:5px; margin-top:9px; flex-wrap:wrap; align-items:center; position:relative; }
+.mural-reaction-btn {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:3px 9px; border-radius:20px;
+  border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04);
+  color:var(--text-secondary); font-size:12px; font-weight:600;
+  cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif;
+}
+.mural-reaction-btn:hover { border-color:rgba(255,255,255,0.22); background:rgba(255,255,255,0.08); color:var(--text-primary); }
+.mural-reaction-btn.mine { border-color:rgba(31,189,114,0.5); background:rgba(31,189,114,0.1); color:var(--accent-green); }
+.mural-add-reaction {
+  padding:3px 9px; border-radius:20px;
+  border:1px dashed rgba(255,255,255,0.15); background:transparent;
+  color:var(--text-secondary); font-size:13px; cursor:pointer;
+  transition:all 0.15s; line-height:1.4;
+}
+.mural-add-reaction:hover { border-color:rgba(255,255,255,0.35); color:var(--text-primary); }
+.mural-emoji-picker {
+  display:none; position:absolute; bottom:calc(100% + 6px); left:0;
+  background:#1c1c1c; border:1px solid rgba(255,255,255,0.12);
+  border-radius:10px; padding:8px; box-shadow:0 12px 40px rgba(0,0,0,0.6);
+  z-index:50; flex-wrap:wrap; gap:4px; width:164px;
+}
+.mural-emoji-picker.open { display:flex; }
+.mural-emoji-opt { font-size:20px; cursor:pointer; padding:4px 6px; border-radius:6px; transition:background 0.1s; }
+.mural-emoji-opt:hover { background:rgba(255,255,255,0.1); }
 .body-1p .datebar-nav {
   display: none !important;
 }
@@ -2681,6 +2915,22 @@ body::before {
         Mural
         <span class="mural-badge" id="muralBadge" style="display:none">0</span>
       </button>
+      <button id="btnHealthStatus" class="btn-health" onclick="abrirHealth()" title="Status dos Serviços">
+        <div class="health-dot"></div>
+        <span id="healthDotLabel">Sistemas OK</span>
+      </button>
+      <button id="btnFinanceiro" class="btn-fin" onclick="abrirFinanceiro()" title="Dashboard Financeiro">
+        <i data-lucide="bar-chart-2" style="width:13px;height:13px"></i>
+        Financeiro
+      </button>
+      <button id="btnHistorico" class="btn-hist" onclick="abrirHistorico()" title="Histórico de Alertas">
+        <i data-lucide="clock" style="width:13px;height:13px"></i>
+        Histórico
+      </button>
+      <button id="btnTVMode" class="btn-tv-mode" style="display:none;" onclick="abrirTVMode()" title="Modo TV">
+        <i data-lucide="monitor" style="width:13px;height:13px"></i>
+        TV Mode
+      </button>
       <div class="user-greeting" id="userGreeting" style="display:none">
         <div class="user-avatar" id="userAvatar"></div>
         <div class="user-info">
@@ -2792,6 +3042,7 @@ body::before {
           <div class="card-tag">Financeiro</div>
           <h2>Gestão de Cobranças</h2>
           <p>Acompanhamento de cartas de débito, conciliação de valores recebidos e pendentes por transportadora.</p>
+
           <div class="card-footer">
             Acessar dashboard <i data-lucide="arrow-right"></i>
           </div>
@@ -3787,8 +4038,11 @@ document.addEventListener("DOMContentLoaded", ()=>{
       </div>
       <div class="ped-search-wrap">
         <i data-lucide="search"></i>
-        <input class="ped-search" id="pedSearch" placeholder="Buscar número ou canal..." oninput="pedRenderTabela()">
+        <input class="ped-search" id="pedSearch" placeholder="Buscar número ou canal..." oninput="pedDebounceBusca()">
       </div>
+      <button class="btn-export-csv" onclick="exportarPedidosCSV()" title="Exportar pedidos filtrados como CSV">
+        <i data-lucide="download" style="width:12px;height:12px;"></i> Exportar CSV
+      </button>
     </div>
 
     <!-- Cards por canal -->
@@ -4426,10 +4680,7 @@ function pedPreCarregar() {
     var TTL = 2 * 60 * 60 * 1000; // 2 horas
 
     if (cacheFirebase && cacheFirebase.dados && (Date.now() - cacheFirebase.ts) < TTL) {
-      // Cache do Firebase ainda válido — usa sem chamar a API
       var dadosFirebase = cacheFirebase.dados;
-
-      // Só atualiza se o Firebase tiver dados mais recentes que o local
       var tsLocal = cacheLocal ? (JSON.parse(localStorage.getItem(PED_CACHE_KEY) || '{}').ts || 0) : 0;
       if (cacheFirebase.ts > tsLocal) {
         PED_TODOS = dadosFirebase;
@@ -4437,12 +4688,9 @@ function pedPreCarregar() {
           var d = new Date(cacheFirebase.tsReal);
           if (!isNaN(d)) PED_ATUALIZADO_EM = d;
         }
-        // Atualiza cache local com os dados do Firebase
         try {
           localStorage.setItem(PED_CACHE_KEY, JSON.stringify({
-            ts: cacheFirebase.ts,
-            tsReal: cacheFirebase.tsReal,
-            dados: dadosFirebase
+            ts: cacheFirebase.ts, tsReal: cacheFirebase.tsReal, dados: dadosFirebase
           }));
         } catch(e) {}
         pedAtualizarHora();
@@ -4451,16 +4699,17 @@ function pedPreCarregar() {
         }
       }
     } else {
-      // Cache expirado ou inexistente — busca da API e salva no Firebase para todos
       pedBuscarCache().then(function(dados) {
         PED_TODOS = dados;
-        pedSalvarCache(dados); // salva no localStorage E no Firebase
+        pedSalvarCache(dados);
         pedAtualizarHora();
         if (document.getElementById('pedidos-view').classList.contains('open')) {
           pedRenderTabela();
         }
       }).catch(function() {});
     }
+    // Busca confirmados (SENT/DELIVERED/INVOICED) em background para o financeiro
+    pedBuscarConfirmados();
   });
 }
 
@@ -4522,15 +4771,17 @@ function pedFiltrarPeriodo(pedidos) {
 }
 
 // Status que consideramos "Pendente" e "Pago" na Anymarket
-const STATUS_PENDENTE = ['PENDING','WAITING_PAYMENT']; // Aguardando pagamento
-const STATUS_PAGO     = ['PAID','PAID_WAITING_SHIP','NEW']; // NEW = pago mas marketplace ainda não atualizou
+const STATUS_PENDENTE  = ['PENDING','WAITING_PAYMENT']; // Aguardando pagamento
+const STATUS_PAGO      = ['PAID','PAID_WAITING_SHIP','NEW']; // Pago, aguardando envio
+const STATUS_CONFIRMADO = ['SENT','INVOICED','DELIVERED','COMPLETED','APPROVED','PROCESSING']; // Enviado/entregue/concluído
 
 function pedNormalizarStatus(st) {
   if (!st) return null;
   const s = st.toUpperCase().trim();
-  if (STATUS_PENDENTE.indexOf(s) !== -1) return 'PENDENTE';
-  if (STATUS_PAGO.indexOf(s) !== -1)     return 'PAGO';
-  return null; // ignora SENT, DELIVERED, CANCELLED, etc
+  if (STATUS_PENDENTE.indexOf(s) !== -1)   return 'PENDENTE';
+  if (STATUS_PAGO.indexOf(s) !== -1)       return 'PAGO';
+  if (STATUS_CONFIRMADO.indexOf(s) !== -1) return 'CONFIRMADO';
+  return null; // ignora CANCELLED, RETURNED, etc
 }
 
 // Lê do cache da planilha (abertura do painel)
@@ -4609,11 +4860,12 @@ async function pedBuscarPagosPorStatus(status) {
 
     itens.forEach(function(o) {
       const dataP = o.createdAt ? new Date(o.createdAt).getTime() : 0;
-      if (dataP && dataP < inicio) { foraMes++; return; } // ignora fora do mês
-      todos.push(pedMontarItem(o, 'PAGO'));
+      if (dataP && dataP < inicio) { foraMes++; return; }
+      // Usa CONFIRMADO para enviados/entregues, PAGO para os demais
+      var stNorm = ['SENT','INVOICED','DELIVERED','COMPLETED'].indexOf(status) !== -1 ? 'CONFIRMADO' : 'PAGO';
+      todos.push(pedMontarItem(o, stNorm));
     });
 
-    // Para se 3 páginas seguidas fora do mês
     if (foraMes >= itens.length * 0.8) { paginasAntigas++; if (paginasAntigas >= 3) break; }
     else paginasAntigas = 0;
 
@@ -4623,6 +4875,26 @@ async function pedBuscarPagosPorStatus(status) {
     offset += 50;
   }
   return todos;
+}
+
+// Busca separada de enviados/entregues para o financeiro — roda em background
+var PED_CONFIRMADOS = []; // SENT + DELIVERED + INVOICED do mês
+
+async function pedBuscarConfirmados() {
+  try {
+    const [sent, delivered, invoiced] = await Promise.all([
+      pedBuscarPagosPorStatus('SENT'),
+      pedBuscarPagosPorStatus('DELIVERED'),
+      pedBuscarPagosPorStatus('INVOICED')
+    ]);
+    const mapa = {};
+    [...sent, ...delivered, ...invoiced].forEach(function(p) {
+      if (!mapa[p.numero]) mapa[p.numero] = p;
+    });
+    PED_CONFIRMADOS = Object.values(mapa);
+  } catch(e) {
+    PED_CONFIRMADOS = [];
+  }
 }
 
 async function pedBuscarAPI() {
@@ -5145,4 +5417,467 @@ document.getElementById('logsModalOverlay').addEventListener('click', function(e
   if (e.target === this) fecharLogs();
 });
 </script>
+<!-- ══ SYSTEM HEALTH MODAL ══ -->
+<div class="health-modal-overlay" id="healthModalOverlay">
+  <div class="health-modal">
+    <div class="health-modal-hdr">
+      <div class="health-modal-title">
+        <i data-lucide="activity" style="width:15px;height:15px;color:var(--accent-green)"></i>
+        Status dos Serviços
+      </div>
+      <button class="health-modal-close" onclick="fecharHealth()"><i data-lucide="x" style="width:15px;height:15px"></i></button>
+    </div>
+    <div class="health-modal-body">
+      <div class="health-services" id="healthServices">
+        <div style="text-align:center;padding:32px;color:var(--text-secondary);font-size:13px;">Verificando serviços...</div>
+      </div>
+      <div class="health-last-check" id="healthLastCheck"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ALERT HISTORY MODAL ══ -->
+<div class="hist-modal-overlay" id="histModalOverlay">
+  <div class="hist-modal">
+    <div class="hist-modal-hdr">
+      <div class="hist-modal-title">
+        <i data-lucide="clock" style="width:15px;height:15px;color:var(--accent-amber)"></i>
+        Histórico de Alertas
+      </div>
+      <button class="hist-modal-close" onclick="fecharHistorico()"><i data-lucide="x" style="width:15px;height:15px"></i></button>
+    </div>
+    <div class="hist-body" id="histBody">
+      <div class="hist-empty">Carregando histórico...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FINANCIAL DASHBOARD MODAL ══ -->
+<div class="fin-modal-overlay" id="finModalOverlay">
+  <div class="fin-modal">
+    <div class="fin-modal-hdr">
+      <div class="fin-modal-title">
+        <i data-lucide="bar-chart-2" style="width:15px;height:15px;color:var(--accent-financeiro)"></i>
+        Dashboard Financeiro
+      </div>
+      <button class="fin-modal-close" onclick="fecharFinanceiro()"><i data-lucide="x" style="width:15px;height:15px"></i></button>
+    </div>
+    <div class="fin-body" id="finBody">
+      <div class="fin-empty">Carregando...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TV MODE OVERLAY ══ -->
+<div id="tv-mode-overlay">
+  <div class="tv-header">
+    <div class="tv-title">📺 <span id="tvSlideLabel">Painel</span></div>
+    <div class="tv-controls">
+      <span class="tv-slide-indicator" id="tvSlideIndicator">1 / 4</span>
+      <button class="tv-exit-btn" onclick="fecharTVMode()">✕ Sair do TV Mode</button>
+    </div>
+  </div>
+  <div class="tv-progress"><div class="tv-progress-bar" id="tvProgressBar" style="width:0%"></div></div>
+  <div class="tv-content" id="tvContent"></div>
+</div>
+
+
+
+<script>
+// ══════════════════════════════════════════════════════
+//  NOVOS FEATURES
+// ══════════════════════════════════════════════════════
+
+var _pedDebounceTimer;
+function pedDebounceBusca() {
+  clearTimeout(_pedDebounceTimer);
+  _pedDebounceTimer = setTimeout(function() { pedRenderTabela(); pedSalvarFiltros(); }, 280);
+}
+function pedSalvarFiltros() {
+  try { sessionStorage.setItem('eh_ped_filtros', JSON.stringify({ periodo:pedPeriodo, status:pedStatus, canal:pedCanalAtivo, busca:(document.getElementById('pedSearch')||{}).value||'' })); } catch(e) {}
+}
+function pedRestaurarFiltros() {
+  try {
+    var f = JSON.parse(sessionStorage.getItem('eh_ped_filtros')||'{}');
+    if(f.periodo) pedPeriodo=f.periodo;
+    if(f.status)  pedStatus=f.status;
+    if(f.canal)   pedCanalAtivo=f.canal;
+    if(f.busca){ var s=document.getElementById('pedSearch'); if(s) s.value=f.busca; }
+    document.querySelectorAll('.ped-period-btn').forEach(function(b){ if(b.id&&b.id.startsWith('ped-btn-')) return; b.classList.toggle('active',(b.getAttribute('onclick')||'').indexOf("'"+pedPeriodo+"'")!==-1); });
+    var mapa={PENDENTE:'ped-btn-pendente',PAGO:'ped-btn-pago',TODOS:'ped-btn-todos-st'};
+    Object.keys(mapa).forEach(function(k){ var el=document.getElementById(mapa[k]); if(el) el.classList.toggle('active',k===pedStatus); });
+  } catch(e) {}
+}
+
+// Auto-sync + restaurar filtros
+var _abrirPedidosOrig = abrirPedidos;
+abrirPedidos = function() {
+  document.getElementById('pedidos-view').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  pedRestaurarFiltros(); pedAtualizarHora();
+  if (PED_TODOS.length > 0) {
+    pedRenderTabela();
+    var raw=localStorage.getItem(PED_CACHE_KEY), ts=raw?(JSON.parse(raw).ts||0):0;
+    if (Date.now()-ts > 15*60*1000) pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();}).catch(function(){});
+  } else {
+    var cl=pedLerCacheLocal();
+    if(cl&&cl.length>0){ PED_TODOS=cl; pedRenderTabela(); pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();}).catch(function(){}); }
+    else { pedSetLoading(true); pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();pedShowToast('Carregado: '+d.length+' pedidos');}).catch(function(){ document.getElementById('pedTbody').innerHTML='<div class="ped-empty"><i data-lucide="wifi-off" style="width:32px;height:32px;color:var(--accent-red);opacity:0.5;"></i><p>Erro ao conectar.</p></div>'; lucide.createIcons(); }); }
+  }
+  lucide.createIcons();
+};
+
+// Persistir filtros
+var _psp=pedSetPeriodo; pedSetPeriodo=function(p,el){_psp(p,el);pedSalvarFiltros();};
+var _pss=pedSetStatus;  pedSetStatus =function(s,el){_pss(s,el);pedSalvarFiltros();};
+var _pfc=pedFiltrarCanal; pedFiltrarCanal=function(c){_pfc(c);pedSalvarFiltros();};
+
+// Highlight novos pedidos
+var _PED_CONHECIDOS=new Set();
+var _pedRTOrig=pedRenderTabela;
+pedRenderTabela=function(){
+  _pedRTOrig();
+  document.querySelectorAll('#pedTbody .ped-row').forEach(function(row){
+    var n=(row.querySelector('.ped-num')||{textContent:''}).textContent.replace('#','').trim();
+    if(n&&_PED_CONHECIDOS.size>0&&!_PED_CONHECIDOS.has(n)) row.classList.add('ped-row-new');
+    if(n) _PED_CONHECIDOS.add(n);
+  });
+};
+
+// Export CSV
+function exportarPedidosCSV() {
+  if(!PED_TODOS||!PED_TODOS.length){pedShowToast('Sem pedidos para exportar.');return;}
+  var d=pedFiltrarPeriodo(PED_TODOS);
+  if(pedStatus!=='TODOS') d=d.filter(function(p){return p.status===pedStatus;});
+  if(pedCanalAtivo) d=d.filter(function(p){return p.canal===pedCanalAtivo;});
+  var q=(document.getElementById('pedSearch').value||'').toLowerCase();
+  if(q) d=d.filter(function(p){return String(p.numero).toLowerCase().includes(q)||p.canal.toLowerCase().includes(q);});
+  var cab=['Numero','Produto','SKU','Cliente','Canal','Valor','Status','Data'];
+  var rows=d.map(function(p){return [p.numero,'"'+(p.produto||'').replace(/"/g,'""')+'"',p.sku||'','"'+(p.cliente||'').replace(/"/g,'""')+'"',p.canal,p.valor.toFixed(2).replace('.',','),p.status,p.data?new Date(p.data).toLocaleDateString('pt-BR'):''].join(';');});
+  var csv='\uFEFF'+cab.join(';')+'\n'+rows.join('\n');
+  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})); a.download='pedidos_'+new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')+'.csv'; a.click();
+  pedShowToast('CSV exportado: '+d.length+' pedidos');
+}
+
+// Reacoes no Mural
+var EMOJIS_REACAO=['👍','✅','🔥','⚠️','❤️','😂'];
+function reagirNota(key,emoji){
+  var cod=emoji.codePointAt(0).toString();
+  var ek=(_muralEmail||'anon').replace(/\./g,'_').replace(/@/g,'_at_');
+  var ref='mural/'+key+'/reacoes/'+cod+'/'+ek;
+  db.ref(ref).once('value',function(snap){if(snap.val()) db.ref(ref).remove(); else db.ref(ref).set(true);});
+}
+function renderReacoes(reacoes,key){
+  var html='<div class="mural-reactions">';
+  if(reacoes){
+    var ek=(_muralEmail||'anon').replace(/\./g,'_').replace(/@/g,'_at_');
+    EMOJIS_REACAO.forEach(function(e){
+      var cod=e.codePointAt(0).toString(), bkt=reacoes[cod]||{}, cnt=Object.keys(bkt).length;
+      if(cnt>0) html+='<button class="mural-reaction-btn'+(bkt[ek]?' mine':'')+'" onclick="reagirNota(\''+key+'\',\''+e+'\')">'+e+' '+cnt+'</button>';
+    });
+  }
+  html+='<button class="mural-add-reaction" onclick="toggleEmojiPicker(event,\''+key+'\')">+</button>';
+  html+='<div class="mural-emoji-picker" id="emojiPicker_'+key+'">';
+  EMOJIS_REACAO.forEach(function(e){html+='<span class="mural-emoji-opt" onclick="reagirNota(\''+key+'\',\''+e+'\');fecharEmojiPickers();">'+e+'</span>';});
+  html+='</div></div>'; return html;
+}
+function toggleEmojiPicker(e,key){
+  e.stopPropagation();
+  var pk=document.getElementById('emojiPicker_'+key), isO=pk&&pk.classList.contains('open');
+  fecharEmojiPickers(); if(!isO&&pk) pk.classList.add('open');
+}
+function fecharEmojiPickers(){document.querySelectorAll('.mural-emoji-picker').forEach(function(p){p.classList.remove('open');});}
+document.addEventListener('click',fecharEmojiPickers);
+
+var _renderMuralOrig=renderMural;
+renderMural=function(notas){
+  var body=document.getElementById('muralBody');
+  if(!notas||!notas.length){body.innerHTML='<div class="mural-empty"><i data-lucide="message-square" style="width:28px;height:28px;opacity:0.2;display:block;margin:0 auto 10px;"></i>Nenhum recado ainda.</div>';lucide.createIcons();return;}
+  body.innerHTML=notas.map(function(n){
+    var ini=(n.nome||'?').split(' ').map(function(p){return p[0]||'';}).join('').slice(0,2).toUpperCase();
+    var ehMeu=n.email===_muralEmail;
+    return '<div class="mural-note">'+
+      '<div class="mural-note-header">'+
+        '<div class="mural-note-author">'+
+          '<div class="mural-note-avatar">'+ini+'</div>'+
+          '<div><div class="mural-note-nome">'+(n.nome||n.email)+'</div><div class="mural-note-hora">'+n.hora+'</div></div>'+
+        '</div>'+
+        (ehMeu?'<button class="mural-note-del" onclick="deletarNota(\''+n._key+'\',\''+n.email+'\')" title="Remover"><i data-lucide="trash-2" style="width:12px;height:12px"></i></button>':'')+
+      '</div>'+
+      '<div class="mural-note-text">'+(n.texto||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>'+
+      renderReacoes(n.reacoes||null,n._key)+
+    '</div>';
+  }).join('');
+  lucide.createIcons();
+};
+
+// System Health
+var HEALTH_SERVICES=[
+  {id:'firebase',name:'Firebase Realtime DB',desc:'Mural, logs, cache',checkFn:function(){return new Promise(function(res){var t=setTimeout(function(){res({status:'error',label:'Sem resposta'});},4000);db.ref('.info/connected').once('value',function(s){clearTimeout(t);res(s.val()?{status:'ok',label:'Conectado'}:{status:'warn',label:'Desconectado'});},function(){clearTimeout(t);res({status:'error',label:'Erro'});});});}},
+  {id:'pedapi',name:'Google Apps Script',desc:'Cache de pedidos',checkFn:function(){return Promise.race([fetch(PED_API+'?acao=ping').then(function(r){return r.ok?{status:'ok',label:'Operacional'}:{status:'warn',label:'HTTP '+r.status};}),new Promise(function(_,rej){setTimeout(function(){rej(new Error('t'));},6000);})]).catch(function(e){return e.message==='t'?{status:'warn',label:'Resposta lenta'}:{status:'ok',label:'Operacional'};});}},
+  {id:'alertas',name:'Alertas Anymarket',desc:'Alertas no Firebase',checkFn:function(){return new Promise(function(res){db.ref('alertas').once('value',function(s){var a=Object.values(s.val()||{}).filter(function(x){return x&&x.ativo;});res(a.length>0?{status:'warn',label:a.length+' alerta(s)',detail:a[0].titulo}:{status:'ok',label:'Sem alertas'});},function(){res({status:'ok',label:'Desconhecido'});});});}},
+  {id:'cache',name:'Cache de Pedidos',desc:'Ultima sincronizacao',checkFn:function(){return new Promise(function(res){try{var r=localStorage.getItem(PED_CACHE_KEY);if(!r)return res({status:'warn',label:'Sem cache'});var o=JSON.parse(r),m=Math.round((Date.now()-o.ts)/60000);res(m>120?{status:'warn',label:'Expirado ('+m+'min)'}:{status:'ok',label:'Ha '+m+'min'});}catch(e){res({status:'warn',label:'Cache invalido'});}});}}
+];
+var _healthResults={};
+
+function abrirHealth(){
+  document.getElementById('healthModalOverlay').classList.add('open'); lucide.createIcons();
+  _healthResults={}; renderHealthServices();
+  document.getElementById('healthLastCheck').textContent='';
+  Promise.all(HEALTH_SERVICES.map(function(s){return s.checkFn().then(function(r){_healthResults[s.id]=r;renderHealthServices();}).catch(function(){_healthResults[s.id]={status:'error',label:'Erro'};renderHealthServices();});})).then(function(){document.getElementById('healthLastCheck').textContent='Verificado: '+new Date().toLocaleTimeString('pt-BR');atualizarBotaoHealth();});
+}
+function fecharHealth(){document.getElementById('healthModalOverlay').classList.remove('open');}
+document.getElementById('healthModalOverlay').addEventListener('click',function(e){if(e.target===this)fecharHealth();});
+
+function renderHealthServices(){
+  document.getElementById('healthServices').innerHTML=HEALTH_SERVICES.map(function(s){
+    var r=_healthResults[s.id],cls=r?'hs-'+r.status:'hs-check',lbl=r?r.label:'Verificando...',det=(r&&r.detail)?r.detail:s.desc;
+    return '<div class="health-service"><div class="health-service-left"><div class="health-service-name">'+s.name+'</div><div class="health-service-desc">'+det+'</div></div><div class="health-status-row '+cls+'"><div class="health-status-dot"></div><span class="health-status-label">'+lbl+'</span></div></div>';
+  }).join(''); lucide.createIcons();
+}
+function atualizarBotaoHealth(){
+  var btn=document.getElementById('btnHealthStatus'); if(!btn) return;
+  var v=Object.values(_healthResults);
+  if(v.some(function(r){return r.status==='error';})){btn.className='btn-health err';btn.style.display='flex';document.getElementById('healthDotLabel').textContent='Problema';}
+  else if(v.some(function(r){return r.status==='warn';})){btn.className='btn-health warn';btn.style.display='flex';document.getElementById('healthDotLabel').textContent='Atencao';}
+  else{btn.className='btn-health';btn.style.display='flex';document.getElementById('healthDotLabel').textContent='Sistemas OK';}
+}
+
+// Historico Alertas
+var _anyHistReg={};
+function anyRegistrarHistoricoAlerta(tipo,titulo,desc){
+  var ch=tipo+'_'+new Date().toDateString(); if(_anyHistReg[ch]) return; _anyHistReg[ch]=true;
+  db.ref('historico_alertas').push({tipo:tipo,titulo:titulo,descricao:desc,hora:new Date().toLocaleString('pt-BR'),ts:Date.now()});
+}
+var _anyConfOrig=anyConfirmarReposicao;
+anyConfirmarReposicao=function(){
+  if(!anyProdutoAtual) return;
+  var nome=anyProdutoAtual.nome,sku=anyProdutoAtual.sku;
+  var qtd=parseInt((document.getElementById('anyModalQtd')||{}).value)||10;
+  var prio=(document.getElementById('anyModalPrioridade')||{}).value||'normal';
+  var obs=(document.getElementById('anyModalObs')||{}).value||'';
+  db.ref('reposicoes').push({nome:nome,sku:sku,qtd:qtd,prioridade:prio,obs:obs,hora:new Date().toLocaleString('pt-BR'),ts:Date.now(),email:_muralEmail||''});
+  db.ref('historico_alertas').push({tipo:'reposicao',titulo:'Reposicao: '+sku,descricao:nome+' | Qtd: '+qtd+' | '+prio,hora:new Date().toLocaleString('pt-BR'),ts:Date.now(),email:_muralEmail||''});
+  anyFecharModal(); anyShowToast('Reposicao registrada: '+nome);
+};
+var _anyGAOrig=anyGerarAlertas;
+anyGerarAlertas=function(produtos){
+  _anyGAOrig(produtos);
+  var z=(produtos||[]).filter(function(p){return p.estoque===0;}); var c=(produtos||[]).filter(function(p){return p.estoque>0&&p.estoque<20;});
+  if(z.length) anyRegistrarHistoricoAlerta('estoque_zerado','Zerado: '+z.length+' SKU(s)',z.slice(0,3).map(function(p){return p.nome;}).join(', '));
+  if(c.length) anyRegistrarHistoricoAlerta('estoque_critico','Critico: '+c.length+' SKU(s)',c.slice(0,3).map(function(p){return p.nome;}).join(', '));
+};
+
+function abrirHistorico(){
+  document.getElementById('histModalOverlay').classList.add('open'); lucide.createIcons();
+  var body=document.getElementById('histBody');
+  body.innerHTML='<div class="hist-empty" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:40px;"><div style="width:22px;height:22px;border:2px solid rgba(212,160,23,0.3);border-top-color:var(--accent-amber);border-radius:50%;animation:spin 0.9s linear infinite;"></div><p>Carregando...</p></div>';
+
+  // Notificacoes locais do painel como fonte imediata
+  var locais = (typeof NOTIFICACOES_HOJE !== 'undefined' ? NOTIFICACOES_HOJE : []).map(function(n){
+    return { tipo: n.critico ? 'painel_critico' : 'painel_info', titulo: n.titulo, descricao: n.desc, hora: n.hora, ts: Date.now() - (Math.random()*1000), _local: true, link: n.link };
+  });
+
+  // Timeout de segurança: se Firebase demorar mais de 5s, mostra só os locais
+  var timeoutId = setTimeout(function(){
+    renderHistoricoItens(body, locais);
+  }, 5000);
+
+  db.ref('historico_alertas').orderByChild('ts').limitToLast(100).once('value', function(snap){
+    clearTimeout(timeoutId);
+    var firebase_itens = [];
+    snap.forEach(function(c){ firebase_itens.push(c.val()); });
+    // Mescla: Firebase + locais (sem duplicar)
+    var todos = firebase_itens.concat(locais);
+    todos.sort(function(a,b){ return b.ts - a.ts; });
+    renderHistoricoItens(body, todos);
+  }, function(){
+    // Erro de leitura: mostra só os locais
+    clearTimeout(timeoutId);
+    renderHistoricoItens(body, locais);
+  });
+}
+
+function renderHistoricoItens(body, itens){
+  if(!itens.length){
+    body.innerHTML='<div class="hist-empty" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:48px;"><i data-lucide="inbox" style="width:30px;height:30px;opacity:0.3;"></i><p>Nenhum alerta registrado ainda.</p><span style="font-size:11px;opacity:0.5;">Alertas aparecem aqui ao sincronizar estoque ou solicitar reposição.</span></div>';
+    lucide.createIcons(); return;
+  }
+  var icM={reposicao:'📦',estoque_zerado:'🔴',estoque_critico:'🟡',sistema:'⚡',painel_critico:'⚠️',painel_info:'📋'};
+  var bgM={reposicao:'rgba(212,160,23,0.15)',estoque_zerado:'rgba(204,40,40,0.15)',estoque_critico:'rgba(212,160,23,0.12)',painel_critico:'rgba(204,40,40,0.12)',painel_info:'rgba(255,255,255,0.06)'};
+  body.innerHTML = itens.map(function(i){
+    var localTag = i._local ? '<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.06);color:var(--text-secondary);margin-left:6px;letter-spacing:1px;">HOJE</span>' : '';
+    var linkOpen  = i.link ? '<a href="'+i.link+'" style="text-decoration:none;color:inherit;display:contents;">' : '';
+    var linkClose = i.link ? '</a>' : '';
+    return '<div class="hist-item" style="'+(i._local?'border-left:2px solid rgba(212,160,23,0.3);':'')+'">'+
+      linkOpen+
+      '<div class="hist-icon" style="background:'+(bgM[i.tipo]||'rgba(255,255,255,0.05)')+'">'+(icM[i.tipo]||'📋')+'</div>'+
+      '<div style="flex:1;">'+
+        '<div class="hist-info-title">'+(i.titulo||'Alerta')+localTag+'</div>'+
+        (i.descricao?'<div class="hist-info-desc">'+i.descricao+'</div>':'')+
+        '<div class="hist-info-meta">'+(i.hora||'')+(i.email?' · '+i.email.split('@')[0]:'')+'</div>'+
+      '</div>'+
+      linkClose+
+    '</div>';
+  }).join('');
+  lucide.createIcons();
+}
+function fecharHistorico(){document.getElementById('histModalOverlay').classList.remove('open');}
+document.getElementById('histModalOverlay').addEventListener('click',function(e){if(e.target===this)fecharHistorico();});
+
+// Dashboard Financeiro
+var _finConfirmados = [];
+var _finConfirmadosTs = 0;
+var _finFirebaseData = null; // dados do Firebase (receita enviados calculada pelo Apps Script)
+
+function abrirFinanceiro(){
+  document.getElementById('finModalOverlay').classList.add('open');
+  lucide.createIcons();
+  renderFinanceiro();
+  // Lê resumo de enviados/entregues do Firebase (calculado pelo Apps Script)
+  finCarregarDoFirebase();
+}
+
+function finCarregarDoFirebase() {
+  var h = new Date();
+  db.ref('financeiro/enviados').on('value', function(snap) {
+    var dados = snap.val();
+    console.log('Firebase financeiro/enviados:', JSON.stringify(dados));
+    if (!dados) { renderFinanceiro(); return; }
+    // Aceita dados do mês atual OU parciais em andamento
+    _finFirebaseData = dados;
+    renderFinanceiro();
+  });
+}
+
+async function finBuscarConfirmados() { /* não usado mais */ }
+function fecharFinanceiro(){document.getElementById('finModalOverlay').classList.remove('open');}
+document.getElementById('finModalOverlay').addEventListener('click',function(e){if(e.target===this)fecharFinanceiro();});
+// Helpers de status — cobrem tanto os normalizados pelo Apps Script
+// quanto os status brutos da Anymarket (SENT, DELIVERED, etc.)
+var _ST_RECEITA  = ['PAGO','PAID','PAID_WAITING_SHIP','NEW','SENT','INVOICED','DELIVERED'];
+var _ST_ENVIADO  = ['SENT','INVOICED','DELIVERED'];
+var _ST_PAGO_OK  = ['PAGO','PAID','PAID_WAITING_SHIP','NEW'];
+var _ST_PENDENTE = ['PENDENTE','PENDING','WAITING_PAYMENT'];
+function isReceita(st)  { return _ST_RECEITA.indexOf(st)  !== -1; }
+function isEnviado(st)  { return _ST_ENVIADO.indexOf(st)  !== -1; }
+function isPago(st)     { return _ST_PAGO_OK.indexOf(st)  !== -1; }
+function isPendente(st) { return _ST_PENDENTE.indexOf(st) !== -1; }
+
+function renderFinanceiro(){
+  var body=document.getElementById('finBody');
+  if(!PED_TODOS||!PED_TODOS.length){body.innerHTML='<div class="fin-empty" style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:48px;"><i data-lucide="alert-circle" style="width:30px;height:30px;opacity:0.3;"></i><p>Abra o painel de Pedidos primeiro.</p></div>';lucide.createIcons();return;}
+  var h=new Date();
+  var filtroMes=function(p){ var d=new Date(p.data); return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear(); };
+  var pm    = PED_TODOS.filter(filtroMes);
+  var ph    = PED_TODOS.filter(function(p){ return new Date(p.data).toDateString()===h.toDateString(); });
+  var pgCache = pm.filter(function(p){ return p.status==='PAGO'; });
+  var pePend  = pm.filter(function(p){ return p.status==='PENDENTE'; });
+  var fmt = function(v){ return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0}); };
+
+  // Receita enviados/entregues vem do Firebase (calculado pelo Apps Script)
+  var rEnv   = _finFirebaseData ? (_finFirebaseData.receita || 0) : 0;
+  var qtdEnv = _finFirebaseData ? (_finFirebaseData.qtd     || 0) : 0;
+  var rPago  = pgCache.reduce(function(s,p){return s+p.valor;},0);
+  var rM     = rPago + rEnv;
+  var qtdTot = pgCache.length + qtdEnv;
+  var rH     = ph.filter(function(p){return p.status==='PAGO';}).reduce(function(s,p){return s+p.valor;},0);
+  var tk     = qtdTot>0 ? rM/qtdTot : 0;
+  var rP     = pePend.reduce(function(s,p){return s+p.valor;},0);
+
+  // Ranking: PAGO do cache + por canal do Firebase
+  var can = {};
+  pgCache.forEach(function(p){ if(!can[p.canal])can[p.canal]={qtd:0,v:0}; can[p.canal].qtd++; can[p.canal].v+=p.valor; });
+  if (_finFirebaseData && _finFirebaseData.porCanal) {
+    Object.entries(_finFirebaseData.porCanal).forEach(function(e){
+      var nome = pedNomeCanal(e[0]) || e[0];
+      if(!can[nome]) can[nome]={qtd:0,v:0};
+      can[nome].qtd += e[1].qtd||0;
+      can[nome].v   += e[1].valor||0;
+    });
+  }
+  var rnk=Object.entries(can).sort(function(a,b){return b[1].v-a[1].v;});
+  var mxV=rnk.length>0?rnk[0][1].v:1, tV=rnk.reduce(function(s,e){return s+e[1].v;},0);
+  var md=['🥇','🥈','🥉'];
+
+  var bkHtml='';
+  if(rEnv>0){
+    var horaSync  = _finFirebaseData ? _finFirebaseData.hora : '';
+    var isParcial = _finFirebaseData && _finFirebaseData.parcial === true;
+    var pct       = _finFirebaseData ? (_finFirebaseData.progresso || 100) : 100;
+    var barHtml   = isParcial
+      ? '<div style="display:flex;align-items:center;gap:6px;margin-top:6px;">'+
+          '<div style="flex:1;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">'+
+            '<div style="height:100%;width:'+pct+'%;background:var(--accent-blue);border-radius:2px;"></div>'+
+          '</div>'+
+          '<span style="font-size:10px;color:var(--accent-blue);white-space:nowrap;">'+pct+'% buscado</span>'+
+        '</div>'
+      : (horaSync ? '<div style="font-size:10px;color:var(--text-secondary);margin-top:5px;">Sync: '+horaSync+'</div>' : '');
+    bkHtml='<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">'+
+      '<span style="font-size:10.5px;color:var(--accent-green);background:rgba(31,189,114,0.1);border:1px solid rgba(31,189,114,0.2);padding:2px 8px;border-radius:5px;">✓ Pago: '+fmt(rPago)+' ('+pgCache.length+')</span>'+
+      '<span style="font-size:10.5px;color:var(--accent-blue);background:rgba(45,125,210,0.1);border:1px solid rgba(45,125,210,0.2);padding:2px 8px;border-radius:5px;">'+(isParcial?'⏳':'🚚')+' Env/Entregue: '+fmt(rEnv)+' ('+qtdEnv+')</span>'+
+    '</div>'+barHtml;
+  } else {
+    bkHtml='<div style="display:flex;align-items:center;gap:6px;margin-top:8px;">'+
+      '<div style="width:10px;height:10px;border:1.5px solid rgba(45,125,210,0.3);border-top-color:var(--accent-blue);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;"></div>'+
+      '<span style="font-size:10.5px;color:var(--text-secondary);">Execute buscarEnviados_inicio() no Apps Script para carregar.</span>'+
+    '</div>';
+  }
+
+  body.innerHTML=
+    '<div class="fin-kpi-row">'+
+    '<div class="fin-kpi fin-kpi-receita"><div class="fin-kpi-lbl">Receita do Mês</div><div class="fin-kpi-val">'+fmt(rM)+'</div><div class="fin-kpi-sub">'+qtdTot+' pedidos · Hoje: '+fmt(rH)+'</div>'+bkHtml+'</div>'+
+    '<div class="fin-kpi fin-kpi-pendente"><div class="fin-kpi-lbl">Em Aberto (Pendente)</div><div class="fin-kpi-val">'+fmt(rP)+'</div><div class="fin-kpi-sub">'+pePend.length+' pedidos aguardando pagamento</div></div>'+
+    '<div class="fin-kpi fin-kpi-ticket"><div class="fin-kpi-lbl">Ticket Médio</div><div class="fin-kpi-val">'+fmt(tk)+'</div><div class="fin-kpi-sub">pago + enviado + entregue</div></div>'+
+    '</div>'+
+    '<div class="fin-section-title">Ranking de Canais — Receita do Mês</div>'+
+    '<div class="fin-ranking">'+
+    (rnk.length?rnk.map(function(e,i){
+      var n=e[0],c=e[1],pct=tV>0?Math.round((c.v/tV)*100):0,bw=Math.round((c.v/mxV)*100);
+      return '<div class="fin-rank-item">'+
+        '<div class="fin-rank-pos '+(i<3?['gold','silver','bronze'][i]:'')+'">'+( i<3?md[i]:'#'+(i+1))+'</div>'+
+        '<div class="fin-rank-name">'+n+' <span style="font-size:10px;color:var(--text-secondary);">'+c.qtd+' ped.</span></div>'+
+        '<div class="fin-rank-bar-bg"><div class="fin-rank-bar-fill" style="width:'+bw+'%"></div></div>'+
+        '<div class="fin-rank-val">'+fmt(c.v)+'</div>'+
+        '<div class="fin-rank-pct">'+pct+'%</div>'+
+      '</div>';
+    }).join(''):'<div class="fin-empty">Sem dados de canal.</div>')+
+    '</div>';
+  lucide.createIcons();
+}
+function renderTVFinanceiro(el){
+  var h=new Date(),fm=function(p){var d=new Date(p.data);return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();};
+  var pm=PED_TODOS.filter(fm);
+  var mapaTV={};
+  pm.filter(function(p){return isReceita(p.status);}).forEach(function(p){mapaTV[p.numero]=p;});
+  (_finConfirmados||[]).filter(fm).forEach(function(p){if(!mapaTV[p.numero])mapaTV[p.numero]=p;});
+  var pgTodos=Object.values(mapaTV);
+  var pe=pm.filter(function(p){return isPendente(p.status);});
+  var fmt=function(v){return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0});};
+  var r=pgTodos.reduce(function(s,p){return s+p.valor;},0);
+  var a=pe.reduce(function(s,p){return s+p.valor;},0);
+  var tk=pgTodos.length>0?r/pgTodos.length:0;
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">'+
+    '<div style="background:rgba(34,197,94,0.1);border:1px solid var(--border);border-radius:14px;padding:22px 24px;"><div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;">RECEITA DO MÊS</div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--accent-financeiro);">'+fmt(r)+'</div><div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">'+pgTodos.length+' pedidos confirmados</div></div>'+
+    '<div style="background:rgba(212,160,23,0.1);border:1px solid var(--border);border-radius:14px;padding:22px 24px;"><div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;">EM ABERTO</div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--accent-amber);">'+fmt(a)+'</div><div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">'+pe.length+' pendentes</div></div>'+
+    '<div style="background:rgba(45,125,210,0.1);border:1px solid var(--border);border-radius:14px;padding:22px 24px;"><div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;">TICKET MÉDIO</div><div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--accent-blue);">'+fmt(tk)+'</div></div>'+
+  '</div>';
+}
+function renderTVMural(el){db.ref('mural').orderByChild('ts').limitToLast(4).once('value',function(snap){var ns=[];snap.forEach(function(c){ns.push(Object.assign({_key:c.key},c.val()));});ns.sort(function(a,b){return b.ts-a.ts;});if(!ns.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-secondary);">Nenhum recado ainda.</div>';return;}el.innerHTML=ns.map(function(n){var i=(n.nome||'?').split(' ').map(function(p){return p[0]||'';}).join('').slice(0,2).toUpperCase();return '<div style="display:flex;gap:14px;padding:16px 18px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid var(--border);margin-bottom:10px;"><div style="width:38px;height:38px;border-radius:50%;background:rgba(31,189,114,0.18);border:1px solid rgba(31,189,114,0.3);color:var(--accent-green);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+i+'</div><div><div style="font-size:13px;font-weight:600;margin-bottom:4px;">'+(n.nome||n.email)+' <span style="font-size:11px;color:var(--text-secondary);">'+(n.hora||'')+'</span></div><div style="font-size:13px;color:var(--text-secondary);">'+(n.texto||'').substring(0,140)+'</div></div></div>';}).join('');});}
+
+// Ligar novos botoes apos login / ocultar no logout
+var _iniUIorig=inicializarUI;
+inicializarUI=function(email){
+  _iniUIorig(email);
+  ['btnHealthStatus','btnFinanceiro','btnHistorico','btnTVMode'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='flex';});
+  setTimeout(function(){Promise.all(HEALTH_SERVICES.map(function(s){return s.checkFn().then(function(r){_healthResults[s.id]=r;}).catch(function(){});})).then(function(){atualizarBotaoHealth();});},2500);
+};
+var _logoutOrig=fazerLogout;
+fazerLogout=function(motivo){
+  _logoutOrig(motivo);
+  ['btnHealthStatus','btnFinanceiro','btnHistorico','btnTVMode'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+};
+
+</script>
+
 </body>
