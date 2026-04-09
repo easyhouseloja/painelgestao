@@ -2130,15 +2130,100 @@ body::before {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
+  /* Layout base */
   .header, .date-bar, .main, .ticker-wrap, .footer {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: 16px;
+    padding-right: 16px;
   }
-  .ticker-wrap { margin-left: 24px; margin-right: 24px; }
-  .main { padding-top: 36px; padding-bottom: 36px; }
-  .header-title { font-size: 18px; }
-  .status-pill span { display: none; }
+  .ticker-wrap { margin-left: 0; margin-right: 0; }
+  .main { padding-top: 20px; padding-bottom: 20px; }
   .footer { flex-direction: column; gap: 8px; text-align: center; }
+
+  /* Header */
+  .header { padding-top: 12px; padding-bottom: 12px; gap: 8px; flex-wrap: wrap; }
+  .header-title { font-size: 15px; }
+  .header-right { gap: 6px; flex-wrap: wrap; }
+  .status-pill span { display: none; }
+  .btn-tv-mode { display: none !important; }
+  .user-greeting .user-info { display: none; }
+
+  /* Channel switcher */
+  .channel-switcher { gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .channel-btn { font-size: 11px; padding: 7px 12px; }
+
+  /* Dashboard grid — 2 colunas no mobile */
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* Cards */
+  .card { padding: 14px; }
+  .card h2 { font-size: 28px !important; }
+  .icon-wrap { width: 32px !important; height: 32px !important; }
+
+  /* Acesso rápido — empilha no mobile */
+  .dashboard + div[style*="display:flex"][style*="gap:12px"] {
+    flex-direction: column !important;
+  }
+
+  /* Modais — tela cheia no mobile */
+  #vtex-modal, #vtex-analytics-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Analytics grid — 1 coluna no mobile */
+  #vtex-analytics-modal .grid-cols-2,
+  #vtex-analytics-modal [style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tabela de pedidos — scroll horizontal */
+  #vtex-modal table { font-size: 11px; }
+  #vtex-modal th, #vtex-modal td { padding: 8px 10px !important; }
+
+  /* Top produtos — 1 coluna */
+  #vtex-top-produtos [style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Mapa */
+  #vtex-mapa-svg { max-height: 280px; }
+
+  /* Charts — altura reduzida */
+  #vtex-chart-diario, #vtex-chart-horas { height: 120px !important; }
+
+  /* Botões de acesso rápido */
+  a[style*="moveislopas"], a[style*="myvtex"] {
+    padding: 12px 14px !important;
+  }
+
+  /* Cards analytics — 1 coluna */
+  [style*="grid-template-columns:1fr 1fr"][style*="gap:20px"] {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Login screen */
+  .login-box { width: 90% !important; padding: 32px 24px !important; }
+
+  /* Date bar */
+  .date-bar { font-size: 11px; flex-wrap: wrap; gap: 6px; }
+  #btnFinanceiroBar, #btnTVModeBar { display: none !important; }
+}
+
+/* Telas muito pequenas (320px) */
+@media (max-width: 400px) {
+  .dashboard { grid-template-columns: 1fr !important; }
+  .channel-btn span { display: none; }
 }
 
 /* 1P THEME */
