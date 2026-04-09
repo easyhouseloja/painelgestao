@@ -2223,19 +2223,16 @@ body::before {
   .icon-wrap { width: 34px !important; height: 34px !important; margin-bottom: 10px !important; }
   .card-footer { font-size: 11px !important; margin-top: 10px !important; }
 
-  /* TICKER */
-  .ticker-wrap { margin: 0 !important; border-radius: 0 !important; height: 36px !important; }
-  .ticker-label { font-size: 9px !important; padding: 0 10px !important; white-space: nowrap !important; }
-  .ticker-track span { font-size: 11px !important; white-space: nowrap !important; }
-  .ticker-body { overflow: hidden !important; }
+  /* TICKER — some no mobile, substituído pela float bar */
+  .ticker-wrap { display: none !important; }
 
-  /* FLOAT BAR */
+  /* FLOAT BAR — fixo no rodapé */
   #anyFloatBar {
     position: fixed !important;
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    z-index: 500 !important;
+    z-index: 9999 !important;
     margin: 0 !important;
     border-radius: 0 !important;
     border-left: none !important;
@@ -2245,9 +2242,10 @@ body::before {
     padding: 5px 12px !important;
     gap: 8px !important;
     height: 48px !important;
+    background: var(--bg, #0d1117) !important;
   }
-  /* Empurra o conteúdo da página para não ficar sob a barra */
-  body { padding-bottom: 48px !important; }
+  /* Espaço no fundo para o conteúdo não ficar sob a barra */
+  body { padding-bottom: 56px !important; }
   .any-sync-info { display: none !important; }
   .any-float-action { display: none !important; }
   .any-float-inner { gap: 8px !important; }
@@ -3857,10 +3855,11 @@ function iframeAbrir(url, titulo) {
           /* ══ COMERCIAL: reduz fontes grandes dos cards ══ */
           /* .kpi-value é 1.8rem — corta em cards de 2 colunas */
           .kpi-value {
-            font-size: 1.1rem !important;
-            line-height: 1.2 !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
+            font-size: 1.0rem !important;
+            line-height: 1.25 !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+            white-space: normal !important;
           }
           /* .axo-val é 1.4rem */
           .axo-val {
@@ -3878,9 +3877,9 @@ function iframeAbrir(url, titulo) {
             font-size: 1.0rem !important;
             line-height: 1.3 !important;
           }
-          /* Garante que texto não vaze para fora do card */
+          /* Cards não cortam texto */
           .kpi-card, .kpi-strip > * {
-            overflow: hidden !important;
+            overflow: visible !important;
             min-width: 0 !important;
           }
 
