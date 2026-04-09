@@ -106,6 +106,15 @@ body{background:var(--bg-base);font-family:var(--fb);color:var(--txt);min-height
 .badge-alert{background:var(--red-dim);color:var(--red);border:1px solid #ff525230;padding:3px 9px;border-radius:4px;font-size:10px;font-weight:700}
 .badge-tend{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue-b);padding:3px 9px;border-radius:4px;font-size:10px;font-weight:700}
 
+/* CARTEIRA CARD */
+.carteira-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.carteira-card{background:var(--bg-card);border-radius:10px;padding:20px;border:1px solid var(--border);border-top:2px solid var(--blue);animation:fadeUp .5s ease .15s both}
+.carteira-title{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--txt2);margin-bottom:4px}
+.carteira-sub{font-size:11px;color:var(--txt3);margin-bottom:16px}
+.carteira-legend{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+.carteira-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt2)}
+.carteira-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
 /* COMP GRID */
 .comp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .comp-card{background:var(--bg-card);border-radius:10px;padding:20px;border:1px solid var(--border);text-align:center;animation:fadeUp .5s ease both}
@@ -264,6 +273,21 @@ table.dt tbody td:first-child{text-align:center;font-size:12px;color:var(--txt2)
         <div class="chart-title">Vendas Diárias</div>
         <div class="chart-sub">Orçado vs Realizado</div>
         <div style="position:relative;height:280px"><canvas id="chartDaily"></canvas></div>
+      </div>
+    </div>
+    <div class="section-lbl">Visão Carteira</div>
+    <div class="carteira-row">
+      <div class="carteira-card">
+        <div class="carteira-title">Distribuição por Peso (kg)</div>
+        <div class="carteira-sub">Carteira total · Com e Sem Reserva</div>
+        <div style="position:relative;height:220px"><canvas id="chartCarteiraPeso"></canvas></div>
+        <div class="carteira-legend" id="legend-carteira-peso"></div>
+      </div>
+      <div class="carteira-card" style="border-top-color:var(--green)">
+        <div class="carteira-title">Distribuição por Valor (R$)</div>
+        <div class="carteira-sub">Carteira total · Com e Sem Reserva</div>
+        <div style="position:relative;height:220px"><canvas id="chartCarteiraValor"></canvas></div>
+        <div class="carteira-legend" id="legend-carteira-valor"></div>
       </div>
     </div>
   </div>
@@ -518,6 +542,7 @@ function saveData(){
   saveStore();
   rebuildClientSelects();
   renderAll();
+  buildCarteiraCharts();
   closeModal();
 }
 
@@ -604,7 +629,7 @@ function renderAll(){
   const mxmDelta=d.fat_ant>0?(d.fat_real-d.fat_ant)/d.fat_ant*100:0;
 
   // topbar
-  document.getElementById('top-period').textContent=(targetMes?monthLabel(targetMes):'')+(recs.length>1?' · '+recs.length+' clientes':'')+(d.dias_trab?' · Período 01/04 a 07/04':'');
+  document.getElementById('top-period').textContent=(targetMes?monthLabel(targetMes):'')+(recs.length>1?' · '+recs.length+' clientes':'')+(d.dias_trab?' · Período 01/04 a 08/04':'');
   document.getElementById('tb-fat').textContent=BRLM(d.fat_real);
   document.getElementById('tb-meta').textContent=PCT(metaPct)+' da Meta';
   document.getElementById('tb-proj').textContent='Proj. '+BRLM(d.fat_proj);
@@ -703,20 +728,60 @@ function switchTab(n){
   document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===n));
 }
 
+// ─── CARTEIRA DATA ─────────────────────────────────────────────
+const carteiraData = {
+  semReserva: { peso: 10400,  valor: 62000.00  },
+  comReserva: { peso: 90000,  valor: 555000.00 }
+};
+
+function buildCarteiraCharts(){
+  const BRL2 = v => 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const KG   = v => v.toLocaleString('pt-BR')+' kg';
+  const cd   = carteiraData;
+  const totalPeso  = cd.semReserva.peso  + cd.comReserva.peso;
+  const totalValor = cd.semReserva.valor + cd.comReserva.valor;
+
+  const donutOpts = (labels, data, colors, fmt) => ({
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:colors, borderColor:'#161b24', borderWidth:3, hoverOffset:8 }] },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'62%',
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ callbacks:{ label: ctx => ' '+fmt(ctx.raw)+' ('+((ctx.raw/data.reduce((a,b)=>a+b,0))*100).toFixed(1)+'%)' } }
+      }
+    }
+  });
+
+  // Peso
+  const cpCtx = document.getElementById('chartCarteiraPeso');
+  if(cpCtx){ const ex=Chart.getChart(cpCtx); if(ex) ex.destroy(); new Chart(cpCtx, donutOpts(['Sem Reserva','Com Reserva'],[cd.semReserva.peso,cd.comReserva.peso],['#ff9100','#29b6f6'],KG)); }
+  document.getElementById('legend-carteira-peso').innerHTML=`
+    <div class="carteira-legend-item"><div class="carteira-legend-dot" style="background:#ff9100"></div><span>Sem Reserva — <strong>${KG(cd.semReserva.peso)}</strong> (${((cd.semReserva.peso/totalPeso)*100).toFixed(1)}%)</span></div>
+    <div class="carteira-legend-item"><div class="carteira-legend-dot" style="background:#29b6f6"></div><span>Com Reserva — <strong>${KG(cd.comReserva.peso)}</strong> (${((cd.comReserva.peso/totalPeso)*100).toFixed(1)}%)</span></div>`;
+
+  // Valor
+  const cvCtx = document.getElementById('chartCarteiraValor');
+  if(cvCtx){ const ex=Chart.getChart(cvCtx); if(ex) ex.destroy(); new Chart(cvCtx, donutOpts(['Sem Reserva','Com Reserva'],[cd.semReserva.valor,cd.comReserva.valor],['#ff9100','#00e676'],BRL2)); }
+  document.getElementById('legend-carteira-valor').innerHTML=`
+    <div class="carteira-legend-item"><div class="carteira-legend-dot" style="background:#ff9100"></div><span>Sem Reserva — <strong>${BRL2(cd.semReserva.valor)}</strong> (${((cd.semReserva.valor/totalValor)*100).toFixed(1)}%)</span></div>
+    <div class="carteira-legend-item"><div class="carteira-legend-dot" style="background:#00e676"></div><span>Com Reserva — <strong>${BRL2(cd.comReserva.valor)}</strong> (${((cd.comReserva.valor/totalValor)*100).toFixed(1)}%)</span></div>`;
+}
+
 // ─── INIT ─────────────────────────────────────────────────────
-// Dados atualizados em 07/04/2026 — forçar atualização sempre
+// Dados atualizados em 08/04/2026 — forçar atualização sempre
 store.clients=['Cliente 1P'];
 store.records=[{
   cliente:'Cliente 1P', mes:'2026-04',
-  dias_uteis:20, dias_trab:4,
-  fat_ant:733419.17, fat_real:115990.26, fat_meta:3140865.47,
-  venda_real:607500.48, venda_meta:3140865.47, venda_proj:3185676.00,
-  fat_proj:141205.53,
-  ano_ant:522078.53, ano_atual:115990.26, ano_cresc:-78,
+  dias_uteis:20, dias_trab:5,
+  fat_ant:733419.17, fat_real:215756.41, fat_meta:3140865.47,
+  venda_real:602623.54, venda_meta:3140865.47, venda_proj:2715330.00,
+  fat_proj:262659.98,
+  ano_ant:627681.57, ano_atual:215756.41, ano_cresc:-66,
   cats:{
-    COMP:{fat:32168.71, meta:690990.40,  venda:163366.72, proj:39161.91},
-    GR:  {fat:76292.32, meta:2010153.90, venda:411798.87, proj:92877.61},
-    SALA:{fat:7529.23,  meta:439721.17,  venda:32334.89,  proj:9166.02}
+    COMP:{fat:62520.99, meta:690990.40,  venda:152712.93, proj:76112.51},
+    GR:  {fat:145706.19,meta:2010153.90, venda:413263.88, proj:177381.45},
+    SALA:{fat:7529.23,  meta:439721.17,  venda:36646.73,  proj:9166.02}
   },
   daily:[
     {dia:1, orc_fat:157043.27,real_fat:25347.01,  orc_venda:104695.51,real_venda:94029.00},
@@ -725,8 +790,8 @@ store.records=[{
     {dia:4, orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:143275.00},
     {dia:5, orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:77315.00},
     {dia:6, orc_fat:157043.27,real_fat:33363.73,  orc_venda:104695.51,real_venda:79890.00},
-    {dia:7, orc_fat:157043.27,real_fat:37192.65,  orc_venda:104695.51,real_venda:0},
-    {dia:8, orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
+    {dia:7, orc_fat:157043.27,real_fat:37192.65,  orc_venda:104695.51,real_venda:107427.00},
+    {dia:8, orc_fat:157043.27,real_fat:99766.15,  orc_venda:104695.51,real_venda:85715.00},
     {dia:9, orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
     {dia:10,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
     {dia:13,orc_fat:157043.27,real_fat:0,         orc_venda:104695.51,real_venda:0},
@@ -746,6 +811,7 @@ saveStore();
 
 rebuildClientSelects();
 renderAll();
+buildCarteiraCharts();
 </script>
 </body>
 </html>
