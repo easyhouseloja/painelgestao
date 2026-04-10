@@ -59,6 +59,93 @@
   --glow-teal: rgba(8,145,178,0.18);
 }
 
+/* ── LIGHT MODE VARIABLES ── */
+body.light-mode {
+  --bg-deep:    #f0f0f0;
+  --bg-panel:   #e8e8e8;
+  --bg-card:    #ffffff;
+  --border:     rgba(0,0,0,0.10);
+  --border-hover: rgba(210,40,40,0.35);
+  --text-primary:   #111111;
+  --text-secondary: #666666;
+  --glow-red:   rgba(204,40,40,0.12);
+  --glow-amber: rgba(212,160,23,0.12);
+  --glow-orange: rgba(217,94,16,0.12);
+  --glow-green: rgba(31,189,114,0.10);
+  --glow-blue: rgba(45,125,210,0.10);
+  --glow-purple: rgba(156,111,255,0.10);
+  --glow-financeiro: rgba(34,197,94,0.10);
+  --glow-teal: rgba(8,145,178,0.10);
+}
+
+body.light-mode::before {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+}
+
+body.light-mode .ambient-1 {
+  background: radial-gradient(circle, rgba(255,90,0,0.10) 0%, rgba(200,30,30,0.05) 40%, transparent 65%);
+}
+body.light-mode .ambient-2 {
+  background: radial-gradient(circle, rgba(255,70,0,0.08) 0%, rgba(170,20,20,0.04) 40%, transparent 65%);
+}
+body.light-mode .ambient-3 {
+  background: radial-gradient(circle, rgba(255,60,0,0.05) 0%, rgba(160,10,10,0.02) 40%, transparent 70%);
+}
+
+body.light-mode .header {
+  background: rgba(240,240,240,0.92);
+}
+
+body.light-mode .date-bar {
+  background: rgba(0,0,0,0.02);
+}
+
+/* ── THEME TOGGLE BUTTON ── */
+#btnThemeToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: #d4c9c4;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+#btnThemeToggle:hover {
+  background: rgba(204,40,40,0.15);
+  border-color: rgba(204,40,40,0.55);
+  color: #ff6b6b;
+  box-shadow: 0 0 14px rgba(204,40,40,0.25);
+}
+body.light-mode #btnThemeToggle {
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.12);
+  color: var(--text-secondary);
+}
+body.light-mode #btnThemeToggle:hover {
+  background: rgba(204,40,40,0.08);
+  border-color: rgba(204,40,40,0.4);
+  color: var(--accent-red);
+}
+
+/* ── THEME TOGGLE ANIMATION ── */
+#btnThemeToggle .icon-sun,
+#btnThemeToggle .icon-moon {
+  position: absolute;
+  transition: opacity 0.25s ease, transform 0.3s ease;
+}
+#btnThemeToggle {
+  position: relative;
+}
+body:not(.light-mode) #btnThemeToggle .icon-sun  { opacity: 1; transform: rotate(0deg) scale(1); }
+body:not(.light-mode) #btnThemeToggle .icon-moon { opacity: 0; transform: rotate(-30deg) scale(0.7); }
+body.light-mode      #btnThemeToggle .icon-sun  { opacity: 0; transform: rotate(30deg) scale(0.7); }
+body.light-mode      #btnThemeToggle .icon-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+
 *, *::before, *::after {
   margin: 0; padding: 0;
   box-sizing: border-box;
@@ -3179,6 +3266,11 @@ body::before {
     </div>
 
     <div class="header-right">
+      <!-- TEMA -->
+      <button id="btnThemeToggle" onclick="toggleTheme()" title="Alternar tema claro/escuro">
+        <i class="icon-sun" data-lucide="sun" style="width:16px;height:16px;"></i>
+        <i class="icon-moon" data-lucide="moon" style="width:16px;height:16px;"></i>
+      </button>
       <!-- NOTIFICAÇÕES -->
       <div class="notif-wrap" id="notifWrap">
         <button class="notif-btn" id="notifBtn">
@@ -3799,6 +3891,99 @@ function inicializarUI(email) {
 
 
 // ── IFRAME NAVIGATOR ─────────────────────────────────────────────
+// ── Injeta CSS de tema no iframe (chamado ao abrir e ao trocar tema) ─────────
+function iframeInjetarTema(iframe) {
+  try {
+    var doc = iframe.contentDocument || iframe.contentWindow.document;
+    if (!doc || !doc.head) return false;
+
+    // Remove injeção anterior se existir
+    var old = doc.getElementById('eh-theme-inject');
+    if (old) old.remove();
+
+    var isLight = document.body.classList.contains('light-mode');
+    var style = doc.createElement('style');
+    style.id = 'eh-theme-inject';
+    style.textContent = isLight ? `
+      /* ── EASY HOUSE LIGHT MODE — injetado pelo painel pai ── */
+      :root, html, body {
+        --bg-deep:        #f0f0f0 !important;
+        --bg-panel:       #e8e8e8 !important;
+        --bg-card:        #ffffff !important;
+        --border:         rgba(0,0,0,0.10) !important;
+        --text-primary:   #111111 !important;
+        --text-secondary: #666666 !important;
+      }
+      html, body {
+        background-color: #f0f0f0 !important;
+        color: #111111 !important;
+      }
+      /* Sobrescreve backgrounds escuros mais comuns nos filhos */
+      body, .page, .container, .wrapper, main, #app, #root {
+        background: #f0f0f0 !important;
+        color: #111111 !important;
+      }
+      /* Cards e painéis */
+      .card, .kpi-card, .panel, .box, .block,
+      [class*="card"], [class*="panel"], [class*="box"],
+      [style*="background:#0a0a0a"], [style*="background:#101010"],
+      [style*="background:#111"], [style*="background:#0d0d0d"],
+      [style*="background: #0a0a0a"], [style*="background: #101010"] {
+        background-color: #ffffff !important;
+        border-color: rgba(0,0,0,0.10) !important;
+        color: #111111 !important;
+      }
+      /* Header / nav */
+      header, nav, .header, .navbar, .topbar, .statusbar {
+        background: rgba(240,240,240,0.95) !important;
+        border-color: rgba(0,0,0,0.10) !important;
+      }
+      /* Textos secundários */
+      .label, .sub, .meta, .caption,
+      [style*="color:#7a7470"], [style*="color: #7a7470"],
+      [style*="color:rgba(255,255,255,0.4)"], [style*="color:rgba(255,255,255,0.5)"] {
+        color: #666666 !important;
+      }
+      /* Tabelas */
+      table, thead, tbody, tr, th, td {
+        border-color: rgba(0,0,0,0.08) !important;
+      }
+      thead, th { background: #f5f5f5 !important; color: #444 !important; }
+      tr:hover td { background: rgba(0,0,0,0.03) !important; }
+      /* Inputs e selects */
+      input, select, textarea {
+        background: #ffffff !important;
+        color: #111111 !important;
+        border-color: rgba(0,0,0,0.15) !important;
+      }
+      /* Bordas genéricas escuras */
+      [style*="border:1px solid rgba(255,255,255"],
+      [style*="border: 1px solid rgba(255,255,255"] {
+        border-color: rgba(0,0,0,0.10) !important;
+      }
+      /* Transição suave */
+      *, *::before, *::after {
+        transition: background-color 0.3s ease, color 0.25s ease, border-color 0.25s ease !important;
+      }
+    ` : `
+      /* ── EASY HOUSE DARK MODE — restaurado pelo painel pai ── */
+      :root, html, body {
+        --bg-deep:        #000000 !important;
+        --bg-panel:       #0a0a0a !important;
+        --bg-card:        #101010 !important;
+        --border:         rgba(255,255,255,0.07) !important;
+        --text-primary:   #f5f0ee !important;
+        --text-secondary: #7a7470 !important;
+      }
+      *, *::before, *::after {
+        transition: background-color 0.3s ease, color 0.25s ease, border-color 0.25s ease !important;
+      }
+    `;
+    doc.head.appendChild(style);
+    return true;
+  } catch(e) { return false; }
+}
+
 function iframeAbrir(url, titulo) {
   var overlay = document.getElementById('iframe-overlay');
   var iframe  = document.getElementById('iframe-content');
@@ -3809,6 +3994,13 @@ function iframeAbrir(url, titulo) {
   overlay.style.display = 'flex';
   document.body.style.overflow = 'hidden';
   lucide.createIcons();
+
+  // Injeta tema ao carregar (sempre, desktop e mobile)
+  var _onloadBase = function() {
+    iframeInjetarTema(iframe);
+    setTimeout(function(){ iframeInjetarTema(iframe); }, 400);
+    setTimeout(function(){ iframeInjetarTema(iframe); }, 1200);
+  };
 
   // Injeta CSS responsivo no iframe ao carregar (só mobile)
   if (window.innerWidth <= 768) {
@@ -3972,12 +4164,16 @@ function iframeAbrir(url, titulo) {
       }
     }
     iframe.onload = function() {
+      _onloadBase();
       injetarCSS();
       setTimeout(injetarCSS, 300);
       setTimeout(injetarCSS, 800);
       setTimeout(injetarCSS, 2000);
       setTimeout(injetarCSS, 4000);
     };
+  } else {
+    // Desktop: só injeta tema
+    iframe.onload = function() { _onloadBase(); };
   }
 }
 
@@ -7658,6 +7854,44 @@ function renderTVMadeira(el) {
       });
     }
   </script>
+
+<!-- THEME TOGGLE SCRIPT -->
+<script>
+// ── Aplica tema salvo ao carregar ──────────────────────────────────────────────
+(function() {
+  if (localStorage.getItem('eh_theme') === 'light') {
+    document.body.classList.add('light-mode');
+  }
+})();
+
+// ── Alterna tema e propaga para todos os iframes ───────────────────────────────
+function toggleTheme() {
+  var isLight = document.body.classList.toggle('light-mode');
+  var tema = isLight ? 'light' : 'dark';
+
+  // 1. Persiste no localStorage
+  localStorage.setItem('eh_theme', tema);
+
+  // 2. Reinjeita CSS diretamente no iframe aberto (se houver)
+  var iframe = document.getElementById('iframe-content');
+  if (iframe && iframe.src) {
+    iframeInjetarTema(iframe);
+  }
+
+  // 3. Re-renderiza icones Lucide (sun/moon no botao)
+  if (window.lucide) lucide.createIcons();
+}
+
+// ── Escuta mudancas vindas de outras abas ─────────────────────────────────────
+window.addEventListener('storage', function(e) {
+  if (e.key !== 'eh_theme') return;
+  if (e.newValue === 'light') document.body.classList.add('light-mode');
+  else document.body.classList.remove('light-mode');
+  var iframe = document.getElementById('iframe-content');
+  if (iframe && iframe.src) iframeInjetarTema(iframe);
+  if (window.lucide) lucide.createIcons();
+});
+</script>
 
 <!-- IFRAME NAVIGATOR -->
 <div id="iframe-overlay">
