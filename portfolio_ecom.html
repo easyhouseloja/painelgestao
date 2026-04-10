@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Portfólio E-COM</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg-base:#0d1117; --bg-card:#161b24; --bg-card2:#1a2030;
+  --border:#ffffff12; --border-med:#ffffff20;
+  --green:#00e676; --green-dim:#00e67620; --green-b:#00e67640;
+  --orange:#ff9100; --orange-dim:#ff910020; --orange-b:#ff910040;
+  --blue:#29b6f6; --blue-dim:#29b6f620; --blue-b:#29b6f640;
+  --purple:#b388ff; --purple-dim:#b388ff20; --purple-b:#b388ff40;
+  --pink:#ff4081; --pink-dim:#ff408120;
+  --yellow:#ffd740; --yellow-dim:#ffd74020;
+  --red:#ff5252; --red-dim:#ff525220;
+  --teal:#00e5ff; --teal-dim:#00e5ff20;
+  --txt:#e8eaf0; --txt2:#8892a4; --txt3:#3a4558;
+  --fd:'Barlow Condensed',sans-serif; --fb:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-base);font-family:var(--fb);color:var(--txt);min-height:100vh}
+.db{max-width:1500px;margin:0 auto;padding:24px 24px 60px}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.topbar-left h1{font-family:var(--fd);font-size:34px;font-weight:800;color:var(--blue);display:flex;align-items:center;gap:10px}
+.icon-sq{width:28px;height:28px;background:var(--txt);border-radius:4px;flex-shrink:0}
+.period{font-size:11px;color:var(--txt2);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tb{padding:5px 14px;border-radius:20px;font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.04em;border:1.5px solid;white-space:nowrap}
+.tb-blue{color:var(--blue);border-color:var(--blue);background:var(--blue-dim)}
+.tb-green{color:var(--green);border-color:var(--green);background:var(--green-dim)}
+.tb-orange{color:var(--orange);border-color:var(--orange);background:var(--orange-dim)}
+.tb-purple{color:var(--purple);border-color:var(--purple);background:var(--purple-dim)}
+
+/* FILTER */
+.filter-bar{background:var(--bg-card);border:1px solid var(--border);border-top:2px solid var(--blue);border-radius:10px;padding:14px 20px;margin-bottom:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.filter-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--txt2);font-weight:600;white-space:nowrap}
+.filter-select{background:var(--bg-base);border:1px solid var(--blue-b);color:var(--txt);font-size:13px;font-family:var(--fb);padding:8px 14px;border-radius:6px;cursor:pointer;min-width:180px}
+.filter-select:focus{outline:none;border-color:var(--blue)}
+.filter-select option{background:#161b24}
+.search-input{background:var(--bg-base);border:1px solid var(--blue-b);color:var(--txt);font-size:13px;font-family:var(--fb);padding:8px 14px;border-radius:6px;min-width:260px;outline:none}
+.search-input::placeholder{color:var(--txt3)}
+.search-input:focus{border-color:var(--blue)}
+
+/* SECTION */
+.section-lbl{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--txt3);margin-bottom:12px;margin-top:24px}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:4px}
+.kpi-card{background:var(--bg-card);border-radius:10px;padding:18px 20px;border:1px solid var(--border);border-top:2px solid;animation:fadeUp .5s ease both}
+.kpi-card:nth-child(1){border-top-color:var(--blue);animation-delay:.04s}
+.kpi-card:nth-child(2){border-top-color:var(--green);animation-delay:.08s}
+.kpi-card:nth-child(3){border-top-color:var(--orange);animation-delay:.12s}
+.kpi-card:nth-child(4){border-top-color:var(--purple);animation-delay:.16s}
+.kpi-lbl{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--txt2);margin-bottom:8px}
+.kpi-val{font-family:var(--fd);font-size:46px;font-weight:800;line-height:1;margin-bottom:6px}
+.kpi-card:nth-child(1) .kpi-val{color:var(--blue)}
+.kpi-card:nth-child(2) .kpi-val{color:var(--green)}
+.kpi-card:nth-child(3) .kpi-val{color:var(--orange)}
+.kpi-card:nth-child(4) .kpi-val{color:var(--purple)}
+.kpi-sub{font-size:11px;color:var(--txt2)}
+
+/* CHART ROW */
+.chart-row{display:grid;grid-template-columns:1fr 1.6fr;gap:12px;margin-bottom:4px}
+.chart-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:4px}
+.chart-card{background:var(--bg-card);border-radius:10px;padding:20px;border:1px solid var(--border);border-top:2px solid var(--blue);animation:fadeUp .5s ease .1s both}
+.chart-title{font-family:var(--fd);font-size:16px;font-weight:700;margin-bottom:2px}
+.chart-sub{font-size:11px;color:var(--txt2);margin-bottom:14px}
+.chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt2)}
+.leg-dot{width:9px;height:9px;border-radius:50%}
+
+/* TABELA PRODUTOS */
+.table-card{background:var(--bg-card);border-radius:10px;border:1px solid var(--border);border-top:2px solid var(--blue);overflow:hidden;animation:fadeUp .5s ease .15s both}
+.table-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.table-title{font-family:var(--fd);font-size:16px;font-weight:700}
+.table-count{font-size:11px;color:var(--txt2)}
+table.pt{width:100%;border-collapse:collapse}
+table.pt thead tr{background:#0d111780}
+table.pt th{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--txt2);padding:11px 14px;text-align:left;border-bottom:1px solid var(--border)}
+table.pt td{font-size:12px;padding:11px 14px;border-bottom:1px solid #ffffff05;vertical-align:top}
+table.pt tbody tr:hover{background:#ffffff04}
+.td-codigo{font-family:var(--fd);font-size:13px;color:var(--blue);font-weight:700;white-space:nowrap}
+.td-desc{font-weight:600;color:var(--txt)}
+.td-mascara{color:var(--txt2);font-size:11px}
+.cat-badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap}
+.cat-gr{background:var(--green-dim);color:var(--green);border:1px solid var(--green-b)}
+.cat-comoda{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue-b)}
+.cat-beliche{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-b)}
+.cat-cama{background:var(--pink-dim);color:var(--pink);border:1px solid #ff408140}
+.cat-outros{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple-b)}
+.cli-badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.cli-esp{background:#29b6f615;color:var(--blue);border:1px solid var(--blue-b)}
+.cli-mad{background:#00e67615;color:var(--green);border:1px solid var(--green-b)}
+.var-count{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--txt2)}
+
+/* MODELO CARDS */
+.modelo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.modelo-card{background:var(--bg-card);border-radius:10px;padding:16px 18px;border:1px solid var(--border);border-left:3px solid var(--blue);animation:fadeUp .4s ease both;transition:.2s}
+.modelo-card:hover{border-color:var(--blue);background:#1c2436}
+.modelo-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
+.modelo-nome{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--txt);line-height:1.2}
+.modelo-vars{font-size:11px;color:var(--txt2);margin-bottom:10px}
+.var-pills{display:flex;flex-wrap:wrap;gap:4px}
+.var-pill{background:#ffffff08;border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:10px;color:var(--txt2)}
+.modelo-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.num-var{font-family:var(--fd);font-size:22px;font-weight:800}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:22px;gap:0;overflow-x:auto}
+.tab{padding:11px 22px;font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--txt2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:.2s}
+.tab:hover{color:var(--txt)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.page{display:none}
+.page.active{display:block}
+
+/* EMPTY */
+.no-data{text-align:center;padding:48px;color:var(--txt3);font-family:var(--fd);font-size:16px;letter-spacing:.1em}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.kpi-grid,.chart-row,.chart-row-3{grid-template-columns:1fr}.topbar-left h1{font-size:24px}.db{padding:14px 14px 40px}}
+</style>
+</head>
+<body>
+<div class="db">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1><span class="icon-sq"></span>Portfólio E-COM</h1>
+      <div class="period">Mix de Produtos · Visão por Cliente</div>
+    </div>
+    <div class="topbar-right">
+      <span class="tb tb-blue" id="tb-skus">— SKUs</span>
+      <span class="tb tb-green" id="tb-modelos">— Modelos</span>
+      <span class="tb tb-orange" id="tb-cats">— Categorias</span>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <span class="filter-label">Cliente</span>
+    <select class="filter-select" id="cli-select" onchange="render()">
+      <option value="ALL">Todos os Clientes</option>
+      <option value="ESPLANADA">ESPLANADA</option>
+      <option value="MADEIRA">MADEIRA</option>
+    </select>
+    <span class="filter-label" style="margin-left:8px">Buscar Produto</span>
+    <input class="search-input" id="search-input" type="text" placeholder="Digite modelo, código ou máscara..." oninput="render()">
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(0)">Visão Geral</div>
+    <div class="tab" onclick="switchTab(1)">Mix por Modelos</div>
+    <div class="tab" onclick="switchTab(2)">Lista Completa</div>
+  </div>
+
+  <!-- PAGE 0: VISÃO GERAL -->
+  <div class="page active" id="page-0">
+    <div class="section-lbl">Indicadores do Portfólio</div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-lbl">Total de SKUs</div><div class="kpi-val" id="kpi-skus">—</div><div class="kpi-sub" id="kpi-skus-sub">variações ativas</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">Modelos Únicos</div><div class="kpi-val" id="kpi-modelos">—</div><div class="kpi-sub" id="kpi-mod-sub">linhas de produto</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">Categorias</div><div class="kpi-val" id="kpi-cats">—</div><div class="kpi-sub" id="kpi-cats-sub">tipos de produto</div></div>
+      <div class="kpi-card"><div class="kpi-lbl">Média de Variações</div><div class="kpi-val" id="kpi-media">—</div><div class="kpi-sub">por modelo</div></div>
+    </div>
+
+    <div class="section-lbl">Distribuição do Mix</div>
+    <div class="chart-row">
+      <div class="chart-card" style="border-top-color:var(--green)">
+        <div class="chart-title">Mix por Categoria</div>
+        <div class="chart-sub">Distribuição de SKUs por tipo de produto</div>
+        <div style="position:relative;height:260px"><canvas id="chartCat"></canvas></div>
+        <div class="chart-legend" id="legend-cat" style="margin-top:12px"></div>
+      </div>
+      <div class="chart-card" style="border-top-color:var(--orange)">
+        <div class="chart-title">Variações por Modelo</div>
+        <div class="chart-sub">Quantidade de SKUs por linha de produto</div>
+        <div style="position:relative;height:260px"><canvas id="chartModelos"></canvas></div>
+      </div>
+    </div>
+
+    <div class="section-lbl">Distribuição por Cliente</div>
+    <div class="chart-row-3">
+      <div class="chart-card" style="border-top-color:var(--blue)">
+        <div class="chart-title">SKUs por Cliente</div>
+        <div class="chart-sub">Total de variações ativas</div>
+        <div style="position:relative;height:200px"><canvas id="chartClientes"></canvas></div>
+        <div class="chart-legend" id="legend-cli" style="margin-top:12px"></div>
+      </div>
+      <div class="chart-card" style="border-top-color:var(--purple)">
+        <div class="chart-title">Modelos por Cliente</div>
+        <div class="chart-sub">Linhas únicas de produto</div>
+        <div style="position:relative;height:200px"><canvas id="chartModelosCli"></canvas></div>
+        <div class="chart-legend" id="legend-mcli" style="margin-top:12px"></div>
+      </div>
+      <div class="chart-card" style="border-top-color:var(--teal)">
+        <div class="chart-title">Média de Variações</div>
+        <div class="chart-sub">SKUs médios por modelo · por cliente</div>
+        <div style="position:relative;height:200px"><canvas id="chartMedia"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 1: MIX POR MODELOS -->
+  <div class="page" id="page-1">
+    <div class="section-lbl">Modelos do Portfólio</div>
+    <div class="modelo-grid" id="modelo-grid"></div>
+  </div>
+
+  <!-- PAGE 2: LISTA COMPLETA -->
+  <div class="page" id="page-2">
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title">Lista Completa de SKUs</div>
+        <div class="table-count" id="table-count">— itens</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="pt">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descrição</th>
+              <th>Máscara / Variação</th>
+              <th>Categoria</th>
+              <th>Cliente</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── DADOS ────────────────────────────────────────────────────
+const RAW = [
+  {codigo:'2236.13857',descricao:'GUARDA ROUPA JAZZ 6 PTS 2023',mascara:'AMENDOA CLEAN#S/ESP#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'2343.13250',descricao:'GUARDA ROUPA SAION 3 PTS PLUS',mascara:'AMENDOA CL/OFF WHI/A#C/PES#C/1 PT GLASS',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'2343.13252',descricao:'GUARDA ROUPA SAION 3 PTS PLUS',mascara:'AMENDOA CL/OFF WHI/A#C/PES#C/3 PTS GLASS',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'73281.23865',descricao:'COMODA URBAN 2019 8GAV',mascara:'AMENDOA CLEAN',cliente:'ESPLANADA',cat:'Cômoda'},
+  {codigo:'74549.33428',descricao:'BELICHE 0,9 OLGA',mascara:'AMENDOA CLEAN#C/LED',cliente:'ESPLANADA',cat:'Beliche'},
+  {codigo:'84932.36951',descricao:'CAMA LOPAS SOLT 0,9 LOOP 2025',mascara:'AMENDOA CLEAN#CORANO BEGE#C/CAMA AUXILIAR',cliente:'ESPLANADA',cat:'Cama'},
+  {codigo:'86203.69331',descricao:'GUARDA ROUPA 2 PTS QUADRIX',mascara:'AMENDOA CL/OFF WHI/A#C/1 PT GLASS#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'86331.70278',descricao:'GUARDA ROUPA 3 PTS QUADRIX',mascara:'AMENDOA CL/OFF WHI/A#C/1 PT GLASS#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'87167.90913',descricao:'COMODA SUAVITA AMENDOA',mascara:'AMENDOA CLEAN',cliente:'ESPLANADA',cat:'Cômoda'},
+  {codigo:'87459.91584',descricao:'GUARDA ROUPA 8 PTS SERENATA',mascara:'AMENDOA CLEAN#C/ESP#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'87459.91586',descricao:'GUARDA ROUPA 8 PTS SERENATA',mascara:'AMENDOA CLEAN#S/ESP#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'87552.93176',descricao:'GUARDA ROUPA LOPAS 6 PTS SUAVITA',mascara:'AMENDOA CLEAN#C/6 PORTAS DE VIDRO#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'87552.93180',descricao:'GUARDA ROUPA LOPAS 6 PTS SUAVITA',mascara:'AMENDOA CLEAN#S/PORTAS DE VIDRO#S/ESP#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'84723.30592',descricao:'GUARDA ROUPA LOPAS 8 PTS ERGON',mascara:'AMENDOA CLEAN#C/ESP#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'84723.30600',descricao:'GUARDA ROUPA LOPAS 8 PTS ERGON',mascara:'AMENDOA CLEAN/OFF WH#C/ESP#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'84794.52111',descricao:'GUARDA ROUPA LOPAS 6 PTS LOOP 2025',mascara:'AMENDOA CLEAN#S/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'2101.13917',descricao:'GUARDA ROUPA ARIES 6 PTS 2021',mascara:'AMENDOA CLEAN/OFF WH#C/ESP#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'2101.13938',descricao:'GUARDA ROUPA ARIES 6 PTS 2021',mascara:'AMENDOA CLEAN#C/ESP#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'2101.13939',descricao:'GUARDA ROUPA ARIES 6 PTS 2021',mascara:'AMENDOA CLEAN#S/ESP#C/PES',cliente:'ESPLANADA',cat:'Guarda Roupa'},
+  {codigo:'2083.12472',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN#C/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12473',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN#S/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12474',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN#S/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12475',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN#C/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12476',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN/BRANCO#C/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12477',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN/BRANCO#S/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12478',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN/BRANCO#S/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12479',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN/BRANCO#C/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12480',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN/OFF WH#C/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12481',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN/OFF WH#S/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12482',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN/OFF WH#S/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12483',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'AMENDOA CLEAN/OFF WH#C/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12488',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'BRANCO#C/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12489',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'BRANCO#S/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12490',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'BRANCO#S/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2083.12491',descricao:'GUARDA ROUPA ALONZO 4 PTS 2021',mascara:'BRANCO#C/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2101.13940',descricao:'GUARDA ROUPA ARIES 6 PTS 2021',mascara:'AMENDOA CLEAN#S/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2106.13357',descricao:'GUARDA ROUPA BERTHA 6 PTS',mascara:'AMENDOA CLEAN#C/ESP#S/PES#S/KIT GAV',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2106.13360',descricao:'GUARDA ROUPA BERTHA 6 PTS',mascara:'AMENDOA CLEAN#S/ESP#S/PES#S/KIT GAV',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2106.13361',descricao:'GUARDA ROUPA BERTHA 6 PTS',mascara:'AMENDOA CLEAN#S/ESP#C/PES#S/KIT GAV',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2106.13363',descricao:'GUARDA ROUPA BERTHA 6 PTS',mascara:'AMENDOA CLEAN/OFF WH#C/ESP#C/PES#S/KIT GAV',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2106.13365',descricao:'GUARDA ROUPA BERTHA 6 PTS',mascara:'AMENDOA CLEAN/OFF WH#C/ESP#S/PES#S/KIT GAV',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2316.13054',descricao:'GUARDA ROUPA NICE 3 PTS',mascara:'AMENDOA CL/OFF WHI/A#C/ESP#S/PES#S/KIT GAV',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'2382.13164',descricao:'GR LOPAS 03 PTS SPAZIO 2,70',mascara:'S/ESP E S/PES PVC',cliente:'MADEIRA',cat:'Outros'},
+  {codigo:'2382.13165',descricao:'GR LOPAS 03 PTS SPAZIO 2,70',mascara:'S/ESP E C/PES PVC',cliente:'MADEIRA',cat:'Outros'},
+  {codigo:'2382.13166',descricao:'GR LOPAS 03 PTS SPAZIO 2,70',mascara:'3PTS SUPER GLASS E C/PES PVC',cliente:'MADEIRA',cat:'Outros'},
+  {codigo:'2382.13167',descricao:'GR LOPAS 03 PTS SPAZIO 2,70',mascara:'3PTS SUPER GLASS E S/PES PVC',cliente:'MADEIRA',cat:'Outros'},
+  {codigo:'2382.13168',descricao:'GR LOPAS 03 PTS SPAZIO 2,70',mascara:'1PT GLASS E C/PES PVC',cliente:'MADEIRA',cat:'Outros'},
+  {codigo:'2382.13169',descricao:'GR LOPAS 03 PTS SPAZIO 2,70',mascara:'1PT GLASS E S/PES PVC',cliente:'MADEIRA',cat:'Outros'},
+  {codigo:'273.12436',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'AMENDOA CLEAN#C/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12437',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'AMENDOA CLEAN#S/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12438',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'AMENDOA CLEAN#C/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12439',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'AMENDOA CLEAN#S/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12440',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'AMENDOA CLEAN/OFF WH#C/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12441',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'AMENDOA CLEAN/OFF WH#S/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12442',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'AMENDOA CLEAN/OFF WH#S/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12443',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'AMENDOA CLEAN/OFF WH#C/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12448',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'BRANCO#C/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12449',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'BRANCO#S/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12450',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'BRANCO#S/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'273.12451',descricao:'GUARDA ROUPA ALONZO 6 PTS 2021',mascara:'BRANCO#C/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'72565.13276',descricao:'GUARDA ROUPA ZEINE 2 PTS 2024',mascara:'AMENDOA CL/OFF WHI/A#C/1 PT GLASS#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'72565.13279',descricao:'GUARDA ROUPA ZEINE 2 PTS 2024',mascara:'AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'72565.13280',descricao:'GUARDA ROUPA ZEINE 2 PTS 2024',mascara:'BRANCO#C/1 PT GLASS#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'72565.13283',descricao:'GUARDA ROUPA ZEINE 2 PTS 2024',mascara:'BRANCO#C/1 PT GLASS#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'84794.42175',descricao:'GUARDA ROUPA LOPAS 6 PTS LOOP 2025',mascara:'AMENDOA CLEAN/OFF WH#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'84794.42176',descricao:'GUARDA ROUPA LOPAS 6 PTS LOOP 2025',mascara:'AMENDOA CLEAN/OFF WH#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'84821.30739',descricao:'GUARDA ROUPA LOPAS 3 PTS OLLIE II 2025',mascara:'AMENDOA CL/OFF WHI/A#C/2 PTS GLASS#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'84821.30740',descricao:'GUARDA ROUPA LOPAS 3 PTS OLLIE II 2025',mascara:'AMENDOA CL/OFF WHI/A#C/2 PTS GLASS#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'84821.30741',descricao:'GUARDA ROUPA LOPAS 3 PTS OLLIE II 2025',mascara:'AMENDOA CL/OFF WHI/A#S/2PTS GLASS#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'84821.30742',descricao:'GUARDA ROUPA LOPAS 3 PTS OLLIE II 2025',mascara:'AMENDOA CL/OFF WHI/A#S/2PTS GLASS#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'84821.30743',descricao:'GUARDA ROUPA LOPAS 3 PTS OLLIE II 2025',mascara:'FRASSINO/OFF WHITE/F#C/2 PTS GLASS#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'84821.30744',descricao:'GUARDA ROUPA LOPAS 3 PTS OLLIE II 2025',mascara:'FRASSINO/OFF WHITE/F#C/2 PTS GLASS#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'84821.30745',descricao:'GUARDA ROUPA LOPAS 3 PTS OLLIE II 2025',mascara:'FRASSINO/OFF WHITE/F#S/2PTS GLASS#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'87459.91588',descricao:'GUARDA ROUPA 8 PTS SERENATA',mascara:'BRANCO#C/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'87459.91589',descricao:'GUARDA ROUPA 8 PTS SERENATA',mascara:'BRANCO#C/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'87459.91590',descricao:'GUARDA ROUPA 8 PTS SERENATA',mascara:'BRANCO#S/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'87552.93176',descricao:'GUARDA ROUPA LOPAS 6 PTS SUAVITA',mascara:'AMENDOA CLEAN#C/6 PORTAS DE VIDRO#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'87552.93177',descricao:'GUARDA ROUPA LOPAS 6 PTS SUAVITA',mascara:'AMENDOA CLEAN#C/6 PORTAS DE VIDRO#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'87552.93179',descricao:'GUARDA ROUPA LOPAS 6 PTS SUAVITA',mascara:'AMENDOA CLEAN#S/PORTAS DE VIDRO#C/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'87552.93180',descricao:'GUARDA ROUPA LOPAS 6 PTS SUAVITA',mascara:'AMENDOA CLEAN#S/PORTAS DE VIDRO#S/ESP#C/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+  {codigo:'87552.93181',descricao:'GUARDA ROUPA LOPAS 6 PTS SUAVITA',mascara:'AMENDOA CLEAN#S/PORTAS DE VIDRO#S/ESP#S/PES',cliente:'MADEIRA',cat:'Guarda Roupa'},
+];
+
+// ─── PALETA ────────────────────────────────────────────────────
+const CAT_COLORS = {
+  'Guarda Roupa':'#00e676','Cômoda':'#29b6f6','Beliche':'#ff9100',
+  'Cama':'#ff4081','Outros':'#b388ff'
+};
+const CLI_COLORS = {'ESPLANADA':'#29b6f6','MADEIRA':'#00e676'};
+
+function catBadge(c){
+  const map={'Guarda Roupa':'cat-gr','Cômoda':'cat-comoda','Beliche':'cat-beliche','Cama':'cat-cama','Outros':'cat-outros'};
+  return `<span class="cat-badge ${map[c]||'cat-outros'}">${c}</span>`;
+}
+function cliBadge(c){
+  return c==='ESPLANADA'
+    ? `<span class="cli-badge cli-esp">${c}</span>`
+    : `<span class="cli-badge cli-mad">${c}</span>`;
+}
+
+// ─── FILTRO ────────────────────────────────────────────────────
+function getFiltered(){
+  const cli = document.getElementById('cli-select').value;
+  const q   = document.getElementById('search-input').value.toLowerCase().trim();
+  return RAW.filter(r => {
+    const matchCli = cli==='ALL' || r.cliente===cli;
+    const matchQ   = !q || r.descricao.toLowerCase().includes(q) || r.codigo.toLowerCase().includes(q) || r.mascara.toLowerCase().includes(q);
+    return matchCli && matchQ;
+  });
+}
+
+// ─── RENDER ────────────────────────────────────────────────────
+let _charts = {};
+function destroyChart(id){ if(_charts[id]){ _charts[id].destroy(); delete _charts[id]; } }
+
+function render(){
+  const data = getFiltered();
+  const cli  = document.getElementById('cli-select').value;
+
+  // Agrupar modelos
+  const modeloMap = {};
+  data.forEach(r => {
+    const k = r.cliente+'||'+r.descricao.trim();
+    if(!modeloMap[k]) modeloMap[k] = {descricao:r.descricao.trim(),cliente:r.cliente,cat:r.cat,vars:[]};
+    modeloMap[k].vars.push(r.mascara);
+  });
+  const modelos = Object.values(modeloMap);
+
+  // KPIs
+  const totalSKUs = data.length;
+  const totalMod  = modelos.length;
+  const cats      = [...new Set(data.map(r=>r.cat))];
+  const media     = totalMod ? (totalSKUs/totalMod).toFixed(1) : 0;
+
+  document.getElementById('kpi-skus').textContent    = totalSKUs;
+  document.getElementById('kpi-modelos').textContent = totalMod;
+  document.getElementById('kpi-cats').textContent    = cats.length;
+  document.getElementById('kpi-media').textContent   = media;
+  document.getElementById('kpi-skus-sub').textContent= cli==='ALL'?'todos os clientes':'cliente selecionado';
+
+  document.getElementById('tb-skus').textContent    = totalSKUs+' SKUs';
+  document.getElementById('tb-modelos').textContent = totalMod+' Modelos';
+  document.getElementById('tb-cats').textContent    = cats.length+' Categorias';
+
+  buildCharts(data, modelos, cli);
+  buildModeloGrid(modelos);
+  buildTable(data);
+}
+
+function buildCharts(data, modelos, cli){
+  // 1. Pizza — Mix por categoria
+  const catCounts = {};
+  data.forEach(r=>{ catCounts[r.cat]=(catCounts[r.cat]||0)+1; });
+  const catLabels = Object.keys(catCounts);
+  const catVals   = catLabels.map(c=>catCounts[c]);
+  const catColors = catLabels.map(c=>CAT_COLORS[c]||'#8892a4');
+
+  destroyChart('chartCat');
+  _charts['chartCat'] = new Chart(document.getElementById('chartCat'),{
+    type:'doughnut',
+    data:{labels:catLabels,datasets:[{data:catVals,backgroundColor:catColors,borderColor:'#161b24',borderWidth:3,hoverOffset:8}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} SKU${ctx.raw>1?'s':''} (${((ctx.raw/data.length)*100).toFixed(1)}%)`}}}}
+  });
+  document.getElementById('legend-cat').innerHTML = catLabels.map((c,i)=>
+    `<div class="leg-item"><div class="leg-dot" style="background:${catColors[i]}"></div><span>${c} <strong style="color:var(--txt)">${catVals[i]}</strong></span></div>`
+  ).join('');
+
+  // 2. Barra — Variações por modelo
+  const modSort = [...modelos].sort((a,b)=>b.vars.length-a.vars.length).slice(0,15);
+  const modLabels = modSort.map(m=>m.descricao.length>28?m.descricao.substring(0,28)+'…':m.descricao);
+  const modVals   = modSort.map(m=>m.vars.length);
+  const modColors = modSort.map(m=>CAT_COLORS[m.cat]||'#8892a4');
+
+  destroyChart('chartModelos');
+  _charts['chartModelos'] = new Chart(document.getElementById('chartModelos'),{
+    type:'bar',
+    data:{labels:modLabels,datasets:[{data:modVals,backgroundColor:modColors.map(c=>c+'99'),borderColor:modColors,borderWidth:1.5,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw} variação${ctx.raw>1?'ões':''}`}}},
+      scales:{x:{ticks:{color:'#8892a4',font:{size:10}},grid:{color:'#ffffff08'}},y:{ticks:{color:'#e8eaf0',font:{size:10}},grid:{display:false}}}}
+  });
+
+  // 3 & 4. SKUs e Modelos por cliente (só mostra se ALL)
+  const clis = ['ESPLANADA','MADEIRA'];
+  const skusCli   = clis.map(c=>RAW.filter(r=>r.cliente===c).length);
+  const modMap2 = {};
+  RAW.forEach(r=>{ const k=r.cliente+'||'+r.descricao.trim(); modMap2[k]=r.cliente; });
+  const modCli = clis.map(c=>Object.values(modMap2).filter(v=>v===c).length);
+
+  destroyChart('chartClientes');
+  _charts['chartClientes'] = new Chart(document.getElementById('chartClientes'),{
+    type:'doughnut',
+    data:{labels:clis,datasets:[{data:skusCli,backgroundColor:clis.map(c=>CLI_COLORS[c]+'99'),borderColor:clis.map(c=>CLI_COLORS[c]),borderWidth:2,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} SKUs`}}}}
+  });
+  document.getElementById('legend-cli').innerHTML = clis.map((c,i)=>
+    `<div class="leg-item"><div class="leg-dot" style="background:${CLI_COLORS[c]}"></div><span>${c} <strong style="color:var(--txt)">${skusCli[i]}</strong></span></div>`
+  ).join('');
+
+  destroyChart('chartModelosCli');
+  _charts['chartModelosCli'] = new Chart(document.getElementById('chartModelosCli'),{
+    type:'doughnut',
+    data:{labels:clis,datasets:[{data:modCli,backgroundColor:clis.map(c=>CLI_COLORS[c]+'99'),borderColor:clis.map(c=>CLI_COLORS[c]),borderWidth:2,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} modelos`}}}}
+  });
+  document.getElementById('legend-mcli').innerHTML = clis.map((c,i)=>
+    `<div class="leg-item"><div class="leg-dot" style="background:${CLI_COLORS[c]}"></div><span>${c} <strong style="color:var(--txt)">${modCli[i]}</strong></span></div>`
+  ).join('');
+
+  // 5. Média por cliente
+  const mediaVals = clis.map((c,i)=> modCli[i]>0?(skusCli[i]/modCli[i]).toFixed(1):0);
+  destroyChart('chartMedia');
+  _charts['chartMedia'] = new Chart(document.getElementById('chartMedia'),{
+    type:'bar',
+    data:{labels:clis,datasets:[{data:mediaVals,backgroundColor:clis.map(c=>CLI_COLORS[c]+'55'),borderColor:clis.map(c=>CLI_COLORS[c]),borderWidth:2,borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw} SKUs/modelo`}}},
+      scales:{x:{ticks:{color:'#8892a4'},grid:{display:false}},y:{ticks:{color:'#8892a4',font:{size:10}},grid:{color:'#ffffff08'}}}}
+  });
+}
+
+function buildModeloGrid(modelos){
+  const sorted = [...modelos].sort((a,b)=>b.vars.length-a.vars.length);
+  const catBorderColor = m => CAT_COLORS[m.cat]||'#8892a4';
+  document.getElementById('modelo-grid').innerHTML = sorted.length ? sorted.map((m,i)=>`
+    <div class="modelo-card" style="border-left-color:${catBorderColor(m)};animation-delay:${(i%12)*0.03}s">
+      <div class="modelo-card-head">
+        <div class="modelo-nome">${m.descricao}</div>
+        ${cliBadge(m.cliente)}
+      </div>
+      <div style="margin-bottom:8px">${catBadge(m.cat)}</div>
+      <div class="modelo-vars">${m.vars.length} variação${m.vars.length>1?'ões':''} ativa${m.vars.length>1?'s':''}</div>
+      <div class="var-pills">${m.vars.map(v=>`<span class="var-pill">${v}</span>`).join('')}</div>
+      <div class="modelo-footer">
+        <span style="font-size:11px;color:var(--txt3)">SKUs neste modelo</span>
+        <span class="num-var" style="color:${catBorderColor(m)}">${m.vars.length}</span>
+      </div>
+    </div>`).join('') : '<div class="no-data">Nenhum modelo encontrado</div>';
+}
+
+function buildTable(data){
+  document.getElementById('table-count').textContent = data.length+' ite'+(data.length===1?'m':'ns');
+  document.getElementById('table-body').innerHTML = data.length ? data.map(r=>`
+    <tr>
+      <td><span class="td-codigo">${r.codigo}</span></td>
+      <td><span class="td-desc">${r.descricao.trim()}</span></td>
+      <td><span class="td-mascara">${r.mascara}</span></td>
+      <td>${catBadge(r.cat)}</td>
+      <td>${cliBadge(r.cliente)}</td>
+    </tr>`).join('') : '<tr><td colspan="5" class="no-data">Nenhum item encontrado</td></tr>';
+}
+
+// ─── TABS ─────────────────────────────────────────────────────
+function switchTab(n){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===n));
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
