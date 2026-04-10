@@ -55,6 +55,8 @@
   --glow-purple: rgba(156,111,255,0.18);
   --accent-financeiro: #22c55e;
   --glow-financeiro: rgba(34,197,94,0.16);
+  --accent-teal:  #0891b2;
+  --glow-teal: rgba(8,145,178,0.18);
 }
 
 *, *::before, *::after {
@@ -632,6 +634,8 @@ body::before {
 
 .card-financeiro::before { background: var(--accent-financeiro); box-shadow: 0 0 20px var(--glow-financeiro); }
 .card-financeiro:hover   { box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 -2px 16px var(--glow-financeiro) inset; transform: translateY(-3px) !important; }
+.card-portfolio::before  { background: var(--accent-teal); box-shadow: 0 0 20px var(--glow-teal); }
+.card-portfolio:hover    { box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 -2px 16px var(--glow-teal) inset; transform: translateY(-3px) !important; }
 
 /* ── BOTÃO ANYMARKET no card ── */
 .card-anymarket-btn {
@@ -1249,6 +1253,7 @@ body::before {
 .card-comercial .icon-wrap { background: rgba(45,125,210,0.1); border: 1px solid rgba(45,125,210,0.25); }
 .card-mm1p  .icon-wrap { background: rgba(156,111,255,0.1); border: 1px solid rgba(156,111,255,0.25); }
 .card-financeiro .icon-wrap { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); }
+.card-portfolio  .icon-wrap { background: rgba(8,145,178,0.1);  border: 1px solid rgba(8,145,178,0.25); }
 
 .card-estoque .icon-wrap i { color: var(--accent-amber); }
 .card-astec   .icon-wrap i { color: var(--accent-orange); }
@@ -1256,6 +1261,7 @@ body::before {
 .card-comercial .icon-wrap i { color: var(--accent-blue); }
 .card-mm1p  .icon-wrap i { color: var(--accent-purple); }
 .card-financeiro .icon-wrap i { color: var(--accent-financeiro); }
+.card-portfolio  .icon-wrap i { color: var(--accent-teal); }
 
 .card-estoque:hover .icon-wrap   { background: rgba(212,160,23,0.18);  border-color: rgba(212,160,23,0.5);  box-shadow: 0 0 18px rgba(212,160,23,0.3); }
 .card-astec:hover   .icon-wrap   { background: rgba(217,94,16,0.18);   border-color: rgba(217,94,16,0.5);   box-shadow: 0 0 18px rgba(217,94,16,0.3); }
@@ -1263,6 +1269,7 @@ body::before {
 .card-comercial:hover .icon-wrap { background: rgba(45,125,210,0.18);  border-color: rgba(45,125,210,0.5);  box-shadow: 0 0 18px rgba(45,125,210,0.3); }
 .card-mm1p:hover    .icon-wrap   { background: rgba(156,111,255,0.18); border-color: rgba(156,111,255,0.5); box-shadow: 0 0 18px rgba(156,111,255,0.3); }
 .card-financeiro:hover .icon-wrap{ background: rgba(34,197,94,0.18);   border-color: rgba(34,197,94,0.5);   box-shadow: 0 0 18px rgba(34,197,94,0.28); }
+.card-portfolio:hover  .icon-wrap { background: rgba(8,145,178,0.18);  border-color: rgba(8,145,178,0.5);  box-shadow: 0 0 18px rgba(8,145,178,0.3); }
 
 /* ── CARD TEXT ── */
 .card-tag {
@@ -1279,6 +1286,7 @@ body::before {
 .card-comercial .card-tag { color: var(--accent-blue); }
 .card-mm1p  .card-tag { color: var(--accent-purple); }
 .card-financeiro .card-tag { color: var(--accent-financeiro); }
+.card-portfolio  .card-tag { color: var(--accent-teal); }
 
 .card h2 {
   font-family: 'Syne', sans-serif;
@@ -3500,13 +3508,20 @@ body::before {
           </div>
         </a>
 
-        <!-- PLACEHOLDER (em breve) -->
-        <div class="coming-soon-card">
-          <i data-lucide="plus-circle" style="width:28px;height:28px"></i>
-          <strong>Em breve</strong>
-          <span>Novos dashboards 1P serão adicionados aqui.</span>
-        </div>
+        <!-- PORTFÓLIO E-COM -->
+        <a class="card card-portfolio" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/portfolio_ecom.html" data-title="Portfólio E-COM · 1P" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
+          <div class="icon-wrap">
+            <i data-lucide="layers" style="width:22px;height:22px;"></i>
+          </div>
+          <div class="card-tag">Mix de Produtos · Visão por Cliente</div>
+          <h2>Portfólio</h2>
+          <p>Visão completa do portfólio ativo na Madeira Madeira: SKUs, modelos, categorias, variações e distribuição por cliente. Atualizado diariamente.</p>
+          <div class="card-footer">
+            Acessar dashboard <i data-lucide="arrow-right"></i>
+          </div>
+        </a>
 
+        <!-- PLACEHOLDER (em breve) -->
         <div class="coming-soon-card">
           <i data-lucide="plus-circle" style="width:28px;height:28px"></i>
           <strong>Em breve</strong>
