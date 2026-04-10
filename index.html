@@ -93,6 +93,16 @@ body.light-mode .ambient-3 {
 }
 
 /* ── PROTEÇÃO DA TELA DE LOGIN — nunca muda de tema ── */
+/* Fundo do body sempre escuro enquanto login estiver visivel */
+body.login-active {
+  background: #060606 !important;
+}
+body.login-active .ambient-1,
+body.login-active .ambient-2,
+body.login-active .ambient-3 {
+  opacity: 1 !important;
+  background: revert !important;
+}
 /* Restaura o fundo original do login no light mode */
 body.light-mode #login-screen,
 body.login-active #login-screen {
@@ -114,6 +124,14 @@ body.login-active .login-glow-2,
 body.login-active .login-glow-3 { opacity: 1 !important; }
 body.light-mode .login-box,
 body.login-active .login-box { background: #ffffff !important; color: #1a1a1a !important; }
+body.light-mode .login-title,
+body.login-active .login-title { color: #1a1a1a !important; }
+body.light-mode .login-sub,
+body.login-active .login-sub { color: #555555 !important; }
+body.light-mode .login-label,
+body.login-active .login-label { color: #333333 !important; }
+body.light-mode .login-footer,
+body.login-active .login-footer { color: #888888 !important; }
 body.light-mode .login-btn,
 body.login-active .login-btn { background: linear-gradient(135deg,#cc2828,#e03535) !important; color:#ffffff !important; }
 body.light-mode .login-input,
@@ -4111,6 +4129,9 @@ function iframeInjetarTema(iframe) {
           Array.prototype.forEach.call(doc.body.querySelectorAll('*'), function(el) {
             var tag = (el.tagName||'').toLowerCase();
             if (SKIP.has(tag)) return;
+            // Pula elementos dentro do login-screen
+            if (document.getElementById('login-screen') &&
+                document.getElementById('login-screen').contains(el)) return;
             // Pula se ja tem inline background (CSS ja tratou)
             var inl = el.style.background || el.style.backgroundColor || '';
             if (inl && inl !== 'transparent' && inl !== 'none') return;
