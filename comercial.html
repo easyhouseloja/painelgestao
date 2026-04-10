@@ -48,14 +48,15 @@ const aprDaily = [
   {d:'05/04', g:250554.42, sh:147369.25, me:37621.18, ma:49740.69, mad:4944.25,  via:5553.87,  web:5325.18},
   {d:'06/04', g:277563.80, sh:166326.12, me:46141.54, ma:52452.84, mad:3522.76,  via:9120.54,  web:0},
   {d:'07/04', g:378320.70, sh:232400.91, me:55217.74, ma:84955.90, mad:1237.26,  via:4508.90,  web:0},
-  {d:'08/04', g:326651.33, sh:188708.48, me:30837.03, ma:95394.74, mad:1626.63,  via:3871.00,  web:5553.19},
+  {d:'08/04', g:326651.33, sh:188708.48, me:30837.03, ma:95394.74, mad:1626.63,  via:3871.00,  web:5553.19, zema:0},
+  {d:'09/04', g:303181.36, sh:192921.19, me:30507.48, ma:69245.59, mad:1302.46,  via:8307.48,  web:0,       zema:897.16},
 ];
 
 // ── Tabela diária Abril ──
 (function() {
   const tbody = document.getElementById('aprDailyTbody');
   if (!tbody) return;
-  const keys = ['g','sh','me','ma','mad','via','web'];
+  const keys = ['g','sh','me','ma','mad','via','web','zema'];
   const avg = aprDaily.reduce((a,r)=>a+r.g,0)/aprDaily.length;
   aprDaily.forEach(row => {
     const tr = document.createElement('tr');
@@ -70,7 +71,7 @@ const aprDaily = [
   tbody.appendChild(trT);
   const trA = document.createElement('tr'); trA.style.background='var(--bg3)';
   trA.innerHTML = `<td style="color:var(--muted);font-size:.7rem">MÉDIA/DIA</td>`
-    +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">R$ ${(t/8).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
+    +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">R$ ${(t/9).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
   tbody.appendChild(trA);
 })();
 
@@ -404,8 +405,8 @@ function renderAprProdTable(tbodyId, data) {
 const aprChartsBuilt = {};
 function buildAprCharts(page) {
   if(page==='visao'){
-    new Chart(document.getElementById('aprCatChart'),{type:'doughnut',data:{labels:['GR','SALA','COMP'],datasets:[{data:[1361006.22,454845.31,340831.56],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
-    new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via','Web'],datasets:[{data:[1392905.78,272065.62,374291.47,42243.38,40799.52,12982.87],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    new Chart(document.getElementById('aprCatChart'),{type:'doughnut',data:{labels:['GR','SALA','COMP'],datasets:[{data:[1620469.05,546684.66,411080.87],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
+    new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via','Web'],datasets:[{data:[1658109.54,311692.68,479230.82,43632.54,45842.74,17839.23],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='categorias'){
     new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[745278.24,189198.60,328953.09,29879.58,36260.61],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[366784.13,43982.25,39614.67,2208.04,923.88],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[280843.41,38884.77,5723.72,10159.76,3615.02],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
@@ -414,7 +415,7 @@ function buildAprCharts(page) {
     const labels=aprDaily.map(d=>d.d);
     const vals=aprDaily.map(d=>d.g);
     const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
-    new Chart(document.getElementById('aprDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(8).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    new Chart(document.getElementById('aprDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(9).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
 }
 
@@ -676,9 +677,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 }
 .month-btn:hover { color: var(--text); background: var(--card); }
 .month-btn.active { color: var(--accent); background: var(--card); border-color: var(--accent); border-bottom: 2px solid var(--card); }
-.month-btn.march    { --accent: #34d399; }
-.month-btn.april    { --accent: #f97316; }
-.month-btn.trimestre { --accent: #a78bfa; }
+.month-btn.march { --accent: #34d399; }
+.month-btn.april  { --accent: #f97316; }
 .month-dashboard { display: none; }
 .month-dashboard.active { display: block; }
 @media(max-width:640px){ .month-selector { padding: 10px 16px 0; } .month-btn { padding: 8px 16px; font-size:.75rem; } }
@@ -691,13 +691,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- SELETOR DE MÊS -->
 <div class="month-selector">
-  <div class="month-btn trimestre active" onclick="showMonth('trimestre', this)">📦 Análise Trimestral</div>
-  <div class="month-btn march"           onclick="showMonth('march', this)">📅 Março 2026</div>
-  <div class="month-btn april"           onclick="showMonth('april', this)">📅 Abril 2026</div>
+  <div class="month-btn march active" onclick="showMonth('march', this)">📅 Março 2026</div>
+  <div class="month-btn april"        onclick="showMonth('april', this)">📅 Abril 2026</div>
 </div>
 
 <!-- ═══════════════ MÊS: MARÇO 2026 ═══════════════ -->
-<div class="month-dashboard" id="month-march">
+<div class="month-dashboard active" id="month-march">
 <div class="header">
   <div>
     <h1>📊 Dashboard Vendas</h1>
@@ -1450,12 +1449,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <div class="header">
   <div>
     <h1>📊 Dashboard Vendas</h1>
-    <div class="header-sub" id="apr-hdr-periodo">Abril 2026 · Período 01/04 a 08/04</div>
+    <div class="header-sub" id="apr-hdr-periodo">Abril 2026 · Período 01/04 a 09/04</div>
   </div>
   <div class="header-badges">
-    <span class="badge" style="color:#f97316">30,12% da Meta</span>
-    <span class="badge red" style="color:var(--red)">-6,30% vs Mar</span>
-    <span class="badge orange" style="color:#a78bfa">+173% Ano x Ano</span>
+    <span class="badge" style="color:#f97316">36,01% da Meta</span>
+    <span class="badge red" style="color:var(--red)">-12,40% vs Mar</span>
+    <span class="badge orange" style="color:#a78bfa">+187% Ano x Ano</span>
   </div>
 </div>
 
@@ -1472,23 +1471,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="kpi-strip">
     <div class="kpi-card orange">
       <div class="kpi-label">Faturamento Total</div>
-      <div class="kpi-value">R$ 2,16M</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-red">-6,30%</span> vs mês anterior</div>
+      <div class="kpi-value">R$ 2,58M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-12,40%</span> vs mês anterior</div>
     </div>
     <div class="kpi-card" style="--c:var(--yellow)">
       <div class="kpi-label">% Meta Atingida</div>
-      <div class="kpi-value" style="color:var(--yellow)">30,12%</div>
-      <div class="kpi-sub">Meta: R$ 7,16M · <span class="kpi-pill pill-yellow">8 dias</span></div>
+      <div class="kpi-value" style="color:var(--yellow)">36,01%</div>
+      <div class="kpi-sub">Meta: R$ 7,16M · <span class="kpi-pill pill-yellow">9 dias</span></div>
     </div>
     <div class="kpi-card" style="--c:var(--shopee)">
       <div class="kpi-label">Projeção do Mês</div>
-      <div class="kpi-value" style="color:var(--shopee)">R$ 8,09M</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-green">+13%</span> acima da meta</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 8,59M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">+20%</span> acima da meta</div>
     </div>
     <div class="kpi-card purple">
       <div class="kpi-label">Crescimento Ano x Ano</div>
-      <div class="kpi-value" style="color:var(--comp)">+173%</div>
-      <div class="kpi-sub">2025: R$ 789K → 2026: R$ 2,16M</div>
+      <div class="kpi-value" style="color:var(--comp)">+187%</div>
+      <div class="kpi-sub">2025: R$ 898K → 2026: R$ 2,58M</div>
     </div>
   </div>
 
@@ -1496,49 +1495,49 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="grid-3">
     <div class="chart-card" style="border-color:rgba(52,211,153,.3);">
       <div class="chart-title">🛋️ Guarda-Roupa (GR)</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gr);margin-bottom:4px;">R$ 1,36M</div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 4,58M · Projeção: R$ 5,10M</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gr);margin-bottom:4px;">R$ 1,62M</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 4,58M · Projeção: R$ 5,40M</div>
       <div class="prog-row">
         <div class="prog-label">Realizado</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:29.70%;background:var(--gr);"></div></div>
-        <div class="prog-val" style="color:var(--red)">29,70%</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:35.36%;background:var(--gr);"></div></div>
+        <div class="prog-val" style="color:var(--red)">35,36%</div>
       </div>
       <div class="prog-row">
         <div class="prog-label">Projeção</div>
         <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:rgba(52,211,153,.3);"></div></div>
-        <div class="prog-val" style="color:var(--gr)">111,4%</div>
+        <div class="prog-val" style="color:var(--gr)">117,9%</div>
       </div>
       <div style="margin-top:12px;"><span class="tag tag-red">⚠ ABAIXO DA META</span></div>
     </div>
     <div class="chart-card" style="border-color:rgba(251,113,133,.3);">
       <div class="chart-title">🪑 Sala de Jantar (SALA)</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--sala);margin-bottom:4px;">R$ 455K</div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,58M · Projeção: R$ 1,71M</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--sala);margin-bottom:4px;">R$ 547K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,58M · Projeção: R$ 1,82M</div>
       <div class="prog-row">
         <div class="prog-label">Realizado</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:28.88%;background:var(--sala);"></div></div>
-        <div class="prog-val" style="color:var(--red)">28,88%</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:34.71%;background:var(--sala);"></div></div>
+        <div class="prog-val" style="color:var(--red)">34,71%</div>
       </div>
       <div class="prog-row">
         <div class="prog-label">Projeção</div>
         <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:rgba(251,113,133,.3);"></div></div>
-        <div class="prog-val" style="color:var(--sala)">108,3%</div>
+        <div class="prog-val" style="color:var(--sala)">115,7%</div>
       </div>
       <div style="margin-top:12px;"><span class="tag tag-red">⚠ ABAIXO DA META</span></div>
     </div>
     <div class="chart-card" style="border-color:rgba(129,140,248,.3);">
       <div class="chart-title">🪞 Complementos (COMP)</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--comp);margin-bottom:4px;">R$ 341K</div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,00M · Projeção: R$ 1,28M</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--comp);margin-bottom:4px;">R$ 411K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,00M · Projeção: R$ 1,37M</div>
       <div class="prog-row">
         <div class="prog-label">Realizado</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:34.00%;background:var(--comp);"></div></div>
-        <div class="prog-val" style="color:var(--red)">34,00%</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:41.01%;background:var(--comp);"></div></div>
+        <div class="prog-val" style="color:var(--red)">41,01%</div>
       </div>
       <div class="prog-row">
         <div class="prog-label">Projeção</div>
         <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:rgba(129,140,248,.3);"></div></div>
-        <div class="prog-val" style="color:var(--comp)">127,5%</div>
+        <div class="prog-val" style="color:var(--comp)">136,7%</div>
       </div>
       <div style="margin-top:12px;"><span class="tag tag-red">⚠ ABAIXO DA META</span></div>
     </div>
@@ -1547,18 +1546,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="axo-grid">
     <div class="axo-card" style="border-color:rgba(239,68,68,.3);">
       <div class="axo-label">Mês Anterior (Mar/26)</div>
-      <div class="axo-val" style="color:var(--muted);">R$ 2,30M</div>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">R$ 2.301.606,30</div>
+      <div class="axo-val" style="color:var(--muted);">R$ 2,94M</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">R$ 2.943.297,45</div>
     </div>
     <div class="axo-card" style="border-color:rgba(239,68,68,.3);">
       <div class="axo-label">Mês Atual vs Anterior</div>
-      <div class="axo-val" style="color:var(--red);">▼ -6,30%</div>
-      <div style="font-size:.75rem;color:var(--red);margin-top:4px;">R$ 2,16M vs R$ 2,30M (8 dias)</div>
+      <div class="axo-val" style="color:var(--red);">▼ -12,40%</div>
+      <div style="font-size:.75rem;color:var(--red);margin-top:4px;">R$ 2,58M vs R$ 2,94M (9 dias)</div>
     </div>
     <div class="axo-card" style="border-color:rgba(239,68,68,.3);">
       <div class="axo-label">Crescimento Ano x Ano</div>
-      <div class="axo-val" style="color:var(--green);">▲ +173%</div>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">Abr/25: R$ 789K</div>
+      <div class="axo-val" style="color:var(--green);">▲ +187%</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">Abr/25: R$ 898K</div>
     </div>
   </div>
 
@@ -1579,37 +1578,37 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="kpi-strip">
     <div class="kpi-card orange">
       <div class="kpi-label">Shopee · Líder</div>
-      <div class="kpi-value" style="color:var(--shopee);">R$ 1,39M</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-green">+10% M×M</span> · 65% do total</div>
+      <div class="kpi-value" style="color:var(--shopee);">R$ 1,66M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">+3% M×M</span> · 64% do total</div>
     </div>
     <div class="kpi-card" style="--c:var(--ml)">
       <div class="kpi-label">Mercado Livre</div>
-      <div class="kpi-value" style="color:var(--ml);">R$ 272K</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-red">-48% M×M</span> · 13%</div>
+      <div class="kpi-value" style="color:var(--ml);">R$ 312K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-52% M×M</span> · 12%</div>
     </div>
     <div class="kpi-card blue">
       <div class="kpi-label">Magalu</div>
-      <div class="kpi-value" style="color:var(--magalu);">R$ 374K</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-red">-11% M×M</span> · 17%</div>
+      <div class="kpi-value" style="color:var(--magalu);">R$ 479K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-17% M×M</span> · 19%</div>
     </div>
     <div class="kpi-card purple">
       <div class="kpi-label">Outros Canais</div>
-      <div class="kpi-value" style="color:var(--comp);">R$ 108K</div>
+      <div class="kpi-value" style="color:var(--comp);">R$ 119K</div>
       <div class="kpi-sub">Via + Madeira + Web + Site · ~5%</div>
     </div>
   </div>
 
   <div class="section-title">Participação & Comparativo por Canal</div>
   <div class="chart-card" style="margin-bottom:20px;">
-    <div class="chart-title">Distribuição do Faturamento — Realizado (01 a 08/Abr)</div>
+    <div class="chart-title">Distribuição do Faturamento — Realizado (01 a 09/Abr)</div>
     <div style="margin-top:8px;">
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--shopee)">🟠 Shopee</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:65%;background:var(--shopee);"></div></div><div class="mkt-val">R$ 1.392.905,78</div><div class="mkt-var"><span class="tag tag-green">+10%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--magalu)">🔵 Magalu</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:17%;background:var(--magalu);"></div></div><div class="mkt-val">R$ 374.291,47</div><div class="mkt-var"><span class="tag tag-red">-11%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--ml)">🟡 Merc.Livre</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:13%;background:var(--ml);"></div></div><div class="mkt-val">R$ 272.065,62</div><div class="mkt-var"><span class="tag tag-red">-48%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--via)">🟣 Via Varejo</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1.9%;background:var(--via);"></div></div><div class="mkt-val">R$ 40.799,52</div><div class="mkt-var"><span class="tag tag-yellow">0%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--madeira)">🪵 Madeira</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:2.0%;background:var(--madeira);"></div></div><div class="mkt-val">R$ 42.243,38</div><div class="mkt-var"><span class="tag tag-green">+25%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--web)">⚪ Web Cont.</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.6%;background:var(--web);"></div></div><div class="mkt-val">R$ 12.982,87</div><div class="mkt-var"><span class="tag tag-green">+231%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:#06b6d4">🏠 Site Lopas</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.53%;background:#06b6d4;"></div></div><div class="mkt-val">R$ 11.483,05</div><div class="mkt-var"><span class="tag tag-green">novo</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--shopee)">🟠 Shopee</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:64%;background:var(--shopee);"></div></div><div class="mkt-val">R$ 1.658.109,54</div><div class="mkt-var"><span class="tag tag-green">+3%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--magalu)">🔵 Magalu</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:19%;background:var(--magalu);"></div></div><div class="mkt-val">R$ 479.230,82</div><div class="mkt-var"><span class="tag tag-red">-17%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--ml)">🟡 Merc.Livre</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:12%;background:var(--ml);"></div></div><div class="mkt-val">R$ 311.692,68</div><div class="mkt-var"><span class="tag tag-red">-52%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--via)">🟣 Via Varejo</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1.8%;background:var(--via);"></div></div><div class="mkt-val">R$ 45.842,74</div><div class="mkt-var"><span class="tag tag-red">-24%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--madeira)">🪵 Madeira</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1.7%;background:var(--madeira);"></div></div><div class="mkt-val">R$ 43.632,54</div><div class="mkt-var"><span class="tag tag-green">+5%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--web)">⚪ Web Cont.</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.69%;background:var(--web);"></div></div><div class="mkt-val">R$ 17.839,23</div><div class="mkt-var"><span class="tag tag-green">+220%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:#06b6d4">🏠 Site Lopas</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.46%;background:#06b6d4;"></div></div><div class="mkt-val">R$ 11.995,62</div><div class="mkt-var"><span class="tag tag-green">novo</span></div></div>
     </div>
   </div>
 
@@ -1618,14 +1617,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <table class="data-table">
       <thead><tr><th>Canal</th><th>Mês Atual</th><th>Mês Anterior</th><th>Ano Anterior</th><th>Var. M×M</th><th>Var. A×A</th><th>Projeção</th><th>Part. %</th></tr></thead>
       <tbody>
-        <tr><td style="color:var(--shopee);font-weight:700;">🟠 Shopee</td><td>R$ 1.392.905,78</td><td>R$ 1.265.309,29</td><td>R$ 47.727,74</td><td><span class="tag tag-green">+10%</span></td><td><span class="tag tag-green">+2.818%</span></td><td style="color:var(--green)">R$ 5.223.396,69</td><td>65%</td></tr>
-        <tr><td style="color:var(--ml);font-weight:700;">🟡 Merc.Livre</td><td>R$ 272.065,62</td><td>R$ 527.225,05</td><td>R$ 243.134,75</td><td><span class="tag tag-red">-48%</span></td><td><span class="tag tag-green">+12%</span></td><td style="color:var(--green)">R$ 1.020.246,07</td><td>13%</td></tr>
-        <tr><td style="color:var(--magalu);font-weight:700;">🔵 Magalu</td><td>R$ 374.291,47</td><td>R$ 422.798,09</td><td>R$ 201.726,25</td><td><span class="tag tag-red">-11%</span></td><td><span class="tag tag-green">+86%</span></td><td style="color:var(--green)">R$ 1.403.593,02</td><td>17%</td></tr>
-        <tr><td style="color:var(--madeira);font-weight:700;">🪵 Madeira</td><td>R$ 42.243,38</td><td>R$ 33.825,07</td><td>R$ 220.896,03</td><td><span class="tag tag-green">+25%</span></td><td><span class="tag tag-red">-81%</span></td><td style="color:var(--green)">R$ 158.412,66</td><td>2%</td></tr>
-        <tr><td style="color:var(--via);font-weight:700;">🟣 Via Varejo</td><td>R$ 40.799,52</td><td>R$ 40.970,48</td><td>R$ 49.393,24</td><td><span class="tag tag-yellow">0%</span></td><td><span class="tag tag-red">-17%</span></td><td style="color:var(--yellow)">R$ 152.998,19</td><td>2%</td></tr>
-        <tr><td style="color:var(--web);font-weight:700;">⚪ Web Cont.</td><td>R$ 12.982,87</td><td>R$ 3.922,23</td><td>R$ 6.844,69</td><td><span class="tag tag-green">+231%</span></td><td><span class="tag tag-green">+90%</span></td><td style="color:var(--green)">R$ 48.685,75</td><td>0,6%</td></tr>
-        <tr><td style="color:#06b6d4;font-weight:700;">🏠 Site Lopas</td><td>R$ 11.483,05</td><td>R$ —</td><td>R$ —</td><td><span class="tag tag-green">novo</span></td><td><span class="tag tag-green">novo</span></td><td style="color:var(--green)">R$ 43.061,45</td><td>0,5%</td></tr>
-        <tr class="total-row"><td>TOTAL</td><td>R$ 2.156.683,09</td><td>R$ 2.301.606,30</td><td>R$ 789.054,93</td><td><span class="tag tag-red">-6%</span></td><td><span class="tag tag-green">+173%</span></td><td style="color:var(--green)">R$ 8.087.561,59</td><td>100%</td></tr>
+        <tr><td style="color:var(--shopee);font-weight:700;">🟠 Shopee</td><td>R$ 1.658.109,54</td><td>R$ 1.606.221,15</td><td>R$ 53.763,94</td><td><span class="tag tag-green">+3%</span></td><td><span class="tag tag-green">+2.984%</span></td><td style="color:var(--green)">R$ 5.527.031,81</td><td>64%</td></tr>
+        <tr><td style="color:var(--ml);font-weight:700;">🟡 Merc.Livre</td><td>R$ 311.692,68</td><td>R$ 644.585,54</td><td>R$ 283.387,20</td><td><span class="tag tag-red">-52%</span></td><td><span class="tag tag-green">+10%</span></td><td style="color:var(--green)">R$ 1.038.975,60</td><td>12%</td></tr>
+        <tr><td style="color:var(--magalu);font-weight:700;">🔵 Magalu</td><td>R$ 479.230,82</td><td>R$ 577.721,58</td><td>R$ 234.574,39</td><td><span class="tag tag-red">-17%</span></td><td><span class="tag tag-green">+104%</span></td><td style="color:var(--green)">R$ 1.597.436,07</td><td>19%</td></tr>
+        <tr><td style="color:var(--madeira);font-weight:700;">🪵 Madeira</td><td>R$ 43.632,54</td><td>R$ 41.512,82</td><td>R$ 245.763,62</td><td><span class="tag tag-green">+5%</span></td><td><span class="tag tag-red">-82%</span></td><td style="color:var(--green)">R$ 145.441,79</td><td>2%</td></tr>
+        <tr><td style="color:var(--via);font-weight:700;">🟣 Via Varejo</td><td>R$ 45.842,74</td><td>R$ 60.131,71</td><td>R$ 67.089,63</td><td><span class="tag tag-red">-24%</span></td><td><span class="tag tag-red">-32%</span></td><td style="color:var(--yellow)">R$ 152.742,47</td><td>2%</td></tr>
+        <tr><td style="color:var(--web);font-weight:700;">⚪ Web Cont.</td><td>R$ 17.839,23</td><td>R$ 5.568,56</td><td>R$ 4.454,21</td><td><span class="tag tag-green">+220%</span></td><td><span class="tag tag-green">+301%</span></td><td style="color:var(--green)">R$ 59.464,08</td><td>0,7%</td></tr>
+        <tr><td style="color:#06b6d4;font-weight:700;">🏠 Site Lopas</td><td>R$ 11.995,62</td><td>R$ —</td><td>R$ —</td><td><span class="tag tag-green">novo</span></td><td><span class="tag tag-green">novo</span></td><td style="color:var(--green)">R$ 39.985,41</td><td>0,5%</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 2.578.234,57</td><td>R$ 2.943.297,45</td><td>R$ 898.262,95</td><td><span class="tag tag-red">-12%</span></td><td><span class="tag tag-green">+187%</span></td><td style="color:var(--green)">R$ 8.594.115,24</td><td>100%</td></tr>
       </tbody>
     </table>
   </div>
@@ -1692,13 +1691,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="kpi-strip">
     <div class="kpi-card orange">
       <div class="kpi-label">Total Vendas (Geral)</div>
-      <div class="kpi-value">R$ 2,44M</div>
-      <div class="kpi-sub">Total: R$ 2.436.802,52 · 8 dias</div>
+      <div class="kpi-value">R$ 2,74M</div>
+      <div class="kpi-sub">Total: R$ 2.739.983,88 · 9 dias</div>
     </div>
     <div class="kpi-card" style="--c:var(--yellow)">
       <div class="kpi-label">Média Diária</div>
-      <div class="kpi-value" style="color:var(--yellow)">R$ 305K</div>
-      <div class="kpi-sub">R$ 304.600,32 / dia · Proj: R$ 9,14M</div>
+      <div class="kpi-value" style="color:var(--yellow)">R$ 304K</div>
+      <div class="kpi-sub">R$ 304.442,65 / dia · Proj: R$ 9,13M</div>
     </div>
     <div class="kpi-card" style="--c:var(--red)">
       <div class="kpi-label">Melhor Dia</div>
@@ -1707,13 +1706,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <div class="kpi-card purple">
       <div class="kpi-label">Projeção Shopee</div>
-      <div class="kpi-value" style="color:var(--comp)">R$ 5,68M</div>
-      <div class="kpi-sub">R$ 5.680.433,03 projetado Shopee</div>
+      <div class="kpi-value" style="color:var(--comp)">R$ 5,69M</div>
+      <div class="kpi-sub">R$ 5.692.344,43 projetado Shopee</div>
     </div>
   </div>
 
   <div class="chart-card" style="margin-bottom:24px;">
-    <div class="chart-title">📅 Vendas Diárias Gerais — Realizado (01 a 08/Abr)</div>
+    <div class="chart-title">📅 Vendas Diárias Gerais — Realizado (01 a 09/Abr)</div>
     <div style="position:relative;height:280px;"><canvas id="aprDailyChart"></canvas></div>
   </div>
 
@@ -1846,440 +1845,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </div>
 
 </div><!-- /month-april -->
-
-<!-- ═══════════════ ANÁLISE TRIMESTRAL ═══════════════ -->
-<div class="month-dashboard active" id="month-trimestre">
-
-<div class="header">
-  <div>
-    <h1>📦 Análise Trimestral de Produtos</h1>
-    <div class="header-sub">Janeiro a Março 2026 · 9 Marketplaces · 24.870 registros</div>
-  </div>
-  <div class="header-badges">
-    <span class="badge">R$ 24,48M Total</span>
-    <span class="badge" style="background:rgba(247,99,33,.2);color:#f97316;">Shopee 52,6%</span>
-    <span class="badge" style="background:rgba(167,139,250,.2);color:#a78bfa;">4 Conflitos</span>
-  </div>
-</div>
-
-<style>
-/* ── Trimestre-specific overrides ── */
-.trim-sec { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;
-  color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
-.trim-sec::after { content:''; flex:1; height:1px; background:var(--border); }
-
-.trim-mkt-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:22px; }
-.trim-mkt-card { background:var(--card); border:1px solid var(--border); border-radius:10px;
-  padding:14px 16px; position:relative; overflow:hidden; }
-.trim-mkt-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
-.trim-mkt-card.tm-shopee::before  { background:#f97316; }
-.trim-mkt-card.tm-ml::before      { background:#FFE600; }
-.trim-mkt-card.tm-magalu::before  { background:#0086ff; }
-.trim-mkt-card.tm-cnova::before   { background:#e11d48; }
-.trim-mkt-card.tm-madeira::before { background:#2d9e6b; }
-.trim-mkt-card.tm-outros::before  { background:#7c3aed; }
-.trim-mkt-name { font-size:.65rem; font-weight:700; text-transform:uppercase;
-  color:var(--muted); letter-spacing:.06em; margin-bottom:4px; }
-.trim-mkt-val  { font-size:1.05rem; font-weight:700; letter-spacing:-.02em; }
-.trim-mkt-bar  { margin-top:8px; background:rgba(255,255,255,0.06); border-radius:3px; height:4px; }
-.trim-mkt-fill { height:4px; border-radius:3px; }
-.trim-mkt-pct  { font-size:.65rem; color:var(--muted); margin-top:4px; }
-
-/* conflict cards */
-.trim-conflict-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:22px; }
-.trim-conflict-card { background:var(--card); border:1px solid rgba(239,68,68,.2);
-  border-radius:10px; padding:15px 17px; }
-.trim-conf-hdr  { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
-.trim-conf-code { font-family:'DM Mono',monospace; font-size:.65rem; color:var(--muted); }
-.trim-conf-desc { font-size:.8rem; font-weight:600; color:var(--text); margin-top:2px; line-height:1.3; }
-.trim-conf-cat  { font-size:.65rem; color:var(--muted); margin-top:2px; }
-.trim-conf-badge { font-size:.6rem; font-weight:700; padding:2px 7px; border-radius:4px;
-  background:rgba(239,68,68,.12); color:#ef4444; border:1px solid rgba(239,68,68,.25);
-  white-space:nowrap; flex-shrink:0; margin-left:8px; }
-.trim-conf-rows { display:flex; flex-direction:column; gap:4px; }
-.trim-conf-row  { display:flex; align-items:center; justify-content:space-between;
-  padding:6px 9px; border-radius:7px; background:var(--bg3); }
-.trim-conf-row.winner { border:1px solid rgba(255,230,0,.18); background:rgba(255,230,0,.04); }
-.trim-conf-mkt  { font-size:.75rem; font-weight:600; }
-.trim-conf-vals { text-align:right; }
-.trim-conf-val  { font-size:.75rem; font-weight:700; }
-.trim-conf-pct  { font-size:.6rem; color:var(--muted); }
-.trim-winner-tag { font-size:.6rem; padding:1px 5px; border-radius:3px;
-  background:rgba(255,230,0,.15); color:#FFE600; margin-left:4px; }
-.trim-conf-rec  { margin-top:8px; padding:6px 9px; border-radius:7px;
-  background:rgba(255,230,0,.03); border:1px solid rgba(255,230,0,.09);
-  font-size:.68rem; color:var(--muted); line-height:1.5; }
-.trim-conf-rec strong { color:#FFE600; }
-
-/* cat sub-tabs */
-.trim-cat-tabs { display:flex; gap:4px; margin-bottom:14px;
-  background:var(--card); border:1px solid var(--border); border-radius:9px; padding:4px; width:fit-content; }
-.trim-cat-tab  { padding:5px 14px; border-radius:6px; cursor:pointer;
-  font-size:.78rem; font-weight:600; color:var(--muted); border:none; background:transparent;
-  transition:all .15s; font-family:'DM Sans',sans-serif; }
-.trim-cat-tab.active { background:var(--bg3); color:var(--text); }
-.trim-cat-section { display:none; }
-.trim-cat-section.active { display:block; }
-
-/* items table */
-.trim-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; }
-.trim-table { width:100%; border-collapse:collapse; font-size:.78rem; }
-.trim-table thead th { text-align:left; padding:8px 11px;
-  background:var(--bg3); color:var(--muted); font-size:.65rem; text-transform:uppercase;
-  letter-spacing:.06em; font-weight:700; }
-.trim-table thead th:first-child { border-radius:6px 0 0 6px; }
-.trim-table thead th:last-child  { border-radius:0 6px 6px 0; }
-.trim-table tbody tr { border-bottom:1px solid var(--border); transition:background .12s; }
-.trim-table tbody tr:hover { background:rgba(255,255,255,.025); }
-.trim-table td  { padding:10px 11px; vertical-align:top; }
-.trim-code { font-family:'DM Mono',monospace; font-size:.6rem; color:var(--muted); }
-.trim-desc { font-size:.75rem; font-weight:600; color:var(--text); line-height:1.3; }
-.trim-val  { font-size:.8rem; font-weight:700; white-space:nowrap; }
-.trim-pct  { font-size:.65rem; color:var(--muted); }
-.trim-rank { display:inline-flex; align-items:center; justify-content:center;
-  width:20px; height:20px; border-radius:5px; font-size:.7rem; font-weight:700; }
-.tr1 { background:rgba(255,230,0,.15); color:#FFE600; }
-.tr2 { background:rgba(52,131,250,.15); color:#3483FA; }
-.tr3 { background:rgba(247,99,33,.15); color:#f97316; }
-.trn { background:rgba(255,255,255,.05); color:var(--muted); }
-
-/* breakdown bars */
-.bkt { display:flex; flex-direction:column; gap:3px; min-width:240px; }
-.bkt-row { display:flex; align-items:center; gap:6px; }
-.bkt-dot { width:7px; height:7px; border-radius:2px; flex-shrink:0; }
-.bkt-lbl { font-size:.6rem; color:var(--muted); width:100px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.bkt-bg  { flex:1; background:rgba(255,255,255,.07); border-radius:2px; height:4px; }
-.bkt-fill { height:4px; border-radius:2px; }
-.bkt-pct { font-size:.6rem; color:var(--muted); width:30px; text-align:right; flex-shrink:0; }
-.bkt-dom { font-size:.65rem; font-weight:600; padding:2px 6px; border-radius:4px; margin-top:2px; display:inline-block; }
-
-/* mkt×cat table */
-.trim-mktcat-wrap { overflow-x:auto; margin-bottom:22px; }
-.trim-mktcat-table { width:100%; border-collapse:collapse; font-size:.72rem; min-width:820px; }
-.trim-mktcat-table th { padding:8px 10px; text-align:left; background:var(--bg3);
-  color:var(--muted); font-size:.65rem; text-transform:uppercase; letter-spacing:.06em; font-weight:700; }
-.trim-mktcat-table th:first-child { border-radius:6px 0 0 6px; }
-.trim-mktcat-table th:last-child  { border-radius:0 6px 6px 0; }
-.trim-mktcat-table td { padding:9px 10px; border-bottom:1px solid var(--border); }
-.trim-mktcat-table tr:hover td { background:rgba(255,255,255,.02); }
-.trim-tc { font-size:.72rem; line-height:1.35; }
-.trim-tc-code { font-family:'DM Mono',monospace; font-size:.58rem; color:var(--muted); }
-.trim-tc-val  { font-weight:700; font-size:.72rem; }
-.trim-tc-pct  { font-size:.58rem; color:var(--muted); }
-
-/* insights */
-.trim-two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:22px; }
-.trim-insight { padding:8px 10px; border-radius:7px; font-size:.72rem; line-height:1.55; }
-</style>
-
-<div style="padding:24px 40px 60px; max-width:1400px; margin:0 auto;">
-
-  <!-- KPI strip -->
-  <div class="kpi-strip" style="grid-template-columns:repeat(5,1fr); margin-bottom:22px;">
-    <div class="kpi-card">
-      <div class="kpi-label">Faturamento Total</div>
-      <div class="kpi-value" style="color:#FFE600;">R$ 24,48M</div>
-      <div class="kpi-sub">9 canais · Jan–Mar 2026</div>
-    </div>
-    <div class="kpi-card orange">
-      <div class="kpi-label">1º Canal</div>
-      <div class="kpi-value" style="color:var(--shopee);">Shopee</div>
-      <div class="kpi-sub">52,6% — R$ 12,87M</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">2º Canal</div>
-      <div class="kpi-value" style="color:#FFE600;">Mercado Livre</div>
-      <div class="kpi-sub">23,8% — R$ 5,82M</div>
-    </div>
-    <div class="kpi-card blue">
-      <div class="kpi-label">3º Canal</div>
-      <div class="kpi-value" style="color:var(--magalu);">Magazine Luiza</div>
-      <div class="kpi-sub">20,1% — R$ 4,92M</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Conflitos Exclusividade</div>
-      <div class="kpi-value" style="color:#ef4444;">4 itens</div>
-      <div class="kpi-sub">Disputados entre canais</div>
-    </div>
-  </div>
-
-  <!-- Participação por marketplace -->
-  <div class="trim-sec">Participação por Marketplace</div>
-  <div class="trim-mkt-grid">
-    <div class="trim-mkt-card tm-shopee">
-      <div class="trim-mkt-name">Shopee</div>
-      <div class="trim-mkt-val" style="color:#f97316;">R$ 12.867.157</div>
-      <div class="trim-mkt-bar"><div class="trim-mkt-fill" style="width:52.6%;background:#f97316;"></div></div>
-      <div class="trim-mkt-pct">52,6% do faturamento total</div>
-    </div>
-    <div class="trim-mkt-card tm-ml">
-      <div class="trim-mkt-name">Mercado Livre</div>
-      <div class="trim-mkt-val" style="color:#FFE600;">R$ 5.818.360</div>
-      <div class="trim-mkt-bar"><div class="trim-mkt-fill" style="width:23.8%;background:#FFE600;"></div></div>
-      <div class="trim-mkt-pct">23,8% do faturamento total</div>
-    </div>
-    <div class="trim-mkt-card tm-magalu">
-      <div class="trim-mkt-name">Magazine Luiza</div>
-      <div class="trim-mkt-val" style="color:#0086ff;">R$ 4.924.107</div>
-      <div class="trim-mkt-bar"><div class="trim-mkt-fill" style="width:20.1%;background:#0086ff;"></div></div>
-      <div class="trim-mkt-pct">20,1% do faturamento total</div>
-    </div>
-    <div class="trim-mkt-card tm-cnova">
-      <div class="trim-mkt-name">Cnova</div>
-      <div class="trim-mkt-val" style="color:#e11d48;">R$ 424.155</div>
-      <div class="trim-mkt-bar"><div class="trim-mkt-fill" style="width:1.7%;background:#e11d48;"></div></div>
-      <div class="trim-mkt-pct">1,7% do faturamento total</div>
-    </div>
-    <div class="trim-mkt-card tm-madeira">
-      <div class="trim-mkt-name">Madeira Madeira</div>
-      <div class="trim-mkt-val" style="color:#2d9e6b;">R$ 352.085</div>
-      <div class="trim-mkt-bar"><div class="trim-mkt-fill" style="width:1.4%;background:#2d9e6b;"></div></div>
-      <div class="trim-mkt-pct">1,4% do faturamento total</div>
-    </div>
-    <div class="trim-mkt-card tm-outros">
-      <div class="trim-mkt-name">Zema + Amazon + Outros</div>
-      <div class="trim-mkt-val" style="color:#7c3aed;">R$ 93.824</div>
-      <div class="trim-mkt-bar"><div class="trim-mkt-fill" style="width:0.4%;background:#7c3aed;"></div></div>
-      <div class="trim-mkt-pct">0,4% do faturamento total</div>
-    </div>
-  </div>
-
-  <!-- Conflitos -->
-  <div class="trim-sec" style="color:#ef4444;">⚠️ Alertas de Exclusividade — Mesmo Item Líder em Múltiplos Canais</div>
-  <div class="trim-conflict-grid">
-
-    <div class="trim-conflict-card">
-      <div class="trim-conf-hdr">
-        <div>
-          <div class="trim-conf-code">72593#13573</div>
-          <div class="trim-conf-desc">GR EASY SLIM 8 PTS AMENDOA CLEAN/OFF WH · C/ESP · S/PÉS</div>
-          <div class="trim-conf-cat">Guarda-Roupa · Total: R$ 4.009.548 (16,4% geral)</div>
-        </div>
-        <div class="trim-conf-badge">⚡ CONFLITO</div>
-      </div>
-      <div class="trim-conf-rows">
-        <div class="trim-conf-row winner">
-          <span class="trim-conf-mkt" style="color:#f97316;">Shopee <span class="trim-winner-tag">LÍDER</span></span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 2.300.783</div><div class="trim-conf-pct">57,4% do item · 9,40% geral</div></div>
-        </div>
-        <div class="trim-conf-row">
-          <span class="trim-conf-mkt" style="color:#FFE600;">Mercado Livre</span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 1.389.762</div><div class="trim-conf-pct">34,7% do item · 5,68% geral</div></div>
-        </div>
-        <div class="trim-conf-row">
-          <span class="trim-conf-mkt" style="color:#2d9e6b;">Madeira Madeira</span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 46.921</div><div class="trim-conf-pct">1,2% do item · 0,19% geral</div></div>
-        </div>
-      </div>
-      <div class="trim-conf-rec"><strong>Recomendação:</strong> Shopee domina com 57%. ML tem participação expressiva (34,7%) — considere manter nos dois ou precificação diferenciada.</div>
-    </div>
-
-    <div class="trim-conflict-card">
-      <div class="trim-conf-hdr">
-        <div>
-          <div class="trim-conf-code">86256#68901</div>
-          <div class="trim-conf-desc">CÔMODA LOPAS EASY LIKE AMENDOA CLEAN/OFF WH</div>
-          <div class="trim-conf-cat">Complementos · Total: R$ 583.622 (2,4% geral)</div>
-        </div>
-        <div class="trim-conf-badge">⚡ CONFLITO</div>
-      </div>
-      <div class="trim-conf-rows">
-        <div class="trim-conf-row winner">
-          <span class="trim-conf-mkt" style="color:#f97316;">Shopee <span class="trim-winner-tag">LÍDER</span></span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 444.583</div><div class="trim-conf-pct">76,2% do item · 1,82% geral</div></div>
-        </div>
-        <div class="trim-conf-row">
-          <span class="trim-conf-mkt" style="color:#FFE600;">Mercado Livre</span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 80.981</div><div class="trim-conf-pct">13,9% do item · 0,33% geral</div></div>
-        </div>
-        <div class="trim-conf-row">
-          <span class="trim-conf-mkt" style="color:#0086ff;">Magazine Luiza</span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 33.588</div><div class="trim-conf-pct">5,8% do item · 0,14% geral</div></div>
-        </div>
-        <div class="trim-conf-row">
-          <span class="trim-conf-mkt" style="color:#2d9e6b;">Madeira Madeira</span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 19.348</div><div class="trim-conf-pct">3,3% do item · 0,08% geral</div></div>
-        </div>
-      </div>
-      <div class="trim-conf-rec"><strong>Recomendação:</strong> Shopee concentra 76%. Retirar de Magalu e Madeira Madeira tem impacto mínimo (&lt;6% cada).</div>
-    </div>
-
-    <div class="trim-conflict-card">
-      <div class="trim-conf-hdr">
-        <div>
-          <div class="trim-conf-code">72593#13574</div>
-          <div class="trim-conf-desc">GR EASY SLIM 8 PTS AMENDOA CLEAN/OFF WH · C/ESP · C/PÉS</div>
-          <div class="trim-conf-cat">Guarda-Roupa · Total: R$ 2.433.935 (9,9% geral)</div>
-        </div>
-        <div class="trim-conf-badge">⚡ CONFLITO</div>
-      </div>
-      <div class="trim-conf-rows">
-        <div class="trim-conf-row winner">
-          <span class="trim-conf-mkt" style="color:#0086ff;">Magazine Luiza <span class="trim-winner-tag">LÍDER</span></span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 1.900.986</div><div class="trim-conf-pct">78,1% do item · 7,77% geral</div></div>
-        </div>
-        <div class="trim-conf-row">
-          <span class="trim-conf-mkt" style="color:#f97316;">Shopee</span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 317.057</div><div class="trim-conf-pct">13,0% do item · 1,30% geral</div></div>
-        </div>
-        <div class="trim-conf-row">
-          <span class="trim-conf-mkt" style="color:#7c3aed;">Zema</span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 11.589</div><div class="trim-conf-pct">0,5% do item · 0,05% geral</div></div>
-        </div>
-      </div>
-      <div class="trim-conf-rec"><strong>Recomendação:</strong> Magalu domina com 78%. Exclusividade natural para Magalu. Zema pode ser removido sem impacto.</div>
-    </div>
-
-    <div class="trim-conflict-card">
-      <div class="trim-conf-hdr">
-        <div>
-          <div class="trim-conf-code">73275#23853</div>
-          <div class="trim-conf-desc">CÔMODA HORIZONTAL MAGGIORE NEW 6GAV BRANCO</div>
-          <div class="trim-conf-cat">Complementos · Total: R$ 100.469 (0,4% geral)</div>
-        </div>
-        <div class="trim-conf-badge">⚡ CONFLITO</div>
-      </div>
-      <div class="trim-conf-rows">
-        <div class="trim-conf-row winner">
-          <span class="trim-conf-mkt" style="color:#f97316;">Shopee <span class="trim-winner-tag">LÍDER</span></span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 78.187</div><div class="trim-conf-pct">77,8% do item · 0,32% geral</div></div>
-        </div>
-        <div class="trim-conf-row">
-          <span class="trim-conf-mkt" style="color:#FF9900;">Amazon</span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 7.989</div><div class="trim-conf-pct">8,0% do item · 0,03% geral</div></div>
-        </div>
-        <div class="trim-conf-row">
-          <span class="trim-conf-mkt" style="color:var(--muted);">Casa Video</span>
-          <div class="trim-conf-vals"><div class="trim-conf-val">R$ 726</div><div class="trim-conf-pct">0,7% do item</div></div>
-        </div>
-      </div>
-      <div class="trim-conf-rec"><strong>Recomendação:</strong> Shopee domina 78%. Amazon e Casa Video com participação irrelevante — exclusividade Shopee viável.</div>
-    </div>
-
-  </div>
-
-  <!-- TOP ITEMS POR CATEGORIA -->
-  <div class="trim-sec">Top 10 Itens por Categoria — Ranking Geral &amp; Representatividade por Canal</div>
-  <div class="trim-cat-tabs">
-    <button class="trim-cat-tab active" onclick="trimShowCat('gr',this)">🚪 Guarda-Roupa</button>
-    <button class="trim-cat-tab" onclick="trimShowCat('sala',this)">🪑 Sala de Jantar</button>
-    <button class="trim-cat-tab" onclick="trimShowCat('comp',this)">🗄️ Complementos</button>
-  </div>
-
-  <!-- GUARDA-ROUPA -->
-  <div class="trim-cat-section active" id="trim-cat-gr">
-  <div class="trim-card" style="margin-bottom:20px;">
-    <table class="trim-table">
-      <thead><tr><th style="width:24px">#</th><th>Código</th><th>Descrição</th><th>Total</th><th>% Geral</th><th>Representatividade por Marketplace</th></tr></thead>
-      <tbody>
-        <tr><td><span class="trim-rank tr1">1</span></td><td><span class="trim-code">72593#13573</span></td><td><span class="trim-desc">GR EASY SLIM 8P AMENDOA CL/OFF WH · C/ESP · S/PES</span></td><td><span class="trim-val">R$ 4.009.548</span></td><td><span class="trim-pct" style="color:#FFE600;font-weight:700;">16,38%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:57.4%;background:#f97316;"></div></div><span class="bkt-pct">57,4%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:34.7%;background:#FFE600;"></div></div><span class="bkt-pct">34,7%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#0086ff;"></div><span class="bkt-lbl">Magalu</span><div class="bkt-bg"><div class="bkt-fill" style="width:4.4%;background:#0086ff;"></div></div><span class="bkt-pct">4,4%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (57,4%)</span></div></td></tr>
-        <tr><td><span class="trim-rank tr2">2</span></td><td><span class="trim-code">72593#13574</span></td><td><span class="trim-desc">GR EASY SLIM 8P AMENDOA CL/OFF WH · C/ESP · C/PES</span></td><td><span class="trim-val">R$ 2.433.935</span></td><td><span class="trim-pct" style="color:#FFE600;font-weight:700;">9,94%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#0086ff;"></div><span class="bkt-lbl">Magalu</span><div class="bkt-bg"><div class="bkt-fill" style="width:78.1%;background:#0086ff;"></div></div><span class="bkt-pct">78,1%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:13%;background:#f97316;"></div></div><span class="bkt-pct">13,0%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:7.7%;background:#FFE600;"></div></div><span class="bkt-pct">7,7%</span></div><span class="bkt-dom" style="background:rgba(0,134,255,.15);color:#0086ff;">🏆 Magalu (78,1%)</span></div></td></tr>
-        <tr><td><span class="trim-rank tr3">3</span></td><td><span class="trim-code">2405#13690</span></td><td><span class="trim-desc">GR TORONTO 2 PTS PLUS BRANCO · S/ESP · S/PES</span></td><td><span class="trim-val">R$ 1.842.280</span></td><td><span class="trim-pct">7,53%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:82.7%;background:#FFE600;"></div></div><span class="bkt-pct">82,7%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:15.7%;background:#f97316;"></div></div><span class="bkt-pct">15,7%</span></div><span class="bkt-dom" style="background:rgba(255,230,0,.12);color:#FFE600;">🏆 ML (82,7%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">4</span></td><td><span class="trim-code">84487#25974</span></td><td><span class="trim-desc">GR 06 PTS EASY SLIM 2025 AMENDOA CL/OFF WH · S/ESP · S/PES</span></td><td><span class="trim-val">R$ 1.403.162</span></td><td><span class="trim-pct">5,73%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#0086ff;"></div><span class="bkt-lbl">Magalu</span><div class="bkt-bg"><div class="bkt-fill" style="width:58.2%;background:#0086ff;"></div></div><span class="bkt-pct">58,2%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:40.3%;background:#f97316;"></div></div><span class="bkt-pct">40,3%</span></div><span class="bkt-dom" style="background:rgba(0,134,255,.15);color:#0086ff;">🏆 Magalu (58,2%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">5</span></td><td><span class="trim-code">72593#13576</span></td><td><span class="trim-desc">GR EASY SLIM 8P BRANCO · C/ESP · S/PES</span></td><td><span class="trim-val">R$ 1.123.315</span></td><td><span class="trim-pct">4,59%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:50.3%;background:#f97316;"></div></div><span class="bkt-pct">50,3%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:36.8%;background:#FFE600;"></div></div><span class="bkt-pct">36,8%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (50,3%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">6</span></td><td><span class="trim-code">72593#13567</span></td><td><span class="trim-desc">GR EASY SLIM 8P AMENDOA CLEAN · C/ESP · C/PES</span></td><td><span class="trim-val">R$ 938.053</span></td><td><span class="trim-pct">3,83%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#0086ff;"></div><span class="bkt-lbl">Magalu</span><div class="bkt-bg"><div class="bkt-fill" style="width:56%;background:#0086ff;"></div></div><span class="bkt-pct">56,0%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:30.5%;background:#f97316;"></div></div><span class="bkt-pct">30,5%</span></div><span class="bkt-dom" style="background:rgba(0,134,255,.15);color:#0086ff;">🏆 Magalu (56,0%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">7</span></td><td><span class="trim-code">72593#13572</span></td><td><span class="trim-desc">GR EASY SLIM 8P AMENDOA CL/OFF WH · S/ESP · S/PES</span></td><td><span class="trim-val">R$ 737.287</span></td><td><span class="trim-pct">3,01%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:94.4%;background:#f97316;"></div></div><span class="bkt-pct">94,4%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (94,4%) — Candidato exclusividade</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">8</span></td><td><span class="trim-code">72593#13568</span></td><td><span class="trim-desc">GR EASY SLIM 8P AMENDOA CLEAN · C/ESP · S/PES</span></td><td><span class="trim-val">R$ 629.855</span></td><td><span class="trim-pct">2,57%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:66.3%;background:#FFE600;"></div></div><span class="bkt-pct">66,3%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:27.8%;background:#f97316;"></div></div><span class="bkt-pct">27,8%</span></div><span class="bkt-dom" style="background:rgba(255,230,0,.12);color:#FFE600;">🏆 ML (66,3%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">9</span></td><td><span class="trim-code">84487#25972</span></td><td><span class="trim-desc">GR 06 PTS EASY SLIM 2025 AMENDOA CL/OFF WH · S/ESP · C/PES</span></td><td><span class="trim-val">R$ 423.473</span></td><td><span class="trim-pct">1,73%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:93.3%;background:#f97316;"></div></div><span class="bkt-pct">93,3%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (93,3%) — Candidato exclusividade</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">10</span></td><td><span class="trim-code">72593#13571</span></td><td><span class="trim-desc">GR EASY SLIM 8P AMENDOA CL/OFF WH · S/ESP · C/PES</span></td><td><span class="trim-val">R$ 360.832</span></td><td><span class="trim-pct">1,47%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:54.8%;background:#f97316;"></div></div><span class="bkt-pct">54,8%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:37%;background:#FFE600;"></div></div><span class="bkt-pct">37,0%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (54,8%)</span></div></td></tr>
-      </tbody>
-    </table>
-  </div>
-  </div>
-
-  <!-- SALA DE JANTAR -->
-  <div class="trim-cat-section" id="trim-cat-sala">
-  <div class="trim-card" style="margin-bottom:20px;">
-    <table class="trim-table">
-      <thead><tr><th style="width:24px">#</th><th>Código</th><th>Descrição</th><th>Total</th><th>% Geral</th><th>Representatividade por Marketplace</th></tr></thead>
-      <tbody>
-        <tr><td><span class="trim-rank tr1">1</span></td><td><span class="trim-code">83021#93405</span></td><td><span class="trim-desc">CONJ MESA 1,70 APOGEU 2023 · 6 CAD AMENDOA CL · SUEDE ANIMALE BEGE</span></td><td><span class="trim-val">R$ 921.726</span></td><td><span class="trim-pct" style="color:#FFE600;font-weight:700;">3,77%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#0086ff;"></div><span class="bkt-lbl">Magalu</span><div class="bkt-bg"><div class="bkt-fill" style="width:68%;background:#0086ff;"></div></div><span class="bkt-pct">68,0%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:31.2%;background:#f97316;"></div></div><span class="bkt-pct">31,2%</span></div><span class="bkt-dom" style="background:rgba(0,134,255,.15);color:#0086ff;">🏆 Magalu (68,0%)</span></div></td></tr>
-        <tr><td><span class="trim-rank tr2">2</span></td><td><span class="trim-code">81714#23864</span></td><td><span class="trim-desc">MESA EASY LINE C/4 CAD AMENDOA CLEAN · LINHO RINZAI BEGE</span></td><td><span class="trim-val">R$ 873.176</span></td><td><span class="trim-pct" style="color:#FFE600;font-weight:700;">3,57%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:58.1%;background:#f97316;"></div></div><span class="bkt-pct">58,1%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:39.7%;background:#FFE600;"></div></div><span class="bkt-pct">39,7%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (58,1%)</span></div></td></tr>
-        <tr><td><span class="trim-rank tr3">3</span></td><td><span class="trim-code">83021#93730</span></td><td><span class="trim-desc">CONJ MESA 1,70 APOGEU 2023 · 6 CAD AMENDOA CL · VELUDO NATURALE CREME</span></td><td><span class="trim-val">R$ 849.627</span></td><td><span class="trim-pct">3,47%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:99%;background:#f97316;"></div></div><span class="bkt-pct">99,0%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee quase exclusivo (99%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">4</span></td><td><span class="trim-code">83027#67058</span></td><td><span class="trim-desc">CONJ MESA 0,90 CELEBRARE 2023 · 4 CAD APOGEU AMENDOA CL · LINHO RINZAI BEGE</span></td><td><span class="trim-val">R$ 554.561</span></td><td><span class="trim-pct">2,27%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:85.2%;background:#f97316;"></div></div><span class="bkt-pct">85,2%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:11.3%;background:#FFE600;"></div></div><span class="bkt-pct">11,3%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (85,2%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">5</span></td><td><span class="trim-code">83022#94252</span></td><td><span class="trim-desc">CONJ MESA 1,20 CELEBRARE 2023 · 4 CAD APOGEU AMENDOA CL · VELUDO NATURALE CREME</span></td><td><span class="trim-val">R$ 220.060</span></td><td><span class="trim-pct">0,90%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:86.3%;background:#f97316;"></div></div><span class="bkt-pct">86,3%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (86,3%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">6</span></td><td><span class="trim-code">83027#67060</span></td><td><span class="trim-desc">CONJ MESA 0,90 CELEBRARE 2023 · 4 CAD APOGEU AMENDOA CL · VELUDO LISO CAPUCCINO</span></td><td><span class="trim-val">R$ 204.455</span></td><td><span class="trim-pct">0,84%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:95.5%;background:#f97316;"></div></div><span class="bkt-pct">95,5%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (95,5%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">7</span></td><td><span class="trim-code">83021#79087</span></td><td><span class="trim-desc">CONJ MESA 1,70 APOGEU 2023 · 6 CAD APOGEU AMENDOA · VELUDO LISO CAPUCCINO</span></td><td><span class="trim-val">R$ 146.045</span></td><td><span class="trim-pct">0,60%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:99.1%;background:#f97316;"></div></div><span class="bkt-pct">99,1%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee praticamente exclusivo</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">8</span></td><td><span class="trim-code">83022#94250</span></td><td><span class="trim-desc">CONJ MESA 1,20 CELEBRARE 2023 · 4 CAD APOGEU AMENDOA CL · LINHO RINZAI BEGE</span></td><td><span class="trim-val">R$ 136.352</span></td><td><span class="trim-pct">0,56%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:90.8%;background:#f97316;"></div></div><span class="bkt-pct">90,8%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (90,8%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">9</span></td><td><span class="trim-code">85119#49243</span></td><td><span class="trim-desc">MESA 1,70 C/VDO EASY POP · 6 CAD CONFORT AMENDOA CL/OFF WH · LINHO RINZAI BEGE</span></td><td><span class="trim-val">R$ 113.794</span></td><td><span class="trim-pct">0,46%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:97.1%;background:#f97316;"></div></div><span class="bkt-pct">97,1%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (97,1%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">10</span></td><td><span class="trim-code">83021#93729</span></td><td><span class="trim-desc">CONJ MESA 1,70 APOGEU 2023 · 6 CAD APOGEU AMENDOA · LINHO RINZAI BEGE</span></td><td><span class="trim-val">R$ 102.597</span></td><td><span class="trim-pct">0,42%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:86.2%;background:#f97316;"></div></div><span class="bkt-pct">86,2%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:5.5%;background:#FFE600;"></div></div><span class="bkt-pct">5,5%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (86,2%)</span></div></td></tr>
-      </tbody>
-    </table>
-  </div>
-  </div>
-
-  <!-- COMPLEMENTOS -->
-  <div class="trim-cat-section" id="trim-cat-comp">
-  <div class="trim-card" style="margin-bottom:20px;">
-    <table class="trim-table">
-      <thead><tr><th style="width:24px">#</th><th>Código</th><th>Descrição</th><th>Total</th><th>% Geral</th><th>Representatividade por Marketplace</th></tr></thead>
-      <tbody>
-        <tr><td><span class="trim-rank tr1">1</span></td><td><span class="trim-code">86256#68901</span></td><td><span class="trim-desc">CÔMODA LOPAS EASY LIKE AMENDOA CLEAN/OFF WH</span></td><td><span class="trim-val">R$ 583.622</span></td><td><span class="trim-pct" style="color:#FFE600;font-weight:700;">2,38%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:76.2%;background:#f97316;"></div></div><span class="bkt-pct">76,2%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:13.9%;background:#FFE600;"></div></div><span class="bkt-pct">13,9%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#0086ff;"></div><span class="bkt-lbl">Magalu</span><div class="bkt-bg"><div class="bkt-fill" style="width:5.8%;background:#0086ff;"></div></div><span class="bkt-pct">5,8%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (76,2%)</span></div></td></tr>
-        <tr><td><span class="trim-rank tr2">2</span></td><td><span class="trim-code">73284#23858</span></td><td><span class="trim-desc">CÔMODA VEDRA 7GAV 2 PTS AMENDOA CLEAN/OFF WH</span></td><td><span class="trim-val">R$ 334.801</span></td><td><span class="trim-pct">1,37%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:60.4%;background:#f97316;"></div></div><span class="bkt-pct">60,4%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:35.5%;background:#FFE600;"></div></div><span class="bkt-pct">35,5%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (60,4%)</span></div></td></tr>
-        <tr><td><span class="trim-rank tr3">3</span></td><td><span class="trim-code">86256#68902</span></td><td><span class="trim-desc">CÔMODA LOPAS EASY LIKE BRANCO</span></td><td><span class="trim-val">R$ 199.115</span></td><td><span class="trim-pct">0,81%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:81.2%;background:#f97316;"></div></div><span class="bkt-pct">81,2%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:11.7%;background:#FFE600;"></div></div><span class="bkt-pct">11,7%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (81,2%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">4</span></td><td><span class="trim-code">73284#23859</span></td><td><span class="trim-desc">CÔMODA VEDRA 7GAV 2 PTS BRANCO</span></td><td><span class="trim-val">R$ 157.585</span></td><td><span class="trim-pct">0,64%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:84%;background:#f97316;"></div></div><span class="bkt-pct">84,0%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:9.4%;background:#FFE600;"></div></div><span class="bkt-pct">9,4%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (84,0%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">5</span></td><td><span class="trim-code">73284#23857</span></td><td><span class="trim-desc">CÔMODA VEDRA 7GAV 2 PTS AMENDOA CLEAN</span></td><td><span class="trim-val">R$ 121.566</span></td><td><span class="trim-pct">0,50%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:62.8%;background:#f97316;"></div></div><span class="bkt-pct">62,8%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:28.5%;background:#FFE600;"></div></div><span class="bkt-pct">28,5%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (62,8%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">6</span></td><td><span class="trim-code">86256#68900</span></td><td><span class="trim-desc">CÔMODA LOPAS EASY LIKE AMENDOA CLEAN/SALVIA</span></td><td><span class="trim-val">R$ 121.394</span></td><td><span class="trim-pct">0,50%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:61.8%;background:#f97316;"></div></div><span class="bkt-pct">61,8%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:33.5%;background:#FFE600;"></div></div><span class="bkt-pct">33,5%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (61,8%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">7</span></td><td><span class="trim-code">73275#23851</span></td><td><span class="trim-desc">CÔMODA HORIZONTAL MAGGIORE NEW 6GAV AMENDOA CLEAN</span></td><td><span class="trim-val">R$ 114.483</span></td><td><span class="trim-pct">0,47%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:83.5%;background:#f97316;"></div></div><span class="bkt-pct">83,5%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:12.4%;background:#FFE600;"></div></div><span class="bkt-pct">12,4%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (83,5%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">8</span></td><td><span class="trim-code">86248#68895</span></td><td><span class="trim-desc">CAMA CASAL 1,40 EASY LIKE AMENDOA CLEAN · CORANO BEGE</span></td><td><span class="trim-val">R$ 113.282</span></td><td><span class="trim-pct">0,46%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:69.3%;background:#f97316;"></div></div><span class="bkt-pct">69,3%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FFE600;"></div><span class="bkt-lbl">Mercado Livre</span><div class="bkt-bg"><div class="bkt-fill" style="width:25.2%;background:#FFE600;"></div></div><span class="bkt-pct">25,2%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (69,3%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">9</span></td><td><span class="trim-code">73177#23850</span></td><td><span class="trim-desc">SAPATEIRA ESTHELA 2024 AMENDOA CLEAN</span></td><td><span class="trim-val">R$ 101.835</span></td><td><span class="trim-pct">0,42%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:68.8%;background:#f97316;"></div></div><span class="bkt-pct">68,8%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#e11d48;"></div><span class="bkt-lbl">Cnova</span><div class="bkt-bg"><div class="bkt-fill" style="width:9.5%;background:#e11d48;"></div></div><span class="bkt-pct">9,5%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (68,8%)</span></div></td></tr>
-        <tr><td><span class="trim-rank trn">10</span></td><td><span class="trim-code">73275#23853</span></td><td><span class="trim-desc">CÔMODA HORIZONTAL MAGGIORE NEW 6GAV BRANCO</span></td><td><span class="trim-val">R$ 100.469</span></td><td><span class="trim-pct">0,41%</span></td><td><div class="bkt"><div class="bkt-row"><div class="bkt-dot" style="background:#f97316;"></div><span class="bkt-lbl">Shopee</span><div class="bkt-bg"><div class="bkt-fill" style="width:77.8%;background:#f97316;"></div></div><span class="bkt-pct">77,8%</span></div><div class="bkt-row"><div class="bkt-dot" style="background:#FF9900;"></div><span class="bkt-lbl">Amazon</span><div class="bkt-bg"><div class="bkt-fill" style="width:8%;background:#FF9900;"></div></div><span class="bkt-pct">8,0%</span></div><span class="bkt-dom" style="background:rgba(247,99,33,.15);color:#f97316;">🏆 Shopee (77,8%)</span></div></td></tr>
-      </tbody>
-    </table>
-  </div>
-  </div>
-
-  <!-- MKT × CATEGORIA -->
-  <div class="trim-sec">Item Líder por Marketplace × Categoria</div>
-  <div class="trim-mktcat-wrap">
-    <table class="trim-mktcat-table">
-      <thead><tr><th>Marketplace</th><th>Fat. Canal</th><th>% Geral</th><th>🚪 Líder Guarda-Roupa</th><th>🪑 Líder Sala de Jantar</th><th>🗄️ Líder Complemento</th></tr></thead>
-      <tbody>
-        <tr><td><strong style="color:#f97316;">Shopee</strong></td><td>R$ 12.867.157</td><td><strong>52,6%</strong></td><td><div class="trim-tc"><div class="trim-tc-code">72593#13573</div><div>GR EASY SLIM 8P AMENDOA C/ESP S/PES</div><div class="trim-tc-val">R$ 2.300.783</div><div class="trim-tc-pct">9,40% geral</div></div></td><td><div class="trim-tc"><div class="trim-tc-code">83021#93730</div><div>MESA 1,70 APOGEU 6 CAD VELUDO CREME</div><div class="trim-tc-val">R$ 841.289</div><div class="trim-tc-pct">3,44% geral</div></div></td><td><div class="trim-tc"><div class="trim-tc-code">86256#68901</div><div>CÔMODA LOPAS AMENDOA CL/OFF WH</div><div class="trim-tc-val">R$ 444.583</div><div class="trim-tc-pct">1,82% geral</div></div></td></tr>
-        <tr><td><strong style="color:#FFE600;">Mercado Livre</strong></td><td>R$ 5.818.360</td><td><strong>23,8%</strong></td><td><div class="trim-tc"><div class="trim-tc-code">2405#13690</div><div>GR TORONTO 2 PTS PLUS BRANCO S/ESP S/PES</div><div class="trim-tc-val">R$ 1.523.207</div><div class="trim-tc-pct">6,22% geral</div></div></td><td><div class="trim-tc"><div class="trim-tc-code">81714#23864</div><div>MESA EASY LINE 4 CAD AMENDOA LINHO</div><div class="trim-tc-val">R$ 346.852</div><div class="trim-tc-pct">1,42% geral</div></div></td><td><div class="trim-tc"><div class="trim-tc-code">73284#23858</div><div>CÔMODA VEDRA 7GAV AMENDOA CL/OFF WH</div><div class="trim-tc-val">R$ 118.986</div><div class="trim-tc-pct">0,49% geral</div></div></td></tr>
-        <tr><td><strong style="color:#0086ff;">Magazine Luiza</strong></td><td>R$ 4.924.107</td><td><strong>20,1%</strong></td><td><div class="trim-tc"><div class="trim-tc-code">72593#13574</div><div>GR EASY SLIM 8P AMENDOA C/ESP C/PES</div><div class="trim-tc-val">R$ 1.900.986</div><div class="trim-tc-pct">7,77% geral</div></div></td><td><div class="trim-tc"><div class="trim-tc-code">83021#93405</div><div>MESA 1,70 APOGEU 6 CAD SUEDE BEGE</div><div class="trim-tc-val">R$ 627.044</div><div class="trim-tc-pct">2,56% geral</div></div></td><td><div class="trim-tc"><div class="trim-tc-code">86256#68901 <span style="color:#ef4444;font-size:.58rem;">⚡</span></div><div>CÔMODA LOPAS AMENDOA CL/OFF WH</div><div class="trim-tc-val">R$ 33.588</div><div class="trim-tc-pct">0,14% geral</div></div></td></tr>
-        <tr><td><strong style="color:#e11d48;">Cnova</strong></td><td>R$ 424.155</td><td>1,7%</td><td><div class="trim-tc"><div class="trim-tc-code">84487#25968</div><div>GR 06 PTS EASY SLIM 2025 AMENDOA S/PES</div><div class="trim-tc-val">R$ 133.038</div><div class="trim-tc-pct">0,54% geral</div></div></td><td><div class="trim-tc"><div class="trim-tc-code">85119#49240</div><div>MESA 1,70 EASY POP 6 CAD AMENDOA</div><div class="trim-tc-val">R$ 12.046</div><div class="trim-tc-pct">0,05% geral</div></div></td><td><div class="trim-tc"><div class="trim-tc-code">73177#23850</div><div>SAPATEIRA ESTHELA 2024 AMENDOA</div><div class="trim-tc-val">R$ 9.720</div><div class="trim-tc-pct">0,04% geral</div></div></td></tr>
-        <tr><td><strong style="color:#2d9e6b;">Madeira Madeira</strong></td><td>R$ 352.085</td><td>1,4%</td><td><div class="trim-tc"><div class="trim-tc-code">72593#13573 <span style="color:#ef4444;font-size:.58rem;">⚡</span></div><div>GR EASY SLIM 8P AMENDOA C/ESP S/PES</div><div class="trim-tc-val">R$ 46.921</div><div class="trim-tc-pct">0,19% geral</div></div></td><td><div class="trim-tc"><div class="trim-tc-code">83022#94250</div><div>MESA 1,20 CELEBRARE 4 CAD LINHO BEGE</div><div class="trim-tc-val">R$ 9.448</div><div class="trim-tc-pct">0,04% geral</div></div></td><td><div class="trim-tc"><div class="trim-tc-code">86256#68901 <span style="color:#ef4444;font-size:.58rem;">⚡</span></div><div>CÔMODA LOPAS AMENDOA CL/OFF WH</div><div class="trim-tc-val">R$ 19.348</div><div class="trim-tc-pct">0,08% geral</div></div></td></tr>
-        <tr><td><strong style="color:#7c3aed;">Zema</strong></td><td>R$ 69.544</td><td>0,3%</td><td><div class="trim-tc"><div class="trim-tc-code">72593#13574 <span style="color:#ef4444;font-size:.58rem;">⚡</span></div><div>GR EASY SLIM 8P AMENDOA C/ESP C/PES</div><div class="trim-tc-val">R$ 11.589</div><div class="trim-tc-pct">0,05% geral</div></div></td><td><span style="color:var(--muted);font-size:.72rem;">—</span></td><td><div class="trim-tc"><div class="trim-tc-code">86248#68896</div><div>CAMA CASAL EASY LIKE BOUCLE SALVIA</div><div class="trim-tc-val">R$ 1.438</div></div></td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- SÍNTESE ESTRATÉGICA -->
-  <div class="trim-sec">💡 Síntese Estratégica para Decisão de Exclusividade</div>
-  <div class="trim-two-col">
-    <div class="trim-card">
-      <div style="font-size:.78rem;font-weight:700;margin-bottom:10px;color:var(--text);">Sugestões por Canal</div>
-      <div style="display:flex;flex-direction:column;gap:7px;">
-        <div class="trim-insight" style="background:rgba(249,115,22,.08);border-left:3px solid #f97316;"><strong style="color:#f97316;">Shopee</strong> — Sala de Jantar quase exclusiva (85–99%). Domina Complementos. Candidato natural para exclusividade nessas duas categorias.</div>
-        <div class="trim-insight" style="background:rgba(255,230,0,.06);border-left:3px solid #FFE600;"><strong style="color:#FFE600;">Mercado Livre</strong> — GR Toronto 2pts domina com 82,7%. Forte em GR c/ espelho. Identidade própria bem definida.</div>
-        <div class="trim-insight" style="background:rgba(0,134,255,.07);border-left:3px solid #0086ff;"><strong style="color:#0086ff;">Magazine Luiza</strong> — GR Easy Slim c/ESP c/PES (78,1%) e Mesa Apogeu Suede (68%). Domina variantes com pés e acabamentos premium.</div>
-        <div class="trim-insight" style="background:rgba(45,158,107,.07);border-left:3px solid #2d9e6b;"><strong style="color:#2d9e6b;">Madeira Madeira</strong> — Volume pequeno (1,4%). Sem item exclusivo com força. Indicado para liquidação ou linha de entrada.</div>
-      </div>
-    </div>
-    <div class="trim-card">
-      <div style="font-size:.78rem;font-weight:700;margin-bottom:10px;color:var(--text);">⚡ Ações Prioritárias</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div class="trim-insight" style="background:var(--bg3);font-size:.7rem;color:var(--muted);line-height:1.6;"><strong style="color:#ef4444;">CONFLITO #1</strong> — <code style="font-size:.65rem;">72593#13573</code>: Shopee (57%) × ML (35%). Volume expressivo nos dois — considere precificação diferenciada.</div>
-        <div class="trim-insight" style="background:var(--bg3);font-size:.7rem;color:var(--muted);line-height:1.6;"><strong style="color:#ef4444;">CONFLITO #2</strong> — <code style="font-size:.65rem;">86256#68901</code> Cômoda Lopas: Shopee 76%. Retirar de Magalu e Madeira tem impacto mínimo (&lt;6% cada).</div>
-        <div class="trim-insight" style="background:var(--bg3);font-size:.7rem;color:var(--muted);line-height:1.6;"><strong style="color:#ef4444;">CONFLITO #3</strong> — <code style="font-size:.65rem;">72593#13574</code>: Magalu 78%. Zema (0,5%) pode ser retirado sem impacto.</div>
-        <div class="trim-insight" style="background:var(--bg3);font-size:.7rem;color:var(--muted);line-height:1.6;"><strong style="color:var(--muted);">OPORTUNIDADE</strong> — Itens de Sala com 94–99% Shopee (ex: <code style="font-size:.65rem;">83021#93730</code>) são candidatos naturais para exclusividade sem custo de negociação.</div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /inner padding -->
-</div><!-- /month-trimestre -->
-
-<script>
-function trimShowCat(id, btn) {
-  document.querySelectorAll('.trim-cat-section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.trim-cat-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('trim-cat-' + id).classList.add('active');
-  btn.classList.add('active');
-}
-</script>
-
 <script>
 // ── DATA ──
 const daily = [
@@ -2953,14 +2518,15 @@ const aprDaily = [
   {d:'05/04', g:250554.42, sh:147369.25, me:37621.18, ma:49740.69, mad:4944.25,  via:5553.87,  web:5325.18},
   {d:'06/04', g:277563.80, sh:166326.12, me:46141.54, ma:52452.84, mad:3522.76,  via:9120.54,  web:0},
   {d:'07/04', g:378320.70, sh:232400.91, me:55217.74, ma:84955.90, mad:1237.26,  via:4508.90,  web:0},
-  {d:'08/04', g:326651.33, sh:188708.48, me:30837.03, ma:95394.74, mad:1626.63,  via:3871.00,  web:5553.19},
+  {d:'08/04', g:326651.33, sh:188708.48, me:30837.03, ma:95394.74, mad:1626.63,  via:3871.00,  web:5553.19, zema:0},
+  {d:'09/04', g:303181.36, sh:192921.19, me:30507.48, ma:69245.59, mad:1302.46,  via:8307.48,  web:0,       zema:897.16},
 ];
 
 // ── Tabela diária Abril ──
 (function() {
   const tbody = document.getElementById('aprDailyTbody');
   if (!tbody) return;
-  const keys = ['g','sh','me','ma','mad','via','web'];
+  const keys = ['g','sh','me','ma','mad','via','web','zema'];
   const avg = aprDaily.reduce((a,r)=>a+r.g,0)/aprDaily.length;
   aprDaily.forEach(row => {
     const tr = document.createElement('tr');
@@ -2975,7 +2541,7 @@ const aprDaily = [
   tbody.appendChild(trT);
   const trA = document.createElement('tr'); trA.style.background='var(--bg3)';
   trA.innerHTML = `<td style="color:var(--muted);font-size:.7rem">MÉDIA/DIA</td>`
-    +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">R$ ${(t/8).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
+    +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">R$ ${(t/9).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
   tbody.appendChild(trA);
 })();
 
@@ -3309,8 +2875,8 @@ function renderAprProdTable(tbodyId, data) {
 const aprChartsBuilt = {};
 function buildAprCharts(page) {
   if(page==='visao'){
-    new Chart(document.getElementById('aprCatChart'),{type:'doughnut',data:{labels:['GR','SALA','COMP'],datasets:[{data:[1361006.22,454845.31,340831.56],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
-    new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via','Web'],datasets:[{data:[1392905.78,272065.62,374291.47,42243.38,40799.52,12982.87],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    new Chart(document.getElementById('aprCatChart'),{type:'doughnut',data:{labels:['GR','SALA','COMP'],datasets:[{data:[1620469.05,546684.66,411080.87],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
+    new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via','Web'],datasets:[{data:[1658109.54,311692.68,479230.82,43632.54,45842.74,17839.23],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='categorias'){
     new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[745278.24,189198.60,328953.09,29879.58,36260.61],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[366784.13,43982.25,39614.67,2208.04,923.88],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[280843.41,38884.77,5723.72,10159.76,3615.02],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
@@ -3319,7 +2885,7 @@ function buildAprCharts(page) {
     const labels=aprDaily.map(d=>d.d);
     const vals=aprDaily.map(d=>d.g);
     const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
-    new Chart(document.getElementById('aprDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(8).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    new Chart(document.getElementById('aprDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(9).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
 }
 
