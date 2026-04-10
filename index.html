@@ -4081,17 +4081,30 @@ function iframeInjetarTema(iframe) {
       [style*="color:#eeeeee"],[style*="color: #eeeeee"],[style*="color:#e8e8e8"],[style*="color: #e8e8e8"],
       [style*="color:#e0e0e0"],[style*="color: #e0e0e0"],[style*="color:#f5f0ee"],[style*="color: #f5f0ee"],
       [style*="color:white"],[style*="color: white"],
-      [style*="color:rgba(255,255,255,0.9)"],[style*="color:rgba(255,255,255,1)"] {
+      [style*="color:rgba(255,255,255,0.9)"],[style*="color:rgba(255,255,255,1)"],
+      [style*="color:rgba(255,255,255,0.8)"],[style*="color:rgba(255,255,255,0.75)"] {
         color:#111111 !important;
       }
       /* textos cinza claro inline (secundarios) */
       [style*="color:#999"],[style*="color:#aaa"],[style*="color:#bbb"],[style*="color:#ccc"],
+      [style*="color:#888"],[style*="color:#777"],[style*="color:#666"],
       [style*="color:#7a7470"],[style*="color: #7a7470"],
-      [style*="color:rgba(255,255,255,0.3)"],[style*="color:rgba(255,255,255,0.4)"],
-      [style*="color:rgba(255,255,255,0.5)"],[style*="color:rgba(255,255,255,0.6)"],
-      [style*="color:rgba(255,255,255,0.65)"],[style*="color:rgba(255,255,255,0.7)"] {
+      [style*="color:rgba(255,255,255,0.1)"],[style*="color:rgba(255,255,255,0.15)"],
+      [style*="color:rgba(255,255,255,0.2)"],[style*="color:rgba(255,255,255,0.25)"],
+      [style*="color:rgba(255,255,255,0.3)"],[style*="color:rgba(255,255,255,0.35)"],
+      [style*="color:rgba(255,255,255,0.4)"],[style*="color:rgba(255,255,255,0.45)"],
+      [style*="color:rgba(255,255,255,0.5)"],[style*="color:rgba(255,255,255,0.55)"],
+      [style*="color:rgba(255,255,255,0.6)"],[style*="color:rgba(255,255,255,0.65)"],
+      [style*="color:rgba(255,255,255,0.7)"],[style*="color:rgba(255,255,255,0.72)"] {
         color:#555555 !important;
       }
+      /* textos com opacity inline que ficam invisiveis no fundo claro */
+      [style*="opacity:0.3"],[style*="opacity: 0.3"],
+      [style*="opacity:0.4"],[style*="opacity: 0.4"] {
+        opacity: 0.7 !important;
+      }
+      /* variaveis de texto para filhos que usam var() */
+      * { --text-primary:#111111; --text-secondary:#555555; }
       /* bordas brancas inline */
       [style*="border:1px solid rgba(255,255,255"],[style*="border: 1px solid rgba(255,255,255"],
       [style*="border-bottom:1px solid rgba(255,255,255"],[style*="border-top:1px solid rgba(255,255,255"],
@@ -4147,6 +4160,34 @@ function iframeInjetarTema(iframe) {
             var tm = tc && tc.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
             if (tm && lum(+tm[1],+tm[2],+tm[3]) > 180) {
               el.style.setProperty('color','#111111','important');
+            }
+          });
+
+          // Segunda passagem: corrige TODOS os textos com baixo contraste no fundo claro
+          // (ex: títulos azuis claros, textos rgba com baixa opacidade)
+          Array.prototype.forEach.call(doc.body.querySelectorAll('*'), function(el) {
+            var tag = (el.tagName||'').toLowerCase();
+            if (SKIP.has(tag)) return;
+            var cs = dv.getComputedStyle(el);
+            var tc = cs.color;
+            if (!tc) return;
+            var tm = tc.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]*)/);
+            if (!tm) return;
+            var r=+tm[1], g=+tm[2], b=+tm[3];
+            var alpha = tm[4] !== '' && tm[4] !== undefined ? +tm[4] : 1;
+            var textLum = lum(r,g,b);
+            // Texto claro (alto brilho) com qualquer opacidade — invisivel em fundo branco
+            if (textLum > 160 && alpha > 0.1) {
+              // Protege cores de acento vivas (saturadas) — só substitui cinzas/brancos
+              var maxC = Math.max(r,g,b), minC = Math.min(r,g,b);
+              var sat = maxC > 0 ? (maxC - minC) / maxC : 0;
+              if (sat < 0.25) { // pouca saturação = cinza/branco → escurece
+                el.style.setProperty('color', alpha < 0.5 ? '#888888' : '#111111', 'important');
+              }
+            }
+            // Texto muito escuro mas com alpha muito baixo — também some no fundo claro
+            if (alpha < 0.15 && alpha > 0) {
+              el.style.setProperty('color', '#888888', 'important');
             }
           });
         }
