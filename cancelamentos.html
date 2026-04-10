@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Cancelamentos – Março 2026</title>
+<title>Dashboard Cancelamentos – Easy House 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
@@ -24,6 +24,14 @@
   .header-title p { font-size: 11px; color: var(--text2); }
   .badge { background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; padding: 3px 12px; font-size: 11px; color: var(--text2); white-space:nowrap; }
   .badge b { color: var(--red); }
+
+  /* Tabs */
+  .tab-bar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; gap: 0; }
+  .tab-btn { padding: 10px 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text2); border-bottom: 3px solid transparent; transition: all .15s; letter-spacing: .03em; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--red); }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
 
   /* Main */
   .main { padding: 16px 24px; max-width: 1400px; margin: 0 auto; }
@@ -78,7 +86,7 @@
   .mb { margin-bottom: 10px; }
   @media(max-width:900px){ .two-col,.three-col{grid-template-columns:1fr} }
 
-  /* Canvas wrapper — altura fixa */
+  /* Canvas wrapper */
   .chart-wrap { position: relative; height: 200px; width: 100%; }
 
   /* Highlights */
@@ -112,6 +120,10 @@
   .mp-nota-legend { display: flex; gap: 10px; font-size: 10px; }
   .leg-r { color: var(--red); } .leg-g { color: var(--green); }
 
+  /* Partial month note */
+  .partial-note { background: rgba(88,166,255,.08); border: 1px solid rgba(88,166,255,.3); border-radius: var(--radius); padding: 10px 16px; margin-bottom: 16px; font-size: 11px; color: var(--text2); display: flex; gap: 8px; align-items: center; }
+  .partial-note b { color: var(--blue); }
+
   .footer { text-align: center; padding: 16px; color: var(--text2); font-size: 10px; border-top: 1px solid var(--border); margin-top: 10px; }
 </style>
 </head>
@@ -122,12 +134,20 @@
     <div class="logo">🚫</div>
     <div class="header-title">
       <h1>Dashboard de Cancelamentos</h1>
-      <p>Easy House · Março 2026 · Todos os Marketplaces</p>
+      <p>Easy House · Todos os Marketplaces</p>
     </div>
   </div>
-  <div class="badge">Total do mês: <b>726</b> cancelamentos</div>
+  <div class="badge">Março: <b>726</b> · Abril (parcial): <b>159</b></div>
 </div>
 
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('marco', this)">📅 Março 2026</button>
+  <button class="tab-btn" onclick="switchTab('abril', this)">📅 Abril 2026</button>
+</div>
+
+<!-- ═══════════════════════════ MARÇO ═══════════════════════════ -->
+<div id="tab-marco" class="tab-pane active">
 <div class="main">
 
   <!-- BANNER -->
@@ -232,11 +252,11 @@
         <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:4px;vertical-align:middle;"></span>Sem NF — barrado</span>
         <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:4px;vertical-align:middle;"></span>Com NF — enviado</span>
       </div>
-      <div id="mpNotaRows"></div>
+      <div id="m3_mpNotaRows"></div>
     </div>
     <div class="card">
       <div class="card-title"><span class="dot dot-purple"></span>Por Semana · Sem NF vs Com NF</div>
-      <div class="chart-wrap"><canvas id="chartSemana"></canvas></div>
+      <div class="chart-wrap"><canvas id="m3_chartSemana"></canvas></div>
     </div>
   </div>
 
@@ -244,11 +264,11 @@
   <div class="two-col sep">
     <div class="card">
       <div class="card-title"><span class="dot dot-red"></span>Cancelamentos por Dia</div>
-      <div class="chart-wrap"><canvas id="chartDiario"></canvas></div>
+      <div class="chart-wrap"><canvas id="m3_chartDiario"></canvas></div>
     </div>
     <div class="card">
       <div class="card-title"><span class="dot dot-blue"></span>Por Marketplace</div>
-      <div class="chart-wrap"><canvas id="chartMP"></canvas></div>
+      <div class="chart-wrap"><canvas id="m3_chartMP"></canvas></div>
     </div>
   </div>
 
@@ -256,11 +276,11 @@
   <div class="two-col sep">
     <div class="card">
       <div class="card-title"><span class="dot dot-purple"></span>Por Forma de Pagamento</div>
-      <div class="chart-wrap"><canvas id="chartPgto"></canvas></div>
+      <div class="chart-wrap"><canvas id="m3_chartPgto"></canvas></div>
     </div>
     <div class="card">
       <div class="card-title"><span class="dot dot-yellow"></span>Valor Cancelado por Marketplace</div>
-      <div class="chart-wrap"><canvas id="chartValorMP"></canvas></div>
+      <div class="chart-wrap"><canvas id="m3_chartValorMP"></canvas></div>
     </div>
   </div>
 
@@ -268,42 +288,229 @@
   <div class="two-col sep">
     <div class="card">
       <div class="card-title"><span class="dot dot-red"></span>Top 10 Produtos Cancelados</div>
-      <ul class="rank-list" id="rankProdutos"></ul>
+      <ul class="rank-list" id="m3_rankProdutos"></ul>
     </div>
     <div class="card">
       <div class="card-title"><span class="dot dot-blue"></span>Top Estados Afetados</div>
-      <ul class="rank-list" id="rankEstados"></ul>
+      <ul class="rank-list" id="m3_rankEstados"></ul>
     </div>
   </div>
 
 </div>
-
 <div class="footer">Dashboard de Cancelamentos · Easy House · Março 2026 · Dados: AnyMarket Export</div>
+</div><!-- /tab-marco -->
+
+<!-- ═══════════════════════════ ABRIL ═══════════════════════════ -->
+<div id="tab-abril" class="tab-pane">
+<div class="main">
+
+  <!-- Partial note -->
+  <div class="partial-note">
+    ℹ️ <span>Dados <b>parciais</b> — exportação de <b>01/04 a 10/04/2026</b> (10 dias). Os totais refletem apenas esse período.</span>
+  </div>
+
+  <!-- BANNER -->
+  <div class="nota-banner">
+    <div class="nota-banner-icon">🚧</div>
+    <div class="nota-banner-body">
+      <h2>96,9% dos cancelamentos foram barrados antes do envio</h2>
+      <p>
+        <b>154 pedidos</b> não tinham nota fiscal — bloqueados pelo marketplace antes de qualquer despacho.<br>
+        Apenas <b>5 pedidos (3,1%)</b> já tinham NF emitida, representando <b>R$ 3.686</b> já movimentados logisticamente.
+      </p>
+    </div>
+    <div class="nota-stats">
+      <div class="nota-stat">
+        <div class="nota-stat-val red">154</div>
+        <div class="nota-pct red">96,9%</div>
+        <div class="nota-stat-label">🔴 Sem NF · Barrados</div>
+      </div>
+      <div class="nota-stat">
+        <div class="nota-stat-val green">5</div>
+        <div class="nota-pct green">3,1%</div>
+        <div class="nota-stat-label">🟢 Com NF · Enviados</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="section-title">Visão Geral</div>
+  <div class="kpi-grid">
+    <div class="kpi-card red">
+      <div class="kpi-label">Total Cancelamentos</div>
+      <div class="kpi-value red">159</div>
+      <div class="kpi-sub">Abril 2026 (10 dias)</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">Valor Cancelado</div>
+      <div class="kpi-value orange">R$ 170K</div>
+      <div class="kpi-sub">Ticket médio R$ 1.072</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Sem NF (barrados)</div>
+      <div class="kpi-value red">154</div>
+      <div class="kpi-sub">96,9% · R$ 166,7K</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Com NF (enviados)</div>
+      <div class="kpi-value green">5</div>
+      <div class="kpi-sub">3,1% · R$ 3,7K</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Pior Dia</div>
+      <div class="kpi-value blue">29</div>
+      <div class="kpi-sub">04/04 — pico do período</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Média Diária</div>
+      <div class="kpi-value purple">15,9</div>
+      <div class="kpi-sub">cancel/dia (10 dias)</div>
+    </div>
+  </div>
+
+  <!-- Highlights -->
+  <div class="section-title">Destaques</div>
+  <div class="highlight-grid">
+    <div class="highlight-card">
+      <div class="hl-icon">🛒</div>
+      <div class="hl-label">Marketplace Crítico</div>
+      <div class="hl-value">Shopee</div>
+      <div class="hl-sub">134 cancel · 131 sem NF · R$ 145K</div>
+    </div>
+    <div class="highlight-card">
+      <div class="hl-icon">📦</div>
+      <div class="hl-label">Produto + Cancelado</div>
+      <div class="hl-value" style="font-size:12px">GR Easy Slim 8P Espelho Amendoa</div>
+      <div class="hl-sub">28 cancel · 27 sem NF (96,4%)</div>
+    </div>
+    <div class="highlight-card">
+      <div class="hl-icon">💳</div>
+      <div class="hl-label">Pgto + Cancelado</div>
+      <div class="hl-value">Cartão de Crédito</div>
+      <div class="hl-sub">78 cancel · 49,1% do total</div>
+    </div>
+    <div class="highlight-card">
+      <div class="hl-icon">📍</div>
+      <div class="hl-label">Estado + Afetado</div>
+      <div class="hl-value">Minas Gerais</div>
+      <div class="hl-sub">68 cancelamentos</div>
+    </div>
+    <div class="highlight-card">
+      <div class="hl-icon">✅</div>
+      <div class="hl-label">Origem</div>
+      <div class="hl-value">98,1% Marketplace</div>
+      <div class="hl-sub">Iniciativa do próprio canal</div>
+    </div>
+  </div>
+
+  <!-- Row 1: MP nota + Semanal -->
+  <div class="two-col sep">
+    <div class="card">
+      <div class="card-title"><span class="dot dot-red"></span>Sem NF vs Com NF por Marketplace</div>
+      <div style="display:flex;gap:14px;font-size:10px;color:var(--text2);margin-bottom:12px;">
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:4px;vertical-align:middle;"></span>Sem NF — barrado</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:4px;vertical-align:middle;"></span>Com NF — enviado</span>
+      </div>
+      <div id="a4_mpNotaRows"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot dot-purple"></span>Por Semana · Sem NF vs Com NF</div>
+      <div class="chart-wrap"><canvas id="a4_chartSemana"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Row 2: Diário + MP donut -->
+  <div class="two-col sep">
+    <div class="card">
+      <div class="card-title"><span class="dot dot-red"></span>Cancelamentos por Dia</div>
+      <div class="chart-wrap"><canvas id="a4_chartDiario"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot dot-blue"></span>Por Marketplace</div>
+      <div class="chart-wrap"><canvas id="a4_chartMP"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Row 3: Pgto + Valor -->
+  <div class="two-col sep">
+    <div class="card">
+      <div class="card-title"><span class="dot dot-purple"></span>Por Forma de Pagamento</div>
+      <div class="chart-wrap"><canvas id="a4_chartPgto"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot dot-yellow"></span>Valor Cancelado por Marketplace</div>
+      <div class="chart-wrap"><canvas id="a4_chartValorMP"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Row 4: Ranks -->
+  <div class="two-col sep">
+    <div class="card">
+      <div class="card-title"><span class="dot dot-red"></span>Top 10 Produtos Cancelados</div>
+      <ul class="rank-list" id="a4_rankProdutos"></ul>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot dot-blue"></span>Top Estados Afetados</div>
+      <ul class="rank-list" id="a4_rankEstados"></ul>
+    </div>
+  </div>
+
+</div>
+<div class="footer">Dashboard de Cancelamentos · Easy House · Abril 2026 (parcial: 01–10/04) · Dados: AnyMarket Export</div>
+</div><!-- /tab-abril -->
 
 <script>
+// ── TAB LOGIC ──
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
 const C = { red:'#f85149', orange:'#d29922', blue:'#58a6ff', purple:'#a371f7', green:'#3fb950', teal:'#39d353', yellow:'#e3b341' };
 Chart.defaults.color='#8b949e';
 Chart.defaults.borderColor='#30363d';
 Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 Chart.defaults.font.size=11;
-
-// ── DATA ──
-const DAILY={"01/03":11,"02/03":16,"03/03":39,"04/03":17,"05/03":24,"06/03":34,"07/03":26,"08/03":20,"09/03":42,"10/03":29,"11/03":30,"12/03":15,"13/03":25,"14/03":17,"15/03":52,"16/03":43,"17/03":38,"18/03":27,"19/03":17,"20/03":17,"21/03":15,"22/03":17,"23/03":11,"24/03":26,"25/03":20,"26/03":17,"27/03":15,"28/03":16,"29/03":8,"30/03":20,"31/03":22};
-const MP_NOTA={"Shopee":{sem:479,com:15},"Magazine Luiza":{sem:128,com:3},"Mercado Livre":{sem:71,com:13},"Zema":{sem:7,com:1},"Madeira Madeira":{sem:4,com:2},"Outros":{sem:2,com:1}};
-const SEMANA_LABELS=["S1 (01–07)","S2 (08–14)","S3 (15–21)","S4 (22–31)"];
-const SEMANA_SN=[162,170,195,164], SEMANA_CN=[5,8,14,8];
-const MARKETPLACES={"Shopee":494,"Magazine Luiza":131,"Mercado Livre":84,"Zema":8,"Madeira Madeira":6,"Outros":3};
-const MP_VALOR={"Shopee":531762,"Magazine Luiza":131094,"Mercado Livre":98671,"Zema":9387,"Madeira Madeira":10158,"Outros":4467};
-const PGTOS={"Cartão de Crédito":335,"Pix":283,"Parcelado/Pós-pago":80,"Mercado Crédito":25,"Boleto":2,"Outros":1};
-const PRODUTOS=[["GR Easy Slim 8P Espelho Amendoa Clean/Off White",118,106],["GR Casal 6P Easy Slim Amendoa Clean/Off White",68,67],["GR Easy Slim 8P Espelho e Pés Amendoa Clean/Off White",58,57],["Conj. Jantar 4 Cad. Easy Line",42,41],["GR Easy Slim 8P Espelho Branco",41,40],["GR 6P Easy Slim Ccom Pés Amendoa Clean/Off White",31,31],["GR Easy Slim 8P Espelho e Pés Amendoa Clean",23,23],["Comoda Lopas Easy Like Amendoa Clean/Off White",22,21],["GR Easy Slim 8P Amendoa Clean/Off White",22,22],["Mesa 170 Apogeu + 6 Cad. Suede Amêndoa",20,20]];
-const ESTADOS=[["São Paulo",264],["Minas Gerais",249],["Rio de Janeiro",207],["Espírito Santo",2],["Bahia",1],["Rio Grande do Sul",1],["Paraíba",1],["Mato Grosso do Sul",1]];
-
 const OPTS_BASE = { responsive:true, maintainAspectRatio:false };
 
-// MP Nota rows
-(function(){
-  const el=document.getElementById('mpNotaRows');
-  Object.entries(MP_NOTA).forEach(([mp,{sem,com}])=>{
+// ══════════════════════════════════════
+// ── MARÇO DATA ──
+// ══════════════════════════════════════
+const M3 = {
+  DAILY:{"01/03":11,"02/03":16,"03/03":39,"04/03":17,"05/03":24,"06/03":34,"07/03":26,"08/03":20,"09/03":42,"10/03":29,"11/03":30,"12/03":15,"13/03":25,"14/03":17,"15/03":52,"16/03":43,"17/03":38,"18/03":27,"19/03":17,"20/03":17,"21/03":15,"22/03":17,"23/03":11,"24/03":26,"25/03":20,"26/03":17,"27/03":15,"28/03":16,"29/03":8,"30/03":20,"31/03":22},
+  MP_NOTA:{"Shopee":{sem:479,com:15},"Magazine Luiza":{sem:128,com:3},"Mercado Livre":{sem:71,com:13},"Zema":{sem:7,com:1},"Madeira Madeira":{sem:4,com:2},"Outros":{sem:2,com:1}},
+  SEMANA_LABELS:["S1 (01–07)","S2 (08–14)","S3 (15–21)","S4 (22–31)"],
+  SEMANA_SN:[162,170,195,164], SEMANA_CN:[5,8,14,8],
+  MARKETPLACES:{"Shopee":494,"Magazine Luiza":131,"Mercado Livre":84,"Zema":8,"Madeira Madeira":6,"Outros":3},
+  MP_VALOR:{"Shopee":531762,"Magazine Luiza":131094,"Mercado Livre":98671,"Zema":9387,"Madeira Madeira":10158,"Outros":4467},
+  PGTOS:{"Cartão de Crédito":335,"Pix":283,"Parcelado/Pós-pago":80,"Mercado Crédito":25,"Boleto":2,"Outros":1},
+  PRODUTOS:[["GR Easy Slim 8P Espelho Amendoa Clean/Off White",118,106],["GR Casal 6P Easy Slim Amendoa Clean/Off White",68,67],["GR Easy Slim 8P Espelho e Pés Amendoa Clean/Off White",58,57],["Conj. Jantar 4 Cad. Easy Line",42,41],["GR Easy Slim 8P Espelho Branco",41,40],["GR 6P Easy Slim Ccom Pés Amendoa Clean/Off White",31,31],["GR Easy Slim 8P Espelho e Pés Amendoa Clean",23,23],["Comoda Lopas Easy Like Amendoa Clean/Off White",22,21],["GR Easy Slim 8P Amendoa Clean/Off White",22,22],["Mesa 170 Apogeu + 6 Cad. Suede Amêndoa",20,20]],
+  ESTADOS:[["São Paulo",264],["Minas Gerais",249],["Rio de Janeiro",207],["Espírito Santo",2],["Bahia",1],["Rio Grande do Sul",1],["Paraíba",1],["Mato Grosso do Sul",1]],
+  TOTAL: 726
+};
+
+// ══════════════════════════════════════
+// ── ABRIL DATA ──
+// ══════════════════════════════════════
+const A4 = {
+  DAILY:{"01/04":8,"02/04":17,"03/04":5,"04/04":29,"05/04":13,"06/04":20,"07/04":22,"08/04":19,"09/04":18,"10/04":8},
+  MP_NOTA:{"Shopee":{sem:131,com:3},"Magazine Luiza":{sem:13,com:0},"Mercado Livre":{sem:7,com:2},"Zema":{sem:3,com:0}},
+  SEMANA_LABELS:["S1 (01–07)","S2 (08–10)*"],
+  SEMANA_SN:[113,41], SEMANA_CN:[1,4],
+  MARKETPLACES:{"Shopee":134,"Magazine Luiza":13,"Mercado Livre":9,"Zema":3},
+  MP_VALOR:{"Shopee":145028,"Magazine Luiza":14114,"Mercado Livre":6761,"Zema":4488},
+  PGTOS:{"Cartão de Crédito":78,"Pix":53,"Shopee PayLater":25,"Parcelado/Pós-pago":2,"Mercado Crédito":1},
+  PRODUTOS:[["GR Easy Slim 8P Espelho Amendoa Clean/Off White",28,27],["GR Casal 6P Easy Slim Amendoa Clean/Off White",16,16],["Conj. Jantar 4 Cad. Easy Line",13,11],["GR Easy Slim 8P Espelho e Pés Amendoa Clean/Off White",12,12],["GR 6P Easy Slim Ccom Pés Amendoa Clean/Off White",9,8],["Comoda Lopas Easy Like Amendoa Clean/Off White",7,6],["GR Easy Slim 8P Espelho Branco",6,6],["GR 6P Easy Slim c/ Espelho Amendoa/Off White",6,6],["Mesa 0,90 Celebrare + 4 Cad. Apogeu Bege Amendoa",5,5],["Mesa 170 Apogeu + 6 Cad. Apogeu Veludo Amêndoa",5,5]],
+  ESTADOS:[["Minas Gerais",68],["Rio de Janeiro",51],["São Paulo",40]],
+  TOTAL: 159
+};
+
+// ── Helper: render MP Nota rows ──
+function renderMpNota(data, elId) {
+  const el = document.getElementById(elId);
+  Object.entries(data).forEach(([mp,{sem,com}])=>{
     const total=sem+com, pS=(sem/total*100).toFixed(0), pC=(com/total*100).toFixed(0);
     el.innerHTML+=`<div class="mp-nota-row">
       <span class="mp-nota-name">${mp}</span>
@@ -312,69 +519,80 @@ const OPTS_BASE = { responsive:true, maintainAspectRatio:false };
         <div class="mp-nota-legend"><span class="leg-r"><b>${sem}</b> sem NF (${pS}%)</span><span class="leg-g"><b>${com}</b> com NF (${pC}%)</span></div>
       </div></div>`;
   });
-})();
+}
 
-// Semana
-new Chart(document.getElementById('chartSemana'),{type:'bar',data:{
-  labels:SEMANA_LABELS,
-  datasets:[
-    {label:'Sem NF (barrado)',data:SEMANA_SN,backgroundColor:C.red+'99',borderColor:C.red,borderWidth:1,borderRadius:4,stack:'s'},
-    {label:'Com NF (enviado)',data:SEMANA_CN,backgroundColor:C.green+'cc',borderColor:C.green,borderWidth:1,borderRadius:4,stack:'s'}
-  ]},
-  options:{...OPTS_BASE,plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:8,font:{size:10}}},tooltip:{mode:'index',intersect:false}},
-    scales:{x:{grid:{display:false},stacked:true},y:{grid:{color:'#30363d22'},stacked:true,beginAtZero:true}}}
-});
+// ── Helper: build all charts for a dataset ──
+function buildCharts(d, prefix) {
+  // MP Nota rows
+  renderMpNota(d.MP_NOTA, prefix+'_mpNotaRows');
 
-// Diário
-(function(){
-  const labels=Object.keys(DAILY),data=Object.values(DAILY),max=Math.max(...data);
-  new Chart(document.getElementById('chartDiario'),{type:'bar',data:{labels,datasets:[{
-    data,backgroundColor:data.map(v=>v===max?C.orange:C.red+'99'),borderColor:data.map(v=>v===max?C.orange:C.red),borderWidth:1,borderRadius:3}]},
-    options:{...OPTS_BASE,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} cancel.`}}},
-      scales:{x:{grid:{display:false},ticks:{maxTicksLimit:14,font:{size:10}}},y:{grid:{color:'#30363d22'},beginAtZero:true}}}
+  // Semana
+  new Chart(document.getElementById(prefix+'_chartSemana'),{type:'bar',data:{
+    labels:d.SEMANA_LABELS,
+    datasets:[
+      {label:'Sem NF (barrado)',data:d.SEMANA_SN,backgroundColor:C.red+'99',borderColor:C.red,borderWidth:1,borderRadius:4,stack:'s'},
+      {label:'Com NF (enviado)',data:d.SEMANA_CN,backgroundColor:C.green+'cc',borderColor:C.green,borderWidth:1,borderRadius:4,stack:'s'}
+    ]},
+    options:{...OPTS_BASE,plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:8,font:{size:10}}},tooltip:{mode:'index',intersect:false}},
+      scales:{x:{grid:{display:false},stacked:true},y:{grid:{color:'#30363d22'},stacked:true,beginAtZero:true}}}
   });
-})();
 
-// Marketplace donut
-new Chart(document.getElementById('chartMP'),{type:'doughnut',data:{
-  labels:Object.keys(MARKETPLACES),datasets:[{data:Object.values(MARKETPLACES),backgroundColor:[C.orange,C.blue,C.yellow,C.purple,C.teal,C.red],borderColor:'#161b22',borderWidth:2}]},
-  options:{...OPTS_BASE,cutout:'60%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:8,font:{size:10}}},
-    tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} (${(ctx.raw/726*100).toFixed(1)}%)`}}}}
-});
+  // Diário
+  (function(){
+    const labels=Object.keys(d.DAILY),data=Object.values(d.DAILY),max=Math.max(...data);
+    new Chart(document.getElementById(prefix+'_chartDiario'),{type:'bar',data:{labels,datasets:[{
+      data,backgroundColor:data.map(v=>v===max?C.orange:C.red+'99'),borderColor:data.map(v=>v===max?C.orange:C.red),borderWidth:1,borderRadius:3}]},
+      options:{...OPTS_BASE,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} cancel.`}}},
+        scales:{x:{grid:{display:false},ticks:{maxTicksLimit:14,font:{size:10}}},y:{grid:{color:'#30363d22'},beginAtZero:true}}}
+    });
+  })();
 
-// Pagamento donut
-new Chart(document.getElementById('chartPgto'),{type:'doughnut',data:{
-  labels:Object.keys(PGTOS),datasets:[{data:Object.values(PGTOS),backgroundColor:[C.red,C.green,C.purple,C.yellow,C.blue,C.orange],borderColor:'#161b22',borderWidth:2}]},
-  options:{...OPTS_BASE,cutout:'60%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:8,font:{size:10}}},
-    tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} (${(ctx.raw/726*100).toFixed(1)}%)`}}}}
-});
-
-// Valor MP
-(function(){
-  const entries=Object.entries(MP_VALOR).sort((a,b)=>b[1]-a[1]);
-  new Chart(document.getElementById('chartValorMP'),{type:'bar',data:{
-    labels:entries.map(e=>e[0]),datasets:[{data:entries.map(e=>e[1]),
-    backgroundColor:[C.orange+'cc',C.blue+'cc',C.yellow+'cc',C.purple+'cc',C.teal+'cc',C.red+'cc'],borderRadius:4,borderWidth:0}]},
-    options:{...OPTS_BASE,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'R$ '+(ctx.raw/1000).toFixed(0)+'K'}}},
-      scales:{x:{grid:{color:'#30363d22'},ticks:{callback:v=>'R$'+(v/1000).toFixed(0)+'K',font:{size:10}}},y:{grid:{display:false},ticks:{font:{size:10}}}}}
+  // Marketplace donut
+  new Chart(document.getElementById(prefix+'_chartMP'),{type:'doughnut',data:{
+    labels:Object.keys(d.MARKETPLACES),datasets:[{data:Object.values(d.MARKETPLACES),backgroundColor:[C.orange,C.blue,C.yellow,C.purple,C.teal,C.red],borderColor:'#161b22',borderWidth:2}]},
+    options:{...OPTS_BASE,cutout:'60%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:8,font:{size:10}}},
+      tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} (${(ctx.raw/d.TOTAL*100).toFixed(1)}%)`}}}}
   });
-})();
 
-// Ranks
-document.getElementById('rankProdutos').innerHTML=PRODUTOS.map(([n,t,sn],i)=>{
-  const max=118;
-  return`<li class="rank-item"><span class="rank-num">${i+1}</span><span class="rank-name" title="${n}">${n}</span>
-    <span class="tag-sn">${sn} s/NF</span>
-    <div class="rank-bar-wrap"><div class="rank-bar" style="width:${(t/max*100).toFixed(0)}%;background:${C.red}"></div></div>
-    <span class="rank-count">${t}</span></li>`;
-}).join('');
+  // Pagamento donut
+  new Chart(document.getElementById(prefix+'_chartPgto'),{type:'doughnut',data:{
+    labels:Object.keys(d.PGTOS),datasets:[{data:Object.values(d.PGTOS),backgroundColor:[C.red,C.green,C.purple,C.yellow,C.blue,C.orange],borderColor:'#161b22',borderWidth:2}]},
+    options:{...OPTS_BASE,cutout:'60%',plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:8,font:{size:10}}},
+      tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} (${(ctx.raw/d.TOTAL*100).toFixed(1)}%)`}}}}
+  });
 
-document.getElementById('rankEstados').innerHTML=ESTADOS.map(([n,c],i)=>{
-  const max=264;
-  return`<li class="rank-item"><span class="rank-num">${i+1}</span><span class="rank-name">${n}</span>
-    <div class="rank-bar-wrap"><div class="rank-bar" style="width:${(c/max*100).toFixed(0)}%;background:${C.blue}"></div></div>
-    <span class="rank-count">${c}</span></li>`;
-}).join('');
+  // Valor MP
+  (function(){
+    const entries=Object.entries(d.MP_VALOR).sort((a,b)=>b[1]-a[1]);
+    new Chart(document.getElementById(prefix+'_chartValorMP'),{type:'bar',data:{
+      labels:entries.map(e=>e[0]),datasets:[{data:entries.map(e=>e[1]),
+      backgroundColor:[C.orange+'cc',C.blue+'cc',C.yellow+'cc',C.purple+'cc',C.teal+'cc',C.red+'cc'],borderRadius:4,borderWidth:0}]},
+      options:{...OPTS_BASE,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'R$ '+(ctx.raw/1000).toFixed(0)+'K'}}},
+        scales:{x:{grid:{color:'#30363d22'},ticks:{callback:v=>'R$'+(v/1000).toFixed(0)+'K',font:{size:10}}},y:{grid:{display:false},ticks:{font:{size:10}}}}}
+    });
+  })();
+
+  // Rank Produtos
+  const maxP = d.PRODUTOS[0][1];
+  document.getElementById(prefix+'_rankProdutos').innerHTML=d.PRODUTOS.map(([n,t,sn],i)=>{
+    return`<li class="rank-item"><span class="rank-num">${i+1}</span><span class="rank-name" title="${n}">${n}</span>
+      <span class="tag-sn">${sn} s/NF</span>
+      <div class="rank-bar-wrap"><div class="rank-bar" style="width:${(t/maxP*100).toFixed(0)}%;background:${C.red}"></div></div>
+      <span class="rank-count">${t}</span></li>`;
+  }).join('');
+
+  // Rank Estados
+  const maxE = d.ESTADOS[0][1];
+  document.getElementById(prefix+'_rankEstados').innerHTML=d.ESTADOS.map(([n,c],i)=>{
+    return`<li class="rank-item"><span class="rank-num">${i+1}</span><span class="rank-name">${n}</span>
+      <div class="rank-bar-wrap"><div class="rank-bar" style="width:${(c/maxE*100).toFixed(0)}%;background:${C.blue}"></div></div>
+      <span class="rank-count">${c}</span></li>`;
+  }).join('');
+}
+
+// Build both months
+buildCharts(M3, 'm3');
+buildCharts(A4, 'a4');
 </script>
 </body>
 </html>
