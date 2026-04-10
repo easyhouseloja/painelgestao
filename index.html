@@ -94,40 +94,62 @@ body.light-mode .ambient-3 {
 
 /* ── PROTEÇÃO DA TELA DE LOGIN — nunca muda de tema ── */
 /* Restaura o fundo original do login no light mode */
-body.light-mode #login-screen {
-  background: #000000 !important;
+body.light-mode #login-screen,
+body.login-active #login-screen {
+  background:
+    radial-gradient(ellipse 80% 65% at 12% 8%, rgba(210,65,0,0.30) 0%, rgba(150,20,0,0.10) 50%, transparent 70%),
+    radial-gradient(ellipse 60% 55% at 90% 88%, rgba(190,35,0,0.22) 0%, rgba(120,10,0,0.08) 55%, transparent 75%),
+    radial-gradient(ellipse 45% 40% at 72% 12%, rgba(230,90,0,0.14) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at 50% 50%, rgba(160,25,5,0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 25% at 5% 95%, rgba(180,30,0,0.12) 0%, transparent 60%),
+    #060606 !important;
 }
-body.light-mode #login-screen::before {
-  opacity: 1 !important;
-}
-/* Restaura glows do login */
+body.light-mode #login-screen::before,
+body.login-active #login-screen::before { opacity: 1 !important; }
 body.light-mode .login-glow,
 body.light-mode .login-glow-2,
-body.light-mode .login-glow-3 {
-  opacity: 1 !important;
-  display: block !important;
+body.light-mode .login-glow-3,
+body.login-active .login-glow,
+body.login-active .login-glow-2,
+body.login-active .login-glow-3 { opacity: 1 !important; }
+body.light-mode .login-box,
+body.login-active .login-box { background: #ffffff !important; color: #1a1a1a !important; }
+body.light-mode .login-btn,
+body.login-active .login-btn { background: linear-gradient(135deg,#cc2828,#e03535) !important; color:#ffffff !important; }
+body.light-mode .login-input,
+body.login-active .login-input { background:#f0f4ff !important; color:#1a1a1a !important; border-color:rgba(0,0,0,0.15) !important; }
+
+/* ── BARRA SUPERIOR TV MODE — light mode ── */
+body.light-mode .tv-header {
+  background: rgba(228,228,228,0.97) !important;
+  border-bottom-color: rgba(0,0,0,0.10) !important;
 }
-/* Restaura o login-box: fundo branco, textos escuros — já é assim originalmente */
-body.light-mode .login-box {
-  background: #ffffff !important;
-  color: #1a1a1a !important;
+body.light-mode .tv-progress {
+  background: rgba(0,0,0,0.08) !important;
 }
-/* Mantém o botão Entrar vermelho */
-body.light-mode .login-btn {
-  background: linear-gradient(135deg, #cc2828, #e03535) !important;
-  color: #ffffff !important;
+
+/* ── BARRAS SUPERIORES ANYMARKET (pedidos e estoque) — light mode ── */
+body.light-mode .any-header {
+  background: rgba(228,228,228,0.97) !important;
+  border-bottom-color: rgba(0,0,0,0.10) !important;
 }
-/* Campo de e-mail */
-body.light-mode .login-input {
-  background: #f0f4ff !important;
-  color: #1a1a1a !important;
-  border-color: rgba(0,0,0,0.15) !important;
+body.light-mode .ped-header {
+  background: rgba(228,228,228,0.97) !important;
+  border-bottom-color: rgba(0,0,0,0.10) !important;
 }
-/* Botão de tema fica oculto na tela de login */
-body.light-mode #btnThemeToggle.hidden-on-login,
-#btnThemeToggle.hidden-on-login {
-  display: none !important;
+body.light-mode .ped-brand,
+body.light-mode .ped-sync-time,
+body.light-mode .any-sync-time,
+body.light-mode .any-title {
+  color: #111111 !important;
 }
+body.light-mode .ped-divider,
+body.light-mode .any-divider {
+  background: rgba(0,0,0,0.12) !important;
+}
+
+/* Botão de tema oculto na tela de login */
+#btnThemeToggle.hidden-on-login { display: none !important; }
 
 body.light-mode .header {
   background: rgba(240,240,240,0.92);
@@ -8007,15 +8029,17 @@ function loginVisivel() {
   return ls && ls.style.display !== 'none';
 }
 
-// Sincroniza visibilidade do botao de tema com o estado do login
+// Sincroniza visibilidade do botao de tema e classe login-active
 function sincronizarBotaoTema() {
   var btn = document.getElementById('btnThemeToggle');
-  if (!btn) return;
-  if (loginVisivel()) {
-    btn.classList.add('hidden-on-login');
-  } else {
-    btn.classList.remove('hidden-on-login');
+  var visivel = loginVisivel();
+  if (btn) {
+    if (visivel) btn.classList.add('hidden-on-login');
+    else btn.classList.remove('hidden-on-login');
   }
+  // Classe no body para que o CSS do login sempre prevaleca
+  if (visivel) document.body.classList.add('login-active');
+  else document.body.classList.remove('login-active');
 }
 
 // Alterna tema — so funciona fora do login
