@@ -4419,9 +4419,28 @@ function vtexRenderTabela(pedidos) {
 }
 
 function vtexSincronizar() {
-  var btn = document.getElementById('vtex-btn-sync');
-  if (btn) { btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; }
-  vtexCarregarResumo(true);
+  var btn  = document.getElementById('vtex-btn-sync');
+  var sync = document.getElementById('vtex-sync');
+  if (btn)  { btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; btn.textContent = '⏳ Buscando...'; }
+  if (sync) sync.textContent = '🔄 Buscando novos pedidos...';
+
+  // Chama acao=sincronizar → Apps Script busca pedidos novos e atualiza o cache
+  fetch(VTEX_API + '?acao=sincronizar')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (btn)  { btn.style.opacity = ''; btn.style.pointerEvents = ''; btn.textContent = '↻ Sincronizar'; }
+      if (data.ok === false) {
+        if (sync) sync.textContent = '❌ Erro: ' + (data.erro || 'desconhecido');
+        return;
+      }
+      if (sync) sync.textContent = '✅ Sync ' + (data.hora || '');
+      // Relê o cache já atualizado
+      vtexCarregarResumo(false);
+    })
+    .catch(function() {
+      if (btn)  { btn.style.opacity = ''; btn.style.pointerEvents = ''; btn.textContent = '↻ Sincronizar'; }
+      if (sync) sync.textContent = '❌ Erro ao sincronizar';
+    });
 }
 
 function vtexCarregarResumo(force) {
