@@ -92,6 +92,43 @@ body.light-mode .ambient-3 {
   background: radial-gradient(circle, rgba(255,60,0,0.05) 0%, rgba(160,10,10,0.02) 40%, transparent 70%);
 }
 
+/* ── PROTEÇÃO DA TELA DE LOGIN — nunca muda de tema ── */
+/* Restaura o fundo original do login no light mode */
+body.light-mode #login-screen {
+  background: #000000 !important;
+}
+body.light-mode #login-screen::before {
+  opacity: 1 !important;
+}
+/* Restaura glows do login */
+body.light-mode .login-glow,
+body.light-mode .login-glow-2,
+body.light-mode .login-glow-3 {
+  opacity: 1 !important;
+  display: block !important;
+}
+/* Restaura o login-box: fundo branco, textos escuros — já é assim originalmente */
+body.light-mode .login-box {
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+}
+/* Mantém o botão Entrar vermelho */
+body.light-mode .login-btn {
+  background: linear-gradient(135deg, #cc2828, #e03535) !important;
+  color: #ffffff !important;
+}
+/* Campo de e-mail */
+body.light-mode .login-input {
+  background: #f0f4ff !important;
+  color: #1a1a1a !important;
+  border-color: rgba(0,0,0,0.15) !important;
+}
+/* Botão de tema fica oculto na tela de login */
+body.light-mode #btnThemeToggle.hidden-on-login,
+#btnThemeToggle.hidden-on-login {
+  display: none !important;
+}
+
 body.light-mode .header {
   background: rgba(240,240,240,0.92);
 }
@@ -3927,212 +3964,7 @@ function iframeInjetarTema(iframe) {
     var style = doc.createElement('style');
     style.id = 'eh-theme-inject';
     style.textContent = isLight ? `
-      /* ── EH LIGHT MODE ── */
-      :root {
-        --bg-deep:#f2f2f2 !important; --bg-panel:#e8e8e8 !important;
-        --bg-card:#ffffff !important; --border:rgba(0,0,0,0.10) !important;
-        --text-primary:#111111 !important; --text-secondary:#555555 !important;
-      }
-      *, *::before, *::after {
-        transition: background-color 0.25s ease, color 0.2s ease, border-color 0.2s ease !important;
-      }
-
-      /* ── FUNDO BASE ── */
-      html, body {
-        background: #f2f2f2 !important;
-        color: #111111 !important;
-      }
-      .page, .wrapper, .container, main, #app, #root, #main, .main,
-      .dashboard, .dash, .content, .layout, .inner, .report, .report-body {
-        background: #f2f2f2 !important;
-        color: #111111 !important;
-      }
-
-      /* ── HEADER / NAV ── */
-      header, .header, .topbar, .navbar, .nav-bar, .page-header,
-      .dash-header, .report-header, .filter-bar, .toolbar, .controls,
-      .tab-bar, .tabs-wrapper, .nav-tabs-wrapper {
-        background: #e8e8e8 !important;
-        border-color: rgba(0,0,0,0.10) !important;
-        color: #111111 !important;
-      }
-
-      /* ── CARDS POR CLASSE ── */
-      .card, .kpi-card, .kpi, .metric, .panel, .box, .block, .tile,
-      .stat, .stat-card, .info-card, .data-card, .summary-card,
-      .chart-card, .chart-box, .table-section, .section-card,
-      .detail-block, .carrier-row, .performance-row, .month-row,
-      .alert-item, .product-row, .item-row, .row-item, .list-item,
-      .notice-box, .highlight-box {
-        background: #ffffff !important;
-        border-color: rgba(0,0,0,0.09) !important;
-        color: #111111 !important;
-      }
-
-      /* ── TABS ── */
-      .tab, .nav-tab, .month-btn, .period-btn {
-        background: rgba(0,0,0,0.05) !important;
-        color: #333 !important;
-        border-color: rgba(0,0,0,0.10) !important;
-      }
-      .tab.active, .tab.selected, .nav-tab.active, .nav-tab.selected,
-      .month-btn.active, .period-btn.active {
-        background: #ffffff !important;
-        color: #111 !important;
-      }
-
-      /* ── TABELAS ── */
-      table { border-color: rgba(0,0,0,0.08) !important; background: #ffffff !important; }
-      thead tr, thead th, th {
-        background: #ebebeb !important;
-        color: #333 !important;
-        border-color: rgba(0,0,0,0.10) !important;
-      }
-      tbody tr { background: #ffffff !important; border-color: rgba(0,0,0,0.06) !important; }
-      tbody tr:nth-child(even) { background: #f8f8f8 !important; }
-      tbody tr:hover, tbody tr:hover td { background: #f0f0f0 !important; }
-      td { color: #111111 !important; border-color: rgba(0,0,0,0.06) !important; }
-
-      /* ── INPUTS ── */
-      input, select, textarea {
-        background: #ffffff !important;
-        color: #111111 !important;
-        border-color: rgba(0,0,0,0.15) !important;
-      }
-
-      /* ── BACKGROUNDS ESCUROS INLINE (hex fixos dos dashboards) ── */
-      [style*="background:#000000"],[style*="background: #000000"],
-      [style*="background:#000"],[style*="background: #000"],
-      [style*="background:#0a0a0a"],[style*="background: #0a0a0a"],
-      [style*="background:#0b0b0b"],[style*="background: #0b0b0b"],
-      [style*="background:#0c0c0c"],[style*="background: #0c0c0c"],
-      [style*="background:#0d0d0d"],[style*="background: #0d0d0d"],
-      [style*="background:#0e0e0e"],[style*="background: #0e0e0e"],
-      [style*="background:#0f0f0f"],[style*="background: #0f0f0f"],
-      [style*="background:#101010"],[style*="background: #101010"],
-      [style*="background:#111111"],[style*="background: #111111"],
-      [style*="background:#111"],[style*="background: #111"],
-      [style*="background:#121212"],[style*="background: #121212"],
-      [style*="background:#131313"],[style*="background: #131313"],
-      [style*="background:#141414"],[style*="background: #141414"],
-      [style*="background:#151515"],[style*="background: #151515"],
-      [style*="background:#161616"],[style*="background: #161616"],
-      [style*="background:#171717"],[style*="background: #171717"],
-      [style*="background:#181818"],[style*="background: #181818"],
-      [style*="background:#191919"],[style*="background: #191919"],
-      [style*="background:#1a1a1a"],[style*="background: #1a1a1a"],
-      [style*="background:#1b1b1b"],[style*="background: #1b1b1b"],
-      [style*="background:#1c1c1c"],[style*="background: #1c1c1c"],
-      [style*="background:#1d1d1d"],[style*="background: #1d1d1d"],
-      [style*="background:#1e1e1e"],[style*="background: #1e1e1e"],
-      [style*="background:#1f1f1f"],[style*="background: #1f1f1f"],
-      [style*="background:#202020"],[style*="background: #202020"],
-      [style*="background:#222222"],[style*="background: #222222"],
-      [style*="background:#222"],[style*="background: #222"],
-      [style*="background:#242424"],[style*="background: #242424"],
-      [style*="background:#262626"],[style*="background: #262626"],
-      [style*="background:#282828"],[style*="background: #282828"],
-      [style*="background:#2a2a2a"],[style*="background: #2a2a2a"],
-      [style*="background:#2c2c2c"],[style*="background: #2c2c2c"],
-      [style*="background:#2d2d2d"],[style*="background: #2d2d2d"],
-      [style*="background:#2e2e2e"],[style*="background: #2e2e2e"],
-      [style*="background:#303030"],[style*="background: #303030"],
-      [style*="background:#333333"],[style*="background: #333333"],
-      [style*="background:#333"],[style*="background: #333"],
-      /* azuis escuros do financeiro / SLA */
-      [style*="background:#0d1117"],[style*="background: #0d1117"],
-      [style*="background:#0b0e14"],[style*="background: #0b0e14"],
-      [style*="background:#0c0f18"],[style*="background: #0c0f18"],
-      [style*="background:#10131a"],[style*="background: #10131a"],
-      [style*="background:#0e1320"],[style*="background: #0e1320"],
-      [style*="background:#12172b"],[style*="background: #12172b"],
-      [style*="background:#0f1629"],[style*="background: #0f1629"],
-      [style*="background:#13182a"],[style*="background: #13182a"],
-      [style*="background:#1a1f35"],[style*="background: #1a1f35"],
-      [style*="background:#1e2235"],[style*="background: #1e2235"],
-      [style*="background:#0d1526"],[style*="background: #0d1526"],
-      [style*="background:#14192e"],[style*="background: #14192e"],
-      /* rgba escuros */
-      [style*="background:rgba(0,0,0,0.6)"],
-      [style*="background:rgba(0,0,0,0.7)"],
-      [style*="background:rgba(0,0,0,0.75)"],
-      [style*="background:rgba(0,0,0,0.8)"],
-      [style*="background:rgba(0,0,0,0.85)"],
-      [style*="background:rgba(0,0,0,0.9)"],
-      [style*="background:rgba(0,0,0,0.95)"],
-      [style*="background:rgba(0,0,0,1)"],
-      /* rgba brancos semi-transparentes (usados como fundo de card dark) */
-      [style*="background:rgba(255,255,255,0.02)"],
-      [style*="background:rgba(255,255,255,0.03)"],
-      [style*="background:rgba(255,255,255,0.04)"],
-      [style*="background:rgba(255,255,255,0.05)"],
-      [style*="background:rgba(255,255,255,0.06)"],
-      [style*="background:rgba(255,255,255,0.07)"],
-      [style*="background:rgba(255,255,255,0.08)"] {
-        background: #ffffff !important;
-        border-color: rgba(0,0,0,0.09) !important;
-      }
-
-      /* ── TEXTOS BRANCOS INLINE ── */
-      [style*="color:#ffffff"],[style*="color: #ffffff"],
-      [style*="color:#fff"],[style*="color: #fff"],
-      [style*="color:#f5f5f5"],[style*="color: #f5f5f5"],
-      [style*="color:#f0f0f0"],[style*="color: #f0f0f0"],
-      [style*="color:#eeeeee"],[style*="color: #eeeeee"],
-      [style*="color:#e8e8e8"],[style*="color: #e8e8e8"],
-      [style*="color:#e0e0e0"],[style*="color: #e0e0e0"],
-      [style*="color:#f5f0ee"],[style*="color: #f5f0ee"],
-      [style*="color:#f8f8f8"],[style*="color: #f8f8f8"],
-      [style*="color:white"],[style*="color: white"],
-      [style*="color:rgba(255,255,255,0.9)"],
-      [style*="color:rgba(255,255,255,1)"] {
-        color: #111111 !important;
-      }
-
-      /* ── TEXTOS CINZA CLARO (secundários) ── */
-      [style*="color:#999"],[style*="color:#9a9a9a"],
-      [style*="color:#aaa"],[style*="color:#ababab"],
-      [style*="color:#bbb"],[style*="color:#bbbbbb"],
-      [style*="color:#ccc"],[style*="color:#cccccc"],
-      [style*="color:#7a7470"],[style*="color: #7a7470"],
-      [style*="color:rgba(255,255,255,0.3)"],
-      [style*="color:rgba(255,255,255,0.4)"],
-      [style*="color:rgba(255,255,255,0.5)"],
-      [style*="color:rgba(255,255,255,0.6)"],
-      [style*="color:rgba(255,255,255,0.65)"],
-      [style*="color:rgba(255,255,255,0.7)"] {
-        color: #555555 !important;
-      }
-
-      /* ── BORDAS BRANCAS INLINE ── */
-      [style*="border:1px solid rgba(255,255,255"],
-      [style*="border: 1px solid rgba(255,255,255"],
-      [style*="border-bottom:1px solid rgba(255,255,255"],
-      [style*="border-top:1px solid rgba(255,255,255"],
-      [style*="border-left:1px solid rgba(255,255,255"],
-      [style*="border-right:1px solid rgba(255,255,255"] {
-        border-color: rgba(0,0,0,0.09) !important;
-      }
-
-      /* ── SCROLLBAR ── */
-      ::-webkit-scrollbar { background: #e0e0e0 !important; }
-      ::-webkit-scrollbar-thumb { background: #b8b8b8 !important; border-radius: 4px; }
-
-    ` : `
-      /* ── EH DARK MODE — restaurado pelo pai ── */
-      :root {
-        --bg-deep:#000 !important; --bg-panel:#0a0a0a !important;
-        --bg-card:#101010 !important; --border:rgba(255,255,255,0.07) !important;
-        --text-primary:#f5f0ee !important; --text-secondary:#7a7470 !important;
-      }
-      *, *::before, *::after {
-        transition: background-color 0.25s ease, color 0.2s ease, border-color 0.2s ease !important;
-      }
-    `;
-    doc.head.appendChild(style);
-    return true;
-  } catch(e) { return false; }
-}
+      /* EH LIGHT MODE */
       :root {
         --bg-deep:#f2f2f2 !important; --bg-panel:#e8e8e8 !important;
         --bg-card:#ffffff !important; --border:rgba(0,0,0,0.10) !important;
@@ -4142,45 +3974,94 @@ function iframeInjetarTema(iframe) {
         transition: background-color 0.25s ease, color 0.2s ease, border-color 0.2s ease !important;
       }
       html, body { background:#f2f2f2 !important; color:#111111 !important; }
-
-      /* estrutura */
       .page,.wrapper,.container,.main,main,#app,#root,.dashboard,.content,.layout,.inner,
       .dash-body,.report,.report-body,.section,.section-body {
         background:#f2f2f2 !important; color:#111111 !important;
       }
-
-      /* cards por classe */
       .card,.kpi-card,.kpi,.metric,.panel,.box,.block,.tile,.stat,.stat-card,
       .info-card,.data-card,.summary-card,.notice,.alert-box,.highlight,.item,.row-item,
       .product-row,.alert-item,.detail-block,.section-card,.chart-card,.chart-box,
       .performance-row,.month-row,.bar-row,.carrier-row,.table-section {
-        background:#ffffff !important; border-color:rgba(0,0,0,0.09) !important;
-        color:#111111 !important;
+        background:#ffffff !important; border-color:rgba(0,0,0,0.09) !important; color:#111111 !important;
       }
-
-      /* header/nav */
       header,nav,.header,.topbar,.navbar,.nav,.sidebar,.statusbar,.ticker,
       .breadcrumb,.tab-bar,.nav-bar,.page-header,.dash-header,.report-header,
       .filter-bar,.toolbar,.controls {
-        background:rgba(232,232,232,0.97) !important;
-        border-color:rgba(0,0,0,0.10) !important; color:#111111 !important;
+        background:#e8e8e8 !important; border-color:rgba(0,0,0,0.10) !important; color:#111111 !important;
       }
-
-      /* tabs */
       .tab,.pill,.chip { background:rgba(0,0,0,0.05) !important; color:#333 !important; }
       .tab.active,.tab.selected,.tab-active { background:#fff !important; color:#111 !important; }
-
-      /* tabelas */
-      table { border-color:rgba(0,0,0,0.08) !important; }
+      table { border-color:rgba(0,0,0,0.08) !important; background:#ffffff !important; }
       thead tr,th { background:#ebebeb !important; color:#333 !important; border-color:rgba(0,0,0,0.10) !important; }
-      tbody tr { border-color:rgba(0,0,0,0.06) !important; }
-      tbody tr:hover td { background:rgba(0,0,0,0.03) !important; }
+      tbody tr { background:#ffffff !important; border-color:rgba(0,0,0,0.06) !important; }
+      tbody tr:nth-child(even) { background:#f8f8f8 !important; }
+      tbody tr:hover,tbody tr:hover td { background:#f0f0f0 !important; }
       td { color:#111111 !important; border-color:rgba(0,0,0,0.06) !important; }
-
-      /* inputs */
       input,select,textarea { background:#fff !important; color:#111 !important; border-color:rgba(0,0,0,0.15) !important; }
-
-      /* scrollbar */
+      /* backgrounds escuros inline -- hex de #000 a #333 */
+      [style*="background:#000000"],[style*="background: #000000"],[style*="background:#000"],[style*="background: #000"],
+      [style*="background:#0a0a0a"],[style*="background: #0a0a0a"],[style*="background:#0b0b0b"],[style*="background: #0b0b0b"],
+      [style*="background:#0c0c0c"],[style*="background: #0c0c0c"],[style*="background:#0d0d0d"],[style*="background: #0d0d0d"],
+      [style*="background:#0e0e0e"],[style*="background: #0e0e0e"],[style*="background:#0f0f0f"],[style*="background: #0f0f0f"],
+      [style*="background:#101010"],[style*="background: #101010"],[style*="background:#111111"],[style*="background: #111111"],
+      [style*="background:#111"],[style*="background: #111"],[style*="background:#121212"],[style*="background: #121212"],
+      [style*="background:#131313"],[style*="background: #131313"],[style*="background:#141414"],[style*="background: #141414"],
+      [style*="background:#151515"],[style*="background: #151515"],[style*="background:#161616"],[style*="background: #161616"],
+      [style*="background:#171717"],[style*="background: #171717"],[style*="background:#181818"],[style*="background: #181818"],
+      [style*="background:#191919"],[style*="background: #191919"],[style*="background:#1a1a1a"],[style*="background: #1a1a1a"],
+      [style*="background:#1b1b1b"],[style*="background: #1b1b1b"],[style*="background:#1c1c1c"],[style*="background: #1c1c1c"],
+      [style*="background:#1d1d1d"],[style*="background: #1d1d1d"],[style*="background:#1e1e1e"],[style*="background: #1e1e1e"],
+      [style*="background:#1f1f1f"],[style*="background: #1f1f1f"],[style*="background:#202020"],[style*="background: #202020"],
+      [style*="background:#222222"],[style*="background: #222222"],[style*="background:#222"],[style*="background: #222"],
+      [style*="background:#242424"],[style*="background: #242424"],[style*="background:#262626"],[style*="background: #262626"],
+      [style*="background:#282828"],[style*="background: #282828"],[style*="background:#2a2a2a"],[style*="background: #2a2a2a"],
+      [style*="background:#2c2c2c"],[style*="background: #2c2c2c"],[style*="background:#2d2d2d"],[style*="background: #2d2d2d"],
+      [style*="background:#2e2e2e"],[style*="background: #2e2e2e"],[style*="background:#303030"],[style*="background: #303030"],
+      [style*="background:#333333"],[style*="background: #333333"],[style*="background:#333"],[style*="background: #333"],
+      /* azuis escuros do financeiro e SLA */
+      [style*="background:#0d1117"],[style*="background: #0d1117"],[style*="background:#0b0e14"],[style*="background: #0b0e14"],
+      [style*="background:#0c0f18"],[style*="background: #0c0f18"],[style*="background:#10131a"],[style*="background: #10131a"],
+      [style*="background:#0e1320"],[style*="background: #0e1320"],[style*="background:#12172b"],[style*="background: #12172b"],
+      [style*="background:#0f1629"],[style*="background: #0f1629"],[style*="background:#13182a"],[style*="background: #13182a"],
+      [style*="background:#1a1f35"],[style*="background: #1a1f35"],[style*="background:#1e2235"],[style*="background: #1e2235"],
+      [style*="background:#0d1526"],[style*="background: #0d1526"],[style*="background:#14192e"],[style*="background: #14192e"],
+      [style*="background:#16213e"],[style*="background: #16213e"],[style*="background:#1a2744"],[style*="background: #1a2744"],
+      [style*="background:#0a1628"],[style*="background: #0a1628"],[style*="background:#0e1b30"],[style*="background: #0e1b30"],
+      /* rgba escuros */
+      [style*="background:rgba(0,0,0,0.6)"],[style*="background:rgba(0,0,0,0.7)"],
+      [style*="background:rgba(0,0,0,0.75)"],[style*="background:rgba(0,0,0,0.8)"],
+      [style*="background:rgba(0,0,0,0.85)"],[style*="background:rgba(0,0,0,0.9)"],
+      [style*="background:rgba(0,0,0,0.95)"],[style*="background:rgba(0,0,0,1)"],
+      /* rgba brancos semi-transparentes (card dark) */
+      [style*="background:rgba(255,255,255,0.02)"],[style*="background:rgba(255,255,255,0.03)"],
+      [style*="background:rgba(255,255,255,0.04)"],[style*="background:rgba(255,255,255,0.05)"],
+      [style*="background:rgba(255,255,255,0.06)"],[style*="background:rgba(255,255,255,0.07)"],
+      [style*="background:rgba(255,255,255,0.08)"] {
+        background:#ffffff !important; border-color:rgba(0,0,0,0.09) !important;
+      }
+      /* textos brancos inline */
+      [style*="color:#ffffff"],[style*="color: #ffffff"],[style*="color:#fff"],[style*="color: #fff"],
+      [style*="color:#f5f5f5"],[style*="color: #f5f5f5"],[style*="color:#f0f0f0"],[style*="color: #f0f0f0"],
+      [style*="color:#eeeeee"],[style*="color: #eeeeee"],[style*="color:#e8e8e8"],[style*="color: #e8e8e8"],
+      [style*="color:#e0e0e0"],[style*="color: #e0e0e0"],[style*="color:#f5f0ee"],[style*="color: #f5f0ee"],
+      [style*="color:white"],[style*="color: white"],
+      [style*="color:rgba(255,255,255,0.9)"],[style*="color:rgba(255,255,255,1)"] {
+        color:#111111 !important;
+      }
+      /* textos cinza claro inline (secundarios) */
+      [style*="color:#999"],[style*="color:#aaa"],[style*="color:#bbb"],[style*="color:#ccc"],
+      [style*="color:#7a7470"],[style*="color: #7a7470"],
+      [style*="color:rgba(255,255,255,0.3)"],[style*="color:rgba(255,255,255,0.4)"],
+      [style*="color:rgba(255,255,255,0.5)"],[style*="color:rgba(255,255,255,0.6)"],
+      [style*="color:rgba(255,255,255,0.65)"],[style*="color:rgba(255,255,255,0.7)"] {
+        color:#555555 !important;
+      }
+      /* bordas brancas inline */
+      [style*="border:1px solid rgba(255,255,255"],[style*="border: 1px solid rgba(255,255,255"],
+      [style*="border-bottom:1px solid rgba(255,255,255"],[style*="border-top:1px solid rgba(255,255,255"],
+      [style*="border-left:1px solid rgba(255,255,255"],[style*="border-right:1px solid rgba(255,255,255"] {
+        border-color:rgba(0,0,0,0.09) !important;
+      }
       ::-webkit-scrollbar { background:#e0e0e0 !important; }
       ::-webkit-scrollbar-thumb { background:#b8b8b8 !important; border-radius:4px; }
     ` : `
@@ -4194,9 +4075,49 @@ function iframeInjetarTema(iframe) {
       }
     `;
     doc.head.appendChild(style);
+
+    // Varredura JS: corrige backgrounds definidos em CSS interno (nao inline)
+    // Ignora canvas, svg, e elementos de grafico
+    if (isLight) {
+      try {
+        var SKIP = new Set(['canvas','svg','path','circle','rect','line','polyline',
+          'polygon','g','defs','use','symbol','marker','lineargradient','radialgradient',
+          'stop','clippath','mask','script','style','link','meta','head','br','hr','img']);
+        function lum(r,g,b){ return 0.299*r+0.587*g+0.114*b; }
+        var dv = doc.defaultView;
+        if (dv && doc.body) {
+          Array.prototype.forEach.call(doc.body.querySelectorAll('*'), function(el) {
+            var tag = (el.tagName||'').toLowerCase();
+            if (SKIP.has(tag)) return;
+            // Pula se ja tem inline background (CSS ja tratou)
+            var inl = el.style.background || el.style.backgroundColor || '';
+            if (inl && inl !== 'transparent' && inl !== 'none') return;
+            var cs = dv.getComputedStyle(el);
+            var bg = cs.backgroundColor;
+            if (!bg || bg === 'transparent' || bg === 'rgba(0, 0, 0, 0)') return;
+            var m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (!m) return;
+            if (lum(+m[1],+m[2],+m[3]) >= 60) return; // nao e escuro
+            // Determina alvo
+            var isH = tag==='header'||tag==='nav'||/header|topbar|navbar|toolbar|tab-bar|filter-bar/.test((el.className||'').toString());
+            var isB = tag==='body'||tag==='html'||tag==='main';
+            el.style.setProperty('background', isB?'#f2f2f2':isH?'#e8e8e8':'#ffffff', 'important');
+            el.style.setProperty('background-color', isB?'#f2f2f2':isH?'#e8e8e8':'#ffffff', 'important');
+            // Clareia texto se estava claro sobre fundo escuro
+            var tc = cs.color;
+            var tm = tc && tc.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (tm && lum(+tm[1],+tm[2],+tm[3]) > 180) {
+              el.style.setProperty('color','#111111','important');
+            }
+          });
+        }
+      } catch(e2) {}
+    }
+
     return true;
   } catch(e) { return false; }
 }
+
 
 function iframeAbrir(url, titulo) {
   var overlay = document.getElementById('iframe-overlay');
@@ -8073,32 +7994,43 @@ function renderTVMadeira(el) {
 
 <!-- THEME TOGGLE SCRIPT -->
 <script>
-// ── Aplica tema salvo ao carregar ──────────────────────────────────────────────
+// Aplica tema salvo ao carregar
 (function() {
   if (localStorage.getItem('eh_theme') === 'light') {
     document.body.classList.add('light-mode');
   }
 })();
 
-// ── Alterna tema e propaga para todos os iframes ───────────────────────────────
+// Verifica se a tela de login esta visivel
+function loginVisivel() {
+  var ls = document.getElementById('login-screen');
+  return ls && ls.style.display !== 'none';
+}
+
+// Sincroniza visibilidade do botao de tema com o estado do login
+function sincronizarBotaoTema() {
+  var btn = document.getElementById('btnThemeToggle');
+  if (!btn) return;
+  if (loginVisivel()) {
+    btn.classList.add('hidden-on-login');
+  } else {
+    btn.classList.remove('hidden-on-login');
+  }
+}
+
+// Alterna tema — so funciona fora do login
 function toggleTheme() {
+  if (loginVisivel()) return;
   var isLight = document.body.classList.toggle('light-mode');
   var tema = isLight ? 'light' : 'dark';
-
-  // 1. Persiste no localStorage
   localStorage.setItem('eh_theme', tema);
-
-  // 2. Reinjeita CSS diretamente no iframe aberto (se houver)
+  // Propaga para iframe aberto
   var iframe = document.getElementById('iframe-content');
-  if (iframe && iframe.src) {
-    iframeInjetarTema(iframe);
-  }
-
-  // 3. Re-renderiza icones Lucide (sun/moon no botao)
+  if (iframe && iframe.src) iframeInjetarTema(iframe);
   if (window.lucide) lucide.createIcons();
 }
 
-// ── Escuta mudancas vindas de outras abas ─────────────────────────────────────
+// Escuta mudancas de outras abas
 window.addEventListener('storage', function(e) {
   if (e.key !== 'eh_theme') return;
   if (e.newValue === 'light') document.body.classList.add('light-mode');
@@ -8106,6 +8038,16 @@ window.addEventListener('storage', function(e) {
   var iframe = document.getElementById('iframe-content');
   if (iframe && iframe.src) iframeInjetarTema(iframe);
   if (window.lucide) lucide.createIcons();
+});
+
+// Observa quando o login aparece/desaparece para mostrar/ocultar o botao
+document.addEventListener('DOMContentLoaded', function() {
+  sincronizarBotaoTema();
+  var ls = document.getElementById('login-screen');
+  if (ls && window.MutationObserver) {
+    new MutationObserver(function() { sincronizarBotaoTema(); })
+      .observe(ls, { attributes: true, attributeFilter: ['style'] });
+  }
 });
 </script>
 
