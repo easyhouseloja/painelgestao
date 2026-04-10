@@ -409,7 +409,7 @@ function buildAprCharts(page) {
     new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via','Web'],datasets:[{data:[1658109.54,311692.68,479230.82,43632.54,45842.74,17839.23],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='categorias'){
-    new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[745278.24,189198.60,328953.09,29879.58,36260.61],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[366784.13,43982.25,39614.67,2208.04,923.88],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[280843.41,38884.77,5723.72,10159.76,3615.02],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[882292.28,215810.69,416910.13,30795.58,41283.83],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[440607.77,50644.19,49021.68,2677.20,923.88],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[335209.49,45237.99,13299.01,10159.76,3615.02],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='diario'){
     const labels=aprDaily.map(d=>d.d);
@@ -1080,6 +1080,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </table>
     </div>
 
+    <!-- SITE LOPAS -->
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid #06b6d4;">
+        <div class="cat-mp-name" style="color:#06b6d4;">🏠 Site Lopas</div>
+        <div class="cat-mp-total">Total: R$ 11.995,62</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead>
+        <tbody>
+          <tr><td>COMP</td><td>R$ 512,57</td><td>R$ 4.200,00</td><td><span class="tag tag-red">12,20%</span></td><td>R$ 1.708,57</td></tr>
+          <tr><td>GR</td><td>R$ 11.483,05</td><td>R$ 19.200,00</td><td><span class="tag tag-yellow">59,81%</span></td><td>R$ 38.276,83</td></tr>
+          <tr><td>SALA</td><td>R$ 0,00</td><td>R$ 6.600,00</td><td><span class="tag tag-red">0,00%</span></td><td>R$ —</td></tr>
+          <tr class="total-row"><td>TOTAL</td><td>R$ 11.995,62</td><td>R$ 30.000,00</td><td><span class="tag tag-yellow">39,99%</span></td><td>R$ 39.985,40</td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <!-- CHART CATEGORIAS -->
     <div class="chart-card">
       <div class="chart-title">📊 Fat. por Categoria — Todos Canais</div>
@@ -1635,48 +1652,48 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="section-title">Faturado × Meta × Projeção por Categoria e Marketplace</div>
   <div class="cat-grid-mp">
     <div class="cat-mp-card">
-      <div class="cat-mp-header" style="border-left:3px solid var(--shopee);"><div class="cat-mp-name" style="color:var(--shopee);">🟠 Shopee</div><div class="cat-mp-total">Total: R$ 1.392.905,78</div></div>
+      <div class="cat-mp-header" style="border-left:3px solid var(--shopee);"><div class="cat-mp-name" style="color:var(--shopee);">🟠 Shopee</div><div class="cat-mp-total">Total: R$ 1.658.109,54</div></div>
       <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
-        <tr><td>COMP</td><td>R$ 280.843,41</td><td>R$ 560.000,00</td><td><span class="tag tag-yellow">50,15%</span></td><td>R$ 1.053.162,78</td></tr>
-        <tr><td>GR</td><td>R$ 745.278,24</td><td>R$ 2.560.000,00</td><td><span class="tag tag-yellow">29,11%</span></td><td>R$ 2.794.793,41</td></tr>
-        <tr><td>SALA</td><td>R$ 366.784,13</td><td>R$ 880.000,00</td><td><span class="tag tag-yellow">41,68%</span></td><td>R$ 1.375.440,49</td></tr>
-        <tr class="total-row"><td>TOTAL</td><td>R$ 1.392.905,78</td><td>R$ 4.000.000,00</td><td><span class="tag tag-yellow">34,82%</span></td><td>R$ 5.223.396,69</td></tr>
+        <tr><td>COMP</td><td>R$ 335.209,49</td><td>R$ 560.000,00</td><td><span class="tag tag-yellow">59,86%</span></td><td>R$ 1.117.364,97</td></tr>
+        <tr><td>GR</td><td>R$ 882.292,28</td><td>R$ 2.560.000,00</td><td><span class="tag tag-yellow">34,46%</span></td><td>R$ 2.940.974,28</td></tr>
+        <tr><td>SALA</td><td>R$ 440.607,77</td><td>R$ 880.000,00</td><td><span class="tag tag-yellow">50,07%</span></td><td>R$ 1.468.692,56</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 1.658.109,54</td><td>R$ 4.000.000,00</td><td><span class="tag tag-yellow">41,45%</span></td><td>R$ 5.527.031,81</td></tr>
       </tbody></table>
     </div>
     <div class="cat-mp-card">
-      <div class="cat-mp-header" style="border-left:3px solid var(--ml);"><div class="cat-mp-name" style="color:var(--ml);">🟡 Mercado Livre</div><div class="cat-mp-total">Total: R$ 272.065,62</div></div>
+      <div class="cat-mp-header" style="border-left:3px solid var(--ml);"><div class="cat-mp-name" style="color:var(--ml);">🟡 Mercado Livre</div><div class="cat-mp-total">Total: R$ 311.692,68</div></div>
       <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
-        <tr><td>COMP</td><td>R$ 38.884,77</td><td>R$ 420.000,00</td><td><span class="tag tag-red">9,26%</span></td><td>R$ 145.817,89</td></tr>
-        <tr><td>GR</td><td>R$ 189.198,60</td><td>R$ 1.920.000,00</td><td><span class="tag tag-red">9,85%</span></td><td>R$ 709.494,76</td></tr>
-        <tr><td>SALA</td><td>R$ 43.982,25</td><td>R$ 660.000,00</td><td><span class="tag tag-red">6,66%</span></td><td>R$ 164.933,42</td></tr>
-        <tr class="total-row"><td>TOTAL</td><td>R$ 272.065,62</td><td>R$ 3.000.000,00</td><td><span class="tag tag-red">9,07%</span></td><td>R$ 1.020.246,07</td></tr>
+        <tr><td>COMP</td><td>R$ 45.237,99</td><td>R$ 420.000,00</td><td><span class="tag tag-red">10,77%</span></td><td>R$ 150.793,30</td></tr>
+        <tr><td>GR</td><td>R$ 215.810,69</td><td>R$ 1.920.000,00</td><td><span class="tag tag-red">11,24%</span></td><td>R$ 719.367,56</td></tr>
+        <tr><td>SALA</td><td>R$ 50.644,19</td><td>R$ 660.000,00</td><td><span class="tag tag-red">7,67%</span></td><td>R$ 168.814,73</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 311.692,68</td><td>R$ 3.000.000,00</td><td><span class="tag tag-red">10,39%</span></td><td>R$ 1.038.975,60</td></tr>
       </tbody></table>
     </div>
     <div class="cat-mp-card">
-      <div class="cat-mp-header" style="border-left:3px solid var(--magalu);"><div class="cat-mp-name" style="color:var(--magalu);">🔵 Magalu</div><div class="cat-mp-total">Total: R$ 374.291,47</div></div>
+      <div class="cat-mp-header" style="border-left:3px solid var(--magalu);"><div class="cat-mp-name" style="color:var(--magalu);">🔵 Magalu</div><div class="cat-mp-total">Total: R$ 479.230,82</div></div>
       <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
-        <tr><td>COMP</td><td>R$ 5.723,72</td><td>R$ 210.000,00</td><td><span class="tag tag-red">2,73%</span></td><td>R$ 21.463,94</td></tr>
-        <tr><td>GR</td><td>R$ 328.953,09</td><td>R$ 960.000,00</td><td><span class="tag tag-yellow">34,27%</span></td><td>R$ 1.233.574,08</td></tr>
-        <tr><td>SALA</td><td>R$ 39.614,67</td><td>R$ 330.000,00</td><td><span class="tag tag-red">12,00%</span></td><td>R$ 148.555,01</td></tr>
-        <tr class="total-row"><td>TOTAL</td><td>R$ 374.291,47</td><td>R$ 1.500.000,00</td><td><span class="tag tag-yellow">24,95%</span></td><td>R$ 1.403.593,02</td></tr>
+        <tr><td>COMP</td><td>R$ 13.299,01</td><td>R$ 210.000,00</td><td><span class="tag tag-red">6,33%</span></td><td>R$ 44.330,03</td></tr>
+        <tr><td>GR</td><td>R$ 416.910,13</td><td>R$ 960.000,00</td><td><span class="tag tag-yellow">43,43%</span></td><td>R$ 1.389.700,45</td></tr>
+        <tr><td>SALA</td><td>R$ 49.021,68</td><td>R$ 330.000,00</td><td><span class="tag tag-red">14,86%</span></td><td>R$ 163.405,59</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 479.230,82</td><td>R$ 1.500.000,00</td><td><span class="tag tag-yellow">31,95%</span></td><td>R$ 1.597.436,07</td></tr>
       </tbody></table>
     </div>
     <div class="cat-mp-card">
-      <div class="cat-mp-header" style="border-left:3px solid var(--madeira);"><div class="cat-mp-name" style="color:var(--madeira);">🪵 Madeira</div><div class="cat-mp-total">Total: R$ 42.243,38</div></div>
+      <div class="cat-mp-header" style="border-left:3px solid var(--madeira);"><div class="cat-mp-name" style="color:var(--madeira);">🪵 Madeira</div><div class="cat-mp-total">Total: R$ 43.632,54</div></div>
       <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
-        <tr><td>COMP</td><td>R$ 10.159,76</td><td>R$ 21.000,00</td><td><span class="tag tag-yellow">48,38%</span></td><td>R$ 38.099,08</td></tr>
-        <tr><td>GR</td><td>R$ 29.879,58</td><td>R$ 96.000,00</td><td><span class="tag tag-yellow">31,12%</span></td><td>R$ 112.033,44</td></tr>
-        <tr><td>SALA</td><td>R$ 2.208,04</td><td>R$ 33.000,00</td><td><span class="tag tag-red">6,69%</span></td><td>R$ 8.280,14</td></tr>
-        <tr class="total-row"><td>TOTAL</td><td>R$ 42.243,38</td><td>R$ 150.000,00</td><td><span class="tag tag-yellow">28,16%</span></td><td>R$ 158.412,66</td></tr>
+        <tr><td>COMP</td><td>R$ 10.159,76</td><td>R$ 21.000,00</td><td><span class="tag tag-yellow">48,38%</span></td><td>R$ 33.865,85</td></tr>
+        <tr><td>GR</td><td>R$ 30.795,58</td><td>R$ 96.000,00</td><td><span class="tag tag-yellow">32,08%</span></td><td>R$ 102.651,94</td></tr>
+        <tr><td>SALA</td><td>R$ 2.677,20</td><td>R$ 33.000,00</td><td><span class="tag tag-red">8,11%</span></td><td>R$ 8.924,00</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 43.632,54</td><td>R$ 150.000,00</td><td><span class="tag tag-yellow">29,09%</span></td><td>R$ 145.441,79</td></tr>
       </tbody></table>
     </div>
     <div class="cat-mp-card">
-      <div class="cat-mp-header" style="border-left:3px solid var(--via);"><div class="cat-mp-name" style="color:var(--via);">🟣 Via Varejo</div><div class="cat-mp-total">Total: R$ 40.799,52</div></div>
+      <div class="cat-mp-header" style="border-left:3px solid var(--via);"><div class="cat-mp-name" style="color:var(--via);">🟣 Via Varejo</div><div class="cat-mp-total">Total: R$ 45.822,74</div></div>
       <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
-        <tr><td>COMP</td><td>R$ 3.615,02</td><td>R$ 21.000,00</td><td><span class="tag tag-yellow">17,21%</span></td><td>R$ 13.556,34</td></tr>
-        <tr><td>GR</td><td>R$ 36.260,61</td><td>R$ 96.000,00</td><td><span class="tag tag-yellow">37,77%</span></td><td>R$ 135.977,29</td></tr>
-        <tr><td>SALA</td><td>R$ 923,88</td><td>R$ 33.000,00</td><td><span class="tag tag-red">2,80%</span></td><td>R$ 3.464,57</td></tr>
-        <tr class="total-row"><td>TOTAL</td><td>R$ 40.799,52</td><td>R$ 150.000,00</td><td><span class="tag tag-yellow">27,20%</span></td><td>R$ 152.998,19</td></tr>
+        <tr><td>COMP</td><td>R$ 3.615,02</td><td>R$ 21.000,00</td><td><span class="tag tag-yellow">17,21%</span></td><td>R$ 12.050,08</td></tr>
+        <tr><td>GR</td><td>R$ 41.283,83</td><td>R$ 96.000,00</td><td><span class="tag tag-yellow">43,00%</span></td><td>R$ 137.612,78</td></tr>
+        <tr><td>SALA</td><td>R$ 923,88</td><td>R$ 33.000,00</td><td><span class="tag tag-red">2,80%</span></td><td>R$ 3.079,61</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 45.822,74</td><td>R$ 150.000,00</td><td><span class="tag tag-yellow">30,55%</span></td><td>R$ 152.742,47</td></tr>
       </tbody></table>
     </div>
     <div class="chart-card">
@@ -2879,7 +2896,7 @@ function buildAprCharts(page) {
     new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via','Web'],datasets:[{data:[1658109.54,311692.68,479230.82,43632.54,45842.74,17839.23],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='categorias'){
-    new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[745278.24,189198.60,328953.09,29879.58,36260.61],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[366784.13,43982.25,39614.67,2208.04,923.88],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[280843.41,38884.77,5723.72,10159.76,3615.02],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[882292.28,215810.69,416910.13,30795.58,41283.83],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[440607.77,50644.19,49021.68,2677.20,923.88],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[335209.49,45237.99,13299.01,10159.76,3615.02],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='diario'){
     const labels=aprDaily.map(d=>d.d);
