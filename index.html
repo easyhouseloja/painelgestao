@@ -2836,6 +2836,43 @@ body::before {
 }
 .btn-export-csv:hover { border-color:rgba(31,189,114,0.7); background:rgba(31,189,114,0.16); box-shadow:0 0 12px rgba(31,189,114,0.2); }
 
+/* ── PESO POR ESTADO / TRANSPORTADORA ── */
+.ped-view-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+  color: var(--text-secondary); font-size: 12px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; transition: all 0.2s; white-space: nowrap;
+}
+.ped-view-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+.ped-view-btn.active {
+  background: rgba(45,125,210,0.12); border-color: rgba(45,125,210,0.4);
+  color: var(--accent-blue);
+}
+
+.peso-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+.peso-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: 'DM Mono', monospace; }
+.peso-table th {
+  padding: 10px 14px; text-align: right; font-size: 10px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary);
+  background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.peso-table th:first-child { text-align: left; position: sticky; left: 0; background: #13161f; z-index: 2; }
+.peso-table td {
+  padding: 9px 14px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-secondary); white-space: nowrap;
+}
+.peso-table td:first-child {
+  text-align: left; font-weight: 600; color: var(--text-primary);
+  position: sticky; left: 0; background: #13161f; z-index: 1;
+}
+.peso-table tr:last-child td { border-bottom: none; font-weight: 700; color: var(--text-primary); background: rgba(255,255,255,0.03); }
+.peso-table tr:last-child td:first-child { background: rgba(255,255,255,0.05); }
+.peso-cell-val { color: var(--text-primary); }
+.peso-cell-zero { color: rgba(255,255,255,0.15); }
+.peso-total-col { background: rgba(45,125,210,0.06); color: #63b3ed !important; font-weight: 700; }
+
 /* ── TV MODE ── */
 .btn-tv-mode {
   display:flex; align-items:center; gap:6px;
@@ -5358,6 +5395,16 @@ inicializarUI = function(email) {
     </div>
 
     <!-- Toolbar -->
+    <!-- View switcher -->
+    <div style="display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:12px;">
+      <button class="ped-view-btn active" id="ped-view-lista" onclick="pedSetView('lista',this)">
+        <i data-lucide="list" style="width:13px;height:13px;"></i> Pedidos
+      </button>
+      <button class="ped-view-btn" id="ped-view-peso" onclick="pedSetView('peso',this)" style="border-color:rgba(99,179,237,0.4);color:#63b3ed;">
+        <i data-lucide="weight" style="width:13px;height:13px;"></i> Peso por Estado · Transportadora
+      </button>
+    </div>
+
     <div class="ped-toolbar">
       <button class="ped-period-btn" onclick="pedSetPeriodo('hoje', this)">Hoje</button>
       <button class="ped-period-btn" onclick="pedSetPeriodo('7d', this)">7 dias</button>
@@ -5384,6 +5431,14 @@ inicializarUI = function(email) {
       </button>
     </div>
     <div class="ped-canais" id="pedCanais"></div>
+
+    <!-- Peso por Estado / Transportadora -->
+    <div id="ped-peso-wrap" style="display:none;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:16px;">
+        📦 Peso em Aberto · Pedidos Pagos · por Transportadora × Estado
+      </div>
+      <div id="ped-peso-tabela"></div>
+    </div>
 
     <!-- Tabela -->
     <div class="ped-table-wrap">
@@ -6155,14 +6210,42 @@ async function pedBuscarCache() {
       status:  p.status,
       data:    p.data || '',
       estado:  p.estado || '-',
-      peso:    Number(p.peso || 0)
+      peso:    Number(p.peso || 0),
+      transportadora: p.transportadora || '-'
     };
   });
 }
 
 // Busca direta da API — filtra por data do mês, sem filtro de status
 // (o filtro de status ignora createdAfter na API do Anymarket)
+var PED_ESTADOS_MAP = {
+  'acre':'AC','alagoas':'AL','amapa':'AP','amazonas':'AM','bahia':'BA',
+  'ceara':'CE','distrito federal':'DF','espirito santo':'ES','goias':'GO',
+  'maranhao':'MA','mato grosso':'MT','mato grosso do sul':'MS','minas gerais':'MG',
+  'para':'PA','paraiba':'PB','parana':'PR','pernambuco':'PE','piaui':'PI',
+  'rio de janeiro':'RJ','rio grande do norte':'RN','rio grande do sul':'RS',
+  'rondonia':'RO','roraima':'RR','santa catarina':'SC','sao paulo':'SP',
+  'sergipe':'SE','tocantins':'TO'
+};
+function pedNormalizarEstado(est) {
+  if (!est || est === '-') return '-';
+  var s = est.trim();
+  if (s.length === 2) return s.toUpperCase();
+  var key = s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  return PED_ESTADOS_MAP[key] || s.toUpperCase().substring(0,2);
+}
+
 function pedMontarItem(o, stNorm) {
+  // DEBUG TEMPORÁRIO — remover após identificar campos
+  if (!window._pedDebugDone && o) {
+    window._pedDebugDone = true;
+    console.log('[PED DEBUG] Objeto bruto:', JSON.stringify(o, null, 2));
+    console.log('[PED DEBUG] Campos shipping:', o.shipping);
+    console.log('[PED DEBUG] Campos logistic:', o.logistic);
+    console.log('[PED DEBUG] anymarketAddress:', o.anymarketAddress);
+    // Listar todas as chaves do objeto
+    console.log('[PED DEBUG] Chaves raiz:', Object.keys(o));
+  }
   const numero = o.marketPlaceNumber || o.marketPlaceId || String(o.id) || '-';
   var produto = '-', sku = '-', cliente = '-', cpf = '-';
   if (o.items && o.items[0]) {
@@ -6184,8 +6267,9 @@ function pedMontarItem(o, stNorm) {
     canal:   pedNomeCanal(o.marketPlace || ''),
     valor:   Number(o.total || o.gross || o.grossAmount || 0),
     status:  stNorm, data: o.createdAt || '',
-    estado:  (o.anymarketAddress && o.anymarketAddress.state) || '-',
-    peso:    Number((o.items && o.items[0] && o.items[0].weight) || 0)
+    estado:  pedNormalizarEstado((o.anymarketAddress && o.anymarketAddress.state) || '-'),
+    peso:    Number((o.items && o.items[0] && o.items[0].weight) || 0),
+    transportadora: (o.shipping && o.shipping.carrierName) || o.carrierName || o.shippingCarrier || '-'
   };
 }
 
@@ -6875,6 +6959,116 @@ pedRenderTabela=function(){
 };
 
 // Export CSV
+function pedSetView(view, btn) {
+  // Atualiza botões
+  document.querySelectorAll('.ped-view-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+
+  var listaSections = [
+    document.querySelector('.ped-toolbar'),
+    document.getElementById('pedCanais') && document.getElementById('pedCanais').previousElementSibling,
+    document.getElementById('pedCanais'),
+    document.querySelector('.ped-table-wrap')
+  ];
+  var pesoWrap = document.getElementById('ped-peso-wrap');
+  var toolbar  = document.querySelector('.ped-toolbar');
+
+  if (view === 'peso') {
+    // Esconde lista, mostra peso
+    listaSections.forEach(function(el) { if (el) el.style.display = 'none'; });
+    if (toolbar) toolbar.style.display = 'none';
+    pesoWrap.style.display = 'block';
+    pedRenderizarPesoEstado();
+  } else {
+    // Mostra lista, esconde peso
+    listaSections.forEach(function(el) { if (el) el.style.display = ''; });
+    if (toolbar) toolbar.style.display = '';
+    pesoWrap.style.display = 'none';
+  }
+}
+
+function pedRenderizarPesoEstado() {
+  var wrap = document.getElementById('ped-peso-tabela');
+  if (!wrap) return;
+
+  // Filtra só pedidos PAGOS/CONFIRMADOS
+  var pedidos = (PED_TODOS || []).filter(function(p) {
+    return p.status === 'PAGO' || p.status === 'CONFIRMADO';
+  });
+
+  if (!pedidos.length) {
+    wrap.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-secondary);font-size:13px;">Nenhum pedido pago encontrado. Sincronize primeiro.</div>';
+    return;
+  }
+
+  // Monta estrutura: transp → estado → {peso, qtd}
+  var matriz = {};
+  var estados = {};
+  var transportadoras = {};
+
+  pedidos.forEach(function(p) {
+    var transp = p.transportadora && p.transportadora !== '-' ? p.transportadora : 'Não informada';
+    var estado = p.estado && p.estado !== '-' ? p.estado : 'N/D';
+    var peso   = Number(p.peso) || 0;
+
+    if (!matriz[transp]) matriz[transp] = {};
+    if (!matriz[transp][estado]) matriz[transp][estado] = { peso: 0, qtd: 0 };
+    matriz[transp][estado].peso += peso;
+    matriz[transp][estado].qtd  += 1;
+    estados[estado] = true;
+    transportadoras[transp] = true;
+  });
+
+  // Ordena transportadoras por peso total desc
+  var listaTransp = Object.keys(transportadoras).sort(function(a, b) {
+    var pa = Object.values(matriz[a] || {}).reduce(function(s, v) { return s + v.peso; }, 0);
+    var pb = Object.values(matriz[b] || {}).reduce(function(s, v) { return s + v.peso; }, 0);
+    return pb - pa;
+  });
+
+  // Ordena estados por nome
+  var listaEstados = Object.keys(estados).sort();
+
+  function fmtKg(v) {
+    if (!v) return '<span class="peso-cell-zero">—</span>';
+    return '<span class="peso-cell-val">' + (v >= 1000 ? (v/1000).toFixed(1) + 't' : v.toFixed(1) + 'kg') + '</span>';
+  }
+
+  // Monta HTML da tabela
+  var html = '<div class="peso-table-wrap"><table class="peso-table"><thead><tr>';
+  html += '<th>Transportadora</th>';
+  listaEstados.forEach(function(uf) { html += '<th>' + uf + '</th>'; });
+  html += '<th class="peso-total-col">Total</th></tr></thead><tbody>';
+
+  var totalGeral = {};
+  listaEstados.forEach(function(uf) { totalGeral[uf] = 0; });
+  var totalTotal = 0;
+
+  listaTransp.forEach(function(transp) {
+    var totalTransp = 0;
+    html += '<tr><td>' + transp + '</td>';
+    listaEstados.forEach(function(uf) {
+      var v = (matriz[transp][uf] || {}).peso || 0;
+      totalGeral[uf] = (totalGeral[uf] || 0) + v;
+      totalTransp += v;
+      html += '<td>' + fmtKg(v) + '</td>';
+    });
+    totalTotal += totalTransp;
+    html += '<td class="peso-total-col">' + fmtKg(totalTransp) + '</td></tr>';
+  });
+
+  // Linha de totais
+  html += '<tr><td>TOTAL</td>';
+  listaEstados.forEach(function(uf) { html += '<td>' + fmtKg(totalGeral[uf]) + '</td>'; });
+  html += '<td class="peso-total-col">' + fmtKg(totalTotal) + '</td></tr>';
+
+  html += '</tbody></table></div>';
+  html += '<div style="margin-top:10px;font-size:11px;color:var(--text-secondary);">' + pedidos.length + ' pedidos pagos · período: ' + (document.getElementById('ped-btn-mes') && document.getElementById('ped-btn-mes').classList.contains('active') ? 'mês atual' : 'filtro aplicado') + '</div>';
+
+  wrap.innerHTML = html;
+  if (window.lucide) lucide.createIcons();
+}
+
 function exportarPedidosCSV() {
   if(!PED_TODOS||!PED_TODOS.length){pedShowToast('Sem pedidos para exportar.');return;}
   var d=pedFiltrarPeriodo(PED_TODOS);
