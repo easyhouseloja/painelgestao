@@ -3918,203 +3918,198 @@ function inicializarUI(email) {
 function iframeInjetarTema(iframe) {
   try {
     var doc = iframe.contentDocument || iframe.contentWindow.document;
-    if (!doc || !doc.head) return false;
-
-    var old = doc.getElementById('eh-theme-inject');
-    if (old) old.remove();
+    if (!doc || !doc.head || !doc.body) return false;
 
     var isLight = document.body.classList.contains('light-mode');
+
+    // ── 1. CSS base (variáveis + regras por classe/tag) ─────────────────────
+    var old = doc.getElementById('eh-theme-inject');
+    if (old) old.remove();
     var style = doc.createElement('style');
     style.id = 'eh-theme-inject';
     style.textContent = isLight ? `
-      /* ── EH LIGHT MODE — injetado pelo pai ── */
-
-      /* Variáveis CSS */
       :root {
         --bg-deep:#f2f2f2 !important; --bg-panel:#e8e8e8 !important;
         --bg-card:#ffffff !important; --border:rgba(0,0,0,0.10) !important;
         --text-primary:#111111 !important; --text-secondary:#555555 !important;
-        --color-bg: #f2f2f2 !important;
       }
-
-      /* Transição suave em tudo */
       *, *::before, *::after {
-        transition: background-color 0.25s ease, color 0.2s ease,
-                    border-color 0.2s ease, box-shadow 0.2s ease !important;
+        transition: background-color 0.25s ease, color 0.2s ease, border-color 0.2s ease !important;
+      }
+      html, body { background:#f2f2f2 !important; color:#111111 !important; }
+
+      /* estrutura */
+      .page,.wrapper,.container,.main,main,#app,#root,.dashboard,.content,.layout,.inner,
+      .dash-body,.report,.report-body,.section,.section-body {
+        background:#f2f2f2 !important; color:#111111 !important;
       }
 
-      /* ── FUNDO GERAL ── */
-      html, body, .page, .wrapper, .container, main, #app, #root, #main, .main,
-      .dashboard, .dash, .content, .layout, .inner {
-        background: #f2f2f2 !important;
-        color: #111111 !important;
+      /* cards por classe */
+      .card,.kpi-card,.kpi,.metric,.panel,.box,.block,.tile,.stat,.stat-card,
+      .info-card,.data-card,.summary-card,.notice,.alert-box,.highlight,.item,.row-item,
+      .product-row,.alert-item,.detail-block,.section-card,.chart-card,.chart-box,
+      .performance-row,.month-row,.bar-row,.carrier-row,.table-section {
+        background:#ffffff !important; border-color:rgba(0,0,0,0.09) !important;
+        color:#111111 !important;
       }
 
-      /* ── CARDS / PAINÉIS ESCUROS ── */
-      /* Por classe */
-      .card, .kpi-card, .kpi, .metric, .panel, .box, .block, .tile,
-      .stat, .stat-card, .info-card, .data-card, .summary-card,
-      .notice, .alert-box, .highlight,
-      [class*="-card"], [class*="card-"], [class*="-panel"],
-      [class*="-box"], [class*="-tile"], [class*="-metric"],
-      [class*="-kpi"], [class*="-stat"] {
-        background: #ffffff !important;
-        border-color: rgba(0,0,0,0.09) !important;
-        color: #111111 !important;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+      /* header/nav */
+      header,nav,.header,.topbar,.navbar,.nav,.sidebar,.statusbar,.ticker,
+      .breadcrumb,.tab-bar,.nav-bar,.page-header,.dash-header,.report-header,
+      .filter-bar,.toolbar,.controls {
+        background:rgba(232,232,232,0.97) !important;
+        border-color:rgba(0,0,0,0.10) !important; color:#111111 !important;
       }
 
-      /* Por background inline escuro — cobre hardcoded hex e rgba escuros */
-      [style*="background:#000"], [style*="background: #000"],
-      [style*="background:#0a0a0a"], [style*="background: #0a0a0a"],
-      [style*="background:#0d0d0d"], [style*="background: #0d0d0d"],
-      [style*="background:#0f0f0f"], [style*="background: #0f0f0f"],
-      [style*="background:#101010"], [style*="background: #101010"],
-      [style*="background:#111"], [style*="background: #111"],
-      [style*="background:#111111"], [style*="background: #111111"],
-      [style*="background:#121212"], [style*="background: #121212"],
-      [style*="background:#141414"], [style*="background: #141414"],
-      [style*="background:#161616"], [style*="background: #161616"],
-      [style*="background:#181818"], [style*="background: #181818"],
-      [style*="background:#1a1a1a"], [style*="background: #1a1a1a"],
-      [style*="background:#1c1c1c"], [style*="background: #1c1c1c"],
-      [style*="background:#1e1e1e"], [style*="background: #1e1e1e"],
-      [style*="background:#202020"], [style*="background: #202020"],
-      [style*="background:#222"], [style*="background: #222"],
-      [style*="background:#222222"], [style*="background: #222222"],
-      [style*="background:#242424"], [style*="background: #242424"],
-      [style*="background:#262626"], [style*="background: #262626"],
-      [style*="background:#282828"], [style*="background: #282828"],
-      [style*="background:#2a2a2a"], [style*="background: #2a2a2a"],
-      [style*="background:#2c2c2c"], [style*="background: #2c2c2c"],
-      [style*="background:#2d2d2d"], [style*="background: #2d2d2d"],
-      [style*="background:#333"], [style*="background: #333"],
-      [style*="background:#333333"], [style*="background: #333333"],
-      [style*="background:rgb(10,10,10)"], [style*="background:rgb(15,15,15)"],
-      [style*="background:rgb(16,16,16)"], [style*="background:rgb(18,18,18)"],
-      [style*="background:rgba(0,0,0,0.8)"], [style*="background:rgba(0,0,0,0.85)"],
-      [style*="background:rgba(0,0,0,0.9)"], [style*="background:rgba(0,0,0,0.95)"],
-      [style*="background:rgba(255,255,255,0.03)"], [style*="background:rgba(255,255,255,0.04)"],
-      [style*="background:rgba(255,255,255,0.05)"], [style*="background:rgba(255,255,255,0.06)"],
-      [style*="background:rgba(255,255,255,0.07)"], [style*="background:rgba(255,255,255,0.08)"] {
-        background: #ffffff !important;
-        border-color: rgba(0,0,0,0.09) !important;
-        color: #111111 !important;
-      }
+      /* tabs */
+      .tab,.pill,.chip { background:rgba(0,0,0,0.05) !important; color:#333 !important; }
+      .tab.active,.tab.selected,.tab-active { background:#fff !important; color:#111 !important; }
 
-      /* ── HEADER / NAV / TOPBAR ── */
-      header, nav, .header, .topbar, .navbar, .nav, .sidebar,
-      .statusbar, .ticker, .breadcrumb, .tabs, .tab-bar,
-      [class*="header"], [class*="topbar"], [class*="navbar"],
-      [class*="sidebar"], [class*="-nav"] {
-        background: rgba(235,235,235,0.97) !important;
-        border-color: rgba(0,0,0,0.10) !important;
-        color: #111111 !important;
-      }
+      /* tabelas */
+      table { border-color:rgba(0,0,0,0.08) !important; }
+      thead tr,th { background:#ebebeb !important; color:#333 !important; border-color:rgba(0,0,0,0.10) !important; }
+      tbody tr { border-color:rgba(0,0,0,0.06) !important; }
+      tbody tr:hover td { background:rgba(0,0,0,0.03) !important; }
+      td { color:#111111 !important; border-color:rgba(0,0,0,0.06) !important; }
 
-      /* ── TABS / PILLS ── */
-      .tab, .pill, .chip, .badge-tab,
-      [class*="-tab"]:not([class*="tab-content"]),
-      [class*="-pill"], [class*="-chip"] {
-        background: rgba(0,0,0,0.05) !important;
-        color: #333333 !important;
-        border-color: rgba(0,0,0,0.10) !important;
-      }
-      .tab.active, .tab-active, .tab.selected,
-      [class*="-tab"].active, [class*="-tab"].selected {
-        background: #ffffff !important;
-        color: #111111 !important;
-        border-bottom-color: currentColor !important;
-      }
+      /* inputs */
+      input,select,textarea { background:#fff !important; color:#111 !important; border-color:rgba(0,0,0,0.15) !important; }
 
-      /* ── TEXTOS ── */
-      /* Texto branco/claro hardcoded */
-      [style*="color:#fff"], [style*="color: #fff"],
-      [style*="color:#ffffff"], [style*="color: #ffffff"],
-      [style*="color:#f5f5f5"], [style*="color: #f5f5f5"],
-      [style*="color:#f0f0f0"], [style*="color: #f0f0f0"],
-      [style*="color:#eeeeee"], [style*="color: #eeeeee"],
-      [style*="color:#e0e0e0"], [style*="color: #e0e0e0"],
-      [style*="color:#f5f0ee"], [style*="color: #f5f0ee"],
-      [style*="color:rgba(255,255,255,0.9)"], [style*="color:rgba(255,255,255,1)"],
-      [style*="color:white"], [style*="color: white"] {
-        color: #111111 !important;
-      }
-      /* Texto cinza médio hardcoded (secundário) */
-      [style*="color:#999"], [style*="color:#aaa"], [style*="color:#bbb"],
-      [style*="color:#ccc"], [style*="color:#7a7470"],
-      [style*="color:rgba(255,255,255,0.4)"], [style*="color:rgba(255,255,255,0.5)"],
-      [style*="color:rgba(255,255,255,0.6)"], [style*="color:rgba(255,255,255,0.7)"] {
-        color: #555555 !important;
-      }
-
-      /* ── TABELAS ── */
-      table { border-color: rgba(0,0,0,0.08) !important; }
-      thead tr, th {
-        background: #eeeeee !important;
-        color: #333333 !important;
-        border-color: rgba(0,0,0,0.10) !important;
-      }
-      tbody tr { border-color: rgba(0,0,0,0.06) !important; }
-      tbody tr:hover td { background: rgba(0,0,0,0.03) !important; }
-      td { color: #111111 !important; border-color: rgba(0,0,0,0.06) !important; }
-
-      /* ── INPUTS / SELECTS ── */
-      input, select, textarea, button:not([class*="btn-"]):not([class*="-btn"]) {
-        background: #ffffff !important;
-        color: #111111 !important;
-        border-color: rgba(0,0,0,0.15) !important;
-      }
-
-      /* ── BORDAS BRANCAS INLINE ── */
-      [style*="border:1px solid rgba(255,255,255"],
-      [style*="border: 1px solid rgba(255,255,255"],
-      [style*="border-bottom:1px solid rgba(255,255,255"],
-      [style*="border-top:1px solid rgba(255,255,255"] {
-        border-color: rgba(0,0,0,0.09) !important;
-      }
-
-      /* ── BARRAS DE PROGRESSO ── */
-      .progress-bg, .progress-track, [class*="progress-bg"],
-      [style*="background:rgba(255,255,255,0.1)"],
-      [style*="background:rgba(255,255,255,0.08)"],
-      [style*="background:rgba(255,255,255,0.12)"] {
-        background: rgba(0,0,0,0.10) !important;
-      }
-
-      /* ── SCROLLBAR ── */
-      ::-webkit-scrollbar { background: #e0e0e0 !important; }
-      ::-webkit-scrollbar-thumb { background: #b0b0b0 !important; border-radius: 4px; }
-
-      /* ── SEÇÕES ESCURAS ESPECIAIS (ex: bloco grande de SLA) ── */
-      /* Mantém accent colors (verde, vermelho, amarelo) — só clareia o fundo */
-      [style*="background:#0d1117"], [style*="background:#0b0e14"],
-      [style*="background:#0c0f18"], [style*="background:#10131a"],
-      [style*="background:#0e1320"], [style*="background:#12172b"],
-      [style*="background:linear-gradient"] {
-        background: #f0f0f0 !important;
-      }
-
-      /* ── OVERLAYS / MODAIS ── */
-      .overlay, .modal, .modal-content, .modal-body,
-      [class*="-overlay"], [class*="-modal"] {
-        background: #ffffff !important;
-        color: #111111 !important;
-      }
-
+      /* scrollbar */
+      ::-webkit-scrollbar { background:#e0e0e0 !important; }
+      ::-webkit-scrollbar-thumb { background:#b8b8b8 !important; border-radius:4px; }
     ` : `
-      /* ── EH DARK MODE — restaurado pelo pai ── */
       :root {
-        --bg-deep:#000000 !important; --bg-panel:#0a0a0a !important;
+        --bg-deep:#000 !important; --bg-panel:#0a0a0a !important;
         --bg-card:#101010 !important; --border:rgba(255,255,255,0.07) !important;
         --text-primary:#f5f0ee !important; --text-secondary:#7a7470 !important;
       }
       *, *::before, *::after {
-        transition: background-color 0.25s ease, color 0.2s ease,
-                    border-color 0.2s ease !important;
+        transition: background-color 0.25s ease, color 0.2s ease, border-color 0.2s ease !important;
       }
     `;
     doc.head.appendChild(style);
+
+    // ── 2. Varredura DOM — corrige estilos inline diretamente ────────────────
+    // Só faz no light mode
+    if (!isLight) return true;
+
+    // Cores de acento que NÃO devem ser alteradas
+    var KEEP_COLORS = [
+      '#cc2828','#e03535','#ff4444','#ff6b6b',  // vermelhos
+      '#d4a017','#f0a500','#f5a623','#ffc107',  // ambers
+      '#1fbd72','#22c55e','#16a34a','#15803d',  // verdes
+      '#2d7dd2','#3b82f6','#2563eb',            // azuis
+      '#9c6fff','#8b5cf6','#7c3aed',            // roxos
+      '#f0116a','#e91e8c',                       // pinks
+      '#d95e10','#ea580c',                       // laranjas
+      '#0891b2','#06b6d4',                       // teals
+    ];
+
+    // Função que checa se uma cor é escura (retorna true = deve clarear)
+    function isEscuro(bg) {
+      if (!bg || bg === 'transparent' || bg === 'none') return false;
+      // rgba/rgb
+      var m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (m) {
+        var r=+m[1],g=+m[2],b=+m[3];
+        var lum = (0.299*r + 0.587*g + 0.114*b);
+        return lum < 80; // luminância baixa = escuro
+      }
+      return false;
+    }
+
+    // Função que checa se uma cor de texto é clara demais (invisível no fundo claro)
+    function isTextoClaroFixo(cor) {
+      if (!cor) return false;
+      var c = cor.replace(/\s/g,'').toLowerCase();
+      var claros = ['#fff','#ffffff','#f5f5f5','#f0f0f0','#eeeeee',
+                    '#e0e0e0','#f5f0ee','#ddd','#d0d0d0','white'];
+      for (var i=0;i<claros.length;i++) if (c.indexOf(claros[i])!==-1) return true;
+      // rgba branco com alta opacidade
+      var m = c.match(/rgba?\(255,255,255,([\d.]+)\)/);
+      if (m && parseFloat(m[1]) > 0.55) return true;
+      return false;
+    }
+
+    function isTextoCinzaClaro(cor) {
+      if (!cor) return false;
+      var c = cor.replace(/\s/g,'').toLowerCase();
+      var cinzas = ['#999','#aaa','#bbb','#ccc','#7a7470','#888','#9a9a9a'];
+      for (var i=0;i<cinzas.length;i++) if (c.indexOf(cinzas[i])!==-1) return true;
+      var m = c.match(/rgba?\(255,255,255,([\d.]+)\)/);
+      if (m) { var op=parseFloat(m[1]); if (op>0.2 && op<=0.55) return true; }
+      return false;
+    }
+
+    // Determina bg claro para um elemento (card vs fundo)
+    function bgClaro(el) {
+      var tag = (el.tagName||'').toLowerCase();
+      if (tag==='header'||tag==='nav'||el.classList.contains('header')||
+          el.classList.contains('topbar')||el.classList.contains('navbar')||
+          el.classList.contains('nav')||el.classList.contains('tab-bar')||
+          el.classList.contains('toolbar')||el.classList.contains('filter-bar')) {
+        return '#e8e8e8';
+      }
+      if (tag==='body'||tag==='html'||tag==='main') return '#f2f2f2';
+      return '#ffffff';
+    }
+
+    // Varre todos os elementos do documento filho
+    var els = doc.querySelectorAll('*');
+    els.forEach(function(el) {
+      var s = el.style;
+      if (!s) return;
+
+      // ── Background ──
+      var bg = s.background || s.backgroundColor || '';
+      if (bg && bg !== 'transparent' && bg !== 'none') {
+        var computed = doc.defaultView ? doc.defaultView.getComputedStyle(el).backgroundColor : '';
+        if (isEscuro(bg) || isEscuro(computed)) {
+          s.setProperty('background', bgClaro(el), 'important');
+          s.setProperty('background-color', bgClaro(el), 'important');
+          // Texto escuro quando fundo clareia
+          if (!s.color || isTextoClaroFixo(s.color)) {
+            s.setProperty('color', '#111111', 'important');
+          }
+        }
+        // rgba muito transparente (ex: 0.03~0.08) usados como fundo de card
+        var mRgba = bg.replace(/\s/g,'').match(/rgba?\((\d+),(\d+),(\d+),([\d.]+)\)/);
+        if (mRgba) {
+          var r=+mRgba[1],g=+mRgba[2],b=+mRgba[3],a=+mRgba[4];
+          if (r>200&&g>200&&b>200&&a<0.15) { // rgba(255,255,255,0.03~0.12) — fundo card escuro
+            s.setProperty('background', '#ffffff', 'important');
+          }
+          if (r<30&&g<30&&b<30&&a>0.6) { // rgba(0,0,0,0.7+) — fundo muito escuro
+            s.setProperty('background', bgClaro(el), 'important');
+          }
+        }
+      }
+
+      // ── Cor do texto ──
+      var cor = s.color || '';
+      if (cor) {
+        if (isTextoClaroFixo(cor)) {
+          // Só substitui se NÃO for uma cor de acento protegida
+          var protegida = false;
+          for (var k=0;k<KEEP_COLORS.length;k++) {
+            if (cor.toLowerCase().indexOf(KEEP_COLORS[k].toLowerCase()) !== -1) {
+              protegida = true; break;
+            }
+          }
+          if (!protegida) s.setProperty('color', '#111111', 'important');
+        } else if (isTextoCinzaClaro(cor)) {
+          s.setProperty('color', '#555555', 'important');
+        }
+      }
+
+      // ── Bordas brancas ──
+      var bc = s.borderColor || s.borderTopColor || s.borderBottomColor || '';
+      if (bc && bc.replace(/\s/g,'').match(/rgba?\(255,255,255/)) {
+        s.setProperty('border-color', 'rgba(0,0,0,0.09)', 'important');
+      }
+    });
+
     return true;
   } catch(e) { return false; }
 }
@@ -4133,8 +4128,10 @@ function iframeAbrir(url, titulo) {
   // Injeta tema ao carregar (sempre, desktop e mobile)
   var _onloadBase = function() {
     iframeInjetarTema(iframe);
-    setTimeout(function(){ iframeInjetarTema(iframe); }, 400);
-    setTimeout(function(){ iframeInjetarTema(iframe); }, 1200);
+    setTimeout(function(){ iframeInjetarTema(iframe); }, 300);
+    setTimeout(function(){ iframeInjetarTema(iframe); }, 800);
+    setTimeout(function(){ iframeInjetarTema(iframe); }, 1800);
+    setTimeout(function(){ iframeInjetarTema(iframe); }, 3500);
   };
 
   // Injeta CSS responsivo no iframe ao carregar (só mobile)
