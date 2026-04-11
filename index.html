@@ -1962,6 +1962,46 @@ body::before {
   box-shadow: none;
 }
 
+
+/* ── HAMBÚRGUER ── */
+.hbg-wrap { position: relative; display: none; align-items: center; }
+.hbg-wrap > .hbg-dropdown { display: none !important; }
+.hbg-wrap > .hbg-dropdown.open { display: flex !important; }
+.hbg-btn {
+  width: 38px; height: 38px; border-radius: 10px;
+  border: 1px solid var(--border); background: rgba(255,255,255,0.03);
+  color: var(--text-secondary); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.hbg-btn:hover { border-color: rgba(156,111,255,0.5); color: var(--text-primary); background: rgba(156,111,255,0.08); }
+.hbg-dropdown {
+  position: absolute; top: calc(100% + 8px); right: 0; width: 220px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 8px; display: none; flex-direction: column; gap: 4px;
+  z-index: 999; box-shadow: 0 8px 32px rgba(0,0,0,0.35); backdrop-filter: blur(12px);
+}
+.hbg-dropdown.open { display: flex; }
+.hbg-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border-radius: 8px; border: none; background: transparent;
+  color: var(--text-secondary); font-size: 13px; font-weight: 600;
+  cursor: pointer; text-align: left; width: 100%;
+  transition: background 0.2s, color 0.2s; font-family: 'DM Sans', sans-serif;
+}
+.hbg-item:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
+.hbg-item.amber { color: var(--accent-amber); }
+.hbg-item.amber:hover { background: rgba(245,158,11,0.1); }
+.hbg-item.green { color: var(--accent-green); }
+.hbg-item.green:hover { background: rgba(31,189,114,0.1); }
+.hbg-item.purple { color: var(--accent-purple); }
+.hbg-item.purple:hover { background: rgba(156,111,255,0.1); }
+.hbg-sep { height: 1px; background: var(--border); margin: 4px 8px; }
+
+/* Logs: ícone only */
+#btnLogs.icon-only { padding: 0; width: 38px; height: 38px; justify-content: center; }
+#btnLogs.icon-only span, #btnLogs.icon-only .logs-text { display: none; }
+
 /* ── NOTIFICATIONS ── */
 .notif-wrap {
   position: relative;
@@ -1969,8 +2009,8 @@ body::before {
 
 .notif-btn {
   position: relative;
-  width: 38px; height: 38px;
-  border-radius: 10px;
+  width: 36px; height: 36px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background: rgba(255,255,255,0.03);
   color: var(--text-secondary);
@@ -2381,7 +2421,6 @@ body.light-mode .notif-item.unread { background: rgba(204,40,40,0.04); }
 
   /* DATE BAR */
   .date-bar { font-size: 10px !important; padding: 5px 16px !important; }
-  #btnFinanceiroBar, #btnTVModeBar { display: none !important; }
 
   /* CARDS */
   .main { padding: 16px !important; }
@@ -2514,8 +2553,11 @@ body.light-mode .notif-item.unread { background: rgba(204,40,40,0.04); }
 .btn-reputacao {
   display: none;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  justify-content: center;
+  gap: 0;
+  padding: 0;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   border: 1px solid rgba(245,158,11,0.45);
   background: rgba(245,158,11,0.08);
@@ -3371,14 +3413,13 @@ body.light-mode #iframe-page-title {
         <i class="icon-sun" data-lucide="sun" style="width:16px;height:16px;"></i>
         <i class="icon-moon" data-lucide="moon" style="width:16px;height:16px;"></i>
       </button>
-      <!-- REPUTAÇÃO -->
+      <!-- REPUTAÇÃO (só Easy House) -->
       <button class="btn-reputacao" id="btnReputacao"
         onclick="iframeAbrir('https://easyhouseloja.github.io/painelgestao/reputacao.html','Reputação')"
-        title="Dashboard de Reputação">
-        <i data-lucide="star" style="width:13px;height:13px"></i>
-        Reputação
+        title="Reputação">
+        <i data-lucide="star" style="width:16px;height:16px"></i>
       </button>
-      <!-- NOTIFICAÇÕES -->
+      <!-- SINO (só Easy House) -->
       <div class="notif-wrap" id="notifWrap">
         <button class="notif-btn" id="notifBtn">
           <i data-lucide="bell" style="width:16px;height:16px"></i>
@@ -3389,21 +3430,8 @@ body.light-mode #iframe-page-title {
           <div class="notif-list" id="notifList"></div>
         </div>
       </div>
-      <!-- STATUS + LOGS + MURAL -->
-      <button id="btnHealthStatus" class="btn-health" onclick="abrirHealth()" title="Status dos Serviços">
-        <div class="health-dot"></div>
-        <span id="healthDotLabel">Sistemas OK</span>
-      </button>
-      <button class="btn-logs" id="btnLogs" onclick="abrirLogs()">
-        <i data-lucide="activity" style="width:13px;height:13px"></i>
-        Logs
-      </button>
-      <button class="btn-logs btn-mural" id="btnMural" onclick="abrirMural()" style="display:none">
-        <i data-lucide="message-square" style="width:13px;height:13px"></i>
-        Mural
-        <span class="mural-badge" id="muralBadge" style="display:none">0</span>
-      </button>
-      <!-- Receita do Mês e TV Mode ficam na barra de data (btnFinanceiroBar / btnTVModeBar) -->
+
+      <!-- USER -->
       <div class="user-greeting" id="userGreeting" style="display:none">
         <div class="user-avatar" id="userAvatar"></div>
         <div class="user-info">
@@ -3411,10 +3439,35 @@ body.light-mode #iframe-page-title {
           <span class="user-name" id="userName"></span>
         </div>
       </div>
+      <!-- SAIR -->
       <button class="header-btn header-btn-logout" id="btnLogout" style="display:none">
         <i data-lucide="log-out" style="width:14px;height:14px"></i>
         Sair
       </button>
+      <!-- HAMBÚRGUER: Logs + Sistemas OK -->
+      <div class="hbg-wrap" id="hbgWrap">
+        <button class="hbg-btn" id="hbgBtn" title="Mais opções">
+          <i data-lucide="menu" style="width:18px;height:18px"></i>
+        </button>
+        <div class="hbg-dropdown" id="hbgDropdown">
+          <!-- Mural -->
+          <button class="hbg-item green" id="hbgMural" onclick="abrirMural(); fecharHbg();" style="display:none">
+            <i data-lucide="message-square" style="width:15px;height:15px"></i>
+            <span>Mural</span>
+            <span class="mural-badge" id="muralBadge" style="display:none;margin-left:4px;">0</span>
+          </button>
+          <!-- Logs (só usuários autorizados) -->
+          <button class="hbg-item purple" id="hbgLogs" onclick="abrirLogs(); fecharHbg();" style="display:none">
+            <i data-lucide="activity" style="width:15px;height:15px"></i>
+            Logs
+          </button>
+          <!-- Sistemas OK / Atenção (todos os canais) -->
+          <button class="hbg-item green" id="hbgHealth" onclick="abrirHealth(); fecharHbg();">
+            <div style="width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 5px currentColor;flex-shrink:0;"></div>
+            <span id="hbgHealthLabel">Sistemas OK</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -3961,9 +4014,23 @@ function inicializarUI(email) {
   greet.style.display = 'flex';
   document.getElementById('btnLogout').style.display = 'flex';
 
-  // Logs de acesso (somente para usuários autorizados)
+  // Logs: mostrar no hambúrguer só para usuários autorizados
   const USUARIOS_LOGS = ['lucaslopes@grupolopas.com.br', 'comercial@lojaeasyhouse.com.br'];
-  document.getElementById('btnLogs').style.display = USUARIOS_LOGS.includes(email) ? 'flex' : 'none';
+  var hbgLogsEl = document.getElementById('hbgLogs');
+  if(hbgLogsEl) hbgLogsEl.style.display = USUARIOS_LOGS.includes(email) ? 'flex' : 'none';
+
+  // Mostrar todos os elementos do header direto aqui (mais confiável que o override)
+  var _hbg = document.getElementById('hbgWrap');
+  if(_hbg) _hbg.style.display = 'flex';
+  var _rep = document.getElementById('btnReputacao');
+  if(_rep) _rep.style.display = 'flex';
+  var _hbgMural = document.getElementById('hbgMural');
+  if(_hbgMural) _hbgMural.style.display = 'flex';
+  // Receita do Mês e TV Mode na barra de data
+  var _btnFin = document.getElementById('btnFinanceiroBar');
+  if(_btnFin) _btnFin.style.display = 'flex';
+  var _btnTV = document.getElementById('btnTVModeBar');
+  if(_btnTV) _btnTV.style.display = 'flex';
 
   // Log de acesso
   registrarAcesso(email);
@@ -5217,6 +5284,27 @@ function marcarCardAtivo() {
 }
 
 // ── BOTÃO SAIR ────────────────────────────────────────────────────────
+
+// ── HAMBÚRGUER ──────────────────────────────────────────────
+function fecharHbg() {
+  var d = document.getElementById('hbgDropdown');
+  if(d) d.classList.remove('open');
+}
+document.addEventListener('click', function(e){
+  var wrap = document.getElementById('hbgWrap');
+  if(wrap && !wrap.contains(e.target)) fecharHbg();
+});
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.getElementById('hbgBtn');
+  if(btn) btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    document.getElementById('hbgDropdown').classList.toggle('open');
+  });
+});
+function _syncHbgHealth() {
+  // Noop — atualizarBotaoHealth atualiza o hambúrguer diretamente
+}
+
 function fazerLogout(motivo) {
   sessionStorage.clear();
   clearTimeout(timerInatividade);
@@ -5279,7 +5367,11 @@ if (savedSession) {
       inicializarUI(email);
       resetarTimer();
     }
-  } catch(e) {}
+  } catch(e) {
+    // fallback: sessão existe mas JSON quebrou — mostrar elementos mínimos
+    var _hbg2 = document.getElementById('hbgWrap');
+    if(_hbg2) _hbg2.style.display = 'flex';
+  }
 }
 
 // ── PAGE VISIBILITY: pausar animações quando fora de foco ───────────────
@@ -5373,11 +5465,11 @@ function switchChannel(ch) {
     }
   });
 
-  // Botão reputação: só no painel Easy House (3P)
+  // Reputação e Sino: só Easy House (3P)
   const rep = document.getElementById('btnReputacao');
-  if(rep){
-    rep.style.display = is3p ? 'flex' : 'none';
-  }
+  if(rep) rep.style.display = is3p ? 'flex' : 'none';
+  const notifWrapSw = document.getElementById('notifWrap');
+  if(notifWrapSw) notifWrapSw.style.display = is3p ? '' : 'none';
 
   const eyebrow = document.querySelector('.header-eyebrow');
   const title = document.querySelector('.header-title');
@@ -7424,11 +7516,17 @@ function renderHealthServices(){
   }).join(''); lucide.createIcons();
 }
 function atualizarBotaoHealth(){
-  var btn=document.getElementById('btnHealthStatus'); if(!btn) return;
   var v=Object.values(_healthResults);
-  if(v.some(function(r){return r.status==='error';})){btn.className='btn-health err';btn.style.display='flex';document.getElementById('healthDotLabel').textContent='Problema';}
-  else if(v.some(function(r){return r.status==='warn';})){btn.className='btn-health warn';btn.style.display='flex';document.getElementById('healthDotLabel').textContent='Atenção';}
-  else{btn.className='btn-health';btn.style.display='flex';document.getElementById('healthDotLabel').textContent='Sistemas OK';}
+  var dst=document.getElementById('hbgHealth');
+  var hbl=document.getElementById('hbgHealthLabel');
+  if(!dst || !hbl) return;
+  if(v.some(function(r){return r.status==='error';})){
+    dst.className='hbg-item'; dst.style.color='#e05555'; hbl.textContent='Problema';
+  } else if(v.some(function(r){return r.status==='warn';})){
+    dst.className='hbg-item amber'; dst.style.color=''; hbl.textContent='Atenção';
+  } else {
+    dst.className='hbg-item green'; dst.style.color=''; hbl.textContent='Sistemas OK';
+  }
 }
 
 // Historico Alertas
@@ -7651,17 +7749,22 @@ function renderTVMural(el){db.ref('mural').orderByChild('ts').limitToLast(4).onc
 
 // Ligar novos botoes apos login / ocultar no logout
 function mostrarBotoesUI() {
-  // Descobre canal ativo (default = 3p)
   var canalAtivo = sessionStorage.getItem('eh_canal_ativo') || '3p';
   var is3p = (canalAtivo === '3p');
-  ['btnHealthStatus','btnFinanceiroBar','btnTVModeBar'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='flex';});
-  // Reputação e Sino só aparecem no canal Easy House (3P)
+  // Receita e TV na barra de data
+  ['btnFinanceiroBar','btnTVModeBar'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='flex';});
+  // Reputação: só Easy House
   var rep = document.getElementById('btnReputacao');
   if(rep) rep.style.display = is3p ? 'flex' : 'none';
+  // Sino: só Easy House
   var notifWrap = document.getElementById('notifWrap');
   if(notifWrap) notifWrap.style.display = is3p ? '' : 'none';
-  var btnMural = document.getElementById('btnMural');
-  if(btnMural) btnMural.style.display='flex';
+  // Mural (no hambúrguer)
+  var hbgMural = document.getElementById('hbgMural');
+  if(hbgMural) hbgMural.style.display = 'flex';
+  // Hambúrguer: sempre visível após login
+  var hbg = document.getElementById('hbgWrap');
+  if(hbg) hbg.style.display = 'flex';
 }
 var _iniUIorig=inicializarUI;
 inicializarUI=function(email){
@@ -7675,7 +7778,9 @@ inicializarUI=function(email){
 var _logoutOrig=fazerLogout;
 fazerLogout=function(motivo){
   _logoutOrig(motivo);
-  ['btnHealthStatus','btnFinanceiroBar','btnTVModeBar','btnMural','btnReputacao'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['btnFinanceiroBar','btnTVModeBar','btnReputacao'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  var hbg = document.getElementById('hbgWrap'); if(hbg) hbg.style.display='none';
+  var notifWrap = document.getElementById('notifWrap'); if(notifWrap) notifWrap.style.display='none';
 };
 
 // Se já está logado ao voltar de outra página, mostra botões imediatamente
