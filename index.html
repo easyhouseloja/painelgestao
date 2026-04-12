@@ -1965,8 +1965,7 @@ body::before {
 
 /* ── HAMBÚRGUER ── */
 .hbg-wrap { position: relative; display: none; align-items: center; }
-.hbg-wrap > .hbg-dropdown { display: none !important; }
-.hbg-wrap > .hbg-dropdown.open { display: flex !important; }
+/* display controlado por opacity/pointer-events para animação suave */
 .hbg-btn {
   width: 38px; height: 38px; border-radius: 10px;
   border: 1px solid var(--border); background: rgba(255,255,255,0.03);
@@ -1978,10 +1977,9 @@ body::before {
 .hbg-dropdown {
   position: absolute; top: calc(100% + 8px); right: 0; width: 220px;
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-  padding: 8px; display: none; flex-direction: column; gap: 4px;
+  padding: 8px; display: flex; flex-direction: column; gap: 4px;
   z-index: 999; box-shadow: 0 8px 32px rgba(0,0,0,0.35); backdrop-filter: blur(12px);
 }
-.hbg-dropdown.open { display: flex; }
 .hbg-item {
   display: flex; align-items: center; gap: 10px; padding: 10px 12px;
   border-radius: 8px; border: none; background: transparent;
@@ -2001,6 +1999,129 @@ body::before {
 /* Logs: ícone only */
 #btnLogs.icon-only { padding: 0; width: 38px; height: 38px; justify-content: center; }
 #btnLogs.icon-only span, #btnLogs.icon-only .logs-text { display: none; }
+
+
+/* ── BADGE NO HAMBÚRGUER ── */
+.hbg-badge {
+  position: absolute;
+  top: -4px; right: -4px;
+  background: var(--accent-red);
+  color: white;
+  font-size: 9px; font-weight: 700;
+  min-width: 16px; height: 16px;
+  border-radius: 50%;
+  display: none; align-items: center; justify-content: center;
+  border: 2px solid var(--bg-panel);
+  animation: notifPulse 2s ease-in-out infinite;
+}
+.hbg-badge.visible { display: flex; }
+
+/* ── ANIMAÇÃO DROPDOWN HAMBÚRGUER ── */
+.hbg-dropdown {
+  transform-origin: top right;
+  transform: scale(0.92) translateY(-6px);
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+}
+.hbg-dropdown.open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── TOOLTIPS NOS BOTÕES DO HEADER ── */
+.eh-tooltip-wrap {
+  position: relative;
+}
+.eh-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+body.light-mode .eh-tooltip {
+  background: #1a1a1a;
+  color: #ffffff;
+  border-color: rgba(0,0,0,0.2);
+}
+.eh-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: var(--border);
+}
+.eh-tooltip-wrap:hover .eh-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── NOTIFICAÇÕES: agrupamento melhorado ── */
+.notif-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(8px);
+  background: rgba(15,15,15,0.9);
+  z-index: 1;
+}
+.notif-group-header.danger {
+  color: rgba(224,85,85,0.9);
+  background: rgba(204,40,40,0.08);
+}
+.notif-group-header.info {
+  color: rgba(156,111,255,0.8);
+  background: rgba(156,111,255,0.05);
+}
+.notif-group-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.notif-item {
+  border-left: 2px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.notif-item.unread { background: rgba(255,255,255,0.025); }
+.notif-item.notif-critico {
+  border-left-color: rgba(204,40,40,0.6);
+  background: rgba(204,40,40,0.04);
+}
+.notif-item.notif-critico:hover { background: rgba(204,40,40,0.07); }
+.notif-count-chip {
+  margin-left: auto;
+  background: rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 1px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  color: inherit;
+}
 
 /* ── NOTIFICATIONS ── */
 .notif-wrap {
@@ -3409,22 +3530,28 @@ body.light-mode #iframe-page-title {
 
     <div class="header-right">
       <!-- TEMA -->
-      <button id="btnThemeToggle" onclick="toggleTheme()" title="Alternar tema claro/escuro">
-        <i class="icon-sun" data-lucide="sun" style="width:16px;height:16px;"></i>
-        <i class="icon-moon" data-lucide="moon" style="width:16px;height:16px;"></i>
-      </button>
+      <div class="eh-tooltip-wrap">
+        <button id="btnThemeToggle" onclick="toggleTheme()">
+          <i class="icon-sun" data-lucide="sun" style="width:16px;height:16px;"></i>
+          <i class="icon-moon" data-lucide="moon" style="width:16px;height:16px;"></i>
+        </button>
+        <div class="eh-tooltip">Alternar tema</div>
+      </div>
       <!-- REPUTAÇÃO (só Easy House) -->
-      <button class="btn-reputacao" id="btnReputacao"
-        onclick="iframeAbrir('https://easyhouseloja.github.io/painelgestao/reputacao.html','Reputação')"
-        title="Reputação">
-        <i data-lucide="star" style="width:16px;height:16px"></i>
-      </button>
+      <div class="eh-tooltip-wrap">
+        <button class="btn-reputacao" id="btnReputacao"
+          onclick="iframeAbrir('https://easyhouseloja.github.io/painelgestao/reputacao.html','Reputação')">
+          <i data-lucide="star" style="width:16px;height:16px"></i>
+        </button>
+        <div class="eh-tooltip">Reputação</div>
+      </div>
       <!-- SINO (só Easy House) -->
-      <div class="notif-wrap" id="notifWrap">
+      <div class="notif-wrap eh-tooltip-wrap" id="notifWrap">
         <button class="notif-btn" id="notifBtn">
           <i data-lucide="bell" style="width:16px;height:16px"></i>
           <span class="notif-badge" id="notifBadge">6</span>
         </button>
+        <div class="eh-tooltip">Notificações</div>
         <div class="notif-dropdown" id="notifDropdown">
           <div class="notif-header"><span>Notificações</span><button class="notif-clear" id="notifClear">Limpar</button></div>
           <div class="notif-list" id="notifList"></div>
@@ -3446,8 +3573,9 @@ body.light-mode #iframe-page-title {
       </button>
       <!-- HAMBÚRGUER: Logs + Sistemas OK -->
       <div class="hbg-wrap" id="hbgWrap">
-        <button class="hbg-btn" id="hbgBtn" title="Mais opções">
+        <button class="hbg-btn" id="hbgBtn" title="Mais opções" style="position:relative;">
           <i data-lucide="menu" style="width:18px;height:18px"></i>
+          <span class="hbg-badge" id="hbgBadge"></span>
         </button>
         <div class="hbg-dropdown" id="hbgDropdown">
           <!-- Mural -->
@@ -5235,15 +5363,16 @@ function renderNotificacoes(notifs) {
   badge.textContent = naoLidas;
   badge.setAttribute('data-count', naoLidas);
 
+  // Atualizar badge no hambúrguer
+  _atualizarHbgBadge();
+
   if (notifs.length === 0) {
     list.innerHTML = '<div class="notif-empty">Nenhuma notificação</div>';
     return;
   }
 
-  if (notifs.length === 0) { list.innerHTML = '<div class="notif-empty">Nenhuma notificação</div>'; return; }
-
-  const criticos   = notifs.filter(n => n.critico);
-  const normais    = notifs.filter(n => !n.critico);
+  const criticos = notifs.filter(n => n.critico);
+  const normais  = notifs.filter(n => !n.critico);
 
   const renderItem = n => `
     <a class="notif-item ${n.lida ? '' : 'unread'} ${n.critico ? 'notif-critico' : ''}"
@@ -5259,14 +5388,39 @@ function renderNotificacoes(notifs) {
 
   let out = '';
   if (criticos.length > 0) {
-    out += `<div class="notif-section-label notif-label-danger">⚠️ Atenção necessária</div>`;
+    out += `<div class="notif-group-header danger">
+      <div class="notif-group-dot"></div>
+      Atenção necessária
+      <span class="notif-count-chip">${criticos.length}</span>
+    </div>`;
     out += criticos.map(renderItem).join('');
   }
   if (normais.length > 0) {
-    out += `<div class="notif-section-label">📋 Informativo</div>`;
+    out += `<div class="notif-group-header info">
+      <div class="notif-group-dot"></div>
+      Informativo
+      <span class="notif-count-chip">${normais.length}</span>
+    </div>`;
     out += normais.map(renderItem).join('');
   }
   list.innerHTML = out;
+}
+
+// Badge no hambúrguer: aparece quando tem Mural não lido ou notif crítica
+function _atualizarHbgBadge() {
+  var badge = document.getElementById('hbgBadge');
+  if(!badge) return;
+  var temCritico = (typeof NOTIFICACOES_HOJE !== 'undefined') &&
+    NOTIFICACOES_HOJE.some(function(n){ return n.critico && !n.lida; });
+  var muralBadgeEl = document.getElementById('muralBadge');
+  var temMural = muralBadgeEl && muralBadgeEl.style.display !== 'none' &&
+    parseInt(muralBadgeEl.textContent) > 0;
+  if(temCritico || temMural) {
+    badge.classList.add('visible');
+    badge.textContent = '';
+  } else {
+    badge.classList.remove('visible');
+  }
 }
 
 // ── CARD ATIVO ────────────────────────────────────────────────────────
@@ -7067,6 +7221,7 @@ function inicializarMural(email) {
     } else {
       badge.style.display = 'none';
     }
+    if(typeof _atualizarHbgBadge === 'function') _atualizarHbgBadge();
   });
 }
 
@@ -7078,6 +7233,7 @@ function abrirMural() {
   var agora = Date.now();
   localStorage.setItem('eh_mural_visto', String(agora));
   document.getElementById('muralBadge').style.display = 'none';
+  if(typeof _atualizarHbgBadge === 'function') _atualizarHbgBadge();
 
   // Cancelar listener anterior
   if (_muralListener) {
