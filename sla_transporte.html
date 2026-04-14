@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard SLA · Easy House · 13/04/2026</title>
+<title>Dashboard SLA · Easy House · 14/04/2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{--bg:#0b0f1a;--card:#161d2e;--border:#1f2d45;--accent:#E8461E;--green:#27ae60;--red:#e74c3c;--yellow:#e6a817;--orange:#e67e22;--purple:#5A1878;--focco:#1A4D0A;--text:#e8edf8;--muted:#8899bb}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px}
-nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0 20px;gap:0}
+nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0 20px}
 .nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:16px;white-space:nowrap}
 .nav-brand span{color:var(--accent)}
 .nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
@@ -48,7 +48,6 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(46,74,122,.1)}
 .bg{background:rgba(30,132,73,.15);color:#27ae60;border:1px solid rgba(30,132,73,.3)}
 .by{background:rgba(183,119,13,.15);color:#e6a817;border:1px solid rgba(183,119,13,.3)}
 .br{background:rgba(192,57,43,.15);color:#e74c3c;border:1px solid rgba(192,57,43,.3)}
-.bw{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
 .cc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px}
 .ct{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
@@ -56,7 +55,6 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(46,74,122,.1)}
 .bar-row{display:flex;align-items:center;gap:10px}
 .bar-w{background:rgba(255,255,255,.04);border-radius:4px;height:6px;flex:1}
 .bar-f{height:100%;border-radius:4px}
-/* prazos faixas */
 .f1{background:rgba(39,174,96,.18);color:#27ae60;font-weight:700;text-align:center;padding:8px 14px}
 .f2{background:rgba(230,168,23,.18);color:#e6a817;font-weight:700;text-align:center;padding:8px 14px}
 .f3{background:rgba(230,126,34,.18);color:#e67e22;font-weight:700;text-align:center;padding:8px 14px}
@@ -69,21 +67,20 @@ th.f3{background:rgba(230,126,34,.25);color:#e67e22;text-align:center}
 th.f4{background:rgba(231,76,60,.2);color:#e74c3c;text-align:center}
 th.f5{background:rgba(100,20,10,.35);color:#c0392b;text-align:center}
 th.ftot{background:rgba(46,74,122,.4);color:#88bbff;text-align:center}
-.leg{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:11px;align-items:center}
-.leg span{display:flex;align-items:center;gap:5px}
-.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
 .ibox{background:rgba(30,82,118,.1);border:1px solid rgba(30,82,118,.22);border-radius:8px;padding:9px 14px;font-size:11px;color:var(--muted);margin-bottom:16px}
 .fhdr{background:rgba(74,26,122,.3);border:1px solid rgba(74,26,122,.4);padding:12px 18px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#cc88ff;border-radius:10px 10px 0 0}
 .fhdr2{background:rgba(26,58,92,.3);border:1px solid rgba(26,58,92,.4);color:#88aaff;border-radius:10px 10px 0 0;padding:12px 18px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
 .twr0{border-radius:0 0 10px 10px;margin-bottom:16px}
 .dvdu{color:#27ae60;font-weight:700}.dvdd{color:#e74c3c;font-weight:700}.dvdn{color:var(--muted)}
-.fhdr-grn{background:rgba(1,77,10,.35);border:1px solid rgba(26,77,10,.4);color:#aade66;border-radius:10px 10px 0 0;padding:12px 18px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
 .pbar{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .pbl{font-size:12px;min-width:30px;font-family:'DM Mono',monospace}
 .pbw{flex:1;height:18px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden}
 .pbf{height:100%;border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
 .pbf span{font-size:10px;font-weight:700;color:#fff;font-family:'DM Mono',monospace}
-.pbv{font-family:'DM Mono',monospace;font-size:11px;min-width:85px;text-align:right}
+.pbv{font-family:'DM Mono',monospace;font-size:11px;min-width:88px;text-align:right}
+.leg{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:11px;align-items:center}
+.leg span{display:flex;align-items:center;gap:5px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
 </style></head><body>
 <nav>
   <div class="nav-brand">Easy <span>House</span></div>
@@ -98,76 +95,65 @@ th.ftot{background:rgba(46,74,122,.4);color:#88bbff;text-align:center}
     <button class="nav-tab" onclick="S('cnpj',this)">🚫 CNPJ</button>
     <button class="nav-tab" onclick="S('dvd',this)">📈 Dia vs Dia</button>
   </div>
-  <div class="nav-date">13 / 04 / 2026</div>
+  <div class="nav-date">14 / 04 / 2026</div>
 </nav>
 
-<!-- VISÃO GERAL -->
 <div id="pg-visao" class="page active">
-  <div class="ph"><h1>Dashboard de SLA</h1><p>Anymarket · Easy House · 13/04/2026 · Sem Correios · NF 78952 excluída SOUL (Correios)</p></div>
+  <div class="ph"><h1>Dashboard de SLA</h1><p>Anymarket · Easy House · 14/04/2026 · Sem Correios · NF 78952 excluída SOUL → Correios</p></div>
   <div class="row c4">
-    <div class="kpi"><div class="kpi-l">Pedidos na Base</div><div class="kpi-v mn">4.783</div><div class="kpi-s">base Anymarket 13/04</div></div>
-    <div class="kpi kg"><div class="kpi-l">Pedidos Faturados</div><div class="kpi-v mn" style="color:var(--green)">3.968</div><div class="kpi-s">com NF emitida</div></div>
-    <div class="kpi kg"><div class="kpi-l">No Prazo</div><div class="kpi-v mn" style="color:var(--green)">3.683</div><div class="kpi-s">dentro da entrega esperada</div></div>
-    <div class="kpi ka"><div class="kpi-l">Em Atraso</div><div class="kpi-v mn" style="color:var(--red)">285</div><div class="kpi-s">pedidos fora do prazo</div></div>
+    <div class="kpi"><div class="kpi-l">Pedidos na Base</div><div class="kpi-v mn">4.782</div><div class="kpi-s">base Anymarket</div></div>
+    <div class="kpi kg"><div class="kpi-l">Pedidos Faturados</div><div class="kpi-v mn" style="color:var(--green)">4.343</div><div class="kpi-s">com NF emitida</div></div>
+    <div class="kpi kg"><div class="kpi-l">No Prazo</div><div class="kpi-v mn" style="color:var(--green)">4.044</div><div class="kpi-s">dentro da entrega esperada</div></div>
+    <div class="kpi ka"><div class="kpi-l">Em Atraso</div><div class="kpi-v mn" style="color:var(--red)">299</div><div class="kpi-s">pedidos fora do prazo</div></div>
   </div>
   <div class="mega">
-    <div class="mega-l">Índice de SLA Geral — 13/04/2026</div>
-    <div class="mega-v" style="color:var(--red)">92,82%</div>
+    <div class="mega-l">Índice de SLA Geral — 14/04/2026</div>
+    <div class="mega-v" style="color:var(--red)">93,12%</div>
     <div class="mega-b" style="background:rgba(192,57,43,.15);color:var(--red);border:1px solid rgba(192,57,43,.3)">⚠️ Abaixo da meta de 95%</div>
-    <div class="meta">22 devoluções excluídas · 1 CNPJ · NF 78952 excluída SOUL → Correios · Semana com acúmulo de final de semana</div>
+    <div class="meta">25 devoluções excluídas · 1 CNPJ · NF 78952 excluída SOUL → Correios</div>
   </div>
   <div class="row c4">
-    <div class="kpi kw"><div class="kpi-l">Em Aberto (S/Fat.)</div><div class="kpi-v mn" style="color:var(--yellow)">791</div><div class="kpi-s">acúmulo fim de semana</div></div>
-    <div class="kpi kw"><div class="kpi-l">Valor em Aberto</div><div class="kpi-v mn" style="color:var(--yellow);font-size:19px">R$ 794.859</div><div class="kpi-s">2 críticos · 1 atenção</div></div>
-    <div class="kpi kt"><div class="kpi-l">Peso em Aberto</div><div class="kpi-v mn" style="color:#5dade2;font-size:19px">91.176 kg</div><div class="kpi-s">peso real por produto</div></div>
-    <div class="kpi kt"><div class="kpi-l">Prazo Médio NF</div><div class="kpi-v mn" style="color:var(--green)">1,4 d.u.</div><div class="kpi-s">média geral</div></div>
+    <div class="kpi kw"><div class="kpi-l">Em Aberto (S/Fat.)</div><div class="kpi-v mn" style="color:var(--yellow)">412</div><div class="kpi-s">pedidos sem NF</div></div>
+    <div class="kpi kw"><div class="kpi-l">Valor em Aberto</div><div class="kpi-v mn" style="color:var(--yellow);font-size:19px">R$ 432.556</div><div class="kpi-s">2 alertas (4-7d)</div></div>
+    <div class="kpi kt"><div class="kpi-l">Peso em Aberto</div><div class="kpi-v mn" style="color:#5dade2;font-size:19px">50.738 kg</div><div class="kpi-s">peso real por produto</div></div>
+    <div class="kpi kt"><div class="kpi-l">Prazo Médio NF</div><div class="kpi-v mn" style="color:var(--green)">1,3 d.u.</div><div class="kpi-s">média geral</div></div>
   </div>
   <div class="g2">
     <div class="cc"><div class="ct">📈 Histórico SLA — Março/Abril 2026</div><canvas id="cHist" height="190"></canvas></div>
     <div class="cc"><div class="ct">⏱ Atrasos por Faixa</div><canvas id="cFaixa" height="190"></canvas></div>
   </div>
-  <div class="sec">Resumo por Transportadora — SLA Ordenado Menor → Maior</div>
+  <div class="sec">Resumo por Transportadora — SLA Menor → Maior</div>
   <div class="tw ts"><table><thead><tr><th>Transportadora</th><th>Total NFs</th><th>No Prazo</th><th>Em Atraso</th><th>% SLA</th><th style="min-width:140px">Barra</th></tr></thead><tbody id="tb-tv"></tbody></table></div>
 </div>
 
-<!-- TRANSPORTADORAS -->
 <div id="pg-transp" class="page">
-  <div class="ph"><h1>SLA por Transportadora</h1><p>Ordenado do menor ao maior SLA · 13/04/2026 · Sem Correios</p></div>
+  <div class="ph"><h1>SLA por Transportadora</h1><p>Ordenado do menor ao maior SLA · 14/04/2026</p></div>
   <div class="g2">
     <div class="cc"><div class="ct">% SLA — Menor → Maior</div><canvas id="cTSla" height="300"></canvas></div>
-    <div class="cc"><div class="ct">Volume de Atrasos</div><canvas id="cTAt" height="300"></canvas></div>
+    <div class="cc"><div class="ct">Volume de Atrasos — Maior → Menor</div><canvas id="cTAt" height="300"></canvas></div>
   </div>
   <div class="tw ts"><table><thead><tr><th>Transportadora</th><th>UF</th><th>Total NFs</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th style="min-width:130px">Barra</th></tr></thead><tbody id="tb-tf"></tbody></table></div>
-
   <div class="sec" style="margin-top:28px">📅 Prazos a Vencer — NFs no Prazo por Janela de Vencimento</div>
   <div class="leg">
     <span><i class="dot" style="background:#27ae60"></i><span style="color:#27ae60">1-3 dias — urgente</span></span>
     <span><i class="dot" style="background:#e6a817"></i><span style="color:#e6a817">4-7 dias — alerta</span></span>
     <span><i class="dot" style="background:#e67e22"></i><span style="color:#e67e22">8-14 dias — atenção</span></span>
-    <span><i class="dot" style="background:#e74c3c"></i><span style="color:#e74c3c">15-30 dias — programado</span></span>
-    <span><i class="dot" style="background:#8b1a0e"></i><span style="color:#c0392b">30+ dias — confortável</span></span>
+    <span><i class="dot" style="background:#e74c3c"></i><span style="color:#e74c3c">15-30 dias</span></span>
+    <span><i class="dot" style="background:#8b1a0e"></i><span style="color:#c0392b">30+ dias</span></span>
   </div>
-  <div class="ibox">ℹ️ Quantidade de NFs <strong>ainda no prazo</strong> agrupadas pela janela até o vencimento. Use para priorizar contato com as transportadoras antes que entrem em atraso.</div>
-  <div class="tw ts">
-    <table><thead><tr>
-      <th>Transportadora</th>
-      <th class="f1">🟢 1-3 dias</th>
-      <th class="f2">🟡 4-7 dias</th>
-      <th class="f3">🟠 8-14 dias</th>
-      <th class="f4">🔴 15-30 dias</th>
-      <th class="f5">⚫ 30+ dias</th>
-      <th class="ftot">Total no Prazo</th>
-    </tr></thead><tbody id="tb-vcto"></tbody></table>
-  </div>
+  <div class="ibox">ℹ️ NFs <strong>ainda no prazo</strong> agrupadas pela janela até o vencimento — use para priorizar antes que entrem em atraso.</div>
+  <div class="tw ts"><table><thead><tr>
+    <th>Transportadora</th><th class="f1">🟢 1-3 dias</th><th class="f2">🟡 4-7 dias</th>
+    <th class="f3">🟠 8-14 dias</th><th class="f4">🔴 15-30 dias</th><th class="f5">⚫ 30+ dias</th><th class="ftot">Total no Prazo</th>
+  </tr></thead><tbody id="tb-vcto"></tbody></table></div>
   <div class="g2">
     <div class="cc"><div class="ct">🟢 NFs Vencendo em 1-3 dias</div><canvas id="cV13" height="260"></canvas></div>
     <div class="cc"><div class="ct">🟡 NFs Vencendo em 4-7 dias</div><canvas id="cV47" height="260"></canvas></div>
   </div>
 </div>
 
-<!-- MARKETPLACES -->
 <div id="pg-mkt" class="page">
-  <div class="ph"><h1>SLA por Marketplace</h1><p>13/04/2026</p></div>
+  <div class="ph"><h1>SLA por Marketplace</h1><p>14/04/2026</p></div>
   <div class="g2">
     <div class="cc"><div class="ct">% SLA por Canal</div><canvas id="cMSla" height="260"></canvas></div>
     <div class="cc"><div class="ct">Volume por Canal</div><canvas id="cMVol" height="260"></canvas></div>
@@ -175,33 +161,32 @@ th.ftot{background:rgba(46,74,122,.4);color:#88bbff;text-align:center}
   <div class="tw"><table><thead><tr><th>Marketplace</th><th>Total Fat.</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th>Barra</th></tr></thead><tbody id="tb-mkt"></tbody></table></div>
 </div>
 
-<!-- EM ABERTO -->
 <div id="pg-aberto" class="page">
-  <div class="ph"><h1>Em Aberto — Sem Faturamento</h1><p>13/04/2026 · 791 pedidos · acúmulo do final de semana 11-12/04</p></div>
-  <div class="ibox">ℹ️ Volume elevado (791) reflete acúmulo do final de semana. Há <strong>2 pedidos críticos (≤3d)</strong> e <strong>1 em atenção (8-14d)</strong>. Demais com prazo acima de 14 dias.</div>
+  <div class="ph"><h1>Em Aberto — Sem Faturamento</h1><p>14/04/2026 · 412 pedidos · 2 alertas (4-7d)</p></div>
+  <div class="ibox">ℹ️ <strong>2 pedidos em alerta</strong> (prazo 4-7 dias) — priorizar faturamento. Demais com prazo acima de 14 dias.</div>
   <div class="row c5">
-    <div class="kpi kw"><div class="kpi-l">Total em Aberto</div><div class="kpi-v mn" style="color:var(--yellow)">791</div></div>
-    <div class="kpi kw"><div class="kpi-l">Valor Total</div><div class="kpi-v mn" style="font-size:16px;color:var(--yellow)">R$ 794.859</div></div>
-    <div class="kpi ka"><div class="kpi-l">Críticos (≤3d)</div><div class="kpi-v mn" style="color:var(--red)">2</div></div>
-    <div class="kpi kg"><div class="kpi-l">Em Alerta (4-7d)</div><div class="kpi-v mn" style="color:var(--green)">0</div></div>
-    <div class="kpi kw"><div class="kpi-l">Em Atenção (8-14d)</div><div class="kpi-v mn" style="color:var(--yellow)">1</div></div>
+    <div class="kpi kw"><div class="kpi-l">Total em Aberto</div><div class="kpi-v mn" style="color:var(--yellow)">412</div></div>
+    <div class="kpi kw"><div class="kpi-l">Valor Total</div><div class="kpi-v mn" style="font-size:16px;color:var(--yellow)">R$ 432.556</div></div>
+    <div class="kpi kg"><div class="kpi-l">Vencidos+Críticos</div><div class="kpi-v mn" style="color:var(--green)">0</div></div>
+    <div class="kpi kw"><div class="kpi-l">Em Alerta (4-7d)</div><div class="kpi-v mn" style="color:var(--yellow)">2</div></div>
+    <div class="kpi kg"><div class="kpi-l">Em Atenção (8-14d)</div><div class="kpi-v mn" style="color:var(--green)">0</div></div>
   </div>
   <div class="sec">⚖️ Peso Real em Aberto por UF</div>
   <div class="row c3" style="margin-bottom:12px">
-    <div class="kpi" style="border-color:rgba(183,119,13,.4);background:rgba(183,119,13,.07)"><div class="kpi-l" style="color:var(--yellow)">Total KG Real</div><div class="kpi-v mn" style="color:var(--yellow);font-size:22px">91.176 kg</div><div class="kpi-s">peso real · 791 pedidos</div></div>
-    <div class="kpi" style="border-color:rgba(30,132,73,.3);background:rgba(30,132,73,.05)"><div class="kpi-l" style="color:#aade66">Minas Gerais · MG</div><div class="kpi-v mn" style="color:#aade66;font-size:22px">31.840 kg</div><div class="kpi-s">34,9% · 258 ped. · R$ 271.039</div></div>
-    <div class="kpi" style="border-color:rgba(183,119,13,.3);background:rgba(183,119,13,.05)"><div class="kpi-l" style="color:#e8a84f">São Paulo · SP</div><div class="kpi-v mn" style="color:#e8a84f;font-size:22px">30.040 kg</div><div class="kpi-s">32,9% · 280 ped. · R$ 271.009</div></div>
+    <div class="kpi" style="border-color:rgba(183,119,13,.4);background:rgba(183,119,13,.07)"><div class="kpi-l" style="color:var(--yellow)">Total KG Real</div><div class="kpi-v mn" style="color:var(--yellow);font-size:22px">50.738 kg</div><div class="kpi-s">412 pedidos</div></div>
+    <div class="kpi" style="border-color:rgba(30,132,73,.3);background:rgba(30,132,73,.05)"><div class="kpi-l" style="color:#aade66">Minas Gerais · MG</div><div class="kpi-v mn" style="color:#aade66;font-size:22px">22.608 kg</div><div class="kpi-s">44,6% · 178 ped. · R$ 186.990</div></div>
+    <div class="kpi" style="border-color:rgba(183,119,13,.3);background:rgba(183,119,13,.05)"><div class="kpi-l" style="color:#e8a84f">São Paulo · SP</div><div class="kpi-v mn" style="color:#e8a84f;font-size:22px">17.937 kg</div><div class="kpi-s">35,4% · 151 ped. · R$ 162.417</div></div>
   </div>
   <div class="row c3" style="margin-bottom:20px">
-    <div class="kpi" style="border-color:rgba(26,82,118,.3);background:rgba(26,82,118,.05)"><div class="kpi-l" style="color:#5dade2">Rio de Janeiro · RJ</div><div class="kpi-v mn" style="color:#5dade2;font-size:22px">29.296 kg</div><div class="kpi-s">32,1% · 253 ped. · R$ 252.811</div></div>
-    <div class="kpi"><div class="kpi-l">Média por Pedido</div><div class="kpi-v mn" style="font-size:22px">115,3 kg</div><div class="kpi-s">média real (SP+MG+RJ)</div></div>
-    <div class="kpi ka"><div class="kpi-l">Status</div><div class="kpi-v mn" style="font-size:16px;color:var(--red)">⚠️ 2 Críticos</div><div class="kpi-s">prioridade de faturamento imediata</div></div>
+    <div class="kpi" style="border-color:rgba(26,82,118,.3);background:rgba(26,82,118,.05)"><div class="kpi-l" style="color:#5dade2">Rio de Janeiro · RJ</div><div class="kpi-v mn" style="color:#5dade2;font-size:22px">10.193 kg</div><div class="kpi-s">20,1% · 83 ped. · R$ 83.149</div></div>
+    <div class="kpi"><div class="kpi-l">Média por Pedido</div><div class="kpi-v mn" style="font-size:22px">122,6 kg</div><div class="kpi-s">média real (SP+MG+RJ)</div></div>
+    <div class="kpi kw"><div class="kpi-l">Status</div><div class="kpi-v mn" style="font-size:16px;color:var(--yellow)">⚠️ 2 Alertas</div><div class="kpi-s">pedidos com prazo 4-7 dias</div></div>
   </div>
   <div class="cc" style="padding:18px">
     <div class="ct">Distribuição de Peso por UF</div>
-    <div class="pbar"><span class="pbl" style="color:#aade66">MG</span><div class="pbw"><div class="pbf" style="width:34.9%;background:linear-gradient(90deg,rgba(30,132,73,.75),rgba(30,132,73,.4))"><span>34,9%</span></div></div><span class="pbv" style="color:#aade66">31.840 kg</span></div>
-    <div class="pbar"><span class="pbl" style="color:#e8a84f">SP</span><div class="pbw"><div class="pbf" style="width:32.9%;background:linear-gradient(90deg,rgba(183,119,13,.75),rgba(183,119,13,.4))"><span>32,9%</span></div></div><span class="pbv" style="color:#e8a84f">30.040 kg</span></div>
-    <div class="pbar"><span class="pbl" style="color:#5dade2">RJ</span><div class="pbw"><div class="pbf" style="width:32.1%;background:linear-gradient(90deg,rgba(26,82,118,.75),rgba(26,82,118,.4))"><span>32,1%</span></div></div><span class="pbv" style="color:#5dade2">29.296 kg</span></div>
+    <div class="pbar"><span class="pbl" style="color:#aade66">MG</span><div class="pbw"><div class="pbf" style="width:44.6%;background:linear-gradient(90deg,rgba(30,132,73,.75),rgba(30,132,73,.4))"><span>44,6%</span></div></div><span class="pbv" style="color:#aade66">22.608 kg</span></div>
+    <div class="pbar"><span class="pbl" style="color:#e8a84f">SP</span><div class="pbw"><div class="pbf" style="width:35.4%;background:linear-gradient(90deg,rgba(183,119,13,.75),rgba(183,119,13,.4))"><span>35,4%</span></div></div><span class="pbv" style="color:#e8a84f">17.937 kg</span></div>
+    <div class="pbar"><span class="pbl" style="color:#5dade2">RJ</span><div class="pbw"><div class="pbf" style="width:20.1%;background:linear-gradient(90deg,rgba(26,82,118,.75),rgba(26,82,118,.4))"><span>20,1%</span></div></div><span class="pbv" style="color:#5dade2">10.193 kg</span></div>
   </div>
   <div class="g2">
     <div class="cc"><div class="ct">Em Aberto por Marketplace</div><canvas id="cSfM" height="220"></canvas></div>
@@ -209,10 +194,9 @@ th.ftot{background:rgba(46,74,122,.4);color:#88bbff;text-align:center}
   </div>
 </div>
 
-<!-- PESO GERAL -->
 <div id="pg-hist" class="page">
   <div style="background:linear-gradient(135deg,#1A3A6A,#2A5AAA);padding:20px 24px;border-radius:10px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
-    <div><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:4px">📊 Evolução de Peso — Janeiro a Março / 2026</div><div style="font-size:12px;color:rgba(255,255,255,.65)">FOCCO · PESO BRUTO REAL · Sem Correios, SC e auxiliares</div></div>
+    <div><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:4px">📊 Evolução de Peso — Janeiro a Março / 2026</div><div style="font-size:12px;color:rgba(255,255,255,.65)">FOCCO · PESO BRUTO REAL · Sem Correios e SC</div></div>
     <div style="text-align:right"><div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:4px">TOTAL KG JAN-MAR</div><div style="font-family:DM Mono,monospace;font-size:32px;font-weight:500;color:#88BBFF">3.137.876 kg</div></div>
   </div>
   <div class="row c3">
@@ -220,37 +204,35 @@ th.ftot{background:rgba(46,74,122,.4);color:#88bbff;text-align:center}
     <div class="kpi kh"><div class="kpi-l" style="color:#66CCDD">Fevereiro/2026</div><div class="kpi-v mn" style="color:#66CCDD;font-size:22px">897.931 kg</div><div class="kpi-s">7.525 NFs</div></div>
     <div class="kpi kf"><div class="kpi-l" style="color:#aade66">Março/2026</div><div class="kpi-v mn" style="color:#aade66;font-size:22px">1.312.261 kg</div><div class="kpi-s">11.035 NFs · 57.054 kg/d.u.</div></div>
   </div>
-  <div class="cc"><div class="ct">Peso (kg) por Transportadora — Jan · Fev · Mar/2026</div><canvas id="cHEvol" height="320"></canvas></div>
+  <div class="cc"><div class="ct">Peso por Transportadora — Jan · Fev · Mar/2026</div><canvas id="cHEvol" height="320"></canvas></div>
   <div class="tw ts"><table><thead><tr><th>Transportadora</th><th>Jan/26 (kg)</th><th>Fev/26 (kg)</th><th>Mar/26 (kg)</th><th>Total Jan-Mar</th><th>% Total</th></tr></thead><tbody id="tb-hkg"></tbody></table></div>
   <div class="cc" style="margin-top:12px"><div class="ct">Peso por Estado — Jan · Fev · Mar/2026</div><canvas id="cHUF" height="200"></canvas></div>
 </div>
 
-<!-- PESO ABRIL -->
 <div id="pg-abril" class="page">
   <div style="background:linear-gradient(135deg,#1A4A0A,#2D6E12);padding:20px 24px;border-radius:10px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
-    <div><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:4px">🌱 Peso Abril/2026 — FOCCO REAL</div><div style="font-size:12px;color:rgba(255,255,255,.65)">PESO BRT · 9 dias úteis (01,02,03,04,07,08,09,10,13/04) · Sem Correios, SC</div></div>
-    <div style="text-align:right"><div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:4px">TOTAL KG ABRIL (PARCIAL)</div><div style="font-family:DM Mono,monospace;font-size:32px;font-weight:500;color:#aade66">335.454 kg</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">2.970 NFs · R$ 2.854.268</div></div>
+    <div><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:4px">🌱 Peso Abril/2026 — FOCCO REAL</div><div style="font-size:12px;color:rgba(255,255,255,.65)">10 dias úteis (01-04,07-10,13-14/04) · Sem Correios e SC</div></div>
+    <div style="text-align:right"><div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:4px">TOTAL KG ABRIL (PARCIAL)</div><div style="font-family:DM Mono,monospace;font-size:32px;font-weight:500;color:#aade66">419.052 kg</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">3.729 NFs · R$ 3.563.704</div></div>
   </div>
   <div class="row c3">
-    <div class="kpi kf"><div class="kpi-l" style="color:#aade66">Total KG Abril (parcial)</div><div class="kpi-v mn" style="color:#aade66;font-size:22px">335.454 kg</div><div class="kpi-s">9 dias úteis</div></div>
-    <div class="kpi" style="border-color:rgba(102,255,153,.4);background:rgba(26,77,10,.2)"><div class="kpi-l" style="color:#66FF99">Média / Dia Útil</div><div class="kpi-v mn" style="color:#66FF99;font-size:22px">37.273 kg</div><div class="kpi-s">335.454 ÷ 9 d.u.</div></div>
-    <div class="kpi kf"><div class="kpi-l" style="color:#aade66">NFs no Período</div><div class="kpi-v mn" style="color:#aade66;font-size:22px">2.970</div><div class="kpi-s">9 transportadoras ativas</div></div>
+    <div class="kpi kf"><div class="kpi-l" style="color:#aade66">Total KG Abril</div><div class="kpi-v mn" style="color:#aade66;font-size:22px">419.052 kg</div><div class="kpi-s">10 dias úteis</div></div>
+    <div class="kpi" style="border-color:rgba(102,255,153,.4);background:rgba(26,77,10,.2)"><div class="kpi-l" style="color:#66FF99">Média / Dia Útil</div><div class="kpi-v mn" style="color:#66FF99;font-size:22px">41.905 kg</div><div class="kpi-s">419.052 ÷ 10 d.u.</div></div>
+    <div class="kpi kf"><div class="kpi-l" style="color:#aade66">NFs no Período</div><div class="kpi-v mn" style="color:#aade66;font-size:22px">3.729</div><div class="kpi-s">9 transportadoras ativas</div></div>
   </div>
   <div class="cc"><div class="ct">Peso Bruto por Transportadora — Abril/2026</div><canvas id="cAbrF" height="240"></canvas></div>
   <div class="tw ts"><table><thead><tr><th>Pos.</th><th>Transportadora</th><th>NFs</th><th>Peso Bruto (kg)</th><th>% no Mês</th><th>% Acumulado</th><th>Média/Dia Útil</th></tr></thead><tbody id="tb-abr"></tbody></table></div>
   <div class="sec" style="margin-top:20px">🗺️ Por Estado</div>
   <div class="g3">
-    <div class="kpi" style="border-color:rgba(30,77,10,.6);background:rgba(30,77,10,.15)"><div class="kpi-l" style="color:#aade66">MG</div><div class="kpi-v mn" style="color:#aade66;font-size:22px">120.111 kg</div><div class="kpi-s">35,8% · 1.049 NFs</div></div>
-    <div class="kpi" style="border-color:rgba(92,58,16,.6);background:rgba(92,58,16,.15)"><div class="kpi-l" style="color:#e8a84f">SP</div><div class="kpi-v mn" style="color:#e8a84f;font-size:22px">114.476 kg</div><div class="kpi-s">34,1% · 1.045 NFs</div></div>
-    <div class="kpi" style="border-color:rgba(26,58,92,.6);background:rgba(26,58,92,.15)"><div class="kpi-l" style="color:#5dade2">RJ</div><div class="kpi-v mn" style="color:#5dade2;font-size:22px">100.866 kg</div><div class="kpi-s">30,1% · 876 NFs</div></div>
+    <div class="kpi" style="border-color:rgba(30,77,10,.6);background:rgba(30,77,10,.15)"><div class="kpi-l" style="color:#aade66">MG</div><div class="kpi-v mn" style="color:#aade66;font-size:22px">145.997 kg</div><div class="kpi-s">34,8% · 1.260 NFs</div></div>
+    <div class="kpi" style="border-color:rgba(92,58,16,.6);background:rgba(92,58,16,.15)"><div class="kpi-l" style="color:#e8a84f">SP</div><div class="kpi-v mn" style="color:#e8a84f;font-size:22px">143.014 kg</div><div class="kpi-s">34,1% · 1.334 NFs</div></div>
+    <div class="kpi" style="border-color:rgba(26,58,92,.6);background:rgba(26,58,92,.15)"><div class="kpi-l" style="color:#5dade2">RJ</div><div class="kpi-v mn" style="color:#5dade2;font-size:22px">130.041 kg</div><div class="kpi-s">31,0% · 1.135 NFs</div></div>
   </div>
 </div>
 
-<!-- DEVOLUÇÕES -->
 <div id="pg-dev" class="page">
-  <div class="ph"><h1>Pedidos em Devolução</h1><p>Base 13/04/2026 · 22 de 95 NFs encontradas · Marketplace via código do pedido</p></div>
-  <div class="ibox">ℹ️ Padrões: <strong>LU-*</strong> = Magazine Luiza · <strong>S-*</strong> e <strong>260*</strong> = Shopee · <strong>2000+12d</strong> = Mercado Livre · <strong>9+5/6d</strong> = Madeira Madeira</div>
-  <div class="fhdr">🛒 MAGAZINE LUIZA — 9 pedidos</div>
+  <div class="ph"><h1>Pedidos em Devolução</h1><p>Base 14/04/2026 · 25 de 99 NFs encontradas · Marketplace via código do pedido</p></div>
+  <div class="ibox">ℹ️ <strong>LU-*</strong> = Magazine Luiza · <strong>S-*</strong> e <strong>260*</strong> = Shopee · <strong>2000+12d</strong> = Mercado Livre · <strong>9+5/6d</strong> = Madeira Madeira</div>
+  <div class="fhdr">🛒 MAGAZINE LUIZA — 12 pedidos</div>
   <div class="tw twr0"><table><thead><tr><th>Data Pedido</th><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead><tbody id="tb-dmag"></tbody></table></div>
   <div class="fhdr">🛒 SHOPEE — 7 pedidos</div>
   <div class="tw twr0"><table><thead><tr><th>Data Pedido</th><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead><tbody id="tb-dsho"></tbody></table></div>
@@ -260,9 +242,8 @@ th.ftot{background:rgba(46,74,122,.4);color:#88bbff;text-align:center}
   <div class="tw twr0"><table><thead><tr><th>Data Pedido</th><th>Nº NF</th><th>Código Pedido</th><th>Cliente</th><th>UF</th></tr></thead><tbody id="tb-dmm"></tbody></table></div>
 </div>
 
-<!-- CNPJ -->
 <div id="pg-cnpj" class="page">
-  <div class="ph"><h1>Pedidos CNPJ — Detectados Automaticamente</h1><p>13/04/2026 · 1 CNPJ identificado</p></div>
+  <div class="ph"><h1>Pedidos CNPJ — Detectados Automaticamente</h1><p>14/04/2026 · 1 CNPJ identificado</p></div>
   <div class="row c3">
     <div class="kpi ka"><div class="kpi-l">CNPJs detectados</div><div class="kpi-v mn" style="color:var(--red)">1</div></div>
     <div class="kpi"><div class="kpi-l">Marketplace</div><div class="kpi-v mn" style="font-size:18px">Mercado Livre</div></div>
@@ -277,62 +258,61 @@ th.ftot{background:rgba(46,74,122,.4);color:#88bbff;text-align:center}
   </tr></tbody></table></div>
 </div>
 
-<!-- DvD -->
 <div id="pg-dvd" class="page">
-  <div class="ph"><h1>Comparativo Dia vs Dia</h1><p>10/04/2026 × 13/04/2026</p></div>
+  <div class="ph"><h1>Comparativo Dia vs Dia</h1><p>13/04/2026 × 14/04/2026</p></div>
   <div class="sec">📊 KPIs Gerais</div>
-  <div class="tw"><table><thead><tr><th>Indicador</th><th>10/04/2026</th><th>13/04/2026</th><th>Variação</th></tr></thead><tbody id="tb-kpi"></tbody></table></div>
+  <div class="tw"><table><thead><tr><th>Indicador</th><th>13/04/2026</th><th>14/04/2026</th><th>Variação</th></tr></thead><tbody id="tb-kpi"></tbody></table></div>
   <div class="g2">
-    <div><div class="sec">🛒 SLA por Marketplace</div><div class="tw"><table><thead><tr><th>Marketplace</th><th>SLA 10/04</th><th>SLA 13/04</th><th>Var.</th></tr></thead><tbody id="tb-dmkt"></tbody></table></div></div>
-    <div><div class="sec">⏱ Faixas de Atraso</div><div class="tw"><table><thead><tr><th>Faixa</th><th>10/04</th><th>13/04</th><th>Var.</th></tr></thead><tbody id="tb-dfx"></tbody></table></div></div>
+    <div><div class="sec">🛒 SLA por Marketplace</div><div class="tw"><table><thead><tr><th>Marketplace</th><th>SLA 13/04</th><th>SLA 14/04</th><th>Var.</th></tr></thead><tbody id="tb-dmkt"></tbody></table></div></div>
+    <div><div class="sec">⏱ Faixas de Atraso</div><div class="tw"><table><thead><tr><th>Faixa</th><th>13/04</th><th>14/04</th><th>Var.</th></tr></thead><tbody id="tb-dfx"></tbody></table></div></div>
   </div>
   <div class="sec">🚚 Atrasos por Transportadora</div>
-  <div class="tw ts"><table><thead><tr><th>Transportadora</th><th>Total 10/04</th><th>Total 13/04</th><th>Atrasos 10/04</th><th>Atrasos 13/04</th><th>SLA 13/04</th></tr></thead><tbody id="tb-dtr"></tbody></table></div>
+  <div class="tw ts"><table><thead><tr><th>Transportadora</th><th>Total 13/04</th><th>Total 14/04</th><th>Atrasos 13/04</th><th>Atrasos 14/04</th><th>SLA 14/04</th></tr></thead><tbody id="tb-dtr"></tbody></table></div>
   <div class="sec">⚖️ Peso Aberto por UF</div>
-  <div class="tw"><table><thead><tr><th>UF</th><th>kg 10/04</th><th>kg 13/04</th><th>Variação</th></tr></thead><tbody id="tb-duf"></tbody></table></div>
-  <div class="sec">🌱 Peso Abril — 10/04 → 13/04</div>
+  <div class="tw"><table><thead><tr><th>UF</th><th>kg 13/04</th><th>kg 14/04</th><th>Variação</th></tr></thead><tbody id="tb-duf"></tbody></table></div>
+  <div class="sec">🌱 Peso Abril — 13/04 → 14/04</div>
   <div class="cc"><div class="ct">Comparativo Peso Abril por Transportadora</div><canvas id="cDAbr" height="240"></canvas></div>
-  <div class="tw"><table><thead><tr><th>Transportadora</th><th>kg 10/04</th><th>kg 13/04</th><th>Variação</th></tr></thead><tbody id="tb-dabr"></tbody></table></div>
+  <div class="tw"><table><thead><tr><th>Transportadora</th><th>kg 13/04</th><th>kg 14/04</th><th>Variação</th></tr></thead><tbody id="tb-dabr"></tbody></table></div>
 </div>
 
 <script>
 const TRANSP=[
-  {s:'MTC · SP',uf:'SP',tot:15,at:3,sla:80.00},
-  {s:'RGE · MG',uf:'MG',tot:779,at:122,sla:84.34},
-  {s:'TS RJ · RJ',uf:'RJ',tot:680,at:78,sla:88.53},
-  {s:'TEMPO JUSTO · SP',uf:'SP',tot:111,at:10,sla:90.99},
-  {s:'TRANS SUA LOG · SP',uf:'SP',tot:356,at:23,sla:93.54},
-  {s:'TRANS EXPRESS · RJ',uf:'RJ',tot:127,at:5,sla:96.06},
-  {s:'NOVA ERA · MG',uf:'MG',tot:628,at:24,sla:96.18},
-  {s:'TRANSBARBOSA · SP',uf:'SP',tot:507,at:10,sla:98.03},
-  {s:'GETLAR · RJ',uf:'RJ',tot:525,at:6,sla:98.86},
-  {s:'SOUL · MG',uf:'MG',tot:226,at:2,sla:99.12}
+  {s:'MTC · SP',uf:'SP',tot:14,at:4,sla:71.43},
+  {s:'RGE · MG',uf:'MG',tot:752,at:137,sla:81.78},
+  {s:'TS RJ · RJ',uf:'RJ',tot:703,at:78,sla:88.90},
+  {s:'TEMPO JUSTO · SP',uf:'SP',tot:104,at:11,sla:89.42},
+  {s:'TRANS SUA LOG · SP',uf:'SP',tot:295,at:23,sla:92.20},
+  {s:'TRANS EXPRESS · RJ',uf:'RJ',tot:111,at:5,sla:95.50},
+  {s:'NOVA ERA · MG',uf:'MG',tot:627,at:26,sla:95.85},
+  {s:'TRANSBARBOSA · SP',uf:'SP',tot:674,at:8,sla:98.81},
+  {s:'GETLAR · RJ',uf:'RJ',tot:691,at:5,sla:99.28},
+  {s:'SOUL · MG',uf:'MG',tot:358,at:1,sla:99.72}
 ];
 const PRAZOS_VCTO=[
-  {s:'TS RJ - RJ',f1:81,f2:48,f3:116,f4:348,f5:9,tot:602},
-  {s:'RGE - MG',f1:66,f2:33,f3:66,f4:423,f5:69,tot:657},
-  {s:'NOVA ERA - MG',f1:29,f2:26,f3:39,f4:210,f5:300,tot:604},
-  {s:'TRANS SUA LOG - SP',f1:18,f2:11,f3:43,f4:253,f5:8,tot:333},
-  {s:'GETLAR - RJ',f1:13,f2:6,f3:58,f4:423,f5:19,tot:519},
-  {s:'MTC - SP',f1:10,f2:1,f3:1,f4:0,f5:0,tot:12},
-  {s:'TEMPO JUSTO - SP',f1:10,f2:6,f3:12,f4:73,f5:0,tot:101},
-  {s:'TRANSBARBOSA - SP',f1:7,f2:1,f3:23,f4:434,f5:32,tot:497},
-  {s:'TRANS EXPRESS - RJ',f1:5,f2:3,f3:18,f4:92,f5:4,tot:122},
-  {s:'SOUL - MG',f1:1,f2:1,f3:20,f4:131,f5:71,tot:224}
+  {s:'TS RJ - RJ',f1:68,f2:35,f3:154,f4:330,f5:38,tot:625},
+  {s:'RGE - MG',f1:53,f2:27,f3:81,f4:401,f5:53,tot:615},
+  {s:'NOVA ERA - MG',f1:22,f2:24,f3:34,f4:220,f5:301,tot:601},
+  {s:'TRANS SUA LOG - SP',f1:18,f2:6,f3:53,f4:192,f5:3,tot:272},
+  {s:'GETLAR - RJ',f1:15,f2:2,f3:83,f4:550,f5:36,tot:686},
+  {s:'MTC - SP',f1:8,f2:1,f3:1,f4:0,f5:0,tot:10},
+  {s:'TRANSBARBOSA - SP',f1:7,f2:1,f3:25,f4:571,f5:62,tot:666},
+  {s:'TEMPO JUSTO - SP',f1:7,f2:2,f3:15,f4:66,f5:3,tot:93},
+  {s:'TRANS EXPRESS - RJ',f1:4,f2:2,f3:28,f4:70,f5:2,tot:106},
+  {s:'SOUL - MG',f1:2,f2:0,f3:24,f4:188,f5:143,tot:357}
 ];
 
 const MKT=[
-  {m:'Magazine Luiza',tot:827,at:128,sla:84.52},
-  {m:'Shopee',tot:2631,at:102,sla:96.12},
-  {m:'Mercado Livre',tot:376,at:40,sla:89.36},
-  {m:'Via Varejo',tot:77,at:8,sla:89.61},
-  {m:'Madeira Madeira',tot:33,at:5,sla:84.85},
-  {m:'Zema',tot:11,at:1,sla:90.91},
-  {m:'Web Continental V2',tot:12,at:0,sla:100},
+  {m:'Magazine Luiza',tot:889,at:124,sla:86.05},
+  {m:'Shopee',tot:2891,at:123,sla:95.75},
+  {m:'Mercado Livre',tot:408,at:38,sla:90.69},
+  {m:'Via Varejo',tot:88,at:7,sla:92.05},
+  {m:'Madeira Madeira',tot:38,at:5,sla:86.84},
+  {m:'Zema',tot:10,at:1,sla:90.00},
+  {m:'Web Continental V2',tot:18,at:0,sla:100},
   {m:'eFácil',tot:1,at:1,sla:0}
 ];
-const FAIXAS=[{f:'1-3 dias',q:58},{f:'4-7 dias',q:153},{f:'8-14 dias',q:50},{f:'15-30 dias',q:19},{f:'30+ dias',q:5}];
-const HIST_SLA=[['26/02','93.94'],['03/03','93.92'],['04/03','95.68'],['05/03','95.75'],['06/03','95.78'],['09/03','95.76'],['10/03','96.36'],['12/03','95.91'],['13/03','95.65'],['17/03','95.85'],['18/03','95.70'],['19/03','96.16'],['20/03','96.00'],['23/03','95.94'],['24/03','95.84'],['25/03','95.72'],['26/03','95.32'],['27/03','95.32'],['30/03','95.76'],['31/03','95.61'],['01/04','95.15'],['02/04','94.50'],['06/04','94.30'],['07/04','94.76'],['08/04','94.64'],['09/04','93.72'],['10/04','93.33'],['13/04','92.82']];
+const FAIXAS=[{f:'1-3 dias',q:77},{f:'4-7 dias',q:135},{f:'8-14 dias',q:60},{f:'15-30 dias',q:23},{f:'30+ dias',q:4}];
+const HIST_SLA=[['03/03','93.92'],['04/03','95.68'],['05/03','95.75'],['06/03','95.78'],['09/03','95.76'],['10/03','96.36'],['12/03','95.91'],['13/03','95.65'],['17/03','95.85'],['18/03','95.70'],['19/03','96.16'],['20/03','96.00'],['23/03','95.94'],['24/03','95.84'],['25/03','95.72'],['26/03','95.32'],['27/03','95.32'],['30/03','95.76'],['31/03','95.61'],['01/04','95.15'],['02/04','94.50'],['06/04','94.30'],['07/04','94.76'],['08/04','94.64'],['09/04','93.72'],['10/04','93.33'],['13/04','92.82'],['14/04','93.12']];
 const HIST=[
   {s:'TRANSBARBOSA - SP',j:162587,f:198345,m:205290,nj:1463,nf:1626,nm:1822},
   {s:'RGE - MG',j:123554,f:157034,m:219560,nj:916,nf:1232,nm:1748},
@@ -347,37 +327,43 @@ const HIST=[
 ];
 const TJM=3137876;
 const ABR=[
-  {s:'GETLAR - RJ',kg:59164,pct:17.64,nf:514},
-  {s:'RGE - MG',kg:53858,pct:16.05,nf:450},
-  {s:'TRANSBARBOSA - SP',kg:49576,pct:14.78,nf:471},
-  {s:'NOVA ERA - MG',kg:46092,pct:13.74,nf:427},
-  {s:'TRANS SUA LOG - SP',kg:38843,pct:11.58,nf:340},
-  {s:'TS RJ - RJ',kg:31185,pct:9.30,nf:273},
-  {s:'TEMPO JUSTO - SP',kg:26057,pct:7.77,nf:234},
-  {s:'SOUL - MG',kg:19579,pct:5.84,nf:165},
-  {s:'TRANS EXPRESS - RJ',kg:10527,pct:3.14,nf:90}
+  {s:'GETLAR - RJ',kg:78161,pct:18.65,nf:690},
+  {s:'TRANSBARBOSA - SP',kg:75085,pct:17.92,nf:729},
+  {s:'RGE - MG',kg:53858,pct:12.85,nf:450},
+  {s:'NOVA ERA - MG',kg:52352,pct:12.49,nf:489},
+  {s:'TS RJ - RJ',kg:41362,pct:9.87,nf:356},
+  {s:'TRANS SUA LOG - SP',kg:38843,pct:9.27,nf:340},
+  {s:'SOUL - MG',kg:38268,pct:9.13,nf:312},
+  {s:'TEMPO JUSTO - SP',kg:29087,pct:6.94,nf:265},
+  {s:'TRANS EXPRESS - RJ',kg:10527,pct:2.51,nf:90}
 ];
-const ABR_PREV={'GETLAR - RJ':53115,'RGE - MG':53858,'TRANSBARBOSA - SP':38709,'NOVA ERA - MG':40992,'TRANS SUA LOG - SP':38843,'TS RJ - RJ':25709,'TEMPO JUSTO - SP':26057,'SOUL - MG':15780,'TRANS EXPRESS - RJ':10527};
-const D10={total:4420,env:4246,ok:3963,late:283,sla:93.33,dev:20,cnpj:2,sf:152,sfv:149375,kg:17452,nf:1.1};
+const TKM_ABR=419052;
+const ABR_PREV={'GETLAR - RJ':59164,'TRANSBARBOSA - SP':49576,'RGE - MG':53858,'NOVA ERA - MG':46092,'TS RJ - RJ':31185,'TRANS SUA LOG - SP':38843,'SOUL - MG':19579,'TEMPO JUSTO - SP':26057,'TRANS EXPRESS - RJ':10527};
+const TKM_ABR_PREV=335454;
+
 const D13={total:4783,env:3968,ok:3683,late:285,sla:92.82,dev:22,cnpj:1,sf:791,sfv:794859,kg:91176,nf:1.4};
-const D10t={'RGE - MG':{t:877,a:116,s:86.77},'TS RJ - RJ':{t:695,a:77,s:88.92},'NOVA ERA - MG':{t:633,a:25,s:96.05},'TRANS SUA LOG - SP':{t:449,a:25,s:94.43},'TEMPO JUSTO - SP':{t:271,a:17,s:93.73},'TRANSBARBOSA - SP':{t:438,a:8,s:98.17},'GETLAR - RJ':{t:506,a:7,s:98.62},'SOUL - MG':{t:207,a:3,s:98.55},'TRANS EXPRESS - RJ':{t:140,a:2,s:98.57},'MTC - SP':{t:17,a:1,s:94.12}};
+const D14={total:4782,env:4343,ok:4044,late:299,sla:93.12,dev:25,cnpj:1,sf:412,sfv:432556,kg:50738,nf:1.3};
 const D13t={'RGE - MG':{t:779,a:122,s:84.34},'TS RJ - RJ':{t:680,a:78,s:88.53},'NOVA ERA - MG':{t:628,a:24,s:96.18},'TRANS SUA LOG - SP':{t:356,a:23,s:93.54},'TEMPO JUSTO - SP':{t:111,a:10,s:90.99},'TRANSBARBOSA - SP':{t:507,a:10,s:98.03},'GETLAR - RJ':{t:525,a:6,s:98.86},'SOUL - MG':{t:226,a:2,s:99.12},'TRANS EXPRESS - RJ':{t:127,a:5,s:96.06},'MTC - SP':{t:15,a:3,s:80.00}};
-const MKT10={'Magazine Luiza':84.77,'Shopee':96.81,'Mercado Livre':89.13,'Via Varejo':89.16,'Madeira Madeira':85.71,'Zema':90.91,'Web Continental V2':100,'eFácil':0};
+const D14t={'RGE - MG':{t:752,a:137,s:81.78},'TS RJ - RJ':{t:703,a:78,s:88.90},'NOVA ERA - MG':{t:627,a:26,s:95.85},'TRANS SUA LOG - SP':{t:295,a:23,s:92.20},'TEMPO JUSTO - SP':{t:104,a:11,s:89.42},'TRANSBARBOSA - SP':{t:674,a:8,s:98.81},'GETLAR - RJ':{t:691,a:5,s:99.28},'SOUL - MG':{t:358,a:1,s:99.72},'TRANS EXPRESS - RJ':{t:111,a:5,s:95.50},'MTC - SP':{t:14,a:4,s:71.43}};
 const MKT13={'Magazine Luiza':84.52,'Shopee':96.12,'Mercado Livre':89.36,'Via Varejo':89.61,'Madeira Madeira':84.85,'Zema':90.91,'Web Continental V2':100,'eFácil':0};
-const F10={s1:146,s2:53,s3:55,s4:27,s5:2};
+const MKT14={'Magazine Luiza':86.05,'Shopee':95.75,'Mercado Livre':90.69,'Via Varejo':92.05,'Madeira Madeira':86.84,'Zema':90.00,'Web Continental V2':100,'eFácil':0};
 const F13={s1:58,s2:153,s3:50,s4:19,s5:5};
-const UF10={MG:4557.2,RJ:5888.4,SP:7006.8};
+const F14={s1:77,s2:135,s3:60,s4:23,s5:4};
 const UF13={MG:31840.3,RJ:29295.8,SP:30039.9};
+const UF14={MG:22608.3,RJ:10192.8,SP:17936.9};
 const DEV_MAG=[
-  {dp:'18/01/2026',nf:21325,cod:'LU-1504870096629559-1',cli:'Adriana Alves de Sousa',uf:'MG'},
   {dp:'09/02/2026',nf:35527,cod:'LU-1510770099061878-1',cli:'Mailsom Mendes',uf:'MG'},
   {dp:'10/02/2026',nf:36701,cod:'LU-1511070099195660-1',cli:'Barbara Souza Lopes Leal',uf:'MG'},
   {dp:'10/02/2026',nf:37481,cod:'LU-1511170099257065-1',cli:'Romulo Batista Ferreira',uf:'MG'},
   {dp:'13/02/2026',nf:38985,cod:'LU-1511970099612504-1',cli:'Hudson pereira da silva',uf:'MG'},
   {dp:'19/02/2026',nf:41949,cod:'LU-1513570100113573-1',cli:'Keitily Giovana Pontes Leal',uf:'SP'},
-  {dp:'04/03/2026',nf:50462,cod:'LU-1517070101663756-1',cli:'Gislene da Silva Oliveira',uf:'RJ'},
   {dp:'06/03/2026',nf:51969,cod:'LU-1517570101906354-1',cli:'Maria Raimunda costa Araujo',uf:'RJ'},
-  {dp:'09/03/2026',nf:55315,cod:'LU-1518470102336630-1',cli:'Daniel Junio de Paula Oliveira',uf:'MG'}
+  {dp:'06/03/2026',nf:53808,cod:'LU-1517670101987440-1',cli:'Kailane de Almeida Franca Bo',uf:'SP'},
+  {dp:'09/03/2026',nf:55315,cod:'LU-1518470102336630-1',cli:'Daniel Junio de Paula Olivei',uf:'MG'},
+  {dp:'11/03/2026',nf:57146,cod:'LU-1519070102642390-1',cli:'Ruan Jonathan D Marcos Ferrei',uf:'MG'},
+  {dp:'13/03/2026',nf:60429,cod:'LU-1519570102894961-1',cli:'Fabia Jose Ferreira de Olive',uf:'SP'},
+  {dp:'15/03/2026',nf:62346,cod:'LU-1520070103135386-1',cli:'MARIO SORROCHE JUNIOR',uf:'SP'},
+  {dp:'18/01/2026',nf:21325,cod:'LU-1504870096629559-1',cli:'Adriana Alves de Sousa',uf:'MG'}
 ];
 const DEV_SHO=[
   {dp:'04/02/2026',nf:33263,cod:'S-46405684731',cli:'leandro aparecido da silva',uf:'SP'},
@@ -392,12 +378,11 @@ const DEV_ML=[
   {dp:'22/01/2026',nf:22885,cod:'2000014820042712',cli:'cosmamarianapereira',uf:'MG'},
   {dp:'28/01/2026',nf:26615,cod:'2000014905241640',cli:'raiane Vieira Silva Passos',uf:'MG'},
   {dp:'06/03/2026',nf:53395,cod:'2000015432314112',cli:'maurilio Alves da silva',uf:'MG'},
-  {dp:'22/03/2026',nf:68796,cod:'2000015661839738',cli:'Rodrigo Aparecido Cunha De Arruda',uf:'SP'},
+  {dp:'22/03/2026',nf:68796,cod:'2000015661839738',cli:'Rodrigo Aparecido Cunha De A',uf:'SP'},
   {dp:'01/04/2026',nf:76418,cod:'2000015792188188',cli:'Erika Sales Guedes Bezerra',uf:'SP'}
 ];
 const DEV_MM=[{dp:'26/02/2026',nf:46904,cod:'9506386',cli:'Caue Carvalho',uf:'SP'}];
 
-// ── helpers ────────────────────────────────────────────────────────
 function sc(v){return v>=95?'#27ae60':v>=90?'#e6a817':'#e74c3c'}
 function sb(v){let c=v>=95?'bg':v>=90?'by':'br';return `<span class="bdg ${c}">${v.toFixed(2)}%</span>`}
 function sbar(v){let c=sc(v);return `<div class="bar-row" style="max-width:130px"><div class="bar-w"><div class="bar-f" style="width:${Math.min(v,100)}%;background:${c}"></div></div><span class="mn" style="color:${c};min-width:44px;font-size:11px">${v.toFixed(1)}%</span></div>`}
@@ -406,85 +391,61 @@ function dr(arr,id){arr.forEach(d=>{document.getElementById(id).innerHTML+=`<tr>
 function vc(a,b,inv=false,fmt='n'){
   let na=parseFloat(String(a).replace(/[^0-9.\-]/g,'')),nb=parseFloat(String(b).replace(/[^0-9.\-]/g,''));
   if(isNaN(na)||isNaN(nb))return'<td class="dvdn mn">—</td>';
-  let d=nb-na,cls,txt;
-  if(d===0){cls='dvdn';txt='→ 0'}
-  else if(d>0){cls=inv?'dvdd':'dvdu';txt=fmt==='pp'?`▲ +${d.toFixed(2)} pp`:fmt==='kg'?`▲ +${Math.abs(d).toLocaleString('pt-BR',{maximumFractionDigits:0})} kg`:`▲ +${Math.round(d)}`}
-  else{cls=inv?'dvdu':'dvdd';txt=fmt==='pp'?`▼ ${d.toFixed(2)} pp`:fmt==='kg'?`▼ ${Math.abs(d).toLocaleString('pt-BR',{maximumFractionDigits:0})} kg`:`▼ ${Math.round(Math.abs(d))}`}
+  let dv=nb-na,cls,txt;
+  if(dv===0){cls='dvdn';txt='→ 0'}
+  else if(dv>0){cls=inv?'dvdd':'dvdu';txt=fmt==='pp'?`▲ +${dv.toFixed(2)} pp`:fmt==='kg'?`▲ +${Math.abs(dv).toLocaleString('pt-BR',{maximumFractionDigits:0})} kg`:`▲ +${Math.round(dv)}`}
+  else{cls=inv?'dvdu':'dvdd';txt=fmt==='pp'?`▼ ${dv.toFixed(2)} pp`:fmt==='kg'?`▼ ${Math.abs(dv).toLocaleString('pt-BR',{maximumFractionDigits:0})} kg`:`▼ ${Math.round(Math.abs(dv))}`}
   return`<td class="${cls} mn" style="font-weight:700">${txt}</td>`
 }
 
-// ── init tables ────────────────────────────────────────────────────
 function init(){
-  // Overview + Transp tables — TRANSP already sorted SLA asc
   TRANSP.forEach(t=>{
     let nm=t.s.split(' · ')[0];
     document.getElementById('tb-tv').innerHTML+=`<tr><td><strong>${t.s}</strong></td><td class="mn">${t.tot}</td><td class="mn" style="color:#27ae60">${t.tot-t.at}</td><td class="mn" style="color:${t.at>0?'#e74c3c':'#888'}">${t.at}</td><td>${sb(t.sla)}</td><td>${sbar(t.sla)}</td></tr>`;
     document.getElementById('tb-tf').innerHTML+=`<tr><td><strong>${nm}</strong></td><td><span class="bdg ${ub(t.uf)}" style="font-size:10px">${t.uf}</span></td><td class="mn">${t.tot}</td><td class="mn" style="color:#27ae60">${t.tot-t.at}</td><td class="mn" style="color:${t.at>0?'#e74c3c':'#888'}">${t.at}</td><td class="mn">${(t.at/t.tot*100).toFixed(2)}%</td><td>${sb(t.sla)}</td><td>${sbar(t.sla)}</td></tr>`;
   });
-  // Prazos a vencer table
   PRAZOS_VCTO.forEach((p,i)=>{
     let bg=i%2===1?'style="background:rgba(255,255,255,.025)"':'';
     let f1txt=p.f1>0?`<strong>⚠ ${p.f1}</strong>`:p.f1;
     document.getElementById('tb-vcto').innerHTML+=`<tr ${bg}><td><strong>${p.s}</strong></td><td class="mn f1">${f1txt}</td><td class="mn f2">${p.f2}</td><td class="mn f3">${p.f3}</td><td class="mn f4">${p.f4}</td><td class="mn f5">${p.f5}</td><td class="mn ftot">${p.tot}</td></tr>`;
   });
-  // MKT
   MKT.forEach(m=>{document.getElementById('tb-mkt').innerHTML+=`<tr><td><strong>${m.m}</strong></td><td class="mn">${m.tot}</td><td class="mn" style="color:#27ae60">${m.tot-m.at}</td><td class="mn" style="color:${m.at>0?'#e74c3c':'#888'}">${m.at}</td><td class="mn">${(m.at/m.tot*100).toFixed(2)}%</td><td>${sb(m.sla)}</td><td>${sbar(m.sla)}</td></tr>`});
-  // Hist
   let tJ=0,tF=0,tM=0;HIST.forEach(h=>{tJ+=h.j;tF+=h.f;tM+=h.m});
   HIST.forEach((h,i)=>{let tot=h.j+h.f+h.m,pct=(tot/TJM*100).toFixed(2);document.getElementById('tb-hkg').innerHTML+=`<tr style="background:${i%2===1?'rgba(255,255,255,.02)':''}"><td><strong>${h.s}</strong></td><td class="mn">${h.j>0?h.j.toLocaleString('pt-BR'):'—'}</td><td class="mn">${h.f>0?h.f.toLocaleString('pt-BR'):'—'}</td><td class="mn">${h.m>0?h.m.toLocaleString('pt-BR'):'—'}</td><td class="mn" style="color:#aade66;font-weight:700">${tot.toLocaleString('pt-BR')}</td><td><span class="bdg by">${pct}%</span></td></tr>`});
   document.getElementById('tb-hkg').innerHTML+=`<tr style="background:#0D1528"><td style="font-weight:700">TOTAL</td><td class="mn" style="font-weight:700">${tJ.toLocaleString('pt-BR')}</td><td class="mn" style="font-weight:700">${tF.toLocaleString('pt-BR')}</td><td class="mn" style="font-weight:700;color:#aade66">${tM.toLocaleString('pt-BR')}</td><td class="mn" style="font-weight:700;color:#FFD700">${TJM.toLocaleString('pt-BR')}</td><td><span class="bdg by">100,00%</span></td></tr>`;
-  // Abril
-  let ac=0;ABR.forEach((f,i)=>{ac+=f.pct;let c=f.pct>=15?'#27ae60':f.pct>=8?'#e6a817':'#e67e22';document.getElementById('tb-abr').innerHTML+=`<tr><td class="mn" style="color:var(--muted)">${i+1}º</td><td><strong>${f.s}</strong></td><td class="mn">${f.nf}</td><td class="mn" style="color:#aade66;font-weight:700">${f.kg.toLocaleString('pt-BR')} kg</td><td class="mn" style="color:${c};font-weight:700">${f.pct.toFixed(2)}%</td><td class="mn" style="color:var(--muted)">${ac.toFixed(2)}%</td><td class="mn" style="color:#66FF99;font-weight:700">${Math.round(f.kg/9).toLocaleString('pt-BR')} kg</td></tr>`});
-  // Dev
+  let ac=0;ABR.forEach((f,i)=>{ac+=f.pct;let c=f.pct>=15?'#27ae60':f.pct>=8?'#e6a817':'#e67e22';document.getElementById('tb-abr').innerHTML+=`<tr><td class="mn" style="color:var(--muted)">${i+1}º</td><td><strong>${f.s}</strong></td><td class="mn">${f.nf}</td><td class="mn" style="color:#aade66;font-weight:700">${f.kg.toLocaleString('pt-BR')} kg</td><td class="mn" style="color:${c};font-weight:700">${f.pct.toFixed(2)}%</td><td class="mn" style="color:var(--muted)">${ac.toFixed(2)}%</td><td class="mn" style="color:#66FF99;font-weight:700">${Math.round(f.kg/10).toLocaleString('pt-BR')} kg</td></tr>`});
   dr(DEV_MAG,'tb-dmag');dr(DEV_SHO,'tb-dsho');dr(DEV_ML,'tb-dml');dr(DEV_MM,'tb-dmm');
-  // DvD KPIs
-  [['Total pedidos',D10.total,D13.total,true,'n'],['Pedidos Faturados',D10.env,D13.env,true,'n'],['No Prazo',D10.ok,D13.ok,false,'n'],['Em Atraso',D10.late,D13.late,true,'n'],['SLA Geral','93.33%','92.82%',false,'pp'],['Devoluções',D10.dev,D13.dev,false,'n'],['CNPJ detectados',D10.cnpj,D13.cnpj,false,'n'],['Em Aberto',D10.sf,D13.sf,true,'n'],['Valor em Aberto','R$ 149.375','R$ 794.859',true,'n'],['Peso em Aberto',D10.kg,D13.kg,true,'kg'],['Prazo médio NF',D10.nf,D13.nf,true,'n']].forEach((r,i)=>{document.getElementById('tb-kpi').innerHTML+=`<tr style="background:${i%2===1?'rgba(255,255,255,.02)':''}"><td><strong>${r[0]}</strong></td><td class="mn">${r[1]}</td><td class="mn">${r[2]}</td>${vc(r[1],r[2],r[3],r[4])}</tr>`});
-  // DvD MKT
-  Object.keys(MKT13).forEach((k,i)=>{let s0=MKT10[k]??100,s1=MKT13[k],dv=s1-s0,cls=dv>0?'dvdu':dv<0?'dvdd':'dvdn',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dmkt').innerHTML+=`<tr style="background:${bg}"><td>${k}</td><td class="mn" style="color:${sc(s0)}">${s0}%</td><td class="mn" style="color:${sc(s1)}">${s1}%</td><td class="${cls} mn">${dv>0?'▲ +':dv<0?'▼ ':'→'}${dv===0?'0':Math.abs(dv).toFixed(2)+' pp'}</td></tr>`});
-  // DvD Faixas
-  let fk=['1-3 dias','4-7 dias','8-14 dias','15-30 dias','30+ dias'];let f10v=[F10.s1,F10.s2,F10.s3,F10.s4,F10.s5];let f13v=[F13.s1,F13.s2,F13.s3,F13.s4,F13.s5];
-  fk.forEach((k,i)=>{let a=f10v[i],b=f13v[i],dv=b-a,cls=dv>0?'dvdd':dv<0?'dvdu':'dvdn',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dfx').innerHTML+=`<tr style="background:${bg}"><td>${k}</td><td class="mn">${a}</td><td class="mn">${b}</td><td class="${cls} mn">${dv>0?'▲ +':dv<0?'▼ ':'→'}${Math.abs(dv)}</td></tr>`});
-  // DvD Trans
-  [...new Set([...Object.keys(D10t),...Object.keys(D13t)])].sort().forEach((k,i)=>{let t0=D10t[k]||{t:0,a:0,s:null},t1=D13t[k]||{t:0,a:0,s:null},bg=i%2===1?'rgba(255,255,255,.02)':'';let dA=t1.a-t0.a,clsA=dA>0?'dvdd':dA<0?'dvdu':'dvdn';document.getElementById('tb-dtr').innerHTML+=`<tr style="background:${bg}"><td><strong>${k}</strong></td><td class="mn">${t0.t||'—'}</td><td class="mn">${t1.t||'—'}</td><td class="mn">${t0.a}</td><td class="mn ${clsA}" style="font-weight:700">${t1.a}</td><td>${t1.s!=null?sb(t1.s):'—'}</td></tr>`});
-  // DvD UF
-  ['MG','RJ','SP'].forEach((uf,i)=>{let a=UF10[uf],b=UF13[uf],dv=b-a,cls=dv>0?'dvdu':dv<0?'dvdd':'dvdn',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-duf').innerHTML+=`<tr style="background:${bg}"><td><strong>${uf}</strong></td><td class="mn">${a.toLocaleString('pt-BR',{maximumFractionDigits:1})}</td><td class="mn">${b.toLocaleString('pt-BR',{maximumFractionDigits:1})}</td><td class="${cls} mn" style="font-weight:700">${dv===0?'→ 0':(dv>0?'▲ +':'▼ ')+Math.abs(dv).toLocaleString('pt-BR',{maximumFractionDigits:0})+' kg'}</td></tr>`});
-  // DvD Abril
+  [['Total pedidos',D13.total,D14.total,true,'n'],['Pedidos Faturados',D13.env,D14.env,true,'n'],['No Prazo',D13.ok,D14.ok,false,'n'],['Em Atraso',D13.late,D14.late,true,'n'],['SLA Geral','92.82%','93.12%',false,'pp'],['Devoluções',D13.dev,D14.dev,false,'n'],['CNPJ',D13.cnpj,D14.cnpj,false,'n'],['Em Aberto',D13.sf,D14.sf,true,'n'],['Valor em Aberto','R$ 794.859','R$ 432.556',true,'n'],['Peso em Aberto',D13.kg,D14.kg,true,'kg'],['Prazo médio NF',D13.nf,D14.nf,true,'n']].forEach((r,i)=>{document.getElementById('tb-kpi').innerHTML+=`<tr style="background:${i%2===1?'rgba(255,255,255,.02)':''}"><td><strong>${r[0]}</strong></td><td class="mn">${r[1]}</td><td class="mn">${r[2]}</td>${vc(r[1],r[2],r[3],r[4])}</tr>`});
+  Object.keys(MKT14).forEach((k,i)=>{let s0=MKT13[k]??100,s1=MKT14[k],dv=s1-s0,cls=dv>0?'dvdu':dv<0?'dvdd':'dvdn',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dmkt').innerHTML+=`<tr style="background:${bg}"><td>${k}</td><td class="mn" style="color:${sc(s0)}">${s0}%</td><td class="mn" style="color:${sc(s1)}">${s1}%</td><td class="${cls} mn">${dv>0?'▲ +':dv<0?'▼ ':'→'}${dv===0?'0':Math.abs(dv).toFixed(2)+' pp'}</td></tr>`});
+  let fk=['1-3 dias','4-7 dias','8-14 dias','15-30 dias','30+ dias'],f13v=[F13.s1,F13.s2,F13.s3,F13.s4,F13.s5],f14v=[F14.s1,F14.s2,F14.s3,F14.s4,F14.s5];
+  fk.forEach((k,i)=>{let a=f13v[i],b=f14v[i],dv=b-a,cls=dv>0?'dvdd':dv<0?'dvdu':'dvdn',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dfx').innerHTML+=`<tr style="background:${bg}"><td>${k}</td><td class="mn">${a}</td><td class="mn">${b}</td><td class="${cls} mn">${dv>0?'▲ +':dv<0?'▼ ':'→'}${Math.abs(dv)}</td></tr>`});
+  [...new Set([...Object.keys(D13t),...Object.keys(D14t)])].sort().forEach((k,i)=>{let t0=D13t[k]||{t:0,a:0,s:null},t1=D14t[k]||{t:0,a:0,s:null},bg=i%2===1?'rgba(255,255,255,.02)':'';let dA=t1.a-t0.a,clsA=dA>0?'dvdd':dA<0?'dvdu':'dvdn';document.getElementById('tb-dtr').innerHTML+=`<tr style="background:${bg}"><td><strong>${k}</strong></td><td class="mn">${t0.t||'—'}</td><td class="mn">${t1.t||'—'}</td><td class="mn">${t0.a}</td><td class="mn ${clsA}" style="font-weight:700">${t1.a}</td><td>${t1.s!=null?sb(t1.s):'—'}</td></tr>`});
+  ['MG','RJ','SP'].forEach((uf,i)=>{let a=UF13[uf],b=UF14[uf],dv=b-a,cls=dv>0?'dvdu':dv<0?'dvdd':'dvdn',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-duf').innerHTML+=`<tr style="background:${bg}"><td><strong>${uf}</strong></td><td class="mn">${a.toLocaleString('pt-BR',{maximumFractionDigits:1})}</td><td class="mn">${b.toLocaleString('pt-BR',{maximumFractionDigits:1})}</td><td class="${cls} mn" style="font-weight:700">${dv===0?'→ 0':(dv>0?'▲ +':'▼ ')+Math.abs(dv).toLocaleString('pt-BR',{maximumFractionDigits:0})+' kg'}</td></tr>`});
   ABR.forEach((f,i)=>{let vp=ABR_PREV[f.s]??0,dv=f.kg-vp,cls=dv>0?'dvdu':dv<0?'dvdd':'dvdn',bg=i%2===1?'rgba(255,255,255,.02)':'';document.getElementById('tb-dabr').innerHTML+=`<tr style="background:${bg}"><td><strong>${f.s}</strong></td><td class="mn">${vp>0?vp.toLocaleString('pt-BR'):'—'}</td><td class="mn">${f.kg.toLocaleString('pt-BR')}</td><td class="${cls} mn" style="font-weight:700">${dv===0?'→ 0':(dv>0?'▲ +':'▼ ')+Math.abs(dv).toLocaleString('pt-BR',{maximumFractionDigits:0})+' kg'}</td></tr>`});
-  let totAbr=ABR.reduce((a,f)=>a+f.kg,0),totPrev=Object.values(ABR_PREV).reduce((a,v)=>a+v,0),dTot=totAbr-totPrev;
-  document.getElementById('tb-dabr').innerHTML+=`<tr style="background:#0D1F07"><td style="color:#aade66;font-weight:700">TOTAL ABRIL</td><td class="mn" style="color:#aade66;font-weight:700">${totPrev.toLocaleString('pt-BR')}</td><td class="mn" style="color:#66FF99;font-weight:700">${totAbr.toLocaleString('pt-BR')}</td><td class="dvdu mn" style="font-weight:700">▲ +${(dTot).toLocaleString('pt-BR',{maximumFractionDigits:0})} kg (+10,3%)</td></tr>`;
+  let totAbr=ABR.reduce((a,f)=>a+f.kg,0),dTot=totAbr-TKM_ABR_PREV;
+  document.getElementById('tb-dabr').innerHTML+=`<tr style="background:#0D1F07"><td style="color:#aade66;font-weight:700">TOTAL ABRIL</td><td class="mn" style="color:#aade66;font-weight:700">${TKM_ABR_PREV.toLocaleString('pt-BR')}</td><td class="mn" style="color:#66FF99;font-weight:700">${TKM_ABR.toLocaleString('pt-BR')}</td><td class="dvdu mn" style="font-weight:700">▲ +${dTot.toLocaleString('pt-BR',{maximumFractionDigits:0})} kg (+${(dTot/TKM_ABR_PREV*100).toFixed(1)}%)</td></tr>`;
 }
 
-// ── Charts ─────────────────────────────────────────────────────────
 const CD={plugins:{legend:{labels:{color:'#8899bb',font:{size:11,family:'DM Sans'}}},tooltip:{backgroundColor:'#1a2236',borderColor:'#2e4a7a',borderWidth:1,titleColor:'#e8edf8',bodyColor:'#8899bb'}},scales:{x:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}},y:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}}}};
 function topL(){return{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((ds,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{if(ds.data[i]){ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='center';ctx.fillText(ds.data[i],bar.x,bar.y-5)}})})}}}
 function rL(s=''){return{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((ds,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(ds.data[i]+s,bar.x+4,bar.y+4)})})}}}
 
 function initCharts(){
-  // SLA histórico
   new Chart(document.getElementById('cHist'),{type:'line',data:{labels:HIST_SLA.map(h=>h[0]),datasets:[{label:'% SLA',data:HIST_SLA.map(h=>+h[1]),borderColor:'#27ae60',backgroundColor:'rgba(30,132,73,.1)',pointBackgroundColor:HIST_SLA.map(h=>+h[1]>=95?'#27ae60':'#e74c3c'),pointRadius:4,tension:.3,fill:true},{label:'Meta 95%',data:HIST_SLA.map(()=>95),borderColor:'rgba(232,70,30,.5)',borderDash:[6,3],pointRadius:0,fill:false}]},options:{...CD,scales:{...CD.scales,y:{...CD.scales.y,min:88,max:97,ticks:{callback:v=>v+'%'}}}}});
-  // Faixas
   new Chart(document.getElementById('cFaixa'),{type:'bar',data:{labels:FAIXAS.map(f=>f.f),datasets:[{data:FAIXAS.map(f=>f.q),backgroundColor:['#27ae60','#e6a817','#e67e22','#e74c3c','#8e1a0e'],borderRadius:5}]},options:{...CD,plugins:{...CD.plugins,legend:{display:false}},animation:topL()}});
-  // Transp SLA — sorted asc (TRANSP array already asc)
-  new Chart(document.getElementById('cTSla'),{type:'bar',data:{labels:TRANSP.map(t=>t.s.split(' · ')[0]),datasets:[{data:TRANSP.map(t=>t.sla),backgroundColor:TRANSP.map(t=>t.sla>=95?'rgba(30,132,73,.75)':t.sla>=90?'rgba(183,119,13,.75)':'rgba(192,57,43,.75)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,min:70,max:101,ticks:{callback:v=>v+'%'}},y:CD.scales.y},animation:rL('%')}});
-  // sort TRANSP by atrasos desc for this chart
-const _tAt=[...TRANSP].sort((a,b)=>b.at-a.at);
-new Chart(document.getElementById('cTAt'),{type:'bar',data:{labels:_tAt.map(t=>t.s.split(' · ')[0]),datasets:[{data:_tAt.map(t=>t.at),backgroundColor:'rgba(232,70,30,.7)',borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},animation:rL()}});
-  // Prazos a vencer 1-3d e 4-7d
-  new Chart(document.getElementById('cV13'),{type:'bar',data:{labels:PRAZOS_VCTO.map(p=>p.s.split(' - ')[0]),datasets:[{label:'NFs 1-3 dias',data:PRAZOS_VCTO.map(p=>p.f1),backgroundColor:'rgba(39,174,96,.75)',borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},animation:rL()}});
-  new Chart(document.getElementById('cV47'),{type:'bar',data:{labels:PRAZOS_VCTO.map(p=>p.s.split(' - ')[0]),datasets:[{label:'NFs 4-7 dias',data:PRAZOS_VCTO.map(p=>p.f2),backgroundColor:'rgba(230,168,23,.75)',borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},animation:rL()}});
-  // MKT
+  new Chart(document.getElementById('cTSla'),{type:'bar',data:{labels:TRANSP.map(t=>t.s.split(' · ')[0]),datasets:[{data:TRANSP.map(t=>t.sla),backgroundColor:TRANSP.map(t=>t.sla>=95?'rgba(30,132,73,.75)':t.sla>=90?'rgba(183,119,13,.75)':'rgba(192,57,43,.75)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,min:60,max:101,ticks:{callback:v=>v+'%'}},y:CD.scales.y},animation:rL('%')}});
+  const _tAt=[...TRANSP].sort((a,b)=>b.at-a.at);
+  new Chart(document.getElementById('cTAt'),{type:'bar',data:{labels:_tAt.map(t=>t.s.split(' · ')[0]),datasets:[{data:_tAt.map(t=>t.at),backgroundColor:'rgba(232,70,30,.7)',borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},animation:rL()}});
+  new Chart(document.getElementById('cV13'),{type:'bar',data:{labels:PRAZOS_VCTO.map(p=>p.s.split(' - ')[0]),datasets:[{data:PRAZOS_VCTO.map(p=>p.f1),backgroundColor:'rgba(39,174,96,.75)',borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},animation:rL()}});
+  new Chart(document.getElementById('cV47'),{type:'bar',data:{labels:PRAZOS_VCTO.map(p=>p.s.split(' - ')[0]),datasets:[{data:PRAZOS_VCTO.map(p=>p.f2),backgroundColor:'rgba(230,168,23,.75)',borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},animation:rL()}});
   new Chart(document.getElementById('cMSla'),{type:'bar',data:{labels:MKT.map(m=>m.m),datasets:[{data:MKT.map(m=>m.sla),backgroundColor:MKT.map(m=>m.sla>=95?'rgba(30,132,73,.7)':m.sla>=90?'rgba(183,119,13,.7)':'rgba(192,57,43,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{...CD.scales.x,min:0,max:102,ticks:{callback:v=>v+'%'}},y:CD.scales.y},animation:rL('%')}});
   new Chart(document.getElementById('cMVol'),{type:'doughnut',data:{labels:MKT.map(m=>m.m),datasets:[{data:MKT.map(m=>m.tot),backgroundColor:['#1A5276','#2E4A7A','#27ae60','#B7770D','#5A1878','#D35400','#888','#aaa'],borderColor:'#161d2e',borderWidth:2}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right',labels:{...CD.plugins.legend.labels,padding:10,font:{size:10}}}}}});
-  // Em Aberto
-  new Chart(document.getElementById('cSfM'),{type:'bar',data:{labels:['Shopee','Mag. Luiza','Merc. Livre','Via Varejo','Madeira Mad.','Web Cont.','Zema'],datasets:[{data:[535,145,75,16,12,6,2],backgroundColor:'rgba(183,119,13,.65)',borderRadius:4}]},options:{...CD,plugins:{...CD.plugins,legend:{display:false}},animation:topL()}});
-  new Chart(document.getElementById('cSfU'),{type:'doughnut',data:{labels:['MG 34,9%  31.840 kg','SP 32,9%  30.040 kg','RJ 32,1%  29.296 kg'],datasets:[{data:[31840,30040,29296],backgroundColor:['rgba(30,132,73,.8)','rgba(183,119,13,.8)','rgba(26,82,118,.8)'],borderColor:'#161d2e',borderWidth:3}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right',labels:{...CD.plugins.legend.labels,padding:12,font:{size:10}}}}}});
-  // Hist Evol
+  new Chart(document.getElementById('cSfM'),{type:'bar',data:{labels:['Shopee','Mag. Luiza','Merc. Livre','Via Varejo','Madeira Mad.','Web Cont.','Zema'],datasets:[{data:[258,91,40,11,7,3,2],backgroundColor:'rgba(183,119,13,.65)',borderRadius:4}]},options:{...CD,plugins:{...CD.plugins,legend:{display:false}},animation:topL()}});
+  new Chart(document.getElementById('cSfU'),{type:'doughnut',data:{labels:['MG 44,6%  22.608 kg','SP 35,4%  17.937 kg','RJ 20,1%  10.193 kg'],datasets:[{data:[22608,17937,10193],backgroundColor:['rgba(30,132,73,.8)','rgba(183,119,13,.8)','rgba(26,82,118,.8)'],borderColor:'#161d2e',borderWidth:3}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'right',labels:{...CD.plugins.legend.labels,padding:12,font:{size:10}}}}}});
   new Chart(document.getElementById('cHEvol'),{type:'bar',data:{labels:HIST.map(h=>h.s),datasets:[{label:'Jan/26',data:HIST.map(h=>h.j),backgroundColor:'rgba(44,74,136,.8)',borderRadius:3},{label:'Fev/26',data:HIST.map(h=>h.f),backgroundColor:'rgba(26,96,128,.8)',borderRadius:3},{label:'Mar/26',data:HIST.map(h=>h.m),backgroundColor:'rgba(30,132,73,.8)',borderRadius:3}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{...CD.plugins.legend,display:true,position:'top'}},scales:{x:{...CD.scales.x,ticks:{callback:v=>Math.round(v/1000)+'k'}},y:{...CD.scales.y,ticks:{font:{size:10}},grid:{display:false}}}}});
   new Chart(document.getElementById('cHUF'),{type:'bar',data:{labels:['SP','MG','RJ'],datasets:[{label:'Jan/26',data:[384932,310940,224774],backgroundColor:'rgba(44,74,136,.7)',borderRadius:3},{label:'Fev/26',data:[376617,291542,222236],backgroundColor:'rgba(26,96,128,.7)',borderRadius:3},{label:'Mar/26',data:[497454,415956,395722],backgroundColor:'rgba(30,132,73,.7)',borderRadius:3}]},options:{...CD,plugins:{...CD.plugins,legend:{...CD.plugins.legend,display:true}},scales:{y:{...CD.scales.y,ticks:{callback:v=>Math.round(v/1000)+'k'}}}}});
-  // Abril
   new Chart(document.getElementById('cAbrF'),{type:'bar',data:{labels:ABR.map(f=>f.s),datasets:[{data:ABR.map(f=>f.kg),backgroundColor:ABR.map(f=>f.pct>=15?'rgba(30,132,73,.7)':f.pct>=8?'rgba(183,119,13,.7)':'rgba(211,84,0,.7)'),borderRadius:4}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},animation:rL(' kg')}});
-  // DvD Abril comparativo
-  new Chart(document.getElementById('cDAbr'),{type:'bar',data:{labels:ABR.map(f=>f.s),datasets:[{label:'10/04',data:ABR.map(f=>ABR_PREV[f.s]??0),backgroundColor:'rgba(46,74,122,.65)',borderRadius:3},{label:'13/04',data:ABR.map(f=>f.kg),backgroundColor:'rgba(30,132,73,.7)',borderRadius:3}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{...CD.plugins.legend,display:true}}}});
+  new Chart(document.getElementById('cDAbr'),{type:'bar',data:{labels:ABR.map(f=>f.s),datasets:[{label:'13/04',data:ABR.map(f=>ABR_PREV[f.s]??0),backgroundColor:'rgba(46,74,122,.65)',borderRadius:3},{label:'14/04',data:ABR.map(f=>f.kg),backgroundColor:'rgba(30,132,73,.7)',borderRadius:3}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{...CD.plugins.legend,display:true}}}});
 }
 
 function S(id,el){
