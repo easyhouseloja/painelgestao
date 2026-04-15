@@ -11,6 +11,8 @@
 // SELETOR DE MÊS
 // ══════════════════════════════════════════════
 function showMonth(month, el) {
+  // Resetar charts ao trocar de mês para garantir dados frescos
+  Object.keys(aprChartsBuilt).forEach(k => delete aprChartsBuilt[k]);
   document.querySelectorAll('.month-dashboard').forEach(d => d.classList.remove('active'));
   document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('month-' + month).classList.add('active');
@@ -43,7 +45,7 @@ function showAprEstado(id, e) {
 const aprDaily = [
   {d:'01/04', g:253416.39, sh:146724.96, me:42006.63, ma:35042.06, mad:25998.11, via:2782.80,  web:0},
   {d:'02/04', g:228769.86, sh:135276.95, me:32319.04, ma:38305.19, mad:6275.91,  via:10263.67, web:5268.41},
-  {d:'03/04', g:209618.35, sh:109335.30, me:34421.72, ma:43901.11, mad:7827.84,  via:11847.09, web:2279.29},
+  {d:'03/04', g:209618.35, sh:109335.30, me:34421.72, ma:43907.11, mad:7827.84,  via:11847.09, web:2279.29},
   {d:'04/04', g:511907.67, sh:388640.17, me:45620.90, ma:61309.33, mad:7143.83,  via:3755.32,  web:2109.98},
   {d:'05/04', g:250554.42, sh:147369.25, me:37621.18, ma:49740.69, mad:4944.25,  via:5553.87,  web:5325.18},
   {d:'06/04', g:277563.80, sh:166326.12, me:46141.54, ma:52452.84, mad:3522.76,  via:9120.54,  web:0},
@@ -51,8 +53,10 @@ const aprDaily = [
   {d:'08/04', g:326651.33, sh:188708.48, me:30837.03, ma:95394.74, mad:1626.63,  via:3871.00,  web:5553.19, zema:0},
   {d:'09/04', g:303181.36, sh:192921.19, me:30507.48, ma:69245.59, mad:1302.46,  via:8307.48,  web:0,       zema:897.16},
   {d:'10/04', g:302360.80, sh:153216.34, me:47623.10, ma:88086.13, mad:987.85,   via:11040.42, web:987.85,   zema:0},
-  {d:'11/04', g:294778.38, sh:189093.83, me:43835.47, ma:40515.25, mad:4231.14,  via:4163.14,  web:2544.26,  zema:1329.29},
+  {d:'11/04', g:294778.38, sh:198053.63, me:43835.47, ma:40515.25, mad:4231.14,  via:4163.14,  web:2544.26,  zema:1329.29},
   {d:'12/04', g:343212.54, sh:219291.51, me:49400.26, ma:52852.83, mad:8525.61,  via:6398.25,  web:5405.75,  zema:0},
+  {d:'13/04', g:379348.24, sh:211679.18, me:57494.88, ma:85621.54, mad:6392.61,  via:14227.97, web:2528.43,  zema:0},
+  {d:'14/04', g:370813.37, sh:232913.73, me:53486.18, ma:72181.32, mad:1970.23,  via:6615.94,  web:3645.97,  zema:0},
 ];
 
 // ── Tabela diária Abril ──
@@ -74,7 +78,7 @@ const aprDaily = [
   tbody.appendChild(trT);
   const trA = document.createElement('tr'); trA.style.background='var(--bg3)';
   trA.innerHTML = `<td style="color:var(--muted);font-size:.7rem">MÉDIA/DIA</td>`
-    +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">R$ ${(t/12).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
+    +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">R$ ${(t/14).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
   tbody.appendChild(trA);
 })();
 
@@ -408,17 +412,26 @@ function renderAprProdTable(tbodyId, data) {
 const aprChartsBuilt = {};
 function buildAprCharts(page) {
   if(page==='visao'){
-    new Chart(document.getElementById('aprCatChart'),{type:'doughnut',data:{labels:['GR','SALA','COMP'],datasets:[{data:[1791236.86,593487.35,456750.53],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
-    new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via','Web'],datasets:[{data:[1658109.54,311692.68,479230.82,43632.54,45842.74,17839.23],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    // Destruir charts existentes para garantir dados atualizados
+    const existingCat = Chart.getChart(document.getElementById('aprCatChart'));
+    if(existingCat) existingCat.destroy();
+    const existingMkt = Chart.getChart(document.getElementById('aprMktChart'));
+    if(existingMkt) existingMkt.destroy();
+    new Chart(document.getElementById('aprCatChart'),{type:'doughnut',data:{labels:['GR','SALA','COMP'],datasets:[{data:[2544221.40,849008.29,618844.91],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
+    new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via','Web'],datasets:[{data:[2522488.39,499940.92,774275.56,65581.74,82119.48,28047.88],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc','#64748b'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='categorias'){
+    const existingCatD = Chart.getChart(document.getElementById('aprCatDetailChart'));
+    if(existingCatD) existingCatD.destroy();
     new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[1126148.07,243691.17,373516.97,32756.66,48551.98],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[430736.93,60826.74,119459.11,8578.29,1295.73],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[249200.03,38992.61,51066.40,6287.61,4220.31],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='diario'){
+    const existingDaily = Chart.getChart(document.getElementById('aprDailyChart'));
+    if(existingDaily) existingDaily.destroy();
     const labels=aprDaily.map(d=>d.d);
     const vals=aprDaily.map(d=>d.g);
     const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
-    new Chart(document.getElementById('aprDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(12).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    new Chart(document.getElementById('aprDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(14).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
 }
 
@@ -685,6 +698,35 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .month-dashboard { display: none; }
 .month-dashboard.active { display: block; }
 @media(max-width:640px){ .month-selector { padding: 10px 16px 0; } .month-btn { padding: 8px 16px; font-size:.75rem; } }
+
+
+/* ── MÓDULO ANÁLISE DE PRODUTOS ABRIL ── */
+.apr-pt-btn{transition:all .2s!important;}
+.mp-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:0;}
+.mp-header-acc{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;cursor:pointer;transition:background .15s;gap:12px;}
+.mp-header-acc:hover{background:rgba(56,189,248,.04);}
+.mp-dot-acc{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.mp-body{display:none;padding:0 22px 18px;border-top:1px solid var(--border);}
+.mp-body.open{display:block;}
+.mp-chevron{color:var(--muted);font-size:.7rem;transition:transform .2s;}
+.mp-chevron.open{transform:rotate(180deg);}
+.grid-auto-apr{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px;margin-bottom:24px;}
+.map-container-apr{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.map-flex-apr{display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;}
+.map-svg-wrap-apr{position:relative;}
+.map-tooltip-apr{position:absolute;background:#0f1f3d;color:var(--text);padding:8px 14px;border-radius:10px;font-size:.78rem;pointer-events:none;display:none;z-index:20;white-space:nowrap;border:1px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.4);}
+.map-side-apr{flex:1;min-width:200px;}
+.state-list-item-apr{padding:10px 14px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);margin-bottom:8px;}
+.state-path-apr{stroke:var(--bg);stroke-width:1.2;cursor:pointer;transition:filter .15s,stroke .15s;}
+.state-path-apr:hover{filter:brightness(1.35);stroke:var(--accent);stroke-width:1.5;}
+.map-legend-apr{display:flex;align-items:center;gap:12px;margin-top:16px;justify-content:center;}
+.leg-gradient-apr{height:10px;width:180px;border-radius:5px;background:linear-gradient(90deg,#1a2c4a,#38bdf8);}
+.apr-estado-content{display:none;}
+.apr-estado-content.active{display:block;}
+
+
+.aprod-page { display: none; }
+.aprod-page.active { display: block; }
 
 </style>
 </head>
@@ -1452,12 +1494,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <div class="header">
   <div>
     <h1>📊 Dashboard Vendas</h1>
-    <div class="header-sub" id="apr-hdr-periodo">Abril 2026 · Período 01/04 a 12/04</div>
+    <div class="header-sub" id="apr-hdr-periodo">Abril 2026 · Período 01/04 a 14/04</div>
   </div>
   <div class="header-badges">
-    <span class="badge" style="color:#f97316">39,69% da Meta</span>
-    <span class="badge red" style="color:var(--red)">-35,28% vs Mar</span>
-    <span class="badge orange" style="color:#a78bfa">+150% Ano x Ano</span>
+    <span class="badge" style="color:#f97316">56,03% da Meta</span>
+    <span class="badge red" style="color:var(--red)">-10,66% vs Mar</span>
+    <span class="badge orange" style="color:#a78bfa">+182% Ano x Ano</span>
   </div>
 </div>
 
@@ -1474,23 +1516,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="kpi-strip">
     <div class="kpi-card orange">
       <div class="kpi-label">Faturamento Total</div>
-      <div class="kpi-value">R$ 2,84M</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-red">-35,28%</span> vs mês anterior</div>
+      <div class="kpi-value">R$ 4,01M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-10,66%</span> vs mês anterior</div>
     </div>
     <div class="kpi-card" style="--c:var(--yellow)">
       <div class="kpi-label">% Meta Atingida</div>
-      <div class="kpi-value" style="color:var(--yellow)">39,69%</div>
-      <div class="kpi-sub">Meta: R$ 7,16M · <span class="kpi-pill pill-yellow">12 dias</span></div>
+      <div class="kpi-value" style="color:var(--green)">56,03%</div>
+      <div class="kpi-sub">Meta: R$ 7,16M · <span class="kpi-pill pill-green">14 dias</span></div>
     </div>
     <div class="kpi-card" style="--c:var(--shopee)">
       <div class="kpi-label">Projeção do Mês</div>
-      <div class="kpi-value" style="color:var(--shopee)">R$ 7,10M</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-red">-1%</span> abaixo da meta</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 8,60M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">+20%</span> acima da meta</div>
     </div>
     <div class="kpi-card purple">
       <div class="kpi-label">Crescimento Ano x Ano</div>
-      <div class="kpi-value" style="color:var(--comp)">+150%</div>
-      <div class="kpi-sub">2025: R$ 1,14M → 2026: R$ 2,84M</div>
+      <div class="kpi-value" style="color:var(--comp)">+182%</div>
+      <div class="kpi-sub">2025: R$ 1,42M → 2026: R$ 4,01M</div>
     </div>
   </div>
 
@@ -1498,49 +1540,49 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="grid-3">
     <div class="chart-card" style="border-color:rgba(52,211,153,.3);">
       <div class="chart-title">🛋️ Guarda-Roupa (GR)</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gr);margin-bottom:4px;">R$ 1,79M</div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 4,58M · Projeção: R$ 4,48M</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gr);margin-bottom:4px;">R$ 2,54M</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 4,58M · Projeção: R$ 5,45M</div>
       <div class="prog-row">
         <div class="prog-label">Realizado</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:39.09%;background:var(--gr);"></div></div>
-        <div class="prog-val" style="color:var(--red)">39,09%</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:55.52%;background:var(--gr);"></div></div>
+        <div class="prog-val" style="color:var(--yellow)">55,52%</div>
       </div>
       <div class="prog-row">
         <div class="prog-label">Projeção</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:97.8%;background:rgba(52,211,153,.3);"></div></div>
-        <div class="prog-val" style="color:var(--gr)">97,8%</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:rgba(52,211,153,.3);"></div></div>
+        <div class="prog-val" style="color:var(--gr)">119,0%</div>
       </div>
       <div style="margin-top:12px;"><span class="tag tag-red">⚠ ABAIXO DA META</span></div>
     </div>
     <div class="chart-card" style="border-color:rgba(251,113,133,.3);">
       <div class="chart-title">🪑 Sala de Jantar (SALA)</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--sala);margin-bottom:4px;">R$ 593K</div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,58M · Projeção: R$ 1,48M</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--sala);margin-bottom:4px;">R$ 849K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,58M · Projeção: R$ 1,82M</div>
       <div class="prog-row">
         <div class="prog-label">Realizado</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:37.68%;background:var(--sala);"></div></div>
-        <div class="prog-val" style="color:var(--red)">37,68%</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:53.90%;background:var(--sala);"></div></div>
+        <div class="prog-val" style="color:var(--yellow)">53,90%</div>
       </div>
       <div class="prog-row">
         <div class="prog-label">Projeção</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:94.1%;background:rgba(251,113,133,.3);"></div></div>
-        <div class="prog-val" style="color:var(--sala)">94,1%</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:rgba(251,113,133,.3);"></div></div>
+        <div class="prog-val" style="color:var(--sala)">115,3%</div>
       </div>
       <div style="margin-top:12px;"><span class="tag tag-red">⚠ ABAIXO DA META</span></div>
     </div>
     <div class="chart-card" style="border-color:rgba(129,140,248,.3);">
       <div class="chart-title">🪞 Complementos (COMP)</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--comp);margin-bottom:4px;">R$ 457K</div>
-      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,00M · Projeção: R$ 1,14M</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--comp);margin-bottom:4px;">R$ 619K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,00M · Projeção: R$ 1,33M</div>
       <div class="prog-row">
         <div class="prog-label">Realizado</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:45.57%;background:var(--comp);"></div></div>
-        <div class="prog-val" style="color:var(--red)">45,57%</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:61.74%;background:var(--comp);"></div></div>
+        <div class="prog-val" style="color:var(--yellow)">61,74%</div>
       </div>
       <div class="prog-row">
         <div class="prog-label">Projeção</div>
         <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:rgba(129,140,248,.3);"></div></div>
-        <div class="prog-val" style="color:var(--comp)">113,9%</div>
+        <div class="prog-val" style="color:var(--comp)">132,3%</div>
       </div>
       <div style="margin-top:12px;"><span class="tag tag-red">⚠ ABAIXO DA META</span></div>
     </div>
@@ -1549,18 +1591,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="axo-grid">
     <div class="axo-card" style="border-color:rgba(239,68,68,.3);">
       <div class="axo-label">Mês Anterior (Mar/26)</div>
-      <div class="axo-val" style="color:var(--muted);">R$ 4,39M</div>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">R$ 4.390.314,92</div>
+      <div class="axo-val" style="color:var(--muted);">R$ 4,49M</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">R$ 4.490.779,59</div>
     </div>
     <div class="axo-card" style="border-color:rgba(239,68,68,.3);">
       <div class="axo-label">Mês Atual vs Anterior</div>
-      <div class="axo-val" style="color:var(--red);">▼ -35,28%</div>
-      <div style="font-size:.75rem;color:var(--red);margin-top:4px;">R$ 2,84M vs R$ 4,39M (12 dias)</div>
+      <div class="axo-val" style="color:var(--red);">▼ -10,66%</div>
+      <div style="font-size:.75rem;color:var(--red);margin-top:4px;">R$ 4,01M vs R$ 4,49M (14 dias)</div>
     </div>
     <div class="axo-card" style="border-color:rgba(239,68,68,.3);">
       <div class="axo-label">Crescimento Ano x Ano</div>
-      <div class="axo-val" style="color:var(--green);">▲ +150%</div>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">Abr/25: R$ 1,14M</div>
+      <div class="axo-val" style="color:var(--green);">▲ +182%</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">Abr/25: R$ 1,42M</div>
     </div>
   </div>
 
@@ -1581,37 +1623,37 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="kpi-strip">
     <div class="kpi-card orange">
       <div class="kpi-label">Shopee · Líder</div>
-      <div class="kpi-value" style="color:var(--shopee);">R$ 1,81M</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-red">-23% M×M</span> · 64% do total</div>
+      <div class="kpi-value" style="color:var(--shopee);">R$ 2,52M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">+4% M×M</span> · 63% do total</div>
     </div>
     <div class="kpi-card" style="--c:var(--ml)">
       <div class="kpi-label">Mercado Livre</div>
-      <div class="kpi-value" style="color:var(--ml);">R$ 344K</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-red">-62% M×M</span> · 12%</div>
+      <div class="kpi-value" style="color:var(--ml);">R$ 500K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-46% M×M</span> · 12%</div>
     </div>
     <div class="kpi-card blue">
       <div class="kpi-label">Magalu</div>
-      <div class="kpi-value" style="color:var(--magalu);">R$ 544K</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-red">-45% M×M</span> · 19%</div>
+      <div class="kpi-value" style="color:var(--magalu);">R$ 774K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">-23% M×M</span> · 19%</div>
     </div>
     <div class="kpi-card purple">
       <div class="kpi-label">Outros Canais</div>
-      <div class="kpi-value" style="color:var(--comp);">R$ 135K</div>
+      <div class="kpi-value" style="color:var(--comp);">R$ 190K</div>
       <div class="kpi-sub">Via + Madeira + Web + Site · ~5%</div>
     </div>
   </div>
 
   <div class="section-title">Participação & Comparativo por Canal</div>
   <div class="chart-card" style="margin-bottom:20px;">
-    <div class="chart-title">Distribuição do Faturamento — Realizado (01 a 12/Abr)</div>
+    <div class="chart-title">Distribuição do Faturamento — Realizado (01 a 14/Abr)</div>
     <div style="margin-top:8px;">
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--shopee)">🟠 Shopee</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:64%;background:var(--shopee);"></div></div><div class="mkt-val">R$ 1.806.085,03</div><div class="mkt-var"><span class="tag tag-red">-23%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--magalu)">🔵 Magalu</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:19%;background:var(--magalu);"></div></div><div class="mkt-val">R$ 544.042,48</div><div class="mkt-var"><span class="tag tag-red">-45%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--ml)">🟡 Merc.Livre</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:12%;background:var(--ml);"></div></div><div class="mkt-val">R$ 343.510,52</div><div class="mkt-var"><span class="tag tag-red">-62%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--via)">🟣 Via Varejo</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1.9%;background:var(--via);"></div></div><div class="mkt-val">R$ 54.068,02</div><div class="mkt-var"><span class="tag tag-red">-24%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--madeira)">🪵 Madeira</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1.7%;background:var(--madeira);"></div></div><div class="mkt-val">R$ 47.622,56</div><div class="mkt-var"><span class="tag tag-red">-13%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:var(--web)">⚪ Web Cont.</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.67%;background:var(--web);"></div></div><div class="mkt-val">R$ 19.069,15</div><div class="mkt-var"><span class="tag tag-green">+192%</span></div></div>
-      <div class="mkt-row"><div class="mkt-name" style="color:#06b6d4">🏠 Site Lopas</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.52%;background:#06b6d4;"></div></div><div class="mkt-val">R$ 14.795,30</div><div class="mkt-var"><span class="tag tag-green">novo</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--shopee)">🟠 Shopee</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:63%;background:var(--shopee);"></div></div><div class="mkt-val">R$ 2.522.488,39</div><div class="mkt-var"><span class="tag tag-green">+4%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--magalu)">🔵 Magalu</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:19%;background:var(--magalu);"></div></div><div class="mkt-val">R$ 774.275,56</div><div class="mkt-var"><span class="tag tag-red">-23%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--ml)">🟡 Merc.Livre</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:12%;background:var(--ml);"></div></div><div class="mkt-val">R$ 499.940,92</div><div class="mkt-var"><span class="tag tag-red">-46%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--via)">🟣 Via Varejo</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:2.0%;background:var(--via);"></div></div><div class="mkt-val">R$ 82.119,48</div><div class="mkt-var"><span class="tag tag-green">+15%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--madeira)">🪵 Madeira</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1.6%;background:var(--madeira);"></div></div><div class="mkt-val">R$ 65.581,74</div><div class="mkt-var"><span class="tag tag-green">+20%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--web)">⚪ Web Cont.</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.70%;background:var(--web);"></div></div><div class="mkt-val">R$ 28.047,88</div><div class="mkt-var"><span class="tag tag-green">+329%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:#06b6d4">🏠 Site Lopas</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.37%;background:#06b6d4;"></div></div><div class="mkt-val">R$ 14.795,30</div><div class="mkt-var"><span class="tag tag-green">novo</span></div></div>
     </div>
   </div>
 
@@ -1620,14 +1662,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <table class="data-table">
       <thead><tr><th>Canal</th><th>Mês Atual</th><th>Mês Anterior</th><th>Ano Anterior</th><th>Var. M×M</th><th>Var. A×A</th><th>Projeção</th><th>Part. %</th></tr></thead>
       <tbody>
-        <tr><td style="color:var(--shopee);font-weight:700;">🟠 Shopee</td><td>R$ 1.806.085,03</td><td>R$ 2.355.074,19</td><td>R$ 66.929,69</td><td><span class="tag tag-red">-23%</span></td><td><span class="tag tag-green">+2.598%</span></td><td style="color:var(--green)">R$ 4.515.212,57</td><td>64%</td></tr>
-        <tr><td style="color:var(--ml);font-weight:700;">🟡 Merc.Livre</td><td>R$ 343.510,52</td><td>R$ 907.243,79</td><td>R$ 365.334,26</td><td><span class="tag tag-red">-62%</span></td><td><span class="tag tag-red">-6%</span></td><td>R$ 858.776,29</td><td>12%</td></tr>
-        <tr><td style="color:var(--magalu);font-weight:700;">🔵 Magalu</td><td>R$ 544.042,48</td><td>R$ 986.257,57</td><td>R$ 299.928,29</td><td><span class="tag tag-red">-17%</span></td><td><span class="tag tag-green">+104%</span></td><td style="color:var(--green)">R$ 1.597.436,07</td><td>19%</td></tr>
-        <tr><td style="color:var(--madeira);font-weight:700;">🪵 Madeira</td><td>R$ 47.622,56</td><td>R$ 54.829,34</td><td>R$ 308.341,93</td><td><span class="tag tag-red">-13%</span></td><td><span class="tag tag-red">-85%</span></td><td>R$ 119.056,41</td><td>2%</td></tr>
-        <tr><td style="color:var(--via);font-weight:700;">🟣 Via Varejo</td><td>R$ 54.068,02</td><td>R$ 71.130,17</td><td>R$ 72.772,63</td><td><span class="tag tag-red">-24%</span></td><td><span class="tag tag-red">-26%</span></td><td style="color:var(--yellow)">R$ 135.170,05</td><td>2%</td></tr>
-        <tr><td style="color:var(--web);font-weight:700;">⚪ Web Cont.</td><td>R$ 19.069,15</td><td>R$ 6.536,99</td><td>R$ 4.454,21</td><td><span class="tag tag-green">+192%</span></td><td><span class="tag tag-green">+328%</span></td><td style="color:var(--green)">R$ 47.672,88</td><td>0,7%</td></tr>
-        <tr><td style="color:#06b6d4;font-weight:700;">🏠 Site Lopas</td><td>R$ 14.795,30</td><td>R$ —</td><td>R$ —</td><td><span class="tag tag-green">novo</span></td><td><span class="tag tag-green">novo</span></td><td style="color:var(--green)">R$ 36.988,24</td><td>0,5%</td></tr>
-        <tr class="total-row"><td>TOTAL</td><td>R$ 2.841.474,74</td><td>R$ 4.390.314,92</td><td>R$ 1.137.699,03</td><td><span class="tag tag-red">-35%</span></td><td><span class="tag tag-green">+150%</span></td><td style="color:var(--yellow)">R$ 7.103.686,85</td><td>100%</td></tr>
+        <tr><td style="color:var(--shopee);font-weight:700;">🟠 Shopee</td><td>R$ 2.522.488,39</td><td>R$ 2.416.433,90</td><td>R$ 95.590,10</td><td><span class="tag tag-green">+4%</span></td><td><span class="tag tag-green">+2.539%</span></td><td style="color:var(--green)">R$ 5.405.332,26</td><td>63%</td></tr>
+        <tr><td style="color:var(--ml);font-weight:700;">🟡 Merc.Livre</td><td>R$ 499.940,92</td><td>R$ 926.319,04</td><td>R$ 461.051,15</td><td><span class="tag tag-red">-46%</span></td><td><span class="tag tag-green">+8%</span></td><td style="color:var(--green)">R$ 1.071.301,97</td><td>12%</td></tr>
+        <tr><td style="color:var(--magalu);font-weight:700;">🔵 Magalu</td><td>R$ 774.275,56</td><td>R$ 1.003.122,29</td><td>R$ 395.888,11</td><td><span class="tag tag-red">-23%</span></td><td><span class="tag tag-green">+96%</span></td><td style="color:var(--green)">R$ 1.659.161,91</td><td>19%</td></tr>
+        <tr><td style="color:var(--madeira);font-weight:700;">🪵 Madeira</td><td>R$ 65.581,74</td><td>R$ 54.829,34</td><td>R$ 362.818,30</td><td><span class="tag tag-green">+20%</span></td><td><span class="tag tag-red">-82%</span></td><td>R$ 140.532,30</td><td>2%</td></tr>
+        <tr><td style="color:var(--via);font-weight:700;">🟣 Via Varejo</td><td>R$ 82.119,48</td><td>R$ 71.130,17</td><td>R$ 79.455,50</td><td><span class="tag tag-green">+15%</span></td><td><span class="tag tag-green">+3%</span></td><td style="color:var(--green)">R$ 175.970,31</td><td>2%</td></tr>
+        <tr><td style="color:var(--web);font-weight:700;">⚪ Web Cont.</td><td>R$ 28.047,88</td><td>R$ 6.536,99</td><td>R$ 4.454,21</td><td><span class="tag tag-green">+329%</span></td><td><span class="tag tag-green">+530%</span></td><td style="color:var(--green)">R$ 60.102,60</td><td>0,7%</td></tr>
+        <tr><td style="color:#06b6d4;font-weight:700;">🏠 Site Lopas</td><td>R$ 14.795,30</td><td>R$ —</td><td>R$ —</td><td><span class="tag tag-green">novo</span></td><td><span class="tag tag-green">novo</span></td><td style="color:var(--green)">R$ 31.704,20</td><td>0,4%</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 4.012.094,60</td><td>R$ 4.490.779,59</td><td>R$ 1.424.730,91</td><td><span class="tag tag-red">-11%</span></td><td><span class="tag tag-green">+182%</span></td><td style="color:var(--green)">R$ 8.597.345,58</td><td>100%</td></tr>
       </tbody>
     </table>
   </div>
@@ -1710,13 +1752,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="kpi-strip">
     <div class="kpi-card orange">
       <div class="kpi-label">Total Vendas (Geral)</div>
-      <div class="kpi-value">R$ 3,68M</div>
-      <div class="kpi-sub">Total: R$ 3.680.335,60 · 12 dias</div>
+      <div class="kpi-value">R$ 4,43M</div>
+      <div class="kpi-sub">Total: R$ 4.430.497,21 · 14 dias</div>
     </div>
     <div class="kpi-card" style="--c:var(--yellow)">
       <div class="kpi-label">Média Diária</div>
-      <div class="kpi-value" style="color:var(--yellow)">R$ 307K</div>
-      <div class="kpi-sub">R$ 306.694,63 / dia · Proj: R$ 9,20M</div>
+      <div class="kpi-value" style="color:var(--yellow)">R$ 316K</div>
+      <div class="kpi-sub">R$ 316.464,09 / dia · Proj: R$ 9,49M</div>
     </div>
     <div class="kpi-card" style="--c:var(--red)">
       <div class="kpi-label">Melhor Dia</div>
@@ -1725,13 +1767,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <div class="kpi-card purple">
       <div class="kpi-label">Projeção Shopee</div>
-      <div class="kpi-value" style="color:var(--comp)">R$ 5,70M</div>
-      <div class="kpi-sub">R$ 5.695.762,53 projetado Shopee</div>
+      <div class="kpi-value" style="color:var(--comp)">R$ 5,83M</div>
+      <div class="kpi-sub">R$ 5.834.781,26 projetado Shopee</div>
     </div>
   </div>
 
   <div class="chart-card" style="margin-bottom:24px;">
-    <div class="chart-title">📅 Vendas Diárias Gerais — Realizado (01 a 12/Abr)</div>
+    <div class="chart-title">📅 Vendas Diárias Gerais — Realizado (01 a 14/Abr)</div>
     <div style="position:relative;height:280px;"><canvas id="aprDailyChart"></canvas></div>
   </div>
 
@@ -1757,112 +1799,190 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- ═══ ABRIL: ANÁLISE DE PRODUTOS ═══ -->
 <div class="page" id="apr-page-produtos">
-  <div class="kpi-strip" style="grid-template-columns:repeat(5,1fr);">
-    <div class="kpi-card orange">
-      <div class="kpi-label">Top Produto — Shopee</div>
-      <div class="kpi-value" style="color:var(--shopee);font-size:1.0rem;line-height:1.3">GR Easy Slim 8P Espelho Amendoa</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-green">121 un</span> · R$ 131.097,90</div>
-    </div>
-    <div class="kpi-card" style="--c:var(--ml)">
-      <div class="kpi-label">Top Produto — Merc. Livre</div>
-      <div class="kpi-value" style="color:var(--ml);font-size:1.0rem;line-height:1.3">GR Easy Slim 8P Espelho Amendoa</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-green">39 un</span> · R$ 41.726,10</div>
-    </div>
+
+  <div class="section-title">📦 Análise de Produtos — Abril 2026</div>
+  <div style="font-size:.75rem;color:var(--muted);margin-bottom:16px;">Período 01/04 a 13/04 · 3.837 pedidos · R$ 3,94M faturado · 7 Marketplaces</div>
+
+  <div class="apr-prod-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+    <button class="apr-pt-btn" onclick="aprod_showPage('visao',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#0b0f1a;transition:all .2s;">📊 Visão Geral</button>
+    <button class="apr-pt-btn" onclick="aprod_showPage('marketplaces',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;">🛒 Marketplaces</button>
+    <button class="apr-pt-btn" onclick="aprod_showPage('produtos',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;">📦 Top Produtos</button>
+    <button class="apr-pt-btn" onclick="aprod_showPage('estados',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;">📍 Por Estado</button>
+    <button class="apr-pt-btn" onclick="aprod_showPage('mapa',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;">🗺️ Mapa de Calor</button>
+  </div>
+
+
+<div class="apr-prod-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;padding:12px 0;border-bottom:1px solid var(--border);">
+  <button class="apr-prod-tab active" onclick="aprod_showPage('visao',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--accent);color:#0b0f1a;letter-spacing:.4px;">📊 Visão Geral</button>
+  <button class="apr-prod-tab" onclick="aprod_showPage('marketplaces',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);letter-spacing:.4px;">🛒 Marketplaces</button>
+  <button class="apr-prod-tab" onclick="aprod_showPage('produtos',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);letter-spacing:.4px;">📦 Top Produtos</button>
+  <button class="apr-prod-tab" onclick="aprod_showPage('estados',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);letter-spacing:.4px;">📍 Por Estado</button>
+  <button class="apr-prod-tab" onclick="aprod_showPage('mapa',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);letter-spacing:.4px;">🗺️ Mapa de Calor</button>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 1 — VISÃO GERAL
+══════════════════════════════════════ -->
+<div class="aprod-page" id="aprod_page-visao">
+
+  <div class="kpi-strip">
     <div class="kpi-card blue">
-      <div class="kpi-label">Top Produto — Magalu</div>
-      <div class="kpi-value" style="color:var(--magalu);font-size:1.0rem;line-height:1.3">GR Easy Slim 8P Espelho e Pés Amendoa</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-green">84 un</span> · R$ 93.131,25</div>
+      <div class="kpi-label">Total Faturado</div>
+      <div class="kpi-value">R$ 3,94M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-blue">01–13 Abr/26</span></div>
     </div>
-    <div class="kpi-card purple">
-      <div class="kpi-label">Top Produto — Via Varejo</div>
-      <div class="kpi-value" style="color:var(--via);font-size:1.0rem;line-height:1.3">GR 6P Easy Slim Espelho e Pés Amendoa</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-green">9 un</span> · R$ 7.707,20</div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">Ticket Médio Geral</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 1.027</div>
+      <div class="kpi-sub">por pedido · 3.837 pedidos</div>
     </div>
-    <div class="kpi-card" style="--c:var(--madeira)">
-      <div class="kpi-label">Top Produto — Madeira</div>
-      <div class="kpi-value" style="color:var(--madeira);font-size:1.0rem;line-height:1.3">Comoda 8 Gavetas Easy Like Amendoa</div>
-      <div class="kpi-sub"><span class="kpi-pill pill-green">4 un</span> · R$ 5.929,82</div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Unidades Vendidas</div>
+      <div class="kpi-value" style="color:var(--green)">3.891</div>
+      <div class="kpi-sub">unidades totais</div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="kpi-label">Item Campeão</div>
+      <div class="kpi-value" style="font-size:1.1rem;line-height:1.3">GR 8P Espelho Amendoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-yellow">498 un · 13,7% receita</span></div>
     </div>
   </div>
 
-  <div class="section-title">📊 Top 15 Produtos — Visão Geral (Todos os Canais · Abr)</div>
-  <div class="top15-card">
-    <div class="top15-header">
-      <div>
-        <div class="top15-title">Itens mais vendidos · Base consolidada todos os marketplaces — Abril 2026</div>
-        <div style="font-size:.72rem;color:var(--muted);margin-top:3px;">Representatividade calculada sobre faturamento total geral · R$ 1.408.636,78 (base planilha abril)</div>
-      </div>
-      <div class="top15-summary">
-        <div><div class="top15-stat-val">64,91%</div><div class="top15-stat-label">Rep. acumulada top 15</div></div>
-        <div><div class="top15-stat-val">889 un</div><div class="top15-stat-label">Qtd total top 15</div></div>
-        <div><div class="top15-stat-val">R$ 914K</div><div class="top15-stat-label">Valor top 15</div></div>
-      </div>
+  <div class="section-title">Distribuição por Marketplace</div>
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-title">Share de Receita por Canal</div>
+    <div id="aprod_mktRows"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">📊 Faturamento por Marketplace</div>
+      <div class="chart-wrap"><canvas id="aprod_barChart"></canvas></div>
     </div>
-    <table class="prod-table" style="width:100%">
-      <thead><tr><th style="width:32px">#</th><th>Produto</th><th class="right">Valor Total</th><th class="right">Qtd</th><th class="right" style="min-width:120px">Rep. Geral</th></tr></thead>
-      <tbody id="apr-top15-geral"></tbody>
+    <div class="chart-card">
+      <div class="chart-title">🥧 Share de Receita</div>
+      <div class="chart-wrap"><canvas id="aprod_donutChart"></canvas></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 2 — MARKETPLACES
+══════════════════════════════════════ -->
+<div class="aprod-page" id="aprod_page-marketplaces">
+
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Shopee · Líder</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 2,46M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">62,4% do total</span> · 2.428 pedidos</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Magazine Luiza</div>
+      <div class="kpi-value" style="color:var(--magalu)">R$ 788K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-blue">20,0% do total</span> · 744 pedidos</div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="kpi-label">Mercado Livre</div>
+      <div class="kpi-value" style="color:var(--ml)">R$ 494K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-yellow">12,6% do total</span> · 502 pedidos</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Outros Canais</div>
+      <div class="kpi-value" style="color:var(--comp)">R$ 199K</div>
+      <div class="kpi-sub">Via + Madeira + Web + Zema · 5%</div>
+    </div>
+  </div>
+
+  <div class="section-title">Top 10 por Marketplace (clique para expandir)</div>
+  <div class="mp-accordion" id="aprod_mpAccordion"></div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 3 — PRODUTOS
+══════════════════════════════════════ -->
+<div class="aprod-page" id="aprod_page-produtos">
+
+  <div class="section-title">Top 10 Produtos Geral — por unidades vendidas</div>
+  <div class="chart-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Produto</th>
+          <th>Qtd</th>
+          <th>Receita</th>
+          <th>% Receita</th>
+          <th>% Unidades</th>
+          <th style="min-width:140px">Representatividade</th>
+        </tr>
+      </thead>
+      <tbody id="aprod_top10tbody"></tbody>
     </table>
   </div>
 
-  <div class="section-title">🏆 Top Produtos por Marketplace — Geral (Abr)</div>
-  <div class="prod-mp-grid">
-    <div class="prod-mp-card">
-      <div class="prod-mp-header" style="border-left:3px solid var(--shopee);"><div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee</div><div class="prod-mp-header-sub">Top produtos</div></div>
-      <table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-shopee-geral"></tbody></table>
-    </div>
-    <div class="prod-mp-card">
-      <div class="prod-mp-header" style="border-left:3px solid var(--ml);"><div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre</div><div class="prod-mp-header-sub">Top produtos</div></div>
-      <table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-ml-geral"></tbody></table>
-    </div>
-    <div class="prod-mp-card">
-      <div class="prod-mp-header" style="border-left:3px solid var(--magalu);"><div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu</div><div class="prod-mp-header-sub">Top produtos</div></div>
-      <table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-magalu-geral"></tbody></table>
-    </div>
-    <div class="prod-mp-card">
-      <div class="prod-mp-header" style="border-left:3px solid var(--via);"><div class="prod-mp-header-title" style="color:var(--via);">🟣 Via Varejo</div><div class="prod-mp-header-sub">Top produtos</div></div>
-      <table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-via-geral"></tbody></table>
-    </div>
-    <div class="prod-mp-card">
-      <div class="prod-mp-header" style="border-left:3px solid var(--madeira);"><div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira</div><div class="prod-mp-header-sub">Top produtos</div></div>
-      <table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-madeira-geral"></tbody></table>
-    </div>
-  </div>
-
-  <div class="section-title">📍 Top Produtos por Estado — Abril 2026</div>
-  <div class="estado-tabs" id="apr-estado-tabs">
-    <div class="estado-tab active" onclick="showAprEstado('sp',event)">🏙️ São Paulo</div>
-    <div class="estado-tab" onclick="showAprEstado('mg',event)">⛰️ Minas Gerais</div>
-    <div class="estado-tab" onclick="showAprEstado('rj',event)">🌊 Rio de Janeiro</div>
-  </div>
-  <div class="estado-page active" id="apr-estado-sp">
-    <div class="estado-grid">
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--shopee);"><div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee — São Paulo</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-shopee-sp"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--ml);"><div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre — São Paulo</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-ml-sp"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--magalu);"><div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu — São Paulo</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-magalu-sp"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--via);"><div class="prod-mp-header-title" style="color:var(--via);">🟣 Via — São Paulo</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-via-sp"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--madeira);"><div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira — São Paulo</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-madeira-sp"></tbody></table></div>
-    </div>
-  </div>
-  <div class="estado-page" id="apr-estado-mg">
-    <div class="estado-grid">
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--shopee);"><div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee — Minas Gerais</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-shopee-mg"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--ml);"><div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre — Minas Gerais</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-ml-mg"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--magalu);"><div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu — Minas Gerais</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-magalu-mg"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--via);"><div class="prod-mp-header-title" style="color:var(--via);">🟣 Via — Minas Gerais</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-via-mg"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--madeira);"><div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira — Minas Gerais</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-madeira-mg"></tbody></table></div>
-    </div>
-  </div>
-  <div class="estado-page" id="apr-estado-rj">
-    <div class="estado-grid">
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--shopee);"><div class="prod-mp-header-title" style="color:var(--shopee);">🟠 Shopee — Rio de Janeiro</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-shopee-rj"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--ml);"><div class="prod-mp-header-title" style="color:var(--ml);">🟡 Mercado Livre — Rio de Janeiro</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-ml-rj"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--magalu);"><div class="prod-mp-header-title" style="color:var(--magalu);">🔵 Magalu — Rio de Janeiro</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-magalu-rj"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--via);"><div class="prod-mp-header-title" style="color:var(--via);">🟣 Via — Rio de Janeiro</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-via-rj"></tbody></table></div>
-      <div class="prod-mp-card"><div class="prod-mp-header" style="border-left:3px solid var(--madeira);"><div class="prod-mp-header-title" style="color:var(--madeira);">🪵 Madeira — Rio de Janeiro</div></div><table class="prod-table"><thead><tr><th>#</th><th>Produto</th><th class="right">Valor</th><th class="right">Qtd</th><th class="right" style="min-width:110px">Rep. Canal</th></tr></thead><tbody id="apr-prod-madeira-rj"></tbody></table></div>
-    </div>
-  </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     PAGE 4 — ESTADOS
+══════════════════════════════════════ -->
+<div class="aprod-page" id="aprod_page-estados">
+
+  <div class="kpi-strip" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi-card blue">
+      <div class="kpi-label">São Paulo</div>
+      <div class="kpi-value" style="font-size:1.4rem">R$ 1,44M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-blue">36,5%</span> · 1.380 pedidos</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Minas Gerais</div>
+      <div class="kpi-value" style="font-size:1.4rem;color:var(--green)">R$ 1,35M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">34,1%</span> · 1.312 pedidos</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--sala)">
+      <div class="kpi-label">Rio de Janeiro</div>
+      <div class="kpi-value" style="font-size:1.4rem;color:var(--sala)">R$ 1,16M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">29,3%</span> · 1.143 pedidos</div>
+    </div>
+  </div>
+
+  <div class="section-title">Itens por Marketplace × Estado</div>
+  <div class="grid-auto" id="aprod_mpStateGrid"></div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 5 — MAPA
+══════════════════════════════════════ -->
+<div class="aprod-page" id="aprod_page-mapa">
+
+  <div class="section-title">Mapa de Calor — Concentração de Vendas por Estado</div>
+  <div class="map-container">
+    <div class="chart-title">Brasil · Abr 2026 · Receita por Estado</div>
+    <div class="map-flex">
+      <div class="map-svg-wrap">
+        <div class="map-tooltip" id="aprod_mapTooltip"></div>
+        <svg id="aprod_brazilMap" viewBox="0 0 800 760" width="520" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="map-side" id="aprod_mapSide"></div>
+    </div>
+    <div class="map-legend">
+      <span class="leg-lbl">Menor</span>
+      <div class="leg-gradient"></div>
+      <span class="leg-lbl">Maior receita</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════ -->
+
+</div>
 </div><!-- /month-april -->
 <script>
 // ── DATA ──
@@ -2500,6 +2620,8 @@ function showEstado(id, e) {
 // SELETOR DE MÊS
 // ══════════════════════════════════════════════
 function showMonth(month, el) {
+  // Resetar charts ao trocar de mês para garantir dados frescos
+  Object.keys(aprChartsBuilt).forEach(k => delete aprChartsBuilt[k]);
   document.querySelectorAll('.month-dashboard').forEach(d => d.classList.remove('active'));
   document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('month-' + month).classList.add('active');
@@ -2532,7 +2654,7 @@ function showAprEstado(id, e) {
 const aprDaily = [
   {d:'01/04', g:253416.39, sh:146724.96, me:42006.63, ma:35042.06, mad:25998.11, via:2782.80,  web:0},
   {d:'02/04', g:228769.86, sh:135276.95, me:32319.04, ma:38305.19, mad:6275.91,  via:10263.67, web:5268.41},
-  {d:'03/04', g:209618.35, sh:109335.30, me:34421.72, ma:43901.11, mad:7827.84,  via:11847.09, web:2279.29},
+  {d:'03/04', g:209618.35, sh:109335.30, me:34421.72, ma:43907.11, mad:7827.84,  via:11847.09, web:2279.29},
   {d:'04/04', g:511907.67, sh:388640.17, me:45620.90, ma:61309.33, mad:7143.83,  via:3755.32,  web:2109.98},
   {d:'05/04', g:250554.42, sh:147369.25, me:37621.18, ma:49740.69, mad:4944.25,  via:5553.87,  web:5325.18},
   {d:'06/04', g:277563.80, sh:166326.12, me:46141.54, ma:52452.84, mad:3522.76,  via:9120.54,  web:0},
@@ -2540,8 +2662,10 @@ const aprDaily = [
   {d:'08/04', g:326651.33, sh:188708.48, me:30837.03, ma:95394.74, mad:1626.63,  via:3871.00,  web:5553.19, zema:0},
   {d:'09/04', g:303181.36, sh:192921.19, me:30507.48, ma:69245.59, mad:1302.46,  via:8307.48,  web:0,       zema:897.16},
   {d:'10/04', g:302360.80, sh:153216.34, me:47623.10, ma:88086.13, mad:987.85,   via:11040.42, web:987.85,   zema:0},
-  {d:'11/04', g:294778.38, sh:189093.83, me:43835.47, ma:40515.25, mad:4231.14,  via:4163.14,  web:2544.26,  zema:1329.29},
+  {d:'11/04', g:294778.38, sh:198053.63, me:43835.47, ma:40515.25, mad:4231.14,  via:4163.14,  web:2544.26,  zema:1329.29},
   {d:'12/04', g:343212.54, sh:219291.51, me:49400.26, ma:52852.83, mad:8525.61,  via:6398.25,  web:5405.75,  zema:0},
+  {d:'13/04', g:379348.24, sh:211679.18, me:57494.88, ma:85621.54, mad:6392.61,  via:14227.97, web:2528.43,  zema:0},
+  {d:'14/04', g:370813.37, sh:232913.73, me:53486.18, ma:72181.32, mad:1970.23,  via:6615.94,  web:3645.97,  zema:0},
 ];
 
 // ── Tabela diária Abril ──
@@ -2563,7 +2687,7 @@ const aprDaily = [
   tbody.appendChild(trT);
   const trA = document.createElement('tr'); trA.style.background='var(--bg3)';
   trA.innerHTML = `<td style="color:var(--muted);font-size:.7rem">MÉDIA/DIA</td>`
-    +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">R$ ${(t/12).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
+    +totals.map(t=>`<td style="color:var(--muted);font-size:.75rem">R$ ${(t/14).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`).join('');
   tbody.appendChild(trA);
 })();
 
@@ -2897,20 +3021,632 @@ function renderAprProdTable(tbodyId, data) {
 const aprChartsBuilt = {};
 function buildAprCharts(page) {
   if(page==='visao'){
-    new Chart(document.getElementById('aprCatChart'),{type:'doughnut',data:{labels:['GR','SALA','COMP'],datasets:[{data:[1791236.86,593487.35,456750.53],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
-    new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via','Web'],datasets:[{data:[1658109.54,311692.68,479230.82,43632.54,45842.74,17839.23],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    // Destruir charts existentes para garantir dados atualizados
+    const existingCat = Chart.getChart(document.getElementById('aprCatChart'));
+    if(existingCat) existingCat.destroy();
+    const existingMkt = Chart.getChart(document.getElementById('aprMktChart'));
+    if(existingMkt) existingMkt.destroy();
+    new Chart(document.getElementById('aprCatChart'),{type:'doughnut',data:{labels:['GR','SALA','COMP'],datasets:[{data:[2544221.40,849008.29,618844.91],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
+    new Chart(document.getElementById('aprMktChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via','Web'],datasets:[{data:[2522488.39,499940.92,774275.56,65581.74,82119.48,28047.88],backgroundColor:['#f97316','#ffe000','#0086ff','#e07b54','#c084fc','#64748b'],borderRadius:6,barThickness:36}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='categorias'){
+    const existingCatD = Chart.getChart(document.getElementById('aprCatDetailChart'));
+    if(existingCatD) existingCatD.destroy();
     new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[1126148.07,243691.17,373516.97,32756.66,48551.98],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[430736.93,60826.74,119459.11,8578.29,1295.73],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[249200.03,38992.61,51066.40,6287.61,4220.31],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='diario'){
+    const existingDaily = Chart.getChart(document.getElementById('aprDailyChart'));
+    if(existingDaily) existingDaily.destroy();
     const labels=aprDaily.map(d=>d.d);
     const vals=aprDaily.map(d=>d.g);
     const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
-    new Chart(document.getElementById('aprDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(12).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    new Chart(document.getElementById('aprDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(14).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
 }
 
+
+// ══════════════════════════════════════════════
+// MÓDULO ANÁLISE DE PRODUTOS — ABRIL 2026
+// ══════════════════════════════════════════════
+(function() {
+
+function aprod_showPage(id, clickedBtn) {
+  // Esconder todas as sub-pages
+  document.querySelectorAll('.aprod-page').forEach(function(p) {
+    p.classList.remove('active');
+  });
+  // Resetar botões
+  document.querySelectorAll('.apr-pt-btn').forEach(function(b) {
+    b.style.background = 'var(--bg3)';
+    b.style.color = 'var(--muted)';
+    b.style.borderColor = 'var(--border)';
+  });
+  // Ativar page e botão
+  var page = document.getElementById('aprod_page-' + id);
+  if (page) page.classList.add('active');
+  if (clickedBtn) {
+    clickedBtn.style.background = 'var(--accent)';
+    clickedBtn.style.color = '#0b0f1a';
+    clickedBtn.style.borderColor = 'var(--accent)';
+  }
+}
+
+
+
+
+
+// ── PAGE SWITCHER ──
+
+
+// ── HELPERS ──
+const fmtBR = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtK  = v => v >= 1e6 ? 'R$ ' + (v/1e6).toFixed(2) + 'M' : v >= 1e3 ? 'R$ ' + (v/1e3).toFixed(0) + 'k' : 'R$ ' + v.toFixed(0);
+function rankClass(i){ return i===0?'rank-badge rank-1':i===1?'rank-badge rank-2':i===2?'rank-badge rank-3':'rank-badge rank-n'; }
+
+// ── DATA ──
+const TOTAL = 3940088.35;
+const TOTAL_QTY = 3891;
+
+const MP = [
+  { name:'Shopee',           color:'#f97316', total:2458203.90, pedidos:2428, ticket:1012.44, pct:62.39 },
+  { name:'Magazine Luiza',   color:'#0086ff', total:788211.92,  pedidos:744,  ticket:1059.42, pct:20.00 },
+  { name:'Mercado Livre',    color:'#ffe000', total:494421.96,  pedidos:502,  ticket:984.90,  pct:12.55 },
+  { name:'Via Varejo',       color:'#c084fc', total:85141.36,   pedidos:84,   ticket:1013.59, pct:2.16  },
+  { name:'Madeira Madeira',  color:'#e07b54', total:76499.06,   pedidos:49,   ticket:1561.21, pct:1.94  },
+  { name:'Web Continental',  color:'#64748b', total:28959.44,   pedidos:22,   ticket:1316.34, pct:0.73  },
+  { name:'Zema',             color:'#ef4444', total:8650.71,    pedidos:8,    ticket:1081.34, pct:0.22  },
+];
+
+const MP_ITEMS = {
+  'Shopee': [
+    {p:'GR Easy Slim 8P c/Espelho Amendoa/Off White',qty:365,valor:395573.50,pct_mp:16.09,pct_t:10.04},
+    {p:'Conj. Sala Jantar 4 Cadeiras Easy Line',qty:171,valor:82062.90,pct_mp:3.34,pct_t:2.08},
+    {p:'GR Casal 6P Easy Slim Amendoa/off White',qty:167,valor:125973.30,pct_mp:5.12,pct_t:3.20},
+    {p:'Comoda Easy Like Amendoa/Off White',qty:146,valor:122625.40,pct_mp:4.99,pct_t:3.11},
+    {p:'Mesa 170 Apogeu c/6 cad. Veludo Creme',qty:109,valor:161309.10,pct_mp:6.56,pct_t:4.09},
+    {p:'GR Easy Slim 8P Amendoa Clean/Off White',qty:108,valor:112249.20,pct_mp:4.57,pct_t:2.85},
+    {p:'Mesa 0,90 Celebrare c/04 Cad. Linho Rinzai',qty:103,valor:109169.70,pct_mp:4.44,pct_t:2.77},
+    {p:'GR Easy Slim 8P c/Espelho e Pés Amendoa',qty:91,valor:103020.90,pct_mp:4.19,pct_t:2.61},
+    {p:'GR Easy Slim 8P c/Espelho Branco',qty:90,valor:97171.00,pct_mp:3.95,pct_t:2.47},
+    {p:'Comoda Vedra 7 Gav. 2P Amendoa/Off White',qty:76,valor:59272.40,pct_mp:2.41,pct_t:1.50},
+  ],
+  'Magazine Luiza': [
+    {p:'GR 8P c/Espelho e Pés Amendoa/Off White',qty:291,valor:320913.56,pct_mp:40.71,pct_t:8.14},
+    {p:'GR Casal 6P Easy Slim Amendoa/off White',qty:199,valor:146816.12,pct_mp:18.63,pct_t:3.73},
+    {p:'GR 8P c/Espelho e Pés Amendoa Clean',qty:66,valor:71955.02,pct_mp:9.13,pct_t:1.83},
+    {p:'Mesa Jantar 170 Apogeu vidro c/6 cad. Suede',qty:51,valor:70151.84,pct_mp:8.90,pct_t:1.78},
+    {p:'GR 8P c/Pés Amendoa Clean',qty:37,valor:38484.01,pct_mp:4.88,pct_t:0.98},
+    {p:'GR 8P c/Espelho Amendoa Clean/Off White',qty:17,valor:18097.82,pct_mp:2.30,pct_t:0.46},
+    {p:'GR 8P c/Espelho Branco',qty:16,valor:17002.48,pct_mp:2.16,pct_t:0.43},
+    {p:'GR 8P c/Espelho e Pés Branco',qty:6,valor:6784.42,pct_mp:0.86,pct_t:0.17},
+    {p:'Mesa Jantar Celebrare 1,20 c/4 Cad. Veludo',qty:6,valor:6573.18,pct_mp:0.83,pct_t:0.17},
+    {p:'Comoda Easy Like Amendoa/Off White',qty:6,valor:8154.00,pct_mp:1.03,pct_t:0.21},
+  ],
+  'Mercado Livre': [
+    {p:'GR 8P c/Espelho Amendoa/Off White',qty:101,valor:108059.90,pct_mp:21.86,pct_t:2.74},
+    {p:'Conj. Sala Jantar 4 Cadeiras Easy Line',qty:98,valor:44090.20,pct_mp:8.92,pct_t:1.12},
+    {p:'GR 2P Correr 6 Gav. Toronto Plus Branco',qty:59,valor:97633.79,pct_mp:19.75,pct_t:2.48},
+    {p:'GR 8P c/Espelho Branco',qty:25,valor:25656.25,pct_mp:5.19,pct_t:0.65},
+    {p:'Comoda Easy Like Amendoa/Off White',qty:24,valor:19536.00,pct_mp:3.95,pct_t:0.50},
+    {p:'Comoda Vedra 7 Gav. 2P Amendoa/Off White',qty:20,valor:15598.00,pct_mp:3.15,pct_t:0.40},
+    {p:'GR 8P c/Espelho Amendoa Clean',qty:17,valor:17447.89,pct_mp:3.53,pct_t:0.44},
+    {p:'GR 8P c/Pés Amendoa/Off White',qty:13,valor:13964.53,pct_mp:2.82,pct_t:0.35},
+    {p:'Cama Casal 1,40 Easy Like Corano Bege',qty:11,valor:8248.90,pct_mp:1.67,pct_t:0.21},
+    {p:'GR 8P c/Espelho e Pés Branco',qty:11,valor:11982.90,pct_mp:2.42,pct_t:0.30},
+  ],
+  'Via Varejo': [
+    {p:'GR 6P c/Espelho e Pés Amendoa/Off White',qty:37,valor:32393.53,pct_mp:38.05,pct_t:0.82},
+    {p:'GR 8P c/Espelho Amendoa/Off White',qty:13,valor:14608.77,pct_mp:17.16,pct_t:0.37},
+    {p:'GR 8P c/Espelho Branco',qty:9,valor:9935.16,pct_mp:11.67,pct_t:0.25},
+    {p:'GR 6P c/Espelho Amendoa/Off White',qty:7,valor:7665.69,pct_mp:9.00,pct_t:0.19},
+    {p:'Comoda Easy Like Amendoa/Off White',qty:3,valor:2669.70,pct_mp:3.14,pct_t:0.07},
+    {p:'GR 8P c/Espelho e Pés Amendoa',qty:2,valor:2439.80,pct_mp:2.87,pct_t:0.06},
+    {p:'GR 8P c/Espelho e Pés Branco',qty:2,valor:2259.80,pct_mp:2.65,pct_t:0.06},
+    {p:'Conj. Mesa Easy Pop 120x80 c/4 Cad.',qty:1,valor:953.91,pct_mp:1.12,pct_t:0.02},
+    {p:'GR 6P c/Pés Amendoa',qty:1,valor:869.90,pct_mp:1.02,pct_t:0.02},
+    {p:'GR 6P Easy Slim Amendoa/off White',qty:1,valor:829.90,pct_mp:0.97,pct_t:0.02},
+  ],
+  'Madeira Madeira': [
+    {p:'Comoda 8 Gav. Easy Like Amendoa Clean',qty:5,valor:6727.73,pct_mp:8.79,pct_t:0.17},
+    {p:'Comoda Easy Like Amendoa/Off White',qty:5,valor:8167.21,pct_mp:10.68,pct_t:0.21},
+    {p:'Mesa Cabeceira Easy Like Amendoa',qty:3,valor:1939.60,pct_mp:2.54,pct_t:0.05},
+    {p:'Mesa Cabeceira 2 Gav. Easy Like Amendoa',qty:3,valor:3509.92,pct_mp:4.59,pct_t:0.09},
+    {p:'Mesa 0,90 Celebrare c/04 Cad. Linho Rinzai',qty:3,valor:3419.70,pct_mp:4.47,pct_t:0.09},
+    {p:'Sapateira Giratoria Esthela c/Espelho Branco',qty:3,valor:1594.72,pct_mp:2.08,pct_t:0.04},
+    {p:'GR Spazio 270 3P 6 Gav. Branco',qty:3,valor:6371.71,pct_mp:8.33,pct_t:0.16},
+    {p:'GR 8P c/Espelho Branco',qty:2,valor:2339.81,pct_mp:3.06,pct_t:0.06},
+    {p:'GR 8P c/Espelho Amendoa Clean',qty:2,valor:2339.81,pct_mp:3.06,pct_t:0.06},
+    {p:'GR 6P Easy Move 2,40 Amendoa Clean',qty:2,valor:4603.21,pct_mp:6.02,pct_t:0.12},
+  ],
+  'Web Continental': [
+    {p:'Comoda 6 Gav. Maggiore Branco',qty:2,valor:1499.80,pct_mp:5.18,pct_t:0.04},
+    {p:'Comoda Easy Like Amendoa/Off White',qty:2,valor:1809.80,pct_mp:6.25,pct_t:0.05},
+    {p:'GR 6P c/Espelho e Pés Amendoa',qty:2,valor:1999.80,pct_mp:6.91,pct_t:0.05},
+    {p:'Beliche Solteiro Olga c/Led Branco',qty:1,valor:1003.11,pct_mp:3.46,pct_t:0.03},
+    {p:'Comoda 8 Gav. 2P Toronto Branco',qty:1,valor:739.11,pct_mp:2.55,pct_t:0.02},
+    {p:'Comoda 8 Gav. Easy Like Amendoa',qty:1,valor:738.62,pct_mp:2.55,pct_t:0.02},
+    {p:'Conj. Sala Jantar 4 Cadeiras Easy Line',qty:1,valor:423.22,pct_mp:1.46,pct_t:0.01},
+    {p:'Conj. Jantar Easy Pop 120x80 4 Cad.',qty:1,valor:1269.90,pct_mp:4.39,pct_t:0.03},
+    {p:'GR 6P Easy Space 100% MDF Amendoa',qty:1,valor:2659.90,pct_mp:9.18,pct_t:0.07},
+    {p:'GR 6P Easy Space MDF Amendoa Clean',qty:1,valor:2739.90,pct_mp:9.46,pct_t:0.07},
+  ],
+  'Zema': [
+    {p:'GR 8P c/Pés Amendoa/Off White',qty:2,valor:2195.96,pct_mp:25.38,pct_t:0.06},
+    {p:'GR 6P Easy Slim Amendoa/off White',qty:1,valor:809.68,pct_mp:9.36,pct_t:0.02},
+    {p:'Cama Solteiro Athenas c/ auxiliar Amendoa',qty:1,valor:767.15,pct_mp:8.87,pct_t:0.02},
+    {p:'GR 6P c/Espelho e Pés Amendoa',qty:1,valor:904.38,pct_mp:10.45,pct_t:0.02},
+    {p:'GR 6P c/Espelho Amendoa/Off White',qty:1,valor:931.42,pct_mp:10.77,pct_t:0.02},
+    {p:'GR Toronto 2P 6 Gav. Branco',qty:1,valor:1871.69,pct_mp:21.64,pct_t:0.05},
+    {p:'GR 8P c/Espelho Amendoa Clean',qty:1,valor:1170.43,pct_mp:13.53,pct_t:0.03},
+  ],
+};
+
+const MP_STATE = {
+  'Shopee':{
+    'São Paulo':[
+      {p:'Conj. Sala Jantar 4 Cadeiras Easy Line',qty:93,valor:44630.70,pct_t:1.13},
+      {p:'GR 8P c/Espelho Amendoa/Off White',qty:92,valor:99730.80,pct_t:2.53},
+      {p:'Comoda Easy Like Amendoa/Off White',qty:63,valor:52913.70,pct_t:1.34},
+      {p:'Mesa 0,90 Celebrare c/04 Cad. Linho Rinzai',qty:49,valor:51935.10,pct_t:1.32},
+      {p:'Mesa 170 Apogeu c/6 cad. Veludo Creme',qty:45,valor:66595.50,pct_t:1.69},
+    ],
+    'Minas Gerais':[
+      {p:'GR 8P c/Espelho Amendoa/Off White',qty:119,valor:128838.10,pct_t:3.27},
+      {p:'GR 6P Easy Slim Amendoa/off White',qty:68,valor:51303.20,pct_t:1.30},
+      {p:'Mesa 170 Apogeu c/6 cad. Veludo Creme',qty:42,valor:62155.80,pct_t:1.58},
+      {p:'GR 8P Amendoa Clean/Off White',qty:41,valor:42625.90,pct_t:1.08},
+      {p:'Comoda Easy Like Amendoa/Off White',qty:41,valor:34435.90,pct_t:0.87},
+    ],
+    'Rio de Janeiro':[
+      {p:'GR 8P c/Espelho Amendoa/Off White',qty:154,valor:167004.60,pct_t:4.24},
+      {p:'GR 6P Easy Slim Amendoa/off White',qty:66,valor:49793.40,pct_t:1.26},
+      {p:'GR 8P Amendoa Clean/Off White',qty:54,valor:56134.60,pct_t:1.43},
+      {p:'Comoda Easy Like Amendoa/Off White',qty:42,valor:35275.80,pct_t:0.90},
+      {p:'Conj. Sala Jantar 4 Cadeiras Easy Line',qty:41,valor:19675.90,pct_t:0.50},
+    ],
+  },
+  'Magazine Luiza':{
+    'São Paulo':[
+      {p:'GR 8P c/Espelho e Pés Amendoa/Off White',qty:116,valor:127681.61,pct_t:3.24},
+      {p:'GR 6P Easy Slim Amendoa/off White',qty:68,valor:49507.38,pct_t:1.26},
+      {p:'GR 8P c/Espelho e Pés Amendoa Clean',qty:25,valor:27360.79,pct_t:0.69},
+      {p:'Mesa Jantar 170 Apogeu vidro c/6 cad.',qty:22,valor:29909.99,pct_t:0.76},
+      {p:'GR 8P c/Espelho Amendoa/Off White',qty:11,valor:11612.91,pct_t:0.30},
+    ],
+    'Minas Gerais':[
+      {p:'GR 8P c/Espelho e Pés Amendoa/Off White',qty:107,valor:118788.71,pct_t:3.02},
+      {p:'GR 6P Easy Slim Amendoa/off White',qty:82,valor:60958.11,pct_t:1.55},
+      {p:'GR 8P c/Espelho e Pés Amendoa Clean',qty:31,valor:33735.48,pct_t:0.86},
+      {p:'GR 8P c/Pés Amendoa Clean',qty:25,valor:26052.46,pct_t:0.66},
+      {p:'Mesa Jantar 170 Apogeu vidro c/6 cad.',qty:22,valor:30627.02,pct_t:0.78},
+    ],
+    'Rio de Janeiro':[
+      {p:'GR 8P c/Espelho e Pés Amendoa/Off White',qty:68,valor:74443.24,pct_t:1.89},
+      {p:'GR 6P Easy Slim Amendoa/off White',qty:49,valor:36350.63,pct_t:0.92},
+      {p:'GR 8P c/Espelho e Pés Amendoa Clean',qty:10,valor:10858.75,pct_t:0.28},
+      {p:'Mesa Jantar 170 Apogeu vidro c/6 cad.',qty:7,valor:9614.83,pct_t:0.24},
+      {p:'GR 8P c/Espelho Branco',qty:6,valor:6430.42,pct_t:0.16},
+    ],
+  },
+  'Mercado Livre':{
+    'São Paulo':[
+      {p:'Conj. Sala Jantar 4 Cadeiras Easy Line',qty:52,valor:23394.80,pct_t:0.59},
+      {p:'GR 8P c/Espelho Amendoa/Off White',qty:32,valor:34236.80,pct_t:0.87},
+      {p:'GR 2P Correr 6 Gav. Toronto Plus Branco',qty:32,valor:52953.92,pct_t:1.34},
+      {p:'GR 8P c/Espelho Branco',qty:10,valor:10262.50,pct_t:0.26},
+      {p:'Comoda Easy Like Amendoa/Off White',qty:9,valor:7326.00,pct_t:0.19},
+    ],
+    'Minas Gerais':[
+      {p:'GR 8P c/Espelho Amendoa/Off White',qty:32,valor:34236.80,pct_t:0.87},
+      {p:'Conj. Sala Jantar 4 Cadeiras Easy Line',qty:20,valor:8998.00,pct_t:0.23},
+      {p:'GR 2P Correr 6 Gav. Toronto Plus Branco',qty:12,valor:19857.72,pct_t:0.50},
+      {p:'Comoda Easy Like Amendoa/Off White',qty:9,valor:7326.00,pct_t:0.19},
+      {p:'Comoda Vedra 7 Gav. 2P Amendoa/Off White',qty:7,valor:5459.30,pct_t:0.14},
+    ],
+    'Rio de Janeiro':[
+      {p:'GR 8P c/Espelho Amendoa/Off White',qty:37,valor:39586.30,pct_t:1.01},
+      {p:'Conj. Sala Jantar 4 Cadeiras Easy Line',qty:26,valor:11697.40,pct_t:0.30},
+      {p:'GR 2P Correr 6 Gav. Toronto Plus Branco',qty:15,valor:24822.15,pct_t:0.63},
+      {p:'GR 8P c/Espelho Branco',qty:11,valor:11288.75,pct_t:0.29},
+      {p:'GR 8P c/Espelho Amendoa Clean',qty:6,valor:6157.50,pct_t:0.16},
+    ],
+  },
+  'Via Varejo':{
+    'São Paulo':[
+      {p:'GR 6P c/Espelho e Pés Amendoa/Off White',qty:17,valor:14611.45,pct_t:0.37},
+      {p:'GR 6P c/Espelho Amendoa/Off White',qty:3,valor:4227.06,pct_t:0.11},
+      {p:'GR 8P c/Espelho Branco',qty:2,valor:2189.82,pct_t:0.06},
+      {p:'Mesa Easy Pop 120x80 c/4 Cad. Cinza',qty:1,valor:953.91,pct_t:0.02},
+      {p:'GR 8P Easy Glow c/Espelhos Amendoa',qty:1,valor:2639.90,pct_t:0.07},
+    ],
+    'Rio de Janeiro':[
+      {p:'GR 6P c/Espelho e Pés Amendoa/Off White',qty:16,valor:14384.44,pct_t:0.37},
+      {p:'GR 8P c/Espelho Amendoa/Off White',qty:7,valor:7929.34,pct_t:0.20},
+      {p:'GR 8P c/Espelho Branco',qty:5,valor:5375.54,pct_t:0.14},
+      {p:'GR 6P c/Espelho Amendoa/Off White',qty:3,valor:2583.72,pct_t:0.07},
+      {p:'Comoda Easy Like Amendoa/Off White',qty:2,valor:1779.80,pct_t:0.05},
+    ],
+    'Minas Gerais':[
+      {p:'GR 8P c/Espelho Amendoa/Off White',qty:5,valor:5589.53,pct_t:0.14},
+      {p:'GR 6P c/Espelho e Pés Amendoa/Off White',qty:4,valor:3397.64,pct_t:0.09},
+      {p:'GR 8P c/Espelho Branco',qty:2,valor:2369.80,pct_t:0.06},
+      {p:'Comoda Easy Like Amendoa/Off White',qty:1,valor:889.90,pct_t:0.02},
+      {p:'GR 6P Easy Slim Amendoa/off White',qty:1,valor:829.90,pct_t:0.02},
+    ],
+  },
+  'Madeira Madeira':{
+    'São Paulo':[
+      {p:'Comoda Easy Like Amendoa/Off White',qty:4,valor:6927.41,pct_t:0.18},
+      {p:'GR Spazio 270 3P 6 Gav. Branco',qty:3,valor:6371.71,pct_t:0.16},
+      {p:'Comoda 8 Gav. Easy Like Amendoa',qty:2,valor:2029.70,pct_t:0.05},
+      {p:'Mesa 0,90 Celebrare c/04 Cad.',qty:2,valor:2279.80,pct_t:0.06},
+      {p:'GR 8P c/Espelho Amendoa Clean',qty:2,valor:2339.81,pct_t:0.06},
+    ],
+    'Rio de Janeiro':[
+      {p:'Comoda 8 Gav. Easy Like Amendoa',qty:3,valor:4698.03,pct_t:0.12},
+      {p:'Sapateira Giratoria Esthela c/Espelho',qty:2,valor:1072.31,pct_t:0.03},
+      {p:'GR 8P c/Espelho Branco',qty:2,valor:2339.81,pct_t:0.06},
+      {p:'Comoda Easy Like Amendoa/Off White',qty:1,valor:1239.80,pct_t:0.03},
+      {p:'GR 6P Easy Move 2,40 Amendoa Clean',qty:1,valor:2769.80,pct_t:0.07},
+    ],
+    'Minas Gerais':[
+      {p:'GR 6P c/Espelho Amendoa/Off White',qty:1,valor:949.90,pct_t:0.02},
+      {p:'Mesa 0,90 Celebrare c/04 Cad. Linho Rinzai',qty:1,valor:1139.90,pct_t:0.03},
+      {p:'Sapateira Giratoria Esthela c/Espelho',qty:1,valor:522.41,pct_t:0.01},
+    ],
+  },
+  'Web Continental':{
+    'São Paulo':[
+      {p:'GR 6P c/Espelho e Pés Amendoa',qty:2,valor:1999.80,pct_t:0.05},
+      {p:'Comoda 8 Gav. Easy Like Amendoa',qty:1,valor:738.62,pct_t:0.02},
+      {p:'Beliche Solteiro Olga c/Led Branco',qty:1,valor:1003.11,pct_t:0.03},
+      {p:'Comoda Easy Like Amendoa/Off White',qty:1,valor:919.90,pct_t:0.02},
+      {p:'Conj. Jantar Easy Pop 120x80 4 Cad.',qty:1,valor:1269.90,pct_t:0.03},
+    ],
+    'Minas Gerais':[
+      {p:'Comoda Easy Like Amendoa/Off White',qty:1,valor:889.90,pct_t:0.02},
+      {p:'GR 6P Easy Space MDF Amendoa Clean',qty:1,valor:2739.90,pct_t:0.07},
+      {p:'GR Easy Max 2P Sem Espelho Branco',qty:1,valor:2009.90,pct_t:0.05},
+      {p:'GR 2P Easy Light c/Espelho Amendoa',qty:1,valor:1329.90,pct_t:0.03},
+    ],
+    'Rio de Janeiro':[
+      {p:'Comoda 6 Gav. Maggiore Branco',qty:2,valor:1499.80,pct_t:0.04},
+      {p:'Comoda 8 Gav. 2P Toronto Branco',qty:1,valor:739.11,pct_t:0.02},
+    ],
+  },
+  'Zema':{
+    'Minas Gerais':[
+      {p:'GR 8P c/Pés Amendoa/Off White',qty:2,valor:2195.96,pct_t:0.06},
+      {p:'GR 6P Easy Slim Amendoa/off White',qty:1,valor:809.68,pct_t:0.02},
+      {p:'Cama Solteiro Athenas c/ auxiliar',qty:1,valor:767.15,pct_t:0.02},
+      {p:'GR 6P c/Espelho e Pés Amendoa',qty:1,valor:904.38,pct_t:0.02},
+      {p:'GR 6P c/Espelho Amendoa/Off White',qty:1,valor:931.42,pct_t:0.02},
+    ],
+  },
+};
+
+const TOP10 = [
+  {p:'GR Easy Slim 8P c/Espelho Amendoa/Off White',qty:498,valor:538676.79,pct_v:13.67,pct_q:12.80},
+  {p:'GR Easy Slim 8P c/Espelho e Pés Amendoa/Off White',qty:396,valor:439825.86,pct_v:11.16,pct_q:10.18},
+  {p:'GR Casal 6P Easy Slim Amendoa/off White',qty:368,valor:274429.00,pct_v:6.97,pct_q:9.46},
+  {p:'Conj. Sala Jantar 4 Cadeiras Easy Line',qty:274,valor:128476.44,pct_v:3.26,pct_q:7.04},
+  {p:'Comoda Lopas Easy Like Amendoa/Off White',qty:186,valor:162962.11,pct_v:4.14,pct_q:4.78},
+  {p:'GR Easy Slim 8P c/Espelho Branco',qty:142,valor:152104.70,pct_v:3.86,pct_q:3.65},
+  {p:'GR Easy Slim 8P c/Espelho e Pés Amendoa Clean',qty:117,valor:129756.32,pct_v:3.29,pct_q:3.01},
+  {p:'Mesa 170 Apogeu c/6 cad. Veludo Creme',qty:111,valor:164268.90,pct_v:4.17,pct_q:2.85},
+  {p:'GR Easy Slim 8 Portas Amendoa Clean/Off White',qty:111,valor:116103.23,pct_v:2.95,pct_q:2.85},
+  {p:'Mesa 0,90 Celebrare c/04 Cad. Linho Rinzai Bege',qty:109,valor:115716.11,pct_v:2.94,pct_q:2.80},
+];
+
+const STATES_DATA = [
+  {abbr:'SP',name:'São Paulo',    valor:1438516.01,pedidos:1380,pct:36.51},
+  {abbr:'MG',name:'Minas Gerais', valor:1345255.99,pedidos:1312,pct:34.14},
+  {abbr:'RJ',name:'Rio de Janeiro',valor:1155656.95,pedidos:1143,pct:29.33},
+  {abbr:'AL',name:'Alagoas',      valor:329.70,     pedidos:1,   pct:0.01},
+  {abbr:'PA',name:'Pará',         valor:329.70,     pedidos:1,   pct:0.01},
+];
+
+// ── STATE VALUE MAP ──
+const stateVal = {};
+STATES_DATA.forEach(s => stateVal[s.abbr] = s.valor);
+const maxStateVal = Math.max(...STATES_DATA.map(s=>s.valor));
+
+// ── COLOR INTERPOLATION ──
+function aprod_heatColor(val) {
+  const t = val > 500 ? Math.min(val / maxStateVal, 1) : 0.04;
+  // dark blue → vivid cyan: interpolate in RGB
+  const r0=26,  g0=44,  b0=74;   // low: #1a2c4a
+  const r1=56,  g1=189, b1=248;  // high: #38bdf8
+  return `rgb(${Math.round(r0+(r1-r0)*t)},${Math.round(g0+(g1-g0)*t)},${Math.round(b0+(b1-b0)*t)})`;
+}
+
+// ── BUILD MKT ROWS (visão geral) ──
+const mktRowsDiv = document.getElementById('aprod_mktRows');
+MP.forEach(mp => {
+  const row = document.createElement('div');
+  row.className = 'mkt-row';
+  row.innerHTML = `
+    <div class="mkt-name" style="color:${mp.color}">${mp.name}</div>
+    <div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:${mp.pct}%;background:${mp.color};opacity:.85"></div></div>
+    <div class="mkt-val">${fmtBR(mp.total)}</div>
+    <div class="mkt-pct" style="color:${mp.color};font-family:'DM Mono',monospace;font-size:.75rem;font-weight:600">${mp.pct}%</div>
+  `;
+  mktRowsDiv.appendChild(row);
+});
+
+// ── CHARTS VISÃO GERAL ──
+const gridCfg = {color:'rgba(31,45,69,.6)'};
+const tickCfg = {color:'#7a8aab',font:{size:10,family:'DM Mono, monospace'}};
+const legendCfg = {labels:{color:'#7a8aab',font:{size:11},boxWidth:10,padding:12,usePointStyle:true}};
+
+new Chart(document.getElementById('aprod_barChart'), {
+  type:'bar',
+  data:{
+    labels: MP.map(m=>m.name),
+    datasets:[{
+      data: MP.map(m=>m.total),
+      backgroundColor: MP.map(m=>m.color+'cc'),
+      borderColor: MP.map(m=>m.color),
+      borderWidth:1, borderRadius:6,
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmtK(ctx.parsed.y)}}},
+    scales:{
+      y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>fmtK(v)}},
+      x:{grid:{display:false},ticks:{...tickCfg,maxRotation:30}}
+    }
+  }
+});
+
+new Chart(document.getElementById('aprod_donutChart'), {
+  type:'doughnut',
+  data:{
+    labels: MP.map(m=>`${m.name} ${m.pct}%`),
+    datasets:[{
+      data: MP.map(m=>m.pct),
+      backgroundColor: MP.map(m=>m.color),
+      borderColor:'#161d2e',borderWidth:3,hoverOffset:8
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,cutout:'60%',
+    plugins:{
+      legend:{...legendCfg,position:'bottom'},
+      tooltip:{callbacks:{label:ctx=>' '+ctx.parsed.toFixed(1)+'% do total'}}
+    }
+  }
+});
+
+// ── MP ACCORDION ──
+const acc = document.getElementById('aprod_mpAccordion');
+MP.forEach(mp => {
+  const items = MP_ITEMS[mp.name] || [];
+  const maxV = items.length ? items[0].valor : 1;
+  const div = document.createElement('div');
+  div.className = 'mp-item';
+  div.innerHTML = `
+    <div class="mp-header" onclick="aprod_toggleMp(this)">
+      <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+        <div class="mp-dot" style="background:${mp.color}"></div>
+        <span class="mp-name">${mp.name}</span>
+        <span style="font-size:.7rem;background:${mp.color}22;color:${mp.color};padding:2px 10px;border-radius:999px;font-weight:700;border:1px solid ${mp.color}44">${mp.pct}%</span>
+      </div>
+      <div class="mp-meta">
+        <div class="mp-stat"><div class="mp-stat-val" style="color:${mp.color}">${fmtK(mp.total)}</div><div class="mp-stat-lbl">Receita</div></div>
+        <div class="mp-stat"><div class="mp-stat-val">${mp.pedidos}</div><div class="mp-stat-lbl">Pedidos</div></div>
+        <div class="mp-stat"><div class="mp-stat-val">${fmtBR(mp.ticket)}</div><div class="mp-stat-lbl">Ticket Médio</div></div>
+      </div>
+      <div class="mp-chevron" id="chev-${mp.name.replace(/\s/g,'_')}">▼</div>
+    </div>
+    <div class="mp-body" id="body-${mp.name.replace(/\s/g,'_')}">
+      <table class="data-table" style="margin-top:14px">
+        <thead><tr>
+          <th>#</th><th>Produto</th><th>Qtd</th><th>Receita</th><th>% no Canal</th><th>% Total</th><th style="min-width:130px">Representatividade</th>
+        </tr></thead>
+        <tbody>
+          ${items.map((it,i)=>`
+            <tr>
+              <td><span class="${rankClass(i)}">${i+1}</span></td>
+              <td><div class="prod-name-text" title="${it.p}">${it.p}</div></td>
+              <td class="qty">${it.qty}</td>
+              <td class="mono">${fmtK(it.valor)}</td>
+              <td><div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden"><div style="height:5px;width:${Math.min(it.valor/maxV*100,100).toFixed(1)}%;background:${mp.color}bb;border-radius:3px"></div></div><span style="font-family:'DM Mono';font-size:.7rem;color:${mp.color};width:38px;text-align:right">${it.pct_mp}%</span></div></td>
+              <td class="mono" style="color:var(--accent)">${it.pct_t}%</td>
+              <td><div class="prod-rep-cell"><div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${Math.min(it.valor/maxV*100,100).toFixed(1)}%"></div></div><span class="prod-rep-pct">${it.pct_t}%</span></div></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  acc.appendChild(div);
+});
+
+function aprod_toggleMp(header) {
+  const name = header.querySelector('.mp-name').textContent.trim().replace(/\s/g,'_');
+  const body = document.getElementById('body-'+name);
+  const chev = document.getElementById('chev-'+name);
+  body.classList.toggle('open');
+  if(chev) chev.classList.toggle('open');
+}
+
+// ── TOP 10 TABLE ──
+const tbody10 = document.getElementById('aprod_top10tbody');
+const maxTop = TOP10[0].valor;
+tbody10.innerHTML = TOP10.map((it,i)=>`
+  <tr>
+    <td><span class="${rankClass(i)}">${i+1}</span></td>
+    <td><div class="prod-name-text" title="${it.p}">${it.p}</div></td>
+    <td class="qty">${it.qty}</td>
+    <td class="mono">${fmtK(it.valor)}</td>
+    <td><span style="background:rgba(56,189,248,.15);color:var(--accent);font-size:.7rem;font-family:'DM Mono';padding:2px 8px;border-radius:999px">${it.pct_v}%</span></td>
+    <td class="mono">${it.pct_q}%</td>
+    <td><div class="prod-rep-cell"><div class="prod-rep-bar-bg"><div class="prod-rep-bar-fill" style="width:${(it.valor/maxTop*100).toFixed(1)}%"></div></div><span class="prod-rep-pct">${it.pct_v}%</span></div></td>
+  </tr>
+`).join('');
+
+// ── MP × STATE GRID ──
+const mpStateGrid = document.getElementById('aprod_mpStateGrid');
+MP.forEach(mp => {
+  const stateData = MP_STATE[mp.name];
+  if (!stateData) return;
+  const states = Object.keys(stateData);
+  if (!states.length) return;
+  const safeId = mp.name.replace(/\s/g,'_');
+
+  const card = document.createElement('div');
+  card.className = 'chart-card';
+  card.innerHTML = `
+    <div class="chart-title" style="display:flex;align-items:center;gap:8px">
+      <span style="width:8px;height:8px;background:${mp.color};border-radius:50%;display:inline-block"></span>
+      ${mp.name}
+    </div>
+    <div class="estado-tabs" id="etabs-${safeId}">
+      ${states.map((s,i)=>`<button class="estado-tab${i===0?' active':''}" onclick="aprod_switchEstado('etabs-${safeId}','econt-${safeId}-${s.replace(/\s/g,'_')}',this)">${s}</button>`).join('')}
+    </div>
+    ${states.map((s,i)=>{
+      const items = stateData[s];
+      const maxV = items.length ? items[0].valor : 1;
+      return `
+        <div class="estado-content${i===0?' active':''}" id="econt-${safeId}-${s.replace(/\s/g,'_')}">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Produto</th><th>Qtd</th><th>Receita</th><th>% Total</th></tr></thead>
+            <tbody>
+              ${items.map((it,j)=>`
+                <tr>
+                  <td><span class="${rankClass(j)}">${j+1}</span></td>
+                  <td><div class="prod-name-text" title="${it.p}" style="max-width:240px">${it.p}</div></td>
+                  <td class="qty">${it.qty}</td>
+                  <td class="mono">${fmtK(it.valor)}</td>
+                  <td><span style="background:rgba(56,189,248,.15);color:var(--accent);font-size:.68rem;font-family:'DM Mono';padding:2px 6px;border-radius:999px">${it.pct_t}%</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }).join('')}
+  `;
+  mpStateGrid.appendChild(card);
+});
+
+function aprod_switchEstado(tabsId, contentId, btn) {
+  const tabs = document.getElementById(tabsId);
+  const card = tabs.closest('.chart-card');
+  tabs.querySelectorAll('.estado-tab').forEach(t=>t.classList.remove('active'));
+  card.querySelectorAll('.estado-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(contentId).classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// BRAZIL MAP — real state paths viewBox 0 0 800 760
+// ══════════════════════════════════════════════
+const STATES_SVG = {
+  AC:{d:"M 68 410 L 82 405 L 108 395 L 130 388 L 145 395 L 152 408 L 148 420 L 135 428 L 110 432 L 88 428 L 72 420 Z",lx:110,ly:412},
+  AL:{d:"M 640 340 L 658 335 L 668 345 L 665 362 L 650 368 L 638 360 L 635 348 Z",lx:652,ly:352},
+  AM:{d:"M 108 250 L 145 228 L 190 215 L 240 210 L 278 218 L 300 238 L 312 262 L 308 295 L 288 318 L 260 335 L 225 345 L 195 348 L 165 342 L 140 330 L 118 315 L 102 295 L 96 270 Z",lx:200,ly:280},
+  AP:{d:"M 495 128 L 518 118 L 542 122 L 555 140 L 548 160 L 528 172 L 505 168 L 492 152 Z",lx:522,ly:147},
+  BA:{d:"M 555 345 L 590 330 L 620 325 L 645 332 L 665 348 L 672 372 L 665 400 L 648 428 L 628 452 L 598 468 L 568 475 L 545 468 L 522 452 L 508 428 L 505 400 L 512 372 L 525 352 Z",lx:585,ly:400},
+  CE:{d:"M 628 230 L 658 220 L 685 225 L 698 242 L 692 262 L 672 272 L 648 268 L 632 252 Z",lx:662,ly:247},
+  DF:{d:"M 507 455 L 518 450 L 524 460 L 513 465 Z",lx:515,ly:458},
+  ES:{d:"M 638 462 L 655 455 L 668 465 L 668 488 L 655 498 L 638 490 L 632 475 Z",lx:650,ly:476},
+  GO:{d:"M 480 420 L 510 408 L 535 415 L 548 435 L 545 465 L 525 480 L 498 485 L 472 475 L 458 455 L 460 432 Z",lx:503,ly:448},
+  MA:{d:"M 528 218 L 560 208 L 592 212 L 612 228 L 615 252 L 598 268 L 570 275 L 545 268 L 528 250 L 522 232 Z",lx:568,ly:242},
+  MG:{d:"M 545 468 L 572 455 L 605 452 L 635 458 L 655 475 L 658 505 L 645 532 L 618 548 L 585 555 L 555 548 L 528 530 L 512 505 L 510 478 L 522 462 Z",lx:582,ly:505},
+  MS:{d:"M 388 498 L 422 485 L 455 488 L 478 505 L 480 535 L 462 558 L 432 568 L 402 562 L 380 542 L 375 515 Z",lx:427,ly:525},
+  MT:{d:"M 270 348 L 310 330 L 355 322 L 398 328 L 432 345 L 448 372 L 445 405 L 420 428 L 385 438 L 348 435 L 315 422 L 288 400 L 268 375 Z",lx:358,ly:382},
+  PA:{d:"M 310 172 L 355 158 L 405 148 L 452 148 L 490 158 L 510 175 L 518 200 L 512 228 L 490 248 L 455 262 L 415 268 L 378 262 L 348 245 L 320 225 L 305 200 Z",lx:410,ly:208},
+  PB:{d:"M 672 278 L 700 268 L 718 272 L 722 288 L 712 300 L 692 302 L 675 292 Z",lx:699,ly:286},
+  PE:{d:"M 635 302 L 672 292 L 715 295 L 728 312 L 720 328 L 685 332 L 648 328 L 632 315 Z",lx:678,ly:314},
+  PI:{d:"M 592 215 L 622 208 L 645 215 L 650 235 L 642 258 L 618 268 L 595 262 L 578 245 L 578 225 Z",lx:614,ly:238},
+  PR:{d:"M 448 588 L 480 572 L 515 568 L 535 582 L 538 608 L 518 628 L 485 635 L 452 625 L 438 608 Z",lx:487,ly:602},
+  RJ:{d:"M 622 530 L 648 522 L 665 532 L 668 552 L 648 568 L 625 562 L 612 548 L 618 535 Z",lx:640,ly:547},
+  RN:{d:"M 685 228 L 712 218 L 732 225 L 738 242 L 722 252 L 698 248 L 688 238 Z",lx:712,ly:236},
+  RO:{d:"M 200 368 L 235 355 L 268 362 L 285 382 L 280 408 L 255 422 L 222 418 L 200 398 L 195 380 Z",lx:238,ly:390},
+  RR:{d:"M 225 128 L 255 112 L 285 108 L 308 118 L 318 140 L 308 165 L 278 178 L 248 175 L 228 158 Z",lx:268,ly:145},
+  RS:{d:"M 432 672 L 465 658 L 500 655 L 525 668 L 528 698 L 508 722 L 472 730 L 440 722 L 418 702 L 420 678 Z",lx:472,ly:692},
+  SC:{d:"M 450 632 L 482 622 L 515 625 L 530 642 L 522 662 L 492 670 L 458 665 L 442 648 Z",lx:486,ly:647},
+  SE:{d:"M 655 362 L 672 355 L 685 362 L 682 378 L 668 385 L 652 378 L 650 368 Z",lx:668,ly:372},
+  SP:{d:"M 508 528 L 538 512 L 568 508 L 598 518 L 618 535 L 615 562 L 595 578 L 562 585 L 528 578 L 508 558 L 502 538 Z",lx:560,ly:548},
+  TO:{d:"M 455 268 L 490 258 L 515 268 L 525 292 L 522 325 L 505 348 L 478 358 L 452 348 L 438 322 L 438 292 L 448 272 Z",lx:480,ly:310},
+};
+
+const svg = document.getElementById('aprod_brazilMap');
+const tooltip = document.getElementById('aprod_mapTooltip');
+const mapWrap = document.querySelector('.map-svg-wrap');
+
+Object.entries(STATES_SVG).forEach(([abbr, st]) => {
+  const val = stateVal[abbr] || 0;
+  const fill = aprod_heatColor(val);
+  const stInfo = STATES_DATA.find(s => s.abbr === abbr);
+
+  const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d', st.d);
+  path.setAttribute('fill', fill);
+  path.setAttribute('class', 'state-path');
+
+  path.addEventListener('mouseenter', () => {
+    tooltip.style.display = 'block';
+    tooltip.innerHTML = stInfo
+      ? `<strong style="color:var(--accent)">${stInfo.name}</strong><br>${fmtK(stInfo.valor)} · ${stInfo.pct}% do total<br><span style="color:var(--muted)">${stInfo.pedidos} pedidos</span>`
+      : `<strong>${abbr}</strong><br><span style="color:var(--muted)">Sem dados este período</span>`;
+  });
+  path.addEventListener('mousemove', e => {
+    const r = mapWrap.getBoundingClientRect();
+    tooltip.style.left = (e.clientX - r.left + 14) + 'px';
+    tooltip.style.top  = (e.clientY - r.top - 44) + 'px';
+  });
+  path.addEventListener('mouseleave', () => tooltip.style.display = 'none');
+
+  svg.appendChild(path);
+
+  // Label
+  const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+  txt.setAttribute('x', st.lx);
+  txt.setAttribute('y', st.ly);
+  txt.setAttribute('text-anchor','middle');
+  txt.setAttribute('dominant-baseline','middle');
+  txt.setAttribute('font-size', abbr==='DF'?'5':'7');
+  txt.setAttribute('font-family','DM Mono, monospace');
+  txt.setAttribute('fill', val > maxStateVal * 0.2 ? '#fff' : '#7a8aab');
+  txt.setAttribute('pointer-events','none');
+  txt.textContent = abbr;
+  svg.appendChild(txt);
+});
+
+// Map side list
+const mapSide = document.getElementById('aprod_mapSide');
+[...STATES_DATA].sort((a,b)=>b.valor-a.valor).forEach(s => {
+  const div = document.createElement('div');
+  div.className = 'state-list-item';
+  const barW = Math.round((s.valor / maxStateVal) * 100);
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span class="state-list-name">${s.name}</span>
+      <span style="font-size:.68rem;background:rgba(56,189,248,.15);color:var(--accent);padding:1px 8px;border-radius:999px;font-family:'DM Mono';font-weight:600">${s.pct}%</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:3px">
+      <span class="state-list-val">${fmtK(s.valor)}</span>
+      <span class="state-list-pct">${s.pedidos} pedidos</span>
+    </div>
+    <div style="height:4px;background:var(--bg2);border-radius:2px;margin-top:6px;overflow:hidden">
+      <div class="state-mini-bar" style="width:${barW}%;background:${aprod_heatColor(s.valor)}"></div>
+    </div>
+  `;
+  mapSide.appendChild(div);
+});
+
+// Inicializar: esconder todas as sub-pages exceto a primeira
+(function initAprProd() {
+  // CSS já esconde via .aprod-page{display:none}
+  // Apenas ativar a primeira
+  var first = document.getElementById('aprod_page-visao');
+  if (first) first.classList.add('active');
+})();
+})();
 </script>
 </body>
 </html>
