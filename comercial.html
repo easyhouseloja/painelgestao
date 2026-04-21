@@ -429,7 +429,7 @@ function buildAprCharts(page) {
   if(page==='categorias'){
     const existingCatD = Chart.getChart(document.getElementById('aprCatDetailChart'));
     if(existingCatD) existingCatD.destroy();
-    new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[1323000.00,310000.00,495000.00,38000.00,58000.00],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[785340.27,85788.76,111919.92,3781.22,923.88],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[553311.13,96114.94,17459.68,18470.97,4922.34],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[1323000.00,310000.00,495000.00,38000.00,58000.00],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[430736.93,60826.74,119459.11,8578.29,1295.73],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[249200.03,38992.61,51066.40,6287.61,4220.31],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='diario'){
     const existingDaily = Chart.getChart(document.getElementById('aprDailyChart'));
@@ -733,6 +733,37 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 .aprod-page { display: none; }
 .aprod-page.active { display: block; }
+
+
+/* ── ABA ADS & AFILIADOS ── */
+.ads-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
+.ads-grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+.ads-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+.ads-mp-block { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:22px 24px; margin-bottom:24px; }
+.ads-mp-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--border); }
+.ads-mp-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+.ads-mp-title { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:800; color:var(--text); }
+.ads-mp-subtitle { font-size:.72rem; color:var(--muted); margin-top:2px; }
+.ads-metric-card { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+.ads-metric-label { font-size:.65rem; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:6px; font-weight:600; }
+.ads-metric-value { font-family:'Syne',sans-serif; font-size:1.35rem; font-weight:800; color:var(--text); }
+.ads-metric-sub { font-size:.7rem; color:var(--muted); margin-top:4px; display:flex; align-items:center; gap:4px; }
+.ads-badge-pos { background:rgba(34,197,94,.15); color:var(--green); border-radius:999px; padding:1px 7px; font-size:.67rem; font-weight:700; }
+.ads-badge-neg { background:rgba(239,68,68,.15); color:var(--red); border-radius:999px; padding:1px 7px; font-size:.67rem; font-weight:700; }
+.ads-insight-card { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:14px 16px; display:flex; gap:10px; align-items:flex-start; }
+.ads-insight-icon { font-size:1.2rem; flex-shrink:0; margin-top:1px; }
+.ads-insight-text { font-size:.78rem; color:var(--text); line-height:1.5; }
+.ads-insight-text strong { color:var(--accent); }
+.ads-prod-table { width:100%; border-collapse:collapse; font-size:.78rem; }
+.ads-prod-table th { font-size:.65rem; font-weight:600; text-transform:uppercase; letter-spacing:.7px; color:var(--muted); padding:8px 10px; border-bottom:1px solid var(--border); text-align:left; }
+.ads-prod-table td { padding:8px 10px; border-bottom:1px solid rgba(31,45,69,.4); vertical-align:middle; }
+.ads-prod-table td:not(:first-child) { text-align:right; font-family:'DM Mono',monospace; font-size:.75rem; }
+.ads-prod-table tr:last-child td { border-bottom:none; }
+.ads-prod-table tr:hover td { background:rgba(56,189,248,.04); }
+.ads-divider { display:flex; align-items:center; gap:12px; margin:20px 0 16px; }
+.ads-divider-line { flex:1; height:1px; background:var(--border); }
+.ads-divider-label { font-family:'Syne',sans-serif; font-size:.75rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; white-space:nowrap; }
+@media(max-width:900px){ .ads-grid-3,.ads-grid-4 { grid-template-columns:1fr 1fr; } .ads-grid-2 { grid-template-columns:1fr; } }
 
 </style>
 </head>
@@ -1515,6 +1546,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="tab" onclick="showAprPage('categorias',event)">Categorias</div>
   <div class="tab" onclick="showAprPage('diario',event)">Vendas Diárias</div>
   <div class="tab" onclick="showAprPage('produtos',event)">Análise de Produtos</div>
+  <div class="tab" onclick="showAprPage('ads',event)">📣 ADS & Afiliados</div>
 </div>
 
 <!-- ═══ ABRIL: VISÃO GERAL ═══ -->
@@ -1987,6 +2019,302 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <!-- ═══════════════════════════════════════════════
      SCRIPTS
 ═══════════════════════════════════════════════ -->
+
+</div>
+
+<!-- ═══ ABRIL: ADS & AFILIADOS ═══ -->
+<div class="page" id="apr-page-ads">
+
+  <div class="kpi-strip" style="grid-template-columns:repeat(4,1fr);margin-bottom:28px;">
+    <div class="kpi-card orange">
+      <div class="kpi-label">💰 Investimento Total ADS</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 57,0K</div>
+      <div class="kpi-sub">Shopee R$33,1K · ML R$23,9K · Magalu R$7,9K</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--green)">
+      <div class="kpi-label">📈 Receita Total ADS</div>
+      <div class="kpi-value" style="color:var(--green)">R$ 2,13M</div>
+      <div class="kpi-sub">Shopee R$1,7M · ML R$327K · Magalu R$125K</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--accent)">
+      <div class="kpi-label">🤝 Vendas Afiliados Total</div>
+      <div class="kpi-value" style="color:var(--accent)">R$ 1,40M</div>
+      <div class="kpi-sub">Shopee R$1,3M · ML R$100K</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">🎯 ROAS Médio ADS</div>
+      <div class="kpi-value" style="color:var(--comp)">27,3x</div>
+      <div class="kpi-sub">Shopee 52,2x · ML 13,6x · Magalu 15,9x</div>
+    </div>
+  </div>
+
+  <!-- ════ SHOPEE ════ -->
+  <div class="ads-mp-block" style="border-color:rgba(249,115,22,.25);">
+    <div class="ads-mp-header">
+      <div class="ads-mp-dot" style="background:var(--shopee)"></div>
+      <div>
+        <div class="ads-mp-title" style="color:var(--shopee)">🟠 Shopee — ADS & Afiliados</div>
+        <div class="ads-mp-subtitle">Período 01/04 a 20/04/2026 · Conta: moveislopas</div>
+      </div>
+    </div>
+
+    <div class="ads-divider"><div class="ads-divider-line"></div><div class="ads-divider-label">📣 Shopee Ads — Desempenho Geral</div><div class="ads-divider-line"></div></div>
+    <div class="ads-grid-4">
+      <div class="ads-metric-card"><div class="ads-metric-label">Impressões</div><div class="ads-metric-value">7,6M</div><div class="ads-metric-sub">Todos os anúncios</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Cliques</div><div class="ads-metric-value">127K</div><div class="ads-metric-sub"><span class="ads-badge-pos">CTR 1,68%</span></div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Investimento</div><div class="ads-metric-value" style="color:var(--red)">R$ 33,1K</div><div class="ads-metric-sub">Custo total dos anúncios</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Receita Gerada</div><div class="ads-metric-value" style="color:var(--green)">R$ 1,7M</div><div class="ads-metric-sub"><span class="ads-badge-pos">ROAS 52,24x</span></div></div>
+    </div>
+    <div class="ads-grid-4">
+      <div class="ads-metric-card"><div class="ads-metric-label">Itens Vendidos (ADS)</div><div class="ads-metric-value">1.800</div><div class="ads-metric-sub">via anúncios</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Pedidos via ADS</div><div class="ads-metric-value">1.800</div><div class="ads-metric-sub">pedidos confirmados</div></div>
+      <div class="ads-metric-card" style="border-color:rgba(249,115,22,.3)"><div class="ads-metric-label">🏆 Campanha Ativa</div><div class="ads-metric-value" style="font-size:1rem">Mês do Consumidor</div><div class="ads-metric-sub">CPC · 16/03 → 04/05/2026</div></div>
+      <div class="ads-metric-card" style="border-color:rgba(249,115,22,.3)"><div class="ads-metric-label">Orçamento Diário</div><div class="ads-metric-value" style="color:var(--shopee)">R$ 715,00</div><div class="ads-metric-sub">Campanha ativa</div></div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(249,115,22,.08),rgba(249,115,22,.03));border:1px solid rgba(249,115,22,.25);border-radius:12px;padding:20px 22px;margin-bottom:20px;">
+      <div style="font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--shopee);margin-bottom:14px;letter-spacing:.5px;">📊 O QUE ESSES NÚMEROS SIGNIFICAM — ADS SHOPEE</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">💰 Retorno por Real Investido (ROAS)</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--green)">R$ 52,24</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Para cada <strong style="color:var(--shopee)">R$ 1,00</strong> investido em ADS na Shopee, você teve <strong style="color:var(--green)">R$ 52,24</strong> em retorno de vendas. ROAS de 52,24x — <strong style="color:var(--accent)">excelente eficiência</strong> de mídia paga.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🖱️ Custo por Clique (CPC Médio)</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent)">R$ 0,26</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Cada clique nos seus anúncios custou em média <strong style="color:var(--accent)">R$ 0,26</strong>. Com 127 mil cliques e R$ 33,1K investidos, o tráfego gerado foi altamente eficiente — <strong style="color:var(--green)">custo baixo por visita</strong>.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🛒 Custo por Venda</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--yellow)">R$ 18,39</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Cada venda gerada pelo ADS custou <strong style="color:var(--yellow)">R$ 18,39</strong> (R$ 33.100 ÷ 1.800 vendas). Considerando o ticket médio dos produtos, esse custo por aquisição é <strong style="color:var(--green)">muito competitivo</strong>.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">👁️ Taxa de Clique (CTR)</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--comp)">1,68%</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">De 7,6 milhões de exibições, <strong style="color:var(--comp)">1,68%</strong> resultou em clique (~1,7 a cada 100). Na Shopee, CTR acima de 1% é considerado <strong style="color:var(--green)">bom desempenho</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 18px;font-size:.8rem;color:var(--muted);display:flex;gap:10px;align-items:center;margin-bottom:20px;">
+      <span style="font-size:1.1rem">ℹ️</span>
+      <span>O painel <strong style="color:var(--text)">Shopee Ads</strong> exibe métricas consolidadas. Para performance por produto, acesse o <strong style="color:var(--shopee)">Shopee Seller Center → Central de Marketing → Shopee Ads</strong>.</span>
+    </div>
+
+    <div class="ads-divider"><div class="ads-divider-line"></div><div class="ads-divider-label">🤝 Afiliados Shopee — Principais Indicadores (Abr/2026)</div><div class="ads-divider-line"></div></div>
+    <div class="ads-grid-4">
+      <div class="ads-metric-card" style="border-color:rgba(249,115,22,.25)"><div class="ads-metric-label">Vendas via Afiliados</div><div class="ads-metric-value" style="color:var(--shopee)">R$ 1,3M</div><div class="ads-metric-sub"><span class="ads-badge-pos">▲ +1,07%</span> vs mês anterior</div></div>
+      <div class="ads-metric-card" style="border-color:rgba(249,115,22,.25)"><div class="ads-metric-label">Itens Vendidos</div><div class="ads-metric-value">1,4 mil</div><div class="ads-metric-sub"><span class="ads-badge-pos">▲ +1,20%</span> vs mês anterior</div></div>
+      <div class="ads-metric-card" style="border-color:rgba(249,115,22,.25)"><div class="ads-metric-label">Pedidos</div><div class="ads-metric-value">1,4 mil</div><div class="ads-metric-sub"><span class="ads-badge-pos">▲ +1,00%</span> vs mês anterior</div></div>
+      <div class="ads-metric-card" style="border-color:rgba(249,115,22,.25)"><div class="ads-metric-label">Comissão Estimada</div><div class="ads-metric-value" style="color:var(--red)">R$ 77,5K</div><div class="ads-metric-sub"><span class="ads-badge-pos">▲ +5,37%</span> vs mês anterior</div></div>
+    </div>
+    <div class="ads-grid-4">
+      <div class="ads-metric-card"><div class="ads-metric-label">ROI Afiliados</div><div class="ads-metric-value">16,5</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -4,08%</span> vs mês anterior</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Compradores Totais</div><div class="ads-metric-value">1,4 mil</div><div class="ads-metric-sub"><span class="ads-badge-pos">▲ +1,17%</span> vs mês anterior</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Novos Compradores</div><div class="ads-metric-value">1,1 mil</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -6,21%</span> vs mês anterior</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Clicks Afiliados</div><div class="ads-metric-value">332,9K</div><div class="ads-metric-sub"><span class="ads-badge-pos">▲ +9,94%</span> vs mês anterior</div></div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(249,115,22,.06),rgba(249,115,22,.02));border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:20px 22px;">
+      <div style="font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--shopee);margin-bottom:14px;letter-spacing:.5px;">📊 O QUE ESSES NÚMEROS SIGNIFICAM — AFILIADOS SHOPEE</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">💸 Comissão Média por Pedido</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--red)">R$ 55,36</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">A cada pedido gerado por afiliado, você paga em média <strong style="color:var(--red)">R$ 55,36</strong> de comissão (R$77,5K ÷ 1.400 pedidos), equivalente a <strong style="color:var(--yellow)">~5,96%</strong> sobre as vendas.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🎯 Retorno por Real de Comissão (ROI)</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--green)">16,5x</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Para cada <strong style="color:var(--shopee)">R$ 1,00</strong> pago em comissão, você gerou <strong style="color:var(--green)">R$ 16,50</strong> em vendas. ROI sólido que justifica manter e escalar o programa.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🛍️ Ticket Médio via Afiliado</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent)">R$ 928,57</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Cada pedido via afiliado tem ticket médio de <strong style="color:var(--accent)">R$ 928,57</strong>. São 1.100 novos compradores atraídos, ampliando a base de clientes organicamente.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ MERCADO LIVRE ════ -->
+  <div class="ads-mp-block" style="border-color:rgba(255,224,0,.2);">
+    <div class="ads-mp-header">
+      <div class="ads-mp-dot" style="background:var(--ml)"></div>
+      <div>
+        <div class="ads-mp-title" style="color:var(--ml)">🟡 Mercado Livre — ADS & Afiliados</div>
+        <div class="ads-mp-subtitle">Período 01/04 a 20/04/2026</div>
+      </div>
+    </div>
+
+    <div class="ads-divider"><div class="ads-divider-line"></div><div class="ads-divider-label">📣 Mercado Livre Ads — Métricas Gerais</div><div class="ads-divider-line"></div></div>
+    <div class="ads-grid-4">
+      <div class="ads-metric-card"><div class="ads-metric-label">Investimento</div><div class="ads-metric-value" style="color:var(--red)">R$ 23.942,02</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -17%</span> vs período ant.</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Renda Gerada</div><div class="ads-metric-value" style="color:var(--green)">R$ 326.648,29</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -21%</span> vs período ant.</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Vendas (unidades)</div><div class="ads-metric-value">316</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -18%</span> vs período ant.</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Cliques</div><div class="ads-metric-value">57.070</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -17%</span> vs período ant.</div></div>
+    </div>
+    <div class="ads-grid-3">
+      <div class="ads-metric-card"><div class="ads-metric-label">Impressões</div><div class="ads-metric-value">15.557.546</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -20%</span> vs período ant.</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Custo por Venda</div><div class="ads-metric-value" style="color:var(--red)">R$ 75,76</div><div class="ads-metric-sub">R$23.942 ÷ 316 vendas</div></div>
+      <div class="ads-metric-card" style="border-color:rgba(255,224,0,.3)"><div class="ads-metric-label">ROAS ML Ads</div><div class="ads-metric-value" style="color:var(--green)">13,6x</div><div class="ads-metric-sub">R$326K ÷ R$23,9K invest.</div></div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(255,224,0,.07),rgba(255,224,0,.02));border:1px solid rgba(255,224,0,.2);border-radius:12px;padding:20px 22px;margin-bottom:20px;">
+      <div style="font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--ml);margin-bottom:14px;letter-spacing:.5px;">📊 O QUE ESSES NÚMEROS SIGNIFICAM — ADS MERCADO LIVRE</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">💰 Retorno por Real Investido (ROAS)</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--green)">R$ 13,64</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Para cada <strong style="color:var(--ml)">R$ 1,00</strong> investido em ADS no Mercado Livre, você teve <strong style="color:var(--green)">R$ 13,64</strong> em renda. ROAS de 13,6x — <strong style="color:var(--yellow)">bom retorno</strong>, mas abaixo da Shopee. Queda de -21% indica necessidade de otimização.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🖱️ Custo por Clique (CPC Médio)</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent)">R$ 0,42</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Cada clique custou <strong style="color:var(--accent)">R$ 0,42</strong> — 62% mais caro que na Shopee (R$ 0,26). Com 57 mil cliques, o custo por visita impacta a eficiência geral.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🛒 Custo por Venda</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--red)">R$ 75,77</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Cada venda via ADS no ML custou <strong style="color:var(--red)">R$ 75,77</strong> — <strong style="color:var(--yellow)">4x mais caro</strong> que na Shopee. Oportunidade de revisar segmentação e melhorar conversão.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">📉 Alerta de Performance</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--red)">▼ -20%</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Impressões <strong style="color:var(--red)">-20%</strong>, vendas <strong style="color:var(--red)">-18%</strong> e cliques <strong style="color:var(--red)">-17%</strong>. Recomenda-se <strong style="color:var(--yellow)">revisar lances</strong>, atualizar criativos e ampliar portfólio de produtos.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ads-divider"><div class="ads-divider-line"></div><div class="ads-divider-label">🤝 Afiliados Mercado Livre — Métricas de Produtos</div><div class="ads-divider-line"></div></div>
+    <div class="ads-grid-4">
+      <div class="ads-metric-card" style="border-color:rgba(255,224,0,.25)"><div class="ads-metric-label">Vendas Líquidas</div><div class="ads-metric-value" style="color:var(--ml)">R$ 99.999,26</div><div class="ads-metric-sub">36 produtos ativos</div></div>
+      <div class="ads-metric-card" style="border-color:rgba(255,224,0,.25)"><div class="ads-metric-label">Unidades Vendidas</div><div class="ads-metric-value">104</div><div class="ads-metric-sub">via programa de afiliados</div></div>
+      <div class="ads-metric-card" style="border-color:rgba(255,224,0,.25)"><div class="ads-metric-label">Quantidade Vendas</div><div class="ads-metric-value">104</div><div class="ads-metric-sub">vendas confirmadas</div></div>
+      <div class="ads-metric-card" style="border-color:rgba(255,224,0,.25)"><div class="ads-metric-label">Custo Estimado</div><div class="ads-metric-value" style="color:var(--red)">R$ 3.578,77</div><div class="ads-metric-sub">comissão afiliados</div></div>
+    </div>
+    <div style="overflow-x:auto;margin-bottom:16px;">
+      <table class="ads-prod-table">
+        <thead><tr><th>#</th><th>Produto</th><th>Vendas</th><th>Unidades</th><th>Cliques</th><th>Custo Est.</th><th>ROI</th></tr></thead>
+        <tbody>
+          <tr><td><span class="rank-badge rank-1">1</span></td><td>Guarda-roupa Casal Easy Slim (R$1.091,90)</td><td style="color:var(--green)">R$ 23.357,80</td><td>22</td><td>2.026</td><td>R$ 1.015,10</td><td style="color:var(--green);font-weight:700">22x</td></tr>
+          <tr><td><span class="rank-badge rank-2">2</span></td><td>Guarda-roupa Casal MDF 2 Portas (R$1.763,90)</td><td style="color:var(--green)">R$ 19.832,81</td><td>12</td><td>1.239</td><td>R$ 659,93</td><td style="color:var(--green)">29x</td></tr>
+          <tr><td><span class="rank-badge rank-3">3</span></td><td>Guarda-roupa Casal Easy Slim (R$1.091,90)</td><td>R$ 7.167,40</td><td>7</td><td>172</td><td>R$ 164,20</td><td style="color:var(--green)">43x</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="background:linear-gradient(135deg,rgba(255,224,0,.06),rgba(255,224,0,.02));border:1px solid rgba(255,224,0,.18);border-radius:12px;padding:20px 22px;">
+      <div style="font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--ml);margin-bottom:14px;letter-spacing:.5px;">📊 O QUE ESSES NÚMEROS SIGNIFICAM — AFILIADOS ML</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">💸 Comissão Média por Venda</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--red)">R$ 34,41</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">A cada venda via afiliado no ML, você paga em média <strong style="color:var(--red)">R$ 34,41</strong> (R$3.578 ÷ 104 vendas), equivalente a <strong style="color:var(--yellow)">3,58%</strong> — menor que na Shopee (5,96%).</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🛍️ Ticket Médio via Afiliado</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent)">R$ 961,53</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Cada compra via afiliado tem ticket de <strong style="color:var(--accent)">R$ 961,53</strong> — similar à Shopee (R$928). Produtos de alto valor funcionam bem em ambas as plataformas.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">💡 Potencial de Escala</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--green)">36 produtos</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Com 36 produtos gerando <strong style="color:var(--green)">R$100K</strong> e custo de apenas R$3.578, o custo é extremamente baixo. <strong style="color:var(--accent)">Ampliar o catálogo</strong> pode multiplicar os resultados.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ MAGALU ════ -->
+  <div class="ads-mp-block" style="border-color:rgba(0,134,255,.2);">
+    <div class="ads-mp-header">
+      <div class="ads-mp-dot" style="background:var(--magalu)"></div>
+      <div>
+        <div class="ads-mp-title" style="color:var(--magalu)">🔵 Magazine Luiza — ADS</div>
+        <div class="ads-mp-subtitle">Período 01/04 a 20/04/2026 · Sem programa de afiliados</div>
+      </div>
+    </div>
+
+    <div class="ads-divider"><div class="ads-divider-line"></div><div class="ads-divider-label">📣 Magalu Ads — Campanha Mês do Consumidor</div><div class="ads-divider-line"></div></div>
+    <div class="ads-grid-4">
+      <div class="ads-metric-card"><div class="ads-metric-label">Investimento</div><div class="ads-metric-value" style="color:var(--red)">R$ 7.865,00</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -21,3%</span> vs período ant.</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">ROAS</div><div class="ads-metric-value" style="color:var(--green)">15,9x</div><div class="ads-metric-sub"><span class="ads-badge-pos">▲ +61,2%</span> vs período ant.</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Impressões</div><div class="ads-metric-value">112.806</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -14,6%</span> vs período ant.</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">CTR</div><div class="ads-metric-value">10,43%</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -2,9%</span> vs período ant.</div></div>
+    </div>
+    <div class="ads-grid-4">
+      <div class="ads-metric-card"><div class="ads-metric-label">Cliques</div><div class="ads-metric-value">11.763</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -17,1%</span> vs período ant.</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">CPC Médio</div><div class="ads-metric-value">R$ 0,77</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -4,8%</span> vs período ant.</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Vendas Diretas</div><div class="ads-metric-value" style="color:var(--green)">R$ 94.073,25</div><div class="ads-metric-sub"><span class="ads-badge-pos">▲ +64,7%</span> · 101 pedidos</div></div>
+      <div class="ads-metric-card"><div class="ads-metric-label">Vendas Indiretas</div><div class="ads-metric-value">R$ 30.654,18</div><div class="ads-metric-sub"><span class="ads-badge-neg">▼ -25,7%</span> · 30 pedidos</div></div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(0,134,255,.07),rgba(0,134,255,.02));border:1px solid rgba(0,134,255,.2);border-radius:12px;padding:20px 22px;margin-bottom:20px;">
+      <div style="font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--magalu);margin-bottom:14px;letter-spacing:.5px;">📊 O QUE ESSES NÚMEROS SIGNIFICAM — ADS MAGALU</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">💰 Retorno por Real Investido (ROAS)</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--green)">R$ 15,90</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Para cada <strong style="color:var(--magalu)">R$ 1,00</strong> investido, você teve <strong style="color:var(--green)">R$ 15,90</strong> em retorno. ROAS 15,9x com melhora de <strong style="color:var(--green)">+61,2%</strong> vs período anterior — campanha ganhando eficiência.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🖱️ Custo por Clique (CPC Médio)</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent)">R$ 0,77</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Cada clique custou <strong style="color:var(--accent)">R$ 0,77</strong> — o mais caro entre os 3 canais. Porém, o CTR de <strong style="color:var(--green)">10,43%</strong> é muito alto, indicando grande afinidade do público com os anúncios.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🛒 Custo por Pedido</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--yellow)">R$ 60,04</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">Cada pedido (direto + indireto) custou <strong style="color:var(--yellow)">R$ 60,04</strong> (R$7.865 ÷ 131 pedidos). As <strong style="color:var(--green)">vendas diretas subiram +64,7%</strong>, mostrando melhor conversão.</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px 16px;">
+          <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">⚠️ Produtos sem Retorno</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--red)">9 produtos</div>
+          <div style="font-size:.78rem;color:var(--text);margin-top:6px;line-height:1.5">9 dos 17 produtos têm <strong style="color:var(--red)">ROAS 0,0x</strong> — gastam orçamento sem gerar vendas. Recomenda-se <strong style="color:var(--yellow)">pausar ou revisar</strong> esses anúncios e realocar o budget nos de melhor performance.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ads-divider"><div class="ads-divider-line"></div><div class="ads-divider-label">📦 Top Produtos — ADS Magalu</div><div class="ads-divider-line"></div></div>
+    <div style="overflow-x:auto;">
+      <table class="ads-prod-table">
+        <thead><tr><th>#</th><th>Produto</th><th>Visualizações</th><th>CTR</th><th>Cliques</th><th>Cl. Cobrados</th><th>CPC</th><th>ROAS</th></tr></thead>
+        <tbody>
+          <tr><td><span class="rank-badge rank-1">1</span></td><td>Conj. Mesa de Jantar Celebrare 1-20 c/vidro 4 Cad. Apogeu</td><td>2.014</td><td>3,03%</td><td>61</td><td>53</td><td>R$ 1,26</td><td style="color:var(--green);font-weight:700">50,8x</td></tr>
+          <tr><td><span class="rank-badge rank-2">2</span></td><td>GR Casal 6P Easy Slim Amendoa Clean/off White</td><td>24.060</td><td>16,21%</td><td>3.899</td><td>3.263</td><td>R$ 0,57</td><td style="color:var(--green)">20,5x</td></tr>
+          <tr><td><span class="rank-badge rank-3">3</span></td><td>Mesa de Jantar 1-70 Apogeu c/vidro Serigrafado 6 Cad.</td><td>7.609</td><td>7,36%</td><td>560</td><td>491</td><td>R$ 1,15</td><td style="color:var(--green)">17,7x</td></tr>
+          <tr><td><span class="rank-badge rank-n">4</span></td><td>GR Easy Slim 8P c/Espelho e Pés Amendoa Clean</td><td>13.887</td><td>9,07%</td><td>1.259</td><td>1.089</td><td>R$ 0,96</td><td style="color:var(--green)">15,8x</td></tr>
+          <tr><td><span class="rank-badge rank-n">5</span></td><td>GR Easy Slim 8P c/Espelho e Pés Amendoa Clean/Off White</td><td>14.642</td><td>9,42%</td><td>1.380</td><td>1.195</td><td>R$ 0,90</td><td style="color:var(--yellow)">14,2x</td></tr>
+          <tr><td><span class="rank-badge rank-n">6</span></td><td>Conj. Mesa de Jantar Celebrare 1-20 c/vidro 4 Cad. (v2)</td><td>3.831</td><td>5,27%</td><td>202</td><td>171</td><td>R$ 1,10</td><td style="color:var(--yellow)">12,0x</td></tr>
+          <tr><td><span class="rank-badge rank-n">7</span></td><td>GR Easy Slim 8P c/Espelho Amendoa Clean/Off White</td><td>18.059</td><td>12,14%</td><td>2.192</td><td>1.907</td><td>R$ 0,75</td><td style="color:var(--yellow)">4,6x</td></tr>
+          <tr><td><span class="rank-badge rank-n">8</span></td><td>GR Easy Slim 8P c/Pés Amendoa Clean</td><td>10.034</td><td>8,28%</td><td>831</td><td>761</td><td>R$ 0,97</td><td style="color:var(--yellow)">2,9x</td></tr>
+          <tr><td><span class="rank-badge rank-n">9</span></td><td>Conj. Sala de Jantar 4 Cadeiras Easy Line</td><td>2.301</td><td>6,52%</td><td>150</td><td>135</td><td>R$ 0,56</td><td style="color:var(--muted)">0,0x ❌</td></tr>
+          <tr><td><span class="rank-badge rank-n">10</span></td><td>GR Casal 6P c/Espelho e Pés Amendoa/Off White</td><td>4.696</td><td>12,84%</td><td>603</td><td>544</td><td>R$ 0,90</td><td style="color:var(--muted)">0,0x ❌</td></tr>
+          <tr><td><span class="rank-badge rank-n">11</span></td><td>Comoda 8 Gavetas Easy Like Branco</td><td>2.645</td><td>3,59%</td><td>95</td><td>87</td><td>R$ 0,78</td><td style="color:var(--muted)">0,0x ❌</td></tr>
+          <tr><td><span class="rank-badge rank-n">12</span></td><td>Mesa De Cabeceira Easy Like Amendoa Clean/Off White</td><td>0</td><td>N/D</td><td>0</td><td>0</td><td>R$ 0,00</td><td style="color:var(--muted)">0,0x ❌</td></tr>
+          <tr><td><span class="rank-badge rank-n">13</span></td><td>Mesa 0,90 Celebrare c/04 Cad. Linho Rinzai Bege</td><td>223</td><td>0,90%</td><td>2</td><td>2</td><td>R$ 1,48</td><td style="color:var(--muted)">0,0x ❌</td></tr>
+          <tr><td><span class="rank-badge rank-n">14</span></td><td>Cômoda Maggiore 6 Gavetas Amêndoa Clean/Off White</td><td>2.427</td><td>4,20%</td><td>102</td><td>84</td><td>R$ 0,68</td><td style="color:var(--muted)">0,0x ❌</td></tr>
+          <tr><td><span class="rank-badge rank-n">15</span></td><td>GR Casal Spazio 270 3 Portas 6 Gavetas Branco</td><td>2.784</td><td>1,65%</td><td>46</td><td>44</td><td>R$ 1,40</td><td style="color:var(--muted)">0,0x ❌</td></tr>
+          <tr><td><span class="rank-badge rank-n">16</span></td><td>GR Easy Max 2P c/Espelho Branco Lopas</td><td>2</td><td>0,00%</td><td>0</td><td>0</td><td>R$ 0,00</td><td style="color:var(--muted)">0,0x ❌</td></tr>
+          <tr><td><span class="rank-badge rank-n">17</span></td><td>Dormitório Completo Casal Easy Like Amendoa Clean/Off White</td><td>1</td><td>0,00%</td><td>0</td><td>0</td><td>R$ 0,00</td><td style="color:var(--muted)">0,0x ❌ inativo</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);padding:8px 12px;background:var(--bg3);border-radius:8px;">❌ = produtos sem conversão registrada · Oportunidade: revisar lances e criativos destes anúncios</div>
+  </div>
+
+  <!-- ════ INSIGHTS ════ -->
+  <div class="section-title">🔍 Principais Insights — ADS & Afiliados (01/04 a 20/04)</div>
+  <div class="ads-grid-3">
+    <div class="ads-insight-card" style="border-color:rgba(34,197,94,.3);"><div class="ads-insight-icon">🏆</div><div class="ads-insight-text"><strong>Shopee ADS — ROAS excepcional:</strong> ROAS de <strong>52,24x</strong>. Para cada R$1 investido, retornam R$52,24 em vendas. R$33,1K investidos geraram R$1,7M em receita.</div></div>
+    <div class="ads-insight-card" style="border-color:rgba(0,134,255,.3);"><div class="ads-insight-icon">📈</div><div class="ads-insight-text"><strong>Magalu ADS melhorando:</strong> ROAS <strong>15,9x (+61,2%)</strong> vs período anterior. Vendas diretas +64,7%. Conversão melhorou mesmo com menos cliques — audiência mais qualificada.</div></div>
+    <div class="ads-insight-card" style="border-color:rgba(255,224,0,.3);"><div class="ads-insight-icon">⚠️</div><div class="ads-insight-text"><strong>ML Ads em queda:</strong> Invest. <strong>-17%</strong>, vendas <strong>-18%</strong>, impressões <strong>-20%</strong>. Custo por venda de R$75,77 — 4x mais caro que Shopee. Revisar mix de anúncios.</div></div>
+    <div class="ads-insight-card" style="border-color:rgba(56,189,248,.3);"><div class="ads-insight-icon">🤝</div><div class="ads-insight-text"><strong>Afiliados Shopee crescendo:</strong> Vendas +1,07%, clicks +9,94%. Comissão média R$55,36/pedido (~5,96%). <strong>1.100 novos compradores</strong> atraídos pelo programa.</div></div>
+    <div class="ads-insight-card" style="border-color:rgba(129,140,248,.3);"><div class="ads-insight-icon">💡</div><div class="ads-insight-text"><strong>ML Afiliados — baixo custo:</strong> R$3.578 de comissão gerou <strong>R$100K</strong> em vendas (comissão média R$34,41 = 3,58%). Ampliar o catálogo dos 36 produtos pode escalar resultados.</div></div>
+    <div class="ads-insight-card" style="border-color:rgba(34,197,94,.3);"><div class="ads-insight-icon">🎯</div><div class="ads-insight-text"><strong>GR Casal 6P — destaque Magalu:</strong> CTR <strong>16,21%</strong> com 3.899 cliques e ROAS 20,5x. Produto mais clicado com CPC baixo de R$0,57. Top performer da campanha.</div></div>
+  </div>
 
 </div>
 </div><!-- /month-april -->
@@ -3044,7 +3372,7 @@ function buildAprCharts(page) {
   if(page==='categorias'){
     const existingCatD = Chart.getChart(document.getElementById('aprCatDetailChart'));
     if(existingCatD) existingCatD.destroy();
-    new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[1323000.00,310000.00,495000.00,38000.00,58000.00],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[785340.27,85788.76,111919.92,3781.22,923.88],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[553311.13,96114.94,17459.68,18470.97,4922.34],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+    new Chart(document.getElementById('aprCatDetailChart'),{type:'bar',data:{labels:['Shopee','ML','Magalu','Madeira','Via'],datasets:[{label:'GR',data:[1323000.00,310000.00,495000.00,38000.00,58000.00],backgroundColor:'#34d399',borderRadius:4},{label:'SALA',data:[430736.93,60826.74,119459.11,8578.29,1295.73],backgroundColor:'#fb7185',borderRadius:4},{label:'COMP',data:[249200.03,38992.61,51066.40,6287.61,4220.31],backgroundColor:'#818cf8',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
   }
   if(page==='diario'){
     const existingDaily = Chart.getChart(document.getElementById('aprDailyChart'));
