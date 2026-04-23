@@ -57,6 +57,8 @@
   --glow-financeiro: rgba(34,197,94,0.16);
   --accent-teal:  #0891b2;
   --glow-teal: rgba(8,145,178,0.18);
+  --accent-pink:  #ec4899;
+  --glow-pink: rgba(236,72,153,0.20);
 }
 
 /* ── LIGHT MODE VARIABLES ── */
@@ -76,6 +78,7 @@ body.light-mode {
   --glow-purple: rgba(156,111,255,0.10);
   --glow-financeiro: rgba(34,197,94,0.10);
   --glow-teal: rgba(8,145,178,0.10);
+  --glow-pink: rgba(236,72,153,0.12);
 }
 
 body.light-mode::before {
@@ -250,22 +253,44 @@ body::before {
   filter: blur(120px);
   pointer-events: none;
   z-index: 0;
+  will-change: transform, opacity;
 }
 .ambient-1 {
   width: 800px; height: 600px;
   top: -280px; left: -180px;
-  background: radial-gradient(circle, rgba(255,90,0,0.28) 0%, rgba(200,30,30,0.15) 40%, transparent 65%);
+  background: radial-gradient(circle, rgba(255,90,0,0.18) 0%, rgba(200,30,30,0.09) 40%, transparent 65%);
+  animation: ambientDrift1 72s ease-in-out infinite;
 }
 .ambient-2 {
   width: 600px; height: 500px;
   bottom: -180px; right: -100px;
-  background: radial-gradient(circle, rgba(255,70,0,0.18) 0%, rgba(170,20,20,0.1) 40%, transparent 65%);
+  background: radial-gradient(circle, rgba(255,70,0,0.11) 0%, rgba(170,20,20,0.06) 40%, transparent 65%);
+  animation: ambientDrift2 84s ease-in-out infinite;
 }
 .ambient-3 {
   width: 500px; height: 400px;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(255,60,0,0.1) 0%, rgba(160,10,10,0.05) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,60,0,0.06) 0%, rgba(160,10,10,0.03) 40%, transparent 70%);
+  animation: ambientDrift3 96s ease-in-out infinite;
+}
+
+@keyframes ambientDrift1 {
+  0%, 100% { transform: translate(0, 0) scale(1);       opacity: 1; }
+  50%      { transform: translate(40px, 30px) scale(1.08); opacity: 0.85; }
+}
+@keyframes ambientDrift2 {
+  0%, 100% { transform: translate(0, 0) scale(1);         opacity: 0.9; }
+  50%      { transform: translate(-35px, -25px) scale(1.1); opacity: 1; }
+}
+@keyframes ambientDrift3 {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);      opacity: 1; }
+  50%      { transform: translate(-48%, -52%) scale(1.12);   opacity: 0.8; }
+}
+
+/* Respeitar usuários com preferência por movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .ambient-1, .ambient-2, .ambient-3 { animation: none; }
 }
 
 /* ── LAYOUT WRAPPER ── */
@@ -734,15 +759,15 @@ body::before {
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255,255,255,0.12);
+  transform: scale(1.008);
+  border-color: rgba(255,255,255,0.14);
   z-index: 10;
   position: relative;
 }
 
 .card:hover::before {
   opacity: 1;
-  box-shadow: 0 0 12px currentColor;
+  box-shadow: 0 0 18px currentColor, 0 0 32px currentColor;
 }
 
 /* Per-card accent */
@@ -752,16 +777,18 @@ body::before {
 .card-comercial::before { background: var(--accent-blue);  box-shadow: 0 0 20px var(--glow-blue); }
 .card-mm1p::before     { background: var(--accent-purple); box-shadow: 0 0 20px var(--glow-purple); }
 
-.card-estoque:hover  { box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 -2px 16px var(--glow-amber) inset; transform: translateY(-3px) !important; }
-.card-astec:hover    { box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 -2px 16px var(--glow-orange) inset; transform: translateY(-3px) !important; }
-.card-sla:hover      { box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 -2px 16px var(--glow-green) inset; transform: translateY(-3px) !important; }
-.card-comercial:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 -2px 16px var(--glow-blue) inset; transform: translateY(-3px) !important; }
-.card-mm1p:hover     { box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 -2px 16px var(--glow-purple) inset; transform: translateY(-3px) !important; }
+.card-estoque:hover  { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-amber) inset; transform: scale(1.008) !important; }
+.card-astec:hover    { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-orange) inset; transform: scale(1.008) !important; }
+.card-sla:hover      { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-green) inset; transform: scale(1.008) !important; }
+.card-comercial:hover { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-blue) inset; transform: scale(1.008) !important; }
+.card-mm1p:hover     { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-purple) inset; transform: scale(1.008) !important; }
 
 .card-financeiro::before { background: var(--accent-financeiro); box-shadow: 0 0 20px var(--glow-financeiro); }
-.card-financeiro:hover   { box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 -2px 16px var(--glow-financeiro) inset; transform: translateY(-3px) !important; }
+.card-financeiro:hover   { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-financeiro) inset; transform: scale(1.008) !important; }
 .card-portfolio::before  { background: var(--accent-teal); box-shadow: 0 0 20px var(--glow-teal); }
-.card-portfolio:hover    { box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 -2px 16px var(--glow-teal) inset; transform: translateY(-3px) !important; }
+.card-portfolio:hover    { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-teal) inset; transform: scale(1.008) !important; }
+.card-estoque-mm::before { background: var(--accent-pink); box-shadow: 0 0 20px var(--glow-pink); }
+.card-estoque-mm:hover   { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-pink) inset; transform: scale(1.008) !important; }
 
 /* ── BOTÃO ANYMARKET no card ── */
 .card-anymarket-btn {
@@ -1380,6 +1407,7 @@ body::before {
 .card-mm1p  .icon-wrap { background: rgba(156,111,255,0.1); border: 1px solid rgba(156,111,255,0.25); }
 .card-financeiro .icon-wrap { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); }
 .card-portfolio  .icon-wrap { background: rgba(8,145,178,0.1);  border: 1px solid rgba(8,145,178,0.25); }
+.card-estoque-mm .icon-wrap { background: rgba(236,72,153,0.1); border: 1px solid rgba(236,72,153,0.25); }
 
 .card-estoque .icon-wrap i { color: var(--accent-amber); }
 .card-astec   .icon-wrap i { color: var(--accent-orange); }
@@ -1388,6 +1416,7 @@ body::before {
 .card-mm1p  .icon-wrap i { color: var(--accent-purple); }
 .card-financeiro .icon-wrap i { color: var(--accent-financeiro); }
 .card-portfolio  .icon-wrap i { color: var(--accent-teal); }
+.card-estoque-mm .icon-wrap i { color: var(--accent-pink); }
 
 .card-estoque:hover .icon-wrap   { background: rgba(212,160,23,0.18);  border-color: rgba(212,160,23,0.5);  box-shadow: 0 0 18px rgba(212,160,23,0.3); }
 .card-astec:hover   .icon-wrap   { background: rgba(217,94,16,0.18);   border-color: rgba(217,94,16,0.5);   box-shadow: 0 0 18px rgba(217,94,16,0.3); }
@@ -1396,6 +1425,7 @@ body::before {
 .card-mm1p:hover    .icon-wrap   { background: rgba(156,111,255,0.18); border-color: rgba(156,111,255,0.5); box-shadow: 0 0 18px rgba(156,111,255,0.3); }
 .card-financeiro:hover .icon-wrap{ background: rgba(34,197,94,0.18);   border-color: rgba(34,197,94,0.5);   box-shadow: 0 0 18px rgba(34,197,94,0.28); }
 .card-portfolio:hover  .icon-wrap { background: rgba(8,145,178,0.18);  border-color: rgba(8,145,178,0.5);  box-shadow: 0 0 18px rgba(8,145,178,0.3); }
+.card-estoque-mm:hover .icon-wrap { background: rgba(236,72,153,0.2);   border-color: rgba(236,72,153,0.55); box-shadow: 0 0 18px rgba(236,72,153,0.38); }
 
 /* ── CARD TEXT ── */
 .card-tag {
@@ -1413,6 +1443,7 @@ body::before {
 .card-mm1p  .card-tag { color: var(--accent-purple); }
 .card-financeiro .card-tag { color: var(--accent-financeiro); }
 .card-portfolio  .card-tag { color: var(--accent-teal); }
+.card-estoque-mm .card-tag { color: var(--accent-pink); }
 
 .card h2 {
   font-family: 'Syne', sans-serif;
@@ -3701,6 +3732,23 @@ body.light-mode #iframe-page-title {
           </div>
           <div class="card-tag">Comercial</div>
           <h2>Vendas & Faturamento</h2>
+
+          <!-- MINI-GRÁFICO DE META (Abril 2026) -->
+          <div class="meta-mini" style="margin:8px 0 12px;padding:8px 10px;background:rgba(45,125,210,0.06);border:1px solid rgba(45,125,210,0.18);border-radius:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+              <span style="font-size:9.5px;font-weight:700;color:var(--accent-blue);letter-spacing:0.4px;text-transform:uppercase;">Meta Abril · 22d</span>
+              <span style="font-size:12px;font-weight:800;color:var(--accent-blue);font-family:'Syne',sans-serif;letter-spacing:-0.3px;">85,9%</span>
+            </div>
+            <div style="position:relative;height:6px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden;margin-bottom:5px;">
+              <div style="position:absolute;top:0;left:0;height:100%;width:85.9%;background:linear-gradient(90deg, var(--accent-blue), #4a9eea);border-radius:4px;box-shadow:0 0 6px rgba(45,125,210,0.5);"></div>
+              <div style="position:absolute;top:0;left:85.9%;height:100%;width:14.1%;background:repeating-linear-gradient(45deg, rgba(31,189,114,0.25), rgba(31,189,114,0.25) 3px, rgba(31,189,114,0.08) 3px, rgba(31,189,114,0.08) 6px);border-radius:0 4px 4px 0;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:9.5px;line-height:1;">
+              <span style="color:var(--text-secondary);"><span style="color:var(--text-primary);font-weight:700;">R$ 6,15M</span> / R$ 7,16M</span>
+              <span style="color:var(--accent-green);font-weight:600;">Proj. R$ 8,39M</span>
+            </div>
+          </div>
+
           <p>Faturamento por marketplace, desempenho por categoria de produto, evolução diária de vendas e comparativo mensal com projeção de meta.</p>
           <div class="card-footer">
             Acessar dashboard <i data-lucide="arrow-right"></i>
@@ -3890,6 +3938,19 @@ body.light-mode #iframe-page-title {
           <p>Visão completa do portfólio ativo na Madeira Madeira: SKUs, modelos, categorias, variações e distribuição por cliente. Atualizado diariamente.</p>
           <div class="card-footer">
             Acessar dashboard <i data-lucide="arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- CONTROLE DE ESTOQUE INTERNO -->
+        <a class="card card-estoque-mm" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/estoque_mm.html" data-title="Controle de Estoque Interno · Madeira Madeira" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
+          <div class="icon-wrap">
+            <i data-lucide="package-check" style="width:22px;height:22px;"></i>
+          </div>
+          <div class="card-tag">Controle Interno · Estoque 1P</div>
+          <h2>Estoque Interno MM <span style="display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;color:#fbbf24;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);padding:3px 7px;border-radius:10px;letter-spacing:0.3px;text-transform:uppercase;vertical-align:middle;margin-left:6px;font-family:'Inter',sans-serif;"><i data-lucide="clock" style="width:9px;height:9px;"></i>Dados em breve</span></h2>
+          <p>Gestão e conferência do estoque interno destinado à Madeira Madeira: saldo atual por SKU e alertas de ruptura. Baseado em forecast mensal.</p>
+          <div class="card-footer">
+            Acessar controle <i data-lucide="arrow-right"></i>
           </div>
         </a>
 
