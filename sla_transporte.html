@@ -66,6 +66,7 @@ th.f1{background:rgba(39,174,96,.25);color:#27ae60;text-align:center}th.f2{backg
     <button class="nav-tab" onclick="S('dev',this)">🔄 Devoluções</button>
     <button class="nav-tab" onclick="S('cnpj',this)">🚫 CNPJ</button>
     <button class="nav-tab" onclick="S('dvd',this)">📈 Dia vs Dia</button>
+  <button class="nav-tab" onclick="S('entregas',this)">📦 Entregas Dia Anterior</button>
   </div>
   <div class="nav-date">23 / 04 / 2026</div>
 </nav>
@@ -229,6 +230,444 @@ th.f1{background:rgba(39,174,96,.25);color:#27ae60;text-align:center}th.f2{backg
   <div class="tw"><table><thead><tr><th>Transportadora</th><th>kg 22/04</th><th>kg 23/04</th><th>Variação</th></tr></thead><tbody id="tb-dabr"></tbody></table></div>
 </div>
 
+
+<div id="pg-entregas" class="page">
+  <div class="ph">
+    <h1>Entregas Dia Anterior</h1>
+    <p>NFs que estavam na base de 22/04/2026 e não aparecem em 23/04/2026 — entregues ao cliente</p>
+  </div>
+  <div class="row c4">
+    <div class="kpi kf"><div class="kpi-l">Total Entregue</div><div class="kpi-v mn" style="color:#aade66">300</div><div class="kpi-s">NFs saíram da base</div></div>
+    <div class="kpi kg"><div class="kpi-l">Estavam no Prazo</div><div class="kpi-v mn" style="color:var(--green)">263</div><div class="kpi-s">entregues dentro do SLA</div></div>
+    <div class="kpi ka"><div class="kpi-l">Estavam Atrasadas</div><div class="kpi-v mn" style="color:var(--red)">37</div><div class="kpi-s">atrasos resolvidos</div></div>
+    <div class="kpi kt"><div class="kpi-l">Maior Atraso Resolvido</div><div class="kpi-v mn" style="color:#5dade2">47d</div><div class="kpi-s">TRANS SUA LOG</div></div>
+  </div>
+  <div class="g2">
+    <div class="cc"><div class="ct">Entregas por Transportadora</div><canvas id="cEntTrans" height="260"></canvas></div>
+    <div class="cc"><div class="ct">Atrasadas vs No Prazo por Transportadora</div><canvas id="cEntStatus" height="260"></canvas></div>
+  </div>
+  <div class="sec">Resumo por Transportadora</div>
+  <div class="tw ts"><table><thead><tr>
+    <th>Transportadora</th>
+    <th style="text-align:center">Total Entregue</th>
+    <th style="text-align:center;background:rgba(192,57,43,.2);color:#e74c3c">Estavam Atrasadas</th>
+    <th style="text-align:center;background:rgba(30,132,73,.2);color:#27ae60">Estavam no Prazo</th>
+    <th style="text-align:center">Maior Atraso Resolvido</th>
+  </tr></thead><tbody id="tb-ent-res"></tbody></table></div>
+  <div class="sec">Detalhe das NFs Entregues</div>
+  <div class="ibox">🔴 Linhas em vermelho = estavam atrasadas em 22/04 e foram entregues  ·  🟢 Linhas em verde = estavam no prazo e foram entregues</div>
+  <div style="margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap">
+    <select id="filt-trans" onchange="filterEnt()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px">
+      <option value="">Todas as transportadoras</option>
+    </select>
+    <select id="filt-status" onchange="filterEnt()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px">
+      <option value="">Todos os status</option>
+      <option value="at">🔴 Estavam Atrasadas</option>
+      <option value="np">🟢 Estavam no Prazo</option>
+    </select>
+    <span id="filt-count" style="padding:8px 12px;color:var(--muted);font-size:13px;align-self:center"></span>
+  </div>
+  <div class="tw ts"><table><thead><tr>
+    <th>Nº NF</th><th>Status 22/04</th><th>Dias Atraso</th><th>Transportadora</th>
+    <th>Cliente</th><th>Marketplace</th><th>Entrega Esperada</th><th>Município/UF</th>
+  </tr></thead><tbody id="tb-ent-det"></tbody></table></div>
+</div>
+
+<script>
+
+const ENTREGAS_RESUMO=[
+  {t:'TRANSBARBOSA - SP',tot:55,at:1,np:54,mx:12},
+  {t:'TEMPO JUSTO - SP',tot:49,at:13,np:36,mx:30},
+  {t:'GETLAR - RJ',tot:45,at:0,np:45,mx:0},
+  {t:'RGE - MG',tot:44,at:5,np:39,mx:14},
+  {t:'NOVA ERA - MG',tot:32,at:4,np:28,mx:16},
+  {t:'TS RJ - RJ',tot:31,at:8,np:23,mx:20},
+  {t:'TRANS SUA LOG - SP',tot:25,at:6,np:19,mx:47},
+  {t:'SOUL - MG',tot:13,at:0,np:13,mx:0},
+  {t:'CORREIOS',tot:3,at:0,np:3,mx:0},
+  {t:'TRANS EXPRESS - RJ',tot:3,at:0,np:3,mx:0}
+];
+
+const ENTREGAS_DETAIL=[
+  {nf:'57736',st:true,da:16,ts:'NOVA ERA - MG',cli:'cristiana da Silva Guedes',mkt:'Magazine Luiza',mun:'PIAU/MG',ee:'06/04/2026',dp:'11/03/2026'},
+  {nf:'57706',st:true,da:7,ts:'NOVA ERA - MG',cli:'Valeria simao campos',mkt:'Magazine Luiza',mun:'IPATINGA/MG',ee:'15/04/2026',dp:'10/03/2026'},
+  {nf:'61358',st:true,da:3,ts:'NOVA ERA - MG',cli:'Luana Estefany De Lima',mkt:'Shopee',mun:'Lavras/MG',ee:'19/04/2026',dp:'16/03/2026'},
+  {nf:'57827',st:true,da:2,ts:'NOVA ERA - MG',cli:'Renata Batista dos Santos Oliveira',mkt:'Magazine Luiza',mun:'ARACUAI/MG',ee:'20/04/2026',dp:'10/03/2026'},
+  {nf:'57101',st:true,da:14,ts:'RGE - MG',cli:'Leydiane Maria de Oliveira Fre Silv',mkt:'Magazine Luiza',mun:'UBERLANDIA/MG',ee:'08/04/2026',dp:'07/03/2026'},
+  {nf:'63920',st:true,da:13,ts:'RGE - MG',cli:'Adrian Teixeira Costa',mkt:'Shopee',mun:'Oliveira/MG',ee:'09/04/2026',dp:'15/03/2026'},
+  {nf:'61052',st:true,da:10,ts:'RGE - MG',cli:'Aline Rodrigues Goncalves Da Cruz',mkt:'Shopee',mun:'Crucilândia/MG',ee:'12/04/2026',dp:'14/03/2026'},
+  {nf:'64088',st:true,da:7,ts:'RGE - MG',cli:'valeria alves braga',mkt:'Magazine Luiza',mun:'SACRAMENTO/MG',ee:'15/04/2026',dp:'12/03/2026'},
+  {nf:'69605',st:true,da:2,ts:'RGE - MG',cli:'Elaine Elena Canhestro',mkt:'Mercado Livre',mun:'Carmópolis de Minas/MG',ee:'20/04/2026',dp:'22/03/2026'},
+  {nf:'48942',st:true,da:30,ts:'TEMPO JUSTO - SP',cli:'Aparecida MAria Fernandes da SIlva',mkt:'Via Varejo',mun:'São Paulo/SP',ee:'23/03/2026',dp:'01/03/2026'},
+  {nf:'60593',st:true,da:13,ts:'TEMPO JUSTO - SP',cli:'Valdimar de Sousa costa',mkt:'Magazine Luiza',mun:'SAO BERNARDO DO CAMPO/SP',ee:'09/04/2026',dp:'15/03/2026'},
+  {nf:'64210',st:true,da:9,ts:'TEMPO JUSTO - SP',cli:'Luana Dornelas de lima',mkt:'Shopee',mun:'São Paulo/SP',ee:'13/04/2026',dp:'17/03/2026'},
+  {nf:'64249',st:true,da:9,ts:'TEMPO JUSTO - SP',cli:'Rafael Scarassatti',mkt:'Shopee',mun:'São Paulo/SP',ee:'13/04/2026',dp:'18/03/2026'},
+  {nf:'64266',st:true,da:9,ts:'TEMPO JUSTO - SP',cli:'Sheila Cristina De Almeida Teixeira',mkt:'Shopee',mun:'São Paulo/SP',ee:'13/04/2026',dp:'18/03/2026'},
+  {nf:'64194',st:true,da:9,ts:'TEMPO JUSTO - SP',cli:'Karina Andrade',mkt:'Shopee',mun:'São Paulo/SP',ee:'13/04/2026',dp:'18/03/2026'},
+  {nf:'64248',st:true,da:9,ts:'TEMPO JUSTO - SP',cli:'Rafael Miranda De Matos',mkt:'Shopee',mun:'São Paulo/SP',ee:'13/04/2026',dp:'18/03/2026'},
+  {nf:'64247',st:true,da:8,ts:'TEMPO JUSTO - SP',cli:'Priscila Figueiredo Da Silva',mkt:'Shopee',mun:'Guarulhos/SP',ee:'14/04/2026',dp:'18/03/2026'},
+  {nf:'64242',st:true,da:6,ts:'TEMPO JUSTO - SP',cli:'Mônica Jeane Maria Menezes',mkt:'Magazine Luiza',mun:'SAO BERNARDO DO CAMPO/SP',ee:'16/04/2026',dp:'18/03/2026'},
+  {nf:'64110',st:true,da:5,ts:'TEMPO JUSTO - SP',cli:'Anikeli Soares',mkt:'Shopee',mun:'Diadema/SP',ee:'17/04/2026',dp:'18/03/2026'},
+  {nf:'64238',st:true,da:5,ts:'TEMPO JUSTO - SP',cli:'Micaele Moreira Dos Santos',mkt:'Shopee',mun:'São Paulo/SP',ee:'17/04/2026',dp:'18/03/2026'},
+  {nf:'64234',st:true,da:5,ts:'TEMPO JUSTO - SP',cli:'Marlen Verusca Silva',mkt:'Shopee',mun:'São Paulo/SP',ee:'17/04/2026',dp:'18/03/2026'},
+  {nf:'64131',st:true,da:2,ts:'TEMPO JUSTO - SP',cli:'Clayton Da Silva Goncalves',mkt:'Shopee',mun:'São Paulo/SP',ee:'20/04/2026',dp:'18/03/2026'},
+  {nf:'28578',st:true,da:47,ts:'TRANS SUA LOG - SP',cli:'Laércio Duarte Dos  Santos Filho',mkt:'Shopee',mun:'Nova Europa/SP',ee:'06/03/2026',dp:'30/01/2026'},
+  {nf:'53795',st:true,da:23,ts:'TRANS SUA LOG - SP',cli:'Irineu dos santos Domingues',mkt:'Magazine Luiza',mun:'ITAPEVA/SP',ee:'30/03/2026',dp:'07/03/2026'},
+  {nf:'63899',st:true,da:9,ts:'TRANS SUA LOG - SP',cli:'Thais Rodrigues dos Reis Luz',mkt:'Magazine Luiza',mun:'PRAIA GRANDE/SP',ee:'13/04/2026',dp:'16/03/2026'},
+  {nf:'63789',st:true,da:9,ts:'TRANS SUA LOG - SP',cli:'Franciely Cristina Santos do Carmo',mkt:'Magazine Luiza',mun:'PRAIA GRANDE/SP',ee:'13/04/2026',dp:'17/03/2026'},
+  {nf:'71229',st:true,da:5,ts:'TRANS SUA LOG - SP',cli:'Jesiel Lopes',mkt:'Shopee',mun:'Amparo/SP',ee:'17/04/2026',dp:'24/03/2026'},
+  {nf:'71228',st:true,da:5,ts:'TRANS SUA LOG - SP',cli:'Jesiel Lopes',mkt:'Shopee',mun:'Amparo/SP',ee:'17/04/2026',dp:'24/03/2026'},
+  {nf:'68824',st:true,da:12,ts:'TRANSBARBOSA - SP',cli:'vitoria delis de Araujo',mkt:'Magazine Luiza',mun:'GUARULHOS/SP',ee:'10/04/2026',dp:'21/03/2026'},
+  {nf:'56774',st:true,da:20,ts:'TS RJ - RJ',cli:'Quenia Cristina do Nascimento',mkt:'Mercado Livre',mun:'Volta Redonda/RJ',ee:'02/04/2026',dp:'09/03/2026'},
+  {nf:'56704',st:true,da:16,ts:'TS RJ - RJ',cli:'Francisca Sales',mkt:'Magazine Luiza',mun:'VOLTA REDONDA/RJ',ee:'06/04/2026',dp:'11/03/2026'},
+  {nf:'64543',st:true,da:16,ts:'TS RJ - RJ',cli:'Juliana Coutinho',mkt:'Magazine Luiza',mun:'PINHEIRAL/RJ',ee:'06/04/2026',dp:'11/03/2026'},
+  {nf:'56672',st:true,da:15,ts:'TS RJ - RJ',cli:'Beatriz dos Santos Pereira',mkt:'Magazine Luiza',mun:'VOLTA REDONDA/RJ',ee:'07/04/2026',dp:'11/03/2026'},
+  {nf:'64527',st:true,da:12,ts:'TS RJ - RJ',cli:'Giovana  Lingerie',mkt:'Mercado Livre',mun:'Volta Redonda/RJ',ee:'10/04/2026',dp:'16/03/2026'},
+  {nf:'68980',st:true,da:6,ts:'TS RJ - RJ',cli:'Gabriely  Delgado',mkt:'Shopee',mun:'Volta Redonda/RJ',ee:'16/04/2026',dp:'19/03/2026'},
+  {nf:'68981',st:true,da:6,ts:'TS RJ - RJ',cli:'Gabriely  Delgado',mkt:'Shopee',mun:'Volta Redonda/RJ',ee:'16/04/2026',dp:'19/03/2026'},
+  {nf:'68468',st:true,da:2,ts:'TS RJ - RJ',cli:'Dayala Rocha',mkt:'Mercado Livre',mun:'Volta Redonda/RJ',ee:'20/04/2026',dp:'22/03/2026'},
+  {nf:'79975',st:false,da:0,ts:'CORREIOS',cli:'Anna Caetano',mkt:'Shopee',mun:'Atibaia/SP',ee:'06/05/2026',dp:'07/04/2026'},
+  {nf:'83327',st:false,da:0,ts:'CORREIOS',cli:'Michelle Resende Andraus',mkt:'Shopee',mun:'Juiz de Fora/MG',ee:'12/05/2026',dp:'12/04/2026'},
+  {nf:'83328',st:false,da:0,ts:'CORREIOS',cli:'Mozart  Estevam',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'13/05/2026',dp:'13/04/2026'},
+  {nf:'77347',st:false,da:0,ts:'GETLAR - RJ',cli:'Tainara Santos Gomes',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'22/04/2026',dp:'01/04/2026'},
+  {nf:'76679',st:false,da:0,ts:'GETLAR - RJ',cli:'Thais Rodrigues',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'28/04/2026',dp:'01/04/2026'},
+  {nf:'77251',st:false,da:0,ts:'GETLAR - RJ',cli:'Gabriela Ribeiro Ramalho',mkt:'Shopee',mun:'Maricá/RJ',ee:'06/05/2026',dp:'03/04/2026'},
+  {nf:'77350',st:false,da:0,ts:'GETLAR - RJ',cli:'Thaissa Souza',mkt:'Shopee',mun:'Maricá/RJ',ee:'06/05/2026',dp:'04/04/2026'},
+  {nf:'79762',st:false,da:0,ts:'GETLAR - RJ',cli:'Beatriz Reis De Oliveira',mkt:'Shopee',mun:'Nova Iguaçu/RJ',ee:'05/05/2026',dp:'07/04/2026'},
+  {nf:'79780',st:false,da:0,ts:'GETLAR - RJ',cli:'F******a',mkt:'Shopee',mun:'Maricá/RJ',ee:'06/05/2026',dp:'07/04/2026'},
+  {nf:'79836',st:false,da:0,ts:'GETLAR - RJ',cli:'Talita Maciel',mkt:'Mercado Livre',mun:'Nova Iguaçu/RJ',ee:'29/04/2026',dp:'07/04/2026'},
+  {nf:'79812',st:false,da:0,ts:'GETLAR - RJ',cli:'Mônica Marreiro De Castro',mkt:'Mercado Livre',mun:'Nova Iguaçu/RJ',ee:'29/04/2026',dp:'07/04/2026'},
+  {nf:'79795',st:false,da:0,ts:'GETLAR - RJ',cli:'Juliana Da Silva Gomes Herbster',mkt:'Shopee',mun:'Maricá/RJ',ee:'07/05/2026',dp:'07/04/2026'},
+  {nf:'80905',st:false,da:0,ts:'GETLAR - RJ',cli:'Anthony Fernandes',mkt:'Mercado Livre',mun:'Nova Iguaçu/RJ',ee:'30/04/2026',dp:'08/04/2026'},
+  {nf:'81813',st:false,da:0,ts:'GETLAR - RJ',cli:'Juliana Francisco',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'06/05/2026',dp:'09/04/2026'},
+  {nf:'81798',st:false,da:0,ts:'GETLAR - RJ',cli:'Caroline Silva da Costa Moutinho',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'01/05/2026',dp:'09/04/2026'},
+  {nf:'81852',st:false,da:0,ts:'GETLAR - RJ',cli:'Thais duro Rodrigues',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'30/04/2026',dp:'10/04/2026'},
+  {nf:'81783',st:false,da:0,ts:'GETLAR - RJ',cli:'Adriana Silva',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'30/04/2026',dp:'10/04/2026'},
+  {nf:'81797',st:false,da:0,ts:'GETLAR - RJ',cli:'Carla Oliveira',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'11/05/2026',dp:'10/04/2026'},
+  {nf:'81800',st:false,da:0,ts:'GETLAR - RJ',cli:'Cristiane gomes',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'01/05/2026',dp:'10/04/2026'},
+  {nf:'81824',st:false,da:0,ts:'GETLAR - RJ',cli:'marcello cordeiro de andrade',mkt:'Via Varejo',mun:'Rio de Janeiro/RJ',ee:'04/05/2026',dp:'10/04/2026'},
+  {nf:'82780',st:false,da:0,ts:'GETLAR - RJ',cli:'Aline  Mateus Da Silva',mkt:'Mercado Livre',mun:'Rio de Janeiro/RJ',ee:'04/05/2026',dp:'10/04/2026'},
+  {nf:'82966',st:false,da:0,ts:'GETLAR - RJ',cli:'Paulo Ricardo  Ferreira Da Silva',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'07/05/2026',dp:'10/04/2026'},
+  {nf:'82778',st:false,da:0,ts:'GETLAR - RJ',cli:'Alessandra Menezes Da Silva Marques',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'07/05/2026',dp:'10/04/2026'},
+  {nf:'82839',st:false,da:0,ts:'GETLAR - RJ',cli:'ELAINE DE OLIVEIRA SALGADO',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'01/05/2026',dp:'10/04/2026'},
+  {nf:'82839',st:false,da:0,ts:'GETLAR - RJ',cli:'ELAINE DE OLIVEIRA SALGADO',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'01/05/2026',dp:'10/04/2026'},
+  {nf:'82792',st:false,da:0,ts:'GETLAR - RJ',cli:'Ana Claudia Vasconcellos',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'12/05/2026',dp:'11/04/2026'},
+  {nf:'82900',st:false,da:0,ts:'GETLAR - RJ',cli:'Karina Gonçalves',mkt:'Mercado Livre',mun:'Rio de Janeiro/RJ',ee:'05/05/2026',dp:'11/04/2026'},
+  {nf:'82942',st:false,da:0,ts:'GETLAR - RJ',cli:'Maria Da Conceicao',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'04/05/2026',dp:'11/04/2026'},
+  {nf:'82832',st:false,da:0,ts:'GETLAR - RJ',cli:'Daniele Rainha',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'08/05/2026',dp:'11/04/2026'},
+  {nf:'82947',st:false,da:0,ts:'GETLAR - RJ',cli:'Maria Selma  Dias',mkt:'Mercado Livre',mun:'Rio de Janeiro/RJ',ee:'05/05/2026',dp:'11/04/2026'},
+  {nf:'82874',st:false,da:0,ts:'GETLAR - RJ',cli:'Iris Jane Da Cruz Ramos',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'08/05/2026',dp:'11/04/2026'},
+  {nf:'82904',st:false,da:0,ts:'GETLAR - RJ',cli:'Katia De Assis Lopes',mkt:'Madeira Madeira',mun:'Rio de Janeiro/RJ',ee:'04/05/2026',dp:'11/04/2026'},
+  {nf:'82797',st:false,da:0,ts:'GETLAR - RJ',cli:'Andrews Goncalves de Oliveira',mkt:'Mercado Livre',mun:'Rio de Janeiro/RJ',ee:'05/05/2026',dp:'11/04/2026'},
+  {nf:'82861',st:false,da:0,ts:'GETLAR - RJ',cli:'Gisely Ladislau',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'08/05/2026',dp:'11/04/2026'},
+  {nf:'82811',st:false,da:0,ts:'GETLAR - RJ',cli:'Bruno Henrique Moreira Lima',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'08/05/2026',dp:'11/04/2026'},
+  {nf:'82937',st:false,da:0,ts:'GETLAR - RJ',cli:'Marcelle Silva',mkt:'Mercado Livre',mun:'Rio de Janeiro/RJ',ee:'05/05/2026',dp:'11/04/2026'},
+  {nf:'82850',st:false,da:0,ts:'GETLAR - RJ',cli:'Flavia Alencar',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'08/05/2026',dp:'11/04/2026'},
+  {nf:'82869',st:false,da:0,ts:'GETLAR - RJ',cli:'Heleen Nascimento De Meireles',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'08/05/2026',dp:'12/04/2026'},
+  {nf:'82980',st:false,da:0,ts:'GETLAR - RJ',cli:'Robson Neves do Nascimento',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'30/04/2026',dp:'12/04/2026'},
+  {nf:'82910',st:false,da:0,ts:'GETLAR - RJ',cli:'Leonardo Agostinho Freitas',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'12/05/2026',dp:'12/04/2026'},
+  {nf:'82846',st:false,da:0,ts:'GETLAR - RJ',cli:'Felipe Lopes',mkt:'Via Varejo',mun:'Rio de Janeiro/RJ',ee:'05/05/2026',dp:'12/04/2026'},
+  {nf:'82815',st:false,da:0,ts:'GETLAR - RJ',cli:'CARLOS RODRIGUES DOS SANTOS',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'30/04/2026',dp:'12/04/2026'},
+  {nf:'82968',st:false,da:0,ts:'GETLAR - RJ',cli:'Rafael Alexandre de Oliveira Carnei',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'08/05/2026',dp:'12/04/2026'},
+  {nf:'82831',st:false,da:0,ts:'GETLAR - RJ',cli:'Daniele Barcellos de Paula',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'05/05/2026',dp:'12/04/2026'},
+  {nf:'82949',st:false,da:0,ts:'GETLAR - RJ',cli:'Mariana Teixeira',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'08/05/2026',dp:'12/04/2026'},
+  {nf:'82847',st:false,da:0,ts:'GETLAR - RJ',cli:'Felipe Moraes Amorim',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'12/05/2026',dp:'12/04/2026'},
+  {nf:'82812',st:false,da:0,ts:'GETLAR - RJ',cli:'caciana lisboa bulhoes',mkt:'Magazine Luiza',mun:'RIO DE JANEIRO/RJ',ee:'30/04/2026',dp:'12/04/2026'},
+  {nf:'82921',st:false,da:0,ts:'GETLAR - RJ',cli:'Liviane',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'08/05/2026',dp:'12/04/2026'},
+  {nf:'64462',st:false,da:0,ts:'NOVA ERA - MG',cli:'Breno Amorim',mkt:'Shopee',mun:'Águas Formosas/MG',ee:'18/05/2026',dp:'18/03/2026'},
+  {nf:'71609',st:false,da:0,ts:'NOVA ERA - MG',cli:'Luziana Marcal De Oliveira Costa',mkt:'Shopee',mun:'Cantagalo/MG',ee:'18/05/2026',dp:'25/03/2026'},
+  {nf:'76069',st:false,da:0,ts:'NOVA ERA - MG',cli:'Fabio Vinicius Silva Rocha',mkt:'Shopee',mun:'Pedra Azul/MG',ee:'21/05/2026',dp:'01/04/2026'},
+  {nf:'76835',st:false,da:0,ts:'NOVA ERA - MG',cli:'Tais Morais',mkt:'Shopee',mun:'São José do Jacuri/MG',ee:'22/05/2026',dp:'02/04/2026'},
+  {nf:'76836',st:false,da:0,ts:'NOVA ERA - MG',cli:'Tais Morais',mkt:'Shopee',mun:'São José do Jacuri/MG',ee:'22/05/2026',dp:'02/04/2026'},
+  {nf:'76827',st:false,da:0,ts:'NOVA ERA - MG',cli:'Paloma Mendes Cardoso',mkt:'Shopee',mun:'São Sebastião do Paraíso/MG',ee:'25/05/2026',dp:'04/04/2026'},
+  {nf:'78256',st:false,da:0,ts:'NOVA ERA - MG',cli:'Luana Alves',mkt:'Shopee',mun:'Paraguaçu/MG',ee:'18/05/2026',dp:'04/04/2026'},
+  {nf:'78188',st:false,da:0,ts:'NOVA ERA - MG',cli:'Agnaldo Henrique Teixeira dias',mkt:'Shopee',mun:'São Brás do Suaçuí/MG',ee:'18/05/2026',dp:'05/04/2026'},
+  {nf:'79928',st:false,da:0,ts:'NOVA ERA - MG',cli:'Fabricia Daiana Ferreira Da Veiga',mkt:'Shopee',mun:'Rosário da Limeira/MG',ee:'14/05/2026',dp:'07/04/2026'},
+  {nf:'79934',st:false,da:0,ts:'NOVA ERA - MG',cli:'Juliana Gomes',mkt:'Shopee',mun:'Viçosa/MG',ee:'14/05/2026',dp:'07/04/2026'},
+  {nf:'81158',st:false,da:0,ts:'NOVA ERA - MG',cli:'Raquel Cardoso Caldas',mkt:'Magazine Luiza',mun:'EWBANK DA CAMARA/MG',ee:'12/05/2026',dp:'08/04/2026'},
+  {nf:'81162',st:false,da:0,ts:'NOVA ERA - MG',cli:'Thais Fernandes de Mello',mkt:'Shopee',mun:'Eugenópolis/MG',ee:'19/05/2026',dp:'09/04/2026'},
+  {nf:'81898',st:false,da:0,ts:'NOVA ERA - MG',cli:'Rosana Franco',mkt:'Shopee',mun:'Juiz de Fora/MG',ee:'19/05/2026',dp:'09/04/2026'},
+  {nf:'82221',st:false,da:0,ts:'NOVA ERA - MG',cli:'Maria Aparecida  da Silva de Rezend',mkt:'Shopee',mun:'Juiz de Fora/MG',ee:'21/05/2026',dp:'11/04/2026'},
+  {nf:'84295',st:false,da:0,ts:'NOVA ERA - MG',cli:'Ana Assis',mkt:'Shopee',mun:'Juiz de Fora/MG',ee:'25/05/2026',dp:'11/04/2026'},
+  {nf:'84311',st:false,da:0,ts:'NOVA ERA - MG',cli:'EDVANIA APARECIDA DA Silva',mkt:'Shopee',mun:'Santos Dumont/MG',ee:'21/05/2026',dp:'11/04/2026'},
+  {nf:'84373',st:false,da:0,ts:'NOVA ERA - MG',cli:'Rosangela Abreu Monteiro de Barros',mkt:'Magazine Luiza',mun:'JUIZ DE FORA/MG',ee:'13/05/2026',dp:'12/04/2026'},
+  {nf:'84321',st:false,da:0,ts:'NOVA ERA - MG',cli:'Gilda Gomes Lima',mkt:'Shopee',mun:'Juiz de Fora/MG',ee:'21/05/2026',dp:'12/04/2026'},
+  {nf:'84387',st:false,da:0,ts:'NOVA ERA - MG',cli:'Veronica Reis',mkt:'Shopee',mun:'Além Paraíba/MG',ee:'21/05/2026',dp:'12/04/2026'},
+  {nf:'84299',st:false,da:0,ts:'NOVA ERA - MG',cli:'Antonio Nicomedes Coelho',mkt:'Magazine Luiza',mun:'BARBACENA/MG',ee:'18/05/2026',dp:'13/04/2026'},
+  {nf:'84336',st:false,da:0,ts:'NOVA ERA - MG',cli:'Jully Goncalves De Almeida',mkt:'Shopee',mun:'Santos Dumont/MG',ee:'22/05/2026',dp:'14/04/2026'},
+  {nf:'85005',st:false,da:0,ts:'NOVA ERA - MG',cli:'Marina Ferreira Landim',mkt:'Shopee',mun:'Santos Dumont/MG',ee:'22/05/2026',dp:'14/04/2026'},
+  {nf:'85006',st:false,da:0,ts:'NOVA ERA - MG',cli:'Marina Ferreira Landim',mkt:'Shopee',mun:'Santos Dumont/MG',ee:'21/05/2026',dp:'14/04/2026'},
+  {nf:'84982',st:false,da:0,ts:'NOVA ERA - MG',cli:'Cintia Maria da Silva campos',mkt:'Shopee',mun:'Barbacena/MG',ee:'22/05/2026',dp:'14/04/2026'},
+  {nf:'84996',st:false,da:0,ts:'NOVA ERA - MG',cli:'Julia Cunha',mkt:'Shopee',mun:'Juiz de Fora/MG',ee:'19/05/2026',dp:'14/04/2026'},
+  {nf:'84983',st:false,da:0,ts:'NOVA ERA - MG',cli:'Cristiano Paulo Machado',mkt:'Shopee',mun:'Viçosa/MG',ee:'19/05/2026',dp:'14/04/2026'},
+  {nf:'84991',st:false,da:0,ts:'NOVA ERA - MG',cli:'Glauber  Miranda Moreira',mkt:'Web Continental V2',mun:'JUIZ DE FORA/MG',ee:'23/05/2026',dp:'15/04/2026'},
+  {nf:'85821',st:false,da:0,ts:'NOVA ERA - MG',cli:'Thifany de Souza Julião',mkt:'Via Varejo',mun:'Juiz de Fora/MG',ee:'21/05/2026',dp:'15/04/2026'},
+  {nf:'65975',st:false,da:0,ts:'RGE - MG',cli:'Ianne Suellen Neri Da Silva',mkt:'Magazine Luiza',mun:'IBIA/MG',ee:'28/04/2026',dp:'19/03/2026'},
+  {nf:'69584',st:false,da:0,ts:'RGE - MG',cli:'Ana Livia Soares Silva',mkt:'Shopee',mun:'Carmópolis de Minas/MG',ee:'23/04/2026',dp:'21/03/2026'},
+  {nf:'68944',st:false,da:0,ts:'RGE - MG',cli:'Nicoly Brenda Pereira rocha',mkt:'Shopee',mun:'Itaguara/MG',ee:'27/04/2026',dp:'21/03/2026'},
+  {nf:'69657',st:false,da:0,ts:'RGE - MG',cli:'Natalia Cristina De Souza',mkt:'Shopee',mun:'Itaguara/MG',ee:'27/04/2026',dp:'22/03/2026'},
+  {nf:'70907',st:false,da:0,ts:'RGE - MG',cli:'Maria Da Gloria Do Carmo',mkt:'Shopee',mun:'Oliveira/MG',ee:'28/04/2026',dp:'24/03/2026'},
+  {nf:'73055',st:false,da:0,ts:'RGE - MG',cli:'Fabiana Pinheiro',mkt:'Shopee',mun:'Piedade dos Gerais/MG',ee:'06/05/2026',dp:'27/03/2026'},
+  {nf:'73067',st:false,da:0,ts:'RGE - MG',cli:'Laura Bariviera',mkt:'Mercado Livre',mun:'Passa Tempo/MG',ee:'28/04/2026',dp:'28/03/2026'},
+  {nf:'76000',st:false,da:0,ts:'RGE - MG',cli:'Leticia Valladao',mkt:'Mercado Livre',mun:'Oliveira/MG',ee:'30/04/2026',dp:'31/03/2026'},
+  {nf:'75986',st:false,da:0,ts:'RGE - MG',cli:'Elmo dos anjos gil Gil',mkt:'Mercado Livre',mun:'Itaguara/MG',ee:'30/04/2026',dp:'31/03/2026'},
+  {nf:'77003',st:false,da:0,ts:'RGE - MG',cli:'Mercia Mendes Ribeiro Crispim',mkt:'Shopee',mun:'Crucilândia/MG',ee:'11/05/2026',dp:'03/04/2026'},
+  {nf:'76936',st:false,da:0,ts:'RGE - MG',cli:'Icaro Osvaldo de Alvarenga Zeferino',mkt:'Magazine Luiza',mun:'OLIVEIRA/MG',ee:'04/05/2026',dp:'05/04/2026'},
+  {nf:'81212',st:false,da:0,ts:'RGE - MG',cli:'jaqueline marques da silva',mkt:'Magazine Luiza',mun:'BELO HORIZONTE/MG',ee:'30/04/2026',dp:'08/04/2026'},
+  {nf:'81198',st:false,da:0,ts:'RGE - MG',cli:'Debora Vasconcelos dos Santos',mkt:'Madeira Madeira',mun:'Belo Horizonte/MG',ee:'30/04/2026',dp:'08/04/2026'},
+  {nf:'81231',st:false,da:0,ts:'RGE - MG',cli:'Márcia Nassif Bilheiro',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'29/04/2026',dp:'08/04/2026'},
+  {nf:'81232',st:false,da:0,ts:'RGE - MG',cli:'Márcia Nassif Bilheiro',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'29/04/2026',dp:'08/04/2026'},
+  {nf:'81210',st:false,da:0,ts:'RGE - MG',cli:'Ivaneide Rodrigues Da Paixao',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'05/05/2026',dp:'08/04/2026'},
+  {nf:'81223',st:false,da:0,ts:'RGE - MG',cli:'Leticia Morais',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'06/05/2026',dp:'09/04/2026'},
+  {nf:'84243',st:false,da:0,ts:'RGE - MG',cli:'Emely Marcelle Amato',mkt:'Shopee',mun:'Vespasiano/MG',ee:'14/05/2026',dp:'13/04/2026'},
+  {nf:'84233',st:false,da:0,ts:'RGE - MG',cli:'Carlos Eduardo Ribeiro Ramos',mkt:'Magazine Luiza',mun:'BETIM/MG',ee:'06/05/2026',dp:'13/04/2026'},
+  {nf:'84269',st:false,da:0,ts:'RGE - MG',cli:'Melanny Castro',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'12/05/2026',dp:'12/04/2026'},
+  {nf:'84263',st:false,da:0,ts:'RGE - MG',cli:'Maiquele Nascimento',mkt:'Shopee',mun:'Ribeirão das Neves/MG',ee:'19/05/2026',dp:'13/04/2026'},
+  {nf:'84253',st:false,da:0,ts:'RGE - MG',cli:'Joao Francisco',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'18/05/2026',dp:'13/04/2026'},
+  {nf:'84268',st:false,da:0,ts:'RGE - MG',cli:'Mateus Paiva',mkt:'Mercado Livre',mun:'Ibirité/MG',ee:'11/05/2026',dp:'13/04/2026'},
+  {nf:'84259',st:false,da:0,ts:'RGE - MG',cli:'Leonardo Felipe Da Penha',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'13/05/2026',dp:'13/04/2026'},
+  {nf:'84230',st:false,da:0,ts:'RGE - MG',cli:'Angela De Oliveira Dias',mkt:'Shopee',mun:'Betim/MG',ee:'13/05/2026',dp:'13/04/2026'},
+  {nf:'84245',st:false,da:0,ts:'RGE - MG',cli:'Flavia Guimaraes',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'13/05/2026',dp:'13/04/2026'},
+  {nf:'84242',st:false,da:0,ts:'RGE - MG',cli:'Edmara Madureira',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'14/05/2026',dp:'14/04/2026'},
+  {nf:'84236',st:false,da:0,ts:'RGE - MG',cli:'Daniel Perdigao',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'14/05/2026',dp:'14/04/2026'},
+  {nf:'84227',st:false,da:0,ts:'RGE - MG',cli:'Ana Clara Moreira',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'14/05/2026',dp:'14/04/2026'},
+  {nf:'84256',st:false,da:0,ts:'RGE - MG',cli:'Kenia aparecida tomaz da cruz',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'18/05/2026',dp:'14/04/2026'},
+  {nf:'84272',st:false,da:0,ts:'RGE - MG',cli:'Natalia Andrade Vermeuler',mkt:'Shopee',mun:'Ibirité/MG',ee:'18/05/2026',dp:'13/04/2026'},
+  {nf:'85322',st:false,da:0,ts:'RGE - MG',cli:'Joyce Rodrigues',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'14/05/2026',dp:'14/04/2026'},
+  {nf:'85338',st:false,da:0,ts:'RGE - MG',cli:'Poliane Souza',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'14/05/2026',dp:'14/04/2026'},
+  {nf:'85310',st:false,da:0,ts:'RGE - MG',cli:'Antonio Souza De Aguiar',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'14/05/2026',dp:'14/04/2026'},
+  {nf:'85341',st:false,da:0,ts:'RGE - MG',cli:'Regiane Reis Ventura',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'14/05/2026',dp:'14/04/2026'},
+  {nf:'85325',st:false,da:0,ts:'RGE - MG',cli:'Kenia aparecida tomaz da cruz',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'14/05/2026',dp:'14/04/2026'},
+  {nf:'85307',st:false,da:0,ts:'RGE - MG',cli:'Ana Carolina Diniz',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'14/05/2026',dp:'14/04/2026'},
+  {nf:'85347',st:false,da:0,ts:'RGE - MG',cli:'Tayline Souza Gomes',mkt:'Via Varejo',mun:'Belo Horizonte/MG',ee:'12/05/2026',dp:'14/04/2026'},
+  {nf:'85314',st:false,da:0,ts:'RGE - MG',cli:'edna lopes do nascimento',mkt:'Magazine Luiza',mun:'BELO HORIZONTE/MG',ee:'11/05/2026',dp:'14/04/2026'},
+  {nf:'70157',st:false,da:0,ts:'SOUL - MG',cli:'Pablo Cezar Magalhaes Wagmann17',mkt:'Shopee',mun:'Inhapim/MG',ee:'11/05/2026',dp:'23/03/2026'},
+  {nf:'70158',st:false,da:0,ts:'SOUL - MG',cli:'Pablo Cezar Magalhaes Wagmann17',mkt:'Shopee',mun:'Inhapim/MG',ee:'11/05/2026',dp:'23/03/2026'},
+  {nf:'70159',st:false,da:0,ts:'SOUL - MG',cli:'Pablo Cezar Magalhaes Wagmann17',mkt:'Shopee',mun:'Inhapim/MG',ee:'11/05/2026',dp:'23/03/2026'},
+  {nf:'69786',st:false,da:0,ts:'SOUL - MG',cli:'Tiago Da Cruz Rozalino',mkt:'Shopee',mun:'Ubaporanga/MG',ee:'11/05/2026',dp:'23/03/2026'},
+  {nf:'69778',st:false,da:0,ts:'SOUL - MG',cli:'Raquel Romanelli De Carvalho',mkt:'Shopee',mun:'Itamonte/MG',ee:'05/05/2026',dp:'23/03/2026'},
+  {nf:'78955',st:false,da:0,ts:'SOUL - MG',cli:'Maria Margarida Macieira',mkt:'Shopee',mun:'Santa Luzia/MG',ee:'04/05/2026',dp:'06/04/2026'},
+  {nf:'78956',st:false,da:0,ts:'SOUL - MG',cli:'Maria Margarida Macieira',mkt:'Shopee',mun:'Santa Luzia/MG',ee:'04/05/2026',dp:'06/04/2026'},
+  {nf:'78881',st:false,da:0,ts:'SOUL - MG',cli:'Aislene Ferreira',mkt:'Shopee',mun:'Ouro Fino/MG',ee:'18/05/2026',dp:'06/04/2026'},
+  {nf:'78941',st:false,da:0,ts:'SOUL - MG',cli:'Livia Maria Santos da Silva',mkt:'Via Varejo',mun:'Ouro Fino/MG',ee:'13/05/2026',dp:'06/04/2026'},
+  {nf:'81671',st:false,da:0,ts:'SOUL - MG',cli:'Leonardo',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'11/05/2026',dp:'09/04/2026'},
+  {nf:'81674',st:false,da:0,ts:'SOUL - MG',cli:'Patricia Maria Avellar Rezende',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'05/05/2026',dp:'09/04/2026'},
+  {nf:'82641',st:false,da:0,ts:'SOUL - MG',cli:'BRUNO CAMILO SENA DE MACEDO',mkt:'Magazine Luiza',mun:'BELO HORIZONTE/MG',ee:'05/05/2026',dp:'10/04/2026'},
+  {nf:'82666',st:false,da:0,ts:'SOUL - MG',cli:'Frederico Jorge Dos Santos Oliveira',mkt:'Shopee',mun:'Belo Horizonte/MG',ee:'13/05/2026',dp:'12/04/2026'},
+  {nf:'77372',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'ana maria de oliveira',mkt:'Magazine Luiza',mun:'MAUA/SP',ee:'28/04/2026',dp:'03/04/2026'},
+  {nf:'77504',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Maria Cicera da silva',mkt:'Magazine Luiza',mun:'FRANCO DA ROCHA/SP',ee:'24/04/2026',dp:'04/04/2026'},
+  {nf:'77381',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Rua Lourival Portal Da Silva Numero',mkt:'Shopee',mun:'Mauá/SP',ee:'05/05/2026',dp:'04/04/2026'},
+  {nf:'77548',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Sarah Neves Da Silva',mkt:'Shopee',mun:'Francisco Morato/SP',ee:'11/05/2026',dp:'04/04/2026'},
+  {nf:'77435',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Erica Marcomini Silverio',mkt:'Shopee',mun:'Santo André/SP',ee:'11/05/2026',dp:'05/04/2026'},
+  {nf:'83283',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Rafaela Cristina',mkt:'Shopee',mun:'São Paulo/SP',ee:'11/05/2026',dp:'12/04/2026'},
+  {nf:'83282',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Rafael Rovero',mkt:'Mercado Livre',mun:'São Paulo/SP',ee:'06/05/2026',dp:'12/04/2026'},
+  {nf:'83267',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'danilo alves',mkt:'Via Varejo',mun:'São Paulo/SP',ee:'06/05/2026',dp:'12/04/2026'},
+  {nf:'83263',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Bruna Paiva',mkt:'Shopee',mun:'São Paulo/SP',ee:'11/05/2026',dp:'12/04/2026'},
+  {nf:'83264',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Carlos Ribamar De Jesus',mkt:'Shopee',mun:'São Paulo/SP',ee:'11/05/2026',dp:'12/04/2026'},
+  {nf:'84115',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'simone silva de souza candido',mkt:'Magazine Luiza',mun:'MAUA/SP',ee:'06/05/2026',dp:'12/04/2026'},
+  {nf:'84065',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'kaila Santana Souza',mkt:'Magazine Luiza',mun:'SANTO ANDRE/SP',ee:'11/05/2026',dp:'13/04/2026'},
+  {nf:'84073',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Leilane',mkt:'Shopee',mun:'Mauá/SP',ee:'12/05/2026',dp:'13/04/2026'},
+  {nf:'84035',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Camila Dutra',mkt:'Shopee',mun:'São Paulo/SP',ee:'11/05/2026',dp:'13/04/2026'},
+  {nf:'84099',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Rhayssa Tarrane',mkt:'Shopee',mun:'Santo André/SP',ee:'18/05/2026',dp:'13/04/2026'},
+  {nf:'84112',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Silvia Isidoro Dos Santos',mkt:'Madeira Madeira',mun:'São Paulo/SP',ee:'06/05/2026',dp:'13/04/2026'},
+  {nf:'84098',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Renaldo Bueno Rocha',mkt:'Shopee',mun:'São Paulo/SP',ee:'11/05/2026',dp:'13/04/2026'},
+  {nf:'84100',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Rita Carvalho',mkt:'Shopee',mun:'Guarulhos/SP',ee:'13/05/2026',dp:'14/04/2026'},
+  {nf:'84094',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Nayara Felix De Menezes',mkt:'Shopee',mun:'Mauá/SP',ee:'13/05/2026',dp:'14/04/2026'},
+  {nf:'84048',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Gilberto Serafim',mkt:'Shopee',mun:'Santo André/SP',ee:'19/05/2026',dp:'14/04/2026'},
+  {nf:'84051',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Guilherme R B Gonçalves',mkt:'Mercado Livre',mun:'São Paulo/SP',ee:'07/05/2026',dp:'14/04/2026'},
+  {nf:'85161',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Monica',mkt:'Shopee',mun:'São Paulo/SP',ee:'12/05/2026',dp:'14/04/2026'},
+  {nf:'85174',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Victoria Carvalho',mkt:'Magazine Luiza',mun:'GUARULHOS/SP',ee:'06/05/2026',dp:'14/04/2026'},
+  {nf:'85138',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Isabella Fortunato Pereira',mkt:'Shopee',mun:'São Paulo/SP',ee:'12/05/2026',dp:'14/04/2026'},
+  {nf:'85124',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Cristina Diniz',mkt:'Shopee',mun:'Mauá/SP',ee:'12/05/2026',dp:'14/04/2026'},
+  {nf:'85139',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Jayne Albuquerque',mkt:'Shopee',mun:'São Paulo/SP',ee:'12/05/2026',dp:'14/04/2026'},
+  {nf:'85158',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Meire Jesus Bispo',mkt:'Shopee',mun:'São Paulo/SP',ee:'12/05/2026',dp:'14/04/2026'},
+  {nf:'85120',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Claudiana Furtado De Lima Santos',mkt:'Shopee',mun:'São Paulo/SP',ee:'13/05/2026',dp:'15/04/2026'},
+  {nf:'85152',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Luana Rodrigues Leite',mkt:'Shopee',mun:'Guarulhos/SP',ee:'14/05/2026',dp:'15/04/2026'},
+  {nf:'85157',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Mayane Albuquerque',mkt:'Shopee',mun:'São Paulo/SP',ee:'13/05/2026',dp:'15/04/2026'},
+  {nf:'85153',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Luara Alves Dos Santos',mkt:'Shopee',mun:'Guarulhos/SP',ee:'14/05/2026',dp:'15/04/2026'},
+  {nf:'85137',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Ignacio Galeano Pampa Churrasqueira',mkt:'Mercado Livre',mun:'São Paulo/SP',ee:'08/05/2026',dp:'15/04/2026'},
+  {nf:'85145',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Kassia Diniz',mkt:'Shopee',mun:'Santo André/SP',ee:'19/05/2026',dp:'14/04/2026'},
+  {nf:'85116',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Beatriz Silva',mkt:'Shopee',mun:'São Paulo/SP',ee:'13/05/2026',dp:'15/04/2026'},
+  {nf:'85448',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'IARA APARECIDA TAVARES LEITE',mkt:'Shopee',mun:'São Paulo/SP',ee:'13/05/2026',dp:'15/04/2026'},
+  {nf:'85447',st:false,da:0,ts:'TEMPO JUSTO - SP',cli:'Francisco Alexsandro Santos',mkt:'Shopee',mun:'São Paulo/SP',ee:'13/05/2026',dp:'15/04/2026'},
+  {nf:'73853',st:false,da:0,ts:'TRANS EXPRESS - RJ',cli:'Joice da Silva Rodrigues',mkt:'Shopee',mun:'Rio de Janeiro/RJ',ee:'22/04/2026',dp:'26/03/2026'},
+  {nf:'79113',st:false,da:0,ts:'TRANS EXPRESS - RJ',cli:'Mayara Rosine Alves',mkt:'Shopee',mun:'Maricá/RJ',ee:'11/05/2026',dp:'06/04/2026'},
+  {nf:'79112',st:false,da:0,ts:'TRANS EXPRESS - RJ',cli:'Mathaus Gabriel da Silva Damasceno ',mkt:'Shopee',mun:'Maricá/RJ',ee:'07/05/2026',dp:'07/04/2026'},
+  {nf:'75579',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Bruna',mkt:'Shopee',mun:'Atibaia/SP',ee:'04/05/2026',dp:'31/03/2026'},
+  {nf:'77779',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Janaina Mendonca da Silva',mkt:'Magazine Luiza',mun:'SAO SEBASTIAO/SP',ee:'06/05/2026',dp:'01/04/2026'},
+  {nf:'77791',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Karina Pires Faxina',mkt:'Magazine Luiza',mun:'PENAPOLIS/SP',ee:'04/05/2026',dp:'02/04/2026'},
+  {nf:'77723',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Claudia Regina Anastacio Barbosa',mkt:'Shopee',mun:'Ibitinga/SP',ee:'12/05/2026',dp:'03/04/2026'},
+  {nf:'77795',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Leonardo Cordeiro Barbosa Carrion',mkt:'Shopee',mun:'Tupã/SP',ee:'07/05/2026',dp:'04/04/2026'},
+  {nf:'77751',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Fabiana Ribeiro',mkt:'Magazine Luiza',mun:'PRAIA GRANDE/SP',ee:'04/05/2026',dp:'04/04/2026'},
+  {nf:'77818',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Mayra Silva Lustosa',mkt:'Shopee',mun:'Praia Grande/SP',ee:'18/05/2026',dp:'04/04/2026'},
+  {nf:'77710',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Bianca Francelino Ranieri',mkt:'Shopee',mun:'Bilac/SP',ee:'14/05/2026',dp:'04/04/2026'},
+  {nf:'77803',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Luanna Pereira De Andrade',mkt:'Shopee',mun:'Bariri/SP',ee:'11/05/2026',dp:'04/04/2026'},
+  {nf:'77810',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Maria Aparecida Umemura',mkt:'Shopee',mun:'Praia Grande/SP',ee:'18/05/2026',dp:'04/04/2026'},
+  {nf:'77852',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Valdelice Miron',mkt:'Shopee',mun:'Braúna/SP',ee:'14/05/2026',dp:'05/04/2026'},
+  {nf:'77798',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Leticia Geronimo de Lima Silva',mkt:'Magazine Luiza',mun:'SAO PAULO/SP',ee:'27/04/2026',dp:'05/04/2026'},
+  {nf:'84172',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Caue Araujo',mkt:'Magazine Luiza',mun:'SAO BERNARDO DO CAMPO/SP',ee:'12/05/2026',dp:'12/04/2026'},
+  {nf:'84166',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Bruno Alves De Oliveira',mkt:'Mercado Livre',mun:'Bragança Paulista/SP',ee:'11/05/2026',dp:'13/04/2026'},
+  {nf:'84938',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Denise Virginia Rodrigues de Souza',mkt:'Magazine Luiza',mun:'BRAGANCA PAULISTA/SP',ee:'11/05/2026',dp:'14/04/2026'},
+  {nf:'85789',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'guilherme santos',mkt:'Mercado Livre',mun:'São José dos Campos/SP',ee:'13/05/2026',dp:'15/04/2026'},
+  {nf:'85793',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Priscila Lacerda',mkt:'Via Varejo',mun:'São Bernardo do Campo/SP',ee:'20/05/2026',dp:'16/04/2026'},
+  {nf:'86325',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Maria Jose Sena De Jesus',mkt:'Shopee',mun:'Guarulhos/SP',ee:'15/05/2026',dp:'16/04/2026'},
+  {nf:'86316',st:false,da:0,ts:'TRANS SUA LOG - SP',cli:'Camila Marotta',mkt:'Shopee',mun:'Taubaté/SP',ee:'19/05/2026',dp:'16/04/2026'},
+  {nf:'68854',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Gisele Alves',mkt:'Shopee',mun:'Lutécia/SP',ee:'22/04/2026',dp:'20/03/2026'},
+  {nf:'73569',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Roberta',mkt:'Shopee',mun:'Valentim Gentil/SP',ee:'04/05/2026',dp:'29/03/2026'},
+  {nf:'74267',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Renata Aparecida Camilo',mkt:'Shopee',mun:'Campinas/SP',ee:'30/04/2026',dp:'30/03/2026'},
+  {nf:'79240',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'maria auxiliadora de sousa',mkt:'Magazine Luiza',mun:'ITAPETININGA/SP',ee:'30/04/2026',dp:'06/04/2026'},
+  {nf:'80109',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Rodrigo Antonio Domingos',mkt:'Mercado Livre',mun:'Suzano/SP',ee:'30/04/2026',dp:'07/04/2026'},
+  {nf:'80027',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Silmara I.Vieira Cinegaglia Cinegag',mkt:'Shopee',mun:'Ibitinga/SP',ee:'08/05/2026',dp:'07/04/2026'},
+  {nf:'81066',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Luana Gallego odlevati',mkt:'Magazine Luiza',mun:'SANTO ANDRE/SP',ee:'06/05/2026',dp:'08/04/2026'},
+  {nf:'81103',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Stella Lopes',mkt:'Mercado Livre',mun:'São Caetano do Sul/SP',ee:'05/05/2026',dp:'08/04/2026'},
+  {nf:'81105',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Tatiana De Jesus',mkt:'Shopee',mun:'Guarujá/SP',ee:'13/05/2026',dp:'08/04/2026'},
+  {nf:'81006',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Adriana Ribeiro',mkt:'Magazine Luiza',mun:'CAMPOS DO JORDAO/SP',ee:'07/05/2026',dp:'08/04/2026'},
+  {nf:'81076',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Maria Suelan Pereira',mkt:'Shopee',mun:'Diadema/SP',ee:'18/05/2026',dp:'08/04/2026'},
+  {nf:'81029',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Danilo Antonio de Lima Fernandes Di',mkt:'Shopee',mun:'Campos do Jordão/SP',ee:'13/05/2026',dp:'08/04/2026'},
+  {nf:'81038',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Fernanda De Souza Fontes De Oliveir',mkt:'Shopee',mun:'São José dos Campos/SP',ee:'12/05/2026',dp:'09/04/2026'},
+  {nf:'81092',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Paula Farias',mkt:'Mercado Livre',mun:'Caraguatatuba/SP',ee:'12/05/2026',dp:'09/04/2026'},
+  {nf:'81030',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Dayane Cristina Campo De Oliveira D',mkt:'Shopee',mun:'Jacareí/SP',ee:'12/05/2026',dp:'09/04/2026'},
+  {nf:'80854',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'ANA LUIZA FREITAS DOMINGUES TEIXEIR',mkt:'Mercado Livre',mun:'Sumaré/SP',ee:'07/05/2026',dp:'09/04/2026'},
+  {nf:'81276',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Andreza Aparecida Carlos',mkt:'Shopee',mun:'Monte Alto/SP',ee:'12/05/2026',dp:'09/04/2026'},
+  {nf:'81718',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Bruna Fernanda Pereira De Souza',mkt:'Shopee',mun:'Guarujá/SP',ee:'14/05/2026',dp:'09/04/2026'},
+  {nf:'81766',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Regina Celia Cerri Santana',mkt:'Shopee',mun:'Mogi das Cruzes/SP',ee:'08/05/2026',dp:'09/04/2026'},
+  {nf:'81735',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Geovanna Rodrigues Trindade',mkt:'Magazine Luiza',mun:'GUARUJA/SP',ee:'07/05/2026',dp:'09/04/2026'},
+  {nf:'81834',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Orlene Dos Santos Cardoso',mkt:'Magazine Luiza',mun:'MATAO/SP',ee:'06/05/2026',dp:'09/04/2026'},
+  {nf:'83200',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Lilian Rezende Rodrigues',mkt:'Shopee',mun:'Franco da Rocha/SP',ee:'08/05/2026',dp:'10/04/2026'},
+  {nf:'83095',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Noemi Frati',mkt:'Magazine Luiza',mun:'AVARE/SP',ee:'08/05/2026',dp:'10/04/2026'},
+  {nf:'83144',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Edite Maria Araujo',mkt:'Magazine Luiza',mun:'DIADEMA/SP',ee:'07/05/2026',dp:'10/04/2026'},
+  {nf:'83186',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Juliana Matos De Araújo Alves Matos',mkt:'Mercado Livre',mun:'Francisco Morato/SP',ee:'12/05/2026',dp:'10/04/2026'},
+  {nf:'83121',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Anielle Manhani',mkt:'Shopee',mun:'Santo André/SP',ee:'15/05/2026',dp:'10/04/2026'},
+  {nf:'83211',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Mariana Garroni Rodrigues Dos Santo',mkt:'Shopee',mun:'Praia Grande/SP',ee:'19/05/2026',dp:'11/04/2026'},
+  {nf:'83134',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Cleia Oliveira',mkt:'Mercado Livre',mun:'São Paulo/SP',ee:'06/05/2026',dp:'11/04/2026'},
+  {nf:'83197',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Leonardo Miranda De Oliveira',mkt:'Shopee',mun:'Tatuí/SP',ee:'14/05/2026',dp:'11/04/2026'},
+  {nf:'83059',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Erica Barbosa de Moura',mkt:'Magazine Luiza',mun:'VINHEDO/SP',ee:'06/05/2026',dp:'11/04/2026'},
+  {nf:'83098',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Patricia dos Santos Pereira',mkt:'Shopee',mun:'Cabreúva/SP',ee:'14/05/2026',dp:'11/04/2026'},
+  {nf:'83080',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'kamilla',mkt:'Shopee',mun:'Bauru/SP',ee:'14/05/2026',dp:'11/04/2026'},
+  {nf:'83189',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Karla Raiany Brasil De Oliveira',mkt:'Shopee',mun:'Boituva/SP',ee:'14/05/2026',dp:'12/04/2026'},
+  {nf:'83202',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Manoelle Coutinho',mkt:'Shopee',mun:'Guarujá/SP',ee:'18/05/2026',dp:'12/04/2026'},
+  {nf:'83196',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Layla Rodrigues Da Costa',mkt:'Shopee',mun:'São Miguel Arcanjo/SP',ee:'20/05/2026',dp:'12/04/2026'},
+  {nf:'83036',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Aline Xavier De Oliveira',mkt:'Shopee',mun:'Campinas/SP',ee:'14/05/2026',dp:'12/04/2026'},
+  {nf:'83058',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Eliane Nogueira',mkt:'Shopee',mun:'Cabreúva/SP',ee:'18/05/2026',dp:'12/04/2026'},
+  {nf:'83114',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Adriana Moreira Simoes De Almeida',mkt:'Shopee',mun:'Capela do Alto/SP',ee:'18/05/2026',dp:'12/04/2026'},
+  {nf:'83079',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Kamili Gabrielly Lemos',mkt:'Shopee',mun:'Campinas/SP',ee:'14/05/2026',dp:'12/04/2026'},
+  {nf:'83078',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Juliana Da Cunha Chixaro',mkt:'Shopee',mun:'Valinhos/SP',ee:'14/05/2026',dp:'12/04/2026'},
+  {nf:'83029',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Adriana Domingos Dos Santos',mkt:'Shopee',mun:'Ribeirão Preto/SP',ee:'14/05/2026',dp:'12/04/2026'},
+  {nf:'83208',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Maria Muniz',mkt:'Shopee',mun:'São Paulo/SP',ee:'11/05/2026',dp:'12/04/2026'},
+  {nf:'83100',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Roseli Rodrigues dos Santos',mkt:'Shopee',mun:'Indaiatuba/SP',ee:'14/05/2026',dp:'12/04/2026'},
+  {nf:'83218',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Oliveira',mkt:'Shopee',mun:'São Paulo/SP',ee:'11/05/2026',dp:'12/04/2026'},
+  {nf:'83222',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Paulo Henrique dos Reis',mkt:'Shopee',mun:'Porangaba/SP',ee:'21/05/2026',dp:'12/04/2026'},
+  {nf:'83224',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Rafael Ramos De Moura',mkt:'Shopee',mun:'Iperó/SP',ee:'14/05/2026',dp:'12/04/2026'},
+  {nf:'83038',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Ana Carolina Tayette Villa Tucunduv',mkt:'Shopee',mun:'Ribeirão Preto/SP',ee:'13/05/2026',dp:'12/04/2026'},
+  {nf:'83096',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Pamella Ortiz',mkt:'Shopee',mun:'Franca/SP',ee:'14/05/2026',dp:'12/04/2026'},
+  {nf:'83072',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Ivete brito santos',mkt:'Magazine Luiza',mun:'CAMPINAS/SP',ee:'07/05/2026',dp:'12/04/2026'},
+  {nf:'83089',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'marislene aparecida ambrosio da sil',mkt:'Magazine Luiza',mun:'RIBEIRAO PRETO/SP',ee:'06/05/2026',dp:'12/04/2026'},
+  {nf:'83103',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Talita Vanessa Oliveira Pimentel',mkt:'Shopee',mun:'Ribeirão Preto/SP',ee:'14/05/2026',dp:'12/04/2026'},
+  {nf:'83039',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Ana Clara Daolio',mkt:'Magazine Luiza',mun:'JAGUARIUNA/SP',ee:'06/05/2026',dp:'12/04/2026'},
+  {nf:'83245',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Suellen Broers',mkt:'Shopee',mun:'Jacareí/SP',ee:'14/05/2026',dp:'12/04/2026'},
+  {nf:'83064',st:false,da:0,ts:'TRANSBARBOSA - SP',cli:'Flavio  Benevides Nascimento',mkt:'Web Continental V2',mun:'Amparo/SP',ee:'11/05/2026',dp:'12/04/2026'},
+  {nf:'68511',st:false,da:0,ts:'TS RJ - RJ',cli:'Edmea Moreira   da Costa',mkt:'Shopee',mun:'Volta Redonda/RJ',ee:'23/04/2026',dp:'20/03/2026'},
+  {nf:'69972',st:false,da:0,ts:'TS RJ - RJ',cli:'Rua Gelson Garcia Invasao Casa 55',mkt:'Shopee',mun:'Campos dos Goytacazes/RJ',ee:'27/04/2026',dp:'24/03/2026'},
+  {nf:'69952',st:false,da:0,ts:'TS RJ - RJ',cli:'Izabel Pessanha Raquel',mkt:'Shopee',mun:'Campos dos Goytacazes/RJ',ee:'27/04/2026',dp:'24/03/2026'},
+  {nf:'71839',st:false,da:0,ts:'TS RJ - RJ',cli:'Luiz Ricardo Dos Santos Felizardo',mkt:'Shopee',mun:'Itaocara/RJ',ee:'28/04/2026',dp:'25/03/2026'},
+  {nf:'71838',st:false,da:0,ts:'TS RJ - RJ',cli:'Larissa Souza',mkt:'Shopee',mun:'Volta Redonda/RJ',ee:'29/04/2026',dp:'26/03/2026'},
+  {nf:'72432',st:false,da:0,ts:'TS RJ - RJ',cli:'Roselaine Silva Campos',mkt:'Mercado Livre',mun:'Volta Redonda/RJ',ee:'24/04/2026',dp:'26/03/2026'},
+  {nf:'72438',st:false,da:0,ts:'TS RJ - RJ',cli:'Thaísa Rodrigues',mkt:'Shopee',mun:'São Fidélis/RJ',ee:'24/04/2026',dp:'26/03/2026'},
+  {nf:'72410',st:false,da:0,ts:'TS RJ - RJ',cli:'Gabrielly Ribeiro',mkt:'Mercado Livre',mun:'Macaé/RJ',ee:'27/04/2026',dp:'27/03/2026'},
+  {nf:'73478',st:false,da:0,ts:'TS RJ - RJ',cli:'Djanira Ramos Pantel Figueira',mkt:'Shopee',mun:'Pinheiral/RJ',ee:'30/04/2026',dp:'27/03/2026'},
+  {nf:'73529',st:false,da:0,ts:'TS RJ - RJ',cli:'Thalia feliciano',mkt:'Shopee',mun:'Campos dos Goytacazes/RJ',ee:'30/04/2026',dp:'27/03/2026'},
+  {nf:'73493',st:false,da:0,ts:'TS RJ - RJ',cli:'Isabela Malvino',mkt:'Shopee',mun:'Campos dos Goytacazes/RJ',ee:'04/05/2026',dp:'28/03/2026'},
+  {nf:'73515',st:false,da:0,ts:'TS RJ - RJ',cli:'Matheus Ricardo de Moraes',mkt:'Magazine Luiza',mun:'VOLTA REDONDA/RJ',ee:'29/04/2026',dp:'29/03/2026'},
+  {nf:'73484',st:false,da:0,ts:'TS RJ - RJ',cli:'Elaine Brum',mkt:'Shopee',mun:'Maricá/RJ',ee:'29/04/2026',dp:'29/03/2026'},
+  {nf:'75504',st:false,da:0,ts:'TS RJ - RJ',cli:'Fidelis Goncalves Dias Neto',mkt:'Shopee',mun:'Itaperuna/RJ',ee:'05/05/2026',dp:'31/03/2026'},
+  {nf:'76664',st:false,da:0,ts:'TS RJ - RJ',cli:'Nathalia Ribeiro DANTAS',mkt:'Shopee',mun:'Volta Redonda/RJ',ee:'06/05/2026',dp:'01/04/2026'},
+  {nf:'76663',st:false,da:0,ts:'TS RJ - RJ',cli:'Natalia Costa',mkt:'Shopee',mun:'Macaé/RJ',ee:'06/05/2026',dp:'01/04/2026'},
+  {nf:'77104',st:false,da:0,ts:'TS RJ - RJ',cli:'Eliandro de Almeida Silva',mkt:'Shopee',mun:'Macaé/RJ',ee:'08/05/2026',dp:'03/04/2026'},
+  {nf:'77168',st:false,da:0,ts:'TS RJ - RJ',cli:'Patricia Mendes Davi',mkt:'Shopee',mun:'Campos dos Goytacazes/RJ',ee:'07/05/2026',dp:'03/04/2026'},
+  {nf:'77091',st:false,da:0,ts:'TS RJ - RJ',cli:'Bianca Pereira Godinho',mkt:'Shopee',mun:'Volta Redonda/RJ',ee:'08/05/2026',dp:'04/04/2026'},
+  {nf:'77170',st:false,da:0,ts:'TS RJ - RJ',cli:'Pedro Henrique Teixeira Do Sacramen',mkt:'Shopee',mun:'Volta Redonda/RJ',ee:'08/05/2026',dp:'04/04/2026'},
+  {nf:'77189',st:false,da:0,ts:'TS RJ - RJ',cli:'Vitor Hugo Coutinho faria Azevedo A',mkt:'Shopee',mun:'Macaé/RJ',ee:'08/05/2026',dp:'04/04/2026'},
+  {nf:'79044',st:false,da:0,ts:'TS RJ - RJ',cli:'Sebastiao C Alves',mkt:'Shopee',mun:'Mussurepe/RJ',ee:'05/05/2026',dp:'06/04/2026'},
+  {nf:'79026',st:false,da:0,ts:'TS RJ - RJ',cli:'Laudiceia de Souza Carmona',mkt:'Shopee',mun:'Volta Redonda/RJ',ee:'08/05/2026',dp:'06/04/2026'}
+];
+
+function initEntregas(){
+  // Preenche resumo
+  let totAt=0,totNp=0;
+  ENTREGAS_RESUMO.forEach((r,i)=>{
+    totAt+=r.at; totNp+=r.np;
+    let bg=i%2===1?'rgba(255,255,255,.02)':'';
+    document.getElementById('tb-ent-res').innerHTML+=
+      `<tr style="background:${bg}">
+        <td><strong>${r.t}</strong></td>
+        <td class="mn" style="text-align:center;font-weight:700;color:#aade66">${r.tot}</td>
+        <td class="mn" style="text-align:center;color:${r.at>0?'#e74c3c':'#888'};font-weight:${r.at>0?'700':'400'}">${r.at||'—'}</td>
+        <td class="mn" style="text-align:center;color:#27ae60">${r.np}</td>
+        <td class="mn" style="text-align:center;color:${r.mx>0?'#e6a817':'#888'}">${r.mx>0?r.mx+'d':'—'}</td>
+      </tr>`;
+  });
+  document.getElementById('tb-ent-res').innerHTML+=
+    `<tr style="background:rgba(26,77,10,.15)">
+      <td style="color:#aade66;font-weight:700">TOTAL</td>
+      <td class="mn" style="text-align:center;font-weight:700;color:#66FF99">300</td>
+      <td class="mn" style="text-align:center;color:#e74c3c;font-weight:700">${totAt}</td>
+      <td class="mn" style="text-align:center;color:#27ae60;font-weight:700">${totNp}</td>
+      <td></td>
+    </tr>`;
+
+  // Popula select transportadoras
+  let trans=[...new Set(ENTREGAS_DETAIL.map(d=>d.ts))].sort();
+  trans.forEach(t=>{document.getElementById('filt-trans').innerHTML+=`<option value="${t}">${t}</option>`});
+
+  filterEnt();
+
+  // Gráficos
+  const CD2={plugins:{legend:{labels:{color:'#8899bb',font:{size:11}}},tooltip:{backgroundColor:'#1a2236',titleColor:'#e8edf8',bodyColor:'#8899bb'}},scales:{x:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}},y:{ticks:{color:'#8899bb',font:{size:10}},grid:{color:'rgba(31,45,69,.4)'}}}};
+
+  new Chart(document.getElementById('cEntTrans'),{type:'bar',
+    data:{labels:ENTREGAS_RESUMO.map(r=>r.t.split(' - ')[0]),
+          datasets:[{data:ENTREGAS_RESUMO.map(r=>r.tot),backgroundColor:'rgba(30,132,73,.7)',borderRadius:4,label:'Total'}]},
+    options:{...CD2,indexAxis:'y',plugins:{...CD2.plugins,legend:{display:false}},
+    animation:{onComplete:function(){const ctx=this.ctx;this.data.datasets.forEach((ds,di)=>{this.getDatasetMeta(di).data.forEach((bar,i)=>{ctx.fillStyle='#e8edf8';ctx.font='bold 10px DM Mono';ctx.textAlign='left';ctx.fillText(ds.data[i],bar.x+4,bar.y+4)})})}}}});
+
+  new Chart(document.getElementById('cEntStatus'),{type:'bar',
+    data:{labels:ENTREGAS_RESUMO.map(r=>r.t.split(' - ')[0]),
+          datasets:[
+            {data:ENTREGAS_RESUMO.map(r=>r.at),backgroundColor:'rgba(192,57,43,.7)',borderRadius:3,label:'Estavam Atrasadas'},
+            {data:ENTREGAS_RESUMO.map(r=>r.np),backgroundColor:'rgba(30,132,73,.65)',borderRadius:3,label:'Estavam no Prazo'}
+          ]},
+    options:{...CD2,indexAxis:'y',plugins:{...CD2.plugins,legend:{...CD2.plugins.legend,display:true,position:'top'}},scales:{x:{...CD2.scales.x,stacked:true},y:{...CD2.scales.y,stacked:true}}}});
+}
+
+function filterEnt(){
+  const ft=document.getElementById('filt-trans').value;
+  const fs=document.getElementById('filt-status').value;
+  let rows=ENTREGAS_DETAIL.filter(d=>{
+    if(ft&&d.ts!==ft) return false;
+    if(fs==='at'&&!d.st) return false;
+    if(fs==='np'&&d.st) return false;
+    return true;
+  });
+  document.getElementById('filt-count').textContent=rows.length+' NFs';
+  let html='';
+  rows.forEach((d,i)=>{
+    const bg=d.st?'rgba(192,57,43,.08)':'rgba(30,132,73,.06)';
+    const tc=d.st?'#e74c3c':'#27ae60';
+    html+=`<tr style="background:${bg}">
+      <td class="mn" style="color:#cc88ff;font-weight:700">${d.nf}</td>
+      <td style="color:${tc};font-size:12px;font-weight:${d.st?'700':'400'}">${d.st?'🔴 Estava Atrasada':'🟢 Estava no Prazo'}</td>
+      <td class="mn" style="text-align:center;color:${d.da>0?'#e74c3c':'#888'};font-weight:${d.da>0?'700':'400'}">${d.da>0?d.da+'d':'—'}</td>
+      <td style="font-size:12px">${d.ts}</td>
+      <td style="font-size:12px">${d.cli}</td>
+      <td><span class="bdg" style="font-size:10px;background:rgba(44,74,136,.2);color:#88aaff;border:1px solid rgba(44,74,136,.3)">${d.mkt}</span></td>
+      <td class="mn" style="text-align:center">${d.ee}</td>
+      <td style="font-size:12px">${d.mun}</td>
+    </tr>`;
+  });
+  document.getElementById('tb-ent-det').innerHTML=html;
+}
+
+</script>
 <script>
 const TRANSP=[
   {s:'TS RJ · RJ',uf:'RJ',tot:358,at:85,sla:76.26},
@@ -386,5 +825,5 @@ function initCharts(){
   new Chart(document.getElementById('cDAbr'),{type:'bar',data:{labels:ABR.map(f=>f.s),datasets:[{label:'22/04',data:ABR.map(f=>ABR_PREV[f.s]??0),backgroundColor:'rgba(46,74,122,.65)',borderRadius:3},{label:'23/04',data:ABR.map(f=>f.kg),backgroundColor:'rgba(30,132,73,.7)',borderRadius:3}]},options:{...CD,indexAxis:'y',plugins:{...CD.plugins,legend:{...CD.plugins.legend,display:true}}}});
 }
 function S(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('pg-'+id).classList.add('active');el.classList.add('active');}
-init();initCharts();
+init();initCharts();initEntregas();
 </script></body></html>
