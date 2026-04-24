@@ -9027,4 +9027,516 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     ATALHOS DE TECLADO
+     T = SLA Transporte · C = Comercial · F = Financeiro · E = Estoque
+     ESC = voltar do iframe · Ctrl+K = busca global
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  // Mapa de atalhos de cards
+  var ATALHOS = {
+    't': { url: 'https://easyhouseloja.github.io/painelgestao/sla_transporte.html', titulo: 'SLA Transporte' },
+    'c': { url: 'https://easyhouseloja.github.io/painelgestao/comercial.html',      titulo: 'Comercial' },
+    'f': { url: 'https://easyhouseloja.github.io/painelgestao/financeiro.html',     titulo: 'Financeiro' },
+    'e': { url: 'https://easyhouseloja.github.io/painelgestao/estoque.html',        titulo: 'Estoque' },
+    'a': { url: 'https://easyhouseloja.github.io/painelgestao/assistencia.html',    titulo: 'Assistência Técnica' },
+    'd': { url: 'https://easyhouseloja.github.io/painelgestao/devolucao.html',      titulo: 'Devoluções' }
+  };
+
+  // Verifica se o usuário está digitando em algum input/textarea
+  function estaDigitando(e){
+    var t = e.target;
+    if(!t) return false;
+    var tag = (t.tagName || '').toLowerCase();
+    if(tag === 'input' || tag === 'textarea' || tag === 'select') return true;
+    if(t.isContentEditable) return true;
+    return false;
+  }
+
+  // Verifica se o iframe overlay está aberto
+  function iframeAberto(){
+    var ov = document.getElementById('iframe-overlay');
+    return ov && getComputedStyle(ov).display !== 'none';
+  }
+
+  // Verifica se a busca global está aberta
+  function buscaAberta(){
+    var b = document.getElementById('eh-busca-overlay');
+    return b && b.style.display !== 'none' && b.style.display !== '';
+  }
+
+  document.addEventListener('keydown', function(e){
+    // Nunca intercepta se o login está visível
+    if(typeof loginVisivel === 'function' && loginVisivel()) return;
+
+    // Ctrl+K / Cmd+K → abre busca global
+    if((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')){
+      e.preventDefault();
+      if(typeof window.ehBuscaAbrir === 'function') window.ehBuscaAbrir();
+      return;
+    }
+
+    // Se está digitando num campo, não processa as outras teclas
+    if(estaDigitando(e)) return;
+
+    // ESC → volta do iframe ou fecha busca
+    if(e.key === 'Escape'){
+      if(buscaAberta() && typeof window.ehBuscaFechar === 'function'){
+        window.ehBuscaFechar();
+        e.preventDefault();
+        return;
+      }
+      if(iframeAberto() && typeof iframeVoltar === 'function'){
+        iframeVoltar();
+        e.preventDefault();
+        return;
+      }
+    }
+
+    // Atalhos de letra (só se não tiver modificadores como Ctrl/Alt/Meta)
+    if(e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
+
+    var letra = (e.key || '').toLowerCase();
+    var atalho = ATALHOS[letra];
+    if(atalho && typeof iframeAbrir === 'function'){
+      e.preventDefault();
+      iframeAbrir(atalho.url, atalho.titulo);
+    }
+  });
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     BUSCA GLOBAL (Ctrl+K)
+     Busca em: cards do painel, pedidos, SKUs do estoque, transportadoras
+     ═══════════════════════════════════════════════════════════════ -->
+<style>
+#eh-busca-overlay {
+  position: fixed; inset: 0; z-index: 99999;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  display: none; align-items: flex-start; justify-content: center;
+  padding-top: 10vh; animation: eh-busca-in 0.18s ease-out;
+}
+@keyframes eh-busca-in { from{opacity:0} to{opacity:1} }
+#eh-busca-box {
+  width: 100%; max-width: 640px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  display: flex; flex-direction: column; max-height: 70vh;
+}
+#eh-busca-input-wrap {
+  display: flex; align-items: center; gap: 10px; padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+#eh-busca-input-wrap i { color: var(--text-secondary); flex-shrink: 0; }
+#eh-busca-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: var(--text-primary); font-size: 15px; font-family: inherit;
+}
+#eh-busca-input::placeholder { color: var(--text-secondary); opacity: 0.6; }
+#eh-busca-kbd {
+  font-size: 10px; color: var(--text-secondary); padding: 3px 6px;
+  border: 1px solid var(--border); border-radius: 4px; opacity: 0.6;
+  font-family: 'DM Mono', monospace;
+}
+#eh-busca-results {
+  overflow-y: auto; max-height: calc(70vh - 56px); padding: 6px 0;
+}
+.eh-busca-grupo {
+  font-size: 10px; color: var(--text-secondary); opacity: 0.6;
+  text-transform: uppercase; letter-spacing: 1.5px; padding: 10px 18px 6px;
+  font-weight: 600;
+}
+.eh-busca-item {
+  display: flex; align-items: center; gap: 12px; padding: 9px 18px;
+  cursor: pointer; transition: background 0.1s; border-left: 2px solid transparent;
+}
+.eh-busca-item:hover, .eh-busca-item.eh-busca-active {
+  background: rgba(204,40,40,0.08); border-left-color: var(--accent-red);
+}
+.eh-busca-item-icon {
+  width: 28px; height: 28px; flex-shrink: 0; display: flex;
+  align-items: center; justify-content: center; border-radius: 6px;
+  background: rgba(255,255,255,0.04); font-size: 14px;
+}
+.eh-busca-item-body { flex: 1; min-width: 0; }
+.eh-busca-item-title {
+  font-size: 13.5px; font-weight: 500; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.eh-busca-item-sub {
+  font-size: 11px; color: var(--text-secondary); opacity: 0.75;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-top: 1px;
+}
+.eh-busca-item-badge {
+  font-size: 10px; color: var(--text-secondary); padding: 2px 7px;
+  border: 1px solid var(--border); border-radius: 4px; flex-shrink: 0;
+  font-family: 'DM Mono', monospace;
+}
+#eh-busca-empty {
+  padding: 30px 18px; text-align: center; color: var(--text-secondary);
+  font-size: 13px; opacity: 0.7;
+}
+#eh-busca-footer {
+  padding: 8px 18px; border-top: 1px solid var(--border);
+  font-size: 10.5px; color: var(--text-secondary); opacity: 0.55;
+  display: flex; justify-content: space-between; gap: 14px;
+  font-family: 'DM Mono', monospace;
+}
+body.light-mode #eh-busca-overlay { background: rgba(0,0,0,0.35); }
+</style>
+
+<div id="eh-busca-overlay" onclick="if(event.target===this)window.ehBuscaFechar()">
+  <div id="eh-busca-box">
+    <div id="eh-busca-input-wrap">
+      <i data-lucide="search" style="width:16px;height:16px"></i>
+      <input id="eh-busca-input" type="text" placeholder="Buscar pedidos, SKUs, transportadoras, dashboards..." autocomplete="off" spellcheck="false">
+      <span id="eh-busca-kbd">ESC</span>
+    </div>
+    <div id="eh-busca-results"></div>
+    <div id="eh-busca-footer">
+      <span>↑↓ navegar · ↵ abrir</span>
+      <span>Ctrl+K</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ── Lista de cards/dashboards (estática) ───────────────────────────────────
+  var CARDS = [
+    { titulo:'SLA Transporte',   sub:'Logística · prazos e transportadoras',     url:'https://easyhouseloja.github.io/painelgestao/sla_transporte.html', icon:'🚚', atalho:'T' },
+    { titulo:'Comercial',        sub:'Vendas, faturamento e metas',              url:'https://easyhouseloja.github.io/painelgestao/comercial.html',      icon:'📈', atalho:'C' },
+    { titulo:'Financeiro',       sub:'Gestão de cobranças e recebimentos',       url:'https://easyhouseloja.github.io/painelgestao/financeiro.html',     icon:'💰', atalho:'F' },
+    { titulo:'Estoque',          sub:'Anymarket · SKUs e disponibilidade',       url:'https://easyhouseloja.github.io/painelgestao/estoque.html',        icon:'📦', atalho:'E' },
+    { titulo:'Assistência Técnica', sub:'Pós-venda · pedidos em aberto',         url:'https://easyhouseloja.github.io/painelgestao/assistencia.html',    icon:'🔧', atalho:'A' },
+    { titulo:'Devoluções',       sub:'Pós-venda · devoluções por marketplace',   url:'https://easyhouseloja.github.io/painelgestao/devolucao.html',      icon:'↩️', atalho:'D' },
+    { titulo:'Reputação',        sub:'Reclame Aqui · notas e avaliações',        url:'https://easyhouseloja.github.io/painelgestao/reputacao.html',      icon:'⭐' },
+    { titulo:'Portfólio E-COM',  sub:'Gestão de catálogo 1P',                    url:'https://easyhouseloja.github.io/painelgestao/portfolio_ecom.html', icon:'📋' },
+    { titulo:'Estoque Madeira Madeira', sub:'Controle interno MM',               url:'https://easyhouseloja.github.io/painelgestao/estoque_mm.html',     icon:'🏭' }
+  ];
+
+  // ── Normalização para busca (remove acentos + lowercase) ───────────────────
+  function norm(s){
+    return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  }
+
+  // ── Extrai transportadoras únicas do cache de SLA (se existir) ─────────────
+  function extrairTransportadoras(){
+    var set = new Set();
+    // De NOTIFICACOES_HOJE (que mencionam transportadoras nos textos)
+    try {
+      if(typeof NOTIFICACOES_HOJE !== 'undefined'){
+        NOTIFICACOES_HOJE.forEach(function(n){
+          var t = (n.titulo||'') + ' ' + (n.desc||'');
+          // Captura nomes em MAIÚSCULAS com 2+ letras (padrão de transportadora)
+          var matches = t.match(/\b[A-Z][A-Z\s]{1,20}[A-Z]\b/g) || [];
+          matches.forEach(function(m){
+            m = m.trim();
+            if(m.length >= 2 && m.length <= 20 && !/^(SLA|NF|NFS|CNPJ|STL|RJ|SP|MG|ML|BR)$/.test(m)){
+              set.add(m);
+            }
+          });
+        });
+      }
+    } catch(e){}
+    return Array.from(set).slice(0, 30).map(function(t){
+      return { titulo: t, sub: 'Transportadora', icon: '🚛', tipo: 'transportadora' };
+    });
+  }
+
+  // ── Busca principal ─────────────────────────────────────────────────────────
+  function buscar(q){
+    if(!q || q.length < 1) return [];
+    var qn = norm(q);
+    var resultados = { dashboards: [], pedidos: [], estoque: [], transportadoras: [] };
+
+    // Dashboards
+    CARDS.forEach(function(c){
+      if(norm(c.titulo).includes(qn) || norm(c.sub).includes(qn)){
+        resultados.dashboards.push({ ...c, tipo:'dashboard' });
+      }
+    });
+
+    // Pedidos (PED_TODOS se disponível)
+    try {
+      if(typeof PED_TODOS !== 'undefined' && Array.isArray(PED_TODOS)){
+        var limite = 15;
+        for(var i=0; i<PED_TODOS.length && resultados.pedidos.length<limite; i++){
+          var p = PED_TODOS[i];
+          var txt = norm((p.numero||'') + ' ' + (p.cliente||'') + ' ' + (p.produto||'') + ' ' + (p.sku||''));
+          if(txt.includes(qn)){
+            resultados.pedidos.push({
+              titulo: '#' + (p.numero||'?') + ' · ' + (p.cliente||'Cliente'),
+              sub: (p.produto||'') + (p.valor ? ' · R$ ' + Number(p.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}) : ''),
+              badge: p.status || '',
+              icon: '📦', tipo: 'pedido', dado: p
+            });
+          }
+        }
+      }
+    } catch(e){}
+
+    // Estoque (ANY_PRODUTOS se disponível)
+    try {
+      if(typeof ANY_PRODUTOS !== 'undefined' && Array.isArray(ANY_PRODUTOS)){
+        var limite2 = 15;
+        for(var j=0; j<ANY_PRODUTOS.length && resultados.estoque.length<limite2; j++){
+          var s = ANY_PRODUTOS[j];
+          var txt2 = norm((s.sku||'') + ' ' + (s.titulo||'') + ' ' + (s.nome||''));
+          if(txt2.includes(qn)){
+            resultados.estoque.push({
+              titulo: (s.titulo||s.nome||s.sku||'SKU'),
+              sub: 'SKU ' + (s.sku||'?') + (typeof s.estoque !== 'undefined' ? ' · estoque: ' + s.estoque : ''),
+              badge: (s.estoque === 0 ? '🔴 zerado' : (s.estoque < 60 ? '⚠️ baixo' : 'OK')),
+              icon: '📦', tipo: 'sku', dado: s
+            });
+          }
+        }
+      }
+    } catch(e){}
+
+    // Transportadoras
+    var transps = extrairTransportadoras();
+    transps.forEach(function(t){
+      if(norm(t.titulo).includes(qn)){
+        resultados.transportadoras.push({ ...t, tipo:'transportadora' });
+      }
+    });
+
+    return resultados;
+  }
+
+  // ── Renderização ────────────────────────────────────────────────────────────
+  var _buscaIndiceAtivo = 0;
+  var _buscaFlat = []; // lista achatada pra navegação com setas
+
+  function renderizar(q){
+    var box = document.getElementById('eh-busca-results');
+    if(!box) return;
+
+    if(!q || q.length < 1){
+      // Sem query: mostra os dashboards
+      box.innerHTML = '';
+      _buscaFlat = [];
+      var grupoHTML = '<div class="eh-busca-grupo">Atalhos rápidos</div>';
+      CARDS.slice(0,6).forEach(function(c){
+        _buscaFlat.push({ ...c, tipo:'dashboard' });
+      });
+      box.innerHTML = grupoHTML + _buscaFlat.map(function(item, i){
+        return itemHTML(item, i);
+      }).join('');
+      _buscaIndiceAtivo = 0;
+      marcarAtivo();
+      if(window.lucide) lucide.createIcons();
+      return;
+    }
+
+    var r = buscar(q);
+    var total = r.dashboards.length + r.pedidos.length + r.estoque.length + r.transportadoras.length;
+
+    if(total === 0){
+      box.innerHTML = '<div id="eh-busca-empty">Nenhum resultado para "<strong>' + q.replace(/</g,'&lt;') + '</strong>"</div>';
+      _buscaFlat = [];
+      return;
+    }
+
+    _buscaFlat = [];
+    var html = '';
+    var grupos = [
+      { key: 'dashboards',      label: 'Dashboards',       items: r.dashboards },
+      { key: 'pedidos',         label: 'Pedidos',          items: r.pedidos },
+      { key: 'estoque',         label: 'SKUs / Estoque',   items: r.estoque },
+      { key: 'transportadoras', label: 'Transportadoras',  items: r.transportadoras }
+    ];
+    grupos.forEach(function(g){
+      if(g.items.length === 0) return;
+      html += '<div class="eh-busca-grupo">' + g.label + ' · ' + g.items.length + '</div>';
+      g.items.forEach(function(item){
+        var idx = _buscaFlat.length;
+        _buscaFlat.push(item);
+        html += itemHTML(item, idx);
+      });
+    });
+    box.innerHTML = html;
+    _buscaIndiceAtivo = 0;
+    marcarAtivo();
+    if(window.lucide) lucide.createIcons();
+  }
+
+  function itemHTML(item, idx){
+    var badge = item.badge ? '<span class="eh-busca-item-badge">'+item.badge+'</span>' : (item.atalho ? '<span class="eh-busca-item-badge">'+item.atalho+'</span>' : '');
+    return '<div class="eh-busca-item" data-idx="'+idx+'" onclick="window.ehBuscaAcionar('+idx+')">' +
+           '<div class="eh-busca-item-icon">'+(item.icon||'•')+'</div>' +
+           '<div class="eh-busca-item-body">' +
+             '<div class="eh-busca-item-title">'+item.titulo+'</div>' +
+             (item.sub ? '<div class="eh-busca-item-sub">'+item.sub+'</div>' : '') +
+           '</div>' + badge + '</div>';
+  }
+
+  function marcarAtivo(){
+    var itens = document.querySelectorAll('.eh-busca-item');
+    itens.forEach(function(el, i){
+      el.classList.toggle('eh-busca-active', i === _buscaIndiceAtivo);
+      if(i === _buscaIndiceAtivo) el.scrollIntoView({ block:'nearest' });
+    });
+  }
+
+  // ── Ações ───────────────────────────────────────────────────────────────────
+  window.ehBuscaAbrir = function(){
+    var ov = document.getElementById('eh-busca-overlay');
+    if(!ov) return;
+    ov.style.display = 'flex';
+    var inp = document.getElementById('eh-busca-input');
+    if(inp){ inp.value = ''; setTimeout(function(){ inp.focus(); }, 30); }
+    renderizar('');
+  };
+
+  window.ehBuscaFechar = function(){
+    var ov = document.getElementById('eh-busca-overlay');
+    if(ov) ov.style.display = 'none';
+  };
+
+  window.ehBuscaAcionar = function(idx){
+    var item = _buscaFlat[idx];
+    if(!item) return;
+    if(item.tipo === 'dashboard'){
+      window.ehBuscaFechar();
+      if(typeof iframeAbrir === 'function') iframeAbrir(item.url, item.titulo);
+    } else if(item.tipo === 'pedido'){
+      // Abre painel de pedidos
+      window.ehBuscaFechar();
+      if(typeof abrirPedidos === 'function') abrirPedidos();
+    } else if(item.tipo === 'sku'){
+      // Abre dashboard de estoque
+      window.ehBuscaFechar();
+      if(typeof iframeAbrir === 'function') iframeAbrir('https://easyhouseloja.github.io/painelgestao/estoque.html', 'Estoque');
+    } else if(item.tipo === 'transportadora'){
+      // Abre SLA transporte
+      window.ehBuscaFechar();
+      if(typeof iframeAbrir === 'function') iframeAbrir('https://easyhouseloja.github.io/painelgestao/sla_transporte.html', 'SLA Transporte');
+    }
+  };
+
+  // ── Eventos do input ────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function(){
+    var inp = document.getElementById('eh-busca-input');
+    if(!inp) return;
+
+    var debounce = null;
+    inp.addEventListener('input', function(){
+      clearTimeout(debounce);
+      var q = inp.value;
+      debounce = setTimeout(function(){ renderizar(q); }, 80);
+    });
+
+    inp.addEventListener('keydown', function(e){
+      if(e.key === 'ArrowDown'){
+        e.preventDefault();
+        if(_buscaFlat.length > 0){
+          _buscaIndiceAtivo = Math.min(_buscaIndiceAtivo + 1, _buscaFlat.length - 1);
+          marcarAtivo();
+        }
+      } else if(e.key === 'ArrowUp'){
+        e.preventDefault();
+        if(_buscaFlat.length > 0){
+          _buscaIndiceAtivo = Math.max(_buscaIndiceAtivo - 1, 0);
+          marcarAtivo();
+        }
+      } else if(e.key === 'Enter'){
+        e.preventDefault();
+        if(_buscaFlat[_buscaIndiceAtivo]) window.ehBuscaAcionar(_buscaIndiceAtivo);
+      } else if(e.key === 'Escape'){
+        e.preventDefault();
+        window.ehBuscaFechar();
+      }
+    });
+  });
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     RESUMO DO DIA + SLA/META NO TICKER DE DADOS
+     Substitui a primeira posição do ticker por um resumo em blocos
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  // Busca o valor atual do widget de SLA Transporte (já atualizado pelo script anterior)
+  function getSlaTransporte(){
+    var el = document.getElementById('sla-transporte-percent');
+    if(!el) return null;
+    var txt = (el.textContent || '').trim();
+    if(!txt || txt === '—' || txt === 'indisponível') return null;
+    return txt;
+  }
+
+  // Busca o valor atual do widget de Meta Comercial
+  function getMetaComercial(){
+    var el = document.getElementById('meta-comercial-percent');
+    if(!el) return null;
+    var txt = (el.textContent || '').trim();
+    if(!txt || txt === '—') return null;
+    return txt;
+  }
+
+  // Busca total de pedidos na base (se disponível)
+  function getTotalPedidos(){
+    try {
+      if(typeof PED_TODOS !== 'undefined' && Array.isArray(PED_TODOS) && PED_TODOS.length > 0){
+        return PED_TODOS.length;
+      }
+    } catch(e){}
+    return null;
+  }
+
+  // Monta o bloco de resumo do dia — símbolos coloridos, texto neutro
+  function montarResumoDia(){
+    var partes = [];
+    var total = getTotalPedidos();
+    var sla = getSlaTransporte();
+    var meta = getMetaComercial();
+
+    if(total !== null){
+      partes.push('<span class="ticker-data"><b>📊 ' + total.toLocaleString('pt-BR') + '</b> ped.</span>');
+    }
+    if(sla){
+      partes.push('<span class="ticker-data-ok"><b>✅ SLA ' + sla + '</b></span>');
+    }
+    if(meta){
+      partes.push('<span class="ticker-data-ok"><b>📈 Meta ' + meta + '</b></span>');
+    }
+
+    if(partes.length === 0) return null;
+    return partes.join('<span class="sep">◆</span>');
+  }
+
+  // Injeta o resumo no início de cada ciclo "dados" do ticker
+  // Faz isso interceptando _tickerGerarDados
+  if(typeof _tickerGerarDados === 'function'){
+    var _tickerGerarDadosOrig = _tickerGerarDados;
+    window._tickerGerarDados = function(){
+      var original = _tickerGerarDadosOrig();
+      var resumo = montarResumoDia();
+      var sep = '<span class="sep">◆</span>';
+
+      if(!resumo && !original) return null;
+      if(!resumo) return original;
+      if(!original){
+        // Só tem resumo — duplica pra fazer loop
+        var bloco = resumo + sep;
+        return bloco + bloco;
+      }
+      // Tem os dois: resumo primeiro, depois dados, tudo duplicado pro loop contínuo
+      // A função original já retorna "bloco + bloco", então a gente monta um novo
+      // bloco combinado e duplica.
+      var blocoCompleto = resumo + sep + original.split(sep + '<span class="ticker-data')[0]; // pega só a primeira metade do original
+      // Abordagem mais simples: prefixa o resumo uma vez antes do conteúdo original completo
+      return resumo + sep + original;
+    };
+    console.log('[ticker] Resumo do dia integrado ao ticker');
+  }
+})();
+</script>
+
 </body>
