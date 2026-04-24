@@ -3577,6 +3577,107 @@ body.light-mode #iframe-page-title {
     transform: none !important;
   }
 }
+
+/* ═══════════ ANIMAÇÕES DO WIDGET DE SLA TRANSPORTE ═══════════ */
+/* Mesmo esquema do widget comercial, porém em VERDE (cor do card SLA) */
+
+/* === ANIMAÇÕES FOCADAS NO CHIP VERDE DO SLA === */
+@keyframes sla-verde-entrada {
+  0%   { opacity: 0; transform: translateX(14px) scale(0.85); }
+  60%  { opacity: 1; transform: translateX(-2px) scale(1.08); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+/* Respiração elegante do chip — pulsa em tons de verde */
+@keyframes sla-verde-breath {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 rgba(102,255,153,0),
+      0 0 0 rgba(102,255,153,0);
+    background: rgba(31,189,114,0.12);
+    border-color: rgba(31,189,114,0.28);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px rgba(102,255,153,0.08),
+      0 0 14px rgba(102,255,153,0.35);
+    background: rgba(31,189,114,0.20);
+    border-color: rgba(102,255,153,0.55);
+  }
+}
+
+/* Halo expansivo — anel verde que cresce e some */
+@keyframes sla-verde-halo {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+
+.sla-transporte-animated.sla-ready {
+  animation: meta-fade-in 0.7s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+
+/* CHIP VERDE — entrada marcante + respiração verde */
+.sla-transporte-animated.sla-ready > span:nth-of-type(1) {
+  position: relative;
+  animation:
+    sla-verde-entrada 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s backwards,
+    sla-verde-breath 2.2s ease-in-out 0.9s 3;
+}
+
+/* Anel/halo que expande ao redor do chip verde (2x) */
+.sla-transporte-animated.sla-ready > span:nth-of-type(1)::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(102,255,153,0.7);
+  pointer-events: none;
+  opacity: 0;
+  animation: sla-verde-halo 1.3s ease-out 1s 2;
+}
+
+/* === EFEITO CONTÍNUO NO VALOR (%) — brilho sutil pulsante === */
+@keyframes sla-valor-glow {
+  0%, 100% {
+    text-shadow:
+      0 0 0 transparent,
+      0 0 0 transparent;
+    filter: brightness(1);
+  }
+  50% {
+    text-shadow:
+      0 0 6px var(--sla-glow, rgba(102,255,153,0.55)),
+      0 0 14px var(--sla-glow, rgba(102,255,153,0.25));
+    filter: brightness(1.15);
+  }
+}
+
+/* Aplica o glow no número — só depois da animação de entrada */
+.sla-transporte-animated.sla-ready #sla-transporte-percent {
+  animation: sla-valor-glow 2.8s ease-in-out 1.2s infinite;
+  will-change: text-shadow, filter;
+}
+
+/* Respeita preferência do usuário por menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .sla-transporte-animated,
+  .sla-transporte-animated.sla-ready,
+  .sla-transporte-animated.sla-ready > span,
+  .sla-transporte-animated.sla-ready > span::before,
+  .sla-transporte-animated.sla-ready #sla-transporte-percent {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
@@ -3816,13 +3917,21 @@ body.light-mode #iframe-page-title {
         </div>
 
         <!-- SLA TRANSPORTE -->
-        <a class="card card-sla" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/sla_transporte.html" data-title="SLA Transporte" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
+        <a class="card card-sla" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/sla_transporte.html" data-title="SLA Transporte" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)" style="position:relative;">
           <div class="icon-wrap">
             <i data-lucide="truck" style="width:22px;height:22px"></i>
           </div>
           <div class="card-tag">Logística</div>
           <h2>SLA Transporte</h2>
           <p>Acompanhamento de prazos de entrega, desempenho por transportadora e indicadores logísticos.</p>
+
+          <!-- ÍNDICE DE SLA GERAL — atualizado automaticamente pelo script no final do arquivo (busca sla_transporte.html) -->
+          <div id="sla-transporte-widget" class="sla-transporte-animated" style="display:flex;align-items:center;gap:8px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do SLA...">
+            <span id="sla-transporte-chip" style="font-size:11px;font-weight:700;color:#66FF99;background:rgba(31,189,114,0.12);border:1px solid rgba(31,189,114,0.22);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
+              <span id="sla-transporte-label">SLA Geral</span> · <span id="sla-transporte-percent" style="font-size:17px;font-weight:800;letter-spacing:0.3px;">—</span>
+            </span>
+          </div>
+
           <div class="card-footer">
             Acessar dashboard <i data-lucide="arrow-right"></i>
           </div>
@@ -8746,6 +8855,123 @@ document.addEventListener('DOMContentLoaded', function() {
     atualizarMetaComercial();
   }
   setInterval(atualizarMetaComercial, 10 * 60 * 1000);
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ATUALIZAÇÃO AUTOMÁTICA DO ÍNDICE DE SLA TRANSPORTE
+     Busca dados de sla_transporte.html e preenche o widget
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  const SLA_URL = 'https://easyhouseloja.github.io/painelgestao/sla_transporte.html';
+  const META_SLA = 95; // Meta de 95%
+
+  // Extrai número de texto tipo "95,04%"
+  function parseNum(txt){
+    if(!txt) return null;
+    const m = txt.replace(/\./g,'').match(/-?\d+(?:,\d+)?/);
+    return m ? parseFloat(m[0].replace(',','.')) : null;
+  }
+
+  async function atualizarSlaTransporte(){
+    const widget = document.getElementById('sla-transporte-widget');
+    if(!widget) return;
+
+    try{
+      const res = await fetch(SLA_URL, { cache:'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const html = await res.text();
+
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      // Pega o bloco "mega" da página de visão geral (#pg-visao)
+      const pgVisao = doc.getElementById('pg-visao');
+      if(!pgVisao) throw new Error('Página de visão geral não encontrada');
+
+      const mega = pgVisao.querySelector('.mega');
+      if(!mega) throw new Error('Bloco mega (índice SLA) não encontrado');
+
+      const labelEl = mega.querySelector('.mega-l');
+      const valueEl = mega.querySelector('.mega-v');
+      const badgeEl = mega.querySelector('.mega-b');
+
+      const labelTxt = labelEl?.textContent?.trim() || '';
+      const valueTxt = valueEl?.textContent?.trim() || '';
+      const badgeTxt = badgeEl?.textContent?.trim() || '';
+
+      if(!valueTxt) throw new Error('Valor de SLA não encontrado');
+
+      // Extrai a data do label (ex: "Índice de SLA Geral — 24/04/2026")
+      const dataMatch = labelTxt.match(/(\d{2}\/\d{2}\/\d{4})/);
+      const dataStr = dataMatch ? dataMatch[1] : '';
+
+      // Atualiza os textos
+      const pctW = document.getElementById('sla-transporte-percent');
+      const chip = document.getElementById('sla-transporte-chip');
+
+      if(pctW) pctW.textContent = valueTxt.replace(/\s+/g,'');
+
+      // Cores dinâmicas: verde se meta atingida, âmbar ou vermelho se abaixo
+      const pctNum = parseNum(valueTxt);
+      const pctEl = document.getElementById('sla-transporte-percent');
+      if(chip){
+        if(pctNum !== null && pctNum >= META_SLA){
+          // Verde — meta atingida (≥ 95%)
+          chip.style.color = '#66FF99';
+          chip.style.background = 'rgba(31,189,114,0.12)';
+          chip.style.borderColor = 'rgba(31,189,114,0.22)';
+          if(pctEl) pctEl.style.setProperty('--sla-glow', 'rgba(102,255,153,0.55)');
+        } else if(pctNum !== null && pctNum >= 90){
+          // Âmbar — entre 90% e 95%
+          chip.style.color = '#f0c674';
+          chip.style.background = 'rgba(212,160,23,0.12)';
+          chip.style.borderColor = 'rgba(212,160,23,0.28)';
+          if(pctEl) pctEl.style.setProperty('--sla-glow', 'rgba(240,198,116,0.55)');
+        } else {
+          // Vermelho — abaixo de 90%
+          chip.style.color = '#ff6b6b';
+          chip.style.background = 'rgba(204,40,40,0.12)';
+          chip.style.borderColor = 'rgba(204,40,40,0.28)';
+          if(pctEl) pctEl.style.setProperty('--sla-glow', 'rgba(255,107,107,0.55)');
+        }
+      }
+
+      // Tooltip completo
+      widget.setAttribute('title',
+        `SLA Geral${dataStr ? ' ('+dataStr+')' : ''}: ${valueTxt}` +
+        (badgeTxt ? ' · ' + badgeTxt.replace(/\s+/g,' ').trim() : '')
+      );
+
+      // Dispara animação de entrada (só uma vez por sessão de carregamento)
+      if(!widget.classList.contains('sla-ready')){
+        requestAnimationFrame(()=>{
+          widget.classList.add('sla-ready');
+        });
+      }
+
+    } catch(err){
+      console.warn('[sla-transporte] Falha ao atualizar:', err);
+      const pctW = document.getElementById('sla-transporte-percent');
+      if(pctW && pctW.textContent === '—'){
+        pctW.textContent = 'indisponível';
+      }
+      // Mesmo em erro, faz o fade-in pra não deixar elemento invisível travado
+      if(widget && !widget.classList.contains('sla-ready')){
+        requestAnimationFrame(()=>{
+          widget.classList.add('sla-ready');
+        });
+      }
+    }
+  }
+
+  // Executa ao carregar e depois a cada 10 minutos
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', atualizarSlaTransporte);
+  } else {
+    atualizarSlaTransporte();
+  }
+  setInterval(atualizarSlaTransporte, 10 * 60 * 1000);
 })();
 </script>
 
