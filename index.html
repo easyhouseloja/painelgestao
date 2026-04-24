@@ -1541,12 +1541,17 @@ body::before {
   animation-duration: 40s !important;
 }
 .ticker-track .ticker-data {
-  color: var(--text-primary);
-  font-weight: 600;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
-.ticker-track .ticker-data-ok    { color: var(--accent-green); font-weight: 700; }
-.ticker-track .ticker-data-warn  { color: var(--accent-amber); font-weight: 700; }
-.ticker-track .ticker-data-alert { color: #e05555; font-weight: 700; }
+/* O span externo fica com cor neutra; só o <b> dentro fica colorido (símbolo + número) */
+.ticker-track .ticker-data-ok    { color: var(--text-secondary); font-weight: 400; }
+.ticker-track .ticker-data-warn  { color: var(--text-secondary); font-weight: 400; }
+.ticker-track .ticker-data-alert { color: var(--text-secondary); font-weight: 400; }
+.ticker-track .ticker-data-ok    b { color: var(--accent-green); font-weight: 700; }
+.ticker-track .ticker-data-warn  b { color: var(--accent-amber); font-weight: 700; }
+.ticker-track .ticker-data-alert b { color: #e05555;            font-weight: 700; }
+.ticker-track .ticker-data       b { color: var(--text-primary); font-weight: 600; }
 
 /* Pausar animações quando a página está oculta */
 .animations-paused .ticker-track,
@@ -3901,10 +3906,11 @@ body.light-mode #iframe-page-title {
           <p>Acompanhamento de prazos de entrega, desempenho por transportadora e indicadores logísticos.</p>
 
           <!-- ÍNDICE DE SLA GERAL — atualizado automaticamente pelo script no final do arquivo (busca sla_transporte.html) -->
-          <div id="sla-transporte-widget" class="sla-transporte-animated" style="display:flex;align-items:center;gap:8px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do SLA...">
+          <div id="sla-transporte-widget" class="sla-transporte-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do SLA...">
             <span id="sla-transporte-chip" style="font-size:11px;font-weight:700;color:#66FF99;background:rgba(31,189,114,0.12);border:1px solid rgba(31,189,114,0.22);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
               <span id="sla-transporte-label">SLA Geral</span> · <span id="sla-transporte-percent" style="font-size:14px;font-weight:800;letter-spacing:0.2px;">—</span>
             </span>
+            <span style="font-size:9.5px;font-weight:500;color:var(--text-secondary);opacity:0.65;letter-spacing:0.3px;padding-left:4px;">meta: <span id="sla-transporte-meta-valor">95%</span></span>
           </div>
 
           <div class="card-footer">
@@ -5996,6 +6002,7 @@ function _tickerFmt(v) {
 function _tickerGerarDados() {
   var itens = [];
   var sep = '<span class="sep">◆</span>';
+  var debug = { pedidos: 0, anymarket: 0, firebase: 0, notif: 0 };
 
   // Pedidos
   if (PED_TODOS && PED_TODOS.length > 0) {
@@ -6008,24 +6015,36 @@ function _tickerGerarDados() {
     var vPend   = pend.reduce(function(s,p){ return s+p.valor; }, 0);
     var vHoje   = hoje.filter(function(p){return p.status==='PAGO';}).reduce(function(s,p){return s+p.valor;},0);
 
-    if (pagos.length > 0)
-      itens.push('<span class="ticker-data-ok">✅ ' + pagos.length + ' pagos aguardando envio</span>');
-    if (pend.length > 0)
-      itens.push('<span class="ticker-data-warn">⏳ ' + pend.length + ' pendentes · ' + _tickerFmt(vPend) + '</span>');
-    if (hoje.length > 0)
-      itens.push('<span class="ticker-data">📅 Hoje: ' + hoje.length + ' pedidos · ' + _tickerFmt(vHoje) + '</span>');
-    if (vPago > 0)
-      itens.push('<span class="ticker-data-ok">💰 Pedidos Pagos: ' + _tickerFmt(vPago) + '</span>');
+    if (pagos.length > 0) {
+      itens.push('<span class="ticker-data-ok"><b>✅ ' + pagos.length + '</b> pagos aguardando envio</span>');
+      debug.pedidos++;
+    }
+    if (pend.length > 0) {
+      itens.push('<span class="ticker-data-warn"><b>⏳ ' + pend.length + '</b> pendentes · <b>' + _tickerFmt(vPend) + '</b></span>');
+      debug.pedidos++;
+    }
+    if (hoje.length > 0) {
+      itens.push('<span class="ticker-data">📅 Hoje: <b>' + hoje.length + '</b> pedidos · <b>' + _tickerFmt(vHoje) + '</b></span>');
+      debug.pedidos++;
+    }
+    if (vPago > 0) {
+      itens.push('<span class="ticker-data-ok"><b>💰 ' + _tickerFmt(vPago) + '</b> em pedidos pagos</span>');
+      debug.pedidos++;
+    }
   }
 
   // Estoque Anymarket
   if (typeof ANY_PRODUTOS !== 'undefined' && ANY_PRODUTOS && ANY_PRODUTOS.length > 0) {
     var zerados = ANY_PRODUTOS.filter(function(p){ return p.estoque === 0; });
     var baixos  = ANY_PRODUTOS.filter(function(p){ return p.estoque > 0 && p.estoque <= (typeof MINIMO_PADRAO !== 'undefined' ? MINIMO_PADRAO : 60); });
-    if (zerados.length > 0)
-      itens.push('<span class="ticker-data-alert">🔴 ' + zerados.length + ' SKU' + (zerados.length>1?'s':'') + ' zerado' + (zerados.length>1?'s':'') + ' no estoque</span>');
-    if (baixos.length > 0)
-      itens.push('<span class="ticker-data-warn">⚠️ ' + baixos.length + ' SKU' + (baixos.length>1?'s':'') + ' abaixo do ideal</span>');
+    if (zerados.length > 0) {
+      itens.push('<span class="ticker-data-alert"><b>🔴 ' + zerados.length + '</b> SKU' + (zerados.length>1?'s':'') + ' zerado' + (zerados.length>1?'s':'') + ' no estoque</span>');
+      debug.anymarket++;
+    }
+    if (baixos.length > 0) {
+      itens.push('<span class="ticker-data-warn"><b>⚠️ ' + baixos.length + '</b> SKU' + (baixos.length>1?'s':'') + ' abaixo do ideal</span>');
+      debug.anymarket++;
+    }
   }
 
   // Receita total (Firebase)
@@ -6035,16 +6054,23 @@ function _tickerGerarDados() {
       var d=new Date(p.data), h2=new Date();
       return p.status==='PAGO' && d.getMonth()===h2.getMonth() && d.getFullYear()===h2.getFullYear();
     }).reduce(function(s,p){return s+p.valor;},0);
-    itens.push('<span class="ticker-data-ok">📈 Receita do mês: ' + _tickerFmt(rPago2 + rEnv) + '</span>');
+    itens.push('<span class="ticker-data-ok"><b>📈 ' + _tickerFmt(rPago2 + rEnv) + '</b> de receita do mês</span>');
+    debug.firebase++;
   }
 
   // Notificações críticas
   if (typeof NOTIFICACOES_HOJE !== 'undefined' && NOTIFICACOES_HOJE) {
     var criticas = NOTIFICACOES_HOJE.filter(function(n){ return n.critico && !n.lida; });
     criticas.slice(0,2).forEach(function(n){
-      itens.push('<span class="ticker-data-alert">🚨 ' + (n.titulo||'').replace(/<[^>]+>/g,'').substring(0,60) + '</span>');
+      itens.push('<span class="ticker-data-alert"><b>🚨</b> ' + (n.titulo||'').replace(/<[^>]+>/g,'').substring(0,60) + '</span>');
+      debug.notif++;
     });
   }
+
+  console.log('[ticker] Dados encontrados:', debug, '| Total de itens:', itens.length,
+              '| PED_TODOS:', (PED_TODOS||[]).length,
+              '| ANY_PRODUTOS:', (typeof ANY_PRODUTOS !== 'undefined' ? (ANY_PRODUTOS||[]).length : 'undefined'),
+              '| _finFirebaseData:', (typeof _finFirebaseData !== 'undefined' && _finFirebaseData ? 'OK' : 'null/undefined'));
 
   if (itens.length === 0) return null;
 
@@ -6084,38 +6110,93 @@ function _tickerTransicionar(para) {
 
 var _tickerJaIniciou = false;
 function _tickerIniciar() {
+  console.log('[ticker] _tickerIniciar() chamado');
   // Garante que só roda UMA vez
-  if (_tickerJaIniciou) return;
+  if (_tickerJaIniciou) {
+    console.log('[ticker] já foi iniciado antes — ignorando');
+    return;
+  }
   _tickerJaIniciou = true;
 
   if (_tickerInterval) clearInterval(_tickerInterval);
 
-  function _alternar() {
-    var canal = sessionStorage.getItem('eh_canal_ativo') || '3p';
-    if (canal !== '3p') {
-      if (_tickerModoAtual !== 'frases') _tickerTransicionar('frases');
-      return;
-    }
-    _tickerTransicionar(_tickerModoAtual === 'frases' ? 'dados' : 'frases');
+  // Tempos assimétricos: frases ficam mais tempo, dados passam rápido
+  var TEMPO_FRASES = 20000; // 20s em frases
+  var TEMPO_DADOS  = 8000;  // 8s em dados (mais rápido)
+
+  function _agendarProxima() {
+    if (_tickerInterval) clearTimeout(_tickerInterval);
+    var proximaEspera = (_tickerModoAtual === 'dados') ? TEMPO_DADOS : TEMPO_FRASES;
+    _tickerInterval = setTimeout(_alternar, proximaEspera);
   }
 
-  // Primeira troca após 4s, depois a cada 20s
-  setTimeout(function() {
-    _alternar();
-    _tickerInterval = setInterval(_alternar, 20000);
-  }, 4000);
+  function _alternar() {
+    // Se está mostrando frases, tenta trocar pra dados — mas só se houver dados
+    if (_tickerModoAtual === 'frases') {
+      var html = _tickerGerarDados();
+      if (!html) {
+        // Sem dados ainda — mantém frases e tenta de novo no próximo ciclo
+        console.log('[ticker] Sem dados disponíveis ainda — mantendo frases');
+        _agendarProxima();
+        return;
+      }
+      console.log('[ticker] Alternando para DADOS (' + (TEMPO_DADOS/1000) + 's)');
+      _tickerTransicionar('dados');
+    } else {
+      // Já está em dados — volta pra frases
+      console.log('[ticker] Alternando para FRASES (' + (TEMPO_FRASES/1000) + 's)');
+      _tickerTransicionar('frases');
+    }
+    _agendarProxima();
+  }
+
+  console.log('[ticker] Iniciado — frases ' + (TEMPO_FRASES/1000) + 's · dados ' + (TEMPO_DADOS/1000) + 's');
+  // Primeira troca após 10s (dar tempo do cache carregar)
+  setTimeout(_alternar, 10000);
 }
 
 // Inicia após login — usa DOMContentLoaded como fallback de segurança
 document.addEventListener('eh_ticker_init', function() {
+  console.log('[ticker] Evento eh_ticker_init recebido');
   setTimeout(_tickerIniciar, 2000);
 });
 
 var _iniUITickerOrig = inicializarUI;
 inicializarUI = function(email) {
   _iniUITickerOrig(email);
+  console.log('[ticker] inicializarUI chamado — disparando eh_ticker_init');
   document.dispatchEvent(new Event('eh_ticker_init'));
 };
+
+// ── FAILSAFE: polling que detecta se o painel está visível e inicia o ticker ──
+// Funciona mesmo se inicializarUI for sobrescrito por outros scripts depois
+console.log('[ticker] Script carregado — iniciando polling de detecção');
+var _tickerPollCount = 0;
+var _tickerPoll = setInterval(function(){
+  _tickerPollCount++;
+  var loginTela = document.getElementById('login-screen');
+  var loginVisivel = loginTela && getComputedStyle(loginTela).display !== 'none';
+  var trackFrases = document.getElementById('tickerTrack');
+
+  if (_tickerPollCount % 5 === 0) {
+    console.log('[ticker] Poll #' + _tickerPollCount +
+                ' | login visível: ' + loginVisivel +
+                ' | track existe: ' + !!trackFrases +
+                ' | já iniciou: ' + _tickerJaIniciou);
+  }
+
+  // Se login não está visível E o ticker existe E ainda não iniciou → inicia agora
+  if (!loginVisivel && trackFrases && !_tickerJaIniciou) {
+    console.log('[ticker] FAILSAFE — painel detectado visível, iniciando ticker');
+    _tickerIniciar();
+    clearInterval(_tickerPoll);
+  }
+  // Desiste após 60 segundos de polling
+  if (_tickerPollCount > 60) {
+    console.log('[ticker] Polling encerrado após 60 tentativas');
+    clearInterval(_tickerPoll);
+  }
+}, 1000);
 
 
 </script>
