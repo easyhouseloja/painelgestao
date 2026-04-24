@@ -60,7 +60,7 @@
     position: relative; z-index: 1;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 28px 32px;
+    padding: 12px 32px 28px;
   }
 
   /* ── HEADER ── */
@@ -68,8 +68,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
-    padding-bottom: 20px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
     animation: fadeDown 0.6s ease both;
   }
@@ -348,13 +348,14 @@
   }
   .ra-info .ra-title {
     font-family: 'Syne', sans-serif;
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 700;
     margin-bottom: 6px;
     color: var(--text);
+    white-space: nowrap;
   }
   .ra-info .ra-sub {
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     color: var(--muted);
     line-height: 1.5;
   }
@@ -619,71 +620,67 @@
     <!-- Score -->
     <div class="ra-score-block">
       <svg viewBox="0 0 60 60" width="66" height="66" xmlns="http://www.w3.org/2000/svg">
-        <!-- Face background -->
-        <circle cx="30" cy="30" r="29" fill="#F5A623"/>
-        <!-- Shading rim -->
-        <circle cx="30" cy="30" r="29" fill="url(#rimShade)" opacity="0.18"/>
+        <!-- Face background - azul do BOM -->
+        <circle cx="30" cy="30" r="29" fill="#4A90D9"/>
+        <circle cx="30" cy="30" r="29" fill="url(#rimShadeBom)" opacity="0.18"/>
         <defs>
-          <radialGradient id="rimShade" cx="50%" cy="35%" r="55%">
-            <stop offset="0%" stop-color="#fff" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="#000" stop-opacity="0.25"/>
+          <radialGradient id="rimShadeBom" cx="50%" cy="35%" r="55%">
+            <stop offset="0%" stop-color="#fff" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0.2"/>
           </radialGradient>
         </defs>
-        <!-- LEFT brow: furrowed — high outside, low inside -->
-        <line x1="12" y1="19" x2="25" y2="24" stroke="#3d2800" stroke-width="3.2" stroke-linecap="round"/>
-        <!-- RIGHT brow: furrowed — low inside, high outside -->
-        <line x1="35" y1="24" x2="48" y2="19" stroke="#3d2800" stroke-width="3.2" stroke-linecap="round"/>
-        <!-- LEFT eye white -->
-        <ellipse cx="21" cy="33" rx="5" ry="5.5" fill="#fff"/>
-        <!-- RIGHT eye white -->
-        <ellipse cx="39" cy="33" rx="5" ry="5.5" fill="#fff"/>
-        <!-- LEFT pupil -->
-        <circle cx="21" cy="34" r="2.8" fill="#3d2800"/>
-        <!-- RIGHT pupil -->
-        <circle cx="39" cy="34" r="2.8" fill="#3d2800"/>
-        <!-- Neutral/flat mouth -->
-        <path d="M20 46 Q30 44 40 46" stroke="#3d2800" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+        <!-- sobrancelhas levemente arqueadas (neutro/positivo) -->
+        <line x1="13" y1="22" x2="26" y2="20" stroke="#1a3a5c" stroke-width="3" stroke-linecap="round"/>
+        <line x1="34" y1="20" x2="47" y2="22" stroke="#1a3a5c" stroke-width="3" stroke-linecap="round"/>
+        <!-- olhos brancos -->
+        <ellipse cx="21" cy="31" rx="4.5" ry="5" fill="#fff"/>
+        <ellipse cx="39" cy="31" rx="4.5" ry="5" fill="#fff"/>
+        <!-- pupilas -->
+        <circle cx="21" cy="32" r="2.5" fill="#1a3a5c"/>
+        <circle cx="39" cy="32" r="2.5" fill="#1a3a5c"/>
+        <!-- sorriso -->
+        <path d="M19 43 Q30 50 41 43" stroke="#1a3a5c" stroke-width="3" fill="none" stroke-linecap="round"/>
       </svg>
-      <div style="font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:800;color:#F59E0B;text-align:center;line-height:1.2;margin-top:4px;">Regular</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:800;color:#4A90D9;text-align:center;line-height:1.2;margin-top:4px;">Bom</div>
     </div>
 
     <div class="ra-divider"></div>
 
     <!-- Info + Bars -->
     <div class="ra-info">
-      <div class="ra-title">Regular · Empresa verificada · <span style="color:#F59E0B;font-weight:800;">6,7 / 10</span></div>
-      <div class="ra-sub">Média 6 meses · 183 rec. recebidas · 46 aguardando · 57 avaliadas, nota média 6,0 · Atualizado em 21/04/2026</div>
+      <div class="ra-title">Bom · Empresa verificada · <span style="color:#4A90D9;font-weight:800;">7,0 / 10</span></div>
+      <div class="ra-sub">Média 6 meses · 183 rec. recebidas · 46 aguardando · 57 avaliadas, nota média 6,0 · Atualizado em 24/04/2026</div>
     </div>
 
     <!-- Mini bars breakdown -->
     <div class="ra-bars">
       <div class="ra-bar-row">
         <span class="ra-bar-label">Respondidas</span>
-        <div class="ra-bar-bg"><div class="ra-bar-fill" style="width:0%" data-width="71%"></div></div>
-        <span class="ra-bar-val">71%</span>
-        <span class="ra-bar-trend up">↑ +1,6 pp</span>
+        <div class="ra-bar-bg"><div class="ra-bar-fill" style="width:0%" data-width="84%"></div></div>
+        <span class="ra-bar-val">83,6%</span>
+        <span class="ra-bar-trend up">↑ +12,6 pp</span>
       </div>
       <div class="ra-bar-row">
         <span class="ra-bar-label">Resolvidas</span>
         <div class="ra-bar-bg"><div class="ra-bar-fill" style="width:0%" data-width="79%"></div></div>
         <span class="ra-bar-val">78,9%</span>
-        <span class="ra-bar-trend down">↓ -0,3 pp</span>
+        <span class="ra-bar-trend flat">— estável</span>
       </div>
       <div class="ra-bar-row">
         <span class="ra-bar-label">Voltariam</span>
         <div class="ra-bar-bg"><div class="ra-bar-fill" style="width:0%" data-width="58%"></div></div>
         <span class="ra-bar-val">57,9%</span>
-        <span class="ra-bar-trend down">↓ -2,5 pp</span>
+        <span class="ra-bar-trend flat">— estável</span>
       </div>
       <div class="ra-bar-row">
         <span class="ra-bar-label" style="color:#22C55E;">★ Nota média</span>
         <div class="ra-bar-bg"><div class="ra-bar-fill" style="width:0%;background:linear-gradient(90deg,#16A34A,#22C55E);" data-width="60%"></div></div>
         <span class="ra-bar-val" style="color:#22C55E;width:auto;white-space:nowrap;">6,0 / 10</span>
-        <span class="ra-bar-trend down">↓ -0,09</span>
+        <span class="ra-bar-trend flat">— estável</span>
       </div>
     </div>
 
-    <span class="ra-badge" style="background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.35);color:#F59E0B;">🟡 REGULAR</span>
+    <span class="ra-badge" style="background:rgba(74,144,217,0.12);border-color:rgba(74,144,217,0.35);color:#4A90D9;">🔵 BOM</span>
   </div>
 
   <!-- CHANNELS -->
@@ -777,25 +774,25 @@
       <div class="ch-name">Shopee</div>
     </div>
 
-    <!-- Viavarejo 3.5 Amarelo -->
-    <div class="channel-card card-yellow">
+    <!-- Viavarejo 4.1 Verde -->
+    <div class="channel-card card-green">
       <div class="ch-icon ch-via">
         <img src="data:image/jpeg;base64,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" alt="Via Varejo"/>
       </div>
       <div class="gauge-wrap">
         <svg class="gauge-svg" viewBox="0 0 110 60" fill="none">
           <path d="M10 55 A45 45 0 0 1 100 55" stroke="rgba(255,255,255,0.08)" stroke-width="6" stroke-linecap="round" fill="none"/>
-          <path d="M10 55 A45 45 0 0 1 100 55" stroke="#F59E0B" stroke-width="6" stroke-linecap="round" fill="none"
-                stroke-dasharray="141.4" stroke-dashoffset="42.4"/>
+          <path d="M10 55 A45 45 0 0 1 100 55" stroke="#22C55E" stroke-width="6" stroke-linecap="round" fill="none"
+                stroke-dasharray="141.4" stroke-dashoffset="25.5"/>
         </svg>
-        <span class="gauge-score" style="color:#F59E0B">3,5</span>
+        <span class="gauge-score" style="color:#22C55E">4,1</span>
       </div>
       <div class="gauge-max">de 5,0</div>
       <div class="score-bar-wrap">
-        <div class="score-bar-bg"><div class="score-bar-fill fill-yellow" style="width:0%" data-width="70%"></div></div>
+        <div class="score-bar-bg"><div class="score-bar-fill fill-green" style="width:0%" data-width="82%"></div></div>
       </div>
-      <span class="status-pill pill-yellow">● Amarelo</span>
-      <span class="trend-badge down">↓ -0,2 pt</span>
+      <span class="status-pill pill-green">● Verde</span>
+      <span class="trend-badge up">↑ +0,6 pt</span>
       <div class="ch-name">Via Varejo</div>
     </div>
 
@@ -811,8 +808,8 @@
     </div>
     <div class="summary-card">
       <div class="label">Nota Média</div>
-      <div class="value" style="color: var(--orange)">3,4</div>
-      <div class="sub">Queda em Magalu e Via Varejo</div>
+      <div class="value" style="color: var(--yellow)">3,5</div>
+      <div class="sub">Queda em Magalu · Alta em Via Varejo</div>
     </div>
     <div class="summary-card">
       <div class="label">Canais em Alerta</div>
@@ -867,8 +864,8 @@
   document.addEventListener('DOMContentLoaded', () => {
     const d = document.getElementById('dateDisplay');
     const f = document.getElementById('footerDate');
-    if (d) d.textContent = 'Terça-feira, 21 abr 2026';
-    if (f) f.textContent = '21/04/2026';
+    if (d) d.textContent = 'Quinta-feira, 24 abr 2026';
+    if (f) f.textContent = '24/04/2026';
 
     // Animate all score bars
     setTimeout(() => {
