@@ -3642,40 +3642,15 @@ body.light-mode #iframe-page-title {
   animation: sla-verde-halo 1.3s ease-out 1s 2;
 }
 
-/* === EFEITO CONTÍNUO NO VALOR (%) — brilho sutil pulsante === */
-@keyframes sla-valor-glow {
-  0%, 100% {
-    text-shadow:
-      0 0 0 transparent,
-      0 0 0 transparent;
-    filter: brightness(1);
-  }
-  50% {
-    text-shadow:
-      0 0 6px var(--sla-glow, rgba(102,255,153,0.55)),
-      0 0 14px var(--sla-glow, rgba(102,255,153,0.25));
-    filter: brightness(1.15);
-  }
-}
-
-/* Aplica o glow no número — só depois da animação de entrada */
-.sla-transporte-animated.sla-ready #sla-transporte-percent {
-  animation: sla-valor-glow 2.8s ease-in-out 1.2s infinite;
-  will-change: text-shadow, filter;
-}
-
 /* Respeita preferência do usuário por menos movimento */
 @media (prefers-reduced-motion: reduce) {
   .sla-transporte-animated,
   .sla-transporte-animated.sla-ready,
   .sla-transporte-animated.sla-ready > span,
-  .sla-transporte-animated.sla-ready > span::before,
-  .sla-transporte-animated.sla-ready #sla-transporte-percent {
+  .sla-transporte-animated.sla-ready > span::before {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
-    text-shadow: none !important;
-    filter: none !important;
   }
 }
 </style>
@@ -3928,7 +3903,7 @@ body.light-mode #iframe-page-title {
           <!-- ÍNDICE DE SLA GERAL — atualizado automaticamente pelo script no final do arquivo (busca sla_transporte.html) -->
           <div id="sla-transporte-widget" class="sla-transporte-animated" style="display:flex;align-items:center;gap:8px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do SLA...">
             <span id="sla-transporte-chip" style="font-size:11px;font-weight:700;color:#66FF99;background:rgba(31,189,114,0.12);border:1px solid rgba(31,189,114,0.22);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
-              <span id="sla-transporte-label">SLA Geral</span> · <span id="sla-transporte-percent" style="font-size:17px;font-weight:800;letter-spacing:0.3px;">—</span>
+              <span id="sla-transporte-label">SLA Geral</span> · <span id="sla-transporte-percent" style="font-size:14px;font-weight:800;letter-spacing:0.2px;">—</span>
             </span>
           </div>
 
@@ -8914,26 +8889,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Cores dinâmicas: verde se meta atingida, âmbar ou vermelho se abaixo
       const pctNum = parseNum(valueTxt);
-      const pctEl = document.getElementById('sla-transporte-percent');
       if(chip){
         if(pctNum !== null && pctNum >= META_SLA){
           // Verde — meta atingida (≥ 95%)
           chip.style.color = '#66FF99';
           chip.style.background = 'rgba(31,189,114,0.12)';
           chip.style.borderColor = 'rgba(31,189,114,0.22)';
-          if(pctEl) pctEl.style.setProperty('--sla-glow', 'rgba(102,255,153,0.55)');
         } else if(pctNum !== null && pctNum >= 90){
           // Âmbar — entre 90% e 95%
           chip.style.color = '#f0c674';
           chip.style.background = 'rgba(212,160,23,0.12)';
           chip.style.borderColor = 'rgba(212,160,23,0.28)';
-          if(pctEl) pctEl.style.setProperty('--sla-glow', 'rgba(240,198,116,0.55)');
         } else {
           // Vermelho — abaixo de 90%
           chip.style.color = '#ff6b6b';
           chip.style.background = 'rgba(204,40,40,0.12)';
           chip.style.borderColor = 'rgba(204,40,40,0.28)';
-          if(pctEl) pctEl.style.setProperty('--sla-glow', 'rgba(255,107,107,0.55)');
         }
       }
 
