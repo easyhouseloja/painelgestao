@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estoque · Carga Mãe Madeira Madeira</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0d0f14;--surface:#151820;--surface2:#1c2030;--border:#252a3a;--text:#e8eaf2;--muted:#6b7494;--accent:#4f7cff;--accent2:#7b5ea7;--ok:#22c98a;--warn:#f59e0b;--danger:#ef4444;--brand:#ff6b35;--brand2:#ffa05c;--cat-gr:#7b9fff;--cat-comp:#22d3ee;--cat-jantar:#c084fc;--danger-soft:rgba(239,68,68,0.12);--ok-soft:rgba(34,201,138,0.10);--warn-soft:rgba(245,158,11,0.10);--brand-soft:rgba(255,107,53,0.12);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  header{background:linear-gradient(135deg,#111420 0%,#1a1f35 100%);border-bottom:1px solid var(--border);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .header-left{display:flex;align-items:center;gap:16px;}
+  .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--brand),var(--brand2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 14px rgba(255,107,53,0.25);}
+  .header-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;}
+  .header-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+  .header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .badge-channel{background:var(--brand-soft);border:1px solid rgba(255,107,53,0.3);color:var(--brand2);font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;}
+  .badge-date{background:rgba(79,124,255,0.12);border:1px solid rgba(79,124,255,0.3);color:#7b9fff;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;}
+  .badge-forecast{background:rgba(192,132,252,0.12);border:1px solid rgba(192,132,252,0.3);color:#c084fc;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;}
+  .badge-alert{background:var(--ok-soft);border:1px solid rgba(34,201,138,0.3);color:var(--ok);font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;}
+  .badge-alert.has-alert{background:var(--danger-soft);border-color:rgba(239,68,68,0.3);color:#f87171;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+  .dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+  main{padding:28px 32px;max-width:1400px;margin:0 auto;}
+
+  /* KPI GRID - now 8 cards in two rows of 4 */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;transition:transform 0.2s,border-color 0.2s;}
+  .kpi-card:hover{transform:translateY(-2px);border-color:#353b52;}
+  .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+  .kpi-card.blue::before{background:linear-gradient(90deg,var(--accent),#7b9fff);}
+  .kpi-card.green::before{background:linear-gradient(90deg,var(--ok),#5eefc0);}
+  .kpi-card.amber::before{background:linear-gradient(90deg,var(--warn),#fbbf24);}
+  .kpi-card.red::before{background:linear-gradient(90deg,var(--danger),#f87171);}
+  .kpi-card.brand::before{background:linear-gradient(90deg,var(--brand),var(--brand2));}
+  .kpi-card.cyan::before{background:linear-gradient(90deg,#22d3ee,#67e8f9);}
+  .kpi-label{font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
+  .kpi-value{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1;}
+  .kpi-value .unit{font-size:13px;color:var(--muted);margin-left:4px;font-weight:500;}
+  .kpi-value.blue{color:#7b9fff}.kpi-value.green{color:var(--ok)}.kpi-value.amber{color:var(--warn)}.kpi-value.red{color:#f87171}.kpi-value.brand{color:var(--brand2)}.kpi-value.cyan{color:#22d3ee}
+  .kpi-sub{font-size:11px;color:var(--muted);margin-top:6px;}
+  .kpi-icon{position:absolute;right:16px;top:16px;font-size:20px;opacity:0.15;}
+
+  /* COVERAGE CARD */
+  .coverage-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:24px;}
+  .coverage-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;flex-wrap:wrap;gap:16px;}
+  .coverage-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;}
+  .coverage-pct{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:var(--ok);}
+  .coverage-bar-bg{height:14px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px;}
+  .coverage-bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--ok),#5eefc0);transition:width 1s ease;}
+  .coverage-legend{display:flex;gap:20px;flex-wrap:wrap;}
+  .cov-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);}
+  .cov-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+
+  /* STATUS GRID - SKU level */
+  .status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+  .status-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;}
+  .status-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .status-icon.ok{background:var(--ok-soft);}.status-icon.warn{background:var(--warn-soft);}.status-icon.danger{background:var(--danger-soft);}
+  .status-num{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;}
+  .status-num.ok{color:var(--ok)}.status-num.warn{color:var(--warn)}.status-num.danger{color:#f87171}
+  .status-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+  .status-sub{font-size:10px;color:var(--muted);margin-top:1px;font-family:'DM Sans';}
+
+  /* CATEGORY CARDS - now 3 */
+  .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+  .cat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;transition:transform 0.2s,border-color 0.2s;cursor:pointer;}
+  .cat-card:hover{transform:translateY(-2px);border-color:#353b52;}
+  .cat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+  .cat-card.gr::before{background:linear-gradient(90deg,var(--cat-gr),#a5beff);}
+  .cat-card.comp::before{background:linear-gradient(90deg,var(--cat-comp),#67e8f9);}
+  .cat-card.jantar::before{background:linear-gradient(90deg,var(--cat-jantar),#d8b4fe);}
+  .cat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;}
+  .cat-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .cat-card.gr .cat-icon{background:rgba(123,159,255,0.12);}
+  .cat-card.comp .cat-icon{background:rgba(34,211,238,0.12);}
+  .cat-card.jantar .cat-icon{background:rgba(192,132,252,0.12);}
+  .cat-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;}
+  .cat-sub{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;}
+  .cat-pct{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;line-height:1;}
+  .cat-card.gr .cat-pct{color:var(--cat-gr);}
+  .cat-card.comp .cat-pct{color:var(--cat-comp);}
+  .cat-card.jantar .cat-pct{color:var(--cat-jantar);}
+  .cat-bar-bg{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:10px;margin-bottom:10px;}
+  .cat-bar-fill{height:100%;border-radius:3px;transition:width 0.8s ease;}
+  .cat-card.gr .cat-bar-fill{background:linear-gradient(90deg,var(--cat-gr),#a5beff);}
+  .cat-card.comp .cat-bar-fill{background:linear-gradient(90deg,var(--cat-comp),#67e8f9);}
+  .cat-card.jantar .cat-bar-fill{background:linear-gradient(90deg,var(--cat-jantar),#d8b4fe);}
+  .cat-stats{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);flex-wrap:wrap;gap:6px;}
+  .cat-stats span{font-family:'Syne',sans-serif;font-weight:700;color:var(--text);}
+  .cat-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;}
+  .cat-meta-left{color:var(--muted);}
+  .cat-meta-left .num{font-family:'Syne',sans-serif;font-weight:700;color:var(--text);}
+  .cat-alert.has{color:#f87171;font-weight:600;}.cat-alert.none{color:var(--ok);}
+
+  /* CATEGORY BADGE */
+  .cat-badge{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:0.06em;margin-right:6px;vertical-align:middle;white-space:nowrap;}
+  .cat-badge.gr{background:rgba(123,159,255,0.15);color:var(--cat-gr);border:1px solid rgba(123,159,255,0.3);}
+  .cat-badge.comp{background:rgba(34,211,238,0.12);color:var(--cat-comp);border:1px solid rgba(34,211,238,0.3);}
+  .cat-badge.jantar{background:rgba(192,132,252,0.12);color:var(--cat-jantar);border:1px solid rgba(192,132,252,0.3);}
+
+  /* COVERAGE-DAYS SECTION */
+  .cov-days-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:14px;margin-bottom:24px;}
+  .cov-days-cards{display:grid;grid-template-columns:1fr;gap:10px;}
+  .cov-mini-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
+  .cov-mini-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .cov-mini-card.crit .cov-mini-icon{background:var(--danger-soft);}
+  .cov-mini-card.warn .cov-mini-icon{background:var(--warn-soft);}
+  .cov-mini-card.ok .cov-mini-icon{background:var(--ok-soft);}
+  .cov-mini-num{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;line-height:1;}
+  .cov-mini-card.crit .cov-mini-num{color:#f87171;}
+  .cov-mini-card.warn .cov-mini-num{color:var(--warn);}
+  .cov-mini-card.ok .cov-mini-num{color:var(--ok);}
+  .cov-mini-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+  .cov-mini-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;font-family:'DM Sans';}
+  .hist-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;}
+  .hist-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:baseline;}
+  .hist-title .hint{font-size:10px;color:var(--muted);font-weight:400;font-family:'DM Sans';letter-spacing:0.05em;}
+  .hist-bars{display:flex;flex-direction:column;gap:9px;}
+  .hist-row{display:grid;grid-template-columns:60px 1fr 36px;gap:10px;align-items:center;}
+  .hist-row .lbl{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);}
+  .hist-track{height:18px;background:var(--border);border-radius:3px;overflow:hidden;}
+  .hist-fill{height:100%;border-radius:3px;width:0;transition:width 1s cubic-bezier(0.4,0,0.2,1);}
+  .hist-fill.crit{background:linear-gradient(90deg,var(--danger),#f87171);}
+  .hist-fill.warn{background:linear-gradient(90deg,var(--warn),#fbbf24);}
+  .hist-fill.ok{background:linear-gradient(90deg,var(--ok),#5eefc0);}
+  .hist-row .count{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;text-align:right;}
+
+  /* LOTES */
+  .empty-lotes{background:var(--surface);border:1px dashed var(--border);border-radius:14px;padding:36px 28px;text-align:center;margin-bottom:24px;}
+  .empty-lotes-icon{font-size:32px;margin-bottom:12px;opacity:0.5;}
+  .empty-lotes-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:6px;}
+  .empty-lotes-text{font-size:12px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.6;}
+
+  /* TOP 10 GAP */
+  .top10-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:grid;grid-template-columns:32px 1fr 80px 80px 80px 100px;align-items:center;gap:12px;transition:border-color 0.15s;margin-bottom:8px;}
+  .top10-row:hover{border-color:#353b52;}
+  .top10-row.crit{border-color:rgba(239,68,68,0.3);}
+  .top10-rank{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--muted);text-align:center;}
+  .top10-rank.top1{color:#f87171;}
+  .top10-rank.top2{color:var(--warn);}
+  .top10-rank.top3{color:#fbbf24;}
+
+  /* ALERT BANNER */
+  .alert-banner{background:var(--danger-soft);border:1px solid rgba(239,68,68,0.25);border-left:4px solid var(--danger);border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:flex-start;gap:14px;}
+  .alert-banner.ok{background:var(--ok-soft);border-color:rgba(34,201,138,0.25);border-left-color:var(--ok);}
+  .alert-icon{font-size:20px;margin-top:1px;}
+  .alert-title{font-family:'Syne',sans-serif;font-weight:700;color:#f87171;font-size:14px;margin-bottom:4px;}
+  .alert-banner.ok .alert-title{color:var(--ok);}
+  .alert-text{font-size:13px;color:#fca5a5;}
+  .alert-banner.ok .alert-text{color:#86efac;}
+  .section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .section-title span{color:var(--muted);font-weight:400;font-size:13px;font-family:'DM Sans';}
+  .alert-cards{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+  .alert-row{background:var(--surface);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:16px 20px;display:grid;grid-template-columns:1fr 110px 110px 110px 100px;align-items:center;gap:14px;transition:border-color 0.2s;}
+  .alert-row:hover{border-color:rgba(239,68,68,0.4);}
+  .prod-name{font-weight:600;font-size:13px;}.prod-var{font-size:11px;color:var(--muted);margin-top:3px;}
+  .col-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;}
+  .col-val{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;}
+  .col-val.danger{color:#f87171}.col-val.amber{color:var(--warn)}.col-val.ok{color:var(--ok)}
+  .pct-badge{display:inline-flex;align-items:center;justify-content:center;padding:5px 12px;border-radius:20px;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;}
+  .pct-badge.danger{background:var(--danger-soft);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
+  .pct-badge.warn{background:var(--warn-soft);color:var(--warn);border:1px solid rgba(245,158,11,0.3);}
+  .pct-badge.ok{background:var(--ok-soft);color:var(--ok);border:1px solid rgba(34,201,138,0.3);}
+
+  /* FILTERS */
+  .filter-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px;}
+  .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .filter-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-right:4px;}
+  .tab{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:500;padding:7px 14px;border-radius:20px;cursor:pointer;transition:all 0.2s;}
+  .tab:hover{background:var(--surface2);color:var(--text);}
+  .tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .tab.active-alert{background:var(--danger);border-color:var(--danger);color:#fff;}
+  .tab.active-ok{background:#0f5230;border-color:var(--ok);color:var(--ok);}
+  .tab.active-cat-gr{background:var(--cat-gr);border-color:var(--cat-gr);color:#fff;}
+  .tab.active-cat-comp{background:var(--cat-comp);border-color:var(--cat-comp);color:#0d0f14;}
+  .tab.active-cat-jantar{background:var(--cat-jantar);border-color:var(--cat-jantar);color:#fff;}
+  .search-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;width:260px;outline:none;transition:border-color 0.2s;}
+  .search-box:focus{border-color:var(--brand);}.search-box::placeholder{color:var(--muted);}
+
+  /* TABLE */
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:32px;}
+  table{width:100%;border-collapse:collapse;}
+  thead th{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);padding:12px 20px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap;}
+  thead th:hover{color:var(--text);}
+  tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr:hover{background:var(--surface2);}
+  tbody td{padding:12px 20px;font-size:13px;vertical-align:middle;}
+  tbody tr.row-alert td:first-child{border-left:3px solid var(--danger);}
+  tbody tr.row-ok td:first-child{border-left:3px solid var(--ok);}
+  .prod-tag{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;flex-wrap:wrap;gap:0;}
+  .cod-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:'DM Sans';font-size:10px;font-weight:500;padding:1px 6px;border-radius:4px;margin-right:6px;letter-spacing:0.04em;}
+  .var-count{display:inline-block;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:10px;padding:2px 7px;border-radius:10px;margin-top:3px;}
+  .has-lote{display:inline-block;background:var(--brand-soft);border:1px solid rgba(255,107,53,0.3);color:var(--brand2);font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px;margin-left:6px;vertical-align:middle;}
+  .progress-wrap{display:flex;align-items:center;gap:10px;}
+  .progress-bar-bg{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+  .progress-bar-fill{height:100%;border-radius:4px;transition:width 0.6s ease;}
+  .fill-ok{background:linear-gradient(90deg,var(--ok),#5eefc0);}
+  .fill-warn{background:linear-gradient(90deg,var(--warn),#fbbf24);}
+  .fill-danger{background:linear-gradient(90deg,var(--danger),#f87171);}
+  .pct-text{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;min-width:48px;text-align:right;}
+  .dias-cell{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;display:inline-flex;align-items:center;gap:6px;}
+  .dias-dot{width:7px;height:7px;border-radius:50%;}
+  .expand-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;padding:4px 8px;border-radius:6px;white-space:nowrap;}
+  .expand-btn:hover{background:var(--surface2);color:var(--text);}
+  .variation-row{display:none;background:#0f1118;}.variation-row.open{display:table-row;}
+  .variation-inner{padding:12px 20px 16px 44px;}
+  .var-table{width:100%;font-size:12px;border-collapse:collapse;}
+  .var-table th{text-align:left;color:var(--muted);font-weight:600;padding:6px 12px;font-size:10px;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid var(--border);}
+  .var-table td{padding:7px 12px;color:#c4c9de;border-bottom:1px solid #151820;}
+  .var-table tr:last-child td{border-bottom:none;}
+  .var-table tr:hover td{color:var(--text);background:rgba(255,255,255,0.02);}
+  .var-mini-bar{display:flex;align-items:center;gap:8px;}
+  .var-mini-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;max-width:80px;}
+  .var-mini-fill{height:100%;border-radius:3px;}
+  .empty-table{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;}
+  footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);}
+  @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.cat-grid{grid-template-columns:1fr;}.cov-days-grid{grid-template-columns:1fr;}.top10-row{grid-template-columns:32px 1fr 60px 80px 90px;}}
+  @media(max-width:900px){main{padding:16px;}.status-grid{grid-template-columns:1fr;}.alert-row{grid-template-columns:1fr 1fr;}.top10-row{grid-template-columns:32px 1fr 90px;}.top10-row .col-hide-sm{display:none;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="logo-icon">🛒</div>
+    <div>
+      <div class="header-title">Carga Mãe · Madeira Madeira</div>
+      <div class="header-sub" id="header-sub">Marketplace · Análise de hoje · Forecast Maio/2026</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="badge-date" id="badgeDate">📅 —</div>
+    <div class="badge-forecast">📈 base Forecast Maio/2026</div>
+    <div class="badge-alert" id="alertBadge"><div class="dot"></div><span id="alertBadgeText">—</span></div>
+  </div>
+</header>
+<main>
+
+  <!-- KPI GRID 8 cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card blue"><div class="kpi-icon">📋</div><div class="kpi-label">Total Solicitado</div><div class="kpi-value blue" id="kpi-sol">—</div><div class="kpi-sub" id="kpi-sol-sub">—</div></div>
+    <div class="kpi-card green"><div class="kpi-icon">✅</div><div class="kpi-label">Total Reservado</div><div class="kpi-value green" id="kpi-res">—</div><div class="kpi-sub" id="kpi-res-sub">—</div></div>
+    <div class="kpi-card amber"><div class="kpi-icon">⏳</div><div class="kpi-label">Pendente</div><div class="kpi-value amber" id="kpi-pen">—</div><div class="kpi-sub" id="kpi-pen-sub">—</div></div>
+    <div class="kpi-card brand"><div class="kpi-icon">🎯</div><div class="kpi-label">% Atendimento</div><div class="kpi-value brand" id="kpi-pct">—</div><div class="kpi-sub" id="kpi-pct-sub">—</div></div>
+    <div class="kpi-card green"><div class="kpi-icon">🟢</div><div class="kpi-label">SKUs Atendidos</div><div class="kpi-value green" id="kpi-sku-ok">—</div><div class="kpi-sub" id="kpi-sku-ok-sub">—</div></div>
+    <div class="kpi-card amber"><div class="kpi-icon">🟡</div><div class="kpi-label">SKUs Parciais</div><div class="kpi-value amber" id="kpi-sku-warn">—</div><div class="kpi-sub" id="kpi-sku-warn-sub">—</div></div>
+    <div class="kpi-card red"><div class="kpi-icon">🔴</div><div class="kpi-label">SKUs Sem Reserva</div><div class="kpi-value red" id="kpi-sku-zero">—</div><div class="kpi-sub" id="kpi-sku-zero-sub">—</div></div>
+    <div class="kpi-card cyan"><div class="kpi-icon">📅</div><div class="kpi-label">Cobertura Média</div><div class="kpi-value cyan" id="kpi-dias">—</div><div class="kpi-sub">de 31 dias do forecast</div></div>
+  </div>
+
+  <!-- COVERAGE -->
+  <div class="coverage-card">
+    <div class="coverage-top">
+      <div>
+        <div class="coverage-title">📊 Cobertura Global do Forecast</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="cov-sub">—</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Gap a fechar</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:#f87171;" id="cov-gap">—</div>
+        </div>
+        <div class="coverage-pct" id="cov-pct">—</div>
+      </div>
+    </div>
+    <div class="coverage-bar-bg"><div class="coverage-bar-fill" id="cov-bar" style="width:0%"></div></div>
+    <div class="coverage-legend">
+      <div class="cov-item"><div class="cov-dot" style="background:var(--ok)"></div><span id="leg-res">Reservado</span></div>
+      <div class="cov-item"><div class="cov-dot" style="background:var(--border)"></div><span id="leg-pen">Pendente</span></div>
+    </div>
+  </div>
+
+  <!-- STATUS GRID (produto level) -->
+  <div class="status-grid">
+    <div class="status-card"><div class="status-icon ok">✅</div><div><div class="status-num ok" id="st-ok">—</div><div class="status-desc">Produtos 100% reservados</div><div class="status-sub" id="st-ok-sub">—</div></div></div>
+    <div class="status-card"><div class="status-icon warn">⏳</div><div><div class="status-num warn" id="st-warn">—</div><div class="status-desc">Produtos com reserva parcial</div><div class="status-sub" id="st-warn-sub">—</div></div></div>
+    <div class="status-card"><div class="status-icon danger">⚠️</div><div><div class="status-num danger" id="st-danger">—</div><div class="status-desc">Variações abaixo de 30%</div><div class="status-sub" id="st-danger-sub">—</div></div></div>
+  </div>
+
+  <!-- CATEGORIA -->
+  <div class="section-title">📂 Resumo por Categoria <span>clique no card para filtrar a tabela abaixo</span></div>
+  <div class="cat-grid" id="cat-grid"></div>
+
+  <!-- COBERTURA EM DIAS -->
+  <div class="section-title">📅 Cobertura em Dias por SKU <span>quantos dias a reserva atende ao consumo médio</span></div>
+  <div class="cov-days-grid">
+    <div class="cov-days-cards">
+      <div class="cov-mini-card crit">
+        <div class="cov-mini-icon">🔥</div>
+        <div>
+          <div class="cov-mini-label">Crítico (&lt;15 dias)</div>
+          <div class="cov-mini-num" id="cov-crit">—</div>
+          <div class="cov-mini-desc">SKUs com risco de ruptura</div>
+        </div>
+      </div>
+      <div class="cov-mini-card warn">
+        <div class="cov-mini-icon">⚠️</div>
+        <div>
+          <div class="cov-mini-label">Atenção (15-25 dias)</div>
+          <div class="cov-mini-num" id="cov-warn">—</div>
+          <div class="cov-mini-desc">Reabastecimento recomendado</div>
+        </div>
+      </div>
+      <div class="cov-mini-card ok">
+        <div class="cov-mini-icon">✅</div>
+        <div>
+          <div class="cov-mini-label">OK (≥25 dias)</div>
+          <div class="cov-mini-num" id="cov-ok">—</div>
+          <div class="cov-mini-desc">Cobertura confortável</div>
+        </div>
+      </div>
+    </div>
+    <div class="hist-card">
+      <div class="hist-title">
+        <span>Distribuição por faixa de dias</span>
+        <span class="hint">112 SKUs · base: cobertura mensal</span>
+      </div>
+      <div class="hist-bars" id="hist-bars"></div>
+    </div>
+  </div>
+
+  <!-- LOTES -->
+  <div class="section-title">🚚 Lotes Planejados <span id="lotes-sub">aguardando informações</span></div>
+  <div id="lotes-content">
+    <div class="empty-lotes">
+      <div class="empty-lotes-icon">📦</div>
+      <div class="empty-lotes-title">Aguardando informações dos lotes</div>
+      <div class="empty-lotes-text">Quando você informar as datas de produção e os produtos previstos, esta seção será preenchida automaticamente — exatamente como na carga mãe do 3P.</div>
+    </div>
+  </div>
+
+  <!-- ALERT BANNER -->
+  <div class="alert-banner" id="alertBanner">
+    <div class="alert-icon">⚠️</div>
+    <div>
+      <div class="alert-title" id="alertBannerTitle">—</div>
+      <div class="alert-text" id="alertBannerText">—</div>
+    </div>
+  </div>
+
+  <!-- TOP 10 GAP -->
+  <div class="section-title" id="section-top10">🚨 Prioridade de Reabastecimento <span>10 SKUs com a maior diferença entre demanda e reserva</span></div>
+  <div id="top10List" style="margin-bottom:28px;"></div>
+
+  <!-- VARIAÇÕES EM ALERTA -->
+  <div class="section-title" id="section-alerts" style="display:none;">🚨 Variações em Alerta <span>reserva &lt; 30%</span></div>
+  <div class="alert-cards" id="alertCards"></div>
+
+  <!-- FULL TABLE -->
+  <div class="section-title">📋 Todos os Produtos</div>
+  <div class="filter-bar">
+    <div class="filter-tabs">
+      <span class="filter-label">Status:</span>
+      <div class="tab active" data-filter="all" onclick="setFilter('all',this)">Todos (<span id="cnt-all">0</span>)</div>
+      <div class="tab" data-filter="alert" onclick="setFilter('alert',this)">⚠️ Alertas (<span id="cnt-alert">0</span>)</div>
+      <div class="tab" data-filter="ok" onclick="setFilter('ok',this)">✅ Completos (<span id="cnt-ok">0</span>)</div>
+      <div class="tab" data-filter="partial" onclick="setFilter('partial',this)">⏳ Parcial (<span id="cnt-part">0</span>)</div>
+    </div>
+  </div>
+  <div class="filter-bar">
+    <div class="filter-tabs">
+      <span class="filter-label">Categoria:</span>
+      <div class="tab active" data-cat="all" onclick="setCat('all',this)">Todas (<span id="cnt-cat-all">0</span>)</div>
+      <div class="tab" data-cat="GR" onclick="setCat('GR',this)">🚪 GR (<span id="cnt-cat-gr">0</span>)</div>
+      <div class="tab" data-cat="Complementos" onclick="setCat('Complementos',this)">🪞 Complementos (<span id="cnt-cat-comp">0</span>)</div>
+      <div class="tab" data-cat="Sala de Jantar" onclick="setCat('Sala de Jantar',this)">🍽️ Sala de Jantar (<span id="cnt-cat-jantar">0</span>)</div>
+    </div>
+    <input class="search-box" type="text" id="searchInput" placeholder="🔍  Buscar produto ou código..." oninput="renderTable()">
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th onclick="sortBy('produto')">Produto ↕</th>
+        <th onclick="sortBy('solicitado')">Solicitado ↕</th>
+        <th onclick="sortBy('reservado')">Reservado ↕</th>
+        <th onclick="sortBy('pendente')">Pendente ↕</th>
+        <th onclick="sortBy('pct')" style="min-width:200px">% Reservado ↕</th>
+        <th onclick="sortBy('dias')">Cobertura ↕</th>
+        <th>Variações</th>
+      </tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</main>
+<footer>Dashboard gerado automaticamente · Carga Mãe MADEIRA MADEIRA · Marketplace · Forecast Maio/2026 · Reserva e análises em <span id="footer-data">—</span></footer>
+
+<script>
+const BUNDLE = {"stats": {"totalSolicitado": 3293, "totalReservado": 3118, "totalPendente": 175, "pctGeral": 94.7, "gapTotal": 175, "nProdutos": 37, "nVariacoes": 112, "nCompletos": 22, "nParcial": 14, "nZero": 1, "nAlertVar": 3, "skuAtendido": 90, "skuParcial": 20, "skuSemReserva": 2, "diasMedia": 26.7, "nDiasCrit": 3, "nDiasWarn": 8, "nDiasOk": 101, "dataAtualizacao": "27/04/2026"}, "data": [{"codItem": 2405, "produto": "GUARDA ROUPA TORONTO 2 PTS PLUS", "categoria": "GR", "solicitado": 80, "reservado": 0, "pendente": 80, "pct": 0.0, "alerta": true, "concluido": false, "mediaSemanal": 20.0, "dias": 0.0, "gap": 80, "variacoes": [{"codMasc": 13689, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 46, "reservado": 0, "pendente": 46, "pct": 0.0, "mediaSemanal": 11.5, "dias": 0.0, "gap": 46}, {"codMasc": 13690, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 34, "reservado": 0, "pendente": 34, "pct": 0.0, "mediaSemanal": 8.5, "dias": 0.0, "gap": 34}]}, {"codItem": 84794, "produto": "GUARDA ROUPA LOPAS 06 PTS LOOP 2025", "categoria": "GR", "solicitado": 20, "reservado": 12, "pendente": 8, "pct": 60.0, "alerta": true, "concluido": false, "mediaSemanal": 5.0, "dias": 16.8, "gap": 8, "variacoes": [{"codMasc": 42176, "variacao": "AMENDOA CLEAN/OFF WH#S/PES", "solicitado": 10, "reservado": 2, "pendente": 8, "pct": 20.0, "mediaSemanal": 2.5, "dias": 5.6, "gap": 8}, {"codMasc": 42175, "variacao": "AMENDOA CLEAN/OFF WH#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}]}, {"codItem": 73177, "produto": "SAPATEIRA ESTHELA 2024", "categoria": "Complementos", "solicitado": 47, "reservado": 38, "pendente": 9, "pct": 80.9, "alerta": false, "concluido": false, "mediaSemanal": 11.75, "dias": 22.6, "gap": 9, "variacoes": [{"codMasc": 23848, "variacao": "BRANCO", "solicitado": 20, "reservado": 13, "pendente": 7, "pct": 65.0, "mediaSemanal": 5.0, "dias": 18.2, "gap": 7}, {"codMasc": 23849, "variacao": "FRASSINO", "solicitado": 16, "reservado": 15, "pendente": 1, "pct": 93.8, "mediaSemanal": 4.0, "dias": 26.2, "gap": 1}, {"codMasc": 23850, "variacao": "AMENDOA CLEAN", "solicitado": 11, "reservado": 10, "pendente": 1, "pct": 90.9, "mediaSemanal": 2.75, "dias": 25.5, "gap": 1}]}, {"codItem": 81929, "produto": "COMODA LOOP 2024 II", "categoria": "Complementos", "solicitado": 179, "reservado": 149, "pendente": 30, "pct": 83.2, "alerta": false, "concluido": false, "mediaSemanal": 44.75, "dias": 23.3, "gap": 30, "variacoes": [{"codMasc": 32963, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 130, "reservado": 100, "pendente": 30, "pct": 76.9, "mediaSemanal": 32.5, "dias": 21.5, "gap": 30}, {"codMasc": 66449, "variacao": "AMENDOA CLEAN", "solicitado": 49, "reservado": 49, "pendente": 0, "pct": 100.0, "mediaSemanal": 12.25, "dias": 28.0, "gap": 0}]}, {"codItem": 73278, "produto": "COMODA TORONTO 2021 8GAV 2 PTS", "categoria": "Complementos", "solicitado": 28, "reservado": 24, "pendente": 4, "pct": 85.7, "alerta": false, "concluido": false, "mediaSemanal": 7.0, "dias": 24.0, "gap": 4, "variacoes": [{"codMasc": 32708, "variacao": "BRANCO", "solicitado": 18, "reservado": 16, "pendente": 2, "pct": 88.9, "mediaSemanal": 4.5, "dias": 24.9, "gap": 2}, {"codMasc": 32707, "variacao": "AMENDOA CLEAN", "solicitado": 10, "reservado": 8, "pendente": 2, "pct": 80.0, "mediaSemanal": 2.5, "dias": 22.4, "gap": 2}]}, {"codItem": 73281, "produto": "COMODA URBAN 2019 8GAV", "categoria": "Complementos", "solicitado": 168, "reservado": 156, "pendente": 12, "pct": 92.9, "alerta": false, "concluido": false, "mediaSemanal": 42.0, "dias": 26.0, "gap": 12, "variacoes": [{"codMasc": 23866, "variacao": "BRANCO", "solicitado": 100, "reservado": 90, "pendente": 10, "pct": 90.0, "mediaSemanal": 25.0, "dias": 25.2, "gap": 10}, {"codMasc": 23865, "variacao": "AMENDOA CLEAN", "solicitado": 68, "reservado": 66, "pendente": 2, "pct": 97.1, "mediaSemanal": 17.0, "dias": 27.2, "gap": 2}]}, {"codItem": 84821, "produto": "GUARDA ROUPA LOPAS 03 PTS OLLIE II 2025", "categoria": "GR", "solicitado": 84, "reservado": 78, "pendente": 6, "pct": 92.9, "alerta": false, "concluido": false, "mediaSemanal": 21.0, "dias": 26.0, "gap": 6, "variacoes": [{"codMasc": 30742, "variacao": "AMENDOA CL/OFF WHI/A#S/2PTS GLASS#C/PES", "solicitado": 22, "reservado": 22, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.5, "dias": 28.0, "gap": 0}, {"codMasc": 30739, "variacao": "AMENDOA CL/OFF WHI/A#C/2 PTS GLASS#C/PES", "solicitado": 21, "reservado": 15, "pendente": 6, "pct": 71.4, "mediaSemanal": 5.25, "dias": 20.0, "gap": 6}, {"codMasc": 30741, "variacao": "AMENDOA CL/OFF WHI/A#S/2PTS GLASS#S/PES", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}, {"codMasc": 30745, "variacao": "FRASSINO/OFF WHITE/F#S/2PTS GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 30744, "variacao": "FRASSINO/OFF WHITE/F#C/2 PTS GLASS#S/PES", "solicitado": 9, "reservado": 9, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.25, "dias": 28.0, "gap": 0}, {"codMasc": 30743, "variacao": "FRASSINO/OFF WHITE/F#C/2 PTS GLASS#C/PES", "solicitado": 2, "reservado": 2, "pendente": 0, "pct": 100.0, "mediaSemanal": 0.5, "dias": 28.0, "gap": 0}]}, {"codItem": 73384, "produto": "MESA 0,90 CELEBRARE 2023", "categoria": "Sala de Jantar", "solicitado": 14, "reservado": 13, "pendente": 1, "pct": 92.9, "alerta": false, "concluido": false, "mediaSemanal": 3.5, "dias": 26.0, "gap": 1, "variacoes": [{"codMasc": 50466, "variacao": "AMENDOA CLEAN/OFF WH#S/VIDRO 900X900", "solicitado": 14, "reservado": 13, "pendente": 1, "pct": 92.9, "mediaSemanal": 3.5, "dias": 26.0, "gap": 1}]}, {"codItem": 84932, "produto": "CAMA LOPAS SOLT 0,90 LOOP 2025", "categoria": "Complementos", "solicitado": 106, "reservado": 100, "pendente": 6, "pct": 94.3, "alerta": false, "concluido": false, "mediaSemanal": 26.5, "dias": 26.4, "gap": 6, "variacoes": [{"codMasc": 36951, "variacao": "AMENDOA CLEAN#CORANO BEGE#C/CAMA AUXILIAR", "solicitado": 47, "reservado": 47, "pendente": 0, "pct": 100.0, "mediaSemanal": 11.75, "dias": 28.0, "gap": 0}, {"codMasc": 36952, "variacao": "BRANCO#KORINO BRANCO#C/CAMA AUXILIAR", "solicitado": 20, "reservado": 14, "pendente": 6, "pct": 70.0, "mediaSemanal": 5.0, "dias": 19.6, "gap": 6}, {"codMasc": 36950, "variacao": "AMENDOA CLEAN#CORANO BEGE#S/CAMA AUXILIAR", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}, {"codMasc": 36953, "variacao": "BRANCO#KORINO BRANCO#S/CAMA AUXILIAR", "solicitado": 19, "reservado": 19, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.75, "dias": 28.0, "gap": 0}]}, {"codItem": 85123, "produto": "MESA 1,20 SINTONIA", "categoria": "Sala de Jantar", "solicitado": 50, "reservado": 48, "pendente": 2, "pct": 96.0, "alerta": false, "concluido": false, "mediaSemanal": 12.5, "dias": 26.9, "gap": 2, "variacoes": [{"codMasc": 46251, "variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S", "solicitado": 50, "reservado": 48, "pendente": 2, "pct": 96.0, "mediaSemanal": 12.5, "dias": 26.9, "gap": 2}]}, {"codItem": 73139, "produto": "CAMA SOLTEIRO 0,90 ATHENAS 2022", "categoria": "Complementos", "solicitado": 188, "reservado": 182, "pendente": 6, "pct": 96.8, "alerta": false, "concluido": false, "mediaSemanal": 47.0, "dias": 27.1, "gap": 6, "variacoes": [{"codMasc": 24414, "variacao": "AMENDOA CL/OFF WHI/A#C/CAMA AUXILIAR", "solicitado": 59, "reservado": 57, "pendente": 2, "pct": 96.6, "mediaSemanal": 14.75, "dias": 27.1, "gap": 2}, {"codMasc": 24417, "variacao": "BRANCO#C/CAMA AUXILIAR", "solicitado": 56, "reservado": 52, "pendente": 4, "pct": 92.9, "mediaSemanal": 14.0, "dias": 26.0, "gap": 4}, {"codMasc": 24416, "variacao": "BRANCO#S/CAMA AUXILIAR", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0, "mediaSemanal": 7.5, "dias": 28.0, "gap": 0}, {"codMasc": 24420, "variacao": "FRASSINO/OFF WHITE/F#C/CAMA AUXILIAR", "solicitado": 23, "reservado": 23, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.75, "dias": 28.0, "gap": 0}, {"codMasc": 24415, "variacao": "AMENDOA CL/OFF WHI/A#S/CAMA AUXILIAR", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}]}, {"codItem": 73284, "produto": "COMODA VEDRA 7GAV 2 PTS", "categoria": "Complementos", "solicitado": 74, "reservado": 72, "pendente": 2, "pct": 97.3, "alerta": false, "concluido": false, "mediaSemanal": 18.5, "dias": 27.2, "gap": 2, "variacoes": [{"codMasc": 15999, "variacao": "FRASSINO/OFF WHITE", "solicitado": 31, "reservado": 31, "pendente": 0, "pct": 100.0, "mediaSemanal": 7.75, "dias": 28.0, "gap": 0}, {"codMasc": 23859, "variacao": "BRANCO", "solicitado": 19, "reservado": 19, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.75, "dias": 28.0, "gap": 0}, {"codMasc": 23857, "variacao": "AMENDOA CLEAN", "solicitado": 17, "reservado": 15, "pendente": 2, "pct": 88.2, "mediaSemanal": 4.25, "dias": 24.7, "gap": 2}, {"codMasc": 23858, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 7, "reservado": 7, "pendente": 0, "pct": 100.0, "mediaSemanal": 1.75, "dias": 28.0, "gap": 0}]}, {"codItem": 84900, "produto": "CAMA LOPAS CASAL 1,40 LOOP 2025", "categoria": "Complementos", "solicitado": 77, "reservado": 75, "pendente": 2, "pct": 97.4, "alerta": false, "concluido": false, "mediaSemanal": 19.25, "dias": 27.3, "gap": 2, "variacoes": [{"codMasc": 31279, "variacao": "AMENDOA CLEAN#CORANO BEGE", "solicitado": 45, "reservado": 43, "pendente": 2, "pct": 95.6, "mediaSemanal": 11.25, "dias": 26.8, "gap": 2}, {"codMasc": 31278, "variacao": "AMENDOA CLEAN#BOUCLE SALVIA", "solicitado": 19, "reservado": 19, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.75, "dias": 28.0, "gap": 0}, {"codMasc": 31280, "variacao": "BRANCO#KORINO BRANCO", "solicitado": 13, "reservado": 13, "pendente": 0, "pct": 100.0, "mediaSemanal": 3.25, "dias": 28.0, "gap": 0}]}, {"codItem": 73173, "produto": "CAMA SOLTEIRO 0,90 REALI 2022", "categoria": "Complementos", "solicitado": 84, "reservado": 83, "pendente": 1, "pct": 98.8, "alerta": false, "concluido": false, "mediaSemanal": 21.0, "dias": 27.7, "gap": 1, "variacoes": [{"codMasc": 16516, "variacao": "BRANCO", "solicitado": 48, "reservado": 48, "pendente": 0, "pct": 100.0, "mediaSemanal": 12.0, "dias": 28.0, "gap": 0}, {"codMasc": 16515, "variacao": "AMENDOA CLEAN", "solicitado": 36, "reservado": 35, "pendente": 1, "pct": 97.2, "mediaSemanal": 9.0, "dias": 27.2, "gap": 1}]}, {"codItem": 2083, "produto": "GUARDA ROUPA ALONZO 4 PTS 2021", "categoria": "GR", "solicitado": 556, "reservado": 550, "pendente": 6, "pct": 98.9, "alerta": false, "concluido": false, "mediaSemanal": 139.0, "dias": 27.7, "gap": 6, "variacoes": [{"codMasc": 12490, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 150, "reservado": 150, "pendente": 0, "pct": 100.0, "mediaSemanal": 37.5, "dias": 28.0, "gap": 0}, {"codMasc": 12478, "variacao": "AMENDOA CLEAN/BRANCO#S/ESP#S/PES", "solicitado": 86, "reservado": 86, "pendente": 0, "pct": 100.0, "mediaSemanal": 21.5, "dias": 28.0, "gap": 0}, {"codMasc": 12477, "variacao": "AMENDOA CLEAN/BRANCO#S/ESP#C/PES", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0, "mediaSemanal": 15.0, "dias": 28.0, "gap": 0}, {"codMasc": 12482, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 52, "reservado": 52, "pendente": 0, "pct": 100.0, "mediaSemanal": 13.0, "dias": 28.0, "gap": 0}, {"codMasc": 12481, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#C/PES", "solicitado": 51, "reservado": 51, "pendente": 0, "pct": 100.0, "mediaSemanal": 12.75, "dias": 28.0, "gap": 0}, {"codMasc": 12474, "variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 34, "reservado": 31, "pendente": 3, "pct": 91.2, "mediaSemanal": 8.5, "dias": 25.5, "gap": 3}, {"codMasc": 12489, "variacao": "BRANCO#S/ESP#C/PES", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0, "mediaSemanal": 7.5, "dias": 28.0, "gap": 0}, {"codMasc": 12472, "variacao": "AMENDOA CLEAN#C/ESP#C/PES", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0, "mediaSemanal": 3.75, "dias": 28.0, "gap": 0}, {"codMasc": 12473, "variacao": "AMENDOA CLEAN#S/ESP#C/PES", "solicitado": 13, "reservado": 10, "pendente": 3, "pct": 76.9, "mediaSemanal": 3.25, "dias": 21.5, "gap": 3}, {"codMasc": 12491, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12483, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12475, "variacao": "AMENDOA CLEAN#C/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12488, "variacao": "BRANCO#C/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12476, "variacao": "AMENDOA CLEAN/BRANCO#C/ESP#C/PES", "solicitado": 9, "reservado": 9, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.25, "dias": 28.0, "gap": 0}, {"codMasc": 12480, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#C/PES", "solicitado": 8, "reservado": 8, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.0, "dias": 28.0, "gap": 0}, {"codMasc": 12479, "variacao": "AMENDOA CLEAN/BRANCO#C/ESP#S/PES", "solicitado": 8, "reservado": 8, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.0, "dias": 28.0, "gap": 0}]}, {"codItem": 2382, "produto": "GUARDA ROUPA SPAZIO 3 PTS 2,70", "categoria": "GR", "solicitado": 300, "reservado": 300, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 75.0, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 13169, "variacao": "BRANCO#S/3PTS GLASS#S/PES", "solicitado": 150, "reservado": 150, "pendente": 0, "pct": 100.0, "mediaSemanal": 37.5, "dias": 28.0, "gap": 0}, {"codMasc": 13165, "variacao": "BRANCO#C/1 PT GLASS#S/PES", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "mediaSemanal": 25.0, "dias": 28.0, "gap": 0}, {"codMasc": 13166, "variacao": "BRANCO#C/3 PTS GLASS#S/PES", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}, {"codMasc": 13167, "variacao": "BRANCO#C/3 PTS GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 13168, "variacao": "BRANCO#S/3PTS GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 13164, "variacao": "BRANCO#C/1 PT GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}]}, {"codItem": 273, "produto": "GUARDA ROUPA ALONZO 6 PTS 2021", "categoria": "GR", "solicitado": 346, "reservado": 346, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 86.5, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 12450, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "mediaSemanal": 25.0, "dias": 28.0, "gap": 0}, {"codMasc": 12442, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 69, "reservado": 69, "pendente": 0, "pct": 100.0, "mediaSemanal": 17.25, "dias": 28.0, "gap": 0}, {"codMasc": 12439, "variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0, "mediaSemanal": 15.0, "dias": 28.0, "gap": 0}, {"codMasc": 12441, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#C/PES", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}, {"codMasc": 12443, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#S/PES", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}, {"codMasc": 12449, "variacao": "BRANCO#S/ESP#C/PES", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0, "mediaSemanal": 3.75, "dias": 28.0, "gap": 0}, {"codMasc": 12451, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 12, "reservado": 12, "pendente": 0, "pct": 100.0, "mediaSemanal": 3.0, "dias": 28.0, "gap": 0}, {"codMasc": 12437, "variacao": "AMENDOA CLEAN#S/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12448, "variacao": "BRANCO#C/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12438, "variacao": "AMENDOA CLEAN#C/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12436, "variacao": "AMENDOA CLEAN#C/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12440, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}]}, {"codItem": 73121, "produto": "CABECEIRA BOX 1,60 CALITAN 2023", "categoria": "Complementos", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 25.0, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 16180, "variacao": "AMENDOA CLEAN/PRETO#KORINO PRETO#C/LED", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "mediaSemanal": 25.0, "dias": 28.0, "gap": 0}]}, {"codItem": 83249, "produto": "MESA DE CABECEIRA LOOP 2024", "categoria": "Complementos", "solicitado": 102, "reservado": 102, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 25.5, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 31792, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "mediaSemanal": 25.0, "dias": 28.0, "gap": 0}, {"codMasc": 67184, "variacao": "AMENDOA CLEAN", "solicitado": 2, "reservado": 2, "pendente": 0, "pct": 100.0, "mediaSemanal": 0.5, "dias": 28.0, "gap": 0}]}, {"codItem": 86048, "produto": "MESA 1,70 APOGEU 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025", "categoria": "Sala de Jantar", "solicitado": 101, "reservado": 101, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 25.25, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 75626, "variacao": "AMENDOA CL/OFF WHI/A#LINHO RINZAI BEGE", "solicitado": 74, "reservado": 74, "pendente": 0, "pct": 100.0, "mediaSemanal": 18.5, "dias": 28.0, "gap": 0}, {"codMasc": 75630, "variacao": "AMENDOA CL/OFF WHI/A#VELUDO NATURALE CREME", "solicitado": 27, "reservado": 27, "pendente": 0, "pct": 100.0, "mediaSemanal": 6.75, "dias": 28.0, "gap": 0}]}, {"codItem": 73275, "produto": "COMODA HORIZONTAL MAGGIORE NEW 6GAV", "categoria": "Complementos", "solicitado": 84, "reservado": 84, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 21.0, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 23853, "variacao": "BRANCO", "solicitado": 48, "reservado": 48, "pendente": 0, "pct": 100.0, "mediaSemanal": 12.0, "dias": 28.0, "gap": 0}, {"codMasc": 23852, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}, {"codMasc": 23851, "variacao": "AMENDOA CLEAN", "solicitado": 16, "reservado": 16, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.0, "dias": 28.0, "gap": 0}]}, {"codItem": 72565, "produto": "GUARDA ROUPA ZEINE 2 PTS 2024", "categoria": "GR", "solicitado": 93, "reservado": 93, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 23.25, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 13283, "variacao": "BRANCO#C/1 PT GLASS#S/PES", "solicitado": 42, "reservado": 42, "pendente": 0, "pct": 100.0, "mediaSemanal": 10.5, "dias": 28.0, "gap": 0}, {"codMasc": 13279, "variacao": "AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES", "solicitado": 31, "reservado": 31, "pendente": 0, "pct": 100.0, "mediaSemanal": 7.75, "dias": 28.0, "gap": 0}, {"codMasc": 13280, "variacao": "BRANCO#C/1 PT GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 13276, "variacao": "AMENDOA CL/OFF WHI/A#C/1 PT GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}]}, {"codItem": 74549, "produto": "BELICHE 0,90 OLGA", "categoria": "Complementos", "solicitado": 46, "reservado": 46, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 11.5, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 33429, "variacao": "BRANCO#C/LED", "solicitado": 37, "reservado": 37, "pendente": 0, "pct": 100.0, "mediaSemanal": 9.25, "dias": 28.0, "gap": 0}, {"codMasc": 33428, "variacao": "AMENDOA CLEAN#C/LED", "solicitado": 9, "reservado": 9, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.25, "dias": 28.0, "gap": 0}]}, {"codItem": 2082, "produto": "CAMA CASAL 1,40 ATHENAS 2022", "categoria": "Complementos", "solicitado": 79, "reservado": 79, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 19.75, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 15712, "variacao": "FRASSINO/OFF WHITE/F", "solicitado": 36, "reservado": 36, "pendente": 0, "pct": 100.0, "mediaSemanal": 9.0, "dias": 28.0, "gap": 0}, {"codMasc": 15707, "variacao": "AMENDOA CL/OFF WHI/A", "solicitado": 26, "reservado": 26, "pendente": 0, "pct": 100.0, "mediaSemanal": 6.5, "dias": 28.0, "gap": 0}, {"codMasc": 15710, "variacao": "BRANCO", "solicitado": 17, "reservado": 17, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.25, "dias": 28.0, "gap": 0}]}, {"codItem": 74197, "produto": "MESA DE CABECEIRA BAIAO   2021  3 GAV", "categoria": "Complementos", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 8.75, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 32906, "variacao": "AMENDOA CLEAN", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0, "mediaSemanal": 8.75, "dias": 28.0, "gap": 0}]}, {"codItem": 85082, "produto": "MESA 1,70 ASTRID 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025", "categoria": "Sala de Jantar", "solicitado": 27, "reservado": 27, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 6.75, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 49178, "variacao": "AMENDOA CLEAN/OFF WH#VELUDO NATURALE CREME", "solicitado": 27, "reservado": 27, "pendente": 0, "pct": 100.0, "mediaSemanal": 6.75, "dias": 28.0, "gap": 0}]}, {"codItem": 159, "produto": "MESA 1,80 ATHENAS BR", "categoria": "Sala de Jantar", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 6.25, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 16481, "variacao": "AMENDOA CLEAN", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0, "mediaSemanal": 6.25, "dias": 28.0, "gap": 0}]}, {"codItem": 263, "produto": "MESA 1,20 ATHENAS BR", "categoria": "Sala de Jantar", "solicitado": 24, "reservado": 24, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 6.0, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 15492, "variacao": "AMENDOA CLEAN", "solicitado": 24, "reservado": 24, "pendente": 0, "pct": 100.0, "mediaSemanal": 6.0, "dias": 28.0, "gap": 0}]}, {"codItem": 73074, "produto": "CAMA CASAL 1,40 REALI 2022", "categoria": "Complementos", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 8.75, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 15961, "variacao": "FRASSINO", "solicitado": 19, "reservado": 19, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.75, "dias": 28.0, "gap": 0}, {"codMasc": 15960, "variacao": "BRANCO", "solicitado": 16, "reservado": 16, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.0, "dias": 28.0, "gap": 0}]}, {"codItem": 86042, "produto": "MESA  1,60 ASTRID 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025", "categoria": "Sala de Jantar", "solicitado": 17, "reservado": 17, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 4.25, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 75985, "variacao": "AMENDOA CLEAN/OFF WH#LINHO RINZAI BEGE", "solicitado": 17, "reservado": 17, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.25, "dias": 28.0, "gap": 0}]}, {"codItem": 85650, "produto": "CAMA CASAL LOPAS 1,60 FREETOWN 2025", "categoria": "Complementos", "solicitado": 14, "reservado": 14, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 3.5, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 49964, "variacao": "AMENDOA CLEAN/BRANCO#KOR.BRANCO C/LED", "solicitado": 14, "reservado": 14, "pendente": 0, "pct": 100.0, "mediaSemanal": 3.5, "dias": 28.0, "gap": 0}]}, {"codItem": 86051, "produto": "MESA 0,90 CELEBRARE 2023 C/VDO SERIG.C/04 CAD.APOGEU 2025", "categoria": "Sala de Jantar", "solicitado": 12, "reservado": 12, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 3.0, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 75610, "variacao": "AMENDOA CLEAN/OFF WH#LINHO RINZAI BEGE", "solicitado": 12, "reservado": 12, "pendente": 0, "pct": 100.0, "mediaSemanal": 3.0, "dias": 28.0, "gap": 0}]}, {"codItem": 155, "produto": "MESA DE CABECEIRA MAGGIORE   NEW  03 GAV", "categoria": "Complementos", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 6.25, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 51181, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 11, "reservado": 11, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.75, "dias": 28.0, "gap": 0}, {"codMasc": 51182, "variacao": "BRANCO", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 51180, "variacao": "AMENDOA CLEAN", "solicitado": 4, "reservado": 4, "pendente": 0, "pct": 100.0, "mediaSemanal": 1.0, "dias": 28.0, "gap": 0}]}, {"codItem": 87459, "produto": "GUARDA ROUPA 08 PTS SERENATA", "categoria": "GR", "solicitado": 29, "reservado": 29, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 7.25, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 91590, "variacao": "BRANCO#S/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 91589, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 91588, "variacao": "BRANCO#C/ESP#C/PES", "solicitado": 9, "reservado": 9, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.25, "dias": 28.0, "gap": 0}]}, {"codItem": 2106, "produto": "GUARDA ROUPA BERTHA 6 PTS", "categoria": "GR", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 8.75, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 13357, "variacao": "AMENDOA CLEAN#C/ESP#S/PES#S/KIT GAV", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 13363, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#C/PES#S/KIT GAV", "solicitado": 8, "reservado": 8, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.0, "dias": 28.0, "gap": 0}, {"codMasc": 13365, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#S/PES#S/KIT GAV", "solicitado": 7, "reservado": 7, "pendente": 0, "pct": 100.0, "mediaSemanal": 1.75, "dias": 28.0, "gap": 0}, {"codMasc": 13361, "variacao": "AMENDOA CLEAN#S/ESP#C/PES#S/KIT GAV", "solicitado": 5, "reservado": 5, "pendente": 0, "pct": 100.0, "mediaSemanal": 1.25, "dias": 28.0, "gap": 0}, {"codMasc": 13360, "variacao": "AMENDOA CLEAN#S/ESP#S/PES#S/KIT GAV", "solicitado": 5, "reservado": 5, "pendente": 0, "pct": 100.0, "mediaSemanal": 1.25, "dias": 28.0, "gap": 0}]}, {"codItem": 2101, "produto": "GUARDA ROUPA ARIES 6 PTS 2021", "categoria": "GR", "solicitado": 6, "reservado": 6, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 1.5, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 13940, "variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 6, "reservado": 6, "pendente": 0, "pct": 100.0, "mediaSemanal": 1.5, "dias": 28.0, "gap": 0}]}, {"codItem": 2316, "produto": "GUARDA ROUPA NICE 3 PTS", "categoria": "GR", "solicitado": 3, "reservado": 3, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 0.75, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 13054, "variacao": "AMENDOA CL/OFF WHI/A#C/ESP#S/PES#S/KIT GAV", "solicitado": 3, "reservado": 3, "pendente": 0, "pct": 100.0, "mediaSemanal": 0.75, "dias": 28.0, "gap": 0}]}], "categorias": [{"nome": "GR", "produtos": 11, "variacoes": 58, "solicitado": 1552, "reservado": 1452, "pendente": 100, "pct": 93.6, "completos": 7, "parcial": 3, "alertas": 3, "diasMedia": 26.2}, {"nome": "Complementos", "produtos": 18, "variacoes": 45, "solicitado": 1471, "reservado": 1399, "pendente": 72, "pct": 95.1, "completos": 9, "parcial": 9, "alertas": 0, "diasMedia": 26.6}, {"nome": "Sala de Jantar", "produtos": 8, "variacoes": 9, "solicitado": 270, "reservado": 267, "pendente": 3, "pct": 98.9, "completos": 6, "parcial": 2, "alertas": 0, "diasMedia": 27.7}], "top10": [{"codItem": 2405, "produto": "GUARDA ROUPA TORONTO 2 PTS PLUS", "categoria": "GR", "codMasc": 13689, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 46, "reservado": 0, "pendente": 46, "pct": 0.0, "gap": 46, "dias": 0.0}, {"codItem": 2405, "produto": "GUARDA ROUPA TORONTO 2 PTS PLUS", "categoria": "GR", "codMasc": 13690, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 34, "reservado": 0, "pendente": 34, "pct": 0.0, "gap": 34, "dias": 0.0}, {"codItem": 81929, "produto": "COMODA LOOP 2024 II", "categoria": "Complementos", "codMasc": 32963, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 130, "reservado": 100, "pendente": 30, "pct": 76.9, "gap": 30, "dias": 21.5}, {"codItem": 73281, "produto": "COMODA URBAN 2019 8GAV", "categoria": "Complementos", "codMasc": 23866, "variacao": "BRANCO", "solicitado": 100, "reservado": 90, "pendente": 10, "pct": 90.0, "gap": 10, "dias": 25.2}, {"codItem": 84794, "produto": "GUARDA ROUPA LOPAS 06 PTS LOOP 2025", "categoria": "GR", "codMasc": 42176, "variacao": "AMENDOA CLEAN/OFF WH#S/PES", "solicitado": 10, "reservado": 2, "pendente": 8, "pct": 20.0, "gap": 8, "dias": 5.6}, {"codItem": 73177, "produto": "SAPATEIRA ESTHELA 2024", "categoria": "Complementos", "codMasc": 23848, "variacao": "BRANCO", "solicitado": 20, "reservado": 13, "pendente": 7, "pct": 65.0, "gap": 7, "dias": 18.2}, {"codItem": 84821, "produto": "GUARDA ROUPA LOPAS 03 PTS OLLIE II 2025", "categoria": "GR", "codMasc": 30739, "variacao": "AMENDOA CL/OFF WHI/A#C/2 PTS GLASS#C/PES", "solicitado": 21, "reservado": 15, "pendente": 6, "pct": 71.4, "gap": 6, "dias": 20.0}, {"codItem": 84932, "produto": "CAMA LOPAS SOLT 0,90 LOOP 2025", "categoria": "Complementos", "codMasc": 36952, "variacao": "BRANCO#KORINO BRANCO#C/CAMA AUXILIAR", "solicitado": 20, "reservado": 14, "pendente": 6, "pct": 70.0, "gap": 6, "dias": 19.6}, {"codItem": 73139, "produto": "CAMA SOLTEIRO 0,90 ATHENAS 2022", "categoria": "Complementos", "codMasc": 24417, "variacao": "BRANCO#C/CAMA AUXILIAR", "solicitado": 56, "reservado": 52, "pendente": 4, "pct": 92.9, "gap": 4, "dias": 26.0}, {"codItem": 2083, "produto": "GUARDA ROUPA ALONZO 4 PTS 2021", "categoria": "GR", "codMasc": 12474, "variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 34, "reservado": 31, "pendente": 3, "pct": 91.2, "gap": 3, "dias": 25.5}], "hist": [{"label": "0-7d", "min": 0, "max": 7, "level": "crit", "count": 3}, {"label": "7-14d", "min": 7, "max": 14, "level": "crit", "count": 0}, {"label": "14-21d", "min": 14, "max": 21, "level": "warn", "count": 3}, {"label": "21-28d", "min": 21, "max": 28, "level": "ok", "count": 16}, {"label": "≥28d", "min": 28, "max": 9999, "level": "ok", "count": 90}]};
+const data = BUNDLE.data;
+const stats = BUNDLE.stats;
+const categorias = BUNDLE.categorias;
+const top10 = BUNDLE.top10;
+const hist = BUNDLE.hist;
+
+// Lotes — populated as user provides them
+const loteProdutos = {};
+
+// Category styling map
+const CAT_STYLES = {
+  'GR': {cls:'gr', icon:'🚪', short:'GR'},
+  'Complementos': {cls:'comp', icon:'🪞', short:'COMP'},
+  'Sala de Jantar': {cls:'jantar', icon:'🍽️', short:'S.JANTAR'},
+};
+
+// Format helpers
+const fmt = n => new Intl.NumberFormat('pt-BR').format(n);
+const fmtPct = p => p.toFixed(1).replace('.', ',') + '%';
+const fmtDias = d => d.toFixed(1).replace('.', ',') + 'd';
+function getPctColor(pct){ return pct<30?'var(--danger)':pct<100?'var(--warn)':'var(--ok)'; }
+function getFillClass(pct){ return pct<30?'fill-danger':pct<100?'fill-warn':'fill-ok'; }
+function getDiasColor(d){ return d<15?'var(--danger)':d<25?'var(--warn)':'var(--ok)'; }
+
+// ============ HEADER + KPIs ============
+document.getElementById('header-sub').textContent = `Marketplace · Análise em ${stats.dataAtualizacao} · Forecast Maio/2026`;
+document.getElementById('badgeDate').textContent = `📅 ${stats.dataAtualizacao}`;
+document.getElementById('footer-data').textContent = stats.dataAtualizacao;
+
+const alertBadge = document.getElementById('alertBadge');
+const alertBadgeText = document.getElementById('alertBadgeText');
+if (stats.nAlertVar > 0) {
+  alertBadge.classList.add('has-alert');
+  alertBadgeText.textContent = `${stats.nAlertVar} ALERTA${stats.nAlertVar>1?'S':''}`;
+} else {
+  alertBadgeText.textContent = 'SEM ALERTAS';
+}
+
+// KPI row 1
+document.getElementById('kpi-sol').innerHTML = fmt(stats.totalSolicitado) + '<span class="unit">un</span>';
+document.getElementById('kpi-sol-sub').textContent = `${stats.nVariacoes} variações · ${stats.nProdutos} produtos`;
+document.getElementById('kpi-res').innerHTML = fmt(stats.totalReservado) + '<span class="unit">un</span>';
+document.getElementById('kpi-res-sub').textContent = `${fmtPct(stats.pctGeral)} do forecast`;
+document.getElementById('kpi-pen').innerHTML = fmt(stats.totalPendente) + '<span class="unit">un</span>';
+document.getElementById('kpi-pen-sub').textContent = `${fmtPct(100-stats.pctGeral)} a reabastecer`;
+document.getElementById('kpi-pct').textContent = fmtPct(stats.pctGeral);
+document.getElementById('kpi-pct-sub').textContent = stats.pctGeral >= 95 ? 'Situação saudável' : stats.pctGeral >= 80 ? 'Atenção' : 'Crítico';
+
+// KPI row 2 - SKU level
+document.getElementById('kpi-sku-ok').textContent = stats.skuAtendido;
+document.getElementById('kpi-sku-ok-sub').textContent = `${fmtPct(stats.skuAtendido/stats.nVariacoes*100)} dos SKUs`;
+document.getElementById('kpi-sku-warn').textContent = stats.skuParcial;
+document.getElementById('kpi-sku-warn-sub').textContent = `${fmtPct(stats.skuParcial/stats.nVariacoes*100)} dos SKUs`;
+document.getElementById('kpi-sku-zero').textContent = stats.skuSemReserva;
+document.getElementById('kpi-sku-zero-sub').textContent = `${fmtPct(stats.skuSemReserva/stats.nVariacoes*100)} dos SKUs`;
+document.getElementById('kpi-dias').innerHTML = fmtDias(stats.diasMedia).replace('d','') + '<span class="unit">dias</span>';
+
+// ============ COVERAGE ============
+document.getElementById('cov-sub').textContent =
+  `${fmt(stats.totalReservado)} reservados de ${fmt(stats.totalSolicitado)} solicitados · ${fmt(stats.totalPendente)} pendentes`;
+document.getElementById('cov-pct').textContent = fmtPct(stats.pctGeral);
+document.getElementById('cov-gap').textContent = `${fmt(stats.gapTotal)} un`;
+document.getElementById('leg-res').textContent = `Reservado: ${fmtPct(stats.pctGeral)}`;
+document.getElementById('leg-pen').textContent = `Pendente: ${fmtPct(100-stats.pctGeral)}`;
+setTimeout(() => { document.getElementById('cov-bar').style.width = stats.pctGeral + '%'; }, 100);
+
+// ============ STATUS CARDS ============
+document.getElementById('st-ok').textContent = stats.nCompletos;
+document.getElementById('st-ok-sub').textContent = `de ${stats.nProdutos} produtos`;
+document.getElementById('st-warn').textContent = stats.nParcial;
+document.getElementById('st-warn-sub').textContent = `de ${stats.nProdutos} produtos`;
+document.getElementById('st-danger').textContent = stats.nAlertVar;
+document.getElementById('st-danger-sub').textContent = `de ${stats.nVariacoes} variações`;
+
+// ============ CATEGORY CARDS ============
+function renderCatCards(){
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = categorias.map(c => {
+    const sty = CAT_STYLES[c.nome] || {cls:'comp', icon:'📦'};
+    const alertHtml = c.alertas > 0
+      ? `<span class="cat-alert has">⚠️ ${c.alertas} alerta${c.alertas>1?'s':''}</span>`
+      : `<span class="cat-alert none">✓ sem alertas</span>`;
+    return `<div class="cat-card ${sty.cls}" onclick="setCatFromCard('${c.nome.replace(/'/g,"\\'")}')">
+      <div class="cat-head">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="cat-icon">${sty.icon}</div>
+          <div>
+            <div class="cat-name">${c.nome}</div>
+            <div class="cat-sub">${c.produtos} produtos · ${c.variacoes} variações</div>
+          </div>
+        </div>
+        <div class="cat-pct">${fmtPct(c.pct)}</div>
+      </div>
+      <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:0%" data-w="${c.pct}"></div></div>
+      <div class="cat-stats">
+        <div>Sol: <span>${fmt(c.solicitado)}</span></div>
+        <div>Res: <span>${fmt(c.reservado)}</span></div>
+        <div>Pend: <span>${fmt(c.pendente)}</span></div>
+      </div>
+      <div class="cat-meta">
+        <div class="cat-meta-left">Cobertura: <span class="num">${fmtDias(c.diasMedia)}</span> · ${c.completos} completos</div>
+        ${alertHtml}
+      </div>
+    </div>`;
+  }).join('');
+  setTimeout(() => {
+    document.querySelectorAll('.cat-bar-fill[data-w]').forEach(el => {
+      el.style.width = el.dataset.w + '%';
+    });
+  }, 200);
+}
+renderCatCards();
+
+// ============ COBERTURA EM DIAS ============
+document.getElementById('cov-crit').textContent = stats.nDiasCrit;
+document.getElementById('cov-warn').textContent = stats.nDiasWarn;
+document.getElementById('cov-ok').textContent = stats.nDiasOk;
+
+// Histogram
+const maxCount = Math.max(...hist.map(h => h.count), 1);
+const histBars = document.getElementById('hist-bars');
+histBars.innerHTML = hist.map(h => {
+  const w = (h.count / maxCount * 100).toFixed(1);
+  return `<div class="hist-row">
+    <span class="lbl">${h.label}</span>
+    <div class="hist-track"><div class="hist-fill ${h.level}" data-w="${w}"></div></div>
+    <span class="count">${h.count}</span>
+  </div>`;
+}).join('');
+setTimeout(() => {
+  document.querySelectorAll('.hist-fill[data-w]').forEach(el => {
+    el.style.width = el.dataset.w + '%';
+  });
+}, 300);
+
+// ============ ALERT BANNER ============
+const banner = document.getElementById('alertBanner');
+const bannerTitle = document.getElementById('alertBannerTitle');
+const bannerText = document.getElementById('alertBannerText');
+
+if (stats.nAlertVar > 0) {
+  const alerts = data.flatMap(p => p.variacoes.filter(v => v.pct < 30).map(v => ({...v, produto: p.produto, categoria: p.categoria})));
+  alerts.sort((a,b) => a.pct - b.pct);
+  const sample = alerts.slice(0, 3).map(a => {
+    const short = a.produto.length > 35 ? a.produto.slice(0,35)+'…' : a.produto;
+    return `<strong>${short}</strong> (${fmtPct(a.pct)})`;
+  }).join(' · ');
+  bannerTitle.textContent = `${stats.nAlertVar} variaç${stats.nAlertVar>1?'ões':'ão'} com reserva crítica (<30%)`;
+  bannerText.innerHTML = `Reabastecimento prioritário: ${sample}${alerts.length>3?' e mais '+(alerts.length-3):''}. <strong>Gap total a fechar: ${fmt(stats.totalPendente)} unidades</strong>.`;
+  document.getElementById('section-alerts').style.display = '';
+} else {
+  banner.classList.add('ok');
+  document.querySelector('.alert-icon').textContent = '✅';
+  bannerTitle.textContent = 'Forecast em situação saudável';
+  bannerText.innerHTML = `Nenhuma variação abaixo de 30% reservado. Atendimento global em <strong>${fmtPct(stats.pctGeral)}</strong>.`;
+  document.getElementById('section-alerts').style.display = 'none';
+}
+
+// ============ TOP 10 GAP ============
+function renderTop10(){
+  const list = document.getElementById('top10List');
+  if (top10.length === 0) {
+    list.innerHTML = `<div class="empty-lotes" style="padding:20px;"><div class="empty-lotes-text">✅ Sem gaps — todo o forecast está coberto</div></div>`;
+    return;
+  }
+  list.innerHTML = top10.map((t, i) => {
+    const sty = CAT_STYLES[t.categoria] || {cls:'comp', short:'?'};
+    const rankCls = i===0?'top1':i===1?'top2':i===2?'top3':'';
+    const critCls = t.pct < 30 ? 'crit' : '';
+    const pctCls = t.pct < 30 ? 'danger' : t.pct < 100 ? 'warn' : 'ok';
+    return `<div class="top10-row ${critCls}">
+      <div class="top10-rank ${rankCls}">${String(i+1).padStart(2,'0')}</div>
+      <div>
+        <div class="prod-name"><span class="cat-badge ${sty.cls}">${sty.short}</span><span class="cod-tag">${t.codItem}·${t.codMasc}</span>${t.produto}</div>
+        <div class="prod-var">${t.variacao}</div>
+      </div>
+      <div class="col-hide-sm"><div class="col-label">Solicit.</div><div class="col-val">${fmt(t.solicitado)}</div></div>
+      <div class="col-hide-sm"><div class="col-label">Reserv.</div><div class="col-val ok">${fmt(t.reservado)}</div></div>
+      <div><div class="col-label">Gap</div><div class="col-val danger">${fmt(t.gap)}</div></div>
+      <div style="text-align:right;"><span class="pct-badge ${pctCls}">${fmtPct(t.pct)}</span></div>
+    </div>`;
+  }).join('');
+}
+renderTop10();
+
+// ============ FILTER COUNTS ============
+document.getElementById('cnt-all').textContent = data.length;
+document.getElementById('cnt-alert').textContent = data.filter(d=>d.pct<30 || d.alerta).length;
+document.getElementById('cnt-ok').textContent = stats.nCompletos;
+document.getElementById('cnt-part').textContent = stats.nParcial;
+document.getElementById('cnt-cat-all').textContent = data.length;
+document.getElementById('cnt-cat-gr').textContent = data.filter(d=>d.categoria==='GR').length;
+document.getElementById('cnt-cat-comp').textContent = data.filter(d=>d.categoria==='Complementos').length;
+document.getElementById('cnt-cat-jantar').textContent = data.filter(d=>d.categoria==='Sala de Jantar').length;
+
+// ============ STATE ============
+let currentFilter='all', currentCat='all', sortKey='pct', sortDir=1;
+
+// ============ ALERT CARDS ============
+function renderAlerts(){
+  const alerts = data.flatMap(p => p.variacoes.filter(v=>v.pct<30).map(v => ({...v, produto: p.produto, codItem: p.codItem, categoria: p.categoria})));
+  alerts.sort((a,b) => a.pct - b.pct);
+  document.getElementById('alertCards').innerHTML = alerts.map(a => {
+    const crit = a.pct<10?'CRÍTICO':a.pct<20?'GRAVE':'ATENÇÃO';
+    const critColor = a.pct<10?'#f87171':a.pct<20?'#f97316':'var(--warn)';
+    const sty = CAT_STYLES[a.categoria] || {cls:'comp'};
+    return `<div class="alert-row">
+      <div>
+        <div class="prod-name"><span class="cat-badge ${sty.cls}">${sty.short}</span><span class="cod-tag">${a.codItem}·${a.codMasc}</span>🚨 ${a.produto}</div>
+        <div class="prod-var">${a.variacao}</div>
+      </div>
+      <div><div class="col-label">Solicitado</div><div class="col-val">${fmt(a.solicitado)}</div></div>
+      <div><div class="col-label">Reservado</div><div class="col-val danger">${fmt(a.reservado)}</div></div>
+      <div><div class="col-label">Pendente</div><div class="col-val amber">${fmt(a.pendente)}</div></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <span class="pct-badge danger">${fmtPct(a.pct)}</span>
+        <span style="font-size:10px;font-weight:700;color:${critColor};letter-spacing:0.05em;">${crit}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============ MAIN TABLE ============
+function renderTable(){
+  const search = (document.getElementById('searchInput').value||'').toLowerCase();
+  let rows = [...data];
+  if (currentFilter==='alert') rows = rows.filter(r => r.pct<30 || r.alerta);
+  else if (currentFilter==='ok') rows = rows.filter(r => r.pct>=100);
+  else if (currentFilter==='partial') rows = rows.filter(r => r.pct>0 && r.pct<100);
+  if (currentCat !== 'all') rows = rows.filter(r => r.categoria === currentCat);
+  if (search) rows = rows.filter(r =>
+    r.produto.toLowerCase().includes(search) ||
+    String(r.codItem).includes(search) ||
+    r.variacoes.some(v => String(v.codMasc).includes(search) || (v.variacao||'').toLowerCase().includes(search))
+  );
+  rows.sort((a,b) => {
+    let va=a[sortKey], vb=b[sortKey];
+    return typeof va==='string' ? sortDir*va.localeCompare(vb) : sortDir*(va-vb);
+  });
+
+  const body = document.getElementById('tableBody');
+  if (rows.length === 0) {
+    body.innerHTML = `<tr><td colspan="7" class="empty-table">Nenhum produto encontrado com os filtros atuais</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = rows.map((r,i) => {
+    const pctColor = getPctColor(r.pct);
+    const fillClass = getFillClass(r.pct);
+    const sty = CAT_STYLES[r.categoria] || {cls:'comp', short:'?'};
+    const loteTag = loteProdutos[r.produto] ? `<span class="has-lote">📦 ${loteProdutos[r.produto]}</span>` : '';
+    const rowClass = (r.pct<30 || r.alerta) ? 'row-alert' : (r.pct>=100 ? 'row-ok' : '');
+    const diasColor = getDiasColor(r.dias);
+    const varsSorted = [...r.variacoes].sort((a,b) => a.pct - b.pct);
+    const varRows = varsSorted.map(v => `<tr>
+      <td><span class="cod-tag">${v.codMasc}</span>${v.variacao}</td>
+      <td style="text-align:center;font-family:Syne,sans-serif;font-weight:600">${fmt(v.solicitado)}</td>
+      <td style="text-align:center;font-family:Syne,sans-serif;font-weight:600;color:var(--ok)">${fmt(v.reservado)}</td>
+      <td style="text-align:center;font-family:Syne,sans-serif;font-weight:600;color:${v.pendente>0?'var(--warn)':'var(--muted)'}">${fmt(v.pendente)}</td>
+      <td><div class="var-mini-bar"><div class="var-mini-bg"><div class="var-mini-fill ${getFillClass(v.pct)}" style="width:${Math.min(v.pct,100)}%"></div></div>
+      <span style="font-family:Syne,sans-serif;font-weight:700;font-size:12px;min-width:48px;color:${getPctColor(v.pct)}">${fmtPct(v.pct)}</span></div></td>
+      <td style="text-align:center;"><span class="dias-cell"><span class="dias-dot" style="background:${getDiasColor(v.dias)}"></span>${fmtDias(v.dias)}</span></td>
+    </tr>`).join('');
+    return `
+      <tr class="${rowClass}" style="cursor:pointer" onclick="toggleVars('var-${i}',this)">
+        <td><div class="prod-tag"><span class="cat-badge ${sty.cls}">${sty.short}</span><span class="cod-tag">${r.codItem}</span>${r.produto}${loteTag}</div><div class="var-count">${r.variacoes.length} variaç${r.variacoes.length>1?'ões':'ão'}</div></td>
+        <td style="font-family:'Syne';font-weight:700">${fmt(r.solicitado)}</td>
+        <td style="font-family:'Syne';font-weight:700;color:var(--ok)">${fmt(r.reservado)}</td>
+        <td style="font-family:'Syne';font-weight:700;color:${r.pendente>0?'var(--warn)':'var(--muted)'}">${fmt(r.pendente)}</td>
+        <td><div class="progress-wrap"><div class="progress-bar-bg"><div class="progress-bar-fill ${fillClass}" style="width:${Math.min(r.pct,100)}%"></div></div><span class="pct-text" style="color:${pctColor}">${fmtPct(r.pct)}</span></div></td>
+        <td><span class="dias-cell"><span class="dias-dot" style="background:${diasColor}"></span>${fmtDias(r.dias)}</span></td>
+        <td><button class="expand-btn">▾ Detalhar</button></td>
+      </tr>
+      <tr class="variation-row" id="var-${i}">
+        <td colspan="7"><div class="variation-inner">
+          <table class="var-table">
+            <thead><tr><th>Cod · Variação / Cor</th><th style="text-align:center">Solicitado</th><th style="text-align:center">Reservado</th><th style="text-align:center">Pendente</th><th>Progresso</th><th style="text-align:center">Cobertura</th></tr></thead>
+            <tbody>${varRows}</tbody>
+          </table>
+        </div></td>
+      </tr>`;
+  }).join('');
+}
+
+function toggleVars(id, row){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('open');
+  const btn = row.querySelector('.expand-btn');
+  if (btn) btn.textContent = el.classList.contains('open') ? '▴ Fechar' : '▾ Detalhar';
+}
+
+function setFilter(f, el){
+  currentFilter = f;
+  document.querySelectorAll('.tab[data-filter]').forEach(t => t.classList.remove('active','active-alert','active-ok'));
+  if (f==='alert') el.classList.add('active-alert');
+  else if (f==='ok') el.classList.add('active-ok');
+  else el.classList.add('active');
+  renderTable();
+}
+
+function setCat(c, el){
+  currentCat = c;
+  document.querySelectorAll('.tab[data-cat]').forEach(t => t.classList.remove('active','active-cat-gr','active-cat-comp','active-cat-jantar'));
+  if (c==='GR') el.classList.add('active-cat-gr');
+  else if (c==='Complementos') el.classList.add('active-cat-comp');
+  else if (c==='Sala de Jantar') el.classList.add('active-cat-jantar');
+  else el.classList.add('active');
+  renderTable();
+  document.querySelector('.table-wrap').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function setCatFromCard(catName){
+  const tab = document.querySelector(`.tab[data-cat="${CSS.escape(catName)}"]`);
+  if (tab) setCat(catName, tab);
+}
+
+function sortBy(key){
+  if (sortKey===key) sortDir *= -1;
+  else { sortKey = key; sortDir = 1; }
+  renderTable();
+}
+
+renderAlerts();
+renderTable();
+</script>
+</body>
+</html>
