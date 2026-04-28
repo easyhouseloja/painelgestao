@@ -177,11 +177,20 @@ def parse_comercial():
 
     dias_abr = re.findall(r"\{d:'(\d{2}/04)',\s*g:([\d.]+)", text)
     if dias_abr:
-        total    = sum(float(v) for _, v in dias_abr)
-        n_dias   = len(dias_abr)
-        ultimo   = dias_abr[-1][0]
-        media    = total / n_dias
-        pct_meta = fmt(total / 8_600_000 * 100) + "% da Meta"
+        total  = sum(float(v) for _, v in dias_abr)
+        n_dias = len(dias_abr)
+        ultimo = dias_abr[-1][0]
+        media  = total / n_dias
+        # Lê % da meta do badge de Abril diretamente
+        idx_hdr = text.find("apr-hdr-periodo")
+        pct_meta = "?"
+        if idx_hdr > 0:
+            bloco = text[idx_hdr:idx_hdr+600]
+            bm = re.search(r"([\d,.]+)%\s*da Meta", bloco)
+            if bm:
+                pct_meta = bm.group(1) + "% da Meta"
+        if pct_meta == "?":
+            pct_meta = fmt(total / 8_600_000 * 100) + "% da Meta"
     else:
         total = n_dias = media = 0
         ultimo   = "?"
