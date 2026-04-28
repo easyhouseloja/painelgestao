@@ -357,57 +357,54 @@ def parse_devolucao():
 
 
 def parse_reputacao():
-    text = read("reputacao.html")
-    if not text:
+    s = soup("reputacao.html")
+    if not s:
         return None
 
-    STATUS_MAP = {
-        "laranja": "Laranja", "amarelo": "Amarelo",
-        "verde":   "Verde",   "green":   "Verde",
-        "ótimo":   "Ótimo",   "otimo":   "Ótimo",
-        "vermelho":"Vermelho","red":     "Vermelho",
+    COR_STATUS = {
+        "#F97316": "Laranja", "#f97316": "Laranja",
+        "#EAB308": "Amarelo", "#eab308": "Amarelo",
+        "#22C55E": "Verde",   "#22c55e": "Verde",
+        "#16A34A": "Verde",   "#16a34a": "Verde",
+        "#4ADE80": "Verde",   "#4ade80": "Verde",
+        "#EF4444": "Vermelho","#ef4444": "Vermelho",
     }
-    EMOJI = {
-        "Ótimo": "✓", "Verde": "✓",
-        "Amarelo": "⚠️", "Laranja": "🔴", "Vermelho": "🔴"
-    }
+    EMOJI = {"Ótimo": "✓", "Verde": "✓", "Amarelo": "⚠️", "Laranja": "🔴", "Vermelho": "🔴"}
 
-    partes   = []
+    def score_to_status(val):
+        try:
+            v = float(val.replace(",", "."))
+            if v >= 4.0: return "Verde"
+            if v >= 3.0: return "Amarelo"
+            if v >= 2.0: return "Laranja"
+            return "Vermelho"
+        except Exception:
+            return "Laranja"
+
+    partes = []
     laranjas = []
     amarelos = []
 
-    for comment in re.findall(r'<!--(.*?)-->', text, re.S):
-        c = comment.strip()
-
-        # Score: número com . ou , (pode ter ~)
-        score_m = re.search(r'~?([\d]+[.,][\d]+)', c)
-        score   = score_m.group(1) if score_m else None
-
-        # Status: primeira palavra reconhecida
-        status = None
-        for word in re.findall(r'[A-Za-záéíóúãõâêôÓóÀàÉéÍíÚú]+', c):
-            s = STATUS_MAP.get(word.lower())
-            if s:
-                status = s
-                break
-
-        if not status or not score:
+    for score_el in s.find_all("span", class_="gauge-score"):
+        score = score_el.text.strip()
+        if not score:
             continue
+        style = score_el.get("style", "")
+        import re as _re
+        cor_m = _re.search(r"color:\s*(#[0-9a-fA-F]{6})", style)
+        status = COR_STATUS.get(cor_m.group(1), score_to_status(score)) if cor_m else score_to_status(score)
 
-        # Nome: remove score, status e parênteses
-        nome = c
-        nome = re.sub(r'~?[\d]+[.,][\d]+', '', nome)
-        nome = re.sub(r'\([^)]*\)', '', nome)
-        for word in list(STATUS_MAP.keys()) + list(STATUS_MAP.values()):
-            nome = re.sub(rf'\b{re.escape(word)}\b', '', nome, flags=re.IGNORECASE)
-        nome = ' '.join(nome.split())  # colapsa espaços
-
-        # Remove duplicação ("Madeira Madeira" → "Madeira")
-        parts = nome.split()
-        if len(parts) >= 2 and parts[0].lower() == parts[1].lower():
-            nome = parts[0]
-
-        if not nome or len(nome) > 25:
+        nome = ""
+        parent = score_el.parent
+        for _ in range(6):
+            if not parent:
+                break
+            name_el = parent.find("div", class_="ch-name")
+            if name_el:
+                nome = name_el.text.strip()
+                break
+            parent = parent.parent
+        if not nome:
             continue
 
         e = EMOJI.get(status, "")
@@ -428,7 +425,8 @@ def parse_reputacao():
         id=8, icon="⭐", cor="rgba(245,158,11,0.12)",
         titulo=titulo,
         desc=" · ".join(partes) if partes else "Dados não disponíveis",
-        hora=file_date('reputacao.html'), lida=False, link="reputacao.html", critico=False
+        hora=file_date("reputacao.html"), lida=False,
+        link="reputacao.html", critico=False
     )
 
 
