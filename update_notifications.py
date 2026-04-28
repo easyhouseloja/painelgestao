@@ -14,6 +14,30 @@ BASE  = Path(__file__).parent
 TODAY = date.today().strftime("%d/%m/%Y")
 
 
+def file_date(filename):
+    """
+    Retorna a data do dashboard em ordem de prioridade:
+    1. Data no <title> do HTML  (ex: '28/04/2026')
+    2. Data de modificação do arquivo
+    3. Data de hoje como fallback
+    """
+    from datetime import datetime
+    path = BASE / filename
+    if not path.exists():
+        return TODAY
+    # 1) Tenta extrair do <title>
+    try:
+        text = path.read_text(encoding="utf-8")
+        m = re.search(r'<title>[^<]*?(\d{2}/\d{2}/\d{4})', text)
+        if m:
+            return m.group(1)
+    except Exception:
+        pass
+    # 2) Data de modificação do arquivo
+    mtime = path.stat().st_mtime
+    return datetime.fromtimestamp(mtime).strftime("%d/%m/%Y")
+
+
 # ─────────────────────────────────────────────
 # HELPERS
 # ─────────────────────────────────────────────
@@ -81,7 +105,7 @@ def parse_estoque():
         id=1, icon="📦", cor="rgba(212,160,23,0.15)",
         titulo=f"Estoque: {alertas} variações em alerta ⚠️",
         desc=f"{pct_res}% reservado · {detalhe}",
-        hora=TODAY, lida=False, link="estoque.html",
+        hora=file_date('estoque.html'), lida=False, link="estoque.html",
         critico=int(alertas) >= 5 if alertas != "?" else False
     )
 
@@ -158,7 +182,7 @@ def parse_comercial():
         desc=(f"R$ {fmt(total/1e6)}M faturado em {n_dias} dias · "
               f"Média diária R$ {fmt(media/1000, 0)}K · Meta R$ 8,6M"
               + (f" · {ano_x_ano}" if ano_x_ano else "")),
-        hora=TODAY, lida=False, link="comercial.html", critico=False
+        hora=file_date('comercial.html'), lida=False, link="comercial.html", critico=False
     )
 
 
@@ -187,7 +211,7 @@ def parse_financeiro():
     return dict(
         id=6, icon="💰", cor="rgba(34,197,94,0.12)",
         titulo=f"Financeiro: {taxa_txt} recebido ✓",
-        desc=desc, hora=TODAY, lida=False,
+        desc=desc, hora=file_date('financeiro.html'), lida=False,
         link="financeiro.html", critico=False
     )
 
@@ -240,7 +264,7 @@ def parse_assistencia():
 
     return dict(
         id=4, icon="🔧", cor="rgba(234,179,8,0.12)",
-        titulo=titulo, desc=desc, hora=TODAY,
+        titulo=titulo, desc=desc, hora=file_date('assistencia.html'),
         lida=False, link="assistencia.html", critico=False
     )
 
@@ -269,7 +293,7 @@ def parse_cancelamentos():
         id=5, icon="❌", cor="rgba(204,40,40,0.12)",
         titulo=f"Cancelamentos: {int(total)} em Abril (01–{ultimo})",
         desc=f"{n_dias} dias · R$ {fmt(total/1000, 0)}K · {' · '.join(canais)}",
-        hora=TODAY, lida=False, link="cancelamentos.html", critico=False
+        hora=file_date('cancelamentos.html'), lida=False, link="cancelamentos.html", critico=False
     )
 
 
@@ -305,7 +329,7 @@ def parse_devolucao():
     return dict(
         id=7, icon="↩️", cor="rgba(188,140,255,0.12)",
         titulo=f"Devoluções: {total_notas} no período",
-        desc=desc, hora=TODAY, lida=False,
+        desc=desc, hora=file_date('devolucao.html'), lida=False,
         link="devolucao.html", critico=False
     )
 
@@ -382,7 +406,7 @@ def parse_reputacao():
         id=8, icon="⭐", cor="rgba(245,158,11,0.12)",
         titulo=titulo,
         desc=" · ".join(partes) if partes else "Dados não disponíveis",
-        hora=TODAY, lida=False, link="reputacao.html", critico=False
+        hora=file_date('reputacao.html'), lida=False, link="reputacao.html", critico=False
     )
 
 
