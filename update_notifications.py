@@ -14,26 +14,48 @@ BASE  = Path(__file__).parent
 TODAY = date.today().strftime("%d/%m/%Y")
 
 
+# Padrões de data por arquivo — onde cada dashboard registra sua data
+FILE_DATE_PATTERNS = {
+    # <title>Dashboard Assistência Técnica — 27/04/2026</title>
+    "assistencia.html":    [r'<title>[^<]*?(\d{2}/\d{2}/\d{4})'],
+    # <title>Dashboard SLA · Easy House · 28/04/2026</title>
+    "sla_transporte.html": [r'<title>[^<]*?(\d{2}/\d{2}/\d{4})'],
+    # Período 01/04 a 27/04  →  usa último dia de abril no apr-hdr-periodo
+    "comercial.html":      [r'apr-hdr-periodo[^>]*>[^·]*·[^·]*a\s*(\d{2}/\d{2})'],
+    # Atualizado em <strong>24/04/2026</strong>
+    "financeiro.html":     [r'Atualizado em.*?(\d{2}/\d{2}/\d{4})'],
+    # até 23/04/2026
+    "devolucao.html":      [r'até\s*(\d{2}/\d{2}/\d{4})'],
+    # reputação — tenta title, senão modificação
+    "reputacao.html":      [r'<title>[^<]*?(\d{2}/\d{2}/\d{4})'],
+    "cancelamentos.html":  [r'<title>[^<]*?(\d{2}/\d{2}/\d{4})'],
+    "estoque.html":        [r'<title>[^<]*?(\d{2}/\d{2}/\d{4})'],
+}
+
 def file_date(filename):
     """
-    Retorna a data do dashboard em ordem de prioridade:
-    1. Data no <title> do HTML  (ex: '28/04/2026')
-    2. Data de modificação do arquivo
-    3. Data de hoje como fallback
+    Retorna a data do dashboard lendo de dentro do HTML.
+    Cada arquivo tem padrões específicos de onde a data aparece.
+    Fallback: data de modificação do arquivo.
     """
     from datetime import datetime
     path = BASE / filename
     if not path.exists():
         return TODAY
-    # 1) Tenta extrair do <title>
     try:
         text = path.read_text(encoding="utf-8")
-        m = re.search(r'<title>[^<]*?(\d{2}/\d{2}/\d{4})', text)
-        if m:
-            return m.group(1)
+        patterns = FILE_DATE_PATTERNS.get(filename, [r'<title>[^<]*?(\d{2}/\d{2}/\d{4})'])
+        for pattern in patterns:
+            m = re.search(pattern, text, re.S | re.IGNORECASE)
+            if m:
+                raw = m.group(1)
+                # Se pegou só DD/MM (sem ano), adiciona o ano atual
+                if re.match(r'^\d{2}/\d{2}$', raw):
+                    raw += '/' + str(datetime.now().year)
+                return raw
     except Exception:
         pass
-    # 2) Data de modificação do arquivo
+    # Fallback: data de modificação
     mtime = path.stat().st_mtime
     return datetime.fromtimestamp(mtime).strftime("%d/%m/%Y")
 
