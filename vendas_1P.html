@@ -112,7 +112,7 @@ table.dt tbody tr:hover{background:#ffffff04}
     <span class="tb tb-green">Jan: R$ 2,84M</span>
     <span class="tb tb-blue">Fev: R$ 2,73M</span>
     <span class="tb tb-orange">Mar: R$ 3,81M</span>
-    <span class="tb tb-pink">Abr: R$ 1,49M*</span>
+    <span class="tb tb-pink">Abr: R$ 1,61M*</span>
   </div>
 </div>
 <div class="month-tabs">
@@ -211,15 +211,19 @@ table.dt tbody tr:hover{background:#ffffff04}
 
 <!-- ABRIL -->
 <div class="month-page" id="pg4">
-  <div class="section-lbl">Indicadores Gerais · Abril 2026 <span style="color:var(--orange);font-size:9px">✦ Parcial 01/04 à 27/04</span></div>
+  <div class="section-lbl">Indicadores Gerais · Abril 2026 <span style="color:var(--orange);font-size:9px">✦ Parcial 01/04 à 28/04</span></div>
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-lbl">Faturamento Parcial</div><div class="kpi-val">R$ 1,49M</div><div class="kpi-sub"><span class="badge-sm bg-red">▼ 27,7% vs Abr/25</span><span style="color:var(--txt3)">Meta: R$ 3,14M</span></div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Faturamento Parcial</div><div class="kpi-val">R$ 1,61M</div><div class="kpi-sub"><span class="badge-sm bg-red">▼ 26,0% vs Abr/25</span><span style="color:var(--txt3)">Meta: R$ 3,14M</span></div></div>
     <div class="kpi-card"><div class="kpi-lbl">Quantidade Faturada</div><div class="kpi-val">2.246</div><div class="kpi-sub">unidades · 2.047 NFs</div></div>
     <div class="kpi-card"><div class="kpi-lbl">Peso Total</div><div class="kpi-val">242 t</div><div class="kpi-sub">242.417 kg líquidos</div></div>
-    <div class="kpi-card"><div class="kpi-lbl">% Atingimento Meta</div><div class="kpi-val" style="color:var(--red)">47,3%</div><div class="kpi-sub"><span class="badge-sm bg-orange">17/20 dias úteis</span></div></div>
+    <div class="kpi-card"><div class="kpi-lbl">% Atingimento Meta</div><div class="kpi-val" style="color:var(--red)">51,3%</div><div class="kpi-sub"><span class="badge-sm bg-orange">18/20 dias úteis</span></div></div>
   </div>
   <div class="section-lbl">Classificação · Realizado vs Meta vs 2025</div>
   <div class="class-grid" id="clAbr"></div>
+
+  <div class="section-lbl">Visão Carteira · Abril 2026</div>
+  <div id="carteiraAbr" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+
   <div class="section-lbl">Evolução Diária</div>
   <div class="chart-row-2">
     <div class="chart-card"><div class="chart-title">Faturamento por Dia · Abril</div><div class="chart-sub">Valor líquido por data da NF · parcial</div><div style="position:relative;height:260px"><canvas id="cDAbr"></canvas></div></div>
@@ -249,10 +253,11 @@ const D={
     cls:{gr:{fat:2429494.24,meta:2394971.30,fat25:1736652.70,qtde:2541,peso:412936.523},comp:{fat:1134078.68,meta:823271.39,fat25:829601.65,qtde:2871,peso:173254.616},sala:{fat:249713.66,meta:523899.97,fat25:406419.03,qtde:399,peso:24672.873}},
     daily:[{d:3,f:228637.14,q:376},{d:4,f:174818.21,q:258},{d:5,f:153135.27,q:193},{d:6,f:176828.55,q:250},{d:9,f:197866.35,q:337},{d:10,f:197807.38,q:323},{d:11,f:136407.03,q:215},{d:12,f:138157.94,q:243},{d:13,f:498844.25,q:688},{d:16,f:38118.78,q:75},{d:17,f:33121.79,q:64},{d:18,f:144269.31,q:240},{d:19,f:146255.59,q:249},{d:20,f:466496.12,q:726},{d:23,f:125136.89,q:177},{d:24,f:153528.60,q:218},{d:25,f:177606.82,q:233},{d:26,f:82869.24,q:120},{d:27,f:78133.32,q:115},{d:30,f:50826.53,q:75},{d:31,f:414421.47,q:636}],
     top10:[{n:'GR ALONZO 4 PTS AMENDOA CL/BRANCO#S/ESP#S/PES',f:236486.76,q:386},{n:'GR SPAZIO 3 PTS BRANCO#C/1 PT GLASS#S/PES',f:229679.13,q:137},{n:'GR ALONZO 4 PTS BRANCO#S/ESP#S/PES',f:228402.82,q:373},{n:'GR SPAZIO 3 PTS BRANCO#S/3PTS GLASS#S/PES',f:167681.94,q:129},{n:'GR LOPAS 03 PTS OLLIE II 2025 AMENDOA#S/2PTS GLASS#C/PES',f:154621.60,q:112},{n:'GR ALONZO 6 PTS BRANCO#S/ESP#S/PES',f:135719.22,q:159},{n:'COMODA LOOP 2024 II AMENDOA CLEAN/OFF WH',f:131998.13,q:234},{n:'GR ALONZO 6 PTS AMENDOA/OFF WH#S/ESP#S/PES',f:99015.28,q:116},{n:'GR LOPAS 03 PTS OLLIE II 2025 AMENDOA#C/2PTS GLASS#S/PES',f:95114.49,q:59},{n:'COMODA HORIZONTAL MAGGIORE NEW 6GAV BRANCO',f:91387.20,q:237}]},
-  abr:{total:1486027.24,meta_total:3140865.47,qtde:2246,nfs:2047,peso:242417.412,total25:2054514.35,
-    cls:{gr:{fat:1019642.18,meta:2010153.90,fat25:1332714.92,qtde:1104,peso:174591.689},comp:{fat:409569.12,meta:690990.40,fat25:572927.92,qtde:1055,peso:62212.670},sala:{fat:56815.94,meta:439721.17,fat25:148872.51,qtde:87,peso:5613.053}},
-    daily:[{d:1,f:25347.01,q:38},{d:2,f:19705.11,q:31},{d:6,f:33745.49,q:50},{d:7,f:37192.65,q:55},{d:8,f:99766.15,q:146},{d:9,f:85946.01,q:123},{d:10,f:108270.85,q:158},{d:13,f:91000.45,q:150},{d:14,f:91532.62,q:140},{d:15,f:91184.83,q:141},{d:16,f:98911.21,q:145},{d:17,f:11076.01,q:13},{d:21,f:121129.92,q:181},{d:22,f:110380.89,q:178},{d:23,f:99230.69,q:149},{d:24,f:287046.86,q:433},{d:27,f:74560.49,q:115}],
-    top10:[{n:'GR ALONZO 4 PTS AMENDOA CL/BRANCO#S/ESP#S/PES',f:182572.68,q:298},{n:'GR LOPAS 03 PTS OLLIE II 2025 AMENDOA#S/2PTS GLASS#C/PES',f:125630.05,q:91},{n:'GR SPAZIO 3 PTS BRANCO#C/1 PT GLASS#S/PES',f:97236.42,q:58},{n:'GR SPAZIO 3 PTS BRANCO#S/3PTS GLASS#S/PES',f:79291.46,q:61},{n:'GR ALONZO 4 PTS BRANCO#S/ESP#S/PES',f:78991.86,q:129},{n:'GR ALONZO 6 PTS BRANCO#S/ESP#S/PES',f:55482.70,q:65},{n:'COMODA LOOP 2024 II AMENDOA CLEAN/OFF WH',f:46259.48,q:82},{n:'GR ALONZO 6 PTS AMENDOA/OFF WH#S/ESP#S/PES',f:39264.68,q:46},{n:'GR ZEINE 2 PTS 2024 AMENDOA#C/1 PT GLASS#S/PES',f:31538.00,q:40},{n:'CAMA SOLTEIRO ATHENAS 2022 AMENDOA#C/CAMA AUX',f:31070.56,q:68}]}
+  abr:{total:1610283.43,meta_total:3140865.47,qtde:2246,nfs:2047,peso:242417.412,total25:2178087.67,
+    cls:{gr:{fat:1109735.26,meta:2010153.90,fat25:1332714.92,qtde:1104,peso:174591.689},comp:{fat:441555.77,meta:690990.40,fat25:572927.92,qtde:1055,peso:62212.670},sala:{fat:58992.40,meta:439721.17,fat25:148872.51,qtde:87,peso:5613.053}},
+    daily:[{d:1,f:25347.01,q:38},{d:2,f:19705.11,q:31},{d:6,f:33745.49,q:50},{d:7,f:37192.65,q:55},{d:8,f:99766.15,q:146},{d:9,f:85946.01,q:123},{d:10,f:108270.85,q:158},{d:13,f:91000.45,q:150},{d:14,f:91532.62,q:140},{d:15,f:91184.83,q:141},{d:16,f:98911.21,q:145},{d:17,f:11076.01,q:13},{d:21,f:121129.92,q:181},{d:22,f:110380.89,q:178},{d:23,f:99230.69,q:149},{d:24,f:287046.86,q:433},{d:27,f:74560.49,q:115},{d:28,f:124256.19,q:0}],
+    top10:[{n:'GR ALONZO 4 PTS AMENDOA CL/BRANCO#S/ESP#S/PES',f:182572.68,q:298},{n:'GR LOPAS 03 PTS OLLIE II 2025 AMENDOA#S/2PTS GLASS#C/PES',f:125630.05,q:91},{n:'GR SPAZIO 3 PTS BRANCO#C/1 PT GLASS#S/PES',f:97236.42,q:58},{n:'GR SPAZIO 3 PTS BRANCO#S/3PTS GLASS#S/PES',f:79291.46,q:61},{n:'GR ALONZO 4 PTS BRANCO#S/ESP#S/PES',f:78991.86,q:129},{n:'GR ALONZO 6 PTS BRANCO#S/ESP#S/PES',f:55482.70,q:65},{n:'COMODA LOOP 2024 II AMENDOA CLEAN/OFF WH',f:46259.48,q:82},{n:'GR ALONZO 6 PTS AMENDOA/OFF WH#S/ESP#S/PES',f:39264.68,q:46},{n:'GR ZEINE 2 PTS 2024 AMENDOA#C/1 PT GLASS#S/PES',f:31538.00,q:40},{n:'CAMA SOLTEIRO ATHENAS 2022 AMENDOA#C/CAMA AUX',f:31070.56,q:68}],
+    carteira:{semReserva:{peso:3100,valor:20000},comReserva:{peso:118000,valor:710000}}}
 };
 const CLS=[{k:'gr',c:'gr',dot:'var(--green)',l:'Guarda Roupas'},{k:'comp',c:'comp',dot:'var(--orange)',l:'Complementos'},{k:'sala',c:'sala',dot:'var(--purple)',l:'Salas'}];
 function sw(n){document.querySelectorAll('.month-tab').forEach((t,i)=>t.classList.toggle('active',i===n));document.querySelectorAll('.month-page').forEach((p,i)=>p.classList.toggle('active',i===n));}
@@ -309,6 +314,42 @@ function buildOv(){
   new Chart(document.getElementById('cOvCls'),{type:'bar',data:{labels:ls,datasets:[{label:'Guarda Roupas',data:ks.map(k=>D[k].cls.gr.fat),backgroundColor:'#00e67655',borderColor:'#00e676',borderWidth:1.5,borderRadius:3},{label:'Complementos',data:ks.map(k=>D[k].cls.comp.fat),backgroundColor:'#ff910055',borderColor:'#ff9100',borderWidth:1.5,borderRadius:3},{label:'Salas',data:ks.map(k=>D[k].cls.sala.fat),backgroundColor:'#b388ff55',borderColor:'#b388ff',borderWidth:1.5,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8892a4',font:{size:11}}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${BRL(c.raw)}`}}},scales:{x:{ticks:{color:'#8892a4'},grid:{display:false}},y:{ticks:{color:'#8892a4',callback:v=>BRLk(v)},grid:{color:'#ffffff08'}}}}});
 }
 buildOv();
+function buildCarteira(id,cart){
+  const tot={peso:cart.semReserva.peso+cart.comReserva.peso,valor:cart.semReserva.valor+cart.comReserva.valor};
+  const cfg=[
+    {key:'semReserva',label:'Sem Reserva',colorPeso:'#ff9100',colorValor:'#ffd740'},
+    {key:'comReserva',label:'Com Reserva',colorPeso:'#29b6f6',colorValor:'#00e676'}
+  ];
+  document.getElementById(id).innerHTML=cfg.map(c=>{
+    const d=cart[c.key];
+    const pP=(d.peso/tot.peso*100),pV=(d.valor/tot.valor*100);
+    return`<div style="background:var(--bg-card);border-radius:10px;padding:22px;border:1px solid var(--border);border-top:2px solid ${c.colorPeso};animation:fadeUp .4s ease both">
+      <div style="font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txt2);margin-bottom:16px">${c.label}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px">
+        <div>
+          <div style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt3);margin-bottom:5px">Peso</div>
+          <div style="font-family:var(--fd);font-size:34px;font-weight:800;color:${c.colorPeso};line-height:1">${d.peso.toLocaleString('pt-BR')}<span style="font-size:14px;margin-left:4px">kg</span></div>
+          <div style="font-size:10px;color:var(--txt2);margin-top:4px">${PCT(pP)} do total</div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt3);margin-bottom:5px">Valor</div>
+          <div style="font-family:var(--fd);font-size:22px;font-weight:800;color:${c.colorValor};line-height:1">${BRL(d.valor)}</div>
+          <div style="font-size:10px;color:var(--txt2);margin-top:4px">${PCT(pV)} do total</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="font-size:10px;color:var(--txt2);width:42px">Peso</div>
+        <div style="flex:1;height:6px;background:#ffffff08;border-radius:3px;overflow:hidden"><div style="width:${Math.min(pP,100).toFixed(1)}%;height:100%;background:${c.colorPeso};border-radius:3px;transition:width 1s"></div></div>
+        <div style="font-family:var(--fd);font-size:13px;font-weight:700;color:${c.colorPeso};min-width:42px;text-align:right">${PCT(pP)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="font-size:10px;color:var(--txt2);width:42px">Valor</div>
+        <div style="flex:1;height:6px;background:#ffffff08;border-radius:3px;overflow:hidden"><div style="width:${Math.min(pV,100).toFixed(1)}%;height:100%;background:${c.colorValor};border-radius:3px;transition:width 1s"></div></div>
+        <div style="font-family:var(--fd);font-size:13px;font-weight:700;color:${c.colorValor};min-width:42px;text-align:right">${PCT(pV)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
 ['jan','fev','mar','abr'].forEach(k=>{
   const K=k.charAt(0).toUpperCase()+k.slice(1);
   buildCls('cl'+K,k);
@@ -317,6 +358,7 @@ buildOv();
   buildTop('t10'+K,D[k].top10,D[k].total);
   buildDt('dt'+K,D[k].daily,D[k].total);
 });
+if(D.abr.carteira) buildCarteira('carteiraAbr',D.abr.carteira);
 </script>
 </body>
 </html>
