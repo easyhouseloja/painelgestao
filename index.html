@@ -675,6 +675,43 @@ body::before {
   border: 1px solid rgba(240,17,106,0.45);
 }
 
+/* ═══════════ MICROINTERAÇÕES DO CHANNEL SWITCHER ═══════════ */
+/* Ponto do canal ativo respira (subtilmente vivo) — funciona em qualquer cor
+   porque usa transform+filter em vez de cores específicas */
+.ch-btn.active-3p   .ch-dot,
+.ch-btn.active-1p   .ch-dot,
+.ch-btn.active-vtex .ch-dot {
+  animation: ch-dot-breathe 2.4s ease-in-out infinite;
+}
+@keyframes ch-dot-breathe {
+  0%, 100% { transform: scale(1);    filter: brightness(1); }
+  50%      { transform: scale(1.18); filter: brightness(1.3); }
+}
+
+/* Pop sutil quando um botão se torna ativo (carrega ou troca canal) */
+.ch-btn.active-3p,
+.ch-btn.active-1p,
+.ch-btn.active-vtex {
+  animation: ch-btn-activate 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes ch-btn-activate {
+  0%   { transform: scale(0.96); }
+  55%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+/* Respeita preferência por menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .ch-btn.active-3p   .ch-dot,
+  .ch-btn.active-1p   .ch-dot,
+  .ch-btn.active-vtex .ch-dot,
+  .ch-btn.active-3p,
+  .ch-btn.active-1p,
+  .ch-btn.active-vtex {
+    animation: none !important;
+  }
+}
+
 /* ── CHANNEL PANELS ── */
 .channel-panel {
   display: none;
@@ -790,6 +827,30 @@ body::before {
 .card-portfolio:hover    { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-teal) inset; transform: translate3d(0, -2px, 0) !important; }
 .card-estoque-mm::before { background: var(--accent-amber); box-shadow: 0 0 20px var(--glow-amber); }
 .card-estoque-mm:hover   { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-amber) inset; transform: translate3d(0, -2px, 0) !important; }
+
+/* ═══════════ HOVER DO CARD PÓS-VENDA (CONTAINER, NÃO CLICÁVEL) ═══════════
+   O card Pós-venda usa <div class="card card-astec"> (não <a>), portanto não é
+   um link clicável — o que clica são os 2 botões internos. O hover herdado de
+   .card-astec faz lift + glow, fingindo clicabilidade. Override só pra <div>:
+   sem lift, mantém o glow sutil, e destaca os botões internos quando o mouse
+   passa por cima do container.                                              */
+div.card.card-astec:hover {
+  transform: none !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.18), 0 -3px 24px var(--glow-orange) inset !important;
+}
+/* Botões internos ganham realce extra quando hover no container */
+div.card.card-astec:hover .card-posvendasub-btn {
+  border-color: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.05);
+}
+div.card.card-astec:hover .card-posvendasub-btn-rust {
+  border-color: rgba(160,82,45,0.45);
+  background: rgba(160,82,45,0.06);
+}
+div.card.card-astec:hover .card-posvendasub-btn-orange {
+  border-color: rgba(217,94,16,0.45);
+  background: rgba(217,94,16,0.06);
+}
 
 /* ── BOTÃO ANYMARKET no card ── */
 .card-anymarket-btn {
@@ -3761,6 +3822,26 @@ body.light-mode #iframe-page-title {
     transform: none !important;
   }
 }
+
+/* ─── WIDGET: ESTOQUE MM (DIAS DE ATENDIMENTO) ─── */
+.estoque-mm-animated {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.estoque-mm-animated.estoque-mm-ready {
+  animation: meta-fade-in 0.7s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+.estoque-mm-animated.estoque-mm-ready > span:nth-of-type(1) {
+  animation: sla-verde-entrada 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .estoque-mm-animated,
+  .estoque-mm-animated.estoque-mm-ready,
+  .estoque-mm-animated.estoque-mm-ready > span {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
@@ -4239,13 +4320,24 @@ body.light-mode #iframe-page-title {
         </a>
 
         <!-- CONTROLE DE ESTOQUE INTERNO -->
-        <a class="card card-estoque-mm" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/estoque_mm.html" data-title="Controle de Estoque Interno · Madeira Madeira" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
+        <a class="card card-estoque-mm" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/estoque_mm.html" data-title="Controle de Estoque Interno · Madeira Madeira" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)" style="position:relative;">
           <div class="icon-wrap">
             <i data-lucide="package-check" style="width:22px;height:22px;"></i>
           </div>
           <div class="card-tag">Controle Interno · Estoque 1P</div>
           <h2>Estoque Interno MM</h2>
           <p>Gestão e conferência do estoque interno destinado à Madeira Madeira: saldo atual por SKU e alertas de ruptura. Baseado em forecast mensal.</p>
+
+          <!-- WIDGET: DIAS DE ATENDIMENTO + % ATENDIMENTO — atualizado pelo script no final do arquivo (busca estoque_mm.html) -->
+          <div id="estoque-mm-widget" class="estoque-mm-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do estoque MM...">
+            <span id="estoque-mm-chip" style="font-size:11px;font-weight:700;color:#22d3ee;background:rgba(8,145,178,0.14);border:1px solid rgba(8,145,178,0.32);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
+              <span>Atende os próximos</span> · <span id="estoque-mm-dias" style="font-size:14px;font-weight:800;letter-spacing:0.2px;">—</span><span style="font-size:10px;font-weight:600;opacity:0.85;margin-left:1px;">dias</span>
+            </span>
+            <span style="font-size:10px;font-weight:600;color:var(--text-secondary);letter-spacing:0.2px;padding-left:4px;line-height:1.3;">
+              atendimento da carga mãe: <span id="estoque-mm-pct" style="color:#f0c674;font-weight:800;font-size:11.5px;letter-spacing:0.3px;">—</span>
+            </span>
+          </div>
+
           <div class="card-footer">
             Acessar controle <i data-lucide="arrow-right"></i>
           </div>
@@ -5488,13 +5580,14 @@ function vtexCarregarResumo(force) {
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────────
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 let NOTIFICACOES_HOJE = [
-  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 6 variações em alerta ⚠️',desc:'78,4% reservado · Guarda Roupas concentra 5 dos 6 alertas: Easy Move (2 cores a 0%) · Easy Slim 8 PTS Branco (11%) — lote amanhã 30/04 · Imperatore Frassino (20%) · Lopas Atlas (27,5%). Sala de Jant',hora:'28/04/2026',lida:false,link:'estoque.html',critico:true},
-  {id:2,icon:'🚚',cor:'rgba(39,174,96,0.15)',titulo:'SLA: ✅ Acima da meta — 96,73%',desc:'131 em atraso · 313 sem faturar · Pior transp.: TS RJ 66,10%🔴 · RGE 94,35%',hora:'29/04/2026',lida:false,link:'sla_transporte.html',critico:false},
-  {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: Abr 108,93% da Meta (01–28/04)',desc:'R$ 8,47M faturado em 28 dias · Média diária R$ 303K · Meta R$ 8,6M · +164% Ano x Ano',hora:'28/04/2026',lida:false,link:'comercial.html',critico:false},
-  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado(s) ⚠️',desc:'95 itens · 58 pedidos · 4 em atraso · Atraso médio 8,6d · Maior: 32d (#495511 — Moderado (32d) · #548540 beira (29d)) · 1 moderado(s): ⚠ #86772 cruzou a faixa hoje · 0 críticos',hora:'27/04/2026',lida:false,link:'assistencia.html',critico:false},
-  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: 94,2% recebido ✓',desc:'Cartas de Débito · R$ 815.277,97 recebido · R$ 50.328 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'24/04/2026',lida:false,link:'financeiro.html',critico:false},
-  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 521 no período',desc:'01/01 a 23/04/2026 · R$ 541,1K · 521 notas · Ticket médio R$ 1.039 · Top motivo: 41,3% (Desistência · 205 notas) · Top transp: 134 notas (Nova Era Express) · Maior mês: Abril R$ 177,2K · 181 notas',hora:'23/04/2026',lida:false,link:'devolucao.html',critico:false},
-  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'29/04/2026',lida:false,link:'reputacao.html',critico:false}
+  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 15 variações em alerta ⚠️',desc:'68,2% reservado · Easy Slim 8 PTS (3 cores críticas, lotes 23/04 e 30/04) · Easy Slim 6 PTS Off White (lote 05/05) · Imperatore (2 cores 0%) · Easy Move (2 cores 0%) · Toronto (2 cores) · Lopas Atlas · Easy Glow · Apogeu C/6 · Mesa Celebrare',hora:'23/04/2026',lida:false,link:'estoque.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 94,30%',desc:'231 em atraso · 169 sem faturar · Pior transp.: TS RJ 76,26% 🔴 · RGE 86,01% · NOVA ERA 95,20% · MTC 96,05% · TRANS SUA LOG 97,90%',hora:'23/04/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: Abr 76,09% da Meta (01–22/04) ⚠️',desc:'R$ 6,54M faturado em 22 dias · Média diária R$ 297K · Meta R$ 8,6M · +167% Ano x Ano · Mar fechado: 117,23% · R$ 10,08M',hora:'23/04/2026',lida:false,link:'comercial.html',critico:false},
+  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: 94,2% recebido ✓',desc:'Cartas de Débito · R$ 815k recebido · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'23/04/2026',lida:false,link:'financeiro.html',critico:false},
+  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado 31d ⚠️',desc:'53 itens (-58) · 27 pedidos · 4 em atraso · Atraso médio 9,5d · 1 moderado: #495511 (31d) · #328319 e #362953 resolvidos ✅ · 0 críticos · Crítico zerado há 32 dias',hora:'23/04/2026',lida:false,link:'assistencia.html',critico:false},
+  {id:5,icon:'❌',cor:'rgba(204,40,40,0.12)',titulo:'Cancelamentos: 159 em Abril (parcial) ⚠️',desc:'01 a 10/04 (10 dias) · 159 cancelamentos · R$ 170K · Shopee 134 · Magalu 13 · ML 9 · Zema 3 · 154 sem nota · Ticket médio R$ 1.069',hora:'10/04/2026',lida:false,link:'cancelamentos.html',critico:false},
+  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 393 no período',desc:'Jan–Abr: R$ 416,2K · 393 notas · Top motivo: Desistência (36,4% · 143 notas) · Nova Era 108 notas · Ticket médio R$ 1.059',hora:'14/04/2026',lida:false,link:'devolucao.html',critico:false},
+  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu Laranja 🔴 · ML Verde ✓',desc:'Magalu 2,9 Laranja 🔴 (piorou) · Mercado Livre ~3,8 Verde ✓ (melhorou) · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Ótimo ✓ · Via Varejo 3,5 Amarelo ⚠️',hora:'23/04/2026',lida:false,link:'reputacao.html',critico:false}
 ];
 let TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
 
@@ -9136,6 +9229,147 @@ document.addEventListener('DOMContentLoaded', function() {
     atualizarSlaTransporte();
   }
   setInterval(atualizarSlaTransporte, 10 * 60 * 1000);
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ATUALIZAÇÃO AUTOMÁTICA DO WIDGET DE ESTOQUE MADEIRA MADEIRA
+     Busca dados de estoque_mm.html (BUNDLE.stats) e preenche o card
+     - "Atende os próximos X dias" (diasAtendeGlobalFc)
+     - "% Atendimento" (pctGeral)
+     - mês do forecast (mesPeriodo)
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  const ESTOQUE_MM_URL = 'https://easyhouseloja.github.io/painelgestao/estoque_mm.html';
+
+  // Extrai um campo do JSON literal "BUNDLE = {..." dentro do HTML.
+  // Funciona pra strings ("...") e números (1234 ou 12.34).
+  function extrairCampo(html, campo){
+    const re = new RegExp('"' + campo + '"\\s*:\\s*(?:"([^"]*)"|(-?[\\d.]+))');
+    const m = html.match(re);
+    if(!m) return null;
+    return m[1] !== undefined ? m[1] : m[2];
+  }
+
+  // Formata número decimal pt-BR sem zero à direita ("17.8" → "17,8", "85.0" → "85")
+  function fmtDec(n){
+    const num = parseFloat(n);
+    if(!isFinite(num)) return '—';
+    return num.toFixed(1).replace(/\.0$/,'').replace('.', ',');
+  }
+
+  // Formata número genérico pt-BR ("154.9" → "154,9")
+  function fmtNum(n){
+    const num = parseFloat(n);
+    if(!isFinite(num)) return '—';
+    return num.toString().replace('.', ',');
+  }
+
+  async function atualizarEstoqueMM(){
+    const widget = document.getElementById('estoque-mm-widget');
+    if(!widget) return;
+
+    try{
+      const res = await fetch(ESTOQUE_MM_URL, { cache:'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const html = await res.text();
+
+      const dias       = extrairCampo(html, 'diasAtendeGlobalFc');
+      const pct        = extrairCampo(html, 'pctGeral');
+      const demanda    = extrairCampo(html, 'demandaDiariaGlobal');
+      const mesPeriodo = extrairCampo(html, 'mesPeriodo');
+      const dataAtual  = extrairCampo(html, 'dataAtualizacao');
+
+      if(dias === null) throw new Error('Campo diasAtendeGlobalFc não encontrado no HTML');
+
+      const diasNum = parseFloat(dias);
+      const pctNum  = pct !== null ? parseFloat(pct) : null;
+
+      // Atualiza textos
+      const elDias = document.getElementById('estoque-mm-dias');
+      const elPct  = document.getElementById('estoque-mm-pct');
+      const chip   = document.getElementById('estoque-mm-chip');
+
+      if(elDias) elDias.textContent = fmtDec(diasNum);
+      if(elPct)  elPct.textContent  = (pctNum !== null && isFinite(pctNum)) ? (fmtDec(pctNum) + '%') : '—';
+
+      // Cor dinâmica do % atendimento da carga mãe (régua de saúde)
+      // ≥ 95% → verde   (excelente)
+      // 80-94% → âmbar  (atenção — caso atual com 85,2%)
+      // < 80% → vermelho (crítico)
+      if(elPct && pctNum !== null && isFinite(pctNum)){
+        if(pctNum >= 95){
+          elPct.style.color = '#66FF99';
+        } else if(pctNum >= 80){
+          elPct.style.color = '#f0c674';
+        } else {
+          elPct.style.color = '#ff8a8a';
+        }
+      }
+
+      // Cores dinâmicas baseadas em dias de cobertura
+      // ≥31d  → verde  (atende todo o mês)
+      // 15-30d → ciano  (parcial mas saudável)
+      // 7-14d  → âmbar  (atenção)
+      // <7d    → vermelho (crítico)
+      if(chip){
+        if(diasNum >= 31){
+          chip.style.color = '#66FF99';
+          chip.style.background = 'rgba(31,189,114,0.14)';
+          chip.style.borderColor = 'rgba(31,189,114,0.32)';
+        } else if(diasNum >= 15){
+          chip.style.color = '#22d3ee';
+          chip.style.background = 'rgba(8,145,178,0.16)';
+          chip.style.borderColor = 'rgba(8,145,178,0.36)';
+        } else if(diasNum >= 7){
+          chip.style.color = '#f0c674';
+          chip.style.background = 'rgba(212,160,23,0.14)';
+          chip.style.borderColor = 'rgba(212,160,23,0.32)';
+        } else {
+          chip.style.color = '#ff6b6b';
+          chip.style.background = 'rgba(204,40,40,0.14)';
+          chip.style.borderColor = 'rgba(204,40,40,0.32)';
+        }
+      }
+
+      // Tooltip completo (mostra todas as métricas no hover)
+      const partesTitle = [];
+      partesTitle.push('Atende os próximos: ' + fmtDec(diasNum) + ' dias');
+      if(pctNum !== null && isFinite(pctNum)) partesTitle.push('% Atendimento (carga mãe): ' + fmtDec(pctNum) + '%');
+      if(demanda) partesTitle.push('Demanda diária: ' + fmtNum(demanda) + ' un/dia');
+      if(mesPeriodo) partesTitle.push('Forecast: ' + mesPeriodo);
+      if(dataAtual) partesTitle.push('Atualizado em: ' + dataAtual);
+      widget.setAttribute('title', partesTitle.join(' · '));
+
+      // Dispara animação de entrada (só uma vez por sessão)
+      if(!widget.classList.contains('estoque-mm-ready')){
+        requestAnimationFrame(()=>{
+          widget.classList.add('estoque-mm-ready');
+        });
+      }
+    } catch(err){
+      console.warn('[estoque-mm] Falha ao atualizar:', err);
+      const elDias = document.getElementById('estoque-mm-dias');
+      if(elDias && elDias.textContent === '—'){
+        elDias.textContent = 'indisp.';
+      }
+      // Mesmo em erro, faz o fade-in pra não deixar elemento invisível travado
+      if(widget && !widget.classList.contains('estoque-mm-ready')){
+        requestAnimationFrame(()=>{
+          widget.classList.add('estoque-mm-ready');
+        });
+      }
+    }
+  }
+
+  // Executa ao carregar e depois a cada 10 minutos
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', atualizarEstoqueMM);
+  } else {
+    atualizarEstoqueMM();
+  }
+  setInterval(atualizarEstoqueMM, 10 * 60 * 1000);
 })();
 </script>
 
