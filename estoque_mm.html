@@ -266,6 +266,33 @@
   @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.cat-grid{grid-template-columns:1fr;}.cov-days-grid{grid-template-columns:1fr;}.top10-row{grid-template-columns:32px 1fr 60px 80px 90px;}}
   @media(max-width:900px){main{padding:16px;}.status-grid{grid-template-columns:1fr;}.alert-row{grid-template-columns:1fr 1fr;}.top10-row{grid-template-columns:32px 1fr 90px;}.top10-row .col-hide-sm{display:none;}}
 </style>
+
+<!-- Firebase Realtime Database (mesma config do painel principal) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+  (function(){
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4krP9uAnApsZl0GgBkHdEwcEZg8e2QTQ",
+      authDomain: "easyhouse-logs.firebaseapp.com",
+      databaseURL: "https://easyhouse-logs-default-rtdb.firebaseio.com",
+      projectId: "easyhouse-logs",
+      storageBucket: "easyhouse-logs.firebasestorage.app",
+      messagingSenderId: "205222626958",
+      appId: "1:205222626958:web:949d7438096201b62eebdf"
+    };
+    // Evita "already exists" caso esse arquivo seja embutido em iframe junto com o index
+    try {
+      if (!firebase.apps || !firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      window._mmDB = firebase.database();
+    } catch(e){
+      console.warn('[firebase] não inicializou:', e);
+      window._mmDB = null;
+    }
+  })();
+</script>
 </head>
 <body>
 <header>
@@ -293,7 +320,22 @@
     <div class="kpi-card green"><div class="kpi-icon">🟢</div><div class="kpi-label">SKUs Atendidos</div><div class="kpi-value green" id="kpi-sku-ok">—</div><div class="kpi-sub" id="kpi-sku-ok-sub">—</div></div>
     <div class="kpi-card amber"><div class="kpi-icon">🟡</div><div class="kpi-label">SKUs Parciais</div><div class="kpi-value amber" id="kpi-sku-warn">—</div><div class="kpi-sub" id="kpi-sku-warn-sub">—</div></div>
     <div class="kpi-card red"><div class="kpi-icon">🔴</div><div class="kpi-label">SKUs Sem Reserva</div><div class="kpi-value red" id="kpi-sku-zero">—</div><div class="kpi-sub" id="kpi-sku-zero-sub">—</div></div>
-    <div class="kpi-card cyan"><div class="kpi-icon">📅</div><div class="kpi-label">Atende os próximos</div><div class="kpi-value cyan" id="kpi-atende-prox">—</div><div class="kpi-sub" id="kpi-atende-prox-sub">—</div></div>
+    <div class="kpi-card cyan"><div class="kpi-icon">📅</div><div class="kpi-label">Atende os próximos</div><div class="kpi-value cyan" id="kpi-atende-prox">—</div><div class="kpi-sub" id="kpi-atende-prox-sub">—</div>
+      <!-- Monitor de divergência diária (preenchido pelo script) -->
+      <div id="monitor-div-wrap" style="display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);align-items:center;gap:8px;flex-wrap:wrap;">
+        <span id="monitor-div-chip" style="font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:8px;letter-spacing:0.2px;line-height:1.3;display:inline-flex;align-items:center;gap:5px;color:var(--ok);background:var(--ok-soft);border:1px solid rgba(34,201,138,0.3);">
+          <span id="monitor-div-icon" style="font-size:12px;line-height:1;">✓</span>
+          <span id="monitor-div-text">—</span>
+        </span>
+        <button id="monitor-div-btn" type="button" onclick="window._exportarComparativoMM&&window._exportarComparativoMM()"
+                style="display:none;font-size:10px;font-weight:700;color:#fff;background:linear-gradient(135deg,#22c98a,#16a06b);border:none;padding:5px 11px;border-radius:7px;cursor:pointer;letter-spacing:0.4px;text-transform:uppercase;line-height:1.2;align-items:center;gap:5px;box-shadow:0 1px 3px rgba(0,0,0,0.25);transition:transform 0.15s,box-shadow 0.15s;"
+                onmouseenter="this.style.transform='translateY(-1px)';this.style.boxShadow='0 3px 10px rgba(34,201,138,0.4)';"
+                onmouseleave="this.style.transform='';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.25)';"
+                title="Baixar comparativo SKU a SKU em Excel">
+          📊 Excel
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- COVERAGE -->
@@ -955,6 +997,505 @@ function sortBy(key){
 
 renderAlerts();
 renderTable();
+
+/* ═══════════════════════════════════════════════════════════════════
+   MONITOR DE DIVERGÊNCIA DIÁRIA + EXPORTAÇÃO EXCEL
+   ───────────────────────────────────────────────────────────────────
+   Persistência:
+     • PRIMÁRIA: Firebase Realtime Database em /estoque_mm/snapshots/AAAA-MM-DD
+       — todos os usuários enxergam a MESMA comparação (compartilhado)
+     • FALLBACK: localStorage do navegador (se Firebase falhar)
+
+   Lógica:
+     • Lê o BUNDLE atual e gera a chave-data ISO (ex: "2026-04-29")
+     • Se autenticado no painel → grava o snapshot no Firebase (idempotente)
+     • Lê o snapshot anterior mais recente (chave < hoje) → compara
+     • esperado = dias_atende_anterior − dias_calendário_decorridos
+     • diferença = esperado − dias_atende_atual  (>0 = consumiu além)
+     • diferença ≤ TOL → OK   (verde)
+     • diferença > TOL → ATENÇÃO (vermelho) + botão Excel
+   ═══════════════════════════════════════════════════════════════════ */
+(function(){
+  const FIREBASE_PATH = 'estoque_mm/snapshots';
+  const STORAGE_KEY   = 'estoque_mm_snapshots_v1'; // fallback localStorage
+  const TOL           = 1.5; // tolerância em dias
+  const MAX_IDADE_DIAS = 30; // se snapshot anterior > 30 dias, ignora comparação
+
+  const db = window._mmDB || null;
+
+  // ═══ HELPERS DE DATA ═══
+  // "29/04/2026" → "2026-04-29" (ordena lexicograficamente como Date)
+  function dataBRparaISO(s){
+    if(!s || typeof s !== 'string') return null;
+    const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if(!m) return null;
+    return m[3] + '-' + m[2].padStart(2,'0') + '-' + m[1].padStart(2,'0');
+  }
+  function parseDataBR(s){
+    if(!s || typeof s !== 'string') return null;
+    const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if(!m) return null;
+    const d = new Date(parseInt(m[3],10), parseInt(m[2],10)-1, parseInt(m[1],10));
+    return isNaN(d.getTime()) ? null : d;
+  }
+  function difDiasCalendario(dataA, dataB){
+    const a = parseDataBR(dataA);
+    const b = parseDataBR(dataB);
+    if(!a || !b) return null;
+    return Math.round((b - a) / (1000*60*60*24));
+  }
+  function fmtDec(n, casas){
+    casas = casas || 1;
+    const num = parseFloat(n);
+    if(!isFinite(num)) return '—';
+    return num.toFixed(casas).replace(/\.?0+$/,'').replace('.', ',') || '0';
+  }
+
+  // ═══ AUTENTICAÇÃO (sessão do painel principal) ═══
+  // O painel grava sessionStorage.eh_painel_auth quando o usuário entra.
+  // Como o estoque_mm.html roda no MESMO origin (easyhouseloja.github.io),
+  // o sessionStorage é compartilhado quando aberto via iframe ou navegação interna.
+  function estaAutenticado(){
+    try {
+      const s = sessionStorage.getItem('eh_painel_auth');
+      if(!s) return false;
+      const parsed = JSON.parse(s);
+      return !!(parsed && parsed.email && parsed.code);
+    } catch(e){ return false; }
+  }
+  function emailAtual(){
+    try {
+      const s = sessionStorage.getItem('eh_painel_auth');
+      return s ? (JSON.parse(s).email || null) : null;
+    } catch(e){ return null; }
+  }
+
+  // Achata BUNDLE.data[] em uma lista plana de SKUs (variações)
+  function achatarSkus(bundle){
+    if(!bundle || !Array.isArray(bundle.data)) return [];
+    const out = [];
+    bundle.data.forEach(prod => {
+      if(!Array.isArray(prod.variacoes)) return;
+      prod.variacoes.forEach(v => {
+        out.push({
+          codItem: prod.codItem, produto: prod.produto, categoria: prod.categoria,
+          codMasc: v.codMasc, variacao: v.variacao,
+          solicitado: v.solicitado, reservado: v.reservado, pendente: v.pendente,
+          pct: v.pct, mediaSemanal: v.mediaSemanal, dias: v.dias, gap: v.gap
+        });
+      });
+    });
+    return out;
+  }
+
+  function montarSnapshot(bundle){
+    if(!bundle || !bundle.stats) return null;
+    return {
+      capturadoEm: Date.now(),
+      capturadoPor: emailAtual() || 'anonimo',
+      dataISO: dataBRparaISO(bundle.stats.dataAtualizacao),
+      stats: {
+        dataAtualizacao: bundle.stats.dataAtualizacao,
+        diasAtendeGlobalFc: bundle.stats.diasAtendeGlobalFc,
+        pctGeral: bundle.stats.pctGeral,
+        demandaDiariaGlobal: bundle.stats.demandaDiariaGlobal,
+        mesPeriodo: bundle.stats.mesPeriodo,
+        fcTotalSolicitado: bundle.stats.fcTotalSolicitado,
+        fcTotalReservado: bundle.stats.fcTotalReservado
+      },
+      skus: achatarSkus(bundle)
+    };
+  }
+
+  // ═══ PERSISTÊNCIA — FIREBASE PRIMÁRIO ═══
+  // Salva o snapshot do dia (idempotente: sobrescreve se mesma chave-data).
+  // Só grava se o usuário estiver autenticado no painel.
+  function gravarSnapshotFirebase(snap){
+    return new Promise((resolve, reject)=>{
+      if(!db){ resolve(false); return; }
+      if(!snap || !snap.dataISO){ resolve(false); return; }
+      if(!estaAutenticado()){
+        console.log('[monitor] não autenticado — não grava no Firebase (só leitura)');
+        resolve(false);
+        return;
+      }
+      db.ref(FIREBASE_PATH + '/' + snap.dataISO).set(snap)
+        .then(()=> { console.log('[monitor] snapshot gravado no Firebase:', snap.dataISO); resolve(true); })
+        .catch(err => { console.warn('[monitor] falha ao gravar no Firebase:', err); resolve(false); });
+    });
+  }
+
+  // Lê o snapshot anterior mais recente: chave < dataISOatual, ordenado por chave desc, limit 1.
+  function lerSnapshotAnteriorFirebase(dataISOatual){
+    return new Promise((resolve)=>{
+      if(!db || !dataISOatual){ resolve(null); return; }
+      // RTDB: orderByKey + endBefore (ou endAt + filtra) + limitToLast
+      // endAt(dataISOatual) inclui a chave igual; filtramos se vier o próprio
+      db.ref(FIREBASE_PATH).orderByKey().endAt(dataISOatual).limitToLast(2).once('value', function(snap){
+        const obj = snap.val();
+        if(!obj){ resolve(null); return; }
+        // Pega a chave mais recente que NÃO seja a atual
+        const chaves = Object.keys(obj).filter(k => k !== dataISOatual).sort();
+        if(chaves.length === 0){ resolve(null); return; }
+        const ultima = chaves[chaves.length - 1];
+        resolve(obj[ultima]);
+      }, function(err){
+        console.warn('[monitor] erro lendo Firebase:', err);
+        resolve(null);
+      });
+    });
+  }
+
+  // Lê o snapshot da data atual no Firebase (pra saber se já foi gravado hoje)
+  function lerSnapshotAtualFirebase(dataISOatual){
+    return new Promise((resolve)=>{
+      if(!db || !dataISOatual){ resolve(null); return; }
+      db.ref(FIREBASE_PATH + '/' + dataISOatual).once('value', function(snap){
+        resolve(snap.val() || null);
+      }, function(err){
+        console.warn('[monitor] erro lendo snapshot atual:', err);
+        resolve(null);
+      });
+    });
+  }
+
+  // ═══ PERSISTÊNCIA — LOCALSTORAGE FALLBACK ═══
+  // Mantém uma cópia local pra funcionar offline ou se Firebase falhar
+  function carregarSnapshotsLocal(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return { atual:null, anterior:null };
+      const obj = JSON.parse(raw);
+      return { atual: obj.atual || null, anterior: obj.anterior || null };
+    } catch(e){ return { atual:null, anterior:null }; }
+  }
+  function salvarSnapshotsLocal(estado){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(estado)); }
+    catch(e){ console.warn('[monitor] Falha ao salvar local:', e); }
+  }
+
+  // ═══ COMPARAÇÃO ═══
+  function calcularDivergencias(anterior, atual){
+    if(!anterior || !atual) return null;
+    const dDias = difDiasCalendario(anterior.stats.dataAtualizacao, atual.stats.dataAtualizacao);
+    if(dDias === null || dDias === 0) return null; // mesma data, nada a comparar
+
+    const diasAnt = parseFloat(anterior.stats.diasAtendeGlobalFc);
+    const diasAtu = parseFloat(atual.stats.diasAtendeGlobalFc);
+    if(!isFinite(diasAnt) || !isFinite(diasAtu)) return null;
+
+    const esperado  = diasAnt - dDias;
+    const diferenca = esperado - diasAtu; // >0 ⇒ consumo acima do previsto
+    const status    = (diferenca > TOL) ? 'ATENCAO' : 'OK';
+
+    // Comparação SKU a SKU (por codMasc)
+    const mapaAnt = new Map();
+    (anterior.skus||[]).forEach(s => { if(s.codMasc != null) mapaAnt.set(s.codMasc, s); });
+
+    const skusComparados = [];
+    const skusDivergentes = [];
+    (atual.skus||[]).forEach(sAtu => {
+      const sAnt = mapaAnt.get(sAtu.codMasc);
+      if(!sAnt) return; // SKU novo, não compara
+      const dAnt = parseFloat(sAnt.dias);
+      const dAtu = parseFloat(sAtu.dias);
+      if(!isFinite(dAnt) || !isFinite(dAtu)) return;
+
+      const espSku = dAnt - dDias;
+      const difSku = espSku - dAtu;
+
+      const linha = {
+        codItem: sAtu.codItem, produto: sAtu.produto, categoria: sAtu.categoria,
+        codMasc: sAtu.codMasc, variacao: sAtu.variacao,
+        solicitado_anterior: sAnt.solicitado, solicitado_atual: sAtu.solicitado, delta_solicitado: (sAtu.solicitado - sAnt.solicitado),
+        reservado_anterior:  sAnt.reservado,  reservado_atual:  sAtu.reservado,  delta_reservado:  (sAtu.reservado  - sAnt.reservado),
+        pendente_anterior:   sAnt.pendente,   pendente_atual:   sAtu.pendente,   delta_pendente:   (sAtu.pendente   - sAnt.pendente),
+        dias_anterior:       Number(dAnt.toFixed(2)),
+        dias_esperado_hoje:  Number(espSku.toFixed(2)),
+        dias_atual:          Number(dAtu.toFixed(2)),
+        discrepancia_dias:   Number((-difSku).toFixed(2)), // negativo = caiu mais que o esperado
+        status: difSku > TOL ? 'ATENCAO' : (difSku <= 0 ? 'OK_SUPRIU_OU_IGUAL' : 'OK_DENTRO_MARGEM')
+      };
+      skusComparados.push(linha);
+      if(linha.status === 'ATENCAO') skusDivergentes.push(linha);
+    });
+    skusDivergentes.sort((a,b) => a.discrepancia_dias - b.discrepancia_dias);
+
+    return {
+      diasCalendario: dDias,
+      dataAnterior: anterior.stats.dataAtualizacao,
+      dataAtual:    atual.stats.dataAtualizacao,
+      diasAtendeAnterior: diasAnt,
+      diasAtendeEsperado: Number(esperado.toFixed(2)),
+      diasAtendeAtual:    diasAtu,
+      diferencaDias:      Number(diferenca.toFixed(2)),
+      status: status,
+      skusComparados: skusComparados,
+      skusDivergentes: skusDivergentes,
+      totalSkus:        skusComparados.length,
+      totalDivergentes: skusDivergentes.length,
+      pctAnterior: parseFloat(anterior.stats.pctGeral),
+      pctAtual:    parseFloat(atual.stats.pctGeral),
+      demandaDiariaAnterior: parseFloat(anterior.stats.demandaDiariaGlobal),
+      demandaDiariaAtual:    parseFloat(atual.stats.demandaDiariaGlobal)
+    };
+  }
+
+  // ═══ RENDER DO CHIP NO KPI ═══
+  function renderizarMonitor(div){
+    const wrap = document.getElementById('monitor-div-wrap');
+    const chip = document.getElementById('monitor-div-chip');
+    const icon = document.getElementById('monitor-div-icon');
+    const text = document.getElementById('monitor-div-text');
+    const btn  = document.getElementById('monitor-div-btn');
+    if(!wrap || !chip || !icon || !text || !btn) return;
+
+    if(!div){
+      wrap.style.display = 'none';
+      btn.style.display  = 'none';
+      return;
+    }
+
+    const dif = div.diferencaDias; // > 0 ⇒ consumo acima do previsto
+    const supriu = dif <= 0;
+    const absDif = Math.abs(dif);
+
+    if(div.status === 'ATENCAO'){
+      // ATENÇÃO — vermelho
+      chip.style.color       = '#fca5a5';
+      chip.style.background  = 'var(--danger-soft)';
+      chip.style.borderColor = 'rgba(239,68,68,0.32)';
+      icon.textContent = '⚠';
+      const skuTxt = div.totalDivergentes === 1 ? '1 SKU diverge' : (div.totalDivergentes + ' SKUs divergem');
+      text.innerHTML = '<b>−' + fmtDec(absDif,2) + 'd</b> abaixo do esperado <span style="opacity:0.65;">(' + fmtDec(div.diasAtendeEsperado,1) + 'd previstos)</span> · ' + skuTxt;
+      btn.style.display = 'inline-flex';
+    } else if(supriu && absDif >= 0.1){
+      // SUPRIU — verde com seta pra cima
+      chip.style.color       = 'var(--ok)';
+      chip.style.background  = 'var(--ok-soft)';
+      chip.style.borderColor = 'rgba(34,201,138,0.3)';
+      icon.textContent = '▲';
+      text.innerHTML = '<b>+' + fmtDec(absDif,2) + 'd</b> acima do esperado · supriu carga vs ' + div.dataAnterior;
+      btn.style.display = 'none';
+    } else {
+      // OK / DENTRO DA MARGEM — verde suave
+      chip.style.color       = 'var(--ok)';
+      chip.style.background  = 'var(--ok-soft)';
+      chip.style.borderColor = 'rgba(34,201,138,0.3)';
+      icon.textContent = '✓';
+      if(absDif < 0.1){
+        text.innerHTML = 'Dentro do esperado · sem desvio vs ' + div.dataAnterior;
+      } else {
+        text.innerHTML = 'Dentro do esperado · <b>−' + fmtDec(absDif,2) + 'd</b> de variação <span style="opacity:0.65;">(tolerância ' + TOL + 'd)</span>';
+      }
+      btn.style.display = 'none';
+    }
+
+    wrap.style.display = 'flex';
+    chip.title =
+      'Comparação ' + div.dataAnterior + ' → ' + div.dataAtual + ' (' + div.diasCalendario + ' dia' + (div.diasCalendario>1?'s':'') + ')\n' +
+      '• Anterior: ' + fmtDec(div.diasAtendeAnterior,2) + 'd\n' +
+      '• Esperado hoje: ' + fmtDec(div.diasAtendeEsperado,2) + 'd\n' +
+      '• Atual: ' + fmtDec(div.diasAtendeAtual,2) + 'd\n' +
+      '• Diferença: ' + fmtDec(div.diferencaDias,2) + 'd' +
+      ' · ' + div.totalDivergentes + '/' + div.totalSkus + ' SKUs c/ discrep. > ' + TOL + 'd';
+  }
+
+  // ═══ EXPORTAÇÃO EXCEL ═══
+  let _xlsxPromise = null;
+  function carregarSheetJS(){
+    if(typeof XLSX !== 'undefined') return Promise.resolve();
+    if(_xlsxPromise) return _xlsxPromise;
+    _xlsxPromise = new Promise((resolve, reject)=>{
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+      s.onload = ()=> resolve();
+      s.onerror = ()=> { _xlsxPromise = null; reject(new Error('Falha ao carregar SheetJS')); };
+      document.head.appendChild(s);
+    });
+    return _xlsxPromise;
+  }
+
+  let _ultimaDivergencia = null;
+
+  window._exportarComparativoMM = async function(){
+    if(!_ultimaDivergencia){ alert('Sem comparativo disponível.'); return; }
+    const div = _ultimaDivergencia;
+    const btn = document.getElementById('monitor-div-btn');
+    const txtOriginal = btn ? btn.innerHTML : '';
+    if(btn){ btn.disabled = true; btn.style.opacity='0.7'; btn.innerHTML = '⏳ gerando...'; }
+
+    try {
+      await carregarSheetJS();
+      const wb = XLSX.utils.book_new();
+
+      // Aba RESUMO
+      const resumoAOA = [
+        ['COMPARATIVO ESTOQUE INTERNO MM — Easy House × Madeira Madeira'],
+        [],
+        ['Data anterior',           div.dataAnterior],
+        ['Data atual',              div.dataAtual],
+        ['Dias-calendário',         div.diasCalendario],
+        [],
+        ['Dias atende (anterior)',  div.diasAtendeAnterior],
+        ['Dias atende (esperado)',  div.diasAtendeEsperado],
+        ['Dias atende (atual)',     div.diasAtendeAtual],
+        ['Diferença (esp − atual)', div.diferencaDias, '> 0 = consumiu além do previsto'],
+        ['Status',                  div.status === 'ATENCAO' ? 'ATENÇÃO' : 'OK'],
+        ['Tolerância aplicada',     TOL, 'dias'],
+        [],
+        ['% Atendimento (anterior)',div.pctAnterior],
+        ['% Atendimento (atual)',   div.pctAtual],
+        ['Demanda diária (anterior)', div.demandaDiariaAnterior],
+        ['Demanda diária (atual)',    div.demandaDiariaAtual],
+        [],
+        ['SKUs comparados',         div.totalSkus],
+        ['SKUs divergentes',        div.totalDivergentes],
+        ['SKUs OK',                 div.totalSkus - div.totalDivergentes],
+        [],
+        ['Gerado em', new Date().toLocaleString('pt-BR')]
+      ];
+      const wsRes = XLSX.utils.aoa_to_sheet(resumoAOA);
+      wsRes['!cols'] = [{wch:32},{wch:18},{wch:42}];
+      XLSX.utils.book_append_sheet(wb, wsRes, 'Resumo');
+
+      // Header padrão SKUs
+      const head = ['Cód Item','Produto','Categoria','Cód SKU','Variação',
+        'Solic. Anterior','Solic. Atual','Δ Solic.',
+        'Reserv. Anterior','Reserv. Atual','Δ Reserv.',
+        'Pend. Anterior','Pend. Atual','Δ Pend.',
+        'Dias Anterior','Dias Esperado Hoje','Dias Atual','Discrepância (dias)','Status'];
+      const cols = [{wch:8},{wch:42},{wch:14},{wch:9},{wch:38},
+        {wch:14},{wch:13},{wch:10},
+        {wch:14},{wch:13},{wch:10},
+        {wch:14},{wch:13},{wch:10},
+        {wch:13},{wch:18},{wch:11},{wch:18},{wch:18}];
+      const labelStatus = (s) => s === 'ATENCAO' ? 'ATENÇÃO' : (s === 'OK_SUPRIU_OU_IGUAL' ? 'OK (supriu/igual)' : 'OK (margem)');
+
+      // Aba SKUs DIVERGENTES (ordenados pela maior discrepância)
+      const linhasDiv = div.skusDivergentes.map(s => [
+        s.codItem, s.produto, s.categoria, s.codMasc, s.variacao,
+        s.solicitado_anterior, s.solicitado_atual, s.delta_solicitado,
+        s.reservado_anterior,  s.reservado_atual,  s.delta_reservado,
+        s.pendente_anterior,   s.pendente_atual,   s.delta_pendente,
+        s.dias_anterior, s.dias_esperado_hoje, s.dias_atual, s.discrepancia_dias,
+        labelStatus(s.status)
+      ]);
+      const wsDiv = XLSX.utils.aoa_to_sheet([head, ...linhasDiv]);
+      wsDiv['!cols'] = cols;
+      XLSX.utils.book_append_sheet(wb, wsDiv, 'SKUs Divergentes');
+
+      // Aba TODOS SKUs
+      const linhasAll = div.skusComparados.map(s => [
+        s.codItem, s.produto, s.categoria, s.codMasc, s.variacao,
+        s.solicitado_anterior, s.solicitado_atual, s.delta_solicitado,
+        s.reservado_anterior,  s.reservado_atual,  s.delta_reservado,
+        s.pendente_anterior,   s.pendente_atual,   s.delta_pendente,
+        s.dias_anterior, s.dias_esperado_hoje, s.dias_atual, s.discrepancia_dias,
+        labelStatus(s.status)
+      ]);
+      const wsAll = XLSX.utils.aoa_to_sheet([head, ...linhasAll]);
+      wsAll['!cols'] = cols;
+      XLSX.utils.book_append_sheet(wb, wsAll, 'Todos SKUs');
+
+      const safeData = (s) => (s||'').replace(/\//g,'-');
+      const nome = 'comparativo_estoque_mm_' + safeData(div.dataAnterior) + '_para_' + safeData(div.dataAtual) + '.xlsx';
+      XLSX.writeFile(wb, nome);
+    } catch(e){
+      console.error('[monitor] export falhou', e);
+      alert('Erro ao gerar Excel: ' + (e && e.message ? e.message : e));
+    } finally {
+      if(btn){ btn.disabled = false; btn.style.opacity=''; btn.innerHTML = txtOriginal; }
+    }
+  };
+
+  // ═══ EXECUÇÃO ═══
+  // Fluxo:
+  //   1. Gera snapshot atual a partir do BUNDLE
+  //   2. Tenta Firebase: lê o snapshot anterior + grava o atual (se autenticado)
+  //   3. Se Firebase falhar OU snapshot anterior for muito antigo, cai pro localStorage
+  //   4. Renderiza
+  async function inicializarMonitor(){
+    try {
+      const novoSnap = montarSnapshot(BUNDLE);
+      if(!novoSnap || !novoSnap.dataISO){
+        console.warn('[monitor] BUNDLE sem dataAtualizacao — abortando');
+        return;
+      }
+
+      let snapAnterior = null;
+
+      // ── Tentativa Firebase (compartilhado entre todos os usuários) ──
+      if(db){
+        try {
+          // Em paralelo: ler o anterior e checar se atual já existe
+          const [anteriorFB, atualFB] = await Promise.all([
+            lerSnapshotAnteriorFirebase(novoSnap.dataISO),
+            lerSnapshotAtualFirebase(novoSnap.dataISO)
+          ]);
+
+          if(anteriorFB) snapAnterior = anteriorFB;
+
+          // Grava se: autenticado E (não existe ainda OU os números mudaram)
+          const precisaGravar = !atualFB ||
+            atualFB.stats.diasAtendeGlobalFc !== novoSnap.stats.diasAtendeGlobalFc ||
+            atualFB.stats.pctGeral !== novoSnap.stats.pctGeral;
+
+          if(precisaGravar) {
+            await gravarSnapshotFirebase(novoSnap);
+          }
+        } catch(e){
+          console.warn('[monitor] Firebase indisponível, usando fallback local:', e);
+        }
+      }
+
+      // ── Fallback localStorage (caso Firebase não tenha retornado anterior) ──
+      const estadoLocal = carregarSnapshotsLocal();
+      if(!snapAnterior){
+        snapAnterior = estadoLocal.anterior || estadoLocal.atual;
+        // estadoLocal.atual pode ser de uma data antiga (que ainda é "anterior" ao bundle de hoje)
+        if(snapAnterior && snapAnterior.stats && snapAnterior.stats.dataAtualizacao === novoSnap.stats.dataAtualizacao){
+          // É a mesma data — não serve como "anterior"
+          snapAnterior = estadoLocal.anterior;
+        }
+      }
+
+      // Sempre atualiza o localStorage como cache local
+      if(estadoLocal.atual && estadoLocal.atual.stats &&
+         estadoLocal.atual.stats.dataAtualizacao === novoSnap.stats.dataAtualizacao){
+        // Mesma data — atualiza só o atual
+        estadoLocal.atual = novoSnap;
+      } else {
+        estadoLocal.anterior = estadoLocal.atual;
+        estadoLocal.atual    = novoSnap;
+      }
+      salvarSnapshotsLocal(estadoLocal);
+
+      // ── Validação de idade do snapshot anterior ──
+      if(snapAnterior && snapAnterior.stats && snapAnterior.stats.dataAtualizacao){
+        const idade = difDiasCalendario(snapAnterior.stats.dataAtualizacao, novoSnap.stats.dataAtualizacao);
+        if(idade === null || idade > MAX_IDADE_DIAS){
+          console.log('[monitor] snapshot anterior tem ' + idade + 'd — descartando comparação');
+          snapAnterior = null;
+        }
+      }
+
+      // ── Calcula divergência e renderiza ──
+      _ultimaDivergencia = calcularDivergencias(snapAnterior, novoSnap);
+      renderizarMonitor(_ultimaDivergencia);
+    } catch(e){
+      console.warn('[monitor] inicialização falhou:', e);
+    }
+  }
+
+  // Aguarda o Firebase estar pronto (libs carregadas) e roda
+  if(window._mmDB){
+    inicializarMonitor();
+  } else {
+    // Firebase pode não ter inicializado — tenta de novo em 500ms
+    setTimeout(inicializarMonitor, 500);
+  }
+})();
 </script>
 </body>
 </html>
