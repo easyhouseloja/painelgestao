@@ -6204,10 +6204,10 @@ function _tickerGerarDados() {
     var pm = PED_TODOS.filter(function(p){ var d=new Date(p.data); return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear(); });
     var pagos   = pm.filter(function(p){ return p.status==='PAGO'; });
     var pend    = pm.filter(function(p){ return p.status==='PENDENTE'; });
-    var hoje    = PED_TODOS.filter(function(p){ return new Date(p.data).toDateString()===h.toDateString(); });
+    var hoje    = PED_TODOS.filter(function(p){ return new Date(p.data).toDateString()===h.toDateString() && p.status!=='CANCELADO'; });
     var vPago   = pagos.reduce(function(s,p){ return s+p.valor; }, 0);
     var vPend   = pend.reduce(function(s,p){ return s+p.valor; }, 0);
-    var vHoje   = hoje.filter(function(p){return p.status==='PAGO';}).reduce(function(s,p){return s+p.valor;},0);
+    var vHoje   = hoje.filter(function(p){return p.status==='PAGO'||p.status==='ENVIADO';}).reduce(function(s,p){return s+p.valor;},0);
 
     if (pagos.length > 0) {
       itens.push('<span class="ticker-data-ok"><b>✅ ' + pagos.length + '</b> pagos aguardando envio</span>');
@@ -8320,7 +8320,7 @@ function renderFinanceiro(){
   var rPago  = pgCache.reduce(function(s,p){return s+p.valor;},0);
   var rM     = rPago + rEnv;
   var qtdTot = pgCache.length + qtdEnv;
-  var rH     = ph.filter(function(p){return p.status==='PAGO';}).reduce(function(s,p){return s+p.valor;},0);
+  var rH     = ph.filter(function(p){return p.status==='PAGO'||p.status==='ENVIADO';}).reduce(function(s,p){return s+p.valor;},0);
   var tk     = qtdTot>0 ? rM/qtdTot : 0;
   var rP     = pePend.reduce(function(s,p){return s+p.valor;},0);
 
@@ -8609,7 +8609,7 @@ function renderTVPedidos(el) {
   var h=new Date();
   var fm=function(p){var d=new Date(p.data);return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();};
   var fh=function(p){return new Date(p.data).toDateString()===h.toDateString();};
-  var pm=PED_TODOS.filter(fm), ph=PED_TODOS.filter(fh);
+  var pm=PED_TODOS.filter(fm), ph=PED_TODOS.filter(fh).filter(function(p){return p.status!=='CANCELADO';});
   var pagos=pm.filter(function(p){return p.status==='PAGO';});
   var pend=pm.filter(function(p){return p.status==='PENDENTE';});
   var vPend=pend.reduce(function(s,p){return s+p.valor;},0);
@@ -8666,7 +8666,7 @@ function renderTVResumo(el) {
   var pend=pm.filter(function(p){return p.status==='PENDENTE';});
   var rPago=pagos.reduce(function(s,p){return s+p.valor;},0);
   var rPend=pend.reduce(function(s,p){return s+p.valor;},0);
-  var vHoje=ph.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO';}).reduce(function(s,p){return s+p.valor;},0);
+  var vHoje=ph.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO'||p.status==='ENVIADO';}).reduce(function(s,p){return s+p.valor;},0);
   var rEnv=_finFirebaseData?(_finFirebaseData.receita||0):0;
   var qtdEnv=_finFirebaseData?(_finFirebaseData.qtd||0):0;
   var rTotal=rPago+rEnv;
@@ -8686,7 +8686,7 @@ function renderTVResumo(el) {
       '<div style="font-size:34px;font-weight:800;color:var(--accent-green);line-height:1;margin-bottom:10px;">'+fmt(rTotal)+'</div>'+
       '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:3px;">✓ Pago: '+fmt(rPago)+' ('+pagos.length+')</div>'+
       '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:3px;">🚚 Env/Entregue: '+fmt(rEnv)+' ('+qtdEnv+')</div>'+
-      '<div style="font-size:12px;color:var(--text-secondary);">📅 Hoje: '+fmt(vHoje)+' ('+ph.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO';}).length+' ped.)</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);">📅 Hoje: '+fmt(vHoje)+' ('+ph.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO'||p.status==='ENVIADO';}).length+' ped.)</div>'+
     '</div>'+
     '<div style="background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.3);border-radius:14px;padding:20px;">'+
       '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-amber);margin-bottom:8px;">⏳ EM ABERTO</div>'+
