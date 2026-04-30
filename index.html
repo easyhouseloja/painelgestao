@@ -4329,12 +4329,12 @@ body.light-mode #iframe-page-title {
           <p>Gestão e conferência do estoque interno destinado à Madeira Madeira: saldo atual por SKU e alertas de ruptura. Baseado em forecast mensal.</p>
 
           <!-- WIDGET: DIAS DE ATENDIMENTO + % ATENDIMENTO — atualizado pelo script no final do arquivo (busca estoque_mm.html) -->
-          <div id="estoque-mm-widget" class="estoque-mm-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do estoque MM...">
+          <div id="estoque-mm-widget" class="estoque-mm-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do estoque MM...">
             <span id="estoque-mm-chip" style="font-size:11px;font-weight:700;color:#22d3ee;background:rgba(8,145,178,0.14);border:1px solid rgba(8,145,178,0.32);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
               <span>Atende os próximos</span> · <span id="estoque-mm-dias" style="font-size:14px;font-weight:800;letter-spacing:0.2px;">—</span><span style="font-size:10px;font-weight:600;opacity:0.85;margin-left:1px;">dias</span>
             </span>
-            <span style="font-size:10px;font-weight:600;color:var(--text-secondary);letter-spacing:0.2px;padding-left:4px;line-height:1.3;">
-              atendimento da carga mãe: <span id="estoque-mm-pct" style="color:#f0c674;font-weight:800;font-size:11.5px;letter-spacing:0.3px;">—</span>
+            <span id="estoque-mm-chip-pct" style="font-size:10.5px;font-weight:700;color:#d4a017;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.30);padding:4px 11px;border-radius:9px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
+              <span style="opacity:0.9;">Atendimento carga mãe</span> · <span id="estoque-mm-pct" style="font-size:12px;font-weight:800;letter-spacing:0.3px;">—</span>
             </span>
           </div>
 
@@ -5580,13 +5580,14 @@ function vtexCarregarResumo(force) {
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────────
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 let NOTIFICACOES_HOJE = [
-  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 10 variações em alerta ⚠️',desc:'75,5% reservado · GR: Easy Slim 8 PTS Off White (24,2%) e Branco (7,3%) — lote amanhã 30/04 · Easy Move (2 cores a 0%) · Easy Glow (0%) — lote 05/05 · Imperatore Frassino (13,3%). Complementos: Cama',hora:'29/04/2026',lida:false,link:'estoque.html',critico:true},
-  {id:2,icon:'🚚',cor:'rgba(39,174,96,0.15)',titulo:'SLA: ✅ Acima da meta — 96,73%',desc:'131 em atraso · 313 sem faturar · Pior transp.: TS RJ 66,10%🔴 · RGE 94,35%',hora:'29/04/2026',lida:false,link:'sla_transporte.html',critico:false},
-  {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: Abr 108,93% da Meta (01–28/04)',desc:'R$ 8,47M faturado em 28 dias · Média diária R$ 303K · Meta R$ 8,6M · +164% Ano x Ano',hora:'28/04/2026',lida:false,link:'comercial.html',critico:false},
-  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado(s) ⚠️',desc:'95 itens · 58 pedidos · 4 em atraso · Atraso médio 8,6d · Maior: 32d (#495511 — Moderado (32d) · #548540 beira (29d)) · 1 moderado(s): ⚠ #86772 cruzou a faixa hoje · 0 críticos',hora:'27/04/2026',lida:false,link:'assistencia.html',critico:false},
-  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: 94,2% recebido ✓',desc:'Cartas de Débito · R$ 815.277,97 recebido · R$ 50.328 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'24/04/2026',lida:false,link:'financeiro.html',critico:false},
-  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 521 no período',desc:'01/01 a 23/04/2026 · R$ 541,1K · 521 notas · Ticket médio R$ 1.039 · Top motivo: 41,3% (Desistência · 205 notas) · Top transp: 134 notas (Nova Era Express) · Maior mês: Abril R$ 177,2K · 181 notas',hora:'23/04/2026',lida:false,link:'devolucao.html',critico:false},
-  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'30/04/2026',lida:false,link:'reputacao.html',critico:false}
+  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 15 variações em alerta ⚠️',desc:'68,2% reservado · Easy Slim 8 PTS (3 cores críticas, lotes 23/04 e 30/04) · Easy Slim 6 PTS Off White (lote 05/05) · Imperatore (2 cores 0%) · Easy Move (2 cores 0%) · Toronto (2 cores) · Lopas Atlas · Easy Glow · Apogeu C/6 · Mesa Celebrare',hora:'23/04/2026',lida:false,link:'estoque.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 94,30%',desc:'231 em atraso · 169 sem faturar · Pior transp.: TS RJ 76,26% 🔴 · RGE 86,01% · NOVA ERA 95,20% · MTC 96,05% · TRANS SUA LOG 97,90%',hora:'23/04/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: Abr 76,09% da Meta (01–22/04) ⚠️',desc:'R$ 6,54M faturado em 22 dias · Média diária R$ 297K · Meta R$ 8,6M · +167% Ano x Ano · Mar fechado: 117,23% · R$ 10,08M',hora:'23/04/2026',lida:false,link:'comercial.html',critico:false},
+  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: 94,2% recebido ✓',desc:'Cartas de Débito · R$ 815k recebido · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'23/04/2026',lida:false,link:'financeiro.html',critico:false},
+  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado 31d ⚠️',desc:'53 itens (-58) · 27 pedidos · 4 em atraso · Atraso médio 9,5d · 1 moderado: #495511 (31d) · #328319 e #362953 resolvidos ✅ · 0 críticos · Crítico zerado há 32 dias',hora:'23/04/2026',lida:false,link:'assistencia.html',critico:false},
+  {id:5,icon:'❌',cor:'rgba(204,40,40,0.12)',titulo:'Cancelamentos: 159 em Abril (parcial) ⚠️',desc:'01 a 10/04 (10 dias) · 159 cancelamentos · R$ 170K · Shopee 134 · Magalu 13 · ML 9 · Zema 3 · 154 sem nota · Ticket médio R$ 1.069',hora:'10/04/2026',lida:false,link:'cancelamentos.html',critico:false},
+  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 393 no período',desc:'Jan–Abr: R$ 416,2K · 393 notas · Top motivo: Desistência (36,4% · 143 notas) · Nova Era 108 notas · Ticket médio R$ 1.059',hora:'14/04/2026',lida:false,link:'devolucao.html',critico:false},
+  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu Laranja 🔴 · ML Verde ✓',desc:'Magalu 2,9 Laranja 🔴 (piorou) · Mercado Livre ~3,8 Verde ✓ (melhorou) · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Ótimo ✓ · Via Varejo 3,5 Amarelo ⚠️',hora:'23/04/2026',lida:false,link:'reputacao.html',critico:false}
 ];
 let TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
 
@@ -6204,10 +6205,10 @@ function _tickerGerarDados() {
     var pm = PED_TODOS.filter(function(p){ var d=new Date(p.data); return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear(); });
     var pagos   = pm.filter(function(p){ return p.status==='PAGO'; });
     var pend    = pm.filter(function(p){ return p.status==='PENDENTE'; });
-    var hoje    = PED_TODOS.filter(function(p){ return new Date(p.data).toDateString()===h.toDateString() && p.status!=='CANCELADO'; });
+    var hoje    = PED_TODOS.filter(function(p){ return new Date(p.data).toDateString()===h.toDateString(); });
     var vPago   = pagos.reduce(function(s,p){ return s+p.valor; }, 0);
     var vPend   = pend.reduce(function(s,p){ return s+p.valor; }, 0);
-    var vHoje   = hoje.filter(function(p){return p.status==='PAGO'||p.status==='ENVIADO';}).reduce(function(s,p){return s+p.valor;},0);
+    var vHoje   = hoje.filter(function(p){return p.status==='PAGO';}).reduce(function(s,p){return s+p.valor;},0);
 
     if (pagos.length > 0) {
       itens.push('<span class="ticker-data-ok"><b>✅ ' + pagos.length + '</b> pagos aguardando envio</span>');
@@ -8099,7 +8100,7 @@ abrirPedidos = function() {
   if (PED_TODOS.length > 0) {
     pedRenderTabela();
     var raw=localStorage.getItem(PED_CACHE_KEY), ts=raw?(JSON.parse(raw).ts||0):0;
-    if (Date.now()-ts > 60*1000) pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();}).catch(function(){});
+    if (Date.now()-ts > 15*60*1000) pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();}).catch(function(){});
   } else {
     var cl=pedLerCacheLocal();
     if(cl&&cl.length>0){ PED_TODOS=cl; pedRenderTabela(); pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();}).catch(function(){}); }
@@ -8269,36 +8270,6 @@ function abrirFinanceiro(){
   renderFinanceiro();
   // Lê resumo de enviados/entregues do Firebase (calculado pelo Apps Script)
   finCarregarDoFirebase();
-
-  // ⚡ Refresh imediato em background se PED_TODOS estiver com mais de 1 min de cache
-  // Garante que o "Hoje: R$ ..." reflita os pedidos recém-criados.
-  try {
-    var rawFin = localStorage.getItem(PED_CACHE_KEY);
-    var tsFin  = rawFin ? (JSON.parse(rawFin).ts || 0) : 0;
-    if (Date.now() - tsFin > 60 * 1000) {
-      pedBuscarCache().then(function(d){
-        PED_TODOS = d;
-        pedSalvarCache(d);
-        renderFinanceiro();
-      }).catch(function(){});
-    }
-  } catch(e) {}
-
-  // ⚡ Auto-refresh a cada 60s enquanto o modal está aberto
-  if (window._finAutoRefresh) clearInterval(window._finAutoRefresh);
-  window._finAutoRefresh = setInterval(function(){
-    var aberto = document.getElementById('finModalOverlay');
-    if (!aberto || !aberto.classList.contains('open')) {
-      clearInterval(window._finAutoRefresh);
-      window._finAutoRefresh = null;
-      return;
-    }
-    pedBuscarCache().then(function(d){
-      PED_TODOS = d;
-      pedSalvarCache(d);
-      renderFinanceiro();
-    }).catch(function(){});
-  }, 60 * 1000);
 }
 
 function finCarregarDoFirebase() {
@@ -8314,13 +8285,7 @@ function finCarregarDoFirebase() {
 }
 
 async function finBuscarConfirmados() { /* não usado mais */ }
-function fecharFinanceiro(){
-  document.getElementById('finModalOverlay').classList.remove('open');
-  if (window._finAutoRefresh) {
-    clearInterval(window._finAutoRefresh);
-    window._finAutoRefresh = null;
-  }
-}
+function fecharFinanceiro(){document.getElementById('finModalOverlay').classList.remove('open');}
 document.getElementById('finModalOverlay').addEventListener('click',function(e){if(e.target===this)fecharFinanceiro();});
 // Helpers de status — cobrem tanto os normalizados pelo Apps Script
 // quanto os status brutos da Anymarket (SENT, DELIVERED, etc.)
@@ -8356,7 +8321,7 @@ function renderFinanceiro(){
   var rPago  = pgCache.reduce(function(s,p){return s+p.valor;},0);
   var rM     = rPago + rEnv;
   var qtdTot = pgCache.length + qtdEnv;
-  var rH     = ph.filter(function(p){return p.status==='PAGO'||p.status==='ENVIADO';}).reduce(function(s,p){return s+p.valor;},0);
+  var rH     = ph.filter(function(p){return p.status==='PAGO';}).reduce(function(s,p){return s+p.valor;},0);
   var tk     = qtdTot>0 ? rM/qtdTot : 0;
   var rP     = pePend.reduce(function(s,p){return s+p.valor;},0);
 
@@ -8645,7 +8610,7 @@ function renderTVPedidos(el) {
   var h=new Date();
   var fm=function(p){var d=new Date(p.data);return d.getMonth()===h.getMonth()&&d.getFullYear()===h.getFullYear();};
   var fh=function(p){return new Date(p.data).toDateString()===h.toDateString();};
-  var pm=PED_TODOS.filter(fm), ph=PED_TODOS.filter(fh).filter(function(p){return p.status!=='CANCELADO';});
+  var pm=PED_TODOS.filter(fm), ph=PED_TODOS.filter(fh);
   var pagos=pm.filter(function(p){return p.status==='PAGO';});
   var pend=pm.filter(function(p){return p.status==='PENDENTE';});
   var vPend=pend.reduce(function(s,p){return s+p.valor;},0);
@@ -8702,7 +8667,7 @@ function renderTVResumo(el) {
   var pend=pm.filter(function(p){return p.status==='PENDENTE';});
   var rPago=pagos.reduce(function(s,p){return s+p.valor;},0);
   var rPend=pend.reduce(function(s,p){return s+p.valor;},0);
-  var vHoje=ph.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO'||p.status==='ENVIADO';}).reduce(function(s,p){return s+p.valor;},0);
+  var vHoje=ph.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO';}).reduce(function(s,p){return s+p.valor;},0);
   var rEnv=_finFirebaseData?(_finFirebaseData.receita||0):0;
   var qtdEnv=_finFirebaseData?(_finFirebaseData.qtd||0):0;
   var rTotal=rPago+rEnv;
@@ -8722,7 +8687,7 @@ function renderTVResumo(el) {
       '<div style="font-size:34px;font-weight:800;color:var(--accent-green);line-height:1;margin-bottom:10px;">'+fmt(rTotal)+'</div>'+
       '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:3px;">✓ Pago: '+fmt(rPago)+' ('+pagos.length+')</div>'+
       '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:3px;">🚚 Env/Entregue: '+fmt(rEnv)+' ('+qtdEnv+')</div>'+
-      '<div style="font-size:12px;color:var(--text-secondary);">📅 Hoje: '+fmt(vHoje)+' ('+ph.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO'||p.status==='ENVIADO';}).length+' ped.)</div>'+
+      '<div style="font-size:12px;color:var(--text-secondary);">📅 Hoje: '+fmt(vHoje)+' ('+ph.filter(function(p){return p.status==='PAGO'||p.status==='CONFIRMADO';}).length+' ped.)</div>'+
     '</div>'+
     '<div style="background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.3);border-radius:14px;padding:20px;">'+
       '<div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent-amber);margin-bottom:8px;">⏳ EM ABERTO</div>'+
@@ -9293,10 +9258,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- ═══════════════════════════════════════════════════════════════
      ATUALIZAÇÃO AUTOMÁTICA DO WIDGET DE ESTOQUE MADEIRA MADEIRA
-     Busca dados de estoque_mm.html (BUNDLE.stats) e preenche o card
-     - "Atende os próximos X dias" (diasAtendeGlobalFc)
-     - "% Atendimento" (pctGeral)
-     - mês do forecast (mesPeriodo)
+     Busca BUNDLE.stats em estoque_mm.html e preenche os 2 chips do card:
+       - "Atende os próximos X dias"  (diasAtendeGlobalFc)
+       - "Atendimento carga mãe X%"   (pctGeral)
+     A lógica de comparação dia-a-dia + Excel está dentro do próprio
+     estoque_mm.html (não duplicar aqui).
      ═══════════════════════════════════════════════════════════════ -->
 <script>
 (function(){
@@ -9311,14 +9277,13 @@ document.addEventListener('DOMContentLoaded', function() {
     return m[1] !== undefined ? m[1] : m[2];
   }
 
-  // Formata número decimal pt-BR sem zero à direita ("17.8" → "17,8", "85.0" → "85")
+  // Formata "17.8" → "17,8", "85.0" → "85"
   function fmtDec(n){
     const num = parseFloat(n);
     if(!isFinite(num)) return '—';
     return num.toFixed(1).replace(/\.0$/,'').replace('.', ',');
   }
 
-  // Formata número genérico pt-BR ("154.9" → "154,9")
   function fmtNum(n){
     const num = parseFloat(n);
     if(!isFinite(num)) return '—';
@@ -9340,72 +9305,60 @@ document.addEventListener('DOMContentLoaded', function() {
       const mesPeriodo = extrairCampo(html, 'mesPeriodo');
       const dataAtual  = extrairCampo(html, 'dataAtualizacao');
 
-      if(dias === null) throw new Error('Campo diasAtendeGlobalFc não encontrado no HTML');
+      if(dias === null) throw new Error('Campo diasAtendeGlobalFc não encontrado');
 
       const diasNum = parseFloat(dias);
       const pctNum  = pct !== null ? parseFloat(pct) : null;
 
-      // Atualiza textos
-      const elDias = document.getElementById('estoque-mm-dias');
-      const elPct  = document.getElementById('estoque-mm-pct');
-      const chip   = document.getElementById('estoque-mm-chip');
+      const elDias  = document.getElementById('estoque-mm-dias');
+      const elPct   = document.getElementById('estoque-mm-pct');
+      const chip    = document.getElementById('estoque-mm-chip');
+      const chipPct = document.getElementById('estoque-mm-chip-pct');
 
       if(elDias) elDias.textContent = fmtDec(diasNum);
       if(elPct)  elPct.textContent  = (pctNum !== null && isFinite(pctNum)) ? (fmtDec(pctNum) + '%') : '—';
 
-      // Cor dinâmica do % atendimento da carga mãe (régua de saúde)
-      // ≥ 95% → verde   (excelente)
-      // 80-94% → âmbar  (atenção — caso atual com 85,2%)
-      // < 80% → vermelho (crítico)
-      if(elPct && pctNum !== null && isFinite(pctNum)){
-        if(pctNum >= 95){
-          elPct.style.color = '#66FF99';
-        } else if(pctNum >= 80){
-          elPct.style.color = '#f0c674';
-        } else {
-          elPct.style.color = '#ff8a8a';
-        }
-      }
-
-      // Cores dinâmicas baseadas em dias de cobertura
-      // ≥31d  → verde  (atende todo o mês)
-      // 15-30d → ciano  (parcial mas saudável)
-      // 7-14d  → âmbar  (atenção)
+      // Cor dinâmica do chip de DIAS DE ATENDIMENTO
+      // ≥31d  → verde (atende todo o mês)
+      // 15-30d → ciano (parcial mas saudável — caso atual com 17,8d)
+      // 7-14d  → âmbar (atenção)
       // <7d    → vermelho (crítico)
       if(chip){
         if(diasNum >= 31){
-          chip.style.color = '#66FF99';
-          chip.style.background = 'rgba(31,189,114,0.14)';
-          chip.style.borderColor = 'rgba(31,189,114,0.32)';
+          chip.style.color = '#1fbd72'; chip.style.background = 'rgba(31,189,114,0.14)'; chip.style.borderColor = 'rgba(31,189,114,0.32)';
         } else if(diasNum >= 15){
-          chip.style.color = '#22d3ee';
-          chip.style.background = 'rgba(8,145,178,0.16)';
-          chip.style.borderColor = 'rgba(8,145,178,0.36)';
+          chip.style.color = '#22d3ee'; chip.style.background = 'rgba(8,145,178,0.16)';  chip.style.borderColor = 'rgba(8,145,178,0.36)';
         } else if(diasNum >= 7){
-          chip.style.color = '#f0c674';
-          chip.style.background = 'rgba(212,160,23,0.14)';
-          chip.style.borderColor = 'rgba(212,160,23,0.32)';
+          chip.style.color = '#d4a017'; chip.style.background = 'rgba(212,160,23,0.14)'; chip.style.borderColor = 'rgba(212,160,23,0.32)';
         } else {
-          chip.style.color = '#ff6b6b';
-          chip.style.background = 'rgba(204,40,40,0.14)';
-          chip.style.borderColor = 'rgba(204,40,40,0.32)';
+          chip.style.color = '#cc2828'; chip.style.background = 'rgba(204,40,40,0.14)';  chip.style.borderColor = 'rgba(204,40,40,0.32)';
         }
       }
 
-      // Tooltip completo (mostra todas as métricas no hover)
-      const partesTitle = [];
-      partesTitle.push('Atende os próximos: ' + fmtDec(diasNum) + ' dias');
-      if(pctNum !== null && isFinite(pctNum)) partesTitle.push('% Atendimento (carga mãe): ' + fmtDec(pctNum) + '%');
-      if(demanda) partesTitle.push('Demanda diária: ' + fmtNum(demanda) + ' un/dia');
-      if(mesPeriodo) partesTitle.push('Forecast: ' + mesPeriodo);
-      if(dataAtual) partesTitle.push('Atualizado em: ' + dataAtual);
-      widget.setAttribute('title', partesTitle.join(' · '));
+      // Cor dinâmica do chip de % ATENDIMENTO (carga mãe)
+      // ≥95% → verde · 80-94% → âmbar · <80% → vermelho
+      if(chipPct && pctNum !== null && isFinite(pctNum)){
+        if(pctNum >= 95){
+          chipPct.style.color='#1fbd72'; chipPct.style.background='rgba(31,189,114,0.12)'; chipPct.style.borderColor='rgba(31,189,114,0.30)';
+        } else if(pctNum >= 80){
+          chipPct.style.color='#d4a017'; chipPct.style.background='rgba(212,160,23,0.12)'; chipPct.style.borderColor='rgba(212,160,23,0.30)';
+        } else {
+          chipPct.style.color='#cc2828'; chipPct.style.background='rgba(204,40,40,0.12)';  chipPct.style.borderColor='rgba(204,40,40,0.30)';
+        }
+      }
 
-      // Dispara animação de entrada (só uma vez por sessão)
+      // Tooltip completo no hover
+      const partes = [];
+      partes.push('Atende os próximos: ' + fmtDec(diasNum) + ' dias');
+      if(pctNum !== null && isFinite(pctNum)) partes.push('% Atendimento (carga mãe): ' + fmtDec(pctNum) + '%');
+      if(demanda) partes.push('Demanda diária: ' + fmtNum(demanda) + ' un/dia');
+      if(mesPeriodo) partes.push('Forecast: ' + mesPeriodo);
+      if(dataAtual) partes.push('Atualizado em: ' + dataAtual);
+      widget.setAttribute('title', partes.join(' · '));
+
+      // Animação de entrada (única vez por sessão)
       if(!widget.classList.contains('estoque-mm-ready')){
-        requestAnimationFrame(()=>{
-          widget.classList.add('estoque-mm-ready');
-        });
+        requestAnimationFrame(()=>{ widget.classList.add('estoque-mm-ready'); });
       }
     } catch(err){
       console.warn('[estoque-mm] Falha ao atualizar:', err);
@@ -9413,11 +9366,8 @@ document.addEventListener('DOMContentLoaded', function() {
       if(elDias && elDias.textContent === '—'){
         elDias.textContent = 'indisp.';
       }
-      // Mesmo em erro, faz o fade-in pra não deixar elemento invisível travado
       if(widget && !widget.classList.contains('estoque-mm-ready')){
-        requestAnimationFrame(()=>{
-          widget.classList.add('estoque-mm-ready');
-        });
+        requestAnimationFrame(()=>{ widget.classList.add('estoque-mm-ready'); });
       }
     }
   }
