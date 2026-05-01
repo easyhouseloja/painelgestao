@@ -100,6 +100,82 @@
   .cat-badge.comp{background:rgba(34,211,238,0.12);color:var(--cat-comp);border:1px solid rgba(34,211,238,0.3);}
   .cat-badge.jantar{background:rgba(192,132,252,0.12);color:var(--cat-jantar);border:1px solid rgba(192,132,252,0.3);}
 
+  /* TIMELINE CHIPS — hover indica clicabilidade */
+  .timeline-chip[onclick]{cursor:pointer;}
+  .timeline-chip[onclick]:hover{transform:translateY(-2px);outline:1px solid rgba(255,255,255,0.18);outline-offset:1px;filter:brightness(1.15);}
+
+  /* EXPORT BUTTON */
+  .export-btn{font-size:11px;font-weight:700;color:var(--muted);background:transparent;border:1px solid var(--border);padding:7px 14px;border-radius:8px;cursor:pointer;letter-spacing:0.4px;text-transform:uppercase;transition:color 0.15s,border-color 0.15s,background 0.15s,transform 0.15s;display:inline-flex;align-items:center;gap:6px;line-height:1.2;font-family:inherit;}
+  .export-btn:hover{color:#22c98a;border-color:rgba(34,201,138,0.45);background:rgba(34,201,138,0.08);transform:translateY(-1px);}
+  .export-btn:active{transform:translateY(0);}
+
+  /* DATA-UPDATED PULSE — destaca elementos cujos números mudaram desde a última visita */
+  @keyframes data-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(34,201,138,0.55), 0 0 0 0 rgba(34,201,138,0.0); }
+    50%  { box-shadow: 0 0 0 6px rgba(34,201,138,0.18), 0 0 22px 4px rgba(34,201,138,0.30); }
+    100% { box-shadow: 0 0 0 0 rgba(34,201,138,0.0), 0 0 0 0 rgba(34,201,138,0.0); }
+  }
+  @keyframes data-pulse-down {
+    0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.55), 0 0 0 0 rgba(239,68,68,0.0); }
+    50%  { box-shadow: 0 0 0 6px rgba(239,68,68,0.18), 0 0 22px 4px rgba(239,68,68,0.30); }
+    100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.0), 0 0 0 0 rgba(239,68,68,0.0); }
+  }
+  .data-changed { animation: data-pulse 1.6s ease-out 2; border-radius:8px; }
+  .data-changed-down { animation: data-pulse-down 1.6s ease-out 2; border-radius:8px; }
+  .data-changed-banner {
+    display:none;align-items:center;gap:10px;padding:10px 16px;margin-bottom:18px;
+    background:linear-gradient(90deg, rgba(34,201,138,0.10), rgba(34,201,138,0.04));
+    border:1px solid rgba(34,201,138,0.35); border-radius:10px;
+    font-size:11.5px; color:#5eefc0; font-weight:600; letter-spacing:0.2px;
+  }
+  .data-changed-banner b { color:#22c98a; }
+  .data-changed-banner button {
+    margin-left:auto; background:transparent; border:1px solid rgba(34,201,138,0.35);
+    color:#22c98a; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:10px;
+    font-weight:700; letter-spacing:0.4px; text-transform:uppercase;
+  }
+  .data-changed-banner button:hover { background:rgba(34,201,138,0.08); }
+  @media (prefers-reduced-motion: reduce) {
+    .data-changed, .data-changed-down { animation:none !important; }
+  }
+
+  /* CURVA ABC BADGE — quadradinho ao lado do SKU */
+  .curva-badge{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:middle;margin-right:6px;flex-shrink:0;border:1px solid rgba(255,255,255,0.1);}
+  .curva-badge.curva-A{background:#22c98a;}
+  .curva-badge.curva-B{background:#f59e0b;}
+  .curva-badge.curva-C{background:#ef4444;}
+  .curva-badge.curva-none{background:#3a4156;}
+  .curva-letra{display:inline-block;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;letter-spacing:0.4px;vertical-align:middle;margin:0 4px 0 0;line-height:1.4;}
+  .curva-letra.curva-A{background:rgba(34,201,138,0.15);color:#22c98a;border:1px solid rgba(34,201,138,0.4);}
+  .curva-letra.curva-B{background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.4);}
+  .curva-letra.curva-C{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.4);}
+
+  /* SEÇÃO CURVA ABC */
+  .abc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+  .abc-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;position:relative;overflow:hidden;}
+  .abc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+  .abc-card.A::before{background:linear-gradient(90deg,#22c98a,#5eefc0);}
+  .abc-card.B::before{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+  .abc-card.C::before{background:linear-gradient(90deg,#ef4444,#f87171);}
+  .abc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .abc-letra-big{font-family:'Syne',sans-serif;font-weight:800;font-size:32px;line-height:1;width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+  .abc-card.A .abc-letra-big{background:rgba(34,201,138,0.15);color:#22c98a;}
+  .abc-card.B .abc-letra-big{background:rgba(245,158,11,0.15);color:#f59e0b;}
+  .abc-card.C .abc-letra-big{background:rgba(239,68,68,0.15);color:#ef4444;}
+  .abc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;}
+  .abc-sub{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;}
+  .abc-stats{display:flex;flex-direction:column;gap:6px;font-size:12px;}
+  .abc-stat-row{display:flex;justify-content:space-between;color:var(--muted);}
+  .abc-stat-row b{font-family:'Syne',sans-serif;font-weight:700;color:var(--text);}
+  .abc-card.A .abc-stat-row b.hi{color:#22c98a;}
+  .abc-card.B .abc-stat-row b.hi{color:#f59e0b;}
+  .abc-card.C .abc-stat-row b.hi{color:#ef4444;}
+  .abc-bar-bg{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:10px;}
+  .abc-bar-fill{height:100%;border-radius:3px;transition:width 0.8s ease;}
+  .abc-card.A .abc-bar-fill{background:linear-gradient(90deg,#22c98a,#5eefc0);}
+  .abc-card.B .abc-bar-fill{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+  .abc-card.C .abc-bar-fill{background:linear-gradient(90deg,#ef4444,#f87171);}
+
   /* COVERAGE-DAYS SECTION */
   .cov-days-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:14px;margin-bottom:24px;}
   .cov-days-cards{display:grid;grid-template-columns:1fr;gap:10px;}
@@ -180,7 +256,7 @@
   .empty-lotes-text{font-size:12px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.6;}
 
   /* TOP 10 GAP */
-  .top10-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:grid;grid-template-columns:32px 1fr 80px 80px 80px 100px;align-items:center;gap:12px;transition:border-color 0.15s;margin-bottom:8px;}
+  .top10-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:grid;grid-template-columns:32px 1fr 70px 75px 75px 70px 70px 85px;align-items:center;gap:12px;transition:border-color 0.15s;margin-bottom:8px;}
   .top10-row:hover{border-color:#353b52;}
   .top10-row.crit{border-color:rgba(239,68,68,0.3);}
   .top10-rank{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--muted);text-align:center;}
@@ -199,7 +275,7 @@
   .section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
   .section-title span{color:var(--muted);font-weight:400;font-size:13px;font-family:'DM Sans';}
   .alert-cards{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
-  .alert-row{background:var(--surface);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:16px 20px;display:grid;grid-template-columns:1fr 110px 110px 110px 100px;align-items:center;gap:14px;transition:border-color 0.2s;}
+  .alert-row{background:var(--surface);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:16px 20px;display:grid;grid-template-columns:1fr 85px 90px 85px 85px 85px 110px;align-items:center;gap:14px;transition:border-color 0.2s;}
   .alert-row:hover{border-color:rgba(239,68,68,0.4);}
   .prod-name{font-weight:600;font-size:13px;}.prod-var{font-size:11px;color:var(--muted);margin-top:3px;}
   .col-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;}
@@ -263,8 +339,74 @@
   .var-mini-fill{height:100%;border-radius:3px;}
   .empty-table{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;}
   footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);}
-  @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.cat-grid{grid-template-columns:1fr;}.cov-days-grid{grid-template-columns:1fr;}.top10-row{grid-template-columns:32px 1fr 60px 80px 90px;}}
+  @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.cat-grid{grid-template-columns:1fr;}.cov-days-grid{grid-template-columns:1fr;}.top10-row{grid-template-columns:32px 1fr 60px 65px 65px 60px 60px 75px;}}
   @media(max-width:900px){main{padding:16px;}.status-grid{grid-template-columns:1fr;}.alert-row{grid-template-columns:1fr 1fr;}.top10-row{grid-template-columns:32px 1fr 90px;}.top10-row .col-hide-sm{display:none;}}
+
+  /* ═════════ PRINT / PDF ═════════
+     Otimiza pra impressão e exportação como PDF:
+     - fundo branco, texto preto
+     - esconde controles interativos (botões, busca, filtros, painel direito)
+     - expande tabelas (sem max-height/scroll)
+     - quebras de página inteligentes nas seções
+  */
+  @media print {
+    @page { size: A4 landscape; margin: 12mm; }
+    *, *::before, *::after { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+    html, body { background:#fff !important; color:#1a1a1a !important; font-size:9.5pt; }
+    body { padding:0 !important; }
+    main { padding:0 !important; max-width:none !important; }
+
+    /* Esconde elementos interativos */
+    .no-print, .filter-bar, .search-box, .tab, .export-btn,
+    #dias-filter-indicator, #cobertura-clear-filter-btn,
+    #cobertura-skus-filtrados, .timeline-chip[onclick]:not([data-faixa]),
+    button { display:none !important; }
+
+    /* Cards e seções: borda sutil, sem sombra/glow */
+    .kpi-card, .cat-card, .top10-row, .abc-card, #cobertura-detalhe-card,
+    .table-wrap, .status-grid > div { background:#fff !important; box-shadow:none !important; border:1px solid #ccc !important; color:#1a1a1a !important; page-break-inside:avoid; }
+    .kpi-value, .cat-num, .top10-rank, h1, h2, h3 { color:#1a1a1a !important; }
+
+    /* Cores funcionais (status) preservadas */
+    .ok, [class*=" ok"] { color:#1a7f4a !important; }
+    .warn, [class*=" warn"] { color:#b3640a !important; }
+    .danger, [class*=" danger"] { color:#a3201a !important; }
+    .pct-badge.ok    { background:#d6f5e3 !important; color:#1a7f4a !important; border:1px solid #1a7f4a !important; }
+    .pct-badge.warn  { background:#fff0d6 !important; color:#b3640a !important; border:1px solid #b3640a !important; }
+    .pct-badge.danger{ background:#fadbd8 !important; color:#a3201a !important; border:1px solid #a3201a !important; }
+
+    /* Tabela: expande totalmente, sem scroll, listras pra leitura */
+    .table-wrap { overflow:visible !important; max-height:none !important; }
+    table { font-size:8.5pt; border-collapse:collapse; width:100%; }
+    table th, table td { border:1px solid #ddd !important; padding:4px 6px !important; color:#1a1a1a !important; }
+    thead { background:#f0f2f5 !important; }
+    thead tr { display:table-row !important; }
+    thead th { color:#333 !important; font-weight:700; }
+    tr.row-alert td { background:#fff5f5 !important; }
+    tr.row-ok td    { background:#f5fff8 !important; }
+    table tbody tr:nth-child(even) td { background:#fafafa !important; }
+    table tbody tr:nth-child(even).row-alert td { background:#fff0f0 !important; }
+
+    /* Badges, código, curva: preto puro */
+    .cat-badge, .cod-tag, .curva-letra { background:#f0f0f0 !important; color:#1a1a1a !important; border:1px solid #999 !important; }
+    .curva-letra.curva-A { background:#d6f5e3 !important; color:#1a7f4a !important; border-color:#1a7f4a !important; }
+    .curva-letra.curva-B { background:#fff0d6 !important; color:#b3640a !important; border-color:#b3640a !important; }
+    .curva-letra.curva-C { background:#fadbd8 !important; color:#a3201a !important; border-color:#a3201a !important; }
+
+    /* Quebras de página */
+    .section-title { page-break-after:avoid; margin-top:16pt; }
+    .table-wrap, .top10-list, .alert-cards, .cat-grid, .abc-grid { page-break-inside:avoid; }
+    tr { page-break-inside:avoid; }
+    thead { display:table-header-group; }  /* repete cabeçalho em cada página */
+    tfoot { display:table-row-group; }
+
+    /* Donut: deixa visível mas sem cores escuras de fundo */
+    svg circle { stroke:#888 !important; }
+    svg circle[stroke="var(--surface2)"] { stroke:#eee !important; }
+
+    /* Footer com info de impressão */
+    footer { border-top:1px solid #ccc !important; color:#666 !important; }
+  }
 </style>
 
 <!-- Firebase Realtime Database (mesma config do painel principal) -->
@@ -293,6 +435,8 @@
     }
   })();
 </script>
+<!-- SheetJS pra exportar Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <header>
@@ -311,6 +455,13 @@
 </header>
 <main>
 
+  <!-- BANNER: dados foram atualizados (aparece quando dataAtualizacao mudou desde a última visita) -->
+  <div id="dataChangedBanner" class="data-changed-banner no-print">
+    <span style="font-size:16px;line-height:1;">✨</span>
+    <span><b>Dados atualizados!</b> <span id="dataChangedDetails">—</span></span>
+    <button onclick="document.getElementById('dataChangedBanner').style.display='none';">✕ Fechar</button>
+  </div>
+
   <!-- KPI GRID 8 cards -->
   <div class="kpi-grid">
     <div class="kpi-card blue"><div class="kpi-icon">📋</div><div class="kpi-label">Total Solicitado</div><div class="kpi-value blue" id="kpi-sol">—</div><div class="kpi-sub" id="kpi-sol-sub">—</div></div>
@@ -320,23 +471,41 @@
     <div class="kpi-card green"><div class="kpi-icon">🟢</div><div class="kpi-label">SKUs Atendidos</div><div class="kpi-value green" id="kpi-sku-ok">—</div><div class="kpi-sub" id="kpi-sku-ok-sub">—</div></div>
     <div class="kpi-card amber"><div class="kpi-icon">🟡</div><div class="kpi-label">SKUs Parciais</div><div class="kpi-value amber" id="kpi-sku-warn">—</div><div class="kpi-sub" id="kpi-sku-warn-sub">—</div></div>
     <div class="kpi-card red"><div class="kpi-icon">🔴</div><div class="kpi-label">SKUs Sem Reserva</div><div class="kpi-value red" id="kpi-sku-zero">—</div><div class="kpi-sub" id="kpi-sku-zero-sub">—</div></div>
-    <div class="kpi-card cyan"><div class="kpi-icon">📅</div><div class="kpi-label">Atende os próximos</div><div class="kpi-value cyan" id="kpi-atende-prox">—</div><div class="kpi-sub" id="kpi-atende-prox-sub">—</div>
-      <!-- Monitor de divergência diária (preenchido pelo script) -->
-      <div id="monitor-div-wrap" style="display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);align-items:center;gap:8px;flex-wrap:wrap;">
-        <span id="monitor-div-chip" style="font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:8px;letter-spacing:0.2px;line-height:1.3;display:inline-flex;align-items:center;gap:5px;color:var(--ok);background:var(--ok-soft);border:1px solid rgba(34,201,138,0.3);">
-          <span id="monitor-div-icon" style="font-size:12px;line-height:1;">✓</span>
-          <span id="monitor-div-text">—</span>
-        </span>
-        <button id="monitor-div-btn" type="button" onclick="window._exportarComparativoMM&&window._exportarComparativoMM()"
-                style="display:none;font-size:10px;font-weight:700;color:#fff;background:linear-gradient(135deg,#22c98a,#16a06b);border:none;padding:5px 11px;border-radius:7px;cursor:pointer;letter-spacing:0.4px;text-transform:uppercase;line-height:1.2;align-items:center;gap:5px;box-shadow:0 1px 3px rgba(0,0,0,0.25);transition:transform 0.15s,box-shadow 0.15s;"
-                onmouseenter="this.style.transform='translateY(-1px)';this.style.boxShadow='0 3px 10px rgba(34,201,138,0.4)';"
-                onmouseleave="this.style.transform='';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.25)';"
-                title="Baixar comparativo SKU a SKU em Excel">
-          📊 Excel
-        </button>
+    <div class="kpi-card cyan"><div class="kpi-icon">⏳</div><div class="kpi-label">Pior caso · atende</div><div class="kpi-value cyan" id="kpi-atende-prox">—</div><div class="kpi-sub" id="kpi-atende-prox-sub">—</div></div>
+  </div>
+
+  <!-- ═══ ILHA: ANÁLISE DE COBERTURA INDIVIDUAL ═══
+       Detalhamento por SKU: pior caso + timeline de cobertura + monitor de divergência.
+       Os chips da timeline são clicáveis e filtram a tabela embaixo. -->
+  <div id="cobertura-detalhe-card" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:24px;">
+    <!-- Conteúdo dividido em 2 colunas desde o TOPO: esquerda = título+donut+chips · direita = SKUs filtrados -->
+    <div style="display:grid;grid-template-columns:minmax(320px,1.05fr) minmax(320px,1fr);gap:24px;align-items:start;">
+      <!-- ESQUERDA: título + donut/legenda + chips -->
+      <div style="min-width:0;">
+        <div style="margin-bottom:14px;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;">🎯</span>
+            <span>Análise individual de cobertura</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;" id="cobertura-detalhe-sub">—</div>
+        </div>
+        <div id="cobertura-detalhe-timeline" style="display:none;"></div>
+      </div>
+      <!-- DIREITA: SKUs filtrados pela faixa selecionada -->
+      <div id="cobertura-skus-filtrados" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;min-width:0;">
+        <div id="cobertura-skus-filtrados-header" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+          <div style="font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;">SKUs da faixa selecionada</div>
+          <div id="cobertura-skus-filtrados-count" style="font-size:10px;font-weight:700;color:var(--muted);"></div>
+        </div>
+        <div id="cobertura-skus-filtrados-body" style="flex:1;overflow-y:auto;max-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+          <div style="font-size:11.5px;color:var(--muted);line-height:1.6;padding:12px;">
+            <div style="font-size:24px;opacity:0.4;margin-bottom:6px;">👈</div>
+            Selecione uma faixa de dias à esquerda<br>pra ver os SKUs aqui
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </div><!-- /cobertura-detalhe-card -->
 
   <!-- COVERAGE -->
   <div class="coverage-card">
@@ -371,6 +540,10 @@
   <div class="section-title">📂 Resumo por Categoria <span>clique no card para filtrar a tabela abaixo</span></div>
   <div class="cat-grid" id="cat-grid"></div>
 
+  <!-- CURVA ABC DO FORECAST -->
+  <div class="section-title">📊 Curva ABC do Forecast <span>classificação por demanda · A = top 80%, B = próximos 15%, C = restantes 5%</span></div>
+  <div class="abc-grid" id="abc-grid"></div>
+
   <!-- COBERTURA COM BASE NO FORECAST DE MAIO -->
   <div class="section-title">📅 Cobertura com Base no Forecast de Maio <span id="cob-fc-sub">considera apenas SKUs presentes na carga mãe E no forecast</span></div>
 
@@ -400,9 +573,9 @@
     </div>
     <div class="ctx-divider"></div>
     <div class="ctx-item ctx-atende-block">
-      <div class="ctx-label">Reserva atende</div>
-      <div class="ctx-value" id="ctx-atende" style="color: var(--brand2)">—</div>
-      <div class="ctx-hint" id="ctx-atende-hint">—</div>
+      <div class="ctx-label">Dias restantes do forecast</div>
+      <div class="ctx-value" id="ctx-dias-restantes" style="color:#ffa05c">—</div>
+      <div class="ctx-hint" id="ctx-dias-restantes-hint">—</div>
     </div>
   </div>
 
@@ -469,7 +642,7 @@
   </div>
 
   <!-- TOP 10 GAP -->
-  <div class="section-title" id="section-top10">🚨 Prioridade de Reabastecimento <span>10 SKUs com a maior diferença entre demanda e reserva</span></div>
+  <div class="section-title" id="section-top10">🚨 Prioridade de Reabastecimento <span>10 SKUs que vão zerar primeiro (menor cobertura em dias)</span></div>
   <div id="top10List" style="margin-bottom:28px;"></div>
 
   <!-- VARIAÇÕES EM ALERTA -->
@@ -477,7 +650,23 @@
   <div class="alert-cards" id="alertCards"></div>
 
   <!-- FULL TABLE -->
-  <div class="section-title">📋 Todos os Produtos</div>
+  <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <span>📋 Todos os Produtos</span>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
+      <button onclick="exportarTabelaExcel()" type="button" class="export-btn" title="Exporta a tabela atual (respeitando filtros) pra Excel">
+        📊 Exportar Excel
+      </button>
+      <button onclick="window.print()" type="button" class="export-btn" title="Imprimir ou salvar como PDF">
+        🖨 Imprimir
+      </button>
+    </div>
+  </div>
+  <!-- Indicador de filtro ativo por faixa de dias (aparece quando clica num chip da timeline) -->
+  <div id="dias-filter-indicator" style="display:none;align-items:center;gap:8px;padding:8px 12px;border:1px solid;border-radius:8px;margin-bottom:12px;font-size:11px;font-weight:600;line-height:1.3;">
+    <span style="font-size:13px;">🎯</span>
+    <span>Filtrando por cobertura: <b class="dias-filter-label">—</b></span>
+    <button onclick="clearDiasFilter()" style="margin-left:auto;background:transparent;border:1px solid currentColor;color:inherit;padding:3px 9px;border-radius:5px;cursor:pointer;font-size:10px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;">✕ Limpar filtro</button>
+  </div>
   <div class="filter-bar">
     <div class="filter-tabs">
       <span class="filter-label">Status:</span>
@@ -501,9 +690,10 @@
     <table>
       <thead><tr>
         <th onclick="sortBy('produto')">Produto ↕</th>
-        <th onclick="sortBy('solicitado')">Solicitado ↕</th>
+        <th onclick="sortBy('solicitadoCargaMae')">Sol. Carga Mãe ↕</th>
+        <th onclick="sortBy('solicitadoForecast')">Sol. Forecast ↕</th>
+        <th>Média/dia</th>
         <th onclick="sortBy('reservado')">Reservado ↕</th>
-        <th onclick="sortBy('pendente')">Pendente ↕</th>
         <th onclick="sortBy('pct')" style="min-width:200px">% Reservado ↕</th>
         <th onclick="sortBy('dias')">Cobertura ↕</th>
         <th>Variações</th>
@@ -515,13 +705,390 @@
 <footer>Dashboard gerado automaticamente · Carga Mãe MADEIRA MADEIRA · Marketplace · Forecast Maio/2026 · Reserva e análises em <span id="footer-data">—</span></footer>
 
 <script>
-const BUNDLE = {"stats": {"totalSolicitado": 3293, "totalReservado": 2806, "totalPendente": 487, "pctGeral": 85.2, "gapTotal": 487, "nProdutos": 37, "nVariacoes": 112, "nCompletos": 10, "nParcial": 26, "nZero": 1, "nAlertVar": 2, "skuAtendido": 61, "skuParcial": 49, "skuSemReserva": 2, "diasMedia": 24.7, "dataAtualizacao": "29/04/2026", "fcTotalSolicitado": 4802, "fcTotalReservado": 2755, "fcTotalProdutos": 35, "fcTotalVariacoes": 103, "diasMes": 31, "demandaDiariaGlobal": 154.9, "diasAtendeGlobalFc": 17.8, "skuAtendeMes": 42, "skuParcialFc": 61, "skuSemCobertura": 0, "mesPeriodo": "Maio/2026", "mesesSeq": [{"nome": "Maio", "ano": 2026, "dias": 31}, {"nome": "Junho", "ano": 2026, "dias": 30}, {"nome": "Julho", "ano": 2026, "dias": 31}]}, "data": [{"codItem": 2405, "produto": "GUARDA ROUPA TORONTO 2 PTS PLUS", "categoria": "GR", "solicitado": 80, "reservado": 0, "pendente": 80, "pct": 0.0, "alerta": true, "concluido": false, "mediaSemanal": 20.0, "dias": 0.0, "gap": 80, "variacoes": [{"codMasc": 13689, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 46, "reservado": 0, "pendente": 46, "pct": 0.0, "mediaSemanal": 11.5, "dias": 0.0, "gap": 46}, {"codMasc": 13690, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 34, "reservado": 0, "pendente": 34, "pct": 0.0, "mediaSemanal": 8.5, "dias": 0.0, "gap": 34}]}, {"codItem": 74197, "produto": "MESA DE CABECEIRA BAIAO   2021  3 GAV", "categoria": "Complementos", "solicitado": 35, "reservado": 18, "pendente": 17, "pct": 51.4, "alerta": false, "concluido": false, "mediaSemanal": 8.75, "dias": 14.4, "gap": 17, "variacoes": [{"codMasc": 32906, "variacao": "AMENDOA CLEAN", "solicitado": 35, "reservado": 18, "pendente": 17, "pct": 51.4, "mediaSemanal": 8.75, "dias": 14.4, "gap": 17}]}, {"codItem": 73177, "produto": "SAPATEIRA ESTHELA 2024", "categoria": "Complementos", "solicitado": 47, "reservado": 26, "pendente": 21, "pct": 55.3, "alerta": false, "concluido": false, "mediaSemanal": 11.75, "dias": 15.5, "gap": 21, "variacoes": [{"codMasc": 23848, "variacao": "BRANCO", "solicitado": 20, "reservado": 10, "pendente": 10, "pct": 50.0, "mediaSemanal": 5.0, "dias": 14.0, "gap": 10}, {"codMasc": 23849, "variacao": "FRASSINO", "solicitado": 16, "reservado": 6, "pendente": 10, "pct": 37.5, "mediaSemanal": 4.0, "dias": 10.5, "gap": 10}, {"codMasc": 23850, "variacao": "AMENDOA CLEAN", "solicitado": 11, "reservado": 10, "pendente": 1, "pct": 90.9, "mediaSemanal": 2.75, "dias": 25.5, "gap": 1}]}, {"codItem": 83249, "produto": "MESA DE CABECEIRA LOOP 2024", "categoria": "Complementos", "solicitado": 102, "reservado": 72, "pendente": 30, "pct": 70.6, "alerta": false, "concluido": false, "mediaSemanal": 25.5, "dias": 19.8, "gap": 30, "variacoes": [{"codMasc": 31792, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 100, "reservado": 70, "pendente": 30, "pct": 70.0, "mediaSemanal": 25.0, "dias": 19.6, "gap": 30}, {"codMasc": 67184, "variacao": "AMENDOA CLEAN", "solicitado": 2, "reservado": 2, "pendente": 0, "pct": 100.0, "mediaSemanal": 0.5, "dias": 28.0, "gap": 0}]}, {"codItem": 81929, "produto": "COMODA LOOP 2024 II", "categoria": "Complementos", "solicitado": 179, "reservado": 129, "pendente": 50, "pct": 72.1, "alerta": false, "concluido": false, "mediaSemanal": 44.75, "dias": 20.2, "gap": 50, "variacoes": [{"codMasc": 32963, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 130, "reservado": 80, "pendente": 50, "pct": 61.5, "mediaSemanal": 32.5, "dias": 17.2, "gap": 50}, {"codMasc": 66449, "variacao": "AMENDOA CLEAN", "solicitado": 49, "reservado": 49, "pendente": 0, "pct": 100.0, "mediaSemanal": 12.25, "dias": 28.0, "gap": 0}]}, {"codItem": 73139, "produto": "CAMA SOLTEIRO 0,90 ATHENAS 2022", "categoria": "Complementos", "solicitado": 188, "reservado": 145, "pendente": 43, "pct": 77.1, "alerta": false, "concluido": false, "mediaSemanal": 47.0, "dias": 21.6, "gap": 43, "variacoes": [{"codMasc": 24414, "variacao": "AMENDOA CL/OFF WHI/A#C/CAMA AUXILIAR", "solicitado": 59, "reservado": 23, "pendente": 36, "pct": 39.0, "mediaSemanal": 14.75, "dias": 10.9, "gap": 36}, {"codMasc": 24417, "variacao": "BRANCO#C/CAMA AUXILIAR", "solicitado": 56, "reservado": 49, "pendente": 7, "pct": 87.5, "mediaSemanal": 14.0, "dias": 24.5, "gap": 7}, {"codMasc": 24416, "variacao": "BRANCO#S/CAMA AUXILIAR", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0, "mediaSemanal": 7.5, "dias": 28.0, "gap": 0}, {"codMasc": 24420, "variacao": "FRASSINO/OFF WHITE/F#C/CAMA AUXILIAR", "solicitado": 23, "reservado": 23, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.75, "dias": 28.0, "gap": 0}, {"codMasc": 24415, "variacao": "AMENDOA CL/OFF WHI/A#S/CAMA AUXILIAR", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}]}, {"codItem": 2083, "produto": "GUARDA ROUPA ALONZO 4 PTS 2021", "categoria": "GR", "solicitado": 556, "reservado": 439, "pendente": 117, "pct": 79.0, "alerta": false, "concluido": false, "mediaSemanal": 139.0, "dias": 22.1, "gap": 117, "variacoes": [{"codMasc": 12490, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 150, "reservado": 120, "pendente": 30, "pct": 80.0, "mediaSemanal": 37.5, "dias": 22.4, "gap": 30}, {"codMasc": 12478, "variacao": "AMENDOA CLEAN/BRANCO#S/ESP#S/PES", "solicitado": 86, "reservado": 60, "pendente": 26, "pct": 69.8, "mediaSemanal": 21.5, "dias": 19.5, "gap": 26}, {"codMasc": 12477, "variacao": "AMENDOA CLEAN/BRANCO#S/ESP#C/PES", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0, "mediaSemanal": 15.0, "dias": 28.0, "gap": 0}, {"codMasc": 12482, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 52, "reservado": 42, "pendente": 10, "pct": 80.8, "mediaSemanal": 13.0, "dias": 22.6, "gap": 10}, {"codMasc": 12481, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#C/PES", "solicitado": 51, "reservado": 41, "pendente": 10, "pct": 80.4, "mediaSemanal": 12.75, "dias": 22.5, "gap": 10}, {"codMasc": 12474, "variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 34, "reservado": 21, "pendente": 13, "pct": 61.8, "mediaSemanal": 8.5, "dias": 17.3, "gap": 13}, {"codMasc": 12489, "variacao": "BRANCO#S/ESP#C/PES", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0, "mediaSemanal": 7.5, "dias": 28.0, "gap": 0}, {"codMasc": 12472, "variacao": "AMENDOA CLEAN#C/ESP#C/PES", "solicitado": 15, "reservado": 10, "pendente": 5, "pct": 66.7, "mediaSemanal": 3.75, "dias": 18.7, "gap": 5}, {"codMasc": 12473, "variacao": "AMENDOA CLEAN#S/ESP#C/PES", "solicitado": 13, "reservado": 5, "pendente": 8, "pct": 38.5, "mediaSemanal": 3.25, "dias": 10.8, "gap": 8}, {"codMasc": 12491, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12483, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#S/PES", "solicitado": 10, "reservado": 4, "pendente": 6, "pct": 40.0, "mediaSemanal": 2.5, "dias": 11.2, "gap": 6}, {"codMasc": 12475, "variacao": "AMENDOA CLEAN#C/ESP#S/PES", "solicitado": 10, "reservado": 5, "pendente": 5, "pct": 50.0, "mediaSemanal": 2.5, "dias": 14.0, "gap": 5}, {"codMasc": 12488, "variacao": "BRANCO#C/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12476, "variacao": "AMENDOA CLEAN/BRANCO#C/ESP#C/PES", "solicitado": 9, "reservado": 9, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.25, "dias": 28.0, "gap": 0}, {"codMasc": 12480, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#C/PES", "solicitado": 8, "reservado": 4, "pendente": 4, "pct": 50.0, "mediaSemanal": 2.0, "dias": 14.0, "gap": 4}, {"codMasc": 12479, "variacao": "AMENDOA CLEAN/BRANCO#C/ESP#S/PES", "solicitado": 8, "reservado": 8, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.0, "dias": 28.0, "gap": 0}]}, {"codItem": 84932, "produto": "CAMA LOPAS SOLT 0,90 LOOP 2025", "categoria": "Complementos", "solicitado": 106, "reservado": 87, "pendente": 19, "pct": 82.1, "alerta": false, "concluido": false, "mediaSemanal": 26.5, "dias": 23.0, "gap": 19, "variacoes": [{"codMasc": 36951, "variacao": "AMENDOA CLEAN#CORANO BEGE#C/CAMA AUXILIAR", "solicitado": 47, "reservado": 38, "pendente": 9, "pct": 80.9, "mediaSemanal": 11.75, "dias": 22.6, "gap": 9}, {"codMasc": 36952, "variacao": "BRANCO#KORINO BRANCO#C/CAMA AUXILIAR", "solicitado": 20, "reservado": 10, "pendente": 10, "pct": 50.0, "mediaSemanal": 5.0, "dias": 14.0, "gap": 10}, {"codMasc": 36950, "variacao": "AMENDOA CLEAN#CORANO BEGE#S/CAMA AUXILIAR", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}, {"codMasc": 36953, "variacao": "BRANCO#KORINO BRANCO#S/CAMA AUXILIAR", "solicitado": 19, "reservado": 19, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.75, "dias": 28.0, "gap": 0}]}, {"codItem": 73278, "produto": "COMODA TORONTO 2021 8GAV 2 PTS", "categoria": "Complementos", "solicitado": 28, "reservado": 23, "pendente": 5, "pct": 82.1, "alerta": false, "concluido": false, "mediaSemanal": 7.0, "dias": 23.0, "gap": 5, "variacoes": [{"codMasc": 32708, "variacao": "BRANCO", "solicitado": 18, "reservado": 16, "pendente": 2, "pct": 88.9, "mediaSemanal": 4.5, "dias": 24.9, "gap": 2}, {"codMasc": 32707, "variacao": "AMENDOA CLEAN", "solicitado": 10, "reservado": 7, "pendente": 3, "pct": 70.0, "mediaSemanal": 2.5, "dias": 19.6, "gap": 3}]}, {"codItem": 73284, "produto": "COMODA VEDRA 7GAV 2 PTS", "categoria": "Complementos", "solicitado": 74, "reservado": 61, "pendente": 13, "pct": 82.4, "alerta": false, "concluido": false, "mediaSemanal": 18.5, "dias": 23.1, "gap": 13, "variacoes": [{"codMasc": 15999, "variacao": "FRASSINO/OFF WHITE", "solicitado": 31, "reservado": 31, "pendente": 0, "pct": 100.0, "mediaSemanal": 7.75, "dias": 28.0, "gap": 0}, {"codMasc": 23859, "variacao": "BRANCO", "solicitado": 19, "reservado": 13, "pendente": 6, "pct": 68.4, "mediaSemanal": 4.75, "dias": 19.2, "gap": 6}, {"codMasc": 23857, "variacao": "AMENDOA CLEAN", "solicitado": 17, "reservado": 11, "pendente": 6, "pct": 64.7, "mediaSemanal": 4.25, "dias": 18.1, "gap": 6}, {"codMasc": 23858, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 7, "reservado": 6, "pendente": 1, "pct": 85.7, "mediaSemanal": 1.75, "dias": 24.0, "gap": 1}]}, {"codItem": 84821, "produto": "GUARDA ROUPA LOPAS 03 PTS OLLIE II 2025", "categoria": "GR", "solicitado": 84, "reservado": 73, "pendente": 11, "pct": 86.9, "alerta": false, "concluido": false, "mediaSemanal": 21.0, "dias": 24.3, "gap": 11, "variacoes": [{"codMasc": 30742, "variacao": "AMENDOA CL/OFF WHI/A#S/2PTS GLASS#C/PES", "solicitado": 22, "reservado": 17, "pendente": 5, "pct": 77.3, "mediaSemanal": 5.5, "dias": 21.6, "gap": 5}, {"codMasc": 30739, "variacao": "AMENDOA CL/OFF WHI/A#C/2 PTS GLASS#C/PES", "solicitado": 21, "reservado": 15, "pendente": 6, "pct": 71.4, "mediaSemanal": 5.25, "dias": 20.0, "gap": 6}, {"codMasc": 30741, "variacao": "AMENDOA CL/OFF WHI/A#S/2PTS GLASS#S/PES", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}, {"codMasc": 30745, "variacao": "FRASSINO/OFF WHITE/F#S/2PTS GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 30744, "variacao": "FRASSINO/OFF WHITE/F#C/2 PTS GLASS#S/PES", "solicitado": 9, "reservado": 9, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.25, "dias": 28.0, "gap": 0}, {"codMasc": 30743, "variacao": "FRASSINO/OFF WHITE/F#C/2 PTS GLASS#C/PES", "solicitado": 2, "reservado": 2, "pendente": 0, "pct": 100.0, "mediaSemanal": 0.5, "dias": 28.0, "gap": 0}]}, {"codItem": 84900, "produto": "CAMA LOPAS CASAL 1,40 LOOP 2025", "categoria": "Complementos", "solicitado": 77, "reservado": 68, "pendente": 9, "pct": 88.3, "alerta": false, "concluido": false, "mediaSemanal": 19.25, "dias": 24.7, "gap": 9, "variacoes": [{"codMasc": 31279, "variacao": "AMENDOA CLEAN#CORANO BEGE", "solicitado": 45, "reservado": 36, "pendente": 9, "pct": 80.0, "mediaSemanal": 11.25, "dias": 22.4, "gap": 9}, {"codMasc": 31278, "variacao": "AMENDOA CLEAN#BOUCLE SALVIA", "solicitado": 19, "reservado": 19, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.75, "dias": 28.0, "gap": 0}, {"codMasc": 31280, "variacao": "BRANCO#KORINO BRANCO", "solicitado": 13, "reservado": 13, "pendente": 0, "pct": 100.0, "mediaSemanal": 3.25, "dias": 28.0, "gap": 0}]}, {"codItem": 72565, "produto": "GUARDA ROUPA ZEINE 2 PTS 2024", "categoria": "GR", "solicitado": 93, "reservado": 83, "pendente": 10, "pct": 89.2, "alerta": false, "concluido": false, "mediaSemanal": 23.25, "dias": 25.0, "gap": 10, "variacoes": [{"codMasc": 13283, "variacao": "BRANCO#C/1 PT GLASS#S/PES", "solicitado": 42, "reservado": 37, "pendente": 5, "pct": 88.1, "mediaSemanal": 10.5, "dias": 24.7, "gap": 5}, {"codMasc": 13279, "variacao": "AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES", "solicitado": 31, "reservado": 26, "pendente": 5, "pct": 83.9, "mediaSemanal": 7.75, "dias": 23.5, "gap": 5}, {"codMasc": 13280, "variacao": "BRANCO#C/1 PT GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 13276, "variacao": "AMENDOA CL/OFF WHI/A#C/1 PT GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}]}, {"codItem": 73281, "produto": "COMODA URBAN 2019 8GAV", "categoria": "Complementos", "solicitado": 168, "reservado": 151, "pendente": 17, "pct": 89.9, "alerta": false, "concluido": false, "mediaSemanal": 42.0, "dias": 25.2, "gap": 17, "variacoes": [{"codMasc": 23866, "variacao": "BRANCO", "solicitado": 100, "reservado": 90, "pendente": 10, "pct": 90.0, "mediaSemanal": 25.0, "dias": 25.2, "gap": 10}, {"codMasc": 23865, "variacao": "AMENDOA CLEAN", "solicitado": 68, "reservado": 61, "pendente": 7, "pct": 89.7, "mediaSemanal": 17.0, "dias": 25.1, "gap": 7}]}, {"codItem": 273, "produto": "GUARDA ROUPA ALONZO 6 PTS 2021", "categoria": "GR", "solicitado": 346, "reservado": 315, "pendente": 31, "pct": 91.0, "alerta": false, "concluido": false, "mediaSemanal": 86.5, "dias": 25.5, "gap": 31, "variacoes": [{"codMasc": 12450, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "mediaSemanal": 25.0, "dias": 28.0, "gap": 0}, {"codMasc": 12442, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 69, "reservado": 63, "pendente": 6, "pct": 91.3, "mediaSemanal": 17.25, "dias": 25.6, "gap": 6}, {"codMasc": 12439, "variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0, "mediaSemanal": 15.0, "dias": 28.0, "gap": 0}, {"codMasc": 12441, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#C/PES", "solicitado": 20, "reservado": 10, "pendente": 10, "pct": 50.0, "mediaSemanal": 5.0, "dias": 14.0, "gap": 10}, {"codMasc": 12443, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#S/PES", "solicitado": 20, "reservado": 10, "pendente": 10, "pct": 50.0, "mediaSemanal": 5.0, "dias": 14.0, "gap": 10}, {"codMasc": 12449, "variacao": "BRANCO#S/ESP#C/PES", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0, "mediaSemanal": 3.75, "dias": 28.0, "gap": 0}, {"codMasc": 12451, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 12, "reservado": 12, "pendente": 0, "pct": 100.0, "mediaSemanal": 3.0, "dias": 28.0, "gap": 0}, {"codMasc": 12437, "variacao": "AMENDOA CLEAN#S/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12448, "variacao": "BRANCO#C/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12438, "variacao": "AMENDOA CLEAN#C/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12436, "variacao": "AMENDOA CLEAN#C/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 12440, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#C/PES", "solicitado": 10, "reservado": 5, "pendente": 5, "pct": 50.0, "mediaSemanal": 2.5, "dias": 14.0, "gap": 5}]}, {"codItem": 73275, "produto": "COMODA HORIZONTAL MAGGIORE NEW 6GAV", "categoria": "Complementos", "solicitado": 84, "reservado": 77, "pendente": 7, "pct": 91.7, "alerta": false, "concluido": false, "mediaSemanal": 21.0, "dias": 25.7, "gap": 7, "variacoes": [{"codMasc": 23853, "variacao": "BRANCO", "solicitado": 48, "reservado": 43, "pendente": 5, "pct": 89.6, "mediaSemanal": 12.0, "dias": 25.1, "gap": 5}, {"codMasc": 23852, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}, {"codMasc": 23851, "variacao": "AMENDOA CLEAN", "solicitado": 16, "reservado": 14, "pendente": 2, "pct": 87.5, "mediaSemanal": 4.0, "dias": 24.5, "gap": 2}]}, {"codItem": 73173, "produto": "CAMA SOLTEIRO 0,90 REALI 2022", "categoria": "Complementos", "solicitado": 84, "reservado": 77, "pendente": 7, "pct": 91.7, "alerta": false, "concluido": false, "mediaSemanal": 21.0, "dias": 25.7, "gap": 7, "variacoes": [{"codMasc": 16516, "variacao": "BRANCO", "solicitado": 48, "reservado": 48, "pendente": 0, "pct": 100.0, "mediaSemanal": 12.0, "dias": 28.0, "gap": 0}, {"codMasc": 16515, "variacao": "AMENDOA CLEAN", "solicitado": 36, "reservado": 29, "pendente": 7, "pct": 80.6, "mediaSemanal": 9.0, "dias": 22.6, "gap": 7}]}, {"codItem": 73384, "produto": "MESA 0,90 CELEBRARE 2023", "categoria": "Sala de Jantar", "solicitado": 14, "reservado": 13, "pendente": 1, "pct": 92.9, "alerta": false, "concluido": false, "mediaSemanal": 3.5, "dias": 26.0, "gap": 1, "variacoes": [{"codMasc": 50466, "variacao": "AMENDOA CLEAN/OFF WH#S/VIDRO 900X900", "solicitado": 14, "reservado": 13, "pendente": 1, "pct": 92.9, "mediaSemanal": 3.5, "dias": 26.0, "gap": 1}]}, {"codItem": 85650, "produto": "CAMA CASAL LOPAS 1,60 FREETOWN 2025", "categoria": "Complementos", "solicitado": 14, "reservado": 13, "pendente": 1, "pct": 92.9, "alerta": false, "concluido": false, "mediaSemanal": 3.5, "dias": 26.0, "gap": 1, "variacoes": [{"codMasc": 49964, "variacao": "AMENDOA CLEAN/BRANCO#KOR.BRANCO C/LED", "solicitado": 14, "reservado": 13, "pendente": 1, "pct": 92.9, "mediaSemanal": 3.5, "dias": 26.0, "gap": 1}]}, {"codItem": 2082, "produto": "CAMA CASAL 1,40 ATHENAS 2022", "categoria": "Complementos", "solicitado": 79, "reservado": 74, "pendente": 5, "pct": 93.7, "alerta": false, "concluido": false, "mediaSemanal": 19.75, "dias": 26.2, "gap": 5, "variacoes": [{"codMasc": 15712, "variacao": "FRASSINO/OFF WHITE/F", "solicitado": 36, "reservado": 36, "pendente": 0, "pct": 100.0, "mediaSemanal": 9.0, "dias": 28.0, "gap": 0}, {"codMasc": 15707, "variacao": "AMENDOA CL/OFF WHI/A", "solicitado": 26, "reservado": 21, "pendente": 5, "pct": 80.8, "mediaSemanal": 6.5, "dias": 22.6, "gap": 5}, {"codMasc": 15710, "variacao": "BRANCO", "solicitado": 17, "reservado": 17, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.25, "dias": 28.0, "gap": 0}]}, {"codItem": 263, "produto": "MESA 1,20 ATHENAS BR", "categoria": "Sala de Jantar", "solicitado": 24, "reservado": 23, "pendente": 1, "pct": 95.8, "alerta": false, "concluido": false, "mediaSemanal": 6.0, "dias": 26.8, "gap": 1, "variacoes": [{"codMasc": 15492, "variacao": "AMENDOA CLEAN", "solicitado": 24, "reservado": 23, "pendente": 1, "pct": 95.8, "mediaSemanal": 6.0, "dias": 26.8, "gap": 1}]}, {"codItem": 86048, "produto": "MESA 1,70 APOGEU 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025", "categoria": "Sala de Jantar", "solicitado": 101, "reservado": 97, "pendente": 4, "pct": 96.0, "alerta": false, "concluido": false, "mediaSemanal": 25.25, "dias": 26.9, "gap": 4, "variacoes": [{"codMasc": 75626, "variacao": "AMENDOA CL/OFF WHI/A#LINHO RINZAI BEGE", "solicitado": 74, "reservado": 70, "pendente": 4, "pct": 94.6, "mediaSemanal": 18.5, "dias": 26.5, "gap": 4}, {"codMasc": 75630, "variacao": "AMENDOA CL/OFF WHI/A#VELUDO NATURALE CREME", "solicitado": 27, "reservado": 27, "pendente": 0, "pct": 100.0, "mediaSemanal": 6.75, "dias": 28.0, "gap": 0}]}, {"codItem": 85123, "produto": "MESA 1,20 SINTONIA", "categoria": "Sala de Jantar", "solicitado": 50, "reservado": 48, "pendente": 2, "pct": 96.0, "alerta": false, "concluido": false, "mediaSemanal": 12.5, "dias": 26.9, "gap": 2, "variacoes": [{"codMasc": 46251, "variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S", "solicitado": 50, "reservado": 48, "pendente": 2, "pct": 96.0, "mediaSemanal": 12.5, "dias": 26.9, "gap": 2}]}, {"codItem": 85082, "produto": "MESA 1,70 ASTRID 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025", "categoria": "Sala de Jantar", "solicitado": 27, "reservado": 26, "pendente": 1, "pct": 96.3, "alerta": false, "concluido": false, "mediaSemanal": 6.75, "dias": 27.0, "gap": 1, "variacoes": [{"codMasc": 49178, "variacao": "AMENDOA CLEAN/OFF WH#VELUDO NATURALE CREME", "solicitado": 27, "reservado": 26, "pendente": 1, "pct": 96.3, "mediaSemanal": 6.75, "dias": 27.0, "gap": 1}]}, {"codItem": 73074, "produto": "CAMA CASAL 1,40 REALI 2022", "categoria": "Complementos", "solicitado": 35, "reservado": 34, "pendente": 1, "pct": 97.1, "alerta": false, "concluido": false, "mediaSemanal": 8.75, "dias": 27.2, "gap": 1, "variacoes": [{"codMasc": 15961, "variacao": "FRASSINO", "solicitado": 19, "reservado": 19, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.75, "dias": 28.0, "gap": 0}, {"codMasc": 15960, "variacao": "BRANCO", "solicitado": 16, "reservado": 15, "pendente": 1, "pct": 93.8, "mediaSemanal": 4.0, "dias": 26.2, "gap": 1}]}, {"codItem": 2106, "produto": "GUARDA ROUPA BERTHA 6 PTS", "categoria": "GR", "solicitado": 35, "reservado": 34, "pendente": 1, "pct": 97.1, "alerta": false, "concluido": false, "mediaSemanal": 8.75, "dias": 27.2, "gap": 1, "variacoes": [{"codMasc": 13357, "variacao": "AMENDOA CLEAN#C/ESP#S/PES#S/KIT GAV", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 13363, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#C/PES#S/KIT GAV", "solicitado": 8, "reservado": 8, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.0, "dias": 28.0, "gap": 0}, {"codMasc": 13365, "variacao": "AMENDOA CLEAN/OFF WH#C/ESP#S/PES#S/KIT GAV", "solicitado": 7, "reservado": 7, "pendente": 0, "pct": 100.0, "mediaSemanal": 1.75, "dias": 28.0, "gap": 0}, {"codMasc": 13361, "variacao": "AMENDOA CLEAN#S/ESP#C/PES#S/KIT GAV", "solicitado": 5, "reservado": 5, "pendente": 0, "pct": 100.0, "mediaSemanal": 1.25, "dias": 28.0, "gap": 0}, {"codMasc": 13360, "variacao": "AMENDOA CLEAN#S/ESP#S/PES#S/KIT GAV", "solicitado": 5, "reservado": 4, "pendente": 1, "pct": 80.0, "mediaSemanal": 1.25, "dias": 22.4, "gap": 1}]}, {"codItem": 74549, "produto": "BELICHE 0,90 OLGA", "categoria": "Complementos", "solicitado": 46, "reservado": 45, "pendente": 1, "pct": 97.8, "alerta": false, "concluido": false, "mediaSemanal": 11.5, "dias": 27.4, "gap": 1, "variacoes": [{"codMasc": 33429, "variacao": "BRANCO#C/LED", "solicitado": 37, "reservado": 36, "pendente": 1, "pct": 97.3, "mediaSemanal": 9.25, "dias": 27.2, "gap": 1}, {"codMasc": 33428, "variacao": "AMENDOA CLEAN#C/LED", "solicitado": 9, "reservado": 9, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.25, "dias": 28.0, "gap": 0}]}, {"codItem": 2382, "produto": "GUARDA ROUPA SPAZIO 3 PTS 2,70", "categoria": "GR", "solicitado": 300, "reservado": 300, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 75.0, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 13169, "variacao": "BRANCO#S/3PTS GLASS#S/PES", "solicitado": 150, "reservado": 150, "pendente": 0, "pct": 100.0, "mediaSemanal": 37.5, "dias": 28.0, "gap": 0}, {"codMasc": 13165, "variacao": "BRANCO#C/1 PT GLASS#S/PES", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "mediaSemanal": 25.0, "dias": 28.0, "gap": 0}, {"codMasc": 13166, "variacao": "BRANCO#C/3 PTS GLASS#S/PES", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "mediaSemanal": 5.0, "dias": 28.0, "gap": 0}, {"codMasc": 13167, "variacao": "BRANCO#C/3 PTS GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 13168, "variacao": "BRANCO#S/3PTS GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 13164, "variacao": "BRANCO#C/1 PT GLASS#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}]}, {"codItem": 73121, "produto": "CABECEIRA BOX 1,60 CALITAN 2023", "categoria": "Complementos", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 25.0, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 16180, "variacao": "AMENDOA CLEAN/PRETO#KORINO PRETO#C/LED", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "mediaSemanal": 25.0, "dias": 28.0, "gap": 0}]}, {"codItem": 159, "produto": "MESA 1,80 ATHENAS BR", "categoria": "Sala de Jantar", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 6.25, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 16481, "variacao": "AMENDOA CLEAN", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0, "mediaSemanal": 6.25, "dias": 28.0, "gap": 0}]}, {"codItem": 86042, "produto": "MESA  1,60 ASTRID 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025", "categoria": "Sala de Jantar", "solicitado": 17, "reservado": 17, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 4.25, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 75985, "variacao": "AMENDOA CLEAN/OFF WH#LINHO RINZAI BEGE", "solicitado": 17, "reservado": 17, "pendente": 0, "pct": 100.0, "mediaSemanal": 4.25, "dias": 28.0, "gap": 0}]}, {"codItem": 86051, "produto": "MESA 0,90 CELEBRARE 2023 C/VDO SERIG.C/04 CAD.APOGEU 2025", "categoria": "Sala de Jantar", "solicitado": 12, "reservado": 12, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 3.0, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 75610, "variacao": "AMENDOA CLEAN/OFF WH#LINHO RINZAI BEGE", "solicitado": 12, "reservado": 12, "pendente": 0, "pct": 100.0, "mediaSemanal": 3.0, "dias": 28.0, "gap": 0}]}, {"codItem": 155, "produto": "MESA DE CABECEIRA MAGGIORE   NEW  03 GAV", "categoria": "Complementos", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 6.25, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 51181, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 11, "reservado": 11, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.75, "dias": 28.0, "gap": 0}, {"codMasc": 51182, "variacao": "BRANCO", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 51180, "variacao": "AMENDOA CLEAN", "solicitado": 4, "reservado": 4, "pendente": 0, "pct": 100.0, "mediaSemanal": 1.0, "dias": 28.0, "gap": 0}]}, {"codItem": 87459, "produto": "GUARDA ROUPA 08 PTS SERENATA", "categoria": "GR", "solicitado": 29, "reservado": 29, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 7.25, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 91590, "variacao": "BRANCO#S/ESP#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 91589, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}, {"codMasc": 91588, "variacao": "BRANCO#C/ESP#C/PES", "solicitado": 9, "reservado": 9, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.25, "dias": 28.0, "gap": 0}]}, {"codItem": 2101, "produto": "GUARDA ROUPA ARIES 6 PTS 2021", "categoria": "GR", "solicitado": 6, "reservado": 6, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 1.5, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 13940, "variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 6, "reservado": 6, "pendente": 0, "pct": 100.0, "mediaSemanal": 1.5, "dias": 28.0, "gap": 0}]}, {"codItem": 2316, "produto": "GUARDA ROUPA NICE 3 PTS", "categoria": "GR", "solicitado": 3, "reservado": 3, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "mediaSemanal": 0.75, "dias": 28.0, "gap": 0, "variacoes": [{"codMasc": 13054, "variacao": "AMENDOA CL/OFF WHI/A#C/ESP#S/PES#S/KIT GAV", "solicitado": 3, "reservado": 3, "pendente": 0, "pct": 100.0, "mediaSemanal": 0.75, "dias": 28.0, "gap": 0}]}, {"codItem": 84794, "produto": "GUARDA ROUPA LOPAS 06 PTS LOOP 2025", "categoria": "GR", "solicitado": 20, "reservado": 38, "pendente": -18, "pct": 190.0, "alerta": false, "concluido": true, "mediaSemanal": 5.0, "dias": 53.2, "gap": -18, "variacoes": [{"codMasc": 42176, "variacao": "AMENDOA CLEAN/OFF WH#S/PES", "solicitado": 10, "reservado": 28, "pendente": -18, "pct": 280.0, "mediaSemanal": 2.5, "dias": 78.4, "gap": -18}, {"codMasc": 42175, "variacao": "AMENDOA CLEAN/OFF WH#C/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0, "mediaSemanal": 2.5, "dias": 28.0, "gap": 0}]}], "categorias": [{"nome": "GR", "produtos": 11, "variacoes": 58, "solicitado": 1552, "reservado": 1320, "pendente": 232, "pct": 85.1, "completos": 5, "parcial": 5, "alertas": 2, "diasMedia": 23.8}, {"nome": "Complementos", "produtos": 18, "variacoes": 45, "solicitado": 1471, "reservado": 1225, "pendente": 246, "pct": 83.3, "completos": 2, "parcial": 16, "alertas": 0, "diasMedia": 23.3}, {"nome": "Sala de Jantar", "produtos": 8, "variacoes": 9, "solicitado": 270, "reservado": 261, "pendente": 9, "pct": 96.7, "completos": 3, "parcial": 5, "alertas": 0, "diasMedia": 27.1}], "top10": [{"codItem": 81929, "produto": "COMODA LOOP 2024 II", "categoria": "Complementos", "codMasc": 32963, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 130, "reservado": 80, "pendente": 50, "pct": 61.5, "gap": 50, "dias": 17.2}, {"codItem": 2405, "produto": "GUARDA ROUPA TORONTO 2 PTS PLUS", "categoria": "GR", "codMasc": 13689, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 46, "reservado": 0, "pendente": 46, "pct": 0.0, "gap": 46, "dias": 0.0}, {"codItem": 73139, "produto": "CAMA SOLTEIRO 0,90 ATHENAS 2022", "categoria": "Complementos", "codMasc": 24414, "variacao": "AMENDOA CL/OFF WHI/A#C/CAMA AUXILIAR", "solicitado": 59, "reservado": 23, "pendente": 36, "pct": 39.0, "gap": 36, "dias": 10.9}, {"codItem": 2405, "produto": "GUARDA ROUPA TORONTO 2 PTS PLUS", "categoria": "GR", "codMasc": 13690, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 34, "reservado": 0, "pendente": 34, "pct": 0.0, "gap": 34, "dias": 0.0}, {"codItem": 83249, "produto": "MESA DE CABECEIRA LOOP 2024", "categoria": "Complementos", "codMasc": 31792, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 100, "reservado": 70, "pendente": 30, "pct": 70.0, "gap": 30, "dias": 19.6}, {"codItem": 2083, "produto": "GUARDA ROUPA ALONZO 4 PTS 2021", "categoria": "GR", "codMasc": 12490, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 150, "reservado": 120, "pendente": 30, "pct": 80.0, "gap": 30, "dias": 22.4}, {"codItem": 2083, "produto": "GUARDA ROUPA ALONZO 4 PTS 2021", "categoria": "GR", "codMasc": 12478, "variacao": "AMENDOA CLEAN/BRANCO#S/ESP#S/PES", "solicitado": 86, "reservado": 60, "pendente": 26, "pct": 69.8, "gap": 26, "dias": 19.5}, {"codItem": 74197, "produto": "MESA DE CABECEIRA BAIAO   2021  3 GAV", "categoria": "Complementos", "codMasc": 32906, "variacao": "AMENDOA CLEAN", "solicitado": 35, "reservado": 18, "pendente": 17, "pct": 51.4, "gap": 17, "dias": 14.4}, {"codItem": 2083, "produto": "GUARDA ROUPA ALONZO 4 PTS 2021", "categoria": "GR", "codMasc": 12474, "variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 34, "reservado": 21, "pendente": 13, "pct": 61.8, "gap": 13, "dias": 17.3}, {"codItem": 73177, "produto": "SAPATEIRA ESTHELA 2024", "categoria": "Complementos", "codMasc": 23849, "variacao": "FRASSINO", "solicitado": 16, "reservado": 6, "pendente": 10, "pct": 37.5, "gap": 10, "dias": 10.5}], "hist": [{"label": "0d", "min": 0, "max": 0.01, "level": "crit", "count": 0}, {"label": "1-10d", "min": 0.01, "max": 10, "level": "crit", "count": 19}, {"label": "11-20d", "min": 10, "max": 20, "level": "warn", "count": 23}, {"label": "21-30d", "min": 20, "max": 30, "level": "warn", "count": 19}, {"label": "≥31d", "min": 30, "max": 9999, "level": "ok", "count": 42}], "categoriasFc": [{"nome": "GR", "produtos": 9, "variacoes": 50, "solicitado": 2372, "reservado": 1271, "demandaDiariaFc": 76.5, "diasAtendeFc": 16.6}, {"nome": "Complementos", "produtos": 18, "variacoes": 44, "solicitado": 2295, "reservado": 1223, "demandaDiariaFc": 74.0, "diasAtendeFc": 16.5}, {"nome": "Sala de Jantar", "produtos": 8, "variacoes": 9, "solicitado": 135, "reservado": 261, "demandaDiariaFc": 4.4, "diasAtendeFc": 59.9}]};
+const BUNDLE = {"stats":{"totalSolicitado":5308,"totalReservado":3089,"totalPendente":2219,"pctGeral":58.2,"gapTotal":2219,"nProdutos":37,"nVariacoes":112,"nCompletos":10,"nParcial":26,"nZero":1,"nAlertVar":18,"skuAtendido":53,"skuParcial":57,"skuSemReserva":2,"diasMedia":68.0,"dataAtualizacao":"30/04/2026","fcTotalSolicitado":4802,"fcTotalReservado":3033,"fcTotalProdutos":35,"fcTotalVariacoes":103,"diasMes":31,"demandaDiariaGlobal":154.9,"diasAtendeGlobalFc":19.6,"skuAtendeMes":50,"skuParcialFc":53,"skuSemCobertura":0,"mesPeriodo":"Maio/2026","mesesSeq":[{"nome":"Maio","ano":2026,"dias":31},{"nome":"Junho","ano":2026,"dias":30},{"nome":"Julho","ano":2026,"dias":31}],"totalSolicitadoCargaMae":5308,"totalSolicitadoForecast":4802,"gapTotalFc":1713,"pendenteTotalFc":1713,"pctGeralFc":64.3},"data":[{"codItem":2405,"produto":"GUARDA ROUPA TORONTO 2 PTS PLUS","categoria":"GR","solicitado":80,"reservado":0,"pendente":80,"pct":0.0,"alerta":true,"concluido":false,"mediaSemanal":20.0,"dias":0.0,"gap":80,"variacoes":[{"codMasc":13689,"variacao":"BRANCO#C/ESP#S/PES","solicitado":46,"reservado":0,"pendente":46,"pct":0.0,"mediaSemanal":11.5,"dias":0.0,"gap":46,"solicitadoCargaMae":46,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codMasc":13690,"variacao":"BRANCO#S/ESP#S/PES","solicitado":34,"reservado":0,"pendente":34,"pct":0.0,"mediaSemanal":8.5,"dias":0.0,"gap":34,"solicitadoCargaMae":34,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0}],"solicitadoCargaMae":80,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codItem":74197,"produto":"MESA DE CABECEIRA BAIAO   2021  3 GAV","categoria":"Complementos","solicitado":54,"reservado":15,"pendente":39,"pct":27.8,"alerta":false,"concluido":false,"mediaSemanal":13.5,"dias":30.0,"gap":39,"variacoes":[{"codMasc":32906,"variacao":"AMENDOA CLEAN","solicitado":54,"reservado":15,"pendente":39,"pct":27.8,"mediaSemanal":13.5,"dias":30.0,"gap":39,"solicitadoCargaMae":54,"solicitadoForecast":15,"gapFc":0,"pendenteFc":0,"pctFc":100.0}],"solicitadoCargaMae":54,"solicitadoForecast":15,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codItem":73177,"produto":"SAPATEIRA ESTHELA 2024","categoria":"Complementos","solicitado":131,"reservado":23,"pendente":108,"pct":17.6,"alerta":false,"concluido":false,"mediaSemanal":32.75,"dias":8.0,"gap":108,"variacoes":[{"codMasc":23848,"variacao":"BRANCO","solicitado":47,"reservado":8,"pendente":39,"pct":17.0,"mediaSemanal":11.75,"dias":4.9,"gap":39,"solicitadoCargaMae":47,"solicitadoForecast":49,"gapFc":41,"pendenteFc":41,"pctFc":16.3},{"codMasc":23849,"variacao":"FRASSINO","solicitado":35,"reservado":6,"pendente":29,"pct":17.1,"mediaSemanal":8.75,"dias":15.0,"gap":29,"solicitadoCargaMae":35,"solicitadoForecast":12,"gapFc":6,"pendenteFc":6,"pctFc":50.0},{"codMasc":23850,"variacao":"AMENDOA CLEAN","solicitado":49,"reservado":9,"pendente":40,"pct":18.4,"mediaSemanal":12.25,"dias":6.0,"gap":40,"solicitadoCargaMae":49,"solicitadoForecast":45,"gapFc":36,"pendenteFc":36,"pctFc":20.0}],"solicitadoCargaMae":131,"solicitadoForecast":106,"gapFc":83,"pendenteFc":83,"pctFc":21.7},{"codItem":83249,"produto":"MESA DE CABECEIRA LOOP 2024","categoria":"Complementos","solicitado":193,"reservado":57,"pendente":136,"pct":29.5,"alerta":false,"concluido":false,"mediaSemanal":48.25,"dias":12.1,"gap":136,"variacoes":[{"codMasc":31792,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":166,"reservado":55,"pendente":111,"pct":33.1,"mediaSemanal":41.5,"dias":11.5,"gap":111,"solicitadoCargaMae":166,"solicitadoForecast":144,"gapFc":89,"pendenteFc":89,"pctFc":38.2},{"codMasc":67184,"variacao":"AMENDOA CLEAN","solicitado":27,"reservado":2,"pendente":25,"pct":7.4,"mediaSemanal":6.75,"dias":28.0,"gap":25,"solicitadoCargaMae":27,"solicitadoForecast":0,"gapFc":-2,"pendenteFc":-2,"pctFc":0.0}],"solicitadoCargaMae":193,"solicitadoForecast":144,"gapFc":87,"pendenteFc":87,"pctFc":39.6},{"codItem":81929,"produto":"COMODA LOOP 2024 II","categoria":"Complementos","solicitado":280,"reservado":116,"pendente":164,"pct":41.4,"alerta":false,"concluido":false,"mediaSemanal":70.0,"dias":27.6,"gap":164,"variacoes":[{"codMasc":32963,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":231,"reservado":69,"pendente":162,"pct":29.9,"mediaSemanal":57.75,"dias":9.5,"gap":162,"solicitadoCargaMae":231,"solicitadoForecast":219,"gapFc":150,"pendenteFc":150,"pctFc":31.5},{"codMasc":66449,"variacao":"AMENDOA CLEAN","solicitado":49,"reservado":47,"pendente":2,"pct":95.9,"mediaSemanal":12.25,"dias":54.2,"gap":2,"solicitadoCargaMae":49,"solicitadoForecast":26,"gapFc":-21,"pendenteFc":-21,"pctFc":180.8}],"solicitadoCargaMae":280,"solicitadoForecast":245,"gapFc":129,"pendenteFc":129,"pctFc":47.3},{"codItem":73139,"produto":"CAMA SOLTEIRO 0,90 ATHENAS 2022","categoria":"Complementos","solicitado":381,"reservado":222,"pendente":159,"pct":58.3,"alerta":false,"concluido":false,"mediaSemanal":95.25,"dias":27.1,"gap":159,"variacoes":[{"codMasc":24414,"variacao":"AMENDOA CL/OFF WHI/A#C/CAMA AUXILIAR","solicitado":171,"reservado":56,"pendente":115,"pct":32.7,"mediaSemanal":42.75,"dias":11.5,"gap":115,"solicitadoCargaMae":171,"solicitadoForecast":146,"gapFc":90,"pendenteFc":90,"pctFc":38.4},{"codMasc":24417,"variacao":"BRANCO#C/CAMA AUXILIAR","solicitado":87,"reservado":47,"pendente":40,"pct":54.0,"mediaSemanal":21.75,"dias":21.7,"gap":40,"solicitadoCargaMae":87,"solicitadoForecast":65,"gapFc":18,"pendenteFc":18,"pctFc":72.3},{"codMasc":24416,"variacao":"BRANCO#S/CAMA AUXILIAR","solicitado":33,"reservado":33,"pendente":0,"pct":100.0,"mediaSemanal":8.25,"dias":52.1,"gap":0,"solicitadoCargaMae":33,"solicitadoForecast":19,"gapFc":-14,"pendenteFc":-14,"pctFc":173.7},{"codMasc":24420,"variacao":"FRASSINO/OFF WHITE/F#C/CAMA AUXILIAR","solicitado":26,"reservado":22,"pendente":4,"pct":84.6,"mediaSemanal":6.5,"dias":34.7,"gap":4,"solicitadoCargaMae":26,"solicitadoForecast":19,"gapFc":-3,"pendenteFc":-3,"pctFc":115.8},{"codMasc":24415,"variacao":"AMENDOA CL/OFF WHI/A#S/CAMA AUXILIAR","solicitado":64,"reservado":64,"pendente":0,"pct":100.0,"mediaSemanal":16.0,"dias":29.1,"gap":0,"solicitadoCargaMae":64,"solicitadoForecast":66,"gapFc":2,"pendenteFc":2,"pctFc":97.0}],"solicitadoCargaMae":381,"solicitadoForecast":315,"gapFc":93,"pendenteFc":93,"pctFc":70.5},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","solicitado":960,"reservado":398,"pendente":562,"pct":41.5,"alerta":false,"concluido":false,"mediaSemanal":240.0,"dias":34.3,"gap":562,"variacoes":[{"codMasc":12490,"variacao":"BRANCO#S/ESP#S/PES","solicitado":270,"reservado":106,"pendente":164,"pct":39.3,"mediaSemanal":67.5,"dias":8.0,"gap":164,"solicitadoCargaMae":270,"solicitadoForecast":397,"gapFc":291,"pendenteFc":291,"pctFc":26.7},{"codMasc":12478,"variacao":"AMENDOA CLEAN/BRANCO#S/ESP#S/PES","solicitado":300,"reservado":57,"pendente":243,"pct":19.0,"mediaSemanal":75.0,"dias":4.3,"gap":243,"solicitadoCargaMae":300,"solicitadoForecast":397,"gapFc":340,"pendenteFc":340,"pctFc":14.4},{"codMasc":12477,"variacao":"AMENDOA CLEAN/BRANCO#S/ESP#C/PES","solicitado":60,"reservado":45,"pendente":15,"pct":75.0,"mediaSemanal":15.0,"dias":50.0,"gap":15,"solicitadoCargaMae":60,"solicitadoForecast":27,"gapFc":-18,"pendenteFc":-18,"pctFc":166.7},{"codMasc":12482,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#S/PES","solicitado":90,"reservado":38,"pendente":52,"pct":42.2,"mediaSemanal":22.5,"dias":13.9,"gap":52,"solicitadoCargaMae":90,"solicitadoForecast":82,"gapFc":44,"pendenteFc":44,"pctFc":46.3},{"codMasc":12481,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#C/PES","solicitado":55,"reservado":40,"pendente":15,"pct":72.7,"mediaSemanal":13.75,"dias":57.1,"gap":15,"solicitadoCargaMae":55,"solicitadoForecast":21,"gapFc":-19,"pendenteFc":-19,"pctFc":190.5},{"codMasc":12474,"variacao":"AMENDOA CLEAN#S/ESP#S/PES","solicitado":60,"reservado":17,"pendente":43,"pct":28.3,"mediaSemanal":15.0,"dias":8.9,"gap":43,"solicitadoCargaMae":60,"solicitadoForecast":57,"gapFc":40,"pendenteFc":40,"pctFc":29.8},{"codMasc":12489,"variacao":"BRANCO#S/ESP#C/PES","solicitado":30,"reservado":30,"pendente":0,"pct":100.0,"mediaSemanal":7.5,"dias":52.9,"gap":0,"solicitadoCargaMae":30,"solicitadoForecast":17,"gapFc":-13,"pendenteFc":-13,"pctFc":176.5},{"codMasc":12472,"variacao":"AMENDOA CLEAN#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":300.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":1,"gapFc":-9,"pendenteFc":-9,"pctFc":1000.0},{"codMasc":12473,"variacao":"AMENDOA CLEAN#S/ESP#C/PES","solicitado":15,"reservado":5,"pendente":10,"pct":33.3,"mediaSemanal":3.75,"dias":8.3,"gap":10,"solicitadoCargaMae":15,"solicitadoForecast":18,"gapFc":13,"pendenteFc":13,"pctFc":27.8},{"codMasc":12491,"variacao":"BRANCO#C/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":60.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":5,"gapFc":-5,"pendenteFc":-5,"pctFc":200.0},{"codMasc":12483,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#S/PES","solicitado":10,"reservado":4,"pendente":6,"pct":40.0,"mediaSemanal":2.5,"dias":20.0,"gap":6,"solicitadoCargaMae":10,"solicitadoForecast":6,"gapFc":2,"pendenteFc":2,"pctFc":66.7},{"codMasc":12475,"variacao":"AMENDOA CLEAN#C/ESP#S/PES","solicitado":10,"reservado":5,"pendente":5,"pct":50.0,"mediaSemanal":2.5,"dias":28.0,"gap":5,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-5,"pendenteFc":-5,"pctFc":0.0},{"codMasc":12488,"variacao":"BRANCO#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":75.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":4,"gapFc":-6,"pendenteFc":-6,"pctFc":250.0},{"codMasc":12476,"variacao":"AMENDOA CLEAN/BRANCO#C/ESP#C/PES","solicitado":10,"reservado":9,"pendente":1,"pct":90.0,"mediaSemanal":2.5,"dias":30.0,"gap":1,"solicitadoCargaMae":10,"solicitadoForecast":9,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":12480,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#C/PES","solicitado":10,"reservado":4,"pendente":6,"pct":40.0,"mediaSemanal":2.5,"dias":60.0,"gap":6,"solicitadoCargaMae":10,"solicitadoForecast":2,"gapFc":-2,"pendenteFc":-2,"pctFc":200.0},{"codMasc":12479,"variacao":"AMENDOA CLEAN/BRANCO#C/ESP#S/PES","solicitado":10,"reservado":8,"pendente":2,"pct":80.0,"mediaSemanal":2.5,"dias":80.0,"gap":2,"solicitadoCargaMae":10,"solicitadoForecast":3,"gapFc":-5,"pendenteFc":-5,"pctFc":266.7}],"solicitadoCargaMae":960,"solicitadoForecast":1046,"gapFc":648,"pendenteFc":648,"pctFc":38.0},{"codItem":84932,"produto":"CAMA LOPAS SOLT 0,90 LOOP 2025","categoria":"Complementos","solicitado":230,"reservado":163,"pendente":67,"pct":70.9,"alerta":false,"concluido":false,"mediaSemanal":57.5,"dias":32.7,"gap":67,"variacoes":[{"codMasc":36951,"variacao":"AMENDOA CLEAN#CORANO BEGE#C/CAMA AUXILIAR","solicitado":90,"reservado":34,"pendente":56,"pct":37.8,"mediaSemanal":22.5,"dias":12.6,"gap":56,"solicitadoCargaMae":90,"solicitadoForecast":81,"gapFc":47,"pendenteFc":47,"pctFc":42.0},{"codMasc":36952,"variacao":"BRANCO#KORINO BRANCO#C/CAMA AUXILIAR","solicitado":21,"reservado":10,"pendente":11,"pct":47.6,"mediaSemanal":5.25,"dias":9.1,"gap":11,"solicitadoCargaMae":21,"solicitadoForecast":33,"gapFc":23,"pendenteFc":23,"pctFc":30.3},{"codMasc":36950,"variacao":"AMENDOA CLEAN#CORANO BEGE#S/CAMA AUXILIAR","solicitado":95,"reservado":95,"pendente":0,"pct":100.0,"mediaSemanal":23.75,"dias":32.4,"gap":0,"solicitadoCargaMae":95,"solicitadoForecast":88,"gapFc":-7,"pendenteFc":-7,"pctFc":108.0},{"codMasc":36953,"variacao":"BRANCO#KORINO BRANCO#S/CAMA AUXILIAR","solicitado":24,"reservado":24,"pendente":0,"pct":100.0,"mediaSemanal":6.0,"dias":72.0,"gap":0,"solicitadoCargaMae":24,"solicitadoForecast":10,"gapFc":-14,"pendenteFc":-14,"pctFc":240.0}],"solicitadoCargaMae":230,"solicitadoForecast":212,"gapFc":49,"pendenteFc":49,"pctFc":76.9},{"codItem":73278,"produto":"COMODA TORONTO 2021 8GAV 2 PTS","categoria":"Complementos","solicitado":57,"reservado":33,"pendente":24,"pct":57.9,"alerta":false,"concluido":false,"mediaSemanal":14.25,"dias":72.5,"gap":24,"variacoes":[{"codMasc":32708,"variacao":"BRANCO","solicitado":18,"reservado":18,"pendente":0,"pct":100.0,"mediaSemanal":4.5,"dias":108.0,"gap":0,"solicitadoCargaMae":18,"solicitadoForecast":5,"gapFc":-13,"pendenteFc":-13,"pctFc":360.0},{"codMasc":32707,"variacao":"AMENDOA CLEAN","solicitado":39,"reservado":15,"pendente":24,"pct":38.5,"mediaSemanal":9.75,"dias":30.0,"gap":24,"solicitadoCargaMae":39,"solicitadoForecast":15,"gapFc":0,"pendenteFc":0,"pctFc":100.0}],"solicitadoCargaMae":57,"solicitadoForecast":20,"gapFc":-13,"pendenteFc":-13,"pctFc":165.0},{"codItem":73284,"produto":"COMODA VEDRA 7GAV 2 PTS","categoria":"Complementos","solicitado":147,"reservado":59,"pendente":88,"pct":40.1,"alerta":false,"concluido":false,"mediaSemanal":36.75,"dias":61.8,"gap":88,"variacoes":[{"codMasc":15999,"variacao":"FRASSINO/OFF WHITE","solicitado":31,"reservado":31,"pendente":0,"pct":100.0,"mediaSemanal":7.75,"dias":103.3,"gap":0,"solicitadoCargaMae":31,"solicitadoForecast":9,"gapFc":-22,"pendenteFc":-22,"pctFc":344.4},{"codMasc":23859,"variacao":"BRANCO","solicitado":46,"reservado":11,"pendente":35,"pct":23.9,"mediaSemanal":11.5,"dias":7.9,"gap":35,"solicitadoCargaMae":46,"solicitadoForecast":42,"gapFc":31,"pendenteFc":31,"pctFc":26.2},{"codMasc":23857,"variacao":"AMENDOA CLEAN","solicitado":37,"reservado":11,"pendente":26,"pct":29.7,"mediaSemanal":9.25,"dias":30.0,"gap":26,"solicitadoCargaMae":37,"solicitadoForecast":11,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":23858,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":33,"reservado":6,"pendente":27,"pct":18.2,"mediaSemanal":8.25,"dias":4.3,"gap":27,"solicitadoCargaMae":33,"solicitadoForecast":42,"gapFc":36,"pendenteFc":36,"pctFc":14.3}],"solicitadoCargaMae":147,"solicitadoForecast":104,"gapFc":45,"pendenteFc":45,"pctFc":56.7},{"codItem":84821,"produto":"GUARDA ROUPA LOPAS 03 PTS OLLIE II 2025","categoria":"GR","solicitado":250,"reservado":76,"pendente":174,"pct":30.4,"alerta":false,"concluido":false,"mediaSemanal":62.5,"dias":14.2,"gap":174,"variacoes":[{"codMasc":30742,"variacao":"AMENDOA CL/OFF WHI/A#S/2PTS GLASS#C/PES","solicitado":100,"reservado":14,"pendente":86,"pct":14.0,"mediaSemanal":25.0,"dias":3.2,"gap":86,"solicitadoCargaMae":100,"solicitadoForecast":132,"gapFc":118,"pendenteFc":118,"pctFc":10.6},{"codMasc":30739,"variacao":"AMENDOA CL/OFF WHI/A#C/2 PTS GLASS#C/PES","solicitado":100,"reservado":12,"pendente":88,"pct":12.0,"mediaSemanal":25.0,"dias":8.0,"gap":88,"solicitadoCargaMae":100,"solicitadoForecast":45,"gapFc":33,"pendenteFc":33,"pctFc":26.7},{"codMasc":30741,"variacao":"AMENDOA CL/OFF WHI/A#S/2PTS GLASS#S/PES","solicitado":20,"reservado":20,"pendente":0,"pct":100.0,"mediaSemanal":5.0,"dias":19.4,"gap":0,"solicitadoCargaMae":20,"solicitadoForecast":31,"gapFc":11,"pendenteFc":11,"pctFc":64.5},{"codMasc":30745,"variacao":"FRASSINO/OFF WHITE/F#S/2PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":20.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":15,"gapFc":5,"pendenteFc":5,"pctFc":66.7},{"codMasc":30744,"variacao":"FRASSINO/OFF WHITE/F#C/2 PTS GLASS#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":17.6,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":17,"gapFc":7,"pendenteFc":7,"pctFc":58.8},{"codMasc":30743,"variacao":"FRASSINO/OFF WHITE/F#C/2 PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":17.6,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":17,"gapFc":7,"pendenteFc":7,"pctFc":58.8}],"solicitadoCargaMae":250,"solicitadoForecast":257,"gapFc":181,"pendenteFc":181,"pctFc":29.6},{"codItem":84900,"produto":"CAMA LOPAS CASAL 1,40 LOOP 2025","categoria":"Complementos","solicitado":88,"reservado":66,"pendente":22,"pct":75.0,"alerta":false,"concluido":false,"mediaSemanal":22.0,"dias":215.2,"gap":22,"variacoes":[{"codMasc":31279,"variacao":"AMENDOA CLEAN#CORANO BEGE","solicitado":54,"reservado":35,"pendente":19,"pct":64.8,"mediaSemanal":13.5,"dias":55.3,"gap":19,"solicitadoCargaMae":54,"solicitadoForecast":19,"gapFc":-16,"pendenteFc":-16,"pctFc":184.2},{"codMasc":31278,"variacao":"AMENDOA CLEAN#BOUCLE SALVIA","solicitado":19,"reservado":19,"pendente":0,"pct":100.0,"mediaSemanal":4.75,"dias":570.0,"gap":0,"solicitadoCargaMae":19,"solicitadoForecast":1,"gapFc":-18,"pendenteFc":-18,"pctFc":1900.0},{"codMasc":31280,"variacao":"BRANCO#KORINO BRANCO","solicitado":15,"reservado":12,"pendente":3,"pct":80.0,"mediaSemanal":3.75,"dias":120.0,"gap":3,"solicitadoCargaMae":15,"solicitadoForecast":3,"gapFc":-9,"pendenteFc":-9,"pctFc":400.0}],"solicitadoCargaMae":88,"solicitadoForecast":23,"gapFc":-43,"pendenteFc":-43,"pctFc":287.0},{"codItem":72565,"produto":"GUARDA ROUPA ZEINE 2 PTS 2024","categoria":"GR","solicitado":140,"reservado":74,"pendente":66,"pct":52.9,"alerta":false,"concluido":false,"mediaSemanal":35.0,"dias":24.8,"gap":66,"variacoes":[{"codMasc":13283,"variacao":"BRANCO#C/1 PT GLASS#S/PES","solicitado":60,"reservado":33,"pendente":27,"pct":55.0,"mediaSemanal":15.0,"dias":20.6,"gap":27,"solicitadoCargaMae":60,"solicitadoForecast":48,"gapFc":15,"pendenteFc":15,"pctFc":68.8},{"codMasc":13279,"variacao":"AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES","solicitado":60,"reservado":21,"pendente":39,"pct":35.0,"mediaSemanal":15.0,"dias":7.5,"gap":39,"solicitadoCargaMae":60,"solicitadoForecast":84,"gapFc":63,"pendenteFc":63,"pctFc":25.0},{"codMasc":13280,"variacao":"BRANCO#C/1 PT GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":50.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":6,"gapFc":-4,"pendenteFc":-4,"pctFc":166.7},{"codMasc":13276,"variacao":"AMENDOA CL/OFF WHI/A#C/1 PT GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":50.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":6,"gapFc":-4,"pendenteFc":-4,"pctFc":166.7}],"solicitadoCargaMae":140,"solicitadoForecast":144,"gapFc":70,"pendenteFc":70,"pctFc":51.4},{"codItem":73281,"produto":"COMODA URBAN 2019 8GAV","categoria":"Complementos","solicitado":274,"reservado":219,"pendente":55,"pct":79.9,"alerta":false,"concluido":false,"mediaSemanal":68.5,"dias":38.6,"gap":55,"variacoes":[{"codMasc":23866,"variacao":"BRANCO","solicitado":162,"reservado":162,"pendente":0,"pct":100.0,"mediaSemanal":40.5,"dias":48.6,"gap":0,"solicitadoCargaMae":162,"solicitadoForecast":100,"gapFc":-62,"pendenteFc":-62,"pctFc":162.0},{"codMasc":23865,"variacao":"AMENDOA CLEAN","solicitado":112,"reservado":57,"pendente":55,"pct":50.9,"mediaSemanal":28.0,"dias":10.1,"gap":55,"solicitadoCargaMae":112,"solicitadoForecast":170,"gapFc":113,"pendenteFc":113,"pctFc":33.5}],"solicitadoCargaMae":274,"solicitadoForecast":270,"gapFc":51,"pendenteFc":51,"pctFc":81.1},{"codItem":273,"produto":"GUARDA ROUPA ALONZO 6 PTS 2021","categoria":"GR","solicitado":365,"reservado":310,"pendente":55,"pct":84.9,"alerta":false,"concluido":false,"mediaSemanal":91.25,"dias":24.4,"gap":55,"variacoes":[{"codMasc":12450,"variacao":"BRANCO#S/ESP#S/PES","solicitado":100,"reservado":100,"pendente":0,"pct":100.0,"mediaSemanal":25.0,"dias":19.2,"gap":0,"solicitadoCargaMae":100,"solicitadoForecast":156,"gapFc":56,"pendenteFc":56,"pctFc":64.1},{"codMasc":12442,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#S/PES","solicitado":90,"reservado":55,"pendente":35,"pct":61.1,"mediaSemanal":22.5,"dias":14.2,"gap":35,"solicitadoCargaMae":90,"solicitadoForecast":116,"gapFc":61,"pendenteFc":61,"pctFc":47.4},{"codMasc":12439,"variacao":"AMENDOA CLEAN#S/ESP#S/PES","solicitado":60,"reservado":60,"pendente":0,"pct":100.0,"mediaSemanal":15.0,"dias":28.1,"gap":0,"solicitadoCargaMae":60,"solicitadoForecast":64,"gapFc":4,"pendenteFc":4,"pctFc":93.8},{"codMasc":12441,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#C/PES","solicitado":15,"reservado":10,"pendente":5,"pct":66.7,"mediaSemanal":3.75,"dias":30.0,"gap":5,"solicitadoCargaMae":15,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":12443,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#S/PES","solicitado":20,"reservado":10,"pendente":10,"pct":50.0,"mediaSemanal":5.0,"dias":25.0,"gap":10,"solicitadoCargaMae":20,"solicitadoForecast":12,"gapFc":2,"pendenteFc":2,"pctFc":83.3},{"codMasc":12449,"variacao":"BRANCO#S/ESP#C/PES","solicitado":15,"reservado":15,"pendente":0,"pct":100.0,"mediaSemanal":3.75,"dias":23.7,"gap":0,"solicitadoCargaMae":15,"solicitadoForecast":19,"gapFc":4,"pendenteFc":4,"pctFc":78.9},{"codMasc":12451,"variacao":"BRANCO#C/ESP#S/PES","solicitado":15,"reservado":15,"pendente":0,"pct":100.0,"mediaSemanal":3.75,"dias":17.3,"gap":0,"solicitadoCargaMae":15,"solicitadoForecast":26,"gapFc":11,"pendenteFc":11,"pctFc":57.7},{"codMasc":12437,"variacao":"AMENDOA CLEAN#S/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":20.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":15,"gapFc":5,"pendenteFc":5,"pctFc":66.7},{"codMasc":12448,"variacao":"BRANCO#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":30.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":12438,"variacao":"AMENDOA CLEAN#C/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":100.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":3,"gapFc":-7,"pendenteFc":-7,"pctFc":333.3},{"codMasc":12436,"variacao":"AMENDOA CLEAN#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":42.9,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":7,"gapFc":-3,"pendenteFc":-3,"pctFc":142.9},{"codMasc":12440,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#C/PES","solicitado":10,"reservado":5,"pendente":5,"pct":50.0,"mediaSemanal":2.5,"dias":18.8,"gap":5,"solicitadoCargaMae":10,"solicitadoForecast":8,"gapFc":3,"pendenteFc":3,"pctFc":62.5}],"solicitadoCargaMae":365,"solicitadoForecast":446,"gapFc":136,"pendenteFc":136,"pctFc":69.5},{"codItem":73275,"produto":"COMODA HORIZONTAL MAGGIORE NEW 6GAV","categoria":"Complementos","solicitado":258,"reservado":86,"pendente":172,"pct":33.3,"alerta":false,"concluido":false,"mediaSemanal":64.5,"dias":28.8,"gap":172,"variacoes":[{"codMasc":23853,"variacao":"BRANCO","solicitado":141,"reservado":31,"pendente":110,"pct":22.0,"mediaSemanal":35.25,"dias":4.6,"gap":110,"solicitadoCargaMae":141,"solicitadoForecast":203,"gapFc":172,"pendenteFc":172,"pctFc":15.3},{"codMasc":23852,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":49,"reservado":49,"pendente":0,"pct":100.0,"mediaSemanal":12.25,"dias":47.4,"gap":0,"solicitadoCargaMae":49,"solicitadoForecast":31,"gapFc":-18,"pendenteFc":-18,"pctFc":158.1},{"codMasc":23851,"variacao":"AMENDOA CLEAN","solicitado":68,"reservado":6,"pendente":62,"pct":8.8,"mediaSemanal":17.0,"dias":2.1,"gap":62,"solicitadoCargaMae":68,"solicitadoForecast":87,"gapFc":81,"pendenteFc":81,"pctFc":6.9}],"solicitadoCargaMae":258,"solicitadoForecast":321,"gapFc":235,"pendenteFc":235,"pctFc":26.8},{"codItem":73173,"produto":"CAMA SOLTEIRO 0,90 REALI 2022","categoria":"Complementos","solicitado":116,"reservado":116,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":29.0,"dias":26.6,"gap":0,"variacoes":[{"codMasc":16516,"variacao":"BRANCO","solicitado":48,"reservado":48,"pendente":0,"pct":100.0,"mediaSemanal":12.0,"dias":26.2,"gap":0,"solicitadoCargaMae":48,"solicitadoForecast":55,"gapFc":7,"pendenteFc":7,"pctFc":87.3},{"codMasc":16515,"variacao":"AMENDOA CLEAN","solicitado":68,"reservado":68,"pendente":0,"pct":100.0,"mediaSemanal":17.0,"dias":26.8,"gap":0,"solicitadoCargaMae":68,"solicitadoForecast":76,"gapFc":8,"pendenteFc":8,"pctFc":89.5}],"solicitadoCargaMae":116,"solicitadoForecast":131,"gapFc":15,"pendenteFc":15,"pctFc":88.5},{"codItem":73384,"produto":"MESA 0,90 CELEBRARE 2023","categoria":"Sala de Jantar","solicitado":37,"reservado":15,"pendente":22,"pct":40.5,"alerta":false,"concluido":false,"mediaSemanal":9.25,"dias":17.3,"gap":22,"variacoes":[{"codMasc":50466,"variacao":"AMENDOA CLEAN/OFF WH#S/VIDRO 900X900","solicitado":37,"reservado":15,"pendente":22,"pct":40.5,"mediaSemanal":9.25,"dias":17.3,"gap":22,"solicitadoCargaMae":37,"solicitadoForecast":26,"gapFc":11,"pendenteFc":11,"pctFc":57.7}],"solicitadoCargaMae":37,"solicitadoForecast":26,"gapFc":11,"pendenteFc":11,"pctFc":57.7},{"codItem":85650,"produto":"CAMA CASAL LOPAS 1,60 FREETOWN 2025","categoria":"Complementos","solicitado":38,"reservado":38,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":9.5,"dias":31.7,"gap":0,"variacoes":[{"codMasc":49964,"variacao":"AMENDOA CLEAN/BRANCO#KOR.BRANCO C/LED","solicitado":38,"reservado":38,"pendente":0,"pct":100.0,"mediaSemanal":9.5,"dias":31.7,"gap":0,"solicitadoCargaMae":38,"solicitadoForecast":36,"gapFc":-2,"pendenteFc":-2,"pctFc":105.6}],"solicitadoCargaMae":38,"solicitadoForecast":36,"gapFc":-2,"pendenteFc":-2,"pctFc":105.6},{"codItem":2082,"produto":"CAMA CASAL 1,40 ATHENAS 2022","categoria":"Complementos","solicitado":148,"reservado":71,"pendente":77,"pct":48.0,"alerta":false,"concluido":false,"mediaSemanal":37.0,"dias":57.9,"gap":77,"variacoes":[{"codMasc":15712,"variacao":"FRASSINO/OFF WHITE/F","solicitado":36,"reservado":36,"pendente":0,"pct":100.0,"mediaSemanal":9.0,"dias":83.1,"gap":0,"solicitadoCargaMae":36,"solicitadoForecast":13,"gapFc":-23,"pendenteFc":-23,"pctFc":276.9},{"codMasc":15707,"variacao":"AMENDOA CL/OFF WHI/A","solicitado":95,"reservado":19,"pendente":76,"pct":20.0,"mediaSemanal":23.75,"dias":8.5,"gap":76,"solicitadoCargaMae":95,"solicitadoForecast":67,"gapFc":48,"pendenteFc":48,"pctFc":28.4},{"codMasc":15710,"variacao":"BRANCO","solicitado":17,"reservado":16,"pendente":1,"pct":94.1,"mediaSemanal":4.25,"dias":60.0,"gap":1,"solicitadoCargaMae":17,"solicitadoForecast":8,"gapFc":-8,"pendenteFc":-8,"pctFc":200.0}],"solicitadoCargaMae":148,"solicitadoForecast":88,"gapFc":17,"pendenteFc":17,"pctFc":80.7},{"codItem":263,"produto":"MESA 1,20 ATHENAS BR","categoria":"Sala de Jantar","solicitado":45,"reservado":23,"pendente":22,"pct":51.1,"alerta":false,"concluido":false,"mediaSemanal":11.25,"dias":230.0,"gap":22,"variacoes":[{"codMasc":15492,"variacao":"AMENDOA CLEAN","solicitado":45,"reservado":23,"pendente":22,"pct":51.1,"mediaSemanal":11.25,"dias":230.0,"gap":22,"solicitadoCargaMae":45,"solicitadoForecast":3,"gapFc":-20,"pendenteFc":-20,"pctFc":766.7}],"solicitadoCargaMae":45,"solicitadoForecast":3,"gapFc":-20,"pendenteFc":-20,"pctFc":766.7},{"codItem":86048,"produto":"MESA 1,70 APOGEU 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":102,"reservado":102,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":25.5,"dias":59.2,"gap":0,"variacoes":[{"codMasc":75626,"variacao":"AMENDOA CL/OFF WHI/A#LINHO RINZAI BEGE","solicitado":75,"reservado":75,"pendente":0,"pct":100.0,"mediaSemanal":18.75,"dias":64.3,"gap":0,"solicitadoCargaMae":75,"solicitadoForecast":35,"gapFc":-40,"pendenteFc":-40,"pctFc":214.3},{"codMasc":75630,"variacao":"AMENDOA CL/OFF WHI/A#VELUDO NATURALE CREME","solicitado":27,"reservado":27,"pendente":0,"pct":100.0,"mediaSemanal":6.75,"dias":45.0,"gap":0,"solicitadoCargaMae":27,"solicitadoForecast":18,"gapFc":-9,"pendenteFc":-9,"pctFc":150.0}],"solicitadoCargaMae":102,"solicitadoForecast":53,"gapFc":-49,"pendenteFc":-49,"pctFc":192.5},{"codItem":85123,"produto":"MESA 1,20 SINTONIA","categoria":"Sala de Jantar","solicitado":51,"reservado":51,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":12.75,"dias":510.0,"gap":0,"variacoes":[{"codMasc":46251,"variacao":"AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S","solicitado":51,"reservado":51,"pendente":0,"pct":100.0,"mediaSemanal":12.75,"dias":510.0,"gap":0,"solicitadoCargaMae":51,"solicitadoForecast":3,"gapFc":-48,"pendenteFc":-48,"pctFc":1700.0}],"solicitadoCargaMae":51,"solicitadoForecast":3,"gapFc":-48,"pendenteFc":-48,"pctFc":1700.0},{"codItem":85082,"produto":"MESA 1,70 ASTRID 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":34,"reservado":34,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":8.5,"dias":255.0,"gap":0,"variacoes":[{"codMasc":49178,"variacao":"AMENDOA CLEAN/OFF WH#VELUDO NATURALE CREME","solicitado":34,"reservado":34,"pendente":0,"pct":100.0,"mediaSemanal":8.5,"dias":255.0,"gap":0,"solicitadoCargaMae":34,"solicitadoForecast":4,"gapFc":-30,"pendenteFc":-30,"pctFc":850.0}],"solicitadoCargaMae":34,"solicitadoForecast":4,"gapFc":-30,"pendenteFc":-30,"pctFc":850.0},{"codItem":73074,"produto":"CAMA CASAL 1,40 REALI 2022","categoria":"Complementos","solicitado":52,"reservado":42,"pendente":10,"pct":80.8,"alerta":false,"concluido":false,"mediaSemanal":13.0,"dias":27.7,"gap":10,"variacoes":[{"codMasc":15961,"variacao":"FRASSINO","solicitado":28,"reservado":28,"pendente":0,"pct":100.0,"mediaSemanal":7.0,"dias":35.0,"gap":0,"solicitadoCargaMae":28,"solicitadoForecast":24,"gapFc":-4,"pendenteFc":-4,"pctFc":116.7},{"codMasc":15960,"variacao":"BRANCO","solicitado":24,"reservado":14,"pendente":10,"pct":58.3,"mediaSemanal":6.0,"dias":13.1,"gap":10,"solicitadoCargaMae":24,"solicitadoForecast":32,"gapFc":18,"pendenteFc":18,"pctFc":43.8}],"solicitadoCargaMae":52,"solicitadoForecast":56,"gapFc":14,"pendenteFc":14,"pctFc":75.0},{"codItem":2106,"produto":"GUARDA ROUPA BERTHA 6 PTS","categoria":"GR","solicitado":50,"reservado":45,"pendente":5,"pct":90.0,"alerta":false,"concluido":false,"mediaSemanal":12.5,"dias":92.7,"gap":5,"variacoes":[{"codMasc":13357,"variacao":"AMENDOA CLEAN#C/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-10,"pendenteFc":-10,"pctFc":0.0},{"codMasc":13363,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#C/PES#S/KIT GAV","solicitado":10,"reservado":8,"pendente":2,"pct":80.0,"mediaSemanal":2.5,"dias":80.0,"gap":2,"solicitadoCargaMae":10,"solicitadoForecast":3,"gapFc":-5,"pendenteFc":-5,"pctFc":266.7},{"codMasc":13365,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":7,"pendente":3,"pct":70.0,"mediaSemanal":2.5,"dias":210.0,"gap":3,"solicitadoCargaMae":10,"solicitadoForecast":1,"gapFc":-6,"pendenteFc":-6,"pctFc":700.0},{"codMasc":13361,"variacao":"AMENDOA CLEAN#S/ESP#C/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-10,"pendenteFc":-10,"pctFc":0.0},{"codMasc":13360,"variacao":"AMENDOA CLEAN#S/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":150.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":2,"gapFc":-8,"pendenteFc":-8,"pctFc":500.0}],"solicitadoCargaMae":50,"solicitadoForecast":6,"gapFc":-39,"pendenteFc":-39,"pctFc":750.0},{"codItem":74549,"produto":"BELICHE 0,90 OLGA","categoria":"Complementos","solicitado":62,"reservado":30,"pendente":32,"pct":48.4,"alerta":false,"concluido":false,"mediaSemanal":15.5,"dias":75.0,"gap":32,"variacoes":[{"codMasc":33429,"variacao":"BRANCO#C/LED","solicitado":42,"reservado":20,"pendente":22,"pct":47.6,"mediaSemanal":10.5,"dias":75.0,"gap":22,"solicitadoCargaMae":42,"solicitadoForecast":8,"gapFc":-12,"pendenteFc":-12,"pctFc":250.0},{"codMasc":33428,"variacao":"AMENDOA CLEAN#C/LED","solicitado":20,"reservado":10,"pendente":10,"pct":50.0,"mediaSemanal":5.0,"dias":75.0,"gap":10,"solicitadoCargaMae":20,"solicitadoForecast":4,"gapFc":-6,"pendenteFc":-6,"pctFc":250.0}],"solicitadoCargaMae":62,"solicitadoForecast":12,"gapFc":-18,"pendenteFc":-18,"pctFc":250.0},{"codItem":2382,"produto":"GUARDA ROUPA SPAZIO 3 PTS 2,70","categoria":"GR","solicitado":300,"reservado":295,"pendente":5,"pct":98.3,"alerta":false,"concluido":false,"mediaSemanal":75.0,"dias":22.7,"gap":5,"variacoes":[{"codMasc":13169,"variacao":"BRANCO#S/3PTS GLASS#S/PES","solicitado":150,"reservado":145,"pendente":5,"pct":96.7,"mediaSemanal":37.5,"dias":27.5,"gap":5,"solicitadoCargaMae":150,"solicitadoForecast":158,"gapFc":13,"pendenteFc":13,"pctFc":91.8},{"codMasc":13165,"variacao":"BRANCO#C/1 PT GLASS#S/PES","solicitado":100,"reservado":100,"pendente":0,"pct":100.0,"mediaSemanal":25.0,"dias":19.4,"gap":0,"solicitadoCargaMae":100,"solicitadoForecast":155,"gapFc":55,"pendenteFc":55,"pctFc":64.5},{"codMasc":13166,"variacao":"BRANCO#C/3 PTS GLASS#S/PES","solicitado":20,"reservado":20,"pendente":0,"pct":100.0,"mediaSemanal":5.0,"dias":11.8,"gap":0,"solicitadoCargaMae":20,"solicitadoForecast":51,"gapFc":31,"pendenteFc":31,"pctFc":39.2},{"codMasc":13167,"variacao":"BRANCO#C/3 PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":20.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":15,"gapFc":5,"pendenteFc":5,"pctFc":66.7},{"codMasc":13168,"variacao":"BRANCO#S/3PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":14.3,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":21,"gapFc":11,"pendenteFc":11,"pctFc":47.6},{"codMasc":13164,"variacao":"BRANCO#C/1 PT GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":18.8,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":16,"gapFc":6,"pendenteFc":6,"pctFc":62.5}],"solicitadoCargaMae":300,"solicitadoForecast":416,"gapFc":121,"pendenteFc":121,"pctFc":70.9},{"codItem":73121,"produto":"CABECEIRA BOX 1,60 CALITAN 2023","categoria":"Complementos","solicitado":155,"reservado":115,"pendente":40,"pct":74.2,"alerta":false,"concluido":false,"mediaSemanal":38.75,"dias":23.0,"gap":40,"variacoes":[{"codMasc":16180,"variacao":"AMENDOA CLEAN/PRETO#KORINO PRETO#C/LED","solicitado":155,"reservado":115,"pendente":40,"pct":74.2,"mediaSemanal":38.75,"dias":23.0,"gap":40,"solicitadoCargaMae":155,"solicitadoForecast":150,"gapFc":35,"pendenteFc":35,"pctFc":76.7}],"solicitadoCargaMae":155,"solicitadoForecast":150,"gapFc":35,"pendenteFc":35,"pctFc":76.7},{"codItem":159,"produto":"MESA 1,80 ATHENAS BR","categoria":"Sala de Jantar","solicitado":25,"reservado":25,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":6.25,"dias":20.8,"gap":0,"variacoes":[{"codMasc":16481,"variacao":"AMENDOA CLEAN","solicitado":25,"reservado":25,"pendente":0,"pct":100.0,"mediaSemanal":6.25,"dias":20.8,"gap":0,"solicitadoCargaMae":25,"solicitadoForecast":36,"gapFc":11,"pendenteFc":11,"pctFc":69.4}],"solicitadoCargaMae":25,"solicitadoForecast":36,"gapFc":11,"pendenteFc":11,"pctFc":69.4},{"codItem":86042,"produto":"MESA  1,60 ASTRID 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":17,"reservado":17,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":4.25,"dias":170.0,"gap":0,"variacoes":[{"codMasc":75985,"variacao":"AMENDOA CLEAN/OFF WH#LINHO RINZAI BEGE","solicitado":17,"reservado":17,"pendente":0,"pct":100.0,"mediaSemanal":4.25,"dias":170.0,"gap":0,"solicitadoCargaMae":17,"solicitadoForecast":3,"gapFc":-14,"pendenteFc":-14,"pctFc":566.7}],"solicitadoCargaMae":17,"solicitadoForecast":3,"gapFc":-14,"pendenteFc":-14,"pctFc":566.7},{"codItem":86051,"produto":"MESA 0,90 CELEBRARE 2023 C/VDO SERIG.C/04 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":18,"reservado":18,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":4.5,"dias":77.1,"gap":0,"variacoes":[{"codMasc":75610,"variacao":"AMENDOA CLEAN/OFF WH#LINHO RINZAI BEGE","solicitado":18,"reservado":18,"pendente":0,"pct":100.0,"mediaSemanal":4.5,"dias":77.1,"gap":0,"solicitadoCargaMae":18,"solicitadoForecast":7,"gapFc":-11,"pendenteFc":-11,"pctFc":257.1}],"solicitadoCargaMae":18,"solicitadoForecast":7,"gapFc":-11,"pendenteFc":-11,"pctFc":257.1},{"codItem":155,"produto":"MESA DE CABECEIRA MAGGIORE   NEW  03 GAV","categoria":"Complementos","solicitado":70,"reservado":48,"pendente":22,"pct":68.6,"alerta":false,"concluido":false,"mediaSemanal":17.5,"dias":35.2,"gap":22,"variacoes":[{"codMasc":51181,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":24,"reservado":11,"pendente":13,"pct":45.8,"mediaSemanal":6.0,"dias":33.0,"gap":13,"solicitadoCargaMae":24,"solicitadoForecast":10,"gapFc":-1,"pendenteFc":-1,"pctFc":110.0},{"codMasc":51182,"variacao":"BRANCO","solicitado":23,"reservado":23,"pendente":0,"pct":100.0,"mediaSemanal":5.75,"dias":46.0,"gap":0,"solicitadoCargaMae":23,"solicitadoForecast":15,"gapFc":-8,"pendenteFc":-8,"pctFc":153.3},{"codMasc":51180,"variacao":"AMENDOA CLEAN","solicitado":23,"reservado":14,"pendente":9,"pct":60.9,"mediaSemanal":5.75,"dias":19.1,"gap":9,"solicitadoCargaMae":23,"solicitadoForecast":22,"gapFc":8,"pendenteFc":8,"pctFc":63.6}],"solicitadoCargaMae":70,"solicitadoForecast":47,"gapFc":-1,"pendenteFc":-1,"pctFc":102.1},{"codItem":87459,"produto":"GUARDA ROUPA 08 PTS SERENATA","categoria":"GR","solicitado":30,"reservado":29,"pendente":1,"pct":96.7,"alerta":false,"concluido":false,"mediaSemanal":7.5,"dias":28.0,"gap":1,"variacoes":[{"codMasc":91590,"variacao":"BRANCO#S/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-10,"pendenteFc":-10,"pctFc":0.0},{"codMasc":91589,"variacao":"BRANCO#C/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-10,"pendenteFc":-10,"pctFc":0.0},{"codMasc":91588,"variacao":"BRANCO#C/ESP#C/PES","solicitado":10,"reservado":9,"pendente":1,"pct":90.0,"mediaSemanal":2.5,"dias":28.0,"gap":1,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-9,"pendenteFc":-9,"pctFc":0.0}],"solicitadoCargaMae":30,"solicitadoForecast":0,"gapFc":-29,"pendenteFc":-29,"pctFc":0.0},{"codItem":2101,"produto":"GUARDA ROUPA ARIES 6 PTS 2021","categoria":"GR","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":2.5,"dias":16.7,"gap":0,"variacoes":[{"codMasc":13940,"variacao":"AMENDOA CLEAN#S/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":16.7,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":18,"gapFc":8,"pendenteFc":8,"pctFc":55.6}],"solicitadoCargaMae":10,"solicitadoForecast":18,"gapFc":8,"pendenteFc":8,"pctFc":55.6},{"codItem":2316,"produto":"GUARDA ROUPA NICE 3 PTS","categoria":"GR","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":2.5,"dias":30.0,"gap":0,"variacoes":[{"codMasc":13054,"variacao":"AMENDOA CL/OFF WHI/A#C/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":30.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0}],"solicitadoCargaMae":10,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codItem":84794,"produto":"GUARDA ROUPA LOPAS 06 PTS LOOP 2025","categoria":"GR","solicitado":50,"reservado":38,"pendente":12,"pct":76.0,"alerta":false,"concluido":false,"mediaSemanal":12.5,"dias":56.2,"gap":12,"variacoes":[{"codMasc":42176,"variacao":"AMENDOA CLEAN/OFF WH#S/PES","solicitado":40,"reservado":28,"pendente":12,"pct":70.0,"mediaSemanal":10.0,"dias":70.0,"gap":12,"solicitadoCargaMae":40,"solicitadoForecast":12,"gapFc":-16,"pendenteFc":-16,"pctFc":233.3},{"codMasc":42175,"variacao":"AMENDOA CLEAN/OFF WH#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":17.6,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":17,"gapFc":7,"pendenteFc":7,"pctFc":58.8}],"solicitadoCargaMae":50,"solicitadoForecast":29,"gapFc":-9,"pendenteFc":-9,"pctFc":131.0}],"categorias":[{"nome":"GR","produtos":11,"variacoes":58,"solicitado":2245,"reservado":1285,"pendente":960,"pct":57.2,"completos":2,"parcial":8,"alertas":1,"diasMedia":31.3,"solicitadoCargaMae":2245,"solicitadoForecast":2372,"pendenteFc":1087,"pctFc":54.2},{"nome":"Complementos","produtos":18,"variacoes":45,"solicitado":2734,"reservado":1519,"pendente":1215,"pct":55.6,"completos":2,"parcial":16,"alertas":0,"diasMedia":46.2,"solicitadoCargaMae":2734,"solicitadoForecast":2295,"pendenteFc":776,"pctFc":66.2},{"nome":"Sala de Jantar","produtos":8,"variacoes":9,"solicitado":329,"reservado":285,"pendente":44,"pct":86.6,"completos":6,"parcial":2,"alertas":0,"diasMedia":167.4,"solicitadoCargaMae":329,"solicitadoForecast":135,"pendenteFc":-150,"pctFc":211.1}],"top10":[{"codItem":73275,"produto":"COMODA HORIZONTAL MAGGIORE NEW 6GAV","categoria":"Complementos","codMasc":23851,"variacao":"AMENDOA CLEAN","solicitado":68,"reservado":6,"pendente":62,"pct":8.8,"gap":62,"dias":2.1,"solicitadoCargaMae":68,"solicitadoForecast":87,"gapFc":81,"pendenteFc":81,"pctFc":6.9},{"codItem":84821,"produto":"GUARDA ROUPA LOPAS 03 PTS OLLIE II 2025","categoria":"GR","codMasc":30742,"variacao":"AMENDOA CL/OFF WHI/A#S/2PTS GLASS#C/PES","solicitado":100,"reservado":14,"pendente":86,"pct":14.0,"gap":86,"dias":3.2,"solicitadoCargaMae":100,"solicitadoForecast":132,"gapFc":118,"pendenteFc":118,"pctFc":10.6},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","codMasc":12478,"variacao":"AMENDOA CLEAN/BRANCO#S/ESP#S/PES","solicitado":300,"reservado":57,"pendente":243,"pct":19.0,"gap":243,"dias":4.3,"solicitadoCargaMae":300,"solicitadoForecast":397,"gapFc":340,"pendenteFc":340,"pctFc":14.4},{"codItem":73284,"produto":"COMODA VEDRA 7GAV 2 PTS","categoria":"Complementos","codMasc":23858,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":33,"reservado":6,"pendente":27,"pct":18.2,"gap":27,"dias":4.3,"solicitadoCargaMae":33,"solicitadoForecast":42,"gapFc":36,"pendenteFc":36,"pctFc":14.3},{"codItem":73275,"produto":"COMODA HORIZONTAL MAGGIORE NEW 6GAV","categoria":"Complementos","codMasc":23853,"variacao":"BRANCO","solicitado":141,"reservado":31,"pendente":110,"pct":22.0,"gap":110,"dias":4.6,"solicitadoCargaMae":141,"solicitadoForecast":203,"gapFc":172,"pendenteFc":172,"pctFc":15.3},{"codItem":73177,"produto":"SAPATEIRA ESTHELA 2024","categoria":"Complementos","codMasc":23848,"variacao":"BRANCO","solicitado":47,"reservado":8,"pendente":39,"pct":17.0,"gap":39,"dias":4.9,"solicitadoCargaMae":47,"solicitadoForecast":49,"gapFc":41,"pendenteFc":41,"pctFc":16.3},{"codItem":73177,"produto":"SAPATEIRA ESTHELA 2024","categoria":"Complementos","codMasc":23850,"variacao":"AMENDOA CLEAN","solicitado":49,"reservado":9,"pendente":40,"pct":18.4,"gap":40,"dias":6.0,"solicitadoCargaMae":49,"solicitadoForecast":45,"gapFc":36,"pendenteFc":36,"pctFc":20.0},{"codItem":72565,"produto":"GUARDA ROUPA ZEINE 2 PTS 2024","categoria":"GR","codMasc":13279,"variacao":"AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES","solicitado":60,"reservado":21,"pendente":39,"pct":35.0,"gap":39,"dias":7.5,"solicitadoCargaMae":60,"solicitadoForecast":84,"gapFc":63,"pendenteFc":63,"pctFc":25.0},{"codItem":73284,"produto":"COMODA VEDRA 7GAV 2 PTS","categoria":"Complementos","codMasc":23859,"variacao":"BRANCO","solicitado":46,"reservado":11,"pendente":35,"pct":23.9,"gap":35,"dias":7.9,"solicitadoCargaMae":46,"solicitadoForecast":42,"gapFc":31,"pendenteFc":31,"pctFc":26.2},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","codMasc":12490,"variacao":"BRANCO#S/ESP#S/PES","solicitado":270,"reservado":106,"pendente":164,"pct":39.3,"gap":164,"dias":8.0,"solicitadoCargaMae":270,"solicitadoForecast":397,"gapFc":291,"pendenteFc":291,"pctFc":26.7}],"hist":[{"label":"0d","min":0,"max":0.01,"level":"crit","count":2},{"label":"1-10d","min":0.01,"max":10,"level":"crit","count":16},{"label":"11-20d","min":10,"max":20,"level":"warn","count":22},{"label":"21-30d","min":20,"max":30,"level":"warn","count":22},{"label":"≥31d","min":30,"max":9999,"level":"ok","count":50}],"categoriasFc":[{"nome":"GR","produtos":9,"variacoes":50,"solicitado":2372,"reservado":1231,"demandaDiariaFc":76.5,"diasAtendeFc":16.1},{"nome":"Complementos","produtos":18,"variacoes":44,"solicitado":2295,"reservado":1517,"demandaDiariaFc":74.0,"diasAtendeFc":20.5},{"nome":"Sala de Jantar","produtos":8,"variacoes":9,"solicitado":135,"reservado":285,"demandaDiariaFc":4.4,"diasAtendeFc":64.8}]};
+/* ═══════════════════════════════════════════════════════════════════
+   EXCLUSÃO DE PRODUTOS DESCONTINUADOS
+   ───────────────────────────────────────────────────────────────────
+   Lista de codItem que NÃO devem aparecer na análise (produtos
+   descontinuados ou que não serão mais vendidos). O BUNDLE é filtrado
+   antes de qualquer cálculo, e os agregados são recalculados.
+
+   - 2405: GUARDA ROUPA TORONTO 2 PTS PLUS (descontinuado em 30/04/2026)
+
+   Pra reincluir um produto, basta removê-lo da lista abaixo.
+   ═══════════════════════════════════════════════════════════════════ */
+const EXCLUIR_COD_ITEM = new Set([2405]);
+
+(function aplicarExclusoes(){
+  const algumExcluido = (BUNDLE.data || []).some(p => EXCLUIR_COD_ITEM.has(p.codItem));
+  if (!algumExcluido) return; // nada a fazer — BUNDLE já vem limpo
+
+  // Guarda o que foi excluído pra log
+  const removidos = BUNDLE.data.filter(p => EXCLUIR_COD_ITEM.has(p.codItem));
+  console.log('[exclusão] removendo da análise:', removidos.map(p => `${p.codItem}/${p.produto}`).join(', '));
+
+  // Filtra produtos e top10
+  BUNDLE.data  = BUNDLE.data.filter(p => !EXCLUIR_COD_ITEM.has(p.codItem));
+  if (Array.isArray(BUNDLE.top10)) {
+    BUNDLE.top10 = BUNDLE.top10.filter(t => !EXCLUIR_COD_ITEM.has(t.codItem));
+  }
+
+  const produtos      = BUNDLE.data;
+  const todasVar      = produtos.flatMap(p => p.variacoes || []);
+  const variacoesAtivas = todasVar.filter(v => (v.pct || 0) < 100); // mesmo critério do gerador
+
+  // ── Recalcula stats globais ──
+  const totalSolicitado = produtos.reduce((s,p) => s + (p.solicitado||0), 0);
+  const totalReservado  = produtos.reduce((s,p) => s + (p.reservado||0), 0);
+  const totalPendente   = totalSolicitado - totalReservado;
+  const pctGeral        = totalSolicitado ? Math.round(totalReservado/totalSolicitado*1000)/10 : 0;
+  const somaDiasProd    = produtos.reduce((s,p) => s + (p.dias||0), 0);
+
+  // demandaDiariaGlobal e diasAtendeGlobalFc são derivados do FORECAST externo
+  // (não da soma de mediaSemanal). Recalculamos diasAtendeGlobalFc usando o
+  // novo totalReservado, mas mantemos demandaDiariaGlobal preservada.
+  const demandaDiariaG  = BUNDLE.stats.demandaDiariaGlobal || 0;
+  const diasAtendeFcG   = demandaDiariaG > 0 ? Math.round(totalReservado/demandaDiariaG*10)/10 : 0;
+
+  Object.assign(BUNDLE.stats, {
+    totalSolicitado,
+    totalReservado,
+    totalPendente,
+    pctGeral,
+    gapTotal:           totalPendente,
+    nProdutos:          produtos.length,
+    nVariacoes:         todasVar.length,
+    nCompletos:         produtos.filter(p => (p.pct||0) >= 100).length,
+    nParcial:           produtos.filter(p => (p.pct||0) > 0 && (p.pct||0) < 100).length,
+    nZero:              produtos.filter(p => (p.pct||0) === 0).length,
+    nAlertVar:          todasVar.filter(v => (v.pct||0) < 30).length,
+    skuAtendido:        todasVar.filter(v => (v.pct||0) >= 100).length,
+    skuParcial:         todasVar.filter(v => (v.pct||0) > 0 && (v.pct||0) < 100).length,
+    skuSemReserva:      todasVar.filter(v => (v.pct||0) === 0).length,
+    diasMedia:          produtos.length ? Math.round(somaDiasProd/produtos.length*10)/10 : 0,
+    diasAtendeGlobalFc: diasAtendeFcG
+    // demandaDiariaGlobal preservado (vem do forecast comercial)
+    // fcTotalSolicitado / skuAtendeMes / skuParcialFc / skuSemCobertura — preservados
+  });
+
+  // ── Recalcula categorias ──
+  const catMap = new Map();
+  produtos.forEach(p => {
+    if (!catMap.has(p.categoria)) {
+      catMap.set(p.categoria, { nome:p.categoria, produtos:0, variacoes:0, solicitado:0, reservado:0, completos:0, parcial:0, alertas:0, somaDias:0 });
+    }
+    const c = catMap.get(p.categoria);
+    c.produtos++;
+    c.variacoes  += (p.variacoes||[]).length;
+    c.solicitado += (p.solicitado||0);
+    c.reservado  += (p.reservado||0);
+    if ((p.pct||0) >= 100)               c.completos++;
+    else if ((p.pct||0) > 0)             c.parcial++;
+    if (p.alerta)                        c.alertas++;
+    c.somaDias   += (p.dias||0);
+  });
+  // Preserva a ordem original das categorias quando possível
+  const ordemCats = (BUNDLE.categorias || []).map(c => c.nome);
+  BUNDLE.categorias = ordemCats
+    .filter(n => catMap.has(n))
+    .concat(Array.from(catMap.keys()).filter(n => !ordemCats.includes(n)))
+    .map(n => {
+      const c = catMap.get(n);
+      return {
+        nome: c.nome,
+        produtos: c.produtos,
+        variacoes: c.variacoes,
+        solicitado: c.solicitado,
+        reservado: c.reservado,
+        pendente: c.solicitado - c.reservado,
+        pct: c.solicitado ? Math.round(c.reservado/c.solicitado*1000)/10 : 0,
+        completos: c.completos,
+        parcial: c.parcial,
+        alertas: c.alertas,
+        diasMedia: c.produtos ? Math.round(c.somaDias/c.produtos*10)/10 : 0
+      };
+    });
+
+  // ── Ajusta categoriasFc (conservador) ──
+  // demandaDiariaFc, solicitadoFc e diasAtendeFc vêm de uma fonte externa
+  // (forecast comercial), não são derivados dos produtos. Por isso NÃO os
+  // recalculamos do zero — só ajustamos as contagens (produtos/variações)
+  // e o reservado, que sabemos que vêm dos produtos.
+  // Quando o gerador for atualizado pra excluir o produto na origem, esses
+  // números virão corretos automaticamente.
+  if (Array.isArray(BUNDLE.categoriasFc)) {
+    BUNDLE.categoriasFc = BUNDLE.categoriasFc.map(catFc => {
+      const prodsCat = produtos.filter(p => p.categoria === catFc.nome);
+      const variacoesCat = prodsCat.flatMap(p => p.variacoes || []);
+      const reservadoCat = prodsCat.reduce((s,p) => s + (p.reservado||0), 0);
+      const demDiaria    = catFc.demandaDiariaFc; // preservado
+      return {
+        ...catFc,
+        produtos: prodsCat.length,
+        variacoes: variacoesCat.length,
+        reservado: reservadoCat,
+        diasAtendeFc: demDiaria > 0 ? Math.round(reservadoCat/demDiaria*10)/10 : 0
+      };
+    });
+
+    // Atualiza só fcTotalReservado (vem dos produtos) e contagens FC.
+    // fcTotalSolicitado é preservado do BUNDLE original (forecast externo).
+    BUNDLE.stats.fcTotalReservado  = BUNDLE.categoriasFc.reduce((s,c) => s + (c.reservado||0), 0);
+    BUNDLE.stats.fcTotalProdutos   = produtos.length;
+    BUNDLE.stats.fcTotalVariacoes  = todasVar.length;
+  }
+
+  // ── Histograma RECALCULADO ──
+  // Baseado APENAS em variações com forecast > 0 (consistente com os cards
+  // laterais "Atende mês completo / Cobertura parcial / Sem cobertura").
+  // Variações sem forecast não fazem sentido nesse histograma — o "dias atende"
+  // delas é arbitrário (default 28). Excluindo, total = 103 SKUs (FC>0)
+  // e bate com a soma 50 + 53 + 0 dos cards.
+  {
+    const fcVars = todasVar.filter(v => (v.solicitadoForecast || 0) > 0);
+    const faixas = [
+      { label: '0d',     level: 'crit', test: d => d === 0 },
+      { label: '1-10d',  level: 'crit', test: d => d > 0 && d < 10 },
+      { label: '11-20d', level: 'warn', test: d => d >= 10 && d < 20 },
+      { label: '21-30d', level: 'warn', test: d => d >= 20 && d < 30 },
+      { label: '≥31d',   level: 'ok',   test: d => d >= 30 },
+    ];
+    BUNDLE.hist = faixas.map(f => ({
+      label: f.label,
+      level: f.level,
+      count: fcVars.filter(v => f.test(v.dias || 0)).length,
+    }));
+    BUNDLE.stats.histTotalAnalisados = fcVars.length;
+    console.log('[hist] recalculado:', BUNDLE.hist.map(h => `${h.label}:${h.count}`).join(' · '), '· total:', fcVars.length);
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════════════════
+   PIOR CASO — SKU QUE VAI ZERAR PRIMEIRO
+   ───────────────────────────────────────────────────────────────────
+   Calcula o "elo mais fraco" da carga mãe: a variação com menor cobertura
+   em dias. Esse é o número exibido no card grande "Atende os próximos",
+   pois é o mais útil pra decisão de abastecimento — quando ele cai, há
+   um SKU específico precisando de atenção.
+
+   Resultado:
+     stats.diasAtendePiorCaso — dias do SKU mais frágil
+     stats.skuPiorCaso        — { codItem, produto, codMasc, variacao, ... }
+
+   Regras:
+     - Variações concluídas (pct >= 100) ficam de fora do cálculo
+       (têm dias=28 só por convenção, não representam gargalo)
+     - Se nenhuma variação está em risco (tudo concluído) → cap do mês
+   ═══════════════════════════════════════════════════════════════════ */
+(function calcularPiorCaso(){
+  const todasVar = (BUNDLE.data || []).flatMap(p =>
+    (p.variacoes || []).map(v => ({ ...v, codItem: p.codItem, produto: p.produto, categoria: p.categoria }))
+  );
+
+  // Considera só variações NÃO concluídas
+  const candidatas = todasVar.filter(v => (v.pct || 0) < 100);
+
+  if (candidatas.length === 0) {
+    BUNDLE.stats.diasAtendePiorCaso = BUNDLE.stats.diasMes || 31;
+    BUNDLE.stats.skuPiorCaso = null;
+    return;
+  }
+
+  // Variação com menor "dias"
+  let pior = candidatas[0];
+  candidatas.forEach(v => { if ((v.dias||0) < (pior.dias||0)) pior = v; });
+
+  BUNDLE.stats.diasAtendePiorCaso = Math.round((pior.dias||0) * 10) / 10;
+  BUNDLE.stats.skuPiorCaso = {
+    codItem: pior.codItem,
+    produto: pior.produto,
+    categoria: pior.categoria,
+    codMasc: pior.codMasc,
+    variacao: pior.variacao,
+    dias: pior.dias,
+    reservado: pior.reservado,
+    solicitado: pior.solicitado,
+    pendente: pior.pendente,
+    mediaSemanal: pior.mediaSemanal,
+    solicitadoCargaMae: pior.solicitadoCargaMae,
+    solicitadoForecast: pior.solicitadoForecast || 0,
+    pctFc: pior.pctFc || 0,
+    gapFc: pior.gapFc || 0
+  };
+
+  // ─── Mini-timeline: distribuição dos SKUs ativos por janela de dias ───
+  // Gradiente vermelho → laranja → amarelo → verde (sem quebra visual)
+  const faixas = [
+    { label: '< 7d',    icone: '🚨', cor: '#ef4444', corBg: 'rgba(239,68,68,0.12)',  corBd: 'rgba(239,68,68,0.35)',  filtro: v => (v.dias||0) < 7,                              count: 0, skus: [] },
+    { label: '7-14d',   icone: '⚠',  cor: '#fb923c', corBg: 'rgba(251,146,60,0.12)', corBd: 'rgba(251,146,60,0.35)', filtro: v => (v.dias||0) >= 7  && (v.dias||0) < 14,        count: 0, skus: [] },
+    { label: '15-21d',  icone: '⏰', cor: '#facc15', corBg: 'rgba(250,204,21,0.12)', corBd: 'rgba(250,204,21,0.35)', filtro: v => (v.dias||0) >= 14 && (v.dias||0) < 21,        count: 0, skus: [] },
+    { label: '≥ 21d',   icone: '✓',  cor: '#22c98a', corBg: 'rgba(34,201,138,0.12)', corBd: 'rgba(34,201,138,0.35)', filtro: v => (v.dias||0) >= 21,                            count: 0, skus: [] }
+  ];
+  candidatas.forEach(v => {
+    for (const f of faixas) {
+      if (f.filtro(v)) {
+        f.count++;
+        if (f.skus.length < 5) f.skus.push({ produto: v.produto, variacao: v.variacao, dias: v.dias });
+        break;
+      }
+    }
+  });
+  BUNDLE.stats.timelineCobertura = {
+    totalSkus: candidatas.length,
+    faixas: faixas.map(f => ({
+      label: f.label, icone: f.icone, cor: f.cor, corBg: f.corBg, corBd: f.corBd,
+      count: f.count, exemplos: f.skus
+    }))
+  };
+
+  console.log('[pior-caso] SKU mais frágil:', pior.dias.toFixed(1) + 'd ·', pior.produto, '·', pior.variacao);
+  console.log('[timeline] distribuição:', faixas.map(f => `${f.label}:${f.count}`).join(' · '));
+})();
+
+/* ═══════════════════════════════════════════════════════════════════
+   CURVA ABC — classificação por solicitado do forecast
+   ───────────────────────────────────────────────────────────────────
+   - Ordena variações por solicitadoForecast desc
+   - A: variações que somam até 80% do volume total
+   - B: próximos 15% (cumulado 80–95%)
+   - C: últimos 5% (cumulado 95–100%)
+   - Cor: A=verde, B=amarelo, C=vermelho (per spec do usuário)
+   ═══════════════════════════════════════════════════════════════════ */
+(function calcularCurvaAbc(){
+  const variacoesComFc = [];
+  (BUNDLE.data || []).forEach(p => {
+    (p.variacoes || []).forEach(v => {
+      if ((v.solicitadoForecast || 0) > 0) {
+        variacoesComFc.push(v);
+      } else {
+        v.curvaAbc = null;
+      }
+    });
+  });
+  variacoesComFc.sort((a, b) => (b.solicitadoForecast || 0) - (a.solicitadoForecast || 0));
+  const totalFc = variacoesComFc.reduce((s, v) => s + v.solicitadoForecast, 0);
+  let cumulado = 0;
+  variacoesComFc.forEach(v => {
+    cumulado += v.solicitadoForecast;
+    const pctCum = cumulado / totalFc * 100;
+    if (pctCum <= 80)      v.curvaAbc = 'A';
+    else if (pctCum <= 95) v.curvaAbc = 'B';
+    else                   v.curvaAbc = 'C';
+  });
+  // Curva por produto: a "melhor" das variações (A > B > C)
+  (BUNDLE.data || []).forEach(p => {
+    const cs = (p.variacoes || []).map(v => v.curvaAbc).filter(Boolean);
+    if (cs.includes('A'))      p.curvaAbc = 'A';
+    else if (cs.includes('B')) p.curvaAbc = 'B';
+    else if (cs.includes('C')) p.curvaAbc = 'C';
+    else                       p.curvaAbc = null;
+  });
+  // Estatísticas pra seção de análise
+  const ag = { A: {n:0, fc:0}, B: {n:0, fc:0}, C: {n:0, fc:0} };
+  variacoesComFc.forEach(v => { ag[v.curvaAbc].n++; ag[v.curvaAbc].fc += v.solicitadoForecast; });
+  BUNDLE.stats.curvaAbcStats = { total: variacoesComFc.length, totalFc, A: ag.A, B: ag.B, C: ag.C };
+  // Enriquece pior caso com a curva da variação
+  if (BUNDLE.stats.skuPiorCaso) {
+    const cm = BUNDLE.stats.skuPiorCaso.codMasc;
+    (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+      if (v.codMasc === cm) BUNDLE.stats.skuPiorCaso.curvaAbc = v.curvaAbc;
+    }));
+  }
+  // Enriquece top10 com curva
+  (BUNDLE.top10 || []).forEach(t => {
+    (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+      if (v.codMasc === t.codMasc) t.curvaAbc = v.curvaAbc;
+    }));
+  });
+  console.log('[curva-abc] A:', ag.A.n, '· B:', ag.B.n, '· C:', ag.C.n, '· total:', variacoesComFc.length);
+})();
+
 const data = BUNDLE.data;
 const stats = BUNDLE.stats;
 const categorias = BUNDLE.categorias;
 const categoriasFc = BUNDLE.categoriasFc || [];
 const top10 = BUNDLE.top10;
 const hist = BUNDLE.hist;
+
+// ╔══════════════════════════════════════════════════════════════════
+// ║ DETECÇÃO DE DADOS ATUALIZADOS (animação ✨)
+// ║ Compara o stats atual com o snapshot salvo no localStorage.
+// ║ Se algum KPI principal mudou, dispara animação pulse + banner.
+// ╚══════════════════════════════════════════════════════════════════
+const _statsSnapshot = {
+  dataAtualizacao:        stats.dataAtualizacao,
+  totalReservado:         stats.totalReservado,
+  totalPendente:          stats.totalPendente,
+  pctGeral:               stats.pctGeral,
+  diasAtendePiorCaso:     stats.diasAtendePiorCaso,
+  skuPiorCasoCod:         stats.skuPiorCaso ? stats.skuPiorCaso.codMasc : null,
+  skuAtendeMes:           stats.skuAtendeMes,
+  skuParcialFc:           stats.skuParcialFc,
+  fcTotalSolicitado:      stats.fcTotalSolicitado,
+};
+const STORAGE_KEY = 'estoque_mm_snapshot_v1';
+let _dataChanges = null;
+try {
+  const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+  if (prev && prev.dataAtualizacao !== _statsSnapshot.dataAtualizacao) {
+    // Houve atualização — calcula deltas
+    _dataChanges = {
+      from:                  prev.dataAtualizacao,
+      to:                    _statsSnapshot.dataAtualizacao,
+      reservadoDelta:        _statsSnapshot.totalReservado - (prev.totalReservado || 0),
+      pctDelta:              +((_statsSnapshot.pctGeral - (prev.pctGeral || 0)).toFixed(1)),
+      piorCasoDelta:         +((_statsSnapshot.diasAtendePiorCaso - (prev.diasAtendePiorCaso || 0)).toFixed(1)),
+      piorCasoChanged:       _statsSnapshot.skuPiorCasoCod !== prev.skuPiorCasoCod,
+      atendeMesDelta:        _statsSnapshot.skuAtendeMes - (prev.skuAtendeMes || 0),
+    };
+    console.log('[dados-atualizados] Mudanças detectadas:', _dataChanges);
+  }
+  // Sempre atualiza o snapshot
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(_statsSnapshot));
+} catch (e) {
+  console.warn('[dados-atualizados] localStorage indisponível:', e);
+}
+
+// Função pra animar elemento(s) e mostrar banner — chamada DEPOIS que tudo foi renderizado
+function aplicarAnimacaoDadosAtualizados(){
+  if (!_dataChanges) return;
+  const c = _dataChanges;
+
+  // Anima KPIs principais que mudaram
+  const fmtDelta = (n, suf) => (n > 0 ? '+' : '') + n + (suf || '');
+  const animar = (id, deltaPositivo) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const card = el.closest('.kpi-card') || el.parentElement;
+    if (card) card.classList.add(deltaPositivo ? 'data-changed' : 'data-changed-down');
+  };
+  if (c.reservadoDelta !== 0) animar('kpi-res', c.reservadoDelta > 0);
+  if (c.pctDelta !== 0)        animar('kpi-pct', c.pctDelta > 0);
+  if (c.piorCasoDelta !== 0 || c.piorCasoChanged) animar('kpi-atende-prox', c.piorCasoDelta > 0);
+  if (c.atendeMesDelta !== 0)  animar('kpi-sku-ok', c.atendeMesDelta > 0);
+
+  // Banner com resumo
+  const banner = document.getElementById('dataChangedBanner');
+  const det = document.getElementById('dataChangedDetails');
+  if (banner && det) {
+    const partes = [];
+    partes.push(`Excel atualizado de <b>${c.from}</b> → <b>${c.to}</b>`);
+    if (c.reservadoDelta !== 0) partes.push(`Reservado: ${fmtDelta(c.reservadoDelta)} un`);
+    if (c.pctDelta !== 0)       partes.push(`% atendimento: ${fmtDelta(c.pctDelta, 'pp')}`);
+    if (c.piorCasoChanged)      partes.push(`pior caso mudou de SKU`);
+    else if (c.piorCasoDelta !== 0) partes.push(`pior caso: ${fmtDelta(c.piorCasoDelta, 'd')}`);
+    det.innerHTML = partes.join(' · ');
+    banner.style.display = 'inline-flex';
+    // Auto-esconde depois de 12s (mas botão ✕ funciona pra fechar antes)
+    setTimeout(() => { if (banner) banner.style.display = 'none'; }, 12000);
+  }
+}
+// Dispara depois que TUDO foi montado (timing seguro: 100ms após DOMContentLoaded)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(aplicarAnimacaoDadosAtualizados, 200));
+} else {
+  setTimeout(aplicarAnimacaoDadosAtualizados, 200);
+}
 
 // Lotes — populated as user provides them
 const loteProdutos = {};
@@ -537,6 +1104,18 @@ const CAT_STYLES = {
 const fmt = n => new Intl.NumberFormat('pt-BR').format(n);
 const fmtPct = p => p.toFixed(1).replace('.', ',') + '%';
 const fmtDias = d => d.toFixed(1).replace('.', ',') + 'd';
+// Média de consumo diária = solicitado do forecast / 30 dias (arredondado pra cima)
+const fmtMedia = un => Math.ceil(un / 30) + ' un/dia';
+// Quadradinho da curva ABC (A=verde, B=amarelo, C=vermelho, sem forecast=cinza)
+function curvaBadge(curva){
+  const c = curva || 'none';
+  const titulo = curva ? `Curva ${curva}` : 'sem forecast';
+  return `<span class="curva-badge curva-${c}" title="${titulo}"></span>`;
+}
+function curvaLetra(curva){
+  if (!curva) return '';
+  return `<span class="curva-letra curva-${curva}" title="Curva ${curva}">${curva}</span>`;
+}
 function getPctColor(pct){ return pct<30?'var(--danger)':pct<100?'var(--warn)':'var(--ok)'; }
 function getFillClass(pct){ return pct<30?'fill-danger':pct<100?'fill-warn':'fill-ok'; }
 function getDiasColor(d){ return d<15?'var(--danger)':d<25?'var(--warn)':'var(--ok)'; }
@@ -556,7 +1135,8 @@ if (stats.nAlertVar > 0) {
 }
 
 // KPI row 1
-document.getElementById('kpi-sol').innerHTML = fmt(stats.totalSolicitado) + '<span class="unit">un</span>';
+document.getElementById('kpi-sol').innerHTML = fmt(stats.totalSolicitadoCargaMae) + '<span class="unit">un</span>';
+  document.getElementById('kpi-sol-sub').textContent = 'Forecast 30d: ' + fmt(stats.totalSolicitadoForecast) + ' un';
 document.getElementById('kpi-sol-sub').textContent = `${stats.nVariacoes} variações · ${stats.nProdutos} produtos`;
 document.getElementById('kpi-res').innerHTML = fmt(stats.totalReservado) + '<span class="unit">un</span>';
 document.getElementById('kpi-res-sub').textContent = `${fmtPct(stats.pctGeral)} do forecast`;
@@ -573,15 +1153,206 @@ document.getElementById('kpi-sku-warn').textContent = stats.skuParcial;
 document.getElementById('kpi-sku-warn-sub').textContent = `${fmtPct(stats.skuParcial/stats.nVariacoes*100)} dos SKUs`;
 document.getElementById('kpi-sku-zero').textContent = stats.skuSemReserva;
 document.getElementById('kpi-sku-zero-sub').textContent = `${fmtPct(stats.skuSemReserva/stats.nVariacoes*100)} dos SKUs`;
-// "Atende os próximos X dias" - usa a métrica de cobertura do forecast (já calculada)
-const diasGlobal = stats.diasAtendeGlobalFc;
-const prettyDias = diasGlobal.toFixed(1).replace(/\.0$/,'').replace('.', ',');
+// ─── ATENDE OS PRÓXIMOS — agora baseado no PIOR CASO (SKU que zera primeiro) ───
+const diasPiorCaso = stats.diasAtendePiorCaso != null ? stats.diasAtendePiorCaso : (stats.diasMes || 31);
+const prettyDias = diasPiorCaso.toFixed(1).replace(/\.0$/,'').replace('.', ',');
 document.getElementById('kpi-atende-prox').innerHTML = prettyDias + '<span class="unit">dias</span>';
-document.getElementById('kpi-atende-prox-sub').innerHTML = `base forecast Maio · <span style="opacity:0.6;">${stats.demandaDiariaGlobal.toString().replace('.',',')} un/dia</span>`;
+// Cor do número conforme criticidade
+const _atendeEl = document.getElementById('kpi-atende-prox');
+if (_atendeEl) {
+  _atendeEl.classList.remove('cyan','green','amber','red');
+  if (diasPiorCaso < 7)        _atendeEl.classList.add('red');
+  else if (diasPiorCaso < 15)  _atendeEl.classList.add('amber');
+  else if (diasPiorCaso < 25)  _atendeEl.classList.add('amber');
+  else                          _atendeEl.classList.add('green');
+}
+// Subtítulo: identifica o SKU pior caso (nome completo + variação completa)
+const _pior = stats.skuPiorCaso;
+if (_pior) {
+  const _curvaHtml = _pior.curvaAbc ? curvaLetra(_pior.curvaAbc) + ' ' : '';
+  document.getElementById('kpi-atende-prox-sub').innerHTML =
+    `<span style="display:block;color:var(--muted);font-size:10px;margin-bottom:2px;">pior caso · cod ${_pior.codMasc} ${_curvaHtml}</span>` +
+    `<b style="color:#f87171;font-size:11px;line-height:1.3;display:block;">${_pior.produto}</b>` +
+    `<span style="color:#fca5a5;font-size:10px;line-height:1.3;display:block;margin-top:2px;">${_pior.variacao}</span>`;
+} else {
+  document.getElementById('kpi-atende-prox-sub').innerHTML = 'todas variações 100% reservadas';
+}
+
+// ─── ILHA DE DETALHAMENTO (SKU frágil + timeline clicável) ───
+const ilha = document.getElementById('cobertura-detalhe-card');
+const tl = stats.timelineCobertura;
+const piorSku = stats.skuPiorCaso;
+
+if (ilha && tl && tl.totalSkus > 0) {
+  // Subtítulo
+  document.getElementById('cobertura-detalhe-sub').textContent =
+    `${tl.totalSkus} SKUs em reserva ainda não atingiram 100%`;
+
+  // SKU mais frágil — agora vai no PAINEL DIREITO como conteúdo inicial (substitui o placeholder)
+  if (piorSku) {
+    const diasPior = stats.diasAtendePiorCaso;
+    let corTxt, corBg, corBd, icone, faixaLabel;
+    if (diasPior < 7) {
+      corTxt = '#ef4444'; corBg = 'rgba(239,68,68,0.10)'; corBd = 'rgba(239,68,68,0.30)'; icone = '🚨'; faixaLabel = '< 7 dias · CRÍTICO';
+    } else if (diasPior < 14) {
+      corTxt = '#fb923c'; corBg = 'rgba(251,146,60,0.10)'; corBd = 'rgba(251,146,60,0.30)'; icone = '⚠'; faixaLabel = '7-14 dias';
+    } else if (diasPior < 21) {
+      corTxt = '#facc15'; corBg = 'rgba(250,204,21,0.10)'; corBd = 'rgba(250,204,21,0.30)'; icone = '⏰'; faixaLabel = '15-21 dias';
+    } else {
+      corTxt = '#22c98a'; corBg = 'rgba(34,201,138,0.10)'; corBd = 'rgba(34,201,138,0.30)'; icone = '✓'; faixaLabel = '≥ 21 dias';
+    }
+    const diasPretty = diasPior.toFixed(1).replace(/\.0$/,'').replace('.',',');
+    const sty = CAT_STYLES[piorSku.categoria] || {cls:'comp', short:'?'};
+    // Função pra montar o conteúdo padrão (pior caso) — chamado no estado inicial e quando filtro é limpo
+    window._renderPiorCasoNoPainel = function(){
+      const head = document.getElementById('cobertura-skus-filtrados-header');
+      const body = document.getElementById('cobertura-skus-filtrados-body');
+      const cnt  = document.getElementById('cobertura-skus-filtrados-count');
+      if (!body || !head) return;
+      head.querySelector('div').innerHTML =
+        `<span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${corTxt};vertical-align:middle;margin-right:6px;"></span>` +
+        `SKU mais frágil`;
+      if (cnt) cnt.textContent = faixaLabel;
+      body.style.alignItems = 'stretch';
+      body.style.justifyContent = 'flex-start';
+      body.style.textAlign = 'left';
+      body.innerHTML =
+        `<div style="display:flex;flex-direction:column;gap:10px;padding:4px;width:100%;box-sizing:border-box;">` +
+          // Linha 1: dias grandes + ícone à esquerda, badges à direita
+          `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">` +
+            `<div style="display:flex;align-items:center;gap:8px;">` +
+              `<span style="font-size:24px;line-height:1;">${icone}</span>` +
+              `<span style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:${corTxt};line-height:1;">${diasPretty}<span style="font-size:14px;opacity:0.7;">d</span></span>` +
+            `</div>` +
+            `<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">` +
+              `<span class="cat-badge ${sty.cls}" style="font-size:9px;">${sty.short}</span>` +
+              `<span style="font-size:10px;color:var(--muted);">cod ${piorSku.codMasc}</span>` +
+              `${curvaLetra(piorSku.curvaAbc || null)}` +
+            `</div>` +
+          `</div>` +
+          // Nome + variação
+          `<div style="border-top:1px dashed var(--border);padding-top:10px;">` +
+            `<div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.3;">${piorSku.produto}</div>` +
+            `<div style="font-size:11px;color:#fca5a5;line-height:1.3;margin-top:3px;">${piorSku.variacao}</div>` +
+          `</div>` +
+          // Métricas inline compactas
+          `<div style="display:flex;gap:12px;font-size:10px;color:var(--muted);font-weight:600;background:var(--surface);padding:8px 10px;border-radius:6px;">` +
+            `<div style="flex:1;">RES <b style="color:var(--text);font-family:'Syne',sans-serif;font-size:13px;display:block;margin-top:1px;">${piorSku.reservado}</b></div>` +
+            `<div style="flex:1;">FC <b style="color:#c084fc;font-family:'Syne',sans-serif;font-size:13px;display:block;margin-top:1px;">${piorSku.solicitadoForecast || 0}</b></div>` +
+            `<div style="flex:1;">MÉD/DIA <b style="color:#c084fc;font-family:'Syne',sans-serif;font-size:13px;display:block;margin-top:1px;">${(piorSku.solicitadoForecast || 0) > 0 ? Math.ceil(piorSku.solicitadoForecast/30) : '—'}</b></div>` +
+          `</div>` +
+          `<button onclick="window._irParaSkuFragil&&window._irParaSkuFragil()" type="button" ` +
+                  `style="background:${corBg};color:${corTxt};border:1px solid ${corBd};padding:7px 12px;border-radius:7px;font-size:10px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;cursor:pointer;transition:transform 0.15s,filter 0.15s;display:inline-flex;align-items:center;justify-content:center;gap:6px;" ` +
+                  `onmouseenter="this.style.transform='translateY(-1px)';this.style.filter='brightness(1.15)';" ` +
+                  `onmouseleave="this.style.transform='';this.style.filter='';">` +
+            `🔍 Ver esse SKU na tabela` +
+          `</button>` +
+        `</div>`;
+    };
+  }
+
+  // Timeline: barra empilhada + chips clicáveis
+  const wrapTimeline = document.getElementById('cobertura-detalhe-timeline');
+  if (wrapTimeline) {
+    let html = '';
+    // ─── Donut + mini-barras individuais ───
+    const totalSkus = tl.totalSkus;
+    const radius = 38;
+    const circ = 2 * Math.PI * radius;
+    let cumulative = 0;
+    const segments = tl.faixas
+      .filter(f => f.count > 0)
+      .map(f => {
+        const frac = f.count / totalSkus;
+        const len = frac * circ;
+        const offset = -cumulative;
+        cumulative += len;
+        return `<circle cx="50" cy="50" r="${radius}" fill="none" stroke="${f.cor}" stroke-width="14" stroke-dasharray="${len.toFixed(2)} ${(circ - len).toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}" style="transition:stroke-width 0.2s;"/>`;
+      }).join('');
+
+    html += `<div style="display:flex;align-items:center;gap:22px;margin-bottom:16px;flex-wrap:wrap;">`;
+    // Donut (SVG)
+    html += `<div style="position:relative;width:120px;height:120px;flex-shrink:0;">
+      <svg viewBox="0 0 100 100" width="120" height="120" style="transform:rotate(-90deg);">
+        <circle cx="50" cy="50" r="${radius}" fill="none" stroke="var(--surface2)" stroke-width="14"/>
+        ${segments}
+      </svg>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;">
+        <div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1;color:var(--text);">${totalSkus}</div>
+        <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:3px;font-weight:600;">SKUs</div>
+      </div>
+    </div>`;
+    // Legenda compacta vertical ao lado do donut
+    html += `<div style="display:flex;flex-direction:column;gap:8px;">`;
+    tl.faixas.forEach(f => {
+      const pct = totalSkus > 0 ? (f.count / totalSkus * 100) : 0;
+      html += `<div style="display:flex;align-items:center;gap:10px;line-height:1.2;">
+        <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${f.cor};flex-shrink:0;"></span>
+        <span style="font-size:11px;color:var(--muted);font-weight:600;min-width:54px;">${f.label}</span>
+        <span style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);">${f.count}</span>
+        <span style="font-size:11px;font-weight:700;color:${f.cor};">${pct.toFixed(0)}%</span>
+      </div>`;
+    });
+    html += `</div>`;
+    html += `</div>`;
+    // Chips com label "Filtrar por dias:" inline — sinaliza que são clicáveis
+    html += `<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">` +
+      `<span style="font-size:10.5px;color:var(--muted);font-weight:600;letter-spacing:0.4px;text-transform:uppercase;margin-right:2px;">Filtrar por dias →</span>`;
+    tl.faixas.forEach(f => {
+      const exemplos = (f.exemplos || []).map(e => `${e.dias.toFixed(1)}d · ${e.produto} / ${(e.variacao||'').split('#')[0]}`).join('\n');
+      const titulo = `Clique pra filtrar a tabela por essa faixa\n\n${f.label} de cobertura — ${f.count} SKU${f.count!==1?'s':''}` + (exemplos ? '\n\nPrimeiros:\n' + exemplos : '');
+      const desabilitado = f.count === 0;
+      const cursor = desabilitado ? 'default' : 'pointer';
+      const opacidade = desabilitado ? '0.35' : '1';
+      // Mapeia label → range numérico pra função setDiasFilter
+      const ranges = { '< 7d':[0,7], '7-14d':[7,14], '15-21d':[14,21], '≥ 21d':[21,9999] };
+      const [min, max] = ranges[f.label] || [0,0];
+      const onclick = desabilitado ? '' : `onclick="setDiasFilter(${min},${max},'${f.label.replace(/'/g,"\\'")}','${f.cor}')"`;
+      html +=
+        `<span class="timeline-chip" data-faixa="${f.label}" data-min="${min}" data-max="${max}" ${onclick} ` +
+        `style="cursor:${cursor};font-size:11px;font-weight:700;color:${f.cor};background:${f.corBg};border:1px solid ${f.corBd};padding:6px 12px;border-radius:8px;line-height:1.3;display:inline-flex;align-items:center;gap:6px;opacity:${opacidade};transition:transform 0.15s,outline 0.15s;" ` +
+        `title="${titulo.replace(/"/g,'&quot;')}">` +
+          `<span style="font-size:13px;line-height:1;">${f.icone}</span>` +
+          `<span>${f.label}</span>` +
+          `<b style="font-size:13px;margin-left:2px;">${f.count}</b>` +
+        `</span>`;
+    });
+    // Botão "✕ Limpar filtro" no fim da fileira (escondido por default, aparece quando há filtro ativo)
+    html += `<button id="cobertura-clear-filter-btn" type="button" onclick="clearDiasFilter()" ` +
+      `style="display:none;font-size:10px;font-weight:700;color:var(--muted);background:transparent;border:1px solid var(--border);padding:5px 11px;border-radius:7px;cursor:pointer;letter-spacing:0.4px;text-transform:uppercase;transition:color 0.15s,border-color 0.15s,background 0.15s;line-height:1.3;" ` +
+      `onmouseenter="this.style.color='#fca5a5';this.style.borderColor='rgba(239,68,68,0.4)';this.style.background='rgba(239,68,68,0.08)';" ` +
+      `onmouseleave="this.style.color='var(--muted)';this.style.borderColor='var(--border)';this.style.background='transparent';">` +
+      `✕ Limpar filtro</button>`;
+    html += `</div>`;
+    wrapTimeline.innerHTML = html;
+    wrapTimeline.style.display = 'block';
+  }
+
+  // Função pra filtrar pelo SKU mais frágil (chamada pelo chip do pior)
+  if (piorSku) {
+    window._irParaSkuFragil = function(){
+      // Define filtro de dias = faixa do pior caso
+      const d = stats.diasAtendePiorCaso;
+      let min, max, label, cor;
+      if (d < 7)       { min=0; max=7;    label='< 7d';   cor='#ef4444'; }
+      else if (d < 14) { min=7; max=14;   label='7-14d';  cor='#fb923c'; }
+      else if (d < 21) { min=14; max=21;  label='15-21d'; cor='#facc15'; }
+      else             { min=21; max=9999; label='≥ 21d';  cor='#22c98a'; }
+      setDiasFilter(min, max, label, cor);
+      // Bonus: aplica busca pelo cod do SKU pra deixar só ele em destaque
+      const inp = document.getElementById('searchInput');
+      if (inp) { inp.value = piorSku.codMasc; renderTable(); }
+    };
+  }
+
+  ilha.style.display = 'block';
+  // Renderiza o pior caso no painel direito como conteúdo inicial
+  if (window._renderPiorCasoNoPainel) window._renderPiorCasoNoPainel();
+}
 
 // ============ COVERAGE ============
 document.getElementById('cov-sub').textContent =
-  `${fmt(stats.totalReservado)} reservados de ${fmt(stats.totalSolicitado)} solicitados · ${fmt(stats.totalPendente)} pendentes`;
+  `Reservado: ${fmt(stats.totalReservado)} · C.Mãe: ${fmt(stats.totalSolicitadoCargaMae)} · Forecast: ${fmt(stats.totalSolicitadoForecast)} · Média: ${fmtMedia(stats.totalSolicitadoForecast)}`;
 document.getElementById('cov-pct').textContent = fmtPct(stats.pctGeral);
 document.getElementById('cov-gap').textContent = `${fmt(stats.gapTotal)} un`;
 document.getElementById('leg-res').textContent = `Reservado: ${fmtPct(stats.pctGeral)}`;
@@ -617,9 +1388,10 @@ function renderCatCards(){
       </div>
       <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:0%" data-w="${c.pct}"></div></div>
       <div class="cat-stats">
-        <div>Sol: <span>${fmt(c.solicitado)}</span></div>
-        <div>Res: <span>${fmt(c.reservado)}</span></div>
-        <div>Pend: <span>${fmt(c.pendente)}</span></div>
+        <div>C.Mãe: <span>${fmt(c.solicitadoCargaMae)}</span></div>
+        <div>Forecast: <span style="color:#c084fc">${fmt(c.solicitadoForecast)}</span></div>
+        <div>Média/dia: <span style="color:#c084fc">${fmtMedia(c.solicitadoForecast)}</span></div>
+        <div>Reservado: <span style="color:var(--ok)">${fmt(c.reservado)}</span></div>
       </div>
       <div class="cat-meta">
         <div class="cat-meta-left">Cobertura: <span class="num">${fmtDias(c.diasMedia)}</span> · ${c.completos} completos</div>
@@ -634,6 +1406,50 @@ function renderCatCards(){
   }, 200);
 }
 renderCatCards();
+
+// ============ CURVA ABC ============
+function renderAbcCards(){
+  const grid = document.getElementById('abc-grid');
+  if (!grid) return;
+  const abc = stats.curvaAbcStats;
+  if (!abc || abc.total === 0) {
+    grid.innerHTML = `<div class="empty-lotes" style="padding:20px;grid-column:1/-1;"><div class="empty-lotes-text">Sem dados de forecast pra calcular Curva ABC</div></div>`;
+    return;
+  }
+  const cards = [
+    { letra: 'A', titulo: 'Alto giro',   sub: 'concentra ~80% do forecast' },
+    { letra: 'B', titulo: 'Médio giro',  sub: 'próximos ~15% do forecast' },
+    { letra: 'C', titulo: 'Baixo giro',  sub: 'últimos ~5% do forecast' },
+  ];
+  grid.innerHTML = cards.map(c => {
+    const d = abc[c.letra];
+    const pctSkus = abc.total ? (d.n / abc.total * 100) : 0;
+    const pctFc   = abc.totalFc ? (d.fc / abc.totalFc * 100) : 0;
+    return `<div class="abc-card ${c.letra}">
+      <div class="abc-head">
+        <div>
+          <div class="abc-title">Curva ${c.letra} · ${c.titulo}</div>
+          <div class="abc-sub">${c.sub}</div>
+        </div>
+        <div class="abc-letra-big">${c.letra}</div>
+      </div>
+      <div class="abc-stats">
+        <div class="abc-stat-row"><span>SKUs</span><b class="hi">${d.n}</b></div>
+        <div class="abc-stat-row"><span>% dos SKUs</span><b>${fmtPct(pctSkus)}</b></div>
+        <div class="abc-stat-row"><span>Forecast</span><b>${fmt(d.fc)} un</b></div>
+        <div class="abc-stat-row"><span>Média/dia</span><b>${fmtMedia(d.fc)}</b></div>
+        <div class="abc-stat-row"><span>% do volume</span><b class="hi">${fmtPct(pctFc)}</b></div>
+      </div>
+      <div class="abc-bar-bg"><div class="abc-bar-fill" style="width:0%" data-w="${pctFc.toFixed(1)}"></div></div>
+    </div>`;
+  }).join('');
+  setTimeout(() => {
+    document.querySelectorAll('.abc-bar-fill[data-w]').forEach(el => {
+      el.style.width = el.dataset.w + '%';
+    });
+  }, 250);
+}
+renderAbcCards();
 
 // ============ COBERTURA COM BASE NO FORECAST DE MAIO ============
 const diasMes = stats.diasMes;
@@ -716,18 +1532,60 @@ function statusFromDias(dias) {
 // Context bar
 document.getElementById('ctx-hoje').textContent = stats.dataAtualizacao;
 document.getElementById('ctx-periodo').textContent = mesPeriodo;
-document.getElementById('ctx-periodo-hint').textContent = `${diasMes} dias`;
+// Dias restantes do forecast — DINÂMICO baseado em hoje vs mês do forecast
+// Ex: forecast = Maio/2026; hoje 30/04 → 30 dias; 01/05 → 30; 02/05 → 29; ... 31/05 → 0
+(function atualizarDiasRestantes(){
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const partes = (stats.mesPeriodo || '').split('/');
+  if (partes.length !== 2) {
+    document.getElementById('ctx-periodo-hint').textContent = `${diasMes} dias`;
+    return;
+  }
+  const fcMes = meses.indexOf(partes[0]);
+  const fcAno = parseInt(partes[1]);
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = hoje.getMonth();
+  const dia = hoje.getDate();
+  let diasRestantes;
+  if (ano < fcAno || (ano === fcAno && mes < fcMes)) {
+    diasRestantes = 30;
+  } else if (ano === fcAno && mes === fcMes) {
+    diasRestantes = Math.max(0, 31 - dia);
+  } else {
+    diasRestantes = 0;
+  }
+  stats.diasRestantes = diasRestantes;
+  // Subtítulo do "Período Forecast" → fica simples: total do mês
+  document.getElementById('ctx-periodo-hint').textContent = `${diasMes} dias no total`;
+  // Card grande de destaque "Dias restantes do forecast"
+  const dataFmt = `${String(dia).padStart(2,'0')}/${String(mes+1).padStart(2,'0')}/${ano}`;
+  const fimMesFmt = `31/05/${fcAno}`;
+  const elDias = document.getElementById('ctx-dias-restantes');
+  const elHint = document.getElementById('ctx-dias-restantes-hint');
+  if (elDias && elHint) {
+    elDias.innerHTML = `${diasRestantes}<span class="unit" style="font-size:18px;color:var(--muted);font-weight:500;margin-left:4px;">dias</span>`;
+    // Cor dinâmica conforme o quanto resta
+    let cor;
+    if (diasRestantes === 0)        cor = '#f87171';   // vermelho — encerrado
+    else if (diasRestantes <= 7)    cor = '#f87171';   // vermelho — quase no fim
+    else if (diasRestantes <= 15)   cor = '#f59e0b';   // amarelo — atenção
+    else                             cor = '#22d3ee';  // ciano — confortável
+    elDias.style.color = cor;
+    let textoHint;
+    if (diasRestantes === 0) {
+      textoHint = `forecast encerrado em ${fimMesFmt}`;
+    } else if (ano < fcAno || (ano === fcAno && mes < fcMes)) {
+      textoHint = `inicia em 01/05/${fcAno} · hoje é ${dataFmt}`;
+    } else {
+      textoHint = `de ${dataFmt} até ${fimMesFmt}`;
+    }
+    elHint.textContent = textoHint;
+  }
+})();
 document.getElementById('ctx-fc-total').textContent = `${stats.fcTotalSolicitado.toLocaleString('pt-BR')} un`;
 document.getElementById('ctx-fc-skus').textContent = `${stats.fcTotalProdutos} produtos · ${stats.fcTotalVariacoes} variações da carga`;
 document.getElementById('ctx-demanda').textContent = `${stats.demandaDiariaGlobal.toString().replace('.',',')} un/dia`;
-document.getElementById('ctx-atende').textContent = formatDiasCurto(stats.diasAtendeGlobalFc);
-document.getElementById('ctx-atende-hint').textContent = formatDiasAtende(stats.diasAtendeGlobalFc);
-
-// Color of "Reserva atende" based on global coverage
-const globalStatus = statusFromDias(stats.diasAtendeGlobalFc);
-document.getElementById('ctx-atende').style.color =
-  globalStatus.cls === 'ok' ? 'var(--ok)' :
-  globalStatus.cls === 'warn' ? 'var(--warn)' : '#f87171';
 
 // SKU status counters
 document.getElementById('cov-fc-ok').textContent = stats.skuAtendeMes;
@@ -833,25 +1691,37 @@ if (stats.nAlertVar > 0) {
 // ============ TOP 10 GAP ============
 function renderTop10(){
   const list = document.getElementById('top10List');
-  if (top10.length === 0) {
+  // Reordena por urgência: SKU que atende menos dias = prioridade 1
+  // SKUs sem forecast (forecast=0) ficam no final, ordenados por gap
+  const top10sorted = [...top10].sort((a, b) => {
+    const aSemFc = (a.solicitadoForecast || 0) === 0;
+    const bSemFc = (b.solicitadoForecast || 0) === 0;
+    if (aSemFc !== bSemFc) return aSemFc ? 1 : -1;  // com forecast vem primeiro
+    if (!aSemFc) return (a.dias || 0) - (b.dias || 0);  // menor dias primeiro
+    return (b.gap || 0) - (a.gap || 0);  // sem forecast: maior gap primeiro
+  });
+  if (top10sorted.length === 0) {
     list.innerHTML = `<div class="empty-lotes" style="padding:20px;"><div class="empty-lotes-text">✅ Sem gaps — todo o forecast está coberto</div></div>`;
     return;
   }
-  list.innerHTML = top10.map((t, i) => {
+  list.innerHTML = top10sorted.map((t, i) => {
     const sty = CAT_STYLES[t.categoria] || {cls:'comp', short:'?'};
     const rankCls = i===0?'top1':i===1?'top2':i===2?'top3':'';
     const critCls = t.pct < 30 ? 'crit' : '';
     const pctCls = t.pct < 30 ? 'danger' : t.pct < 100 ? 'warn' : 'ok';
+    const diasColor = t.dias < 15 ? 'var(--danger)' : t.dias < 25 ? 'var(--warn)' : 'var(--ok)';
     return `<div class="top10-row ${critCls}">
       <div class="top10-rank ${rankCls}">${String(i+1).padStart(2,'0')}</div>
       <div>
-        <div class="prod-name"><span class="cat-badge ${sty.cls}">${sty.short}</span><span class="cod-tag">${t.codItem}·${t.codMasc}</span>${t.produto}</div>
+        <div class="prod-name"><span class="cat-badge ${sty.cls}">${sty.short}</span><span class="cod-tag">${t.codItem}·${t.codMasc}</span>${curvaLetra(t.curvaAbc)} ${t.produto}</div>
         <div class="prod-var">${t.variacao}</div>
       </div>
-      <div class="col-hide-sm"><div class="col-label">Solicit.</div><div class="col-val">${fmt(t.solicitado)}</div></div>
+      <div class="col-hide-sm"><div class="col-label">Sol. C.Mãe</div><div class="col-val">${fmt(t.solicitadoCargaMae)}</div></div>
+      <div class="col-hide-sm"><div class="col-label">Sol. Forecast</div><div class="col-val" style="color:#c084fc">${t.solicitadoForecast>0?fmt(t.solicitadoForecast):'—'}</div></div>
+      <div class="col-hide-sm"><div class="col-label">Média/dia</div><div class="col-val" style="color:#c084fc;font-size:12px">${t.solicitadoForecast>0?fmtMedia(t.solicitadoForecast):'—'}</div></div>
       <div class="col-hide-sm"><div class="col-label">Reserv.</div><div class="col-val ok">${fmt(t.reservado)}</div></div>
-      <div><div class="col-label">Gap</div><div class="col-val danger">${fmt(t.gap)}</div></div>
-      <div style="text-align:right;"><span class="pct-badge ${pctCls}">${fmtPct(t.pct)}</span></div>
+      <div class="col-hide-sm"><div class="col-label">Dias atende</div><div class="col-val" style="color:${diasColor}">${t.solicitadoForecast>0?fmtDias(t.dias):'—'}</div></div>
+      <div style="text-align:right;"><div class="col-label">% C.Mãe</div><span class="pct-badge ${pctCls}">${fmtPct(t.pct)}</span></div>
     </div>`;
   }).join('');
 }
@@ -869,6 +1739,9 @@ document.getElementById('cnt-cat-jantar').textContent = data.filter(d=>d.categor
 
 // ============ STATE ============
 let currentFilter='all', currentCat='all', sortKey='pct', sortDir=1;
+// Filtro por faixa de dias de cobertura — setado pelos chips da timeline
+// { min: número, max: número, label: string } | null
+let currentDiasFilter = null;
 
 // ============ ALERT CARDS ============
 function renderAlerts(){
@@ -878,15 +1751,19 @@ function renderAlerts(){
     const crit = a.pct<10?'CRÍTICO':a.pct<20?'GRAVE':'ATENÇÃO';
     const critColor = a.pct<10?'#f87171':a.pct<20?'#f97316':'var(--warn)';
     const sty = CAT_STYLES[a.categoria] || {cls:'comp'};
+    const diasColor = a.dias < 15 ? 'var(--danger)' : a.dias < 25 ? 'var(--warn)' : 'var(--ok)';
     return `<div class="alert-row">
       <div>
-        <div class="prod-name"><span class="cat-badge ${sty.cls}">${sty.short}</span><span class="cod-tag">${a.codItem}·${a.codMasc}</span>🚨 ${a.produto}</div>
+        <div class="prod-name"><span class="cat-badge ${sty.cls}">${sty.short}</span><span class="cod-tag">${a.codItem}·${a.codMasc}</span>${curvaLetra(a.curvaAbc)} 🚨 ${a.produto}</div>
         <div class="prod-var">${a.variacao}</div>
       </div>
-      <div><div class="col-label">Solicitado</div><div class="col-val">${fmt(a.solicitado)}</div></div>
-      <div><div class="col-label">Reservado</div><div class="col-val danger">${fmt(a.reservado)}</div></div>
-      <div><div class="col-label">Pendente</div><div class="col-val amber">${fmt(a.pendente)}</div></div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+      <div><div class="col-label">Sol. C.Mãe</div><div class="col-val">${fmt(a.solicitadoCargaMae)}</div></div>
+      <div><div class="col-label">Sol. Forecast</div><div class="col-val" style="color:#c084fc">${a.solicitadoForecast>0?fmt(a.solicitadoForecast):'—'}</div></div>
+      <div><div class="col-label">Média/dia</div><div class="col-val" style="color:#c084fc;font-size:12px">${a.solicitadoForecast>0?fmtMedia(a.solicitadoForecast):'—'}</div></div>
+      <div><div class="col-label">Reservado</div><div class="col-val ok">${fmt(a.reservado)}</div></div>
+      <div><div class="col-label">Dias atende</div><div class="col-val" style="color:${diasColor}">${a.solicitadoForecast>0?fmtDias(a.dias):'—'}</div></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <div class="col-label">% C.Mãe</div>
         <span class="pct-badge danger">${fmtPct(a.pct)}</span>
         <span style="font-size:10px;font-weight:700;color:${critColor};letter-spacing:0.05em;">${crit}</span>
       </div>
@@ -895,6 +1772,125 @@ function renderAlerts(){
 }
 
 // ============ MAIN TABLE ============
+// ╔══════════════════════════════════════════════════════════════════
+// ║ EXPORTAR EXCEL — gera .xlsx das variações com os filtros atuais
+// ╚══════════════════════════════════════════════════════════════════
+function exportarTabelaExcel(){
+  if (typeof XLSX === 'undefined') {
+    alert('Biblioteca de exportação ainda não carregou. Tente novamente em alguns segundos.');
+    return;
+  }
+
+  // Aplica os MESMOS filtros do renderTable, mas retorna LINHA POR VARIAÇÃO
+  // (não por produto) — formato mais útil pro fornecedor
+  const search = (document.getElementById('searchInput').value || '').toLowerCase();
+  let rows = [...data];
+  if (currentFilter === 'alert')   rows = rows.filter(r => r.pct < 30 || r.alerta);
+  else if (currentFilter === 'ok') rows = rows.filter(r => r.pct >= 100);
+  else if (currentFilter === 'partial') rows = rows.filter(r => r.pct > 0 && r.pct < 100);
+  if (currentCat !== 'all') rows = rows.filter(r => r.categoria === currentCat);
+  if (search) rows = rows.filter(r =>
+    r.produto.toLowerCase().includes(search) ||
+    String(r.codItem).includes(search) ||
+    r.variacoes.some(v => String(v.codMasc).includes(search) || (v.variacao||'').toLowerCase().includes(search))
+  );
+  if (currentDiasFilter){
+    const f = currentDiasFilter;
+    rows = rows.filter(r => r.variacoes.some(v =>
+      (v.pct||0) < 100 && (v.dias||0) >= f.min && (v.dias||0) < f.max
+    ));
+  }
+
+  // Achata: 1 linha = 1 variação
+  const linhas = [];
+  rows.forEach(p => {
+    const vars = currentDiasFilter
+      ? p.variacoes.filter(v => (v.pct||0) < 100 && (v.dias||0) >= currentDiasFilter.min && (v.dias||0) < currentDiasFilter.max)
+      : p.variacoes;
+    vars.forEach(v => {
+      linhas.push({
+        'Categoria':            p.categoria || '',
+        'Cod Produto':          p.codItem,
+        'Produto':              p.produto,
+        'Cod Variação':         v.codMasc,
+        'Variação':             v.variacao,
+        'Curva ABC':            v.curvaAbc || '',
+        'Sol. Carga Mãe':       v.solicitadoCargaMae || 0,
+        'Sol. Forecast':        v.solicitadoForecast || 0,
+        'Média/dia':            v.solicitadoForecast > 0 ? Math.ceil(v.solicitadoForecast / 30) : 0,
+        'Reservado':            v.reservado || 0,
+        'Pendente C.Mãe':       v.pendente || 0,
+        'Pendente Forecast':    v.pendenteFc || 0,
+        '% Reservado C.Mãe':    +((v.pct || 0).toFixed(1)),
+        '% Reservado Forecast': +((v.pctFc || 0).toFixed(1)),
+        'Cobertura (dias)':     +((v.dias || 0).toFixed(1)),
+        'Status':               (v.pct||0) >= 100 ? 'Atende' : (v.pct||0) >= 30 ? 'Parcial' : 'Crítico'
+      });
+    });
+  });
+
+  if (linhas.length === 0) {
+    alert('Nenhum SKU pra exportar. Ajuste os filtros e tente novamente.');
+    return;
+  }
+
+  // Constrói o workbook
+  const ws = XLSX.utils.json_to_sheet(linhas);
+  // Define larguras das colunas (em chars)
+  ws['!cols'] = [
+    { wch: 15 }, // Categoria
+    { wch: 12 }, // Cod Produto
+    { wch: 38 }, // Produto
+    { wch: 14 }, // Cod Variação
+    { wch: 32 }, // Variação
+    { wch: 9 },  // Curva ABC
+    { wch: 13 }, // Sol Carga Mãe
+    { wch: 13 }, // Sol Forecast
+    { wch: 11 }, // Média/dia
+    { wch: 11 }, // Reservado
+    { wch: 14 }, // Pendente C.Mãe
+    { wch: 16 }, // Pendente Forecast
+    { wch: 17 }, // % Reservado CM
+    { wch: 19 }, // % Reservado FC
+    { wch: 16 }, // Cobertura
+    { wch: 10 }, // Status
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'SKUs Carga Mãe');
+
+  // Aba "Resumo" com info do filtro aplicado e totais
+  const resumo = [
+    ['Dashboard',           'Carga Mãe MADEIRA MADEIRA · Marketplace'],
+    ['Período Forecast',    stats.mesPeriodo || ''],
+    ['Data atualização',    stats.dataAtualizacao || ''],
+    ['Exportado em',        new Date().toLocaleString('pt-BR')],
+    [''],
+    ['FILTROS APLICADOS', ''],
+    ['Status',              currentFilter === 'all' ? 'Todos' : currentFilter],
+    ['Categoria',           currentCat === 'all' ? 'Todas' : currentCat],
+    ['Busca',               search || '(nenhuma)'],
+    ['Faixa de cobertura',  currentDiasFilter ? currentDiasFilter.label : '(nenhuma)'],
+    [''],
+    ['TOTAIS NA EXPORTAÇÃO', ''],
+    ['SKUs exportados',     linhas.length],
+    ['Reservado',           linhas.reduce((s,r) => s + r['Reservado'], 0)],
+    ['Sol. Carga Mãe',      linhas.reduce((s,r) => s + r['Sol. Carga Mãe'], 0)],
+    ['Sol. Forecast',       linhas.reduce((s,r) => s + r['Sol. Forecast'], 0)],
+  ];
+  const wsResumo = XLSX.utils.aoa_to_sheet(resumo);
+  wsResumo['!cols'] = [{ wch: 22 }, { wch: 50 }];
+  XLSX.utils.book_append_sheet(wb, wsResumo, 'Resumo');
+
+  // Nome do arquivo: ESTOQUE_MM_YYYY-MM-DD_HHMMSS_filtro.xlsx
+  const agora = new Date();
+  const ts = agora.toISOString().slice(0,10) + '_' + agora.toTimeString().slice(0,8).replace(/:/g,'');
+  const filtroTxt = currentDiasFilter ? '_' + currentDiasFilter.label.replace(/[^\w]/g,'') :
+                    currentCat !== 'all' ? '_' + currentCat.replace(/[^\w]/g,'') :
+                    currentFilter !== 'all' ? '_' + currentFilter : '';
+  XLSX.writeFile(wb, `estoque_mm_${ts}${filtroTxt}.xlsx`);
+}
+
 function renderTable(){
   const search = (document.getElementById('searchInput').value||'').toLowerCase();
   let rows = [...data];
@@ -907,6 +1903,16 @@ function renderTable(){
     String(r.codItem).includes(search) ||
     r.variacoes.some(v => String(v.codMasc).includes(search) || (v.variacao||'').toLowerCase().includes(search))
   );
+
+  // Filtro por faixa de dias — só produtos com pelo menos uma variação
+  // não-concluída na faixa selecionada. Marca a "match" pra destacar depois.
+  if (currentDiasFilter){
+    const f = currentDiasFilter;
+    rows = rows.filter(r => r.variacoes.some(v =>
+      (v.pct||0) < 100 && (v.dias||0) >= f.min && (v.dias||0) < f.max
+    ));
+  }
+
   rows.sort((a,b) => {
     let va=a[sortKey], vb=b[sortKey];
     return typeof va==='string' ? sortDir*va.localeCompare(vb) : sortDir*(va-vb);
@@ -926,29 +1932,41 @@ function renderTable(){
     const rowClass = (r.pct<30 || r.alerta) ? 'row-alert' : (r.pct>=100 ? 'row-ok' : '');
     const diasColor = getDiasColor(r.dias);
     const varsSorted = [...r.variacoes].sort((a,b) => a.pct - b.pct);
-    const varRows = varsSorted.map(v => `<tr>
-      <td><span class="cod-tag">${v.codMasc}</span>${v.variacao}</td>
-      <td style="text-align:center;font-family:Syne,sans-serif;font-weight:600">${fmt(v.solicitado)}</td>
+    // Se há filtro de dias ativo, marca quais variações batem com a faixa
+    const f = currentDiasFilter;
+    const varRows = varsSorted.map(v => {
+      const matchDias = f && (v.pct||0) < 100 && (v.dias||0) >= f.min && (v.dias||0) < f.max;
+      const rowStyle = matchDias ? `background:${f.cor}15;` : '';
+      const matchBadge = matchDias ? `<span style="display:inline-block;margin-left:6px;font-size:9px;font-weight:700;color:${f.cor};background:${f.cor}22;padding:2px 6px;border-radius:4px;letter-spacing:0.3px;">na faixa ${f.label}</span>` : '';
+      return `<tr style="${rowStyle}">
+      <td><span class="cod-tag">${v.codMasc}</span>${curvaLetra(v.curvaAbc)} ${v.variacao}${matchBadge}</td>
+      <td style="text-align:center;font-family:Syne,sans-serif;font-weight:600">${fmt(v.solicitadoCargaMae)}</td>
+      <td style="text-align:center;font-family:Syne,sans-serif;font-weight:600;color:#c084fc">${v.solicitadoForecast>0?fmt(v.solicitadoForecast):'<span style="color:var(--muted);font-size:11px">—</span>'}</td>
+      <td style="text-align:center;font-family:Syne,sans-serif;font-weight:600;color:#c084fc;font-size:12px">${v.solicitadoForecast>0?fmtMedia(v.solicitadoForecast):'<span style="color:var(--muted);font-size:11px">—</span>'}</td>
       <td style="text-align:center;font-family:Syne,sans-serif;font-weight:600;color:var(--ok)">${fmt(v.reservado)}</td>
-      <td style="text-align:center;font-family:Syne,sans-serif;font-weight:600;color:${v.pendente>0?'var(--warn)':'var(--muted)'}">${fmt(v.pendente)}</td>
       <td><div class="var-mini-bar"><div class="var-mini-bg"><div class="var-mini-fill ${getFillClass(v.pct)}" style="width:${Math.min(v.pct,100)}%"></div></div>
       <span style="font-family:Syne,sans-serif;font-weight:700;font-size:12px;min-width:48px;color:${getPctColor(v.pct)}">${fmtPct(v.pct)}</span></div></td>
       <td style="text-align:center;"><span class="dias-cell"><span class="dias-dot" style="background:${getDiasColor(v.dias)}"></span>${fmtDias(v.dias)}</span></td>
-    </tr>`).join('');
+    </tr>`;
+    }).join('');
+    // Se há filtro de dias ativo, abre as linhas automaticamente
+    const autoOpenClass = currentDiasFilter ? ' open' : '';
+    const expandLabel = currentDiasFilter ? '▴ Fechar' : '▾ Detalhar';
     return `
       <tr class="${rowClass}" style="cursor:pointer" onclick="toggleVars('var-${i}',this)">
-        <td><div class="prod-tag"><span class="cat-badge ${sty.cls}">${sty.short}</span><span class="cod-tag">${r.codItem}</span>${r.produto}${loteTag}</div><div class="var-count">${r.variacoes.length} variaç${r.variacoes.length>1?'ões':'ão'}</div></td>
-        <td style="font-family:'Syne';font-weight:700">${fmt(r.solicitado)}</td>
+        <td><div class="prod-tag"><span class="cat-badge ${sty.cls}">${sty.short}</span><span class="cod-tag">${r.codItem}</span>${curvaLetra(r.curvaAbc)} ${r.produto}${loteTag}</div><div class="var-count">${r.variacoes.length} variaç${r.variacoes.length>1?'ões':'ão'}</div></td>
+        <td style="font-family:'Syne';font-weight:700">${fmt(r.solicitadoCargaMae)}</td>
+        <td style="font-family:'Syne';font-weight:700;color:#c084fc">${r.solicitadoForecast>0?fmt(r.solicitadoForecast):'<span style="color:var(--muted);font-size:11px">—</span>'}</td>
+        <td style="font-family:'Syne';font-weight:700;color:#c084fc;font-size:12px">${r.solicitadoForecast>0?fmtMedia(r.solicitadoForecast):'<span style="color:var(--muted);font-size:11px">—</span>'}</td>
         <td style="font-family:'Syne';font-weight:700;color:var(--ok)">${fmt(r.reservado)}</td>
-        <td style="font-family:'Syne';font-weight:700;color:${r.pendente>0?'var(--warn)':'var(--muted)'}">${fmt(r.pendente)}</td>
         <td><div class="progress-wrap"><div class="progress-bar-bg"><div class="progress-bar-fill ${fillClass}" style="width:${Math.min(r.pct,100)}%"></div></div><span class="pct-text" style="color:${pctColor}">${fmtPct(r.pct)}</span></div></td>
         <td><span class="dias-cell"><span class="dias-dot" style="background:${diasColor}"></span>${fmtDias(r.dias)}</span></td>
-        <td><button class="expand-btn">▾ Detalhar</button></td>
+        <td><button class="expand-btn">${expandLabel}</button></td>
       </tr>
-      <tr class="variation-row" id="var-${i}">
-        <td colspan="7"><div class="variation-inner">
+      <tr class="variation-row${autoOpenClass}" id="var-${i}">
+        <td colspan="9"><div class="variation-inner">
           <table class="var-table">
-            <thead><tr><th>Cod · Variação / Cor</th><th style="text-align:center">Solicitado</th><th style="text-align:center">Reservado</th><th style="text-align:center">Pendente</th><th>Progresso</th><th style="text-align:center">Cobertura</th></tr></thead>
+            <thead><tr><th>Cod · Variação / Cor</th><th style="text-align:center">Sol. Carga Mãe</th><th style="text-align:center">Sol. Forecast</th><th style="text-align:center">Média/dia</th><th style="text-align:center">Reservado</th><th>Progresso</th><th style="text-align:center">Cobertura</th></tr></thead>
             <tbody>${varRows}</tbody>
           </table>
         </div></td>
@@ -987,6 +2005,124 @@ function setCat(c, el){
 function setCatFromCard(catName){
   const tab = document.querySelector(`.tab[data-cat="${CSS.escape(catName)}"]`);
   if (tab) setCat(catName, tab);
+}
+
+// Filtro por faixa de dias — chamado pelos chips da timeline.
+// Aplica filtro, atualiza visual dos chips e faz scroll pra tabela.
+function setDiasFilter(min, max, label, cor){
+  if (currentDiasFilter && currentDiasFilter.min === min && currentDiasFilter.max === max) {
+    // Clica no mesmo chip de novo → desativa
+    clearDiasFilter();
+    return;
+  }
+  currentDiasFilter = { min, max, label, cor };
+  // Atualiza estado visual dos chips
+  document.querySelectorAll('.timeline-chip[data-faixa]').forEach(c => {
+    const isActive = c.dataset.min === String(min) && c.dataset.max === String(max);
+    c.style.outline = isActive ? `2px solid ${cor}` : 'none';
+    c.style.outlineOffset = isActive ? '2px' : '0';
+    c.style.transform = isActive ? 'scale(1.05)' : '';
+    c.style.fontWeight = isActive ? '900' : '700';
+  });
+  // Mostra "barra de filtro ativo"
+  const ind = document.getElementById('dias-filter-indicator');
+  if (ind) {
+    ind.style.display = 'inline-flex';
+    ind.style.color = cor;
+    ind.style.borderColor = cor + '55';
+    ind.style.background = cor + '15';
+    ind.querySelector('.dias-filter-label').textContent = label;
+  }
+  renderTable();
+  // Popula painel lateral direito com os SKUs da faixa
+  renderSkusFiltrados(min, max, label, cor);
+  // Mostra botão "Limpar filtro" perto dos chips
+  const clearBtn = document.getElementById('cobertura-clear-filter-btn');
+  if (clearBtn) clearBtn.style.display = 'inline-block';
+}
+
+// Popula o painel direito com a lista de SKUs da faixa selecionada
+function renderSkusFiltrados(min, max, label, cor){
+  const body  = document.getElementById('cobertura-skus-filtrados-body');
+  const cnt   = document.getElementById('cobertura-skus-filtrados-count');
+  const head  = document.getElementById('cobertura-skus-filtrados-header');
+  if (!body) return;
+  // Coleta variações ativas (exclui descontinuados) com pct < 100 dentro da faixa
+  const todas = (data || []).flatMap(p =>
+    (p.variacoes || []).map(v => ({...v, codItem: p.codItem, produto: p.produto, categoria: p.categoria}))
+  );
+  const candidatas = todas.filter(v => (v.pct || 0) < 100);
+  const naFaixa = candidatas
+    .filter(v => (v.dias || 0) >= min && (v.dias || 0) < max)
+    .sort((a, b) => (a.dias || 0) - (b.dias || 0));
+  // Cabeçalho com cor da faixa
+  if (head) {
+    head.querySelector('div').innerHTML =
+      `<span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${cor};vertical-align:middle;margin-right:6px;"></span>` +
+      `Faixa <span style="color:${cor};">${label}</span>`;
+  }
+  if (cnt) cnt.textContent = `${naFaixa.length} SKU${naFaixa.length !== 1 ? 's' : ''}`;
+  // Renderiza lista
+  if (naFaixa.length === 0) {
+    body.style.alignItems = 'center';
+    body.style.justifyContent = 'center';
+    body.innerHTML = `<div style="font-size:11.5px;color:var(--muted);text-align:center;padding:12px;">Nenhum SKU nessa faixa</div>`;
+    return;
+  }
+  body.style.alignItems = 'stretch';
+  body.style.justifyContent = 'flex-start';
+  body.style.textAlign = 'left';
+  body.innerHTML = `<div style="display:flex;flex-direction:column;gap:0;width:100%;box-sizing:border-box;">` + naFaixa.map((v, i) => {
+    const sty = CAT_STYLES[v.categoria] || {cls:'comp', short:'?'};
+    const diasTxt = (v.dias || 0).toFixed(1).replace('.', ',') + 'd';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:7px 4px;${i < naFaixa.length-1 ? 'border-bottom:1px solid var(--border);' : ''};width:100%;box-sizing:border-box;">
+      <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:${cor};min-width:38px;flex-shrink:0;text-align:right;">${diasTxt}</div>
+      <div style="flex:1;min-width:0;overflow:hidden;">
+        <div style="font-size:10.5px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px;line-height:1.3;flex-wrap:nowrap;overflow:hidden;">
+          <span class="cat-badge ${sty.cls}" style="font-size:8px;padding:1px 5px;flex-shrink:0;">${sty.short}</span>
+          <span style="opacity:0.55;font-size:9px;flex-shrink:0;">${v.codMasc}</span>
+          ${curvaLetra(v.curvaAbc)}
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">${v.produto}</span>
+        </div>
+        <div style="font-size:9.5px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.variacao}</div>
+      </div>
+      <div style="text-align:right;font-size:8.5px;color:var(--muted);font-weight:600;line-height:1.3;flex-shrink:0;min-width:46px;">
+        <div>res <b style="color:var(--text);font-size:10.5px;">${v.reservado}</b></div>
+        <div>fc <b style="color:#c084fc;font-size:10.5px;">${v.solicitadoForecast || 0}</b></div>
+      </div>
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+function clearDiasFilter(){
+  currentDiasFilter = null;
+  document.querySelectorAll('.timeline-chip[data-faixa]').forEach(c => {
+    c.style.outline = 'none'; c.style.outlineOffset = '0'; c.style.transform = ''; c.style.fontWeight = '700';
+  });
+  const ind = document.getElementById('dias-filter-indicator');
+  if (ind) ind.style.display = 'none';
+  // Esconde botão "Limpar filtro"
+  const clearBtn = document.getElementById('cobertura-clear-filter-btn');
+  if (clearBtn) clearBtn.style.display = 'none';
+  renderTable();
+  // Volta o painel direito pro estado inicial (pior caso)
+  if (window._renderPiorCasoNoPainel) {
+    window._renderPiorCasoNoPainel();
+  } else {
+    const body = document.getElementById('cobertura-skus-filtrados-body');
+    const cnt  = document.getElementById('cobertura-skus-filtrados-count');
+    const head = document.getElementById('cobertura-skus-filtrados-header');
+    if (head) head.querySelector('div').textContent = 'SKUs da faixa selecionada';
+    if (cnt) cnt.textContent = '';
+    if (body) {
+      body.style.alignItems = 'center';
+      body.style.justifyContent = 'center';
+      body.innerHTML = `<div style="font-size:11.5px;color:var(--muted);line-height:1.6;padding:12px;text-align:center;">
+        <div style="font-size:24px;opacity:0.4;margin-bottom:6px;">👈</div>
+        Selecione uma faixa de dias à esquerda<br>pra ver os SKUs aqui
+      </div>`;
+    }
+  }
 }
 
 function sortBy(key){
@@ -1096,7 +2232,9 @@ renderTable();
       dataISO: dataBRparaISO(bundle.stats.dataAtualizacao),
       stats: {
         dataAtualizacao: bundle.stats.dataAtualizacao,
-        diasAtendeGlobalFc: bundle.stats.diasAtendeGlobalFc,
+        diasAtendeGlobalFc: bundle.stats.diasAtendeGlobalFc,   // agregado (carga mãe / demanda diária)
+        diasAtendePiorCaso: bundle.stats.diasAtendePiorCaso,   // SKU mais frágil (métrica do card grande)
+        skuPiorCaso:        bundle.stats.skuPiorCaso || null,  // qual SKU é o gargalo
         pctGeral: bundle.stats.pctGeral,
         demandaDiariaGlobal: bundle.stats.demandaDiariaGlobal,
         mesPeriodo: bundle.stats.mesPeriodo,
@@ -1175,17 +2313,20 @@ renderTable();
   }
 
   // ═══ COMPARAÇÃO ═══
+  // Compara o número AGREGADO (diasAtendeGlobalFc) — que é o número grande
+  // exibido no card "Atende os próximos". O chip do SKU mais frágil é uma
+  // leitura paralela e tem sua própria sinalização visual de cor.
   function calcularDivergencias(anterior, atual){
     if(!anterior || !atual) return null;
     const dDias = difDiasCalendario(anterior.stats.dataAtualizacao, atual.stats.dataAtualizacao);
-    if(dDias === null || dDias === 0) return null; // mesma data, nada a comparar
+    if(dDias === null || dDias === 0) return null;
 
     const diasAnt = parseFloat(anterior.stats.diasAtendeGlobalFc);
     const diasAtu = parseFloat(atual.stats.diasAtendeGlobalFc);
     if(!isFinite(diasAnt) || !isFinite(diasAtu)) return null;
 
     const esperado  = diasAnt - dDias;
-    const diferenca = esperado - diasAtu; // >0 ⇒ consumo acima do previsto
+    const diferenca = esperado - diasAtu;
     const status    = (diferenca > TOL) ? 'ATENCAO' : 'OK';
 
     // Comparação SKU a SKU (por codMasc)
@@ -1436,10 +2577,13 @@ renderTable();
 
           if(anteriorFB) snapAnterior = anteriorFB;
 
-          // Grava se: autenticado E (não existe ainda OU os números mudaram)
+          // Grava se: autenticado E (não existe ainda OU números mudaram OU
+          // pior caso ainda não foi gravado neste snapshot)
           const precisaGravar = !atualFB ||
             atualFB.stats.diasAtendeGlobalFc !== novoSnap.stats.diasAtendeGlobalFc ||
-            atualFB.stats.pctGeral !== novoSnap.stats.pctGeral;
+            atualFB.stats.diasAtendePiorCaso !== novoSnap.stats.diasAtendePiorCaso ||
+            atualFB.stats.pctGeral !== novoSnap.stats.pctGeral ||
+            atualFB.stats.diasAtendePiorCaso === undefined; // snapshot antigo, sem pior caso
 
           if(precisaGravar) {
             await gravarSnapshotFirebase(novoSnap);
