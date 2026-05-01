@@ -649,6 +649,22 @@
   <div class="section-title" id="section-alerts" style="display:none;">🚨 Variações em Alerta <span>reserva &lt; 30%</span></div>
   <div class="alert-cards" id="alertCards"></div>
 
+  <!-- ANÁLISE DE CONSUMO DIÁRIO -->
+  <div class="section-title" id="section-consumo" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <span>📉 Consumo Diário <span id="consumo-sub" style="font-weight:400;font-size:11px;color:var(--muted);">comparativo de reserva entre datas</span></span>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
+      <button onclick="exportarConsumoExcel()" type="button" class="export-btn" id="btn-export-consumo" disabled style="opacity:0.4;cursor:not-allowed;" title="Disponível quando houver SKUs com consumo acima do esperado">
+        📊 Exportar SKUs em alerta
+      </button>
+    </div>
+  </div>
+  <div id="consumo-container" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:24px;">
+    <div id="consumo-loading" style="text-align:center;padding:24px;color:var(--muted);font-size:12px;">
+      <span style="font-size:24px;opacity:0.5;display:block;margin-bottom:6px;">⏳</span>
+      Carregando histórico do Firebase...
+    </div>
+  </div>
+
   <!-- FULL TABLE -->
   <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <span>📋 Todos os Produtos</span>
@@ -1011,79 +1027,155 @@ const top10 = BUNDLE.top10;
 const hist = BUNDLE.hist;
 
 // ╔══════════════════════════════════════════════════════════════════
-// ║ DETECÇÃO DE DADOS ATUALIZADOS (animação ✨)
-// ║ Compara o stats atual com o snapshot salvo no localStorage.
-// ║ Se algum KPI principal mudou, dispara animação pulse + banner.
+// ║ DETECÇÃO DE DADOS ATUALIZADOS (animação ✨ inteligente)
+// ║ Compara métricas-chave com o snapshot anterior (localStorage).
+// ║ Banner mostra 2-3 highlights priorizados:
+// ║   - Crítico (vermelho): SKU sem reserva aparece, pior caso vira <7d,
+// ║     pior caso piora muito, % cai mais que 2pp
+// ║   - Ganho (verde):   SKU sem reserva zerado, pior caso melhora,
+// ║     % sobe, mais SKUs atendidos
 // ╚══════════════════════════════════════════════════════════════════
+function _calcularSkusSemReservaCM(){
+  // SKUs com reservado=0 dentro da carga mãe (solicitadoCargaMae > 0)
+  let n = 0;
+  (BUNDLE.data || []).forEach(p => {
+    (p.variacoes || []).forEach(v => {
+      if ((v.solicitadoCargaMae || 0) > 0 && (v.reservado || 0) === 0) n++;
+    });
+  });
+  return n;
+}
+
 const _statsSnapshot = {
   dataAtualizacao:        stats.dataAtualizacao,
   totalReservado:         stats.totalReservado,
-  totalPendente:          stats.totalPendente,
   pctGeral:               stats.pctGeral,
+  pctGeralFc:             stats.pctGeralFc,
   diasAtendePiorCaso:     stats.diasAtendePiorCaso,
   skuPiorCasoCod:         stats.skuPiorCaso ? stats.skuPiorCaso.codMasc : null,
   skuAtendeMes:           stats.skuAtendeMes,
-  skuParcialFc:           stats.skuParcialFc,
-  fcTotalSolicitado:      stats.fcTotalSolicitado,
+  skuSemReservaCM:        _calcularSkusSemReservaCM(),
 };
-const STORAGE_KEY = 'estoque_mm_snapshot_v1';
-let _dataChanges = null;
+const STORAGE_KEY = 'estoque_mm_snapshot_v2';
+let _highlights = null;  // array de {tipo:'crit'|'gain', icone, texto, prioridade}
+let _piorCasoMudouSku = false;
+
 try {
   const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-  if (prev && prev.dataAtualizacao !== _statsSnapshot.dataAtualizacao) {
-    // Houve atualização — calcula deltas
-    _dataChanges = {
-      from:                  prev.dataAtualizacao,
-      to:                    _statsSnapshot.dataAtualizacao,
-      reservadoDelta:        _statsSnapshot.totalReservado - (prev.totalReservado || 0),
-      pctDelta:              +((_statsSnapshot.pctGeral - (prev.pctGeral || 0)).toFixed(1)),
-      piorCasoDelta:         +((_statsSnapshot.diasAtendePiorCaso - (prev.diasAtendePiorCaso || 0)).toFixed(1)),
-      piorCasoChanged:       _statsSnapshot.skuPiorCasoCod !== prev.skuPiorCasoCod,
-      atendeMesDelta:        _statsSnapshot.skuAtendeMes - (prev.skuAtendeMes || 0),
-    };
-    console.log('[dados-atualizados] Mudanças detectadas:', _dataChanges);
+  if (prev && prev.dataAtualizacao && prev.dataAtualizacao !== _statsSnapshot.dataAtualizacao) {
+    const dResv  = _statsSnapshot.totalReservado     - (prev.totalReservado     || 0);
+    const dPct   = +(_statsSnapshot.pctGeral         - (prev.pctGeral           || 0)).toFixed(1);
+    const dPctFc = +(_statsSnapshot.pctGeralFc       - (prev.pctGeralFc         || 0)).toFixed(1);
+    const dPior  = +(_statsSnapshot.diasAtendePiorCaso - (prev.diasAtendePiorCaso || 0)).toFixed(1);
+    const dAtend = _statsSnapshot.skuAtendeMes       - (prev.skuAtendeMes       || 0);
+    const dSemRsv= _statsSnapshot.skuSemReservaCM    - (prev.skuSemReservaCM    || 0);
+    _piorCasoMudouSku = _statsSnapshot.skuPiorCasoCod !== prev.skuPiorCasoCod;
+    const piorAtual  = _statsSnapshot.diasAtendePiorCaso;
+    const piorAntes  = prev.diasAtendePiorCaso;
+
+    // ── Cada candidato a highlight tem: tipo, icone, texto, prioridade (maior = mais urgente)
+    const cand = [];
+
+    // SKUs sem reserva (carga mãe) — aparecimento é crítico, eliminação é ganho
+    if (dSemRsv > 0) cand.push({ tipo:'crit', icone:'🚨', prio:100, texto:`<b>+${dSemRsv}</b> SKU${dSemRsv>1?'s':''} sem reserva (zeraram)` });
+    else if (dSemRsv < 0) cand.push({ tipo:'gain', icone:'✓', prio:90,  texto:`<b>${dSemRsv}</b> SKU${Math.abs(dSemRsv)>1?'s':''} sem reserva resolvido${Math.abs(dSemRsv)>1?'s':''}` });
+
+    // Pior caso — entrar em <7d é crítico extremo; sair de <7d é ganho importante
+    if (piorAtual < 7 && piorAntes >= 7) cand.push({ tipo:'crit', icone:'🚨', prio:95, texto:`pior caso entrou em zona crítica: <b>${piorAtual.toString().replace('.',',')}d</b>` });
+    else if (piorAtual >= 7 && piorAntes < 7) cand.push({ tipo:'gain', icone:'✓', prio:85, texto:`pior caso saiu da zona crítica: <b>${piorAtual.toString().replace('.',',')}d</b>` });
+    else if (Math.abs(dPior) >= 0.5) {
+      const sinal = dPior > 0 ? '+' : '';
+      cand.push({ tipo: dPior > 0 ? 'gain' : 'crit', icone: dPior > 0 ? '↑' : '↓', prio:60, texto:`pior caso: <b>${sinal}${dPior.toString().replace('.',',')}d</b>` });
+    }
+    // Mudança de SKU sem mudar dias significativamente — info neutra
+    if (_piorCasoMudouSku && Math.abs(dPior) < 0.5) {
+      cand.push({ tipo:'info', icone:'⇄', prio:40, texto:`pior caso mudou de SKU` });
+    }
+
+    // % atendimento carga mãe — variações maiores que 1pp
+    if (Math.abs(dPct) >= 1) {
+      const sinal = dPct > 0 ? '+' : '';
+      const isCrit = dPct <= -2;
+      cand.push({ tipo: dPct > 0 ? 'gain' : (isCrit ? 'crit' : 'info'), icone: dPct > 0 ? '↑' : '↓', prio:55, texto:`% atendimento C.Mãe: <b>${sinal}${dPct.toString().replace('.',',')}pp</b>` });
+    }
+
+    // % atendimento forecast
+    if (Math.abs(dPctFc) >= 1) {
+      const sinal = dPctFc > 0 ? '+' : '';
+      cand.push({ tipo: dPctFc > 0 ? 'gain' : 'info', icone: dPctFc > 0 ? '↑' : '↓', prio:50, texto:`% atendimento Forecast: <b>${sinal}${dPctFc.toString().replace('.',',')}pp</b>` });
+    }
+
+    // SKUs atendidos completamente — variações
+    if (dAtend !== 0) {
+      const sinal = dAtend > 0 ? '+' : '';
+      cand.push({ tipo: dAtend > 0 ? 'gain' : 'info', icone: dAtend > 0 ? '↑' : '↓', prio:45, texto:`SKUs atendidos: <b>${sinal}${dAtend}</b>` });
+    }
+
+    // Total reservado — só destaca se mudança >= 50un
+    if (Math.abs(dResv) >= 50) {
+      const sinal = dResv > 0 ? '+' : '';
+      cand.push({ tipo: dResv > 0 ? 'gain' : 'info', icone: dResv > 0 ? '↑' : '↓', prio:30, texto:`reservado: <b>${sinal}${dResv}</b> un` });
+    }
+
+    // Ordena por prioridade DESC, pega top 3
+    _highlights = cand.sort((a,b) => b.prio - a.prio).slice(0, 3);
+    if (_highlights.length === 0) _highlights = null;
+    console.log('[dados-atualizados] mudou', prev.dataAtualizacao, '→', _statsSnapshot.dataAtualizacao, '| highlights:', _highlights);
   }
-  // Sempre atualiza o snapshot
   localStorage.setItem(STORAGE_KEY, JSON.stringify(_statsSnapshot));
 } catch (e) {
   console.warn('[dados-atualizados] localStorage indisponível:', e);
 }
 
-// Função pra animar elemento(s) e mostrar banner — chamada DEPOIS que tudo foi renderizado
+// Aplica banner + animação nos KPIs depois que tudo foi montado
 function aplicarAnimacaoDadosAtualizados(){
-  if (!_dataChanges) return;
-  const c = _dataChanges;
+  if (!_highlights) return;
+  const temCrit = _highlights.some(h => h.tipo === 'crit');
 
-  // Anima KPIs principais que mudaram
-  const fmtDelta = (n, suf) => (n > 0 ? '+' : '') + n + (suf || '');
-  const animar = (id, deltaPositivo) => {
+  // Anima cards baseado em quais métricas mudaram (lendo dos highlights)
+  const animar = (id, classe) => {
     const el = document.getElementById(id);
     if (!el) return;
     const card = el.closest('.kpi-card') || el.parentElement;
-    if (card) card.classList.add(deltaPositivo ? 'data-changed' : 'data-changed-down');
+    if (card) card.classList.add(classe);
   };
-  if (c.reservadoDelta !== 0) animar('kpi-res', c.reservadoDelta > 0);
-  if (c.pctDelta !== 0)        animar('kpi-pct', c.pctDelta > 0);
-  if (c.piorCasoDelta !== 0 || c.piorCasoChanged) animar('kpi-atende-prox', c.piorCasoDelta > 0);
-  if (c.atendeMesDelta !== 0)  animar('kpi-sku-ok', c.atendeMesDelta > 0);
+  // Mapeia cada highlight a um card específico (heurística simples por keyword)
+  _highlights.forEach(h => {
+    const cls = h.tipo === 'crit' ? 'data-changed-down' : (h.tipo === 'gain' ? 'data-changed' : '');
+    if (!cls) return;
+    if (h.texto.includes('sem reserva'))    animar('kpi-sku-zero', cls);
+    else if (h.texto.includes('pior caso')) animar('kpi-atende-prox', cls);
+    else if (h.texto.includes('atendimento C.Mãe')) animar('kpi-pct', cls);
+    else if (h.texto.includes('atendimento Forecast')) animar('kpi-pct', cls);
+    else if (h.texto.includes('SKUs atendidos')) animar('kpi-sku-ok', cls);
+    else if (h.texto.includes('reservado'))     animar('kpi-res', cls);
+  });
 
-  // Banner com resumo
+  // Banner: cor adapta — vermelho se há crítico, verde se só ganhos
   const banner = document.getElementById('dataChangedBanner');
-  const det = document.getElementById('dataChangedDetails');
+  const det    = document.getElementById('dataChangedDetails');
   if (banner && det) {
-    const partes = [];
-    partes.push(`Excel atualizado de <b>${c.from}</b> → <b>${c.to}</b>`);
-    if (c.reservadoDelta !== 0) partes.push(`Reservado: ${fmtDelta(c.reservadoDelta)} un`);
-    if (c.pctDelta !== 0)       partes.push(`% atendimento: ${fmtDelta(c.pctDelta, 'pp')}`);
-    if (c.piorCasoChanged)      partes.push(`pior caso mudou de SKU`);
-    else if (c.piorCasoDelta !== 0) partes.push(`pior caso: ${fmtDelta(c.piorCasoDelta, 'd')}`);
-    det.innerHTML = partes.join(' · ');
+    if (temCrit) {
+      banner.style.background = 'linear-gradient(90deg, rgba(239,68,68,0.10), rgba(239,68,68,0.04))';
+      banner.style.borderColor = 'rgba(239,68,68,0.35)';
+      banner.style.color = '#fca5a5';
+      const titleEl = banner.querySelector('span:nth-child(2)');
+      if (titleEl) titleEl.firstChild.nodeValue = '';  // remove texto antigo
+    }
+    // Monta lista de highlights inline
+    const partes = _highlights.map(h => {
+      const cor = h.tipo === 'crit' ? '#ef4444' : h.tipo === 'gain' ? '#22c98a' : 'var(--muted)';
+      return `<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;background:${cor}15;border:1px solid ${cor}55;border-radius:6px;color:${cor};font-size:11px;line-height:1.3;">${h.icone} ${h.texto}</span>`;
+    }).join(' ');
+    const acaoTitulo = temCrit
+      ? '<b style="color:#ef4444">⚠ Atenção:</b>'
+      : '<b style="color:#22c98a">✨ Atualização:</b>';
+    det.innerHTML = `${acaoTitulo} ${partes}`;
     banner.style.display = 'inline-flex';
-    // Auto-esconde depois de 12s (mas botão ✕ funciona pra fechar antes)
-    setTimeout(() => { if (banner) banner.style.display = 'none'; }, 12000);
+    banner.style.flexWrap = 'wrap';
+    setTimeout(() => { if (banner) banner.style.display = 'none'; }, 14000);
   }
 }
-// Dispara depois que TUDO foi montado (timing seguro: 100ms após DOMContentLoaded)
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => setTimeout(aplicarAnimacaoDadosAtualizados, 200));
 } else {
@@ -1775,6 +1867,306 @@ function renderAlerts(){
 // ╔══════════════════════════════════════════════════════════════════
 // ║ EXPORTAR EXCEL — gera .xlsx das variações com os filtros atuais
 // ╚══════════════════════════════════════════════════════════════════
+// ╔══════════════════════════════════════════════════════════════════
+// ║ ANÁLISE DE CONSUMO DIÁRIO (Firebase)
+// ║ - Salva snapshot diário de TODAS variações no Firebase ao detectar
+// ║   nova dataAtualizacao
+// ║ - Busca snapshot anterior, calcula consumo (reserva caiu) por SKU
+// ║ - Compara com média/dia (forecast/30)
+// ║ - Lista SKUs com consumo acima do esperado (tolerância 1.5x)
+// ╚══════════════════════════════════════════════════════════════════
+const CONSUMO_TOLERANCIA = 1.5;  // consumo é alerta se > média × 1.5
+const CONSUMO_FB_PATH = 'estoque_mm/historico_consumo';
+let _consumoAlerts = [];          // SKUs com consumo acima do esperado (pra exportar)
+let _consumoSnapshotAnterior = null;
+let _consumoDataAnterior = null;
+
+// Converte "30/04/2026" → "2026-04-30" pra usar como key sortável no Firebase
+function dataParaKey(dataBr){
+  if (!dataBr) return null;
+  const m = String(dataBr).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!m) return String(dataBr).replace(/[^\w-]/g, '_');
+  return `${m[3]}-${m[2]}-${m[1]}`;
+}
+function keyParaData(key){
+  if (!key) return '—';
+  const m = String(key).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : key;
+}
+
+// Coleta TODAS variações ativas (carga mãe) num formato compacto pra salvar no FB
+function montarSnapshotConsumo(){
+  const snap = {};
+  (data || []).forEach(p => {
+    (p.variacoes || []).forEach(v => {
+      if ((v.solicitadoCargaMae || 0) <= 0) return;  // só carga mãe
+      snap[v.codMasc] = {
+        r: v.reservado || 0,                                // reservado
+        f: v.solicitadoForecast || 0,                       // forecast
+        s: v.solicitadoCargaMae || 0,                       // sol. carga mãe
+        m: (v.solicitadoForecast||0) > 0 ? Math.ceil(v.solicitadoForecast/30) : 0,  // média/dia
+        p: p.codItem,                                       // cod produto
+        n: (p.produto||'').substring(0,80),                 // nome (truncado)
+        c: v.curvaAbc || null,                              // curva
+        x: (v.variacao||'').substring(0,80),                // variação (truncada)
+      };
+    });
+  });
+  return snap;
+}
+
+// Busca o snapshot mais recente ANTES da dataAtualizacao atual
+async function buscarSnapshotAnterior(dataAtualKey){
+  if (!window._mmDB) return null;
+  try {
+    const ref = window._mmDB.ref(CONSUMO_FB_PATH);
+    // Pega os últimos 5 snapshots em ordem decrescente, filtra pelo que é < dataAtualKey
+    const snap = await ref.orderByKey().limitToLast(10).once('value');
+    const all = snap.val() || {};
+    const keysOrdenadas = Object.keys(all).sort();  // asc
+    // Pega a maior key MENOR que dataAtualKey
+    let melhor = null;
+    for (const k of keysOrdenadas) {
+      if (k < dataAtualKey) melhor = k;
+    }
+    if (!melhor) return null;
+    return { data: melhor, snap: all[melhor] };
+  } catch (e) {
+    console.warn('[consumo] falha buscando snapshot anterior:', e);
+    return null;
+  }
+}
+
+// Salva snapshot atual no Firebase
+async function salvarSnapshotConsumo(dataAtualKey, snap){
+  if (!window._mmDB) return false;
+  try {
+    await window._mmDB.ref(`${CONSUMO_FB_PATH}/${dataAtualKey}`).set(snap);
+    console.log(`[consumo] snapshot salvo em ${CONSUMO_FB_PATH}/${dataAtualKey}`);
+    return true;
+  } catch (e) {
+    console.warn('[consumo] falha salvando:', e);
+    return false;
+  }
+}
+
+// Compara o snapshot atual com o anterior, retorna lista de SKUs analisados
+function calcularConsumoSKUs(snapAtual, snapAnterior){
+  const result = [];
+  for (const cm of Object.keys(snapAtual)) {
+    const atual    = snapAtual[cm];
+    const anterior = snapAnterior[cm];
+    if (!anterior) continue;  // SKU novo (sem comparação)
+    const consumo = (anterior.r || 0) - (atual.r || 0);
+    if (consumo === 0 && (atual.r === anterior.r)) continue;  // sem mudança = ignora
+    const media   = atual.m || 0;
+    // Status:
+    //   "alerta": consumo > média × tolerância (acima do esperado)
+    //   "aumento": reserva subiu (consumo negativo, ou seja, reabasteceu)
+    //   "normal": consumo dentro do esperado (≤ média × tolerância)
+    let status, desvio;
+    if (consumo < 0) { status = 'aumento'; desvio = consumo; }  // reserva subiu
+    else if (media > 0 && consumo > media * CONSUMO_TOLERANCIA) {
+      status = 'alerta';
+      desvio = consumo - media;  // quanto a mais que a média
+    } else {
+      status = 'normal';
+      desvio = media > 0 ? consumo - media : 0;
+    }
+    result.push({
+      codMasc: parseInt(cm),
+      codItem: atual.p,
+      produto: atual.n,
+      variacao: atual.x,
+      curvaAbc: atual.c,
+      reservadoAnterior: anterior.r || 0,
+      reservadoAtual:    atual.r || 0,
+      consumo:           consumo,
+      mediaDia:          media,
+      desvio:            desvio,
+      status:            status,
+      forecast:          atual.f,
+    });
+  }
+  return result;
+}
+
+// Renderiza a seção
+function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun){
+  const c = document.getElementById('consumo-container');
+  if (!c) return;
+
+  if (isFirstRun) {
+    c.innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted);font-size:12px;line-height:1.6;">
+      <span style="font-size:32px;opacity:0.5;display:block;margin-bottom:8px;">📅</span>
+      <b style="color:var(--text);">Primeiro registro</b><br>
+      Snapshot do dia <b>${dataAtual}</b> salvo no Firebase. A análise de consumo<br>
+      ficará disponível a partir da próxima atualização do Excel.
+    </div>`;
+    return;
+  }
+
+  if (!comparacao || comparacao.length === 0) {
+    c.innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted);font-size:12px;">
+      <span style="font-size:24px;opacity:0.5;display:block;margin-bottom:6px;">📊</span>
+      Nenhuma variação na comparação entre <b>${dataAnterior}</b> e <b>${dataAtual}</b>.
+    </div>`;
+    return;
+  }
+
+  const alertas  = comparacao.filter(x => x.status === 'alerta').sort((a,b) => b.desvio - a.desvio);
+  const aumentos = comparacao.filter(x => x.status === 'aumento');
+  const normais  = comparacao.filter(x => x.status === 'normal' && x.consumo > 0);
+  const totalConsumo = comparacao.reduce((s,x) => s + Math.max(0, x.consumo), 0);
+  const totalAumento = comparacao.reduce((s,x) => s + Math.max(0, -x.consumo), 0);
+
+  _consumoAlerts = alertas;  // pra exportar Excel
+  // Habilita botão de exportar se há alertas
+  const btnExp = document.getElementById('btn-export-consumo');
+  if (btnExp) {
+    if (alertas.length > 0) {
+      btnExp.disabled = false; btnExp.style.opacity = ''; btnExp.style.cursor = 'pointer';
+    } else {
+      btnExp.disabled = true; btnExp.style.opacity = '0.4'; btnExp.style.cursor = 'not-allowed';
+    }
+  }
+  document.getElementById('consumo-sub').textContent = `de ${dataAnterior} → ${dataAtual}`;
+
+  // 4 mini-cards no topo + lista de alertas
+  let html = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;">
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:700;">SKUs em alerta</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#ef4444;line-height:1.1;margin-top:4px;">${alertas.length}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px;">consumo > ${CONSUMO_TOLERANCIA}× média</div>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:700;">Total consumido</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--text);line-height:1.1;margin-top:4px;">${totalConsumo}<span style="font-size:14px;opacity:0.6;"> un</span></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px;">${normais.length + alertas.length} SKU${(normais.length+alertas.length)!==1?'s':''} com queda</div>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:700;">Reabastecidos</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#22c98a;line-height:1.1;margin-top:4px;">${aumentos.length}<span style="font-size:14px;opacity:0.6;"> SKUs</span></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px;">+${totalAumento} un de reserva</div>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:700;">Total comparado</div>
+      <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--text);line-height:1.1;margin-top:4px;">${comparacao.length}<span style="font-size:14px;opacity:0.6;"> SKUs</span></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px;">de ${dataAnterior} → ${dataAtual}</div>
+    </div>
+  </div>`;
+
+  if (alertas.length === 0) {
+    html += `<div style="text-align:center;padding:18px;color:var(--ok);font-size:12px;background:rgba(34,201,138,0.06);border:1px solid rgba(34,201,138,0.25);border-radius:10px;">
+      ✓ Nenhum SKU consumiu acima do esperado entre ${dataAnterior} e ${dataAtual}
+    </div>`;
+  } else {
+    html += `<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:700;margin-bottom:8px;">⚠ SKUs com consumo acima da média (top ${Math.min(alertas.length, 15)})</div>`;
+    html += `<div style="display:flex;flex-direction:column;gap:0;background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;">`;
+    alertas.slice(0, 15).forEach((a, i) => {
+      const sty = (a.codItem) ? '' : '';  // placeholder; categoria não vem no snap compacto
+      const desvioPct = a.mediaDia > 0 ? Math.round((a.consumo / a.mediaDia) * 100) : 0;
+      html += `<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;${i < Math.min(alertas.length, 15)-1 ? 'border-bottom:1px solid var(--border);' : ''}">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:#ef4444;min-width:46px;text-align:right;">${a.consumo}<span style="font-size:10px;opacity:0.7;"> un</span></div>
+        <div style="flex:1;min-width:0;overflow:hidden;">
+          <div style="font-size:11px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px;line-height:1.3;">
+            <span style="opacity:0.55;font-size:9px;flex-shrink:0;">${a.codMasc}</span>
+            ${curvaLetra(a.curvaAbc)}
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.produto}</span>
+          </div>
+          <div style="font-size:9.5px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.variacao}</div>
+        </div>
+        <div style="text-align:right;font-size:9px;color:var(--muted);font-weight:600;line-height:1.3;flex-shrink:0;min-width:88px;">
+          <div>esperado <b style="color:var(--text);font-size:10.5px;">${a.mediaDia} un/dia</b></div>
+          <div style="color:#ef4444;">${desvioPct}% da média</div>
+        </div>
+        <div style="text-align:right;font-size:9px;color:var(--muted);font-weight:600;line-height:1.3;flex-shrink:0;min-width:64px;">
+          <div>res ant <b style="color:var(--text);font-size:10.5px;">${a.reservadoAnterior}</b></div>
+          <div>res atual <b style="color:#fb923c;font-size:10.5px;">${a.reservadoAtual}</b></div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+    if (alertas.length > 15) {
+      html += `<div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;">+ ${alertas.length - 15} SKU${alertas.length-15>1?'s':''} adicionais — exporte o Excel pra ver todos</div>`;
+    }
+  }
+
+  c.innerHTML = html;
+}
+
+// Exporta SKUs em alerta de consumo pra Excel
+function exportarConsumoExcel(){
+  if (typeof XLSX === 'undefined') { alert('Biblioteca de exportação ainda não carregou.'); return; }
+  if (_consumoAlerts.length === 0) { alert('Nenhum SKU em alerta de consumo pra exportar.'); return; }
+  const linhas = _consumoAlerts.map(a => ({
+    'Cod Produto':              a.codItem,
+    'Produto':                  a.produto,
+    'Cod Variação':             a.codMasc,
+    'Variação':                 a.variacao,
+    'Curva ABC':                a.curvaAbc || '',
+    'Reservado anterior':       a.reservadoAnterior,
+    'Reservado atual':          a.reservadoAtual,
+    'Consumo (un)':             a.consumo,
+    'Esperado (média/dia)':     a.mediaDia,
+    'Desvio (un acima da média)': a.desvio,
+    'Desvio (%)':               a.mediaDia > 0 ? Math.round((a.consumo / a.mediaDia) * 100) : 0,
+    'Forecast mensal':          a.forecast,
+  }));
+  const ws = XLSX.utils.json_to_sheet(linhas);
+  ws['!cols'] = [
+    { wch: 12 }, { wch: 38 }, { wch: 14 }, { wch: 32 }, { wch: 9 },
+    { wch: 18 }, { wch: 16 }, { wch: 13 }, { wch: 20 }, { wch: 24 }, { wch: 12 }, { wch: 16 }
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Consumo acima da média');
+  // Aba info
+  const info = [
+    ['Análise',           'Consumo diário acima do esperado'],
+    ['Data anterior',     _consumoDataAnterior || '—'],
+    ['Data atual',        stats.dataAtualizacao || '—'],
+    ['Tolerância',        `${CONSUMO_TOLERANCIA}× a média/dia`],
+    ['Critério',          `Consumo > Média/dia × ${CONSUMO_TOLERANCIA}`],
+    ['SKUs em alerta',    linhas.length],
+    ['Exportado em',      new Date().toLocaleString('pt-BR')],
+  ];
+  const wsInfo = XLSX.utils.aoa_to_sheet(info);
+  wsInfo['!cols'] = [{ wch: 22 }, { wch: 50 }];
+  XLSX.utils.book_append_sheet(wb, wsInfo, 'Resumo');
+  const ts = new Date().toISOString().slice(0,10) + '_' + new Date().toTimeString().slice(0,8).replace(/:/g,'');
+  XLSX.writeFile(wb, `consumo_alerta_${ts}.xlsx`);
+}
+
+// Inicializa: salva snapshot atual e busca anterior pra comparar
+(async function inicializarConsumoDiario(){
+  // Aguarda renderTable ser definido (timing-safe)
+  await new Promise(resolve => setTimeout(resolve, 50));
+  if (!window._mmDB) {
+    document.getElementById('consumo-container').innerHTML =
+      `<div style="text-align:center;padding:18px;color:var(--muted);font-size:12px;">⚠ Firebase não disponível — análise de consumo desabilitada nesse contexto.</div>`;
+    return;
+  }
+  const dataAtualKey = dataParaKey(stats.dataAtualizacao);
+  if (!dataAtualKey) {
+    document.getElementById('consumo-container').innerHTML =
+      `<div style="text-align:center;padding:18px;color:var(--muted);font-size:12px;">⚠ Data de atualização inválida no BUNDLE.</div>`;
+    return;
+  }
+  const snapAtual = montarSnapshotConsumo();
+  // Busca anterior ANTES de salvar o atual
+  const ant = await buscarSnapshotAnterior(dataAtualKey);
+  // Salva o snapshot atual (sobrescreve se mesma data)
+  await salvarSnapshotConsumo(dataAtualKey, snapAtual);
+  if (!ant) {
+    renderizarConsumo(null, null, stats.dataAtualizacao, true);  // primeira vez
+    return;
+  }
+  _consumoSnapshotAnterior = ant.snap;
+  _consumoDataAnterior = keyParaData(ant.data);
+  const comparacao = calcularConsumoSKUs(snapAtual, ant.snap);
+  renderizarConsumo(comparacao, _consumoDataAnterior, stats.dataAtualizacao, false);
+})();
+
 function exportarTabelaExcel(){
   if (typeof XLSX === 'undefined') {
     alert('Biblioteca de exportação ainda não carregou. Tente novamente em alguns segundos.');
