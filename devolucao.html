@@ -36,6 +36,8 @@
     color:var(--accent2);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
   .header-period{background:rgba(56,139,253,.1);border:1px solid rgba(56,139,253,.25);
     color:#79c0ff;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
+  .header-closing{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.3);
+    color:#3fb950;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
 
   /* OBS */
   .obs-banner{background:rgba(227,179,65,.08);border-bottom:1px solid rgba(227,179,65,.2);
@@ -108,6 +110,26 @@
     border-left:3px solid var(--yellow);border-radius:0 6px 6px 0;
     font-size:12px;color:#c9a227;line-height:1.6;}
 
+  /* RESUMO MENSAL CARD */
+  .monthly-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;}
+  .month-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;position:relative;overflow:hidden;}
+  .month-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+  .mc-jan::after{background:linear-gradient(90deg,#1f6feb,var(--blue));}
+  .mc-fev::after{background:linear-gradient(90deg,#7c3aed,var(--purple));}
+  .mc-mar::after{background:linear-gradient(90deg,var(--accent),var(--accent2));}
+  .mc-abr::after{background:linear-gradient(90deg,#9e6a03,var(--yellow));}
+  .month-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
+    letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+  .month-notas{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;line-height:1;}
+  .mc-jan .month-notas{color:var(--blue);}
+  .mc-fev .month-notas{color:var(--purple);}
+  .mc-mar .month-notas{color:var(--accent2);}
+  .mc-abr .month-notas{color:var(--yellow);}
+  .month-val{font-size:14px;font-weight:700;color:var(--text);margin:4px 0;}
+  .month-pct{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:8px;margin-top:4px;}
+  .pct-excellent{background:rgba(63,185,80,.15);color:var(--green);}
+  .pct-caution  {background:rgba(227,179,65,.15);color:var(--yellow);}
+
   .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 
   /* CARD */
@@ -167,7 +189,7 @@
   .axis-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px;}
 
   @media(max-width:900px){
-    .grid-2,.almox-3,.almox-2,.almox-4{grid-template-columns:1fr;}
+    .grid-2,.almox-3,.almox-2,.almox-4,.monthly-summary{grid-template-columns:1fr;}
     .page{padding:16px;}
     .header{padding:16px;flex-wrap:wrap;}
     .tabs-bar,.obs-banner{padding:0 16px;}
@@ -186,8 +208,9 @@
     <div class="header-sub">Relatório consolidado · Comercial + Suprimentos</div>
   </div>
   <div class="header-right">
-    <div class="header-period">📅 01/01/2026 a 29/04/2026</div>
-    <div class="header-badge">583 REGISTROS</div>
+    <div class="header-closing">✅ Fechamento Abril 2026</div>
+    <div class="header-period">📅 01/01/2026 a 30/04/2026</div>
+    <div class="header-badge">614 REGISTROS</div>
   </div>
 </div>
 
@@ -215,30 +238,59 @@
 
   <div class="kpis">
     <div class="kpi orange">
-      <div class="kpi-label">Total Devolvido</div><div class="kpi-value">R$ 606,7K</div>
-      <div class="kpi-sub">01/01 a 29/04/2026</div>
-      <div class="kpi-fat warn">👍 1,85% do faturamento</div>
+      <div class="kpi-label">Total Devolvido</div><div class="kpi-value">R$ 641,1K</div>
+      <div class="kpi-sub">01/01 a 30/04/2026</div>
+      <div class="kpi-fat warn">👍 1,94% do faturamento</div>
       <div class="kpi-icon">💰</div>
     </div>
     <div class="kpi blue">
-      <div class="kpi-label">Total de Notas</div><div class="kpi-value">583</div>
+      <div class="kpi-label">Total de Notas</div><div class="kpi-value">614</div>
       <div class="kpi-sub">Comercial + Suprimentos</div><div class="kpi-icon">📄</div>
     </div>
     <div class="kpi green">
-      <div class="kpi-label">Ticket Médio</div><div class="kpi-value">R$ 1.040</div>
+      <div class="kpi-label">Ticket Médio</div><div class="kpi-value">R$ 1.044</div>
       <div class="kpi-sub">Por devolução</div><div class="kpi-icon">📊</div>
     </div>
     <div class="kpi purple">
-      <div class="kpi-label">Principal Motivo</div><div class="kpi-value">41,4%</div>
-      <div class="kpi-sub">Desistência · 233 notas</div><div class="kpi-icon">🔍</div>
+      <div class="kpi-label">Principal Motivo</div><div class="kpi-value">40,2%</div>
+      <div class="kpi-sub">Desistência · 238 notas</div><div class="kpi-icon">🔍</div>
     </div>
     <div class="kpi yellow">
-      <div class="kpi-label">Top Transportadora</div><div class="kpi-value">169 notas</div>
+      <div class="kpi-label">Top Transportadora</div><div class="kpi-value">186 notas</div>
       <div class="kpi-sub">Nova Era Express</div><div class="kpi-icon">🚚</div>
     </div>
     <div class="kpi red">
       <div class="kpi-label">Maior Mês</div><div class="kpi-value">Abril</div>
-      <div class="kpi-sub">R$ 242,8K · 243 notas</div><div class="kpi-icon">📅</div>
+      <div class="kpi-sub">R$ 277,1K · 274 notas</div><div class="kpi-icon">📅</div>
+    </div>
+  </div>
+
+  <!-- RESUMO MENSAL -->
+  <div class="section-divider"><div class="section-divider-title">Resumo do Período Jan–Abr 2026</div><div class="section-divider-line"></div></div>
+  <div class="monthly-summary">
+    <div class="month-card mc-jan">
+      <div class="month-name">Janeiro</div>
+      <div class="month-notas">80</div>
+      <div class="month-val">R$ 86.457,91</div>
+      <span class="month-pct pct-excellent">1,17% ✅</span>
+    </div>
+    <div class="month-card mc-fev">
+      <div class="month-name">Fevereiro</div>
+      <div class="month-notas">100</div>
+      <div class="month-val">R$ 113.853,43</div>
+      <span class="month-pct pct-caution">1,60% 👍</span>
+    </div>
+    <div class="month-card mc-mar">
+      <div class="month-name">Março</div>
+      <div class="month-notas">160</div>
+      <div class="month-val">R$ 163.621,42</div>
+      <span class="month-pct pct-caution">1,62% 👍</span>
+    </div>
+    <div class="month-card mc-abr">
+      <div class="month-name">Abril · Fechamento</div>
+      <div class="month-notas">274</div>
+      <div class="month-val">R$ 277.130,80</div>
+      <span class="month-pct pct-caution">3,26% 👍</span>
     </div>
   </div>
 
@@ -294,30 +346,30 @@
       </div>
     </div>
 
-    <!-- ABR 2.95% → 59.1% -->
+    <!-- ABR 3.26% → 65.3% -->
     <div class="perf-row">
       <div class="perf-row-header">
-        <span class="perf-row-label">Abril <span style="font-size:11px;color:var(--text3);font-weight:400">R$ 242.804,13 / R$ 8.220.964,48 &nbsp;·&nbsp; até 29/04</span></span>
-        <div class="perf-row-right"><span class="perf-pct-badge caution">2,95%</span><span class="perf-status">👍 Bom</span></div>
+        <span class="perf-row-label">Abril <span style="font-size:11px;color:var(--text3);font-weight:400">R$ 277.130,80 / R$ 8.488.929,78 &nbsp;·&nbsp; <strong style="color:var(--green)">Fechamento</strong></span></span>
+        <div class="perf-row-right"><span class="perf-pct-badge caution">3,26%</span><span class="perf-status">👍 Bom</span></div>
       </div>
       <div style="position:relative">
-        <div class="perf-bar-track"><div class="perf-bar-fill" style="width:59.1%;background:linear-gradient(90deg,#9e6a03,var(--perf-caution))"></div></div>
+        <div class="perf-bar-track"><div class="perf-bar-fill" style="width:65.3%;background:linear-gradient(90deg,#9e6a03,var(--perf-caution))"></div></div>
         <div class="limit-line" style="left:100%"></div>
       </div>
     </div>
 
-    <!-- TOTAL 1.85% → 37.0% -->
+    <!-- TOTAL 1.94% → 38.8% -->
     <div class="perf-row" style="padding-top:12px;border-top:1px solid var(--border);margin-top:4px">
       <div class="perf-row-header">
-        <span class="perf-row-label" style="font-size:14px"><strong>Total do Período</strong> <span style="font-size:11px;color:var(--text3);font-weight:400">R$ 606.736,89 / R$ 32.813.055,48</span></span>
+        <span class="perf-row-label" style="font-size:14px"><strong>Total do Período (Jan–Abr)</strong> <span style="font-size:11px;color:var(--text3);font-weight:400">R$ 641.063,55 / R$ 33.081.020,78</span></span>
         <div class="perf-row-right">
-          <span class="perf-pct-badge caution" style="font-size:14px;padding:3px 12px">1,85%</span>
+          <span class="perf-pct-badge caution" style="font-size:14px;padding:3px 12px">1,94%</span>
           <span class="perf-status" style="font-size:12px">✅ Dentro da meta</span>
         </div>
       </div>
       <div style="position:relative">
         <div style="height:16px;background:var(--bg3);border-radius:8px;overflow:hidden">
-          <div style="width:37%;height:100%;background:linear-gradient(90deg,#9e6a03,var(--perf-caution));border-radius:8px"></div>
+          <div style="width:38.8%;height:100%;background:linear-gradient(90deg,#9e6a03,var(--perf-caution));border-radius:8px"></div>
         </div>
         <div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">limite 5%</div>
       </div>
@@ -334,15 +386,16 @@
       <div class="almox-desc">Notas repassadas</div><div class="almox-val">R$ 41.967,99</div>
     </div>
     <div class="almox-card almox-103">
-      <div class="almox-num">320</div><div class="almox-label">ALM 103 — Retorno</div>
-      <div class="almox-desc">Notas retornaram para a empresa</div><div class="almox-val">R$ 333.139,01</div>
+      <div class="almox-num">345</div><div class="almox-label">ALM 103 — Retorno</div>
+      <div class="almox-desc">Notas retornaram para a empresa</div><div class="almox-val">R$ 361.567,95</div>
     </div>
     <div class="almox-card almox-105">
-      <div class="almox-num">218</div><div class="almox-label">ALM 105 — Em Coleta</div>
-      <div class="almox-desc">Notas em processo de coleta</div><div class="almox-val">R$ 229.219,44</div>
+      <div class="almox-num">224</div><div class="almox-label">ALM 105 — Em Coleta</div>
+      <div class="almox-desc">Notas em processo de coleta</div><div class="almox-val">R$ 235.117,16</div>
     </div>
   </div>
 
+  <!-- ANÁLISE -->
   <div class="section-divider"><div class="section-divider-title">Análise Detalhada</div><div class="section-divider-line"></div></div>
   <div class="grid-2">
     <div class="card">
@@ -465,32 +518,36 @@
 </div>
 
 
-<!-- ══════ ABRIL ══════ -->
+<!-- ══════ ABRIL — FECHAMENTO ══════ -->
 <div class="page" id="page-abr">
   <div class="kpis">
-    <div class="kpi blue"><div class="kpi-label">Total de Notas</div><div class="kpi-value">243</div><div class="kpi-sub">Abril · até 29/04/2026</div><div class="kpi-icon">📄</div></div>
-    <div class="kpi orange"><div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 242,8K</div><div class="kpi-sub">Abril · até 29/04/2026</div><div class="kpi-fat warn">👍 2,95% do faturamento</div><div class="kpi-icon">💰</div></div>
-    <div class="kpi green"><div class="kpi-label">Faturamento</div><div class="kpi-value">R$ 8,22M</div><div class="kpi-sub">Parcial · até 29/04</div><div class="kpi-icon">🏦</div></div>
-    <div class="kpi purple"><div class="kpi-label">Principal Motivo</div><div class="kpi-value">Desistência</div><div class="kpi-sub">119 notas · 49,0%</div><div class="kpi-icon">🔍</div></div>
+    <div class="kpi blue"><div class="kpi-label">Total de Notas</div><div class="kpi-value">274</div><div class="kpi-sub">Abril 2026 · Fechamento</div><div class="kpi-icon">📄</div></div>
+    <div class="kpi orange"><div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 277,1K</div><div class="kpi-sub">Abril 2026 · Fechamento</div><div class="kpi-fat warn">👍 3,26% do faturamento</div><div class="kpi-icon">💰</div></div>
+    <div class="kpi green"><div class="kpi-label">Faturamento Abril</div><div class="kpi-value">R$ 8,49M</div><div class="kpi-sub">Fechamento do mês</div><div class="kpi-icon">🏦</div></div>
+    <div class="kpi purple"><div class="kpi-label">Principal Motivo</div><div class="kpi-value">Desistência</div><div class="kpi-sub">124 notas · 45,3%</div><div class="kpi-icon">🔍</div></div>
   </div>
 
   <div class="card" style="margin-bottom:16px">
     <div class="perf-card-header">
-      <div class="card-title"><span>🎯</span> Performance — Abril <span style="font-size:11px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(parcial até 29/04)</span></div>
-      <span class="perf-pct-badge caution" style="font-size:13px;padding:3px 12px">2,95% 👍 Bom</span>
+      <div class="card-title"><span>🎯</span> Performance — Abril <span style="font-size:11px;color:var(--green);font-weight:600;text-transform:none;letter-spacing:0;margin-left:4px">✅ Fechamento do Mês</span></div>
+      <span class="perf-pct-badge caution" style="font-size:13px;padding:3px 12px">3,26% 👍 Bom</span>
     </div>
     <div class="card-body">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;color:var(--text2);flex-wrap:wrap;gap:4px"><span>Dev: <strong style="color:var(--text)">R$ 242.804,13</strong></span><span>Fat: <strong style="color:var(--text)">R$ 8.220.964,48</strong></span><span>Meta ≤ <strong style="color:var(--red)">5%</strong> · <strong style="color:var(--yellow)">2,95%</strong> <span style="color:var(--text3)">(2,05pp abaixo)</span></span></div>
-      <div style="position:relative"><div style="height:16px;background:var(--bg3);border-radius:8px;overflow:hidden"><div style="width:59.1%;height:100%;background:linear-gradient(90deg,#9e6a03,var(--perf-caution));border-radius:8px"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">limite 5%</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;color:var(--text2);flex-wrap:wrap;gap:4px">
+        <span>Dev: <strong style="color:var(--text)">R$ 277.130,80</strong></span>
+        <span>Fat: <strong style="color:var(--text)">R$ 8.488.929,78</strong></span>
+        <span>Meta ≤ <strong style="color:var(--red)">5%</strong> · <strong style="color:var(--yellow)">3,26%</strong> <span style="color:var(--text3)">(1,74pp abaixo do limite)</span></span>
+      </div>
+      <div style="position:relative"><div style="height:16px;background:var(--bg3);border-radius:8px;overflow:hidden"><div style="width:65.3%;height:100%;background:linear-gradient(90deg,#9e6a03,var(--perf-caution));border-radius:8px"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">limite 5%</div></div>
       <div class="axis-labels"><span>0%</span><span>1%</span><span>2%</span><span>3%</span><span>4%</span><span style="color:rgba(248,81,73,.8);font-weight:700">5%</span></div>
     </div>
   </div>
 
-  <div class="section-divider"><div class="section-divider-title">Almoxarifado — Abril</div><div class="section-divider-line"></div></div>
+  <div class="section-divider"><div class="section-divider-title">Almoxarifado — Abril (Fechamento)</div><div class="section-divider-line"></div></div>
   <div class="almox-grid almox-4">
     <div class="almox-card almox-101"><div class="almox-num">17</div><div class="almox-label">ALM 101 — Repasse</div><div class="almox-desc">Notas repassadas</div><div class="almox-val">R$ 17.705,90</div></div>
-    <div class="almox-card almox-103"><div class="almox-num">154</div><div class="almox-label">ALM 103 — Retorno</div><div class="almox-desc">Notas retornaram para a empresa</div><div class="almox-val">R$ 148.714,16</div></div>
-    <div class="almox-card almox-105"><div class="almox-num">70</div><div class="almox-label">ALM 105 — Em Coleta</div><div class="almox-desc">Notas em processo de coleta</div><div class="almox-val">R$ 73.973,62</div></div>
+    <div class="almox-card almox-103"><div class="almox-num">179</div><div class="almox-label">ALM 103 — Retorno</div><div class="almox-desc">Notas retornaram para a empresa</div><div class="almox-val">R$ 177.143,10</div></div>
+    <div class="almox-card almox-105"><div class="almox-num">76</div><div class="almox-label">ALM 105 — Em Coleta</div><div class="almox-desc">Notas em processo de coleta</div><div class="almox-val">R$ 79.871,34</div></div>
     <div class="almox-card almox-out"><div class="almox-num">2</div><div class="almox-label">Outros</div><div class="almox-desc">Códigos não mapeados</div><div class="almox-val">R$ 2.410,46</div></div>
   </div>
   <div class="grid-2">
@@ -508,29 +565,29 @@
 const DATA = {
   geral:{
     transp:[
-      {name:'Nova Era Express Transportes Ltda',count:169},
+      {name:'Nova Era Express Transportes Ltda',count:186},
       {name:'Trans Sua Log Transporte e Logistica Ltda',count:91},
       {name:'Transbarbosa Soluções Logistica Ltda',count:87},
       {name:'Getlar Transp e Serv de Armazenagem',count:68},
       {name:'TS RJ Transportes Logistica e Soluções',count:59},
-      {name:'Tempo Justo Transportes Logistica',count:48},
-      {name:'RGE Soluções Ltda',count:32},
-      {name:'MTC Logistica Company Ltda',count:8},
+      {name:'Tempo Justo Transportes Logistica',count:49},
+      {name:'RGE Soluções Ltda',count:35},
+      {name:'MTC Logistica Company Ltda',count:18},
     ],
     motivos:[
-      {name:'Desistência',count:233},{name:'Avaria',count:132},
-      {name:'Atraso na Entrega',count:128},{name:'Entrega Incorreta',count:40},
+      {name:'Desistência',count:238},{name:'Atraso na Entrega',count:147},
+      {name:'Avaria',count:139},{name:'Entrega Incorreta',count:40},
       {name:'Refaturamento de Notas',count:23},
     ],
     mkt:[
-      {name:'N/A (Suprimentos)',count:270},{name:'Shopee',count:141},
-      {name:'Magazine Luiza',count:76},{name:'Mercado Livre',count:69},
-      {name:'Madeira Madeira',count:10},{name:'CNova',count:5},{name:'Zema',count:4},
+      {name:'N/A (Suprimentos)',count:285},{name:'Shopee',count:148},
+      {name:'Magazine Luiza',count:80},{name:'Mercado Livre',count:73},
+      {name:'Madeira Madeira',count:10},{name:'CNova',count:6},{name:'Zema',count:4},
     ],
     prod:[
-      {name:'Guarda Roupa Easy Slim 8 Pts',count:270},{name:'Guarda Roupa 06 Pts Easy Slim 2025',count:47},
-      {name:'Mesa Easy Line c/4 Cad Easy Line',count:33},{name:'Conj Mesa 1,70 Apogeu 2023 c/06 Cad.',count:29},
-      {name:'Comoda Lopas Easy Like',count:25},{name:'Guarda Roupa Toronto 2 Pts Plus',count:25},
+      {name:'Guarda Roupa Easy Slim 8 Pts',count:285},{name:'Guarda Roupa 06 Pts Easy Slim 2025',count:50},
+      {name:'Mesa Easy Line c/4 Cad Easy Line',count:35},{name:'Conj Mesa 1,70 Apogeu 2023 c/06 Cad.',count:30},
+      {name:'Guarda Roupa Toronto 2 Pts Plus',count:28},{name:'Comoda Lopas Easy Like',count:27},
       {name:'Conj Mesa 0,90 Celebrare 2023 c/04 Cad.',count:14},{name:'Comoda Vedra 7GAV 2 Pts',count:13},
     ]
   },
@@ -584,33 +641,33 @@ const DATA = {
   },
   abr:{
     transp:[
-      {name:'Nova Era Express Transportes Ltda',count:89},
+      {name:'Nova Era Express Transportes Ltda',count:106},
       {name:'Transbarbosa Soluções Logistica Ltda',count:41},
       {name:'Getlar Transp e Serv de Armazenagem',count:28},
       {name:'TS RJ Transportes Logistica e Soluções',count:26},
       {name:'Trans Sua Log Transporte e Logistica Ltda',count:24},
-      {name:'Tempo Justo Transportes Logistica',count:14},
-      {name:'RGE Soluções Ltda',count:13},
-      {name:'Soul Express MG Ltda',count:3},
+      {name:'RGE Soluções Ltda',count:16},
+      {name:'Tempo Justo Transportes Logistica',count:15},
+      {name:'MTC Logistica Company Ltda',count:12},
     ],
     motivos:[
-      {name:'Desistência',count:119},{name:'Atraso na Entrega',count:46},
-      {name:'Avaria',count:35},{name:'Entrega Incorreta',count:20},
+      {name:'Desistência',count:124},{name:'Atraso na Entrega',count:65},
+      {name:'Avaria',count:42},{name:'Entrega Incorreta',count:20},
       {name:'Refaturamento de Notas',count:17},
     ],
     mkt:[
-      {name:'N/A (Suprimentos)',count:76},{name:'Shopee',count:67},
-      {name:'Magazine Luiza',count:45},{name:'Mercado Livre',count:35},
-      {name:'Madeira Madeira',count:5},{name:'CNova',count:5},{name:'Zema',count:2},
+      {name:'N/A (Suprimentos)',count:91},{name:'Shopee',count:74},
+      {name:'Magazine Luiza',count:49},{name:'Mercado Livre',count:39},
+      {name:'CNova',count:6},{name:'Madeira Madeira',count:5},{name:'Zema',count:2},
     ],
     prod:[
-      {name:'Guarda Roupa Easy Slim 8 Pts',count:115},
-      {name:'Guarda Roupa 06 Pts Easy Slim 2025',count:22},
-      {name:'Mesa Easy Line c/4 Cad Easy Line',count:22},
-      {name:'Conj Mesa 1,70 Apogeu 2023 c/06 Cad.',count:16},
-      {name:'Guarda Roupa Toronto 2 Pts Plus',count:10},
+      {name:'Guarda Roupa Easy Slim 8 Pts',count:130},
+      {name:'Guarda Roupa 06 Pts Easy Slim 2025',count:25},
+      {name:'Mesa Easy Line c/4 Cad Easy Line',count:24},
+      {name:'Conj Mesa 1,70 Apogeu 2023 c/06 Cad.',count:17},
+      {name:'Guarda Roupa Toronto 2 Pts Plus',count:13},
+      {name:'Comoda Lopas Easy Like',count:7},
       {name:'Comoda Vedra 7GAV 2 Pts',count:5},
-      {name:'Comoda Lopas Easy Like',count:5},
       {name:'Conj Mesa 1,20 Celebrare 2023 c/04 Cad.',count:4},
     ]
   }
