@@ -7423,6 +7423,7 @@ async function pedBuscarCache() {
       status:  p.status,
       data:    p.data || '',
       estado:  p.estado || '-',
+      cidade:  p.cidade || '-',
       peso:    Number(p.peso || 0),
       transportadora: p.transportadora || '-'
     };
@@ -7455,6 +7456,7 @@ function pedMontarItem(o, stNorm) {
     valor:   Number(o.total || o.gross || o.grossAmount || 0),
     status:  stNorm, data: o.createdAt || '',
     estado:  (o.anymarketAddress && o.anymarketAddress.state) || '-',
+    cidade:  (o.anymarketAddress && o.anymarketAddress.city) || '-',
     peso:    Number((o.items && o.items[0] && o.items[0].weight) || 0),
     transportadora: (o.shipping && o.shipping.carrierName) || o.carrierName || o.shippingCarrier || '-'
   };
@@ -7601,6 +7603,8 @@ function pedSetLoading(on) {
 function pedRenderTabela() {
   if (PED_TODOS.length === 0) return;
   let dados = pedFiltrarPeriodo(PED_TODOS);
+  // Esta página é "PEDIDOS · PENDENTE & PAGO" — ignora CONFIRMADO/CANCELADO/OUTRO
+  dados = dados.filter(function(p){ return p.status === 'PENDENTE' || p.status === 'PAGO'; });
   if (pedStatus !== 'TODOS') dados = dados.filter(function(p){ return p.status === pedStatus; });
   if (pedCanalAtivo) dados = dados.filter(function(p){ return p.canal === pedCanalAtivo || p.canal.toUpperCase() === pedCanalAtivo.toUpperCase(); });
   const q = (document.getElementById('pedSearch').value || '').toLowerCase();
@@ -8150,15 +8154,34 @@ pedRenderTabela=function(){
 // Export CSV
 
 
+// Normaliza UF: 'Minas Gerais' -> 'MG', 'sp' -> 'SP', 'MG' -> 'MG'
+var PED_UF_MAP = {
+  'ACRE':'AC','ALAGOAS':'AL','AMAPA':'AP','AMAZONAS':'AM','BAHIA':'BA',
+  'CEARA':'CE','DISTRITO FEDERAL':'DF','ESPIRITO SANTO':'ES','GOIAS':'GO',
+  'MARANHAO':'MA','MATO GROSSO':'MT','MATO GROSSO DO SUL':'MS',
+  'MINAS GERAIS':'MG','PARA':'PA','PARAIBA':'PB','PARANA':'PR',
+  'PERNAMBUCO':'PE','PIAUI':'PI','RIO DE JANEIRO':'RJ',
+  'RIO GRANDE DO NORTE':'RN','RIO GRANDE DO SUL':'RS','RONDONIA':'RO',
+  'RORAIMA':'RR','SANTA CATARINA':'SC','SAO PAULO':'SP','SERGIPE':'SE','TOCANTINS':'TO'
+};
+function pedNormalizarUF(uf) {
+  if (!uf || uf === '-') return '-';
+  var s = String(uf).trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  if (s.length === 2) return s;
+  return PED_UF_MAP[s] || uf;
+}
+
 function exportarPedidosCSV() {
   if(!PED_TODOS||!PED_TODOS.length){pedShowToast('Sem pedidos para exportar.');return;}
   var d=pedFiltrarPeriodo(PED_TODOS);
+  // Esta página é "PEDIDOS · PENDENTE & PAGO" — nunca exporta CONFIRMADO/CANCELADO/etc.
+  d=d.filter(function(p){return p.status==='PENDENTE'||p.status==='PAGO';});
   if(pedStatus!=='TODOS') d=d.filter(function(p){return p.status===pedStatus;});
   if(pedCanalAtivo) d=d.filter(function(p){return p.canal===pedCanalAtivo;});
   var q=(document.getElementById('pedSearch').value||'').toLowerCase();
   if(q) d=d.filter(function(p){return String(p.numero).toLowerCase().includes(q)||p.canal.toLowerCase().includes(q);});
-  var cab=['Numero','Produto','SKU','Cliente','Canal','Valor','Status','Data'];
-  var rows=d.map(function(p){return [p.numero,'"'+(p.produto||'').replace(/"/g,'""')+'"',p.sku||'','"'+(p.cliente||'').replace(/"/g,'""')+'"',p.canal,p.valor.toFixed(2).replace('.',','),p.status,p.data?new Date(p.data).toLocaleDateString('pt-BR'):''].join(';');});
+  var cab=['Numero','Produto','SKU','Cliente','Canal','Valor','Status','Data','UF','Cidade'];
+  var rows=d.map(function(p){return [p.numero,'"'+(p.produto||'').replace(/"/g,'""')+'"',p.sku||'','"'+(p.cliente||'').replace(/"/g,'""')+'"',p.canal,p.valor.toFixed(2).replace('.',','),p.status,p.data?new Date(p.data).toLocaleDateString('pt-BR'):'',pedNormalizarUF(p.estado),'"'+(p.cidade||'-').replace(/"/g,'""')+'"'].join(';');});
   var csv='\uFEFF'+cab.join(';')+'\n'+rows.join('\n');
   var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})); a.download='pedidos_'+new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')+'.csv'; a.click();
   pedShowToast('CSV exportado: '+d.length+' pedidos');
