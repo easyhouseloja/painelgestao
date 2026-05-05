@@ -19,6 +19,7 @@ function showMonth(month, el) {
   document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('month-' + month).classList.add('active');
   el.classList.add('active');
+  if (month === 'ytd' && !window.ytdChartsBuilt) { buildYtdCharts(); window.ytdChartsBuilt = true; }
 }
 
 // ══════════════════════════════════════════════
@@ -304,6 +305,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .month-btn.active { color: var(--accent); background: var(--card); border-color: var(--accent); border-bottom: 2px solid var(--card); }
 .month-btn.march { --accent: #34d399; }
 .month-btn.april  { --accent: #f97316; }
+.month-btn.ytd    { --accent: #38bdf8; }
 .month-dashboard { display: none; }
 .month-dashboard.active { display: block; }
 @media(max-width:640px){ .month-selector { padding: 10px 16px 0; } .month-btn { padding: 8px 16px; font-size:.75rem; } }
@@ -376,12 +378,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- SELETOR DE MÊS -->
 <div class="month-selector">
-  <div class="month-btn march active" onclick="showMonth('march', this)">📅 Março 2026</div>
+  <div class="month-btn ytd active"   onclick="showMonth('ytd', this)" style="background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(124,58,237,.12));border:1px solid rgba(56,189,248,.4);">🎯 Acumulado 2026 (YTD)</div>
+  <div class="month-btn march"        onclick="showMonth('march', this)">📅 Março 2026</div>
   <div class="month-btn april"        onclick="showMonth('april', this)">📅 Abril 2026</div>
 </div>
 
 <!-- ═══════════════ MÊS: MARÇO 2026 ═══════════════ -->
-<div class="month-dashboard active" id="month-march">
+<div class="month-dashboard" id="month-march">
 <div class="header">
   <div>
     <h1>📊 Dashboard Vendas</h1>
@@ -1949,6 +1952,253 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 </div>
 </div><!-- /month-april -->
+
+<!-- ═══════════════ ACUMULADO 2026 (YTD) ═══════════════ -->
+<div class="month-dashboard active" id="month-ytd">
+<div class="header" style="background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(124,58,237,.05));border-color:rgba(56,189,248,.3);">
+  <div>
+    <h1>🎯 Dashboard Vendas — Acumulado 2026</h1>
+    <div class="header-sub">YTD · Período 01/01/2026 a 30/04/2026 · 4 meses fechados</div>
+  </div>
+  <div class="header-badges">
+    <span class="badge" style="color:#f97316">27,56% da Meta Anual</span>
+    <span class="badge orange" style="color:#a78bfa">+945% Ano x Ano</span>
+    <span class="badge green" style="color:var(--green)">R$ 33,08M faturado</span>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-strip">
+  <div class="kpi-card orange">
+    <div class="kpi-label">Faturamento YTD</div>
+    <div class="kpi-value">R$ 33,08M</div>
+    <div class="kpi-sub">Janeiro a Abril 2026 · 4 meses</div>
+  </div>
+  <div class="kpi-card" style="--c:var(--yellow)">
+    <div class="kpi-label">% Meta Anual</div>
+    <div class="kpi-value" style="color:var(--yellow)">27,56%</div>
+    <div class="kpi-sub">Meta: R$ 120,04M · <span class="kpi-pill pill-green">33% do ano transcorrido</span></div>
+  </div>
+  <div class="kpi-card" style="--c:var(--shopee)">
+    <div class="kpi-label">Projeção Anual</div>
+    <div class="kpi-value" style="color:var(--shopee)">R$ 99,24M</div>
+    <div class="kpi-sub"><span class="kpi-pill pill-red">-17%</span> vs meta anual</div>
+  </div>
+  <div class="kpi-card purple">
+    <div class="kpi-label">Crescimento Ano x Ano</div>
+    <div class="kpi-value" style="color:var(--comp)">+945%</div>
+    <div class="kpi-sub">2025: R$ 3,17M → 2026: R$ 33,08M</div>
+  </div>
+</div>
+
+<!-- Categorias YTD -->
+<div class="grid-3" style="margin-bottom:24px;">
+  <div class="chart-card" style="border-color:rgba(52,211,153,.3);">
+    <div class="chart-title">🛋️ Guarda-Roupa (GR) · YTD</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gr);margin-bottom:4px;">R$ 22,41M</div>
+    <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta Anual: R$ 76,83M · Projeção: R$ 67,24M</div>
+    <div class="prog-row">
+      <div class="prog-label">Realizado</div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:29.18%;background:var(--gr);"></div></div>
+      <div class="prog-val" style="color:var(--yellow)">29,18%</div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-label">Projeção</div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:87.5%;background:rgba(52,211,153,.3);"></div></div>
+      <div class="prog-val" style="color:var(--yellow)">87,5%</div>
+    </div>
+    <div style="margin-top:12px;"><span class="tag tag-yellow">⚠ Tendência: -12%</span></div>
+  </div>
+  <div class="chart-card" style="border-color:rgba(251,113,133,.3);">
+    <div class="chart-title">🪑 Sala de Jantar (SALA) · YTD</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--sala);margin-bottom:4px;">R$ 6,76M</div>
+    <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta Anual: R$ 26,41M · Projeção: R$ 20,27M</div>
+    <div class="prog-row">
+      <div class="prog-label">Realizado</div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:25.59%;background:var(--sala);"></div></div>
+      <div class="prog-val" style="color:var(--yellow)">25,59%</div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-label">Projeção</div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:76.8%;background:rgba(251,113,133,.3);"></div></div>
+      <div class="prog-val" style="color:var(--yellow)">76,8%</div>
+    </div>
+    <div style="margin-top:12px;"><span class="tag tag-red">⚠ Tendência: -23%</span></div>
+  </div>
+  <div class="chart-card" style="border-color:rgba(129,140,248,.3);">
+    <div class="chart-title">🪞 Complementos (COMP) · YTD</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--comp);margin-bottom:4px;">R$ 3,91M</div>
+    <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta Anual: R$ 16,81M · Projeção: R$ 11,73M</div>
+    <div class="prog-row">
+      <div class="prog-label">Realizado</div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:23.27%;background:var(--comp);"></div></div>
+      <div class="prog-val" style="color:var(--yellow)">23,27%</div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-label">Projeção</div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:69.8%;background:rgba(129,140,248,.3);"></div></div>
+      <div class="prog-val" style="color:var(--red)">69,8%</div>
+    </div>
+    <div style="margin-top:12px;"><span class="tag tag-red">⚠ Tendência: -30%</span></div>
+  </div>
+</div>
+
+<!-- Charts: Categoria + Marketplace -->
+<div class="grid-2" style="margin-bottom:24px;">
+  <div class="chart-card">
+    <div class="chart-title">📊 Distribuição por Categoria — YTD</div>
+    <div style="height:260px;"><canvas id="ytdCatChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">🛒 Faturamento por Marketplace — YTD</div>
+    <div style="height:260px;"><canvas id="ytdMktChart"></canvas></div>
+  </div>
+</div>
+
+<!-- Mensal: evolução mês a mês -->
+<div class="chart-card" style="margin-bottom:24px;">
+  <div class="chart-title">📈 Evolução Mensal 2026 — Faturamento vs Meta</div>
+  <div style="height:300px;"><canvas id="ytdMonthChart"></canvas></div>
+</div>
+
+<!-- Tabela: Resumo Mensal -->
+<div class="chart-card" style="margin-bottom:24px;">
+  <div class="chart-title">📅 Resumo Mensal 2026</div>
+  <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Mês</th><th>Fat. 2026</th><th>Meta</th><th>% Atingimento</th><th>Fat. 2025</th><th>Ano vs Ano</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700">Janeiro</td><td>R$ 7.375.532,75</td><td>R$ 10.000.000,00</td><td><span class="tag tag-yellow">73,76%</span></td><td>R$ 4.684.646,70</td><td><span class="tag tag-green">+57%</span></td></tr>
+        <tr><td style="font-weight:700">Fevereiro</td><td>R$ 7.135.124,44</td><td>R$ 6.240.000,00</td><td><span class="tag tag-green">114,34%</span></td><td>R$ 3.752.852,48</td><td><span class="tag tag-green">+90%</span></td></tr>
+        <tr><td style="font-weight:700">Março</td><td>R$ 10.081.433,80</td><td>R$ 7.600.000,00</td><td><span class="tag tag-green">132,65%</span></td><td>R$ 2.915.627,98</td><td><span class="tag tag-green">+246%</span></td></tr>
+        <tr><td style="font-weight:700">Abril</td><td>R$ 8.488.929,78</td><td>R$ 7.160.000,00</td><td><span class="tag tag-green">118,56%</span></td><td>R$ 3.165.610,47</td><td><span class="tag tag-green">+168%</span></td></tr>
+        <tr class="total-row"><td>TOTAL YTD</td><td>R$ 33.081.020,78</td><td>R$ 31.000.000,00</td><td><span class="tag tag-green">106,71%</span></td><td>R$ 14.518.737,63</td><td><span class="tag tag-green">+128%</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Categorias por mês -->
+<div class="chart-card" style="margin-bottom:24px;">
+  <div class="chart-title">📊 Faturamento por Categoria — Mensal 2026</div>
+  <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Mês</th><th>GR</th><th>% GR</th><th>SALA</th><th>% SALA</th><th>COMP</th><th>% COMP</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700">Janeiro</td><td>R$ 5.028.131,58</td><td><span class="tag tag-yellow">79%</span></td><td>R$ 1.635.464,38</td><td><span class="tag tag-yellow">74%</span></td><td>R$ 711.921,15</td><td><span class="tag tag-red">51%</span></td></tr>
+        <tr><td style="font-weight:700">Fevereiro</td><td>R$ 4.858.892,39</td><td><span class="tag tag-green">122%</span></td><td>R$ 1.515.152,98</td><td><span class="tag tag-green">110%</span></td><td>R$ 761.079,08</td><td><span class="tag tag-yellow">87%</span></td></tr>
+        <tr><td style="font-weight:700">Março</td><td>R$ 7.027.681,11</td><td><span class="tag tag-green">144%</span></td><td>R$ 1.852.006,24</td><td><span class="tag tag-green">111%</span></td><td>R$ 1.201.746,45</td><td><span class="tag tag-green">113%</span></td></tr>
+        <tr><td style="font-weight:700">Abril</td><td>R$ 5.499.392,85</td><td><span class="tag tag-green">120%</span></td><td>R$ 1.754.417,86</td><td><span class="tag tag-green">111%</span></td><td>R$ 1.235.119,07</td><td><span class="tag tag-green">123%</span></td></tr>
+        <tr class="total-row"><td>TOTAL YTD</td><td>R$ 22.414.097,93</td><td><span class="tag tag-yellow">29%</span></td><td>R$ 6.757.041,46</td><td><span class="tag tag-yellow">26%</span></td><td>R$ 3.909.865,75</td><td><span class="tag tag-yellow">23%</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="font-size:.7rem;color:var(--muted);margin-top:8px;">% Atingimento mensal vs meta do mês · YTD vs meta anual</div>
+</div>
+
+<!-- Marketplaces YTD -->
+<div class="chart-card" style="margin-bottom:24px;">
+  <div class="chart-title">🛒 Marketplaces — Acumulado 2026</div>
+  <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Marketplace</th><th>YTD 2026</th><th>YTD 2025</th><th>Var A×A</th><th>Projeção Anual</th><th>Repres.</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--shopee);font-weight:700;">🟠 Shopee</td><td>R$ 18.077.715,66</td><td>R$ 301.097,22</td><td><span class="tag tag-green">+5.904%</span></td><td style="color:var(--green)">R$ 54.233.146,97</td><td>55%</td></tr>
+        <tr><td style="color:var(--ml);font-weight:700;">🟡 Mercado Livre</td><td>R$ 7.023.143,38</td><td>R$ 4.923.727,43</td><td><span class="tag tag-green">+43%</span></td><td>R$ 21.069.430,13</td><td>21%</td></tr>
+        <tr><td style="color:var(--magalu);font-weight:700;">🔵 Magalu</td><td>R$ 6.538.490,89</td><td>R$ 5.430.317,12</td><td><span class="tag tag-green">+20%</span></td><td>R$ 19.615.472,67</td><td>20%</td></tr>
+        <tr><td style="color:var(--via);font-weight:700;">🟣 Via Varejo</td><td>R$ 599.687,50</td><td>R$ 403.268,85</td><td><span class="tag tag-green">+49%</span></td><td>R$ 1.799.062,50</td><td>2%</td></tr>
+        <tr><td style="color:var(--madeira);font-weight:700;">🪵 Madeira</td><td>R$ 469.159,64</td><td>R$ 3.135.554,48</td><td><span class="tag tag-red">-85%</span></td><td>R$ 1.407.478,93</td><td>1%</td></tr>
+        <tr><td style="color:var(--web);font-weight:700;">⚪ Web Continental</td><td>R$ 140.352,85</td><td>R$ 149.063,21</td><td><span class="tag tag-red">-6%</span></td><td>R$ 421.058,54</td><td>0,4%</td></tr>
+        <tr><td style="color:#06b6d4;font-weight:700;">🏠 Site & Venda Direta</td><td>R$ 119.456,09</td><td>R$ —</td><td><span class="tag tag-green">novo</span></td><td>R$ 358.368,28</td><td>0,4%</td></tr>
+        <tr class="total-row"><td>TOTAL YTD</td><td>R$ 33.081.005,13</td><td>R$ 14.342.928,31</td><td><span class="tag tag-green">+131%</span></td><td style="color:var(--green)">R$ 99.243.015,40</td><td>100%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Insights YTD -->
+<!-- Categorias por Marketplace YTD -->
+<div class="section-title" style="margin-top:32px;">📊 Categorias por Marketplace — Acumulado 2026 (YTD)</div>
+<div class="cat-grid-mp" style="margin-bottom:24px;">
+  <!-- SHOPEE -->
+  <div class="cat-mp-card">
+    <div class="cat-mp-header" style="border-left:3px solid var(--shopee);"><div class="cat-mp-name" style="color:var(--shopee);">🟠 Shopee</div><div class="cat-mp-total">Total: R$ 14.095.483,43</div></div>
+    <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+      <tr><td>COMP</td><td>R$ 963.755,27</td><td>R$ 560.000,00</td><td><span class="tag tag-green">172,10%</span></td><td style="color:var(--green)">R$ 2.891.265,82</td></tr>
+      <tr><td>GR</td><td>R$ 10.264.101,07</td><td>R$ 2.560.000,00</td><td><span class="tag tag-green">400,94%</span></td><td style="color:var(--green)">R$ 30.792.303,20</td></tr>
+      <tr><td>SALA</td><td>R$ 2.867.627,09</td><td>R$ 880.000,00</td><td><span class="tag tag-green">325,87%</span></td><td style="color:var(--green)">R$ 8.602.881,28</td></tr>
+      <tr class="total-row"><td>TOTAL</td><td>R$ 14.095.483,43</td><td>R$ 4.000.000,00</td><td><span class="tag tag-green">352,39%</span></td><td style="color:var(--green)">R$ 42.286.450,30</td></tr>
+    </tbody></table>
+  </div>
+  <!-- MERCADO LIVRE -->
+  <div class="cat-mp-card">
+    <div class="cat-mp-header" style="border-left:3px solid var(--ml);"><div class="cat-mp-name" style="color:var(--ml);">🟡 Mercado Livre</div><div class="cat-mp-total">Total: R$ 7.023.143,38</div></div>
+    <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+      <tr><td>COMP</td><td>R$ 665.645,73</td><td>R$ 420.000,00</td><td><span class="tag tag-green">158,49%</span></td><td style="color:var(--green)">R$ 1.996.937,20</td></tr>
+      <tr><td>GR</td><td>R$ 5.573.400,19</td><td>R$ 1.920.000,00</td><td><span class="tag tag-green">290,28%</span></td><td style="color:var(--green)">R$ 16.720.200,57</td></tr>
+      <tr><td>SALA</td><td>R$ 784.097,45</td><td>R$ 660.000,00</td><td><span class="tag tag-green">118,80%</span></td><td style="color:var(--green)">R$ 2.352.292,36</td></tr>
+      <tr class="total-row"><td>TOTAL</td><td>R$ 7.023.143,38</td><td>R$ 3.000.000,00</td><td><span class="tag tag-green">234,10%</span></td><td style="color:var(--green)">R$ 21.069.430,13</td></tr>
+    </tbody></table>
+  </div>
+  <!-- MAGALU -->
+  <div class="cat-mp-card">
+    <div class="cat-mp-header" style="border-left:3px solid var(--magalu);"><div class="cat-mp-name" style="color:var(--magalu);">🔵 Magalu</div><div class="cat-mp-total">Total: R$ 6.538.490,89</div></div>
+    <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+      <tr><td>COMP</td><td>R$ 144.461,14</td><td>R$ 210.000,00</td><td><span class="tag tag-yellow">68,79%</span></td><td>R$ 433.383,43</td></tr>
+      <tr><td>GR</td><td>R$ 5.474.012,27</td><td>R$ 960.000,00</td><td><span class="tag tag-green">570,21%</span></td><td style="color:var(--green)">R$ 16.422.036,81</td></tr>
+      <tr><td>SALA</td><td>R$ 920.017,48</td><td>R$ 330.000,00</td><td><span class="tag tag-green">278,79%</span></td><td style="color:var(--green)">R$ 2.760.052,43</td></tr>
+      <tr class="total-row"><td>TOTAL</td><td>R$ 6.538.490,89</td><td>R$ 1.500.000,00</td><td><span class="tag tag-green">435,90%</span></td><td style="color:var(--green)">R$ 19.615.472,67</td></tr>
+    </tbody></table>
+  </div>
+  <!-- MADEIRA -->
+  <div class="cat-mp-card">
+    <div class="cat-mp-header" style="border-left:3px solid var(--madeira);"><div class="cat-mp-name" style="color:var(--madeira);">🪵 Madeira</div><div class="cat-mp-total">Total: R$ 469.159,64</div></div>
+    <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+      <tr><td>COMP</td><td>R$ 111.258,52</td><td>R$ 21.000,00</td><td><span class="tag tag-green">529,80%</span></td><td style="color:var(--green)">R$ 333.775,55</td></tr>
+      <tr><td>GR</td><td>R$ 312.911,51</td><td>R$ 96.000,00</td><td><span class="tag tag-green">325,95%</span></td><td style="color:var(--green)">R$ 938.734,52</td></tr>
+      <tr><td>SALA</td><td>R$ 44.989,62</td><td>R$ 33.000,00</td><td><span class="tag tag-green">136,33%</span></td><td style="color:var(--green)">R$ 134.968,86</td></tr>
+      <tr class="total-row"><td>TOTAL</td><td>R$ 469.159,64</td><td>R$ 150.000,00</td><td><span class="tag tag-green">312,77%</span></td><td style="color:var(--green)">R$ 1.407.478,93</td></tr>
+    </tbody></table>
+  </div>
+  <!-- VIA -->
+  <div class="cat-mp-card">
+    <div class="cat-mp-header" style="border-left:3px solid var(--via);"><div class="cat-mp-name" style="color:var(--via);">🟣 Via Varejo</div><div class="cat-mp-total">Total: R$ 599.687,50</div></div>
+    <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+      <tr><td>COMP</td><td>R$ 51.732,83</td><td>R$ 21.000,00</td><td><span class="tag tag-green">246,35%</span></td><td style="color:var(--green)">R$ 155.138,50</td></tr>
+      <tr><td>GR</td><td>R$ 512.379,70</td><td>R$ 96.000,00</td><td><span class="tag tag-green">533,73%</span></td><td style="color:var(--green)">R$ 1.537.139,09</td></tr>
+      <tr><td>SALA</td><td>R$ 35.574,97</td><td>R$ 33.000,00</td><td><span class="tag tag-green">107,80%</span></td><td style="color:var(--green)">R$ 106.724,90</td></tr>
+      <tr class="total-row"><td>TOTAL</td><td>R$ 599.687,50</td><td>R$ 150.000,00</td><td><span class="tag tag-green">399,79%</span></td><td style="color:var(--green)">R$ 1.799.062,50</td></tr>
+    </tbody></table>
+  </div>
+  <!-- SITE LOPAS -->
+  <div class="cat-mp-card">
+    <div class="cat-mp-header" style="border-left:3px solid #06b6d4;"><div class="cat-mp-name" style="color:#06b6d4;">🏠 Site Lopas</div><div class="cat-mp-total">Total: R$ 119.440,45</div></div>
+    <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>%</th><th>Projeção</th></tr></thead><tbody>
+      <tr><td>COMP</td><td>R$ 29.446,43</td><td>R$ 4.200,00</td><td><span class="tag tag-green">701,11%</span></td><td style="color:var(--green)">R$ 88.339,30</td></tr>
+      <tr><td>GR</td><td>R$ 85.084,08</td><td>R$ 19.200,00</td><td><span class="tag tag-green">443,15%</span></td><td style="color:var(--green)">R$ 255.252,25</td></tr>
+      <tr><td>SALA</td><td>R$ 4.909,94</td><td>R$ 6.600,00</td><td><span class="tag tag-yellow">74,39%</span></td><td>R$ 14.729,81</td></tr>
+      <tr class="total-row"><td>TOTAL</td><td>R$ 119.440,45</td><td>R$ 30.000,00</td><td><span class="tag tag-green">398,13%</span></td><td style="color:var(--green)">R$ 358.321,36</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- Gráfico Empilhado: Categorias por Marketplace YTD -->
+<div class="chart-card" style="margin-bottom:24px;">
+  <div class="chart-title">📊 Categorias por Marketplace — Distribuição YTD</div>
+  <div style="height:340px;"><canvas id="ytdCatDetailChart"></canvas></div>
+</div>
+
+<div class="section-title" style="margin-top:32px;">🔍 Principais Insights — YTD 2026</div>
+<div class="grid-3">
+  <div class="ads-insight-card" style="border-color:rgba(34,197,94,.3);"><div class="ads-insight-icon">🚀</div><div class="ads-insight-text"><strong>Crescimento explosivo Ano×Ano:</strong> R$ 33,08M em 2026 vs R$ 3,17M em 2025 — <strong>+945%</strong>. Diversificação de canais (Shopee +5.904%) é o principal motor desse salto.</div></div>
+  <div class="ads-insight-card" style="border-color:rgba(249,115,22,.3);"><div class="ads-insight-icon">🟠</div><div class="ads-insight-text"><strong>Shopee dominante (55%):</strong> R$ 18,08M YTD, líder absoluto. Projeção R$ 54,23M no ano. Saiu de R$ 301K em 2025 — virada de chave do canal.</div></div>
+  <div class="ads-insight-card" style="border-color:rgba(255,224,0,.3);"><div class="ads-insight-icon">⚠️</div><div class="ads-insight-text"><strong>Meta anual em risco:</strong> 27,56% da meta com 33% do ano transcorrido. Tendência de atingimento: <strong>82,7%</strong> (R$99,24M de R$120,04M). Necessidade de acelerar maio-dezembro.</div></div>
+  <div class="ads-insight-card" style="border-color:rgba(34,197,94,.3);"><div class="ads-insight-icon">📈</div><div class="ads-insight-text"><strong>3 de 4 meses bateram a meta:</strong> Fev (114%), Mar (132%), Abr (118%). Janeiro foi o único abaixo (74%) — meta mensal era mais alta. Tendência consistente de superação.</div></div>
+  <div class="ads-insight-card" style="border-color:rgba(0,134,255,.3);"><div class="ads-insight-icon">🛋️</div><div class="ads-insight-text"><strong>GR é o motor (68% do mix):</strong> R$ 22,41M YTD com 29% da meta anual. Projeção 87,5%. Categoria mais consistente — Mar e Abr bateram meta.</div></div>
+  <div class="ads-insight-card" style="border-color:rgba(239,68,68,.3);"><div class="ads-insight-icon">🪵</div><div class="ads-insight-text"><strong>Madeira em queda livre:</strong> R$ 469K vs R$ 3,13M em 2025 — <strong>-85%</strong>. Canal precisa de revisão estratégica urgente para recuperação.</div></div>
+</div>
+
+</div><!-- /month-ytd -->
 <script>
 // ── DATA ──
 const daily = [
@@ -2591,6 +2841,103 @@ function showMonth(month, el) {
   document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('month-' + month).classList.add('active');
   el.classList.add('active');
+  if (month === 'ytd' && !window.ytdChartsBuilt) { buildYtdCharts(); window.ytdChartsBuilt = true; }
+}
+
+// ══════════════════════════════════════════════
+// ACUMULADO 2026 (YTD) — CHARTS
+// ══════════════════════════════════════════════
+function buildYtdCharts() {
+  const gridCfg = { color: 'rgba(255,255,255,.05)' };
+  const tickCfg = { color: '#7a8aab', font: { size: 11 } };
+  const legendCfg = { labels: { color: '#cbd5e1', font: { size: 12 }, usePointStyle: true, pointStyle: 'circle' } };
+
+  new Chart(document.getElementById('ytdCatChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['GR', 'SALA', 'COMP'],
+      datasets: [{
+        data: [22414097.93, 6757041.46, 3909865.75],
+        backgroundColor: ['#34d399', '#fb7185', '#818cf8'],
+        borderWidth: 2,
+        borderColor: '#161d2e'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: legendCfg,
+        tooltip: { callbacks: { label: ctx => ' R$ ' + (ctx.raw / 1000000).toFixed(2) + 'M' } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('ytdMktChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Shopee', 'ML', 'Magalu', 'Via', 'Madeira', 'Web', 'Site'],
+      datasets: [{
+        data: [18077715.66, 7023143.38, 6538490.89, 599687.50, 469159.64, 140352.85, 119456.09],
+        backgroundColor: ['#f97316', '#ffe000', '#0086ff', '#c084fc', '#e07b54', '#64748b', '#06b6d4'],
+        borderRadius: 6, barThickness: 32
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' R$ ' + (ctx.raw / 1000000).toFixed(2) + 'M' } } },
+      scales: {
+        x: { grid: gridCfg, ticks: tickCfg },
+        y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v / 1000000).toFixed(0) + 'M' } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('ytdMonthChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril'],
+      datasets: [
+        { label: 'Faturamento 2026', data: [7375532.75, 7135124.44, 10081433.80, 8488929.78], backgroundColor: '#38bdf8', borderRadius: 6, order: 2 },
+        { label: 'Faturamento 2025', data: [4684646.70, 3752852.48, 2915627.98, 3165610.47], backgroundColor: 'rgba(122,138,171,.4)', borderRadius: 6, order: 3 },
+        { label: 'Meta Mensal', data: [10000000, 6240000, 7600000, 7160000], type: 'line', borderColor: '#f97316', borderWidth: 2, borderDash: [6, 4], pointRadius: 5, pointBackgroundColor: '#f97316', fill: false, tension: 0.2, order: 1 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: legendCfg,
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': R$ ' + (ctx.raw / 1000000).toFixed(2) + 'M' } }
+      },
+      scales: {
+        x: { grid: gridCfg, ticks: tickCfg },
+        y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v / 1000000).toFixed(0) + 'M' } }
+      }
+    }
+  });
+
+  // Categorias por Marketplace (empilhado)
+  new Chart(document.getElementById('ytdCatDetailChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Shopee', 'ML', 'Magalu', 'Via', 'Madeira', 'Site'],
+      datasets: [
+        { label: 'GR', data: [10264101.07, 5573400.19, 5474012.27, 512379.70, 312911.51, 85084.08], backgroundColor: '#34d399', borderRadius: 4 },
+        { label: 'SALA', data: [2867627.09, 784097.45, 920017.48, 35574.97, 44989.62, 4909.94], backgroundColor: '#fb7185', borderRadius: 4 },
+        { label: 'COMP', data: [963755.27, 665645.73, 144461.14, 51732.83, 111258.52, 29446.43], backgroundColor: '#818cf8', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: legendCfg,
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': R$ ' + (ctx.raw / 1000000).toFixed(2) + 'M' } }
+      },
+      scales: {
+        x: { stacked: true, grid: gridCfg, ticks: tickCfg },
+        y: { stacked: true, grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v / 1000000).toFixed(0) + 'M' } }
+      }
+    }
+  });
 }
 
 // ══════════════════════════════════════════════
@@ -3177,6 +3524,10 @@ window.showEstado = showEstado;
 
   // Patch na função aprod_showPage para chamar renderização ao abrir aba horarios
   document.addEventListener('DOMContentLoaded', function() {
+    // Como YTD é a aba inicial, construir os charts da YTD imediatamente
+    if (typeof buildYtdCharts === 'function' && !window.ytdChartsBuilt) {
+      try { buildYtdCharts(); window.ytdChartsBuilt = true; } catch(e) { console.warn('YTD charts deferred:', e); }
+    }
     var origFn = window.aprod_showPage;
     if (origFn) {
       window.aprod_showPage = function(id, btn) {
