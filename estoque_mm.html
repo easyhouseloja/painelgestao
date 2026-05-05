@@ -13,6 +13,8 @@
   .header-left{display:flex;align-items:center;gap:16px;}
   .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--brand),var(--brand2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 14px rgba(255,107,53,0.25);}
   .header-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;}
+  .header-owner{font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:0.3px;opacity:0.85;}
+  .header-owner b{color:var(--text);font-weight:700;}
   .header-sub{font-size:12px;color:var(--muted);margin-top:2px;}
   .header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .badge-channel{background:var(--brand-soft);border:1px solid rgba(255,107,53,0.3);color:var(--brand2);font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;}
@@ -27,6 +29,85 @@
   /* KPI GRID - now 8 cards in two rows of 4 */
   .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
   .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;transition:transform 0.2s,border-color 0.2s;}
+
+  /* Variante compacta (depois que adicionamos o hero, esses cards viraram secundários) */
+  .kpi-grid.kpi-grid-compact{grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:24px;}
+  .kpi-grid.kpi-grid-compact .kpi-card{padding:12px 14px;border-radius:10px;}
+  .kpi-grid.kpi-grid-compact .kpi-value{font-size:20px;}
+  .kpi-grid.kpi-grid-compact .kpi-label{font-size:9px;margin-bottom:4px;}
+  .kpi-grid.kpi-grid-compact .kpi-sub{font-size:10px;margin-top:4px;}
+  .kpi-grid.kpi-grid-compact .kpi-icon{font-size:14px;right:10px;top:10px;}
+
+  /* HERO COBERTURA — bloco principal mesclado (versão compacta) */
+  .hero-cobertura{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:16px;}
+  .hero-cob-main{background:linear-gradient(135deg,rgba(34,201,138,0.06),rgba(34,201,138,0.01) 70%),var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 16px;position:relative;overflow:hidden;}
+  .hero-cob-main::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#22c98a,#5eefc0,#22c98a);}
+  .hero-cob-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:8px;flex-wrap:wrap;}
+  .hero-cob-title{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--text);}
+  .hero-cob-sub{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4;}
+  .hero-cob-pct-wrap{text-align:right;flex-shrink:0;}
+  .hero-cob-pct-label{font-size:8.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0;}
+  .hero-cob-pct{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--ok);line-height:1;letter-spacing:-0.02em;}
+  .hero-cob-bar-bg{height:8px;background:var(--border);border-radius:5px;overflow:hidden;margin-bottom:6px;}
+  .hero-cob-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--ok),#5eefc0);transition:width 1s ease;}
+  .hero-cob-legend{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:10px;color:var(--muted);}
+  .hero-cob-gap-inline{margin-left:auto;display:flex;align-items:baseline;gap:5px;}
+  .hero-cob-gap-inline .gap-label{font-size:8.5px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);}
+  .hero-cob-gap-inline .gap-value{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:#f87171;}
+
+  /* Card pior caso lado direito — versão compacta (4 linhas) */
+  .hero-pior-card{background:linear-gradient(135deg,rgba(239,68,68,0.06),rgba(239,68,68,0.01) 70%),var(--surface);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:10px 14px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:6px;}
+  .hero-pior-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#ef4444,#fb923c,#ef4444);}
+
+  /* Linha 1: header */
+  .hero-pior-row1{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+  .hero-pior-label{font-size:9.5px;font-weight:800;color:#f87171;text-transform:uppercase;letter-spacing:0.5px;}
+  .hero-pior-status{font-weight:600;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:0.4px;}
+
+  /* Linha 2: dias + nome lado a lado */
+  .hero-pior-row2{display:flex;align-items:center;gap:10px;}
+  .hero-pior-dias{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:#f87171;line-height:1;letter-spacing:-0.02em;flex-shrink:0;}
+  .hero-pior-nomevar{flex:1;min-width:0;line-height:1.2;}
+  .hero-pior-nome{font-size:11.5px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .hero-pior-var{font-size:9.5px;color:#f87171;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .hero-pior-tags{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+  .hero-pior-cat{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(34,211,238,0.15);color:#67e8f9;text-transform:uppercase;letter-spacing:0.4px;}
+  .hero-pior-cod{font-size:9px;color:var(--muted);font-weight:600;}
+  .hero-pior-curva{font-size:9px;font-weight:800;padding:1px 5px;border-radius:3px;}
+
+  /* Linha 3: lote */
+  .hero-pior-lote{display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:6px;font-size:10px;border:1px solid;flex-wrap:wrap;}
+  .hero-pior-lote.ok   {background:rgba(34,201,138,0.10);border-color:rgba(34,201,138,0.35);}
+  .hero-pior-lote.warn {background:rgba(251,146,60,0.10);border-color:rgba(251,146,60,0.35);}
+  .hero-pior-lote.crit {background:rgba(239,68,68,0.10);border-color:rgba(239,68,68,0.35);}
+  .hero-pior-lote.gone {background:rgba(255,255,255,0.04);border-color:var(--border);}
+  .hero-pior-lote.none {background:rgba(255,255,255,0.03);border-color:var(--border);border-style:dashed;}
+  .hero-pior-lote .lote-icon{font-size:11px;}
+  .hero-pior-lote .lote-label{color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.4px;font-size:8.5px;}
+  .hero-pior-lote .lote-data{font-family:'Syne',sans-serif;font-weight:800;font-size:11.5px;}
+  .hero-pior-lote.ok   .lote-data{color:#22c98a;}
+  .hero-pior-lote.warn .lote-data{color:#fb923c;}
+  .hero-pior-lote.crit .lote-data{color:#ef4444;}
+  .hero-pior-lote.gone .lote-data{color:var(--muted);}
+  .hero-pior-lote.none .lote-data{color:var(--muted);font-style:italic;font-size:10px;font-weight:500;font-family:inherit;}
+  .hero-pior-lote .lote-aviso{margin-left:auto;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;}
+  .hero-pior-lote.ok   .lote-aviso{color:#22c98a;}
+  .hero-pior-lote.warn .lote-aviso{color:#fb923c;}
+  .hero-pior-lote.crit .lote-aviso{color:#ef4444;}
+  .hero-pior-lote.gone .lote-aviso{color:var(--muted);}
+
+  /* Linha 4: stats inline */
+  .hero-pior-stats{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:600;padding-top:2px;}
+  .hero-pior-stats b{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:var(--text);margin-right:2px;}
+  .hero-pior-stats .sep{color:var(--border);font-weight:400;}
+
+  @media(max-width:900px){
+    .hero-cobertura{grid-template-columns:1fr;}
+    .kpi-grid.kpi-grid-compact{grid-template-columns:repeat(3,1fr);}
+  }
+  @media(max-width:600px){
+    .kpi-grid.kpi-grid-compact{grid-template-columns:repeat(2,1fr);}
+  }
   .kpi-card:hover{transform:translateY(-2px);border-color:#353b52;}
   .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
   .kpi-card.blue::before{background:linear-gradient(90deg,var(--accent),#7b9fff);}
@@ -93,6 +174,12 @@
   .cat-meta-left{color:var(--muted);}
   .cat-meta-left .num{font-family:'Syne',sans-serif;font-weight:700;color:var(--text);}
   .cat-alert.has{color:#f87171;font-weight:600;}.cat-alert.none{color:var(--ok);}
+  /* Badge "atende o mês" / "cobertura parcial" — info que veio da seção forecast removida */
+  .cat-status-row{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);}
+  .cat-status-badge{display:inline-block;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;letter-spacing:0.3px;}
+  .cat-status-badge.ok{background:rgba(34,201,138,0.12);color:#22c98a;border:1px solid rgba(34,201,138,0.3);}
+  .cat-status-badge.warn{background:rgba(251,146,60,0.10);color:#fb923c;border:1px solid rgba(251,146,60,0.3);}
+  .cat-status-badge.crit{background:rgba(239,68,68,0.10);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
 
   /* CATEGORY BADGE */
   .cat-badge{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:0.06em;margin-right:6px;vertical-align:middle;white-space:nowrap;}
@@ -255,6 +342,42 @@
   .empty-lotes-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:6px;}
   .empty-lotes-text{font-size:12px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.6;}
 
+  /* LOTES PLANEJADOS — formulário e lista */
+  .lote-form{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .lote-form-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+  .lote-form-select{flex:1;min-width:240px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;font-family:inherit;outline:none;transition:border-color 0.15s;}
+  .lote-form-select:focus{border-color:rgba(34,211,238,0.5);}
+
+  /* Autocomplete (substitui o select) */
+  .lote-form-prod-wrap{flex:1;min-width:240px;position:relative;}
+  .lote-form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;font-family:inherit;outline:none;transition:border-color 0.15s;box-sizing:border-box;}
+  .lote-form-input:focus{border-color:rgba(34,211,238,0.5);}
+  .lote-form-input::placeholder{color:var(--muted);}
+  .lote-form-suggestions{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:280px;overflow-y:auto;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,0.4);z-index:50;}
+  .lote-form-suggestions.open{display:block;}
+  .lote-form-suggestion-item{padding:8px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;transition:background 0.12s;}
+  .lote-form-suggestion-item:last-child{border-bottom:none;}
+  .lote-form-suggestion-item:hover,.lote-form-suggestion-item.active{background:var(--surface2);color:#22d3ee;}
+  .lote-form-suggestion-item .prod-vars{font-size:10px;color:var(--muted);font-weight:500;flex-shrink:0;}
+  .lote-form-suggestion-empty{padding:12px;text-align:center;color:var(--muted);font-size:11px;}
+  .lote-form-date{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;font-family:inherit;outline:none;transition:border-color 0.15s;}
+  .lote-form-date:focus{border-color:rgba(34,211,238,0.5);}
+  .lote-form-btn{background:rgba(34,211,238,0.10);border:1px solid rgba(34,211,238,0.40);color:#22d3ee;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;font-family:inherit;transition:all 0.15s;}
+  .lote-form-btn:hover{background:rgba(34,211,238,0.18);}
+  .lote-form-btn:disabled{opacity:0.4;cursor:not-allowed;}
+  .lotes-list{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .lote-item{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--border);}
+  .lote-item:last-child{border-bottom:none;}
+  .lote-item:hover{background:var(--surface2);}
+  .lote-item-data{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;min-width:90px;text-align:center;line-height:1.1;}
+  .lote-item-data .dia-aviso{font-size:9.5px;color:var(--muted);font-weight:600;display:block;margin-top:2px;}
+  .lote-item-info{flex:1;min-width:0;}
+  .lote-item-produto{font-size:12.5px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lote-item-meta{font-size:10px;color:var(--muted);margin-top:2px;}
+  .lote-item-actions{display:flex;gap:6px;}
+  .lote-item-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:9px;padding:4px 9px;border-radius:5px;cursor:pointer;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;font-family:inherit;transition:all 0.15s;}
+  .lote-item-btn:hover{color:#ef4444;border-color:rgba(239,68,68,0.4);}
+
   /* TOP 10 GAP */
   .top10-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:grid;grid-template-columns:32px 1fr 70px 75px 75px 70px 70px 85px;align-items:center;gap:12px;transition:border-color 0.15s;margin-bottom:8px;}
   .top10-row:hover{border-color:#353b52;}
@@ -407,6 +530,91 @@
     /* Footer com info de impressão */
     footer { border-top:1px solid #ccc !important; color:#666 !important; }
   }
+
+  /* HISTÓRICO DE SKU — botão e modal */
+  #btn-historico-sku{font-size:11px;font-weight:700;color:var(--muted);background:transparent;border:1px solid var(--border);padding:7px 14px;border-radius:8px;cursor:pointer;letter-spacing:0.4px;text-transform:uppercase;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;line-height:1.2;font-family:inherit;}
+  #btn-historico-sku:hover{color:#a78bfa;border-color:rgba(167,139,250,0.45);background:rgba(167,139,250,0.08);transform:translateY(-1px);}
+
+  /* SIMULAR RESERVA — botão (cyan) e UI da calculadora */
+  #btn-simular-reserva{font-size:11px;font-weight:700;color:var(--muted);background:transparent;border:1px solid var(--border);padding:7px 14px;border-radius:8px;cursor:pointer;letter-spacing:0.4px;text-transform:uppercase;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;line-height:1.2;font-family:inherit;}
+  #btn-simular-reserva:hover{color:#22d3ee;border-color:rgba(34,211,238,0.45);background:rgba(34,211,238,0.08);transform:translateY(-1px);}
+
+  .sim-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+  .sim-card-title{font-size:9.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+  .sim-num-input{width:100%;background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:14px 16px;color:var(--text);font-size:22px;font-weight:800;font-family:'Syne','Inter',sans-serif;outline:none;transition:all 0.15s;text-align:center;letter-spacing:-0.5px;box-sizing:border-box;}
+  .sim-num-input:focus{border-color:#22d3ee;background:rgba(34,211,238,0.04);}
+  .sim-num-input::-webkit-outer-spin-button,.sim-num-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .sim-num-input{-moz-appearance:textfield;}
+  .sim-info-row{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;padding:5px 0;border-bottom:1px dashed var(--border);}
+  .sim-info-row:last-child{border-bottom:none;}
+  .sim-info-row .label{color:var(--muted);font-weight:500;}
+  .sim-info-row .value{color:var(--text);font-weight:700;font-family:'Syne','Inter',sans-serif;}
+  .sim-info-row .unit{color:var(--muted);font-weight:500;font-size:10px;margin-left:3px;}
+
+  .sim-resultado-card{padding:18px 20px;border-radius:12px;margin-top:14px;border:1px solid;transition:all 0.2s;}
+  .sim-resultado-card.empty{background:var(--surface);border-color:var(--border);text-align:center;color:var(--muted);font-size:11.5px;padding:24px;}
+  .sim-resultado-card.ok{background:rgba(34,201,138,0.06);border-color:rgba(34,201,138,0.30);}
+  .sim-resultado-card.warn{background:rgba(251,146,60,0.06);border-color:rgba(251,146,60,0.30);}
+  .sim-resultado-card.crit{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.35);}
+  .sim-result-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+  .sim-result-title.ok{color:#22c98a;}
+  .sim-result-title.warn{color:#fb923c;}
+  .sim-result-title.crit{color:#ef4444;}
+  .sim-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;}
+  .sim-result-num{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:1;letter-spacing:-0.02em;}
+  .sim-result-num-sm{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1;}
+  .sim-result-label{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;}
+  .sim-warning-text{font-size:11.5px;line-height:1.5;margin-top:10px;padding:8px 10px;border-radius:7px;font-weight:500;}
+  .sim-warning-text.crit{background:rgba(239,68,68,0.10);color:#fca5a5;border-left:3px solid #ef4444;}
+  .sim-warning-text.warn{background:rgba(251,146,60,0.10);color:#fdba74;border-left:3px solid #fb923c;}
+  .sim-warning-text.ok{background:rgba(34,201,138,0.08);color:#86efac;border-left:3px solid #22c98a;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:var(--bg);border:1px solid var(--border);border-radius:14px;width:100%;max-width:780px;padding:22px 26px;box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative;}
+  .modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+  .modal-title{font-size:15px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
+  .modal-close{background:transparent;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:14px;line-height:1;font-family:inherit;display:flex;align-items:center;justify-content:center;}
+  .modal-close:hover{color:#ef4444;border-color:rgba(239,68,68,0.4);}
+  .sku-search-box{position:relative;margin-bottom:14px;}
+  .sku-search-box input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:all 0.15s;box-sizing:border-box;}
+  .sku-search-box input:focus{border-color:rgba(167,139,250,0.5);background:var(--surface2);}
+  .sku-search-box input::placeholder{color:var(--muted);}
+  .sku-suggestions{max-height:300px;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;display:none;}
+  .sku-suggestions.open{display:block;}
+  .sku-suggestion-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;font-size:11.5px;transition:background 0.12s;}
+  .sku-suggestion-item:last-child{border-bottom:none;}
+  .sku-suggestion-item:hover{background:var(--surface2);}
+  .sku-suggestion-item .codmasc{font-size:10px;color:var(--muted);min-width:50px;font-family:'Syne',monospace;font-weight:700;padding-top:2px;}
+  .sku-suggestion-item .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+  .sku-suggestion-item .info .nome{color:var(--text);font-weight:600;font-size:11.5px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .sku-suggestion-item .info .var{color:var(--muted);font-size:10px;font-weight:500;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+  .sku-suggestion-item .info .var::before{content:"↳";opacity:0.5;font-size:11px;}
+  .sku-suggestion-item .curva-wrap{padding-top:1px;}
+
+  /* Botão voltar (na tela do SKU selecionado) */
+  .historico-back-btn{font-size:10.5px;font-weight:700;color:var(--muted);background:transparent;border:1px solid var(--border);padding:6px 12px;border-radius:7px;cursor:pointer;letter-spacing:0.3px;text-transform:uppercase;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;line-height:1.2;font-family:inherit;margin-bottom:12px;}
+  .historico-back-btn:hover{color:#a78bfa;border-color:rgba(167,139,250,0.4);background:rgba(167,139,250,0.06);}
+  .historico-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:8px;}
+  .historico-table thead th{background:var(--surface2);color:var(--muted);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:9px 10px;text-align:right;border-bottom:1px solid var(--border);}
+  .historico-table thead th:first-child{text-align:left;}
+  .historico-table tbody td{padding:9px 10px;border-bottom:1px solid var(--border);text-align:right;color:var(--text);font-weight:500;}
+  .historico-table tbody td:first-child{text-align:left;color:var(--muted);font-weight:600;font-family:'Syne',monospace;}
+  .historico-table tbody tr:hover{background:rgba(255,255,255,0.02);}
+  .historico-table tbody tr.row-current{background:rgba(167,139,250,0.06);}
+  /* Indicador de movimento — pill com cor forte de fundo */
+  .historico-delta{display:inline-flex;align-items:center;gap:2px;font-size:9.5px;font-weight:700;padding:1px 5px;border-radius:4px;margin-left:4px;line-height:1.4;letter-spacing:0.2px;}
+  .historico-delta.up{color:#22c98a;background:rgba(34,201,138,0.14);border:1px solid rgba(34,201,138,0.30);}
+  .historico-delta.down{color:#ef4444;background:rgba(239,68,68,0.14);border:1px solid rgba(239,68,68,0.30);}
+  .historico-delta.neutral{color:var(--muted);background:rgba(255,255,255,0.04);border:1px solid var(--border);}
+  /* Coluna de consumo — destaque por cor (vermelho quando consome muito) */
+  .historico-consumo{display:inline-flex;align-items:baseline;gap:3px;font-weight:700;}
+  .historico-consumo .num{font-size:12.5px;font-family:'Syne',sans-serif;}
+  .historico-consumo .vs{font-size:9px;color:var(--muted);font-weight:500;margin-left:3px;}
+  .historico-consumo.alta{color:#ef4444;}
+  .historico-consumo.normal{color:var(--text);}
+  .historico-consumo.baixa{color:#22c98a;}
+  .historico-consumo.repos{color:#22c98a;}
+  .historico-consumo.zero{color:var(--muted);}
 </style>
 
 <!-- Firebase Realtime Database (mesma config do painel principal) -->
@@ -444,16 +652,56 @@
     <div class="logo-icon">🛒</div>
     <div>
       <div class="header-title">Carga Mãe · Madeira Madeira</div>
+      <div class="header-owner">controle de estoque carga mãe · <b>Janaína</b></div>
       <div class="header-sub" id="header-sub">Marketplace · Análise de hoje · Forecast Maio/2026</div>
     </div>
   </div>
   <div class="header-right">
-    <div class="badge-date" id="badgeDate">📅 —</div>
-    <div class="badge-forecast">📈 base Forecast Maio/2026</div>
     <div class="badge-alert" id="alertBadge"><div class="dot"></div><span id="alertBadgeText">—</span></div>
+    <div class="badge-date" id="badgeDate">📅 —</div>
+    <button id="btn-simular-reserva" type="button" onclick="abrirSimularModal()" class="no-print" title="Simular cessão de reserva — calcula quantos dias o estoque vai durar após ceder X unidades">
+      🧮 Simular Reserva
+    </button>
+    <button id="btn-historico-sku" type="button" onclick="abrirHistoricoModal()" class="no-print" title="Ver evolução histórica de um SKU específico ao longo das datas registradas no Firebase">
+      📜 Histórico de SKU
+    </button>
   </div>
 </header>
 <main>
+
+  <!-- MODAL: SIMULAR RESERVA -->
+  <div id="modal-simular" class="modal-overlay no-print">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">🧮 Simular Reserva <span style="font-weight:400;font-size:11.5px;color:var(--muted);margin-left:4px;">— calcule cobertura antes de ceder</span></div>
+        <button class="modal-close" onclick="fecharSimularModal()" title="Fechar (Esc)">✕</button>
+      </div>
+      <!-- Estado 1: busca -->
+      <div id="simular-busca">
+        <div class="sku-search-box">
+          <input type="text" id="simular-search-input" placeholder="🔍 Buscar SKU pra simular..." autocomplete="off" oninput="filtrarSimularSKU(this.value)">
+        </div>
+        <div id="simular-suggestions" class="sku-suggestions"></div>
+      </div>
+      <!-- Estado 2: simulador (após escolher SKU) -->
+      <div id="simular-content" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: HISTÓRICO DE SKU -->
+  <div id="modal-historico" class="modal-overlay no-print">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">📜 Histórico de SKU <span style="font-weight:400;font-size:11.5px;color:var(--muted);margin-left:4px;">— evolução nas últimas atualizações</span></div>
+        <button class="modal-close" onclick="fecharHistoricoModal()" title="Fechar (Esc)">✕</button>
+      </div>
+      <div class="sku-search-box">
+        <input type="text" id="sku-search-input" placeholder="🔍 Buscar produto, código ou variação..." autocomplete="off" oninput="filtrarSugestoesSKU(this.value)">
+      </div>
+      <div id="sku-suggestions" class="sku-suggestions"></div>
+      <div id="historico-content" style="margin-top:14px;"></div>
+    </div>
+  </div>
 
   <!-- BANNER: dados foram atualizados (aparece quando dataAtualizacao mudou desde a última visita) -->
   <div id="dataChangedBanner" class="data-changed-banner no-print">
@@ -462,16 +710,103 @@
     <button onclick="document.getElementById('dataChangedBanner').style.display='none';">✕ Fechar</button>
   </div>
 
-  <!-- KPI GRID 8 cards -->
-  <div class="kpi-grid">
+  <!-- ═══ HERO COBERTURA — destaque principal mesclando Cobertura Global + Pior Caso ═══ -->
+  <div class="hero-cobertura">
+    <!-- Coluna esquerda: % Atendimento e barra global -->
+    <div class="hero-cob-main">
+      <div class="hero-cob-head">
+        <div>
+          <div class="hero-cob-title">📊 Cobertura Global da Carga</div>
+          <div class="hero-cob-sub" id="cov-sub">—</div>
+        </div>
+        <div class="hero-cob-pct-wrap">
+          <div class="hero-cob-pct-label">% ATENDIMENTO</div>
+          <div class="hero-cob-pct" id="cov-pct">—</div>
+        </div>
+      </div>
+      <div class="hero-cob-bar-bg"><div class="hero-cob-bar-fill" id="cov-bar" style="width:0%"></div></div>
+      <div class="hero-cob-legend">
+        <div class="cov-item"><div class="cov-dot" style="background:var(--ok)"></div><span id="leg-res">Reservado</span></div>
+        <div class="cov-item"><div class="cov-dot" style="background:var(--border)"></div><span id="leg-pen">Pendente</span></div>
+        <div class="hero-cob-gap-inline">
+          <span class="gap-label">Gap a fechar:</span>
+          <span class="gap-value" id="cov-gap">—</span>
+        </div>
+      </div>
+    </div>
+    <!-- Coluna direita: SKU mais frágil (compacto) -->
+    <div class="hero-pior-card" id="hero-pior-card">
+      <!-- Linha 1: header -->
+      <div class="hero-pior-row1">
+        <span class="hero-pior-label">🚨 SKU MAIS FRÁGIL</span>
+        <span class="hero-pior-status" id="hero-pior-status">—</span>
+      </div>
+      <!-- Linha 2: dias + nome+variação (lado a lado) -->
+      <div class="hero-pior-row2">
+        <div class="hero-pior-dias" id="hero-pior-dias">—</div>
+        <div class="hero-pior-nomevar">
+          <div class="hero-pior-nome" id="hero-pior-nome">—</div>
+          <div class="hero-pior-var" id="hero-pior-var">—</div>
+        </div>
+        <div class="hero-pior-tags">
+          <span class="hero-pior-cat" id="hero-pior-cat">—</span>
+          <span class="hero-pior-cod" id="hero-pior-cod">—</span>
+          <span class="hero-pior-curva" id="hero-pior-curva"></span>
+        </div>
+      </div>
+      <!-- Linha 3: próximo lote (única linha discreta) -->
+      <div class="hero-pior-lote" id="hero-pior-lote-wrap" style="display:none;">
+        <span class="lote-icon">📅</span>
+        <span class="lote-label">Próx. lote:</span>
+        <span class="lote-data" id="hero-pior-lote-data">—</span>
+        <span class="lote-aviso" id="hero-pior-lote-aviso">—</span>
+      </div>
+      <!-- Linha 4: stats inline -->
+      <div class="hero-pior-stats">
+        <span><b id="hero-pior-res">—</b> RES</span>
+        <span class="sep">·</span>
+        <span><b id="hero-pior-fc">—</b> FC</span>
+        <span class="sep">·</span>
+        <span><b id="hero-pior-med">—</b> MÉD/DIA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI GRID compacto (6 cards menores agora, sem % Atend e Pior Caso que viraram hero) -->
+  <div class="kpi-grid kpi-grid-compact">
     <div class="kpi-card blue"><div class="kpi-icon">📋</div><div class="kpi-label">Total Solicitado</div><div class="kpi-value blue" id="kpi-sol">—</div><div class="kpi-sub" id="kpi-sol-sub">—</div></div>
     <div class="kpi-card green"><div class="kpi-icon">✅</div><div class="kpi-label">Total Reservado</div><div class="kpi-value green" id="kpi-res">—</div><div class="kpi-sub" id="kpi-res-sub">—</div></div>
     <div class="kpi-card amber"><div class="kpi-icon">⏳</div><div class="kpi-label">Pendente</div><div class="kpi-value amber" id="kpi-pen">—</div><div class="kpi-sub" id="kpi-pen-sub">—</div></div>
-    <div class="kpi-card brand"><div class="kpi-icon">🎯</div><div class="kpi-label">% Atendimento</div><div class="kpi-value brand" id="kpi-pct">—</div><div class="kpi-sub" id="kpi-pct-sub">—</div></div>
     <div class="kpi-card green"><div class="kpi-icon">🟢</div><div class="kpi-label">SKUs Atendidos</div><div class="kpi-value green" id="kpi-sku-ok">—</div><div class="kpi-sub" id="kpi-sku-ok-sub">—</div></div>
     <div class="kpi-card amber"><div class="kpi-icon">🟡</div><div class="kpi-label">SKUs Parciais</div><div class="kpi-value amber" id="kpi-sku-warn">—</div><div class="kpi-sub" id="kpi-sku-warn-sub">—</div></div>
     <div class="kpi-card red"><div class="kpi-icon">🔴</div><div class="kpi-label">SKUs Sem Reserva</div><div class="kpi-value red" id="kpi-sku-zero">—</div><div class="kpi-sub" id="kpi-sku-zero-sub">—</div></div>
-    <div class="kpi-card cyan"><div class="kpi-icon">⏳</div><div class="kpi-label">Pior caso · atende</div><div class="kpi-value cyan" id="kpi-atende-prox">—</div><div class="kpi-sub" id="kpi-atende-prox-sub">—</div></div>
+    <!-- Mantidos invisíveis pra não quebrar o JS antigo que ainda alimenta esses ids -->
+    <div style="display:none;">
+      <div id="kpi-pct"></div><div id="kpi-pct-sub"></div>
+      <div id="kpi-atende-prox"></div><div id="kpi-atende-prox-sub"></div>
+    </div>
+  </div>
+
+  <!-- LOTES -->
+  <div class="section-title">🚚 Lotes Planejados <span id="lotes-sub">datas previstas de chegada por produto</span></div>
+  <div id="lotes-content" style="margin-bottom:24px;">
+    <!-- Formulário de cadastro -->
+    <div class="lote-form no-print">
+      <span class="lote-form-label">+ NOVO LOTE</span>
+      <div class="lote-form-prod-wrap">
+        <input type="text" class="lote-form-input" id="lote-form-produto-search"
+               placeholder="🔍 Digite o produto..." autocomplete="off"
+               oninput="filtrarProdutosLote(this.value)"
+               onfocus="filtrarProdutosLote(this.value)">
+        <input type="hidden" id="lote-form-produto" value="">
+        <div class="lote-form-suggestions" id="lote-form-suggestions"></div>
+      </div>
+      <input type="date" class="lote-form-date" id="lote-form-data">
+      <button class="lote-form-btn" id="lote-form-btn" onclick="salvarNovoLote()">✓ Salvar lote</button>
+    </div>
+
+    <!-- Lista de lotes (preenchida pelo JS) -->
+    <div id="lotes-lista"></div>
   </div>
 
   <!-- ═══ ILHA: ANÁLISE DE COBERTURA INDIVIDUAL ═══
@@ -507,33 +842,11 @@
     </div>
   </div><!-- /cobertura-detalhe-card -->
 
-  <!-- COVERAGE -->
-  <div class="coverage-card">
-    <div class="coverage-top">
-      <div>
-        <div class="coverage-title">📊 Cobertura Global da Carga</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="cov-sub">—</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
-        <div style="text-align:right;">
-          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Gap a fechar</div>
-          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:#f87171;" id="cov-gap">—</div>
-        </div>
-        <div class="coverage-pct" id="cov-pct">—</div>
-      </div>
-    </div>
-    <div class="coverage-bar-bg"><div class="coverage-bar-fill" id="cov-bar" style="width:0%"></div></div>
-    <div class="coverage-legend">
-      <div class="cov-item"><div class="cov-dot" style="background:var(--ok)"></div><span id="leg-res">Reservado</span></div>
-      <div class="cov-item"><div class="cov-dot" style="background:var(--border)"></div><span id="leg-pen">Pendente</span></div>
-    </div>
-  </div>
-
-  <!-- STATUS GRID (produto level) -->
-  <div class="status-grid">
-    <div class="status-card"><div class="status-icon ok">✅</div><div><div class="status-num ok" id="st-ok">—</div><div class="status-desc">Produtos 100% reservados</div><div class="status-sub" id="st-ok-sub">—</div></div></div>
-    <div class="status-card"><div class="status-icon warn">⏳</div><div><div class="status-num warn" id="st-warn">—</div><div class="status-desc">Produtos com reserva parcial</div><div class="status-sub" id="st-warn-sub">—</div></div></div>
-    <div class="status-card"><div class="status-icon danger">⚠️</div><div><div class="status-num danger" id="st-danger">—</div><div class="status-desc">Variações abaixo de 30%</div><div class="status-sub" id="st-danger-sub">—</div></div></div>
+  <!-- STATUS GRID removido — info já está no hero (Cobertura Global) -->
+  <div style="display:none;">
+    <div id="st-ok"></div><div id="st-ok-sub"></div>
+    <div id="st-warn"></div><div id="st-warn-sub"></div>
+    <div id="st-danger"></div><div id="st-danger-sub"></div>
   </div>
 
   <!-- CATEGORIA -->
@@ -544,93 +857,22 @@
   <div class="section-title">📊 Curva ABC do Forecast <span>classificação por demanda · A = top 80%, B = próximos 15%, C = restantes 5%</span></div>
   <div class="abc-grid" id="abc-grid"></div>
 
-  <!-- COBERTURA COM BASE NO FORECAST DE MAIO -->
-  <div class="section-title">📅 Cobertura com Base no Forecast de Maio <span id="cob-fc-sub">considera apenas SKUs presentes na carga mãe E no forecast</span></div>
-
-  <!-- Banner de contexto: data, demanda diária, cobertura global -->
-  <div class="cov-fc-context">
-    <div class="ctx-item">
-      <div class="ctx-label">Hoje</div>
-      <div class="ctx-value" id="ctx-hoje">—</div>
-    </div>
-    <div class="ctx-divider"></div>
-    <div class="ctx-item">
-      <div class="ctx-label">Período Forecast</div>
-      <div class="ctx-value" id="ctx-periodo">—</div>
-      <div class="ctx-hint" id="ctx-periodo-hint">—</div>
-    </div>
-    <div class="ctx-divider"></div>
-    <div class="ctx-item">
-      <div class="ctx-label">Forecast total</div>
-      <div class="ctx-value" id="ctx-fc-total">—</div>
-      <div class="ctx-hint" id="ctx-fc-skus">—</div>
-    </div>
-    <div class="ctx-divider"></div>
-    <div class="ctx-item">
-      <div class="ctx-label">Demanda diária esperada</div>
-      <div class="ctx-value" id="ctx-demanda">—</div>
-      <div class="ctx-hint">forecast ÷ dias do mês</div>
-    </div>
-    <div class="ctx-divider"></div>
-    <div class="ctx-item ctx-atende-block">
-      <div class="ctx-label">Dias restantes do forecast</div>
-      <div class="ctx-value" id="ctx-dias-restantes" style="color:#ffa05c">—</div>
-      <div class="ctx-hint" id="ctx-dias-restantes-hint">—</div>
-    </div>
+  <!-- Seção "Cobertura com Base no Forecast de Maio" REMOVIDA — info já está no Resumo por Categoria -->
+  <!-- IDs ocultos pra não quebrar o JS que ainda preenche esses elementos -->
+  <div style="display:none;">
+    <div id="cob-fc-sub"></div>
+    <div id="ctx-hoje"></div><div id="ctx-periodo"></div><div id="ctx-periodo-hint"></div>
+    <div id="ctx-fc-total"></div><div id="ctx-fc-skus"></div>
+    <div id="ctx-demanda"></div>
+    <div id="ctx-dias-restantes"></div><div id="ctx-dias-restantes-hint"></div>
+    <div id="cov-fc-ok"></div><div id="cov-fc-warn"></div><div id="cov-fc-zero"></div>
+    <div id="cov-fc-crit"></div>
+    <div id="hist-bars"></div>
+    <div id="hist-hint"></div>
+    <div id="cat-fc-grid"></div>
   </div>
 
-  <!-- Status grid + histograma -->
-  <div class="cov-days-grid">
-    <div class="cov-days-cards">
-      <div class="cov-mini-card ok">
-        <div class="cov-mini-icon">✅</div>
-        <div>
-          <div class="cov-mini-label">Atende o mês completo</div>
-          <div class="cov-mini-num" id="cov-fc-ok">—</div>
-          <div class="cov-mini-desc">Cobertura ≥ 31 dias</div>
-        </div>
-      </div>
-      <div class="cov-mini-card warn">
-        <div class="cov-mini-icon">⚠️</div>
-        <div>
-          <div class="cov-mini-label">Cobertura parcial</div>
-          <div class="cov-mini-num" id="cov-fc-warn">—</div>
-          <div class="cov-mini-desc">Entre 1 e 30 dias</div>
-        </div>
-      </div>
-      <div class="cov-mini-card crit">
-        <div class="cov-mini-icon">🚨</div>
-        <div>
-          <div class="cov-mini-label">Sem cobertura</div>
-          <div class="cov-mini-num" id="cov-fc-crit">—</div>
-          <div class="cov-mini-desc">Reserva = 0</div>
-        </div>
-      </div>
-    </div>
-    <div class="hist-card">
-      <div class="hist-title">
-        <span>Distribuição de SKUs por dias de cobertura</span>
-        <span class="hint" id="hist-hint">—</span>
-      </div>
-      <div class="hist-bars" id="hist-bars"></div>
-      <div class="hist-marker">
-        <span>🟩 atende todo o mês &nbsp;·&nbsp; 🟨 cobertura parcial &nbsp;·&nbsp; 🟥 cobertura curta</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Cobertura por categoria (forecast-based) -->
-  <div class="cat-fc-grid" id="cat-fc-grid"></div>
-
-  <!-- LOTES -->
-  <div class="section-title">🚚 Lotes Planejados <span id="lotes-sub">aguardando informações</span></div>
-  <div id="lotes-content">
-    <div class="empty-lotes">
-      <div class="empty-lotes-icon">📦</div>
-      <div class="empty-lotes-title">Aguardando informações dos lotes</div>
-      <div class="empty-lotes-text">Os próximos lotes de produção serão exibidos nesta seção conforme forem informados.</div>
-    </div>
-  </div>
+  <!-- ALERT BANNER -->
 
   <!-- ALERT BANNER -->
   <div class="alert-banner" id="alertBanner">
@@ -721,7 +963,7 @@
 <footer>Dashboard gerado automaticamente · Carga Mãe MADEIRA MADEIRA · Marketplace · Forecast Maio/2026 · Reserva e análises em <span id="footer-data">—</span></footer>
 
 <script>
-const BUNDLE = {"stats":{"totalSolicitado":5228,"totalReservado":3095,"totalPendente":2133,"pctGeral":59.2,"gapTotal":2133,"nProdutos":36,"nVariacoes":110,"nCompletos":10,"nParcial":26,"nZero":0,"nAlertVar":16,"skuAtendido":53,"skuParcial":57,"skuSemReserva":0,"diasMedia":64.4,"dataAtualizacao":"01/05/2026","fcTotalSolicitado":4802,"fcTotalReservado":3095,"fcTotalProdutos":35,"fcTotalVariacoes":103,"diasMes":31,"demandaDiariaGlobal":160.1,"diasAtendeGlobalFc":19.3,"skuAtendeMes":50,"skuParcialFc":53,"skuSemCobertura":0,"mesPeriodo":"Maio/2026","mesesSeq":[{"nome":"Maio","ano":2026,"dias":31},{"nome":"Junho","ano":2026,"dias":30},{"nome":"Julho","ano":2026,"dias":31}],"totalSolicitadoCargaMae":5228,"totalSolicitadoForecast":4802,"gapTotalFc":1707,"pendenteTotalFc":1707,"pctGeralFc":64.5},"data":[{"codItem":2405,"produto":"GUARDA ROUPA TORONTO 2 PTS PLUS","categoria":"GR","solicitado":80,"reservado":0,"pendente":80,"pct":0.0,"alerta":true,"concluido":false,"mediaSemanal":20.0,"dias":0.0,"gap":80,"variacoes":[{"codMasc":13689,"variacao":"BRANCO#C/ESP#S/PES","solicitado":46,"reservado":0,"pendente":46,"pct":0.0,"mediaSemanal":11.5,"dias":0.0,"gap":46,"solicitadoCargaMae":46,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codMasc":13690,"variacao":"BRANCO#S/ESP#S/PES","solicitado":34,"reservado":0,"pendente":34,"pct":0.0,"mediaSemanal":8.5,"dias":0.0,"gap":34,"solicitadoCargaMae":34,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0}],"solicitadoCargaMae":80,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codItem":74197,"produto":"MESA DE CABECEIRA BAIAO   2021  3 GAV","categoria":"Complementos","solicitado":54,"reservado":15,"pendente":39,"pct":27.8,"alerta":true,"concluido":false,"mediaSemanal":13.5,"dias":30.0,"gap":39,"variacoes":[{"codMasc":32906,"variacao":"AMENDOA CLEAN","solicitado":54,"reservado":15,"pendente":39,"pct":27.8,"mediaSemanal":13.5,"dias":30.0,"gap":39,"solicitadoCargaMae":54,"solicitadoForecast":15,"gapFc":0,"pendenteFc":0,"pctFc":100.0}],"solicitadoCargaMae":54,"solicitadoForecast":15,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codItem":73177,"produto":"SAPATEIRA ESTHELA 2024","categoria":"Complementos","solicitado":131,"reservado":23,"pendente":108,"pct":17.6,"alerta":true,"concluido":false,"mediaSemanal":32.75,"dias":6.5,"gap":108,"variacoes":[{"codMasc":23848,"variacao":"BRANCO","solicitado":47,"reservado":8,"pendente":39,"pct":17.0,"mediaSemanal":11.75,"dias":4.9,"gap":39,"solicitadoCargaMae":47,"solicitadoForecast":49,"gapFc":41,"pendenteFc":41,"pctFc":16.3},{"codMasc":23849,"variacao":"FRASSINO","solicitado":35,"reservado":6,"pendente":29,"pct":17.1,"mediaSemanal":8.75,"dias":15.0,"gap":29,"solicitadoCargaMae":35,"solicitadoForecast":12,"gapFc":6,"pendenteFc":6,"pctFc":50.0},{"codMasc":23850,"variacao":"AMENDOA CLEAN","solicitado":49,"reservado":9,"pendente":40,"pct":18.4,"mediaSemanal":12.25,"dias":6.0,"gap":40,"solicitadoCargaMae":49,"solicitadoForecast":45,"gapFc":36,"pendenteFc":36,"pctFc":20.0}],"solicitadoCargaMae":131,"solicitadoForecast":106,"gapFc":83,"pendenteFc":83,"pctFc":21.7},{"codItem":83249,"produto":"MESA DE CABECEIRA LOOP 2024","categoria":"Complementos","solicitado":193,"reservado":57,"pendente":136,"pct":29.5,"alerta":true,"concluido":false,"mediaSemanal":48.25,"dias":11.9,"gap":136,"variacoes":[{"codMasc":31792,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":166,"reservado":55,"pendente":111,"pct":33.1,"mediaSemanal":41.5,"dias":11.5,"gap":111,"solicitadoCargaMae":166,"solicitadoForecast":144,"gapFc":89,"pendenteFc":89,"pctFc":38.2},{"codMasc":67184,"variacao":"AMENDOA CLEAN","solicitado":27,"reservado":2,"pendente":25,"pct":7.4,"mediaSemanal":6.75,"dias":28.0,"gap":25,"solicitadoCargaMae":27,"solicitadoForecast":0,"gapFc":-2,"pendenteFc":-2,"pctFc":0.0}],"solicitadoCargaMae":193,"solicitadoForecast":144,"gapFc":87,"pendenteFc":87,"pctFc":39.6},{"codItem":81929,"produto":"COMODA LOOP 2024 II","categoria":"Complementos","solicitado":280,"reservado":116,"pendente":164,"pct":41.4,"alerta":false,"concluido":false,"mediaSemanal":70.0,"dias":14.2,"gap":164,"variacoes":[{"codMasc":32963,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":231,"reservado":69,"pendente":162,"pct":29.9,"mediaSemanal":57.75,"dias":9.5,"gap":162,"solicitadoCargaMae":231,"solicitadoForecast":219,"gapFc":150,"pendenteFc":150,"pctFc":31.5},{"codMasc":66449,"variacao":"AMENDOA CLEAN","solicitado":49,"reservado":47,"pendente":2,"pct":95.9,"mediaSemanal":12.25,"dias":54.2,"gap":2,"solicitadoCargaMae":49,"solicitadoForecast":26,"gapFc":-21,"pendenteFc":-21,"pctFc":180.8}],"solicitadoCargaMae":280,"solicitadoForecast":245,"gapFc":129,"pendenteFc":129,"pctFc":47.3},{"codItem":73139,"produto":"CAMA SOLTEIRO 0,90 ATHENAS 2022","categoria":"Complementos","solicitado":381,"reservado":222,"pendente":159,"pct":58.3,"alerta":false,"concluido":false,"mediaSemanal":95.25,"dias":21.1,"gap":159,"variacoes":[{"codMasc":24414,"variacao":"AMENDOA CL/OFF WHI/A#C/CAMA AUXILIAR","solicitado":171,"reservado":56,"pendente":115,"pct":32.7,"mediaSemanal":42.75,"dias":11.5,"gap":115,"solicitadoCargaMae":171,"solicitadoForecast":146,"gapFc":90,"pendenteFc":90,"pctFc":38.4},{"codMasc":24417,"variacao":"BRANCO#C/CAMA AUXILIAR","solicitado":87,"reservado":47,"pendente":40,"pct":54.0,"mediaSemanal":21.75,"dias":21.7,"gap":40,"solicitadoCargaMae":87,"solicitadoForecast":65,"gapFc":18,"pendenteFc":18,"pctFc":72.3},{"codMasc":24416,"variacao":"BRANCO#S/CAMA AUXILIAR","solicitado":33,"reservado":33,"pendente":0,"pct":100.0,"mediaSemanal":8.25,"dias":52.1,"gap":0,"solicitadoCargaMae":33,"solicitadoForecast":19,"gapFc":-14,"pendenteFc":-14,"pctFc":173.7},{"codMasc":24420,"variacao":"FRASSINO/OFF WHITE/F#C/CAMA AUXILIAR","solicitado":26,"reservado":22,"pendente":4,"pct":84.6,"mediaSemanal":6.5,"dias":34.7,"gap":4,"solicitadoCargaMae":26,"solicitadoForecast":19,"gapFc":-3,"pendenteFc":-3,"pctFc":115.8},{"codMasc":24415,"variacao":"AMENDOA CL/OFF WHI/A#S/CAMA AUXILIAR","solicitado":64,"reservado":64,"pendente":0,"pct":100.0,"mediaSemanal":16.0,"dias":29.1,"gap":0,"solicitadoCargaMae":64,"solicitadoForecast":66,"gapFc":2,"pendenteFc":2,"pctFc":97.0}],"solicitadoCargaMae":381,"solicitadoForecast":315,"gapFc":93,"pendenteFc":93,"pctFc":70.5},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","solicitado":960,"reservado":398,"pendente":562,"pct":41.5,"alerta":false,"concluido":false,"mediaSemanal":240.0,"dias":11.4,"gap":562,"variacoes":[{"codMasc":12490,"variacao":"BRANCO#S/ESP#S/PES","solicitado":270,"reservado":106,"pendente":164,"pct":39.3,"mediaSemanal":67.5,"dias":8.0,"gap":164,"solicitadoCargaMae":270,"solicitadoForecast":397,"gapFc":291,"pendenteFc":291,"pctFc":26.7},{"codMasc":12478,"variacao":"AMENDOA CLEAN/BRANCO#S/ESP#S/PES","solicitado":300,"reservado":57,"pendente":243,"pct":19.0,"mediaSemanal":75.0,"dias":4.3,"gap":243,"solicitadoCargaMae":300,"solicitadoForecast":397,"gapFc":340,"pendenteFc":340,"pctFc":14.4},{"codMasc":12477,"variacao":"AMENDOA CLEAN/BRANCO#S/ESP#C/PES","solicitado":60,"reservado":45,"pendente":15,"pct":75.0,"mediaSemanal":15.0,"dias":50.0,"gap":15,"solicitadoCargaMae":60,"solicitadoForecast":27,"gapFc":-18,"pendenteFc":-18,"pctFc":166.7},{"codMasc":12482,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#S/PES","solicitado":90,"reservado":38,"pendente":52,"pct":42.2,"mediaSemanal":22.5,"dias":13.9,"gap":52,"solicitadoCargaMae":90,"solicitadoForecast":82,"gapFc":44,"pendenteFc":44,"pctFc":46.3},{"codMasc":12481,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#C/PES","solicitado":55,"reservado":40,"pendente":15,"pct":72.7,"mediaSemanal":13.75,"dias":57.1,"gap":15,"solicitadoCargaMae":55,"solicitadoForecast":21,"gapFc":-19,"pendenteFc":-19,"pctFc":190.5},{"codMasc":12474,"variacao":"AMENDOA CLEAN#S/ESP#S/PES","solicitado":60,"reservado":17,"pendente":43,"pct":28.3,"mediaSemanal":15.0,"dias":8.9,"gap":43,"solicitadoCargaMae":60,"solicitadoForecast":57,"gapFc":40,"pendenteFc":40,"pctFc":29.8},{"codMasc":12489,"variacao":"BRANCO#S/ESP#C/PES","solicitado":30,"reservado":30,"pendente":0,"pct":100.0,"mediaSemanal":7.5,"dias":52.9,"gap":0,"solicitadoCargaMae":30,"solicitadoForecast":17,"gapFc":-13,"pendenteFc":-13,"pctFc":176.5},{"codMasc":12472,"variacao":"AMENDOA CLEAN#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":300.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":1,"gapFc":-9,"pendenteFc":-9,"pctFc":1000.0},{"codMasc":12473,"variacao":"AMENDOA CLEAN#S/ESP#C/PES","solicitado":15,"reservado":5,"pendente":10,"pct":33.3,"mediaSemanal":3.75,"dias":8.3,"gap":10,"solicitadoCargaMae":15,"solicitadoForecast":18,"gapFc":13,"pendenteFc":13,"pctFc":27.8},{"codMasc":12491,"variacao":"BRANCO#C/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":60.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":5,"gapFc":-5,"pendenteFc":-5,"pctFc":200.0},{"codMasc":12483,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#S/PES","solicitado":10,"reservado":4,"pendente":6,"pct":40.0,"mediaSemanal":2.5,"dias":20.0,"gap":6,"solicitadoCargaMae":10,"solicitadoForecast":6,"gapFc":2,"pendenteFc":2,"pctFc":66.7},{"codMasc":12475,"variacao":"AMENDOA CLEAN#C/ESP#S/PES","solicitado":10,"reservado":5,"pendente":5,"pct":50.0,"mediaSemanal":2.5,"dias":28.0,"gap":5,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-5,"pendenteFc":-5,"pctFc":0.0},{"codMasc":12488,"variacao":"BRANCO#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":75.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":4,"gapFc":-6,"pendenteFc":-6,"pctFc":250.0},{"codMasc":12476,"variacao":"AMENDOA CLEAN/BRANCO#C/ESP#C/PES","solicitado":10,"reservado":9,"pendente":1,"pct":90.0,"mediaSemanal":2.5,"dias":30.0,"gap":1,"solicitadoCargaMae":10,"solicitadoForecast":9,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":12480,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#C/PES","solicitado":10,"reservado":4,"pendente":6,"pct":40.0,"mediaSemanal":2.5,"dias":60.0,"gap":6,"solicitadoCargaMae":10,"solicitadoForecast":2,"gapFc":-2,"pendenteFc":-2,"pctFc":200.0},{"codMasc":12479,"variacao":"AMENDOA CLEAN/BRANCO#C/ESP#S/PES","solicitado":10,"reservado":8,"pendente":2,"pct":80.0,"mediaSemanal":2.5,"dias":80.0,"gap":2,"solicitadoCargaMae":10,"solicitadoForecast":3,"gapFc":-5,"pendenteFc":-5,"pctFc":266.7}],"solicitadoCargaMae":960,"solicitadoForecast":1046,"gapFc":648,"pendenteFc":648,"pctFc":38.0},{"codItem":84932,"produto":"CAMA LOPAS SOLT 0,90 LOOP 2025","categoria":"Complementos","solicitado":230,"reservado":163,"pendente":67,"pct":70.9,"alerta":false,"concluido":false,"mediaSemanal":57.5,"dias":23.1,"gap":67,"variacoes":[{"codMasc":36951,"variacao":"AMENDOA CLEAN#CORANO BEGE#C/CAMA AUXILIAR","solicitado":90,"reservado":34,"pendente":56,"pct":37.8,"mediaSemanal":22.5,"dias":12.6,"gap":56,"solicitadoCargaMae":90,"solicitadoForecast":81,"gapFc":47,"pendenteFc":47,"pctFc":42.0},{"codMasc":36952,"variacao":"BRANCO#KORINO BRANCO#C/CAMA AUXILIAR","solicitado":21,"reservado":10,"pendente":11,"pct":47.6,"mediaSemanal":5.25,"dias":9.1,"gap":11,"solicitadoCargaMae":21,"solicitadoForecast":33,"gapFc":23,"pendenteFc":23,"pctFc":30.3},{"codMasc":36950,"variacao":"AMENDOA CLEAN#CORANO BEGE#S/CAMA AUXILIAR","solicitado":95,"reservado":95,"pendente":0,"pct":100.0,"mediaSemanal":23.75,"dias":32.4,"gap":0,"solicitadoCargaMae":95,"solicitadoForecast":88,"gapFc":-7,"pendenteFc":-7,"pctFc":108.0},{"codMasc":36953,"variacao":"BRANCO#KORINO BRANCO#S/CAMA AUXILIAR","solicitado":24,"reservado":24,"pendente":0,"pct":100.0,"mediaSemanal":6.0,"dias":72.0,"gap":0,"solicitadoCargaMae":24,"solicitadoForecast":10,"gapFc":-14,"pendenteFc":-14,"pctFc":240.0}],"solicitadoCargaMae":230,"solicitadoForecast":212,"gapFc":49,"pendenteFc":49,"pctFc":76.9},{"codItem":73278,"produto":"COMODA TORONTO 2021 8GAV 2 PTS","categoria":"Complementos","solicitado":57,"reservado":33,"pendente":24,"pct":57.9,"alerta":false,"concluido":false,"mediaSemanal":14.25,"dias":49.5,"gap":24,"variacoes":[{"codMasc":32708,"variacao":"BRANCO","solicitado":18,"reservado":18,"pendente":0,"pct":100.0,"mediaSemanal":4.5,"dias":108.0,"gap":0,"solicitadoCargaMae":18,"solicitadoForecast":5,"gapFc":-13,"pendenteFc":-13,"pctFc":360.0},{"codMasc":32707,"variacao":"AMENDOA CLEAN","solicitado":39,"reservado":15,"pendente":24,"pct":38.5,"mediaSemanal":9.75,"dias":30.0,"gap":24,"solicitadoCargaMae":39,"solicitadoForecast":15,"gapFc":0,"pendenteFc":0,"pctFc":100.0}],"solicitadoCargaMae":57,"solicitadoForecast":20,"gapFc":0,"pendenteFc":0,"pctFc":165.0},{"codItem":73284,"produto":"COMODA VEDRA 7GAV 2 PTS","categoria":"Complementos","solicitado":147,"reservado":59,"pendente":88,"pct":40.1,"alerta":false,"concluido":false,"mediaSemanal":36.75,"dias":17.0,"gap":88,"variacoes":[{"codMasc":15999,"variacao":"FRASSINO/OFF WHITE","solicitado":31,"reservado":31,"pendente":0,"pct":100.0,"mediaSemanal":7.75,"dias":103.3,"gap":0,"solicitadoCargaMae":31,"solicitadoForecast":9,"gapFc":-22,"pendenteFc":-22,"pctFc":344.4},{"codMasc":23859,"variacao":"BRANCO","solicitado":46,"reservado":11,"pendente":35,"pct":23.9,"mediaSemanal":11.5,"dias":7.9,"gap":35,"solicitadoCargaMae":46,"solicitadoForecast":42,"gapFc":31,"pendenteFc":31,"pctFc":26.2},{"codMasc":23857,"variacao":"AMENDOA CLEAN","solicitado":37,"reservado":11,"pendente":26,"pct":29.7,"mediaSemanal":9.25,"dias":30.0,"gap":26,"solicitadoCargaMae":37,"solicitadoForecast":11,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":23858,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":33,"reservado":6,"pendente":27,"pct":18.2,"mediaSemanal":8.25,"dias":4.3,"gap":27,"solicitadoCargaMae":33,"solicitadoForecast":42,"gapFc":36,"pendenteFc":36,"pctFc":14.3}],"solicitadoCargaMae":147,"solicitadoForecast":104,"gapFc":45,"pendenteFc":45,"pctFc":56.7},{"codItem":84821,"produto":"GUARDA ROUPA LOPAS 03 PTS OLLIE II 2025","categoria":"GR","solicitado":250,"reservado":76,"pendente":174,"pct":30.4,"alerta":false,"concluido":false,"mediaSemanal":62.5,"dias":8.9,"gap":174,"variacoes":[{"codMasc":30742,"variacao":"AMENDOA CL/OFF WHI/A#S/2PTS GLASS#C/PES","solicitado":100,"reservado":14,"pendente":86,"pct":14.0,"mediaSemanal":25.0,"dias":3.2,"gap":86,"solicitadoCargaMae":100,"solicitadoForecast":132,"gapFc":118,"pendenteFc":118,"pctFc":10.6},{"codMasc":30739,"variacao":"AMENDOA CL/OFF WHI/A#C/2 PTS GLASS#C/PES","solicitado":100,"reservado":12,"pendente":88,"pct":12.0,"mediaSemanal":25.0,"dias":8.0,"gap":88,"solicitadoCargaMae":100,"solicitadoForecast":45,"gapFc":33,"pendenteFc":33,"pctFc":26.7},{"codMasc":30741,"variacao":"AMENDOA CL/OFF WHI/A#S/2PTS GLASS#S/PES","solicitado":20,"reservado":20,"pendente":0,"pct":100.0,"mediaSemanal":5.0,"dias":19.4,"gap":0,"solicitadoCargaMae":20,"solicitadoForecast":31,"gapFc":11,"pendenteFc":11,"pctFc":64.5},{"codMasc":30745,"variacao":"FRASSINO/OFF WHITE/F#S/2PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":20.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":15,"gapFc":5,"pendenteFc":5,"pctFc":66.7},{"codMasc":30744,"variacao":"FRASSINO/OFF WHITE/F#C/2 PTS GLASS#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":17.6,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":17,"gapFc":7,"pendenteFc":7,"pctFc":58.8},{"codMasc":30743,"variacao":"FRASSINO/OFF WHITE/F#C/2 PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":17.6,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":17,"gapFc":7,"pendenteFc":7,"pctFc":58.8}],"solicitadoCargaMae":250,"solicitadoForecast":257,"gapFc":181,"pendenteFc":181,"pctFc":29.6},{"codItem":84900,"produto":"CAMA LOPAS CASAL 1,40 LOOP 2025","categoria":"Complementos","solicitado":88,"reservado":66,"pendente":22,"pct":75.0,"alerta":false,"concluido":false,"mediaSemanal":22.0,"dias":86.1,"gap":22,"variacoes":[{"codMasc":31279,"variacao":"AMENDOA CLEAN#CORANO BEGE","solicitado":54,"reservado":35,"pendente":19,"pct":64.8,"mediaSemanal":13.5,"dias":55.3,"gap":19,"solicitadoCargaMae":54,"solicitadoForecast":19,"gapFc":-16,"pendenteFc":-16,"pctFc":184.2},{"codMasc":31278,"variacao":"AMENDOA CLEAN#BOUCLE SALVIA","solicitado":19,"reservado":19,"pendente":0,"pct":100.0,"mediaSemanal":4.75,"dias":570.0,"gap":0,"solicitadoCargaMae":19,"solicitadoForecast":1,"gapFc":-18,"pendenteFc":-18,"pctFc":1900.0},{"codMasc":31280,"variacao":"BRANCO#KORINO BRANCO","solicitado":15,"reservado":12,"pendente":3,"pct":80.0,"mediaSemanal":3.75,"dias":120.0,"gap":3,"solicitadoCargaMae":15,"solicitadoForecast":3,"gapFc":-9,"pendenteFc":-9,"pctFc":400.0}],"solicitadoCargaMae":88,"solicitadoForecast":23,"gapFc":0,"pendenteFc":0,"pctFc":287.0},{"codItem":72565,"produto":"GUARDA ROUPA ZEINE 2 PTS 2024","categoria":"GR","solicitado":140,"reservado":74,"pendente":66,"pct":52.9,"alerta":false,"concluido":false,"mediaSemanal":35.0,"dias":15.4,"gap":66,"variacoes":[{"codMasc":13283,"variacao":"BRANCO#C/1 PT GLASS#S/PES","solicitado":60,"reservado":33,"pendente":27,"pct":55.0,"mediaSemanal":15.0,"dias":20.6,"gap":27,"solicitadoCargaMae":60,"solicitadoForecast":48,"gapFc":15,"pendenteFc":15,"pctFc":68.8},{"codMasc":13279,"variacao":"AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES","solicitado":60,"reservado":21,"pendente":39,"pct":35.0,"mediaSemanal":15.0,"dias":7.5,"gap":39,"solicitadoCargaMae":60,"solicitadoForecast":84,"gapFc":63,"pendenteFc":63,"pctFc":25.0},{"codMasc":13280,"variacao":"BRANCO#C/1 PT GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":50.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":6,"gapFc":-4,"pendenteFc":-4,"pctFc":166.7},{"codMasc":13276,"variacao":"AMENDOA CL/OFF WHI/A#C/1 PT GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":50.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":6,"gapFc":-4,"pendenteFc":-4,"pctFc":166.7}],"solicitadoCargaMae":140,"solicitadoForecast":144,"gapFc":70,"pendenteFc":70,"pctFc":51.4},{"codItem":73281,"produto":"COMODA URBAN 2019 8GAV","categoria":"Complementos","solicitado":274,"reservado":219,"pendente":55,"pct":79.9,"alerta":false,"concluido":false,"mediaSemanal":68.5,"dias":24.3,"gap":55,"variacoes":[{"codMasc":23866,"variacao":"BRANCO","solicitado":162,"reservado":162,"pendente":0,"pct":100.0,"mediaSemanal":40.5,"dias":48.6,"gap":0,"solicitadoCargaMae":162,"solicitadoForecast":100,"gapFc":-62,"pendenteFc":-62,"pctFc":162.0},{"codMasc":23865,"variacao":"AMENDOA CLEAN","solicitado":112,"reservado":57,"pendente":55,"pct":50.9,"mediaSemanal":28.0,"dias":10.1,"gap":55,"solicitadoCargaMae":112,"solicitadoForecast":170,"gapFc":113,"pendenteFc":113,"pctFc":33.5}],"solicitadoCargaMae":274,"solicitadoForecast":270,"gapFc":51,"pendenteFc":51,"pctFc":81.1},{"codItem":273,"produto":"GUARDA ROUPA ALONZO 6 PTS 2021","categoria":"GR","solicitado":365,"reservado":310,"pendente":55,"pct":84.9,"alerta":false,"concluido":false,"mediaSemanal":91.25,"dias":20.9,"gap":55,"variacoes":[{"codMasc":12450,"variacao":"BRANCO#S/ESP#S/PES","solicitado":100,"reservado":100,"pendente":0,"pct":100.0,"mediaSemanal":25.0,"dias":19.2,"gap":0,"solicitadoCargaMae":100,"solicitadoForecast":156,"gapFc":56,"pendenteFc":56,"pctFc":64.1},{"codMasc":12442,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#S/PES","solicitado":90,"reservado":55,"pendente":35,"pct":61.1,"mediaSemanal":22.5,"dias":14.2,"gap":35,"solicitadoCargaMae":90,"solicitadoForecast":116,"gapFc":61,"pendenteFc":61,"pctFc":47.4},{"codMasc":12439,"variacao":"AMENDOA CLEAN#S/ESP#S/PES","solicitado":60,"reservado":60,"pendente":0,"pct":100.0,"mediaSemanal":15.0,"dias":28.1,"gap":0,"solicitadoCargaMae":60,"solicitadoForecast":64,"gapFc":4,"pendenteFc":4,"pctFc":93.8},{"codMasc":12441,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#C/PES","solicitado":15,"reservado":10,"pendente":5,"pct":66.7,"mediaSemanal":3.75,"dias":30.0,"gap":5,"solicitadoCargaMae":15,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":12443,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#S/PES","solicitado":20,"reservado":10,"pendente":10,"pct":50.0,"mediaSemanal":5.0,"dias":25.0,"gap":10,"solicitadoCargaMae":20,"solicitadoForecast":12,"gapFc":2,"pendenteFc":2,"pctFc":83.3},{"codMasc":12449,"variacao":"BRANCO#S/ESP#C/PES","solicitado":15,"reservado":15,"pendente":0,"pct":100.0,"mediaSemanal":3.75,"dias":23.7,"gap":0,"solicitadoCargaMae":15,"solicitadoForecast":19,"gapFc":4,"pendenteFc":4,"pctFc":78.9},{"codMasc":12451,"variacao":"BRANCO#C/ESP#S/PES","solicitado":15,"reservado":15,"pendente":0,"pct":100.0,"mediaSemanal":3.75,"dias":17.3,"gap":0,"solicitadoCargaMae":15,"solicitadoForecast":26,"gapFc":11,"pendenteFc":11,"pctFc":57.7},{"codMasc":12437,"variacao":"AMENDOA CLEAN#S/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":20.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":15,"gapFc":5,"pendenteFc":5,"pctFc":66.7},{"codMasc":12448,"variacao":"BRANCO#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":30.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":12438,"variacao":"AMENDOA CLEAN#C/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":100.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":3,"gapFc":-7,"pendenteFc":-7,"pctFc":333.3},{"codMasc":12436,"variacao":"AMENDOA CLEAN#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":42.9,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":7,"gapFc":-3,"pendenteFc":-3,"pctFc":142.9},{"codMasc":12440,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#C/PES","solicitado":10,"reservado":5,"pendente":5,"pct":50.0,"mediaSemanal":2.5,"dias":18.8,"gap":5,"solicitadoCargaMae":10,"solicitadoForecast":8,"gapFc":3,"pendenteFc":3,"pctFc":62.5}],"solicitadoCargaMae":365,"solicitadoForecast":446,"gapFc":136,"pendenteFc":136,"pctFc":69.5},{"codItem":73275,"produto":"COMODA HORIZONTAL MAGGIORE NEW 6GAV","categoria":"Complementos","solicitado":258,"reservado":92,"pendente":166,"pct":35.7,"alerta":false,"concluido":false,"mediaSemanal":64.5,"dias":8.6,"gap":166,"variacoes":[{"codMasc":23853,"variacao":"BRANCO","solicitado":141,"reservado":31,"pendente":110,"pct":22.0,"mediaSemanal":35.25,"dias":4.6,"gap":110,"solicitadoCargaMae":141,"solicitadoForecast":203,"gapFc":172,"pendenteFc":172,"pctFc":15.3},{"codMasc":23852,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":49,"reservado":49,"pendente":0,"pct":100.0,"mediaSemanal":12.25,"dias":47.4,"gap":0,"solicitadoCargaMae":49,"solicitadoForecast":31,"gapFc":-18,"pendenteFc":-18,"pctFc":158.1},{"codMasc":23851,"variacao":"AMENDOA CLEAN","solicitado":68,"reservado":12,"pendente":56,"pct":17.6,"mediaSemanal":17.0,"dias":4.1,"gap":56,"solicitadoCargaMae":68,"solicitadoForecast":87,"gapFc":75,"pendenteFc":75,"pctFc":13.8}],"solicitadoCargaMae":258,"solicitadoForecast":321,"gapFc":229,"pendenteFc":229,"pctFc":28.7},{"codItem":73173,"produto":"CAMA SOLTEIRO 0,90 REALI 2022","categoria":"Complementos","solicitado":116,"reservado":116,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":29.0,"dias":26.6,"gap":0,"variacoes":[{"codMasc":16516,"variacao":"BRANCO","solicitado":48,"reservado":48,"pendente":0,"pct":100.0,"mediaSemanal":12.0,"dias":26.2,"gap":0,"solicitadoCargaMae":48,"solicitadoForecast":55,"gapFc":7,"pendenteFc":7,"pctFc":87.3},{"codMasc":16515,"variacao":"AMENDOA CLEAN","solicitado":68,"reservado":68,"pendente":0,"pct":100.0,"mediaSemanal":17.0,"dias":26.8,"gap":0,"solicitadoCargaMae":68,"solicitadoForecast":76,"gapFc":8,"pendenteFc":8,"pctFc":89.5}],"solicitadoCargaMae":116,"solicitadoForecast":131,"gapFc":15,"pendenteFc":15,"pctFc":88.5},{"codItem":73384,"produto":"MESA 0,90 CELEBRARE 2023","categoria":"Sala de Jantar","solicitado":37,"reservado":15,"pendente":22,"pct":40.5,"alerta":false,"concluido":false,"mediaSemanal":9.25,"dias":17.3,"gap":22,"variacoes":[{"codMasc":50466,"variacao":"AMENDOA CLEAN/OFF WH#S/VIDRO 900X900","solicitado":37,"reservado":15,"pendente":22,"pct":40.5,"mediaSemanal":9.25,"dias":17.3,"gap":22,"solicitadoCargaMae":37,"solicitadoForecast":26,"gapFc":11,"pendenteFc":11,"pctFc":57.7}],"solicitadoCargaMae":37,"solicitadoForecast":26,"gapFc":11,"pendenteFc":11,"pctFc":57.7},{"codItem":85650,"produto":"CAMA CASAL LOPAS 1,60 FREETOWN 2025","categoria":"Complementos","solicitado":38,"reservado":38,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":9.5,"dias":31.7,"gap":0,"variacoes":[{"codMasc":49964,"variacao":"AMENDOA CLEAN/BRANCO#KOR.BRANCO C/LED","solicitado":38,"reservado":38,"pendente":0,"pct":100.0,"mediaSemanal":9.5,"dias":31.7,"gap":0,"solicitadoCargaMae":38,"solicitadoForecast":36,"gapFc":-2,"pendenteFc":-2,"pctFc":105.6}],"solicitadoCargaMae":38,"solicitadoForecast":36,"gapFc":0,"pendenteFc":0,"pctFc":105.6},{"codItem":2082,"produto":"CAMA CASAL 1,40 ATHENAS 2022","categoria":"Complementos","solicitado":148,"reservado":71,"pendente":77,"pct":48.0,"alerta":false,"concluido":false,"mediaSemanal":37.0,"dias":24.2,"gap":77,"variacoes":[{"codMasc":15712,"variacao":"FRASSINO/OFF WHITE/F","solicitado":36,"reservado":36,"pendente":0,"pct":100.0,"mediaSemanal":9.0,"dias":83.1,"gap":0,"solicitadoCargaMae":36,"solicitadoForecast":13,"gapFc":-23,"pendenteFc":-23,"pctFc":276.9},{"codMasc":15707,"variacao":"AMENDOA CL/OFF WHI/A","solicitado":95,"reservado":19,"pendente":76,"pct":20.0,"mediaSemanal":23.75,"dias":8.5,"gap":76,"solicitadoCargaMae":95,"solicitadoForecast":67,"gapFc":48,"pendenteFc":48,"pctFc":28.4},{"codMasc":15710,"variacao":"BRANCO","solicitado":17,"reservado":16,"pendente":1,"pct":94.1,"mediaSemanal":4.25,"dias":60.0,"gap":1,"solicitadoCargaMae":17,"solicitadoForecast":8,"gapFc":-8,"pendenteFc":-8,"pctFc":200.0}],"solicitadoCargaMae":148,"solicitadoForecast":88,"gapFc":17,"pendenteFc":17,"pctFc":80.7},{"codItem":263,"produto":"MESA 1,20 ATHENAS BR","categoria":"Sala de Jantar","solicitado":45,"reservado":23,"pendente":22,"pct":51.1,"alerta":false,"concluido":false,"mediaSemanal":11.25,"dias":230.0,"gap":22,"variacoes":[{"codMasc":15492,"variacao":"AMENDOA CLEAN","solicitado":45,"reservado":23,"pendente":22,"pct":51.1,"mediaSemanal":11.25,"dias":230.0,"gap":22,"solicitadoCargaMae":45,"solicitadoForecast":3,"gapFc":-20,"pendenteFc":-20,"pctFc":766.7}],"solicitadoCargaMae":45,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":766.7},{"codItem":86048,"produto":"MESA 1,70 APOGEU 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":102,"reservado":102,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":25.5,"dias":57.7,"gap":0,"variacoes":[{"codMasc":75626,"variacao":"AMENDOA CL/OFF WHI/A#LINHO RINZAI BEGE","solicitado":75,"reservado":75,"pendente":0,"pct":100.0,"mediaSemanal":18.75,"dias":64.3,"gap":0,"solicitadoCargaMae":75,"solicitadoForecast":35,"gapFc":-40,"pendenteFc":-40,"pctFc":214.3},{"codMasc":75630,"variacao":"AMENDOA CL/OFF WHI/A#VELUDO NATURALE CREME","solicitado":27,"reservado":27,"pendente":0,"pct":100.0,"mediaSemanal":6.75,"dias":45.0,"gap":0,"solicitadoCargaMae":27,"solicitadoForecast":18,"gapFc":-9,"pendenteFc":-9,"pctFc":150.0}],"solicitadoCargaMae":102,"solicitadoForecast":53,"gapFc":0,"pendenteFc":0,"pctFc":192.5},{"codItem":85123,"produto":"MESA 1,20 SINTONIA","categoria":"Sala de Jantar","solicitado":51,"reservado":51,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":12.75,"dias":510.0,"gap":0,"variacoes":[{"codMasc":46251,"variacao":"AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S","solicitado":51,"reservado":51,"pendente":0,"pct":100.0,"mediaSemanal":12.75,"dias":510.0,"gap":0,"solicitadoCargaMae":51,"solicitadoForecast":3,"gapFc":-48,"pendenteFc":-48,"pctFc":1700.0}],"solicitadoCargaMae":51,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":1700.0},{"codItem":85082,"produto":"MESA 1,70 ASTRID 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":34,"reservado":34,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":8.5,"dias":255.0,"gap":0,"variacoes":[{"codMasc":49178,"variacao":"AMENDOA CLEAN/OFF WH#VELUDO NATURALE CREME","solicitado":34,"reservado":34,"pendente":0,"pct":100.0,"mediaSemanal":8.5,"dias":255.0,"gap":0,"solicitadoCargaMae":34,"solicitadoForecast":4,"gapFc":-30,"pendenteFc":-30,"pctFc":850.0}],"solicitadoCargaMae":34,"solicitadoForecast":4,"gapFc":0,"pendenteFc":0,"pctFc":850.0},{"codItem":73074,"produto":"CAMA CASAL 1,40 REALI 2022","categoria":"Complementos","solicitado":52,"reservado":42,"pendente":10,"pct":80.8,"alerta":false,"concluido":false,"mediaSemanal":13.0,"dias":22.5,"gap":10,"variacoes":[{"codMasc":15961,"variacao":"FRASSINO","solicitado":28,"reservado":28,"pendente":0,"pct":100.0,"mediaSemanal":7.0,"dias":35.0,"gap":0,"solicitadoCargaMae":28,"solicitadoForecast":24,"gapFc":-4,"pendenteFc":-4,"pctFc":116.7},{"codMasc":15960,"variacao":"BRANCO","solicitado":24,"reservado":14,"pendente":10,"pct":58.3,"mediaSemanal":6.0,"dias":13.1,"gap":10,"solicitadoCargaMae":24,"solicitadoForecast":32,"gapFc":18,"pendenteFc":18,"pctFc":43.8}],"solicitadoCargaMae":52,"solicitadoForecast":56,"gapFc":14,"pendenteFc":14,"pctFc":75.0},{"codItem":2106,"produto":"GUARDA ROUPA BERTHA 6 PTS","categoria":"GR","solicitado":50,"reservado":45,"pendente":5,"pct":90.0,"alerta":false,"concluido":false,"mediaSemanal":12.5,"dias":225.0,"gap":5,"variacoes":[{"codMasc":13357,"variacao":"AMENDOA CLEAN#C/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-10,"pendenteFc":-10,"pctFc":0.0},{"codMasc":13363,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#C/PES#S/KIT GAV","solicitado":10,"reservado":8,"pendente":2,"pct":80.0,"mediaSemanal":2.5,"dias":80.0,"gap":2,"solicitadoCargaMae":10,"solicitadoForecast":3,"gapFc":-5,"pendenteFc":-5,"pctFc":266.7},{"codMasc":13365,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":7,"pendente":3,"pct":70.0,"mediaSemanal":2.5,"dias":210.0,"gap":3,"solicitadoCargaMae":10,"solicitadoForecast":1,"gapFc":-6,"pendenteFc":-6,"pctFc":700.0},{"codMasc":13361,"variacao":"AMENDOA CLEAN#S/ESP#C/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-10,"pendenteFc":-10,"pctFc":0.0},{"codMasc":13360,"variacao":"AMENDOA CLEAN#S/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":150.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":2,"gapFc":-8,"pendenteFc":-8,"pctFc":500.0}],"solicitadoCargaMae":50,"solicitadoForecast":6,"gapFc":0,"pendenteFc":0,"pctFc":750.0},{"codItem":74549,"produto":"BELICHE 0,90 OLGA","categoria":"Complementos","solicitado":62,"reservado":30,"pendente":32,"pct":48.4,"alerta":false,"concluido":false,"mediaSemanal":15.5,"dias":75.0,"gap":32,"variacoes":[{"codMasc":33429,"variacao":"BRANCO#C/LED","solicitado":42,"reservado":20,"pendente":22,"pct":47.6,"mediaSemanal":10.5,"dias":75.0,"gap":22,"solicitadoCargaMae":42,"solicitadoForecast":8,"gapFc":-12,"pendenteFc":-12,"pctFc":250.0},{"codMasc":33428,"variacao":"AMENDOA CLEAN#C/LED","solicitado":20,"reservado":10,"pendente":10,"pct":50.0,"mediaSemanal":5.0,"dias":75.0,"gap":10,"solicitadoCargaMae":20,"solicitadoForecast":4,"gapFc":-6,"pendenteFc":-6,"pctFc":250.0}],"solicitadoCargaMae":62,"solicitadoForecast":12,"gapFc":0,"pendenteFc":0,"pctFc":250.0},{"codItem":2382,"produto":"GUARDA ROUPA SPAZIO 3 PTS 2,70","categoria":"GR","solicitado":300,"reservado":295,"pendente":5,"pct":98.3,"alerta":false,"concluido":false,"mediaSemanal":75.0,"dias":21.3,"gap":5,"variacoes":[{"codMasc":13169,"variacao":"BRANCO#S/3PTS GLASS#S/PES","solicitado":150,"reservado":145,"pendente":5,"pct":96.7,"mediaSemanal":37.5,"dias":27.5,"gap":5,"solicitadoCargaMae":150,"solicitadoForecast":158,"gapFc":13,"pendenteFc":13,"pctFc":91.8},{"codMasc":13165,"variacao":"BRANCO#C/1 PT GLASS#S/PES","solicitado":100,"reservado":100,"pendente":0,"pct":100.0,"mediaSemanal":25.0,"dias":19.4,"gap":0,"solicitadoCargaMae":100,"solicitadoForecast":155,"gapFc":55,"pendenteFc":55,"pctFc":64.5},{"codMasc":13166,"variacao":"BRANCO#C/3 PTS GLASS#S/PES","solicitado":20,"reservado":20,"pendente":0,"pct":100.0,"mediaSemanal":5.0,"dias":11.8,"gap":0,"solicitadoCargaMae":20,"solicitadoForecast":51,"gapFc":31,"pendenteFc":31,"pctFc":39.2},{"codMasc":13167,"variacao":"BRANCO#C/3 PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":20.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":15,"gapFc":5,"pendenteFc":5,"pctFc":66.7},{"codMasc":13168,"variacao":"BRANCO#S/3PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":14.3,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":21,"gapFc":11,"pendenteFc":11,"pctFc":47.6},{"codMasc":13164,"variacao":"BRANCO#C/1 PT GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":18.8,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":16,"gapFc":6,"pendenteFc":6,"pctFc":62.5}],"solicitadoCargaMae":300,"solicitadoForecast":416,"gapFc":121,"pendenteFc":121,"pctFc":70.9},{"codItem":73121,"produto":"CABECEIRA BOX 1,60 CALITAN 2023","categoria":"Complementos","solicitado":155,"reservado":115,"pendente":40,"pct":74.2,"alerta":false,"concluido":false,"mediaSemanal":38.75,"dias":23.0,"gap":40,"variacoes":[{"codMasc":16180,"variacao":"AMENDOA CLEAN/PRETO#KORINO PRETO#C/LED","solicitado":155,"reservado":115,"pendente":40,"pct":74.2,"mediaSemanal":38.75,"dias":23.0,"gap":40,"solicitadoCargaMae":155,"solicitadoForecast":150,"gapFc":35,"pendenteFc":35,"pctFc":76.7}],"solicitadoCargaMae":155,"solicitadoForecast":150,"gapFc":35,"pendenteFc":35,"pctFc":76.7},{"codItem":159,"produto":"MESA 1,80 ATHENAS BR","categoria":"Sala de Jantar","solicitado":25,"reservado":25,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":6.25,"dias":20.8,"gap":0,"variacoes":[{"codMasc":16481,"variacao":"AMENDOA CLEAN","solicitado":25,"reservado":25,"pendente":0,"pct":100.0,"mediaSemanal":6.25,"dias":20.8,"gap":0,"solicitadoCargaMae":25,"solicitadoForecast":36,"gapFc":11,"pendenteFc":11,"pctFc":69.4}],"solicitadoCargaMae":25,"solicitadoForecast":36,"gapFc":11,"pendenteFc":11,"pctFc":69.4},{"codItem":86042,"produto":"MESA  1,60 ASTRID 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":17,"reservado":17,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":4.25,"dias":170.0,"gap":0,"variacoes":[{"codMasc":75985,"variacao":"AMENDOA CLEAN/OFF WH#LINHO RINZAI BEGE","solicitado":17,"reservado":17,"pendente":0,"pct":100.0,"mediaSemanal":4.25,"dias":170.0,"gap":0,"solicitadoCargaMae":17,"solicitadoForecast":3,"gapFc":-14,"pendenteFc":-14,"pctFc":566.7}],"solicitadoCargaMae":17,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":566.7},{"codItem":86051,"produto":"MESA 0,90 CELEBRARE 2023 C/VDO SERIG.C/04 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":18,"reservado":18,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":4.5,"dias":77.1,"gap":0,"variacoes":[{"codMasc":75610,"variacao":"AMENDOA CLEAN/OFF WH#LINHO RINZAI BEGE","solicitado":18,"reservado":18,"pendente":0,"pct":100.0,"mediaSemanal":4.5,"dias":77.1,"gap":0,"solicitadoCargaMae":18,"solicitadoForecast":7,"gapFc":-11,"pendenteFc":-11,"pctFc":257.1}],"solicitadoCargaMae":18,"solicitadoForecast":7,"gapFc":0,"pendenteFc":0,"pctFc":257.1},{"codItem":155,"produto":"MESA DE CABECEIRA MAGGIORE   NEW  03 GAV","categoria":"Complementos","solicitado":70,"reservado":48,"pendente":22,"pct":68.6,"alerta":false,"concluido":false,"mediaSemanal":17.5,"dias":30.6,"gap":22,"variacoes":[{"codMasc":51181,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":24,"reservado":11,"pendente":13,"pct":45.8,"mediaSemanal":6.0,"dias":33.0,"gap":13,"solicitadoCargaMae":24,"solicitadoForecast":10,"gapFc":-1,"pendenteFc":-1,"pctFc":110.0},{"codMasc":51182,"variacao":"BRANCO","solicitado":23,"reservado":23,"pendente":0,"pct":100.0,"mediaSemanal":5.75,"dias":46.0,"gap":0,"solicitadoCargaMae":23,"solicitadoForecast":15,"gapFc":-8,"pendenteFc":-8,"pctFc":153.3},{"codMasc":51180,"variacao":"AMENDOA CLEAN","solicitado":23,"reservado":14,"pendente":9,"pct":60.9,"mediaSemanal":5.75,"dias":19.1,"gap":9,"solicitadoCargaMae":23,"solicitadoForecast":22,"gapFc":8,"pendenteFc":8,"pctFc":63.6}],"solicitadoCargaMae":70,"solicitadoForecast":47,"gapFc":0,"pendenteFc":0,"pctFc":102.1},{"codItem":87459,"produto":"GUARDA ROUPA 08 PTS SERENATA","categoria":"GR","solicitado":30,"reservado":29,"pendente":1,"pct":96.7,"alerta":false,"concluido":false,"mediaSemanal":7.5,"dias":0.0,"gap":1,"variacoes":[{"codMasc":91590,"variacao":"BRANCO#S/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-10,"pendenteFc":-10,"pctFc":0.0},{"codMasc":91589,"variacao":"BRANCO#C/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-10,"pendenteFc":-10,"pctFc":0.0},{"codMasc":91588,"variacao":"BRANCO#C/ESP#C/PES","solicitado":10,"reservado":9,"pendente":1,"pct":90.0,"mediaSemanal":2.5,"dias":28.0,"gap":1,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":-9,"pendenteFc":-9,"pctFc":0.0}],"solicitadoCargaMae":30,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codItem":2101,"produto":"GUARDA ROUPA ARIES 6 PTS 2021","categoria":"GR","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":2.5,"dias":16.7,"gap":0,"variacoes":[{"codMasc":13940,"variacao":"AMENDOA CLEAN#S/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":16.7,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":18,"gapFc":8,"pendenteFc":8,"pctFc":55.6}],"solicitadoCargaMae":10,"solicitadoForecast":18,"gapFc":8,"pendenteFc":8,"pctFc":55.6},{"codItem":2316,"produto":"GUARDA ROUPA NICE 3 PTS","categoria":"GR","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":2.5,"dias":30.0,"gap":0,"variacoes":[{"codMasc":13054,"variacao":"AMENDOA CL/OFF WHI/A#C/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":30.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0}],"solicitadoCargaMae":10,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codItem":84794,"produto":"GUARDA ROUPA LOPAS 06 PTS LOOP 2025","categoria":"GR","solicitado":50,"reservado":38,"pendente":12,"pct":76.0,"alerta":false,"concluido":false,"mediaSemanal":12.5,"dias":39.3,"gap":12,"variacoes":[{"codMasc":42176,"variacao":"AMENDOA CLEAN/OFF WH#S/PES","solicitado":40,"reservado":28,"pendente":12,"pct":70.0,"mediaSemanal":10.0,"dias":70.0,"gap":12,"solicitadoCargaMae":40,"solicitadoForecast":12,"gapFc":-16,"pendenteFc":-16,"pctFc":233.3},{"codMasc":42175,"variacao":"AMENDOA CLEAN/OFF WH#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":17.6,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":17,"gapFc":7,"pendenteFc":7,"pctFc":58.8}],"solicitadoCargaMae":50,"solicitadoForecast":29,"gapFc":0,"pendenteFc":0,"pctFc":131.0}],"categorias":[{"nome":"Complementos","produtos":18,"variacoes":45,"solicitado":2734,"reservado":1525,"pendente":1209,"pct":55.8,"completos":2,"parcial":16,"alertas":3,"diasMedia":29.2,"solicitadoCargaMae":2734,"solicitadoForecast":2295,"pendenteFc":847,"pctFc":66.4},{"nome":"GR","produtos":10,"variacoes":56,"solicitado":2165,"reservado":1285,"pendente":880,"pct":59.4,"completos":2,"parcial":8,"alertas":0,"diasMedia":43.2,"solicitadoCargaMae":2165,"solicitadoForecast":2372,"pendenteFc":1164,"pctFc":54.2},{"nome":"Sala de Jantar","produtos":8,"variacoes":9,"solicitado":329,"reservado":285,"pendente":44,"pct":86.6,"completos":6,"parcial":2,"alertas":0,"diasMedia":167.2,"solicitadoCargaMae":329,"solicitadoForecast":135,"pendenteFc":22,"pctFc":211.1}],"top10":[{"codItem":84821,"produto":"GUARDA ROUPA LOPAS 03 PTS OLLIE II 2025","categoria":"GR","codMasc":30742,"variacao":"AMENDOA CL/OFF WHI/A#S/2PTS GLASS#C/PES","solicitado":100,"solicitadoCargaMae":100,"solicitadoForecast":132,"reservado":14,"pendente":86,"pct":14.0,"pctFc":10.6,"gap":86,"gapFc":118,"pendenteFc":118,"dias":3.2},{"codItem":73275,"produto":"COMODA HORIZONTAL MAGGIORE NEW 6GAV","categoria":"Complementos","codMasc":23851,"variacao":"AMENDOA CLEAN","solicitado":68,"solicitadoCargaMae":68,"solicitadoForecast":87,"reservado":12,"pendente":56,"pct":17.6,"pctFc":13.8,"gap":56,"gapFc":75,"pendenteFc":75,"dias":4.1},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","codMasc":12478,"variacao":"AMENDOA CLEAN/BRANCO#S/ESP#S/PES","solicitado":300,"solicitadoCargaMae":300,"solicitadoForecast":397,"reservado":57,"pendente":243,"pct":19.0,"pctFc":14.4,"gap":243,"gapFc":340,"pendenteFc":340,"dias":4.3},{"codItem":73284,"produto":"COMODA VEDRA 7GAV 2 PTS","categoria":"Complementos","codMasc":23858,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":33,"solicitadoCargaMae":33,"solicitadoForecast":42,"reservado":6,"pendente":27,"pct":18.2,"pctFc":14.3,"gap":27,"gapFc":36,"pendenteFc":36,"dias":4.3},{"codItem":73275,"produto":"COMODA HORIZONTAL MAGGIORE NEW 6GAV","categoria":"Complementos","codMasc":23853,"variacao":"BRANCO","solicitado":141,"solicitadoCargaMae":141,"solicitadoForecast":203,"reservado":31,"pendente":110,"pct":22.0,"pctFc":15.3,"gap":110,"gapFc":172,"pendenteFc":172,"dias":4.6},{"codItem":73177,"produto":"SAPATEIRA ESTHELA 2024","categoria":"Complementos","codMasc":23848,"variacao":"BRANCO","solicitado":47,"solicitadoCargaMae":47,"solicitadoForecast":49,"reservado":8,"pendente":39,"pct":17.0,"pctFc":16.3,"gap":39,"gapFc":41,"pendenteFc":41,"dias":4.9},{"codItem":73177,"produto":"SAPATEIRA ESTHELA 2024","categoria":"Complementos","codMasc":23850,"variacao":"AMENDOA CLEAN","solicitado":49,"solicitadoCargaMae":49,"solicitadoForecast":45,"reservado":9,"pendente":40,"pct":18.4,"pctFc":20.0,"gap":40,"gapFc":36,"pendenteFc":36,"dias":6.0},{"codItem":72565,"produto":"GUARDA ROUPA ZEINE 2 PTS 2024","categoria":"GR","codMasc":13279,"variacao":"AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES","solicitado":60,"solicitadoCargaMae":60,"solicitadoForecast":84,"reservado":21,"pendente":39,"pct":35.0,"pctFc":25.0,"gap":39,"gapFc":63,"pendenteFc":63,"dias":7.5},{"codItem":73284,"produto":"COMODA VEDRA 7GAV 2 PTS","categoria":"Complementos","codMasc":23859,"variacao":"BRANCO","solicitado":46,"solicitadoCargaMae":46,"solicitadoForecast":42,"reservado":11,"pendente":35,"pct":23.9,"pctFc":26.2,"gap":35,"gapFc":31,"pendenteFc":31,"dias":7.9},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","codMasc":12490,"variacao":"BRANCO#S/ESP#S/PES","solicitado":270,"solicitadoCargaMae":270,"solicitadoForecast":397,"reservado":106,"pendente":164,"pct":39.3,"pctFc":26.7,"gap":164,"gapFc":291,"pendenteFc":291,"dias":8.0}],"hist":[{"label":"0d","min":0,"max":0.01,"level":"crit","count":0},{"label":"1-10d","min":0.01,"max":10,"level":"crit","count":16},{"label":"11-20d","min":10,"max":20,"level":"warn","count":22},{"label":"21-30d","min":20,"max":30,"level":"warn","count":15},{"label":"≥31d","min":30,"max":9999,"level":"ok","count":50}],"categoriasFc":[{"nome":"Complementos","produtos":18,"variacoes":44,"solicitado":2295,"reservado":1525,"demandaDiariaFc":76.5,"diasAtendeFc":19.9},{"nome":"GR","produtos":9,"variacoes":50,"solicitado":2372,"reservado":1256,"demandaDiariaFc":79.1,"diasAtendeFc":15.9},{"nome":"Sala de Jantar","produtos":8,"variacoes":9,"solicitado":135,"reservado":285,"demandaDiariaFc":4.5,"diasAtendeFc":63.3}]};
+const BUNDLE = {"stats":{"totalSolicitado":5229,"totalReservado":3435,"totalPendente":1794,"pctGeral":65.7,"gapTotal":1794,"nProdutos":36,"nVariacoes":110,"nCompletos":16,"nParcial":20,"nZero":0,"nAlertVar":9,"skuAtendido":67,"skuParcial":43,"skuSemReserva":0,"diasMedia":70.8,"dataAtualizacao":"04/05/2026","fcTotalSolicitado":4802,"fcTotalReservado":3435,"fcTotalProdutos":35,"fcTotalVariacoes":103,"diasMes":31,"demandaDiariaGlobal":154.9,"diasAtendeGlobalFc":22.2,"skuAtendeMes":54,"skuParcialFc":49,"skuSemCobertura":0,"mesPeriodo":"Maio/2026","mesesSeq":[{"nome":"Maio","ano":2026,"dias":31},{"nome":"Junho","ano":2026,"dias":30},{"nome":"Julho","ano":2026,"dias":31}],"totalSolicitadoCargaMae":5229,"totalSolicitadoForecast":4802,"gapTotalFc":1367,"pendenteTotalFc":1367,"pctGeralFc":71.5,"diasAtendePiorCaso":2.1,"skuPiorCaso":{"codItem":73275,"produto":"COMODA HORIZONTAL MAGGIORE NEW 6GAV","categoria":"Complementos","codMasc":23853,"variacao":"BRANCO","solicitado":141,"solicitadoCargaMae":141,"solicitadoForecast":203,"reservado":14,"pendente":127,"pct":9.9,"pctFc":6.9,"gap":127,"gapFc":189,"pendenteFc":189,"dias":2.1}},"data":[{"codItem":2405,"produto":"GUARDA ROUPA TORONTO 2 PTS PLUS","categoria":"GR","solicitado":80,"reservado":0,"pendente":80,"pct":0.0,"alerta":true,"concluido":false,"mediaSemanal":20.0,"dias":0.0,"gap":80,"variacoes":[{"codMasc":13689,"variacao":"BRANCO#C/ESP#S/PES","solicitado":46,"reservado":0,"pendente":46,"pct":0.0,"mediaSemanal":11.5,"dias":0.0,"gap":46,"solicitadoCargaMae":46,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codMasc":13690,"variacao":"BRANCO#S/ESP#S/PES","solicitado":34,"reservado":0,"pendente":34,"pct":0.0,"mediaSemanal":8.5,"dias":0.0,"gap":34,"solicitadoCargaMae":34,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0}],"solicitadoCargaMae":80,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codItem":74197,"produto":"MESA DE CABECEIRA BAIAO   2021  3 GAV","categoria":"Complementos","solicitado":54,"reservado":54,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":13.5,"dias":108.0,"gap":0,"variacoes":[{"codMasc":32906,"variacao":"AMENDOA CLEAN","solicitado":54,"reservado":54,"pendente":0,"pct":100.0,"mediaSemanal":13.5,"dias":108.0,"gap":0,"solicitadoCargaMae":54,"solicitadoForecast":15,"gapFc":0,"pendenteFc":0,"pctFc":360.0}],"solicitadoCargaMae":54,"solicitadoForecast":15,"gapFc":0,"pendenteFc":0,"pctFc":360.0},{"codItem":73177,"produto":"SAPATEIRA ESTHELA 2024","categoria":"Complementos","solicitado":131,"reservado":131,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":32.75,"dias":37.1,"gap":0,"variacoes":[{"codMasc":23848,"variacao":"BRANCO","solicitado":47,"reservado":47,"pendente":0,"pct":100.0,"mediaSemanal":11.75,"dias":28.8,"gap":0,"solicitadoCargaMae":47,"solicitadoForecast":49,"gapFc":2,"pendenteFc":2,"pctFc":95.9},{"codMasc":23849,"variacao":"FRASSINO","solicitado":35,"reservado":35,"pendente":0,"pct":100.0,"mediaSemanal":8.75,"dias":87.5,"gap":0,"solicitadoCargaMae":35,"solicitadoForecast":12,"gapFc":0,"pendenteFc":0,"pctFc":291.7},{"codMasc":23850,"variacao":"AMENDOA CLEAN","solicitado":49,"reservado":49,"pendente":0,"pct":100.0,"mediaSemanal":12.25,"dias":32.7,"gap":0,"solicitadoCargaMae":49,"solicitadoForecast":45,"gapFc":0,"pendenteFc":0,"pctFc":108.9}],"solicitadoCargaMae":131,"solicitadoForecast":106,"gapFc":0,"pendenteFc":0,"pctFc":123.6},{"codItem":83249,"produto":"MESA DE CABECEIRA LOOP 2024","categoria":"Complementos","solicitado":193,"reservado":193,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":48.25,"dias":40.2,"gap":0,"variacoes":[{"codMasc":31792,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":166,"reservado":166,"pendente":0,"pct":100.0,"mediaSemanal":41.5,"dias":34.6,"gap":0,"solicitadoCargaMae":166,"solicitadoForecast":144,"gapFc":0,"pendenteFc":0,"pctFc":115.3},{"codMasc":67184,"variacao":"AMENDOA CLEAN","solicitado":27,"reservado":27,"pendente":0,"pct":100.0,"mediaSemanal":6.75,"dias":28.0,"gap":0,"solicitadoCargaMae":27,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0}],"solicitadoCargaMae":193,"solicitadoForecast":144,"gapFc":0,"pendenteFc":0,"pctFc":134.0},{"codItem":81929,"produto":"COMODA LOOP 2024 II","categoria":"Complementos","solicitado":280,"reservado":112,"pendente":168,"pct":40.0,"alerta":false,"concluido":false,"mediaSemanal":70.0,"dias":13.7,"gap":168,"variacoes":[{"codMasc":32963,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":231,"reservado":68,"pendente":163,"pct":29.4,"mediaSemanal":57.75,"dias":9.3,"gap":163,"solicitadoCargaMae":231,"solicitadoForecast":219,"gapFc":151,"pendenteFc":151,"pctFc":31.1},{"codMasc":66449,"variacao":"AMENDOA CLEAN","solicitado":49,"reservado":44,"pendente":5,"pct":89.8,"mediaSemanal":12.25,"dias":50.8,"gap":5,"solicitadoCargaMae":49,"solicitadoForecast":26,"gapFc":0,"pendenteFc":0,"pctFc":169.2}],"solicitadoCargaMae":280,"solicitadoForecast":245,"gapFc":133,"pendenteFc":133,"pctFc":45.7},{"codItem":73139,"produto":"CAMA SOLTEIRO 0,90 ATHENAS 2022","categoria":"Complementos","solicitado":381,"reservado":194,"pendente":187,"pct":50.9,"alerta":false,"concluido":false,"mediaSemanal":95.25,"dias":18.5,"gap":187,"variacoes":[{"codMasc":24414,"variacao":"AMENDOA CL/OFF WHI/A#C/CAMA AUXILIAR","solicitado":171,"reservado":38,"pendente":133,"pct":22.2,"mediaSemanal":42.75,"dias":7.8,"gap":133,"solicitadoCargaMae":171,"solicitadoForecast":146,"gapFc":108,"pendenteFc":108,"pctFc":26.0},{"codMasc":24417,"variacao":"BRANCO#C/CAMA AUXILIAR","solicitado":87,"reservado":38,"pendente":49,"pct":43.7,"mediaSemanal":21.75,"dias":17.5,"gap":49,"solicitadoCargaMae":87,"solicitadoForecast":65,"gapFc":27,"pendenteFc":27,"pctFc":58.5},{"codMasc":24416,"variacao":"BRANCO#S/CAMA AUXILIAR","solicitado":33,"reservado":33,"pendente":0,"pct":100.0,"mediaSemanal":8.25,"dias":52.1,"gap":0,"solicitadoCargaMae":33,"solicitadoForecast":19,"gapFc":0,"pendenteFc":0,"pctFc":173.7},{"codMasc":24420,"variacao":"FRASSINO/OFF WHITE/F#C/CAMA AUXILIAR","solicitado":26,"reservado":21,"pendente":5,"pct":80.8,"mediaSemanal":6.5,"dias":33.2,"gap":5,"solicitadoCargaMae":26,"solicitadoForecast":19,"gapFc":0,"pendenteFc":0,"pctFc":110.5},{"codMasc":24415,"variacao":"AMENDOA CL/OFF WHI/A#S/CAMA AUXILIAR","solicitado":64,"reservado":64,"pendente":0,"pct":100.0,"mediaSemanal":16.0,"dias":29.1,"gap":0,"solicitadoCargaMae":64,"solicitadoForecast":66,"gapFc":2,"pendenteFc":2,"pctFc":97.0}],"solicitadoCargaMae":381,"solicitadoForecast":315,"gapFc":121,"pendenteFc":121,"pctFc":61.6},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","solicitado":960,"reservado":318,"pendente":642,"pct":33.1,"alerta":false,"concluido":false,"mediaSemanal":240.0,"dias":9.1,"gap":642,"variacoes":[{"codMasc":12490,"variacao":"BRANCO#S/ESP#S/PES","solicitado":270,"reservado":86,"pendente":184,"pct":31.9,"mediaSemanal":67.5,"dias":6.5,"gap":184,"solicitadoCargaMae":270,"solicitadoForecast":397,"gapFc":311,"pendenteFc":311,"pctFc":21.7},{"codMasc":12478,"variacao":"AMENDOA CLEAN/BRANCO#S/ESP#S/PES","solicitado":300,"reservado":47,"pendente":253,"pct":15.7,"mediaSemanal":75.0,"dias":3.6,"gap":253,"solicitadoCargaMae":300,"solicitadoForecast":397,"gapFc":350,"pendenteFc":350,"pctFc":11.8},{"codMasc":12477,"variacao":"AMENDOA CLEAN/BRANCO#S/ESP#C/PES","solicitado":60,"reservado":20,"pendente":40,"pct":33.3,"mediaSemanal":15.0,"dias":22.2,"gap":40,"solicitadoCargaMae":60,"solicitadoForecast":27,"gapFc":7,"pendenteFc":7,"pctFc":74.1},{"codMasc":12482,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#S/PES","solicitado":90,"reservado":31,"pendente":59,"pct":34.4,"mediaSemanal":22.5,"dias":11.3,"gap":59,"solicitadoCargaMae":90,"solicitadoForecast":82,"gapFc":51,"pendenteFc":51,"pctFc":37.8},{"codMasc":12481,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#C/PES","solicitado":55,"reservado":23,"pendente":32,"pct":41.8,"mediaSemanal":13.75,"dias":32.9,"gap":32,"solicitadoCargaMae":55,"solicitadoForecast":21,"gapFc":0,"pendenteFc":0,"pctFc":109.5},{"codMasc":12474,"variacao":"AMENDOA CLEAN#S/ESP#S/PES","solicitado":60,"reservado":16,"pendente":44,"pct":26.7,"mediaSemanal":15.0,"dias":8.4,"gap":44,"solicitadoCargaMae":60,"solicitadoForecast":57,"gapFc":41,"pendenteFc":41,"pctFc":28.1},{"codMasc":12489,"variacao":"BRANCO#S/ESP#C/PES","solicitado":30,"reservado":30,"pendente":0,"pct":100.0,"mediaSemanal":7.5,"dias":52.9,"gap":0,"solicitadoCargaMae":30,"solicitadoForecast":17,"gapFc":0,"pendenteFc":0,"pctFc":176.5},{"codMasc":12472,"variacao":"AMENDOA CLEAN#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":300.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":1,"gapFc":0,"pendenteFc":0,"pctFc":1000.0},{"codMasc":12473,"variacao":"AMENDOA CLEAN#S/ESP#C/PES","solicitado":15,"reservado":5,"pendente":10,"pct":33.3,"mediaSemanal":3.75,"dias":8.3,"gap":10,"solicitadoCargaMae":15,"solicitadoForecast":18,"gapFc":13,"pendenteFc":13,"pctFc":27.8},{"codMasc":12491,"variacao":"BRANCO#C/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":60.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":5,"gapFc":0,"pendenteFc":0,"pctFc":200.0},{"codMasc":12483,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#S/PES","solicitado":10,"reservado":4,"pendente":6,"pct":40.0,"mediaSemanal":2.5,"dias":20.0,"gap":6,"solicitadoCargaMae":10,"solicitadoForecast":6,"gapFc":2,"pendenteFc":2,"pctFc":66.7},{"codMasc":12475,"variacao":"AMENDOA CLEAN#C/ESP#S/PES","solicitado":10,"reservado":5,"pendente":5,"pct":50.0,"mediaSemanal":2.5,"dias":28.0,"gap":5,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codMasc":12488,"variacao":"BRANCO#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":75.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":4,"gapFc":0,"pendenteFc":0,"pctFc":250.0},{"codMasc":12476,"variacao":"AMENDOA CLEAN/BRANCO#C/ESP#C/PES","solicitado":10,"reservado":9,"pendente":1,"pct":90.0,"mediaSemanal":2.5,"dias":30.0,"gap":1,"solicitadoCargaMae":10,"solicitadoForecast":9,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":12480,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#C/PES","solicitado":10,"reservado":4,"pendente":6,"pct":40.0,"mediaSemanal":2.5,"dias":60.0,"gap":6,"solicitadoCargaMae":10,"solicitadoForecast":2,"gapFc":0,"pendenteFc":0,"pctFc":200.0},{"codMasc":12479,"variacao":"AMENDOA CLEAN/BRANCO#C/ESP#S/PES","solicitado":10,"reservado":8,"pendente":2,"pct":80.0,"mediaSemanal":2.5,"dias":80.0,"gap":2,"solicitadoCargaMae":10,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":266.7}],"solicitadoCargaMae":960,"solicitadoForecast":1046,"gapFc":728,"pendenteFc":728,"pctFc":30.4},{"codItem":84932,"produto":"CAMA LOPAS SOLT 0,90 LOOP 2025","categoria":"Complementos","solicitado":230,"reservado":164,"pendente":66,"pct":71.3,"alerta":false,"concluido":false,"mediaSemanal":57.5,"dias":23.2,"gap":66,"variacoes":[{"codMasc":36951,"variacao":"AMENDOA CLEAN#CORANO BEGE#C/CAMA AUXILIAR","solicitado":90,"reservado":35,"pendente":55,"pct":38.9,"mediaSemanal":22.5,"dias":13.0,"gap":55,"solicitadoCargaMae":90,"solicitadoForecast":81,"gapFc":46,"pendenteFc":46,"pctFc":43.2},{"codMasc":36952,"variacao":"BRANCO#KORINO BRANCO#C/CAMA AUXILIAR","solicitado":21,"reservado":10,"pendente":11,"pct":47.6,"mediaSemanal":5.25,"dias":9.1,"gap":11,"solicitadoCargaMae":21,"solicitadoForecast":33,"gapFc":23,"pendenteFc":23,"pctFc":30.3},{"codMasc":36950,"variacao":"AMENDOA CLEAN#CORANO BEGE#S/CAMA AUXILIAR","solicitado":95,"reservado":95,"pendente":0,"pct":100.0,"mediaSemanal":23.75,"dias":32.4,"gap":0,"solicitadoCargaMae":95,"solicitadoForecast":88,"gapFc":0,"pendenteFc":0,"pctFc":108.0},{"codMasc":36953,"variacao":"BRANCO#KORINO BRANCO#S/CAMA AUXILIAR","solicitado":24,"reservado":24,"pendente":0,"pct":100.0,"mediaSemanal":6.0,"dias":72.0,"gap":0,"solicitadoCargaMae":24,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":240.0}],"solicitadoCargaMae":230,"solicitadoForecast":212,"gapFc":48,"pendenteFc":48,"pctFc":77.4},{"codItem":73278,"produto":"COMODA TORONTO 2021 8GAV 2 PTS","categoria":"Complementos","solicitado":57,"reservado":33,"pendente":24,"pct":57.9,"alerta":false,"concluido":false,"mediaSemanal":14.25,"dias":49.5,"gap":24,"variacoes":[{"codMasc":32708,"variacao":"BRANCO","solicitado":18,"reservado":18,"pendente":0,"pct":100.0,"mediaSemanal":4.5,"dias":108.0,"gap":0,"solicitadoCargaMae":18,"solicitadoForecast":5,"gapFc":0,"pendenteFc":0,"pctFc":360.0},{"codMasc":32707,"variacao":"AMENDOA CLEAN","solicitado":39,"reservado":15,"pendente":24,"pct":38.5,"mediaSemanal":9.75,"dias":30.0,"gap":24,"solicitadoCargaMae":39,"solicitadoForecast":15,"gapFc":0,"pendenteFc":0,"pctFc":100.0}],"solicitadoCargaMae":57,"solicitadoForecast":20,"gapFc":0,"pendenteFc":0,"pctFc":165.0},{"codItem":73284,"produto":"COMODA VEDRA 7GAV 2 PTS","categoria":"Complementos","solicitado":147,"reservado":147,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":36.75,"dias":42.4,"gap":0,"variacoes":[{"codMasc":15999,"variacao":"FRASSINO/OFF WHITE","solicitado":31,"reservado":31,"pendente":0,"pct":100.0,"mediaSemanal":7.75,"dias":103.3,"gap":0,"solicitadoCargaMae":31,"solicitadoForecast":9,"gapFc":0,"pendenteFc":0,"pctFc":344.4},{"codMasc":23859,"variacao":"BRANCO","solicitado":46,"reservado":46,"pendente":0,"pct":100.0,"mediaSemanal":11.5,"dias":32.9,"gap":0,"solicitadoCargaMae":46,"solicitadoForecast":42,"gapFc":0,"pendenteFc":0,"pctFc":109.5},{"codMasc":23857,"variacao":"AMENDOA CLEAN","solicitado":37,"reservado":37,"pendente":0,"pct":100.0,"mediaSemanal":9.25,"dias":100.9,"gap":0,"solicitadoCargaMae":37,"solicitadoForecast":11,"gapFc":0,"pendenteFc":0,"pctFc":336.4},{"codMasc":23858,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":33,"reservado":33,"pendente":0,"pct":100.0,"mediaSemanal":8.25,"dias":23.6,"gap":0,"solicitadoCargaMae":33,"solicitadoForecast":42,"gapFc":9,"pendenteFc":9,"pctFc":78.6}],"solicitadoCargaMae":147,"solicitadoForecast":104,"gapFc":0,"pendenteFc":0,"pctFc":141.3},{"codItem":84821,"produto":"GUARDA ROUPA LOPAS 03 PTS OLLIE II 2025","categoria":"GR","solicitado":250,"reservado":160,"pendente":90,"pct":64.0,"alerta":false,"concluido":false,"mediaSemanal":62.5,"dias":18.7,"gap":90,"variacoes":[{"codMasc":30742,"variacao":"AMENDOA CL/OFF WHI/A#S/2PTS GLASS#C/PES","solicitado":100,"reservado":10,"pendente":90,"pct":10.0,"mediaSemanal":25.0,"dias":2.3,"gap":90,"solicitadoCargaMae":100,"solicitadoForecast":132,"gapFc":122,"pendenteFc":122,"pctFc":7.6},{"codMasc":30739,"variacao":"AMENDOA CL/OFF WHI/A#C/2 PTS GLASS#C/PES","solicitado":100,"reservado":100,"pendente":0,"pct":100.0,"mediaSemanal":25.0,"dias":66.7,"gap":0,"solicitadoCargaMae":100,"solicitadoForecast":45,"gapFc":0,"pendenteFc":0,"pctFc":222.2},{"codMasc":30741,"variacao":"AMENDOA CL/OFF WHI/A#S/2PTS GLASS#S/PES","solicitado":20,"reservado":20,"pendente":0,"pct":100.0,"mediaSemanal":5.0,"dias":19.4,"gap":0,"solicitadoCargaMae":20,"solicitadoForecast":31,"gapFc":11,"pendenteFc":11,"pctFc":64.5},{"codMasc":30745,"variacao":"FRASSINO/OFF WHITE/F#S/2PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":20.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":15,"gapFc":5,"pendenteFc":5,"pctFc":66.7},{"codMasc":30744,"variacao":"FRASSINO/OFF WHITE/F#C/2 PTS GLASS#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":17.6,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":17,"gapFc":7,"pendenteFc":7,"pctFc":58.8},{"codMasc":30743,"variacao":"FRASSINO/OFF WHITE/F#C/2 PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":17.6,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":17,"gapFc":7,"pendenteFc":7,"pctFc":58.8}],"solicitadoCargaMae":250,"solicitadoForecast":257,"gapFc":97,"pendenteFc":97,"pctFc":62.3},{"codItem":84900,"produto":"CAMA LOPAS CASAL 1,40 LOOP 2025","categoria":"Complementos","solicitado":88,"reservado":86,"pendente":2,"pct":97.7,"alerta":false,"concluido":false,"mediaSemanal":22.0,"dias":112.2,"gap":2,"variacoes":[{"codMasc":31279,"variacao":"AMENDOA CLEAN#CORANO BEGE","solicitado":54,"reservado":54,"pendente":0,"pct":100.0,"mediaSemanal":13.5,"dias":85.3,"gap":0,"solicitadoCargaMae":54,"solicitadoForecast":19,"gapFc":0,"pendenteFc":0,"pctFc":284.2},{"codMasc":31278,"variacao":"AMENDOA CLEAN#BOUCLE SALVIA","solicitado":19,"reservado":19,"pendente":0,"pct":100.0,"mediaSemanal":4.75,"dias":570.0,"gap":0,"solicitadoCargaMae":19,"solicitadoForecast":1,"gapFc":0,"pendenteFc":0,"pctFc":1900.0},{"codMasc":31280,"variacao":"BRANCO#KORINO BRANCO","solicitado":15,"reservado":13,"pendente":2,"pct":86.7,"mediaSemanal":3.75,"dias":130.0,"gap":2,"solicitadoCargaMae":15,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":433.3}],"solicitadoCargaMae":88,"solicitadoForecast":23,"gapFc":0,"pendenteFc":0,"pctFc":373.9},{"codItem":72565,"produto":"GUARDA ROUPA ZEINE 2 PTS 2024","categoria":"GR","solicitado":140,"reservado":65,"pendente":75,"pct":46.4,"alerta":false,"concluido":false,"mediaSemanal":35.0,"dias":13.5,"gap":75,"variacoes":[{"codMasc":13283,"variacao":"BRANCO#C/1 PT GLASS#S/PES","solicitado":60,"reservado":29,"pendente":31,"pct":48.3,"mediaSemanal":15.0,"dias":18.1,"gap":31,"solicitadoCargaMae":60,"solicitadoForecast":48,"gapFc":19,"pendenteFc":19,"pctFc":60.4},{"codMasc":13279,"variacao":"AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES","solicitado":60,"reservado":16,"pendente":44,"pct":26.7,"mediaSemanal":15.0,"dias":5.7,"gap":44,"solicitadoCargaMae":60,"solicitadoForecast":84,"gapFc":68,"pendenteFc":68,"pctFc":19.0},{"codMasc":13280,"variacao":"BRANCO#C/1 PT GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":50.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":6,"gapFc":0,"pendenteFc":0,"pctFc":166.7},{"codMasc":13276,"variacao":"AMENDOA CL/OFF WHI/A#C/1 PT GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":50.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":6,"gapFc":0,"pendenteFc":0,"pctFc":166.7}],"solicitadoCargaMae":140,"solicitadoForecast":144,"gapFc":79,"pendenteFc":79,"pctFc":45.1},{"codItem":73281,"produto":"COMODA URBAN 2019 8GAV","categoria":"Complementos","solicitado":274,"reservado":214,"pendente":60,"pct":78.1,"alerta":false,"concluido":false,"mediaSemanal":68.5,"dias":23.8,"gap":60,"variacoes":[{"codMasc":23866,"variacao":"BRANCO","solicitado":162,"reservado":162,"pendente":0,"pct":100.0,"mediaSemanal":40.5,"dias":48.6,"gap":0,"solicitadoCargaMae":162,"solicitadoForecast":100,"gapFc":0,"pendenteFc":0,"pctFc":162.0},{"codMasc":23865,"variacao":"AMENDOA CLEAN","solicitado":112,"reservado":52,"pendente":60,"pct":46.4,"mediaSemanal":28.0,"dias":9.2,"gap":60,"solicitadoCargaMae":112,"solicitadoForecast":170,"gapFc":118,"pendenteFc":118,"pctFc":30.6}],"solicitadoCargaMae":274,"solicitadoForecast":270,"gapFc":56,"pendenteFc":56,"pctFc":79.3},{"codItem":273,"produto":"GUARDA ROUPA ALONZO 6 PTS 2021","categoria":"GR","solicitado":365,"reservado":279,"pendente":86,"pct":76.4,"alerta":false,"concluido":false,"mediaSemanal":91.25,"dias":18.8,"gap":86,"variacoes":[{"codMasc":12450,"variacao":"BRANCO#S/ESP#S/PES","solicitado":100,"reservado":82,"pendente":18,"pct":82.0,"mediaSemanal":25.0,"dias":15.8,"gap":18,"solicitadoCargaMae":100,"solicitadoForecast":156,"gapFc":74,"pendenteFc":74,"pctFc":52.6},{"codMasc":12442,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#S/PES","solicitado":90,"reservado":42,"pendente":48,"pct":46.7,"mediaSemanal":22.5,"dias":10.9,"gap":48,"solicitadoCargaMae":90,"solicitadoForecast":116,"gapFc":74,"pendenteFc":74,"pctFc":36.2},{"codMasc":12439,"variacao":"AMENDOA CLEAN#S/ESP#S/PES","solicitado":60,"reservado":60,"pendente":0,"pct":100.0,"mediaSemanal":15.0,"dias":28.1,"gap":0,"solicitadoCargaMae":60,"solicitadoForecast":64,"gapFc":4,"pendenteFc":4,"pctFc":93.8},{"codMasc":12441,"variacao":"AMENDOA CLEAN/OFF WH#S/ESP#C/PES","solicitado":15,"reservado":10,"pendente":5,"pct":66.7,"mediaSemanal":3.75,"dias":30.0,"gap":5,"solicitadoCargaMae":15,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":12443,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#S/PES","solicitado":20,"reservado":10,"pendente":10,"pct":50.0,"mediaSemanal":5.0,"dias":25.0,"gap":10,"solicitadoCargaMae":20,"solicitadoForecast":12,"gapFc":2,"pendenteFc":2,"pctFc":83.3},{"codMasc":12449,"variacao":"BRANCO#S/ESP#C/PES","solicitado":15,"reservado":15,"pendente":0,"pct":100.0,"mediaSemanal":3.75,"dias":23.7,"gap":0,"solicitadoCargaMae":15,"solicitadoForecast":19,"gapFc":4,"pendenteFc":4,"pctFc":78.9},{"codMasc":12451,"variacao":"BRANCO#C/ESP#S/PES","solicitado":15,"reservado":15,"pendente":0,"pct":100.0,"mediaSemanal":3.75,"dias":17.3,"gap":0,"solicitadoCargaMae":15,"solicitadoForecast":26,"gapFc":11,"pendenteFc":11,"pctFc":57.7},{"codMasc":12437,"variacao":"AMENDOA CLEAN#S/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":20.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":15,"gapFc":5,"pendenteFc":5,"pctFc":66.7},{"codMasc":12448,"variacao":"BRANCO#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":30.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codMasc":12438,"variacao":"AMENDOA CLEAN#C/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":100.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":333.3},{"codMasc":12436,"variacao":"AMENDOA CLEAN#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":42.9,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":7,"gapFc":0,"pendenteFc":0,"pctFc":142.9},{"codMasc":12440,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#C/PES","solicitado":10,"reservado":5,"pendente":5,"pct":50.0,"mediaSemanal":2.5,"dias":18.8,"gap":5,"solicitadoCargaMae":10,"solicitadoForecast":8,"gapFc":3,"pendenteFc":3,"pctFc":62.5}],"solicitadoCargaMae":365,"solicitadoForecast":446,"gapFc":167,"pendenteFc":167,"pctFc":62.6},{"codItem":73275,"produto":"COMODA HORIZONTAL MAGGIORE NEW 6GAV","categoria":"Complementos","solicitado":258,"reservado":131,"pendente":127,"pct":50.8,"alerta":false,"concluido":false,"mediaSemanal":64.5,"dias":12.2,"gap":127,"variacoes":[{"codMasc":23853,"variacao":"BRANCO","solicitado":141,"reservado":14,"pendente":127,"pct":9.9,"mediaSemanal":35.25,"dias":2.1,"gap":127,"solicitadoCargaMae":141,"solicitadoForecast":203,"gapFc":189,"pendenteFc":189,"pctFc":6.9},{"codMasc":23852,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":49,"reservado":49,"pendente":0,"pct":100.0,"mediaSemanal":12.25,"dias":47.4,"gap":0,"solicitadoCargaMae":49,"solicitadoForecast":31,"gapFc":0,"pendenteFc":0,"pctFc":158.1},{"codMasc":23851,"variacao":"AMENDOA CLEAN","solicitado":68,"reservado":68,"pendente":0,"pct":100.0,"mediaSemanal":17.0,"dias":23.4,"gap":0,"solicitadoCargaMae":68,"solicitadoForecast":87,"gapFc":19,"pendenteFc":19,"pctFc":78.2}],"solicitadoCargaMae":258,"solicitadoForecast":321,"gapFc":190,"pendenteFc":190,"pctFc":40.8},{"codItem":73173,"produto":"CAMA SOLTEIRO 0,90 REALI 2022","categoria":"Complementos","solicitado":116,"reservado":116,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":29.0,"dias":26.6,"gap":0,"variacoes":[{"codMasc":16516,"variacao":"BRANCO","solicitado":48,"reservado":48,"pendente":0,"pct":100.0,"mediaSemanal":12.0,"dias":26.2,"gap":0,"solicitadoCargaMae":48,"solicitadoForecast":55,"gapFc":7,"pendenteFc":7,"pctFc":87.3},{"codMasc":16515,"variacao":"AMENDOA CLEAN","solicitado":68,"reservado":68,"pendente":0,"pct":100.0,"mediaSemanal":17.0,"dias":26.8,"gap":0,"solicitadoCargaMae":68,"solicitadoForecast":76,"gapFc":8,"pendenteFc":8,"pctFc":89.5}],"solicitadoCargaMae":116,"solicitadoForecast":131,"gapFc":15,"pendenteFc":15,"pctFc":88.5},{"codItem":73384,"produto":"MESA 0,90 CELEBRARE 2023","categoria":"Sala de Jantar","solicitado":37,"reservado":14,"pendente":23,"pct":37.8,"alerta":false,"concluido":false,"mediaSemanal":9.25,"dias":16.2,"gap":23,"variacoes":[{"codMasc":50466,"variacao":"AMENDOA CLEAN/OFF WH#S/VIDRO 900X900","solicitado":37,"reservado":14,"pendente":23,"pct":37.8,"mediaSemanal":9.25,"dias":16.2,"gap":23,"solicitadoCargaMae":37,"solicitadoForecast":26,"gapFc":12,"pendenteFc":12,"pctFc":53.8}],"solicitadoCargaMae":37,"solicitadoForecast":26,"gapFc":12,"pendenteFc":12,"pctFc":53.8},{"codItem":85650,"produto":"CAMA CASAL LOPAS 1,60 FREETOWN 2025","categoria":"Complementos","solicitado":38,"reservado":38,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":9.5,"dias":31.7,"gap":0,"variacoes":[{"codMasc":49964,"variacao":"AMENDOA CLEAN/BRANCO#KOR.BRANCO C/LED","solicitado":38,"reservado":38,"pendente":0,"pct":100.0,"mediaSemanal":9.5,"dias":31.7,"gap":0,"solicitadoCargaMae":38,"solicitadoForecast":36,"gapFc":0,"pendenteFc":0,"pctFc":105.6}],"solicitadoCargaMae":38,"solicitadoForecast":36,"gapFc":0,"pendenteFc":0,"pctFc":105.6},{"codItem":2082,"produto":"CAMA CASAL 1,40 ATHENAS 2022","categoria":"Complementos","solicitado":148,"reservado":72,"pendente":76,"pct":48.6,"alerta":false,"concluido":false,"mediaSemanal":37.0,"dias":24.5,"gap":76,"variacoes":[{"codMasc":15712,"variacao":"FRASSINO/OFF WHITE/F","solicitado":36,"reservado":36,"pendente":0,"pct":100.0,"mediaSemanal":9.0,"dias":83.1,"gap":0,"solicitadoCargaMae":36,"solicitadoForecast":13,"gapFc":0,"pendenteFc":0,"pctFc":276.9},{"codMasc":15707,"variacao":"AMENDOA CL/OFF WHI/A","solicitado":95,"reservado":19,"pendente":76,"pct":20.0,"mediaSemanal":23.75,"dias":8.5,"gap":76,"solicitadoCargaMae":95,"solicitadoForecast":67,"gapFc":48,"pendenteFc":48,"pctFc":28.4},{"codMasc":15710,"variacao":"BRANCO","solicitado":17,"reservado":17,"pendente":0,"pct":100.0,"mediaSemanal":4.25,"dias":63.8,"gap":0,"solicitadoCargaMae":17,"solicitadoForecast":8,"gapFc":0,"pendenteFc":0,"pctFc":212.5}],"solicitadoCargaMae":148,"solicitadoForecast":88,"gapFc":16,"pendenteFc":16,"pctFc":81.8},{"codItem":263,"produto":"MESA 1,20 ATHENAS BR","categoria":"Sala de Jantar","solicitado":23,"reservado":23,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":5.75,"dias":230.0,"gap":0,"variacoes":[{"codMasc":15492,"variacao":"AMENDOA CLEAN","solicitado":23,"reservado":23,"pendente":0,"pct":100.0,"mediaSemanal":5.75,"dias":230.0,"gap":0,"solicitadoCargaMae":23,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":766.7}],"solicitadoCargaMae":23,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":766.7},{"codItem":86048,"produto":"MESA 1,70 APOGEU 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":102,"reservado":102,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":25.5,"dias":57.7,"gap":0,"variacoes":[{"codMasc":75626,"variacao":"AMENDOA CL/OFF WHI/A#LINHO RINZAI BEGE","solicitado":75,"reservado":75,"pendente":0,"pct":100.0,"mediaSemanal":18.75,"dias":64.3,"gap":0,"solicitadoCargaMae":75,"solicitadoForecast":35,"gapFc":0,"pendenteFc":0,"pctFc":214.3},{"codMasc":75630,"variacao":"AMENDOA CL/OFF WHI/A#VELUDO NATURALE CREME","solicitado":27,"reservado":27,"pendente":0,"pct":100.0,"mediaSemanal":6.75,"dias":45.0,"gap":0,"solicitadoCargaMae":27,"solicitadoForecast":18,"gapFc":0,"pendenteFc":0,"pctFc":150.0}],"solicitadoCargaMae":102,"solicitadoForecast":53,"gapFc":0,"pendenteFc":0,"pctFc":192.5},{"codItem":85123,"produto":"MESA 1,20 SINTONIA","categoria":"Sala de Jantar","solicitado":51,"reservado":51,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":12.75,"dias":510.0,"gap":0,"variacoes":[{"codMasc":46251,"variacao":"AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S","solicitado":51,"reservado":51,"pendente":0,"pct":100.0,"mediaSemanal":12.75,"dias":510.0,"gap":0,"solicitadoCargaMae":51,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":1700.0}],"solicitadoCargaMae":51,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":1700.0},{"codItem":85082,"produto":"MESA 1,70 ASTRID 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":34,"reservado":34,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":8.5,"dias":255.0,"gap":0,"variacoes":[{"codMasc":49178,"variacao":"AMENDOA CLEAN/OFF WH#VELUDO NATURALE CREME","solicitado":34,"reservado":34,"pendente":0,"pct":100.0,"mediaSemanal":8.5,"dias":255.0,"gap":0,"solicitadoCargaMae":34,"solicitadoForecast":4,"gapFc":0,"pendenteFc":0,"pctFc":850.0}],"solicitadoCargaMae":34,"solicitadoForecast":4,"gapFc":0,"pendenteFc":0,"pctFc":850.0},{"codItem":73074,"produto":"CAMA CASAL 1,40 REALI 2022","categoria":"Complementos","solicitado":75,"reservado":41,"pendente":34,"pct":54.7,"alerta":false,"concluido":false,"mediaSemanal":18.75,"dias":22.0,"gap":34,"variacoes":[{"codMasc":15961,"variacao":"FRASSINO","solicitado":28,"reservado":28,"pendente":0,"pct":100.0,"mediaSemanal":7.0,"dias":35.0,"gap":0,"solicitadoCargaMae":28,"solicitadoForecast":24,"gapFc":0,"pendenteFc":0,"pctFc":116.7},{"codMasc":15960,"variacao":"BRANCO","solicitado":47,"reservado":13,"pendente":34,"pct":27.7,"mediaSemanal":11.75,"dias":12.2,"gap":34,"solicitadoCargaMae":47,"solicitadoForecast":32,"gapFc":19,"pendenteFc":19,"pctFc":40.6}],"solicitadoCargaMae":75,"solicitadoForecast":56,"gapFc":15,"pendenteFc":15,"pctFc":73.2},{"codItem":2106,"produto":"GUARDA ROUPA BERTHA 6 PTS","categoria":"GR","solicitado":50,"reservado":45,"pendente":5,"pct":90.0,"alerta":false,"concluido":false,"mediaSemanal":12.5,"dias":225.0,"gap":5,"variacoes":[{"codMasc":13357,"variacao":"AMENDOA CLEAN#C/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codMasc":13363,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#C/PES#S/KIT GAV","solicitado":10,"reservado":8,"pendente":2,"pct":80.0,"mediaSemanal":2.5,"dias":80.0,"gap":2,"solicitadoCargaMae":10,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":266.7},{"codMasc":13365,"variacao":"AMENDOA CLEAN/OFF WH#C/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":7,"pendente":3,"pct":70.0,"mediaSemanal":2.5,"dias":210.0,"gap":3,"solicitadoCargaMae":10,"solicitadoForecast":1,"gapFc":0,"pendenteFc":0,"pctFc":700.0},{"codMasc":13361,"variacao":"AMENDOA CLEAN#S/ESP#C/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codMasc":13360,"variacao":"AMENDOA CLEAN#S/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":150.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":2,"gapFc":0,"pendenteFc":0,"pctFc":500.0}],"solicitadoCargaMae":50,"solicitadoForecast":6,"gapFc":0,"pendenteFc":0,"pctFc":750.0},{"codItem":74549,"produto":"BELICHE 0,90 OLGA","categoria":"Complementos","solicitado":62,"reservado":62,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":15.5,"dias":155.0,"gap":0,"variacoes":[{"codMasc":33429,"variacao":"BRANCO#C/LED","solicitado":42,"reservado":42,"pendente":0,"pct":100.0,"mediaSemanal":10.5,"dias":157.5,"gap":0,"solicitadoCargaMae":42,"solicitadoForecast":8,"gapFc":0,"pendenteFc":0,"pctFc":525.0},{"codMasc":33428,"variacao":"AMENDOA CLEAN#C/LED","solicitado":20,"reservado":20,"pendente":0,"pct":100.0,"mediaSemanal":5.0,"dias":150.0,"gap":0,"solicitadoCargaMae":20,"solicitadoForecast":4,"gapFc":0,"pendenteFc":0,"pctFc":500.0}],"solicitadoCargaMae":62,"solicitadoForecast":12,"gapFc":0,"pendenteFc":0,"pctFc":516.7},{"codItem":2382,"produto":"GUARDA ROUPA SPAZIO 3 PTS 2,70","categoria":"GR","solicitado":300,"reservado":254,"pendente":46,"pct":84.7,"alerta":false,"concluido":false,"mediaSemanal":75.0,"dias":18.3,"gap":46,"variacoes":[{"codMasc":13169,"variacao":"BRANCO#S/3PTS GLASS#S/PES","solicitado":150,"reservado":106,"pendente":44,"pct":70.7,"mediaSemanal":37.5,"dias":20.1,"gap":44,"solicitadoCargaMae":150,"solicitadoForecast":158,"gapFc":52,"pendenteFc":52,"pctFc":67.1},{"codMasc":13165,"variacao":"BRANCO#C/1 PT GLASS#S/PES","solicitado":100,"reservado":98,"pendente":2,"pct":98.0,"mediaSemanal":25.0,"dias":19.0,"gap":2,"solicitadoCargaMae":100,"solicitadoForecast":155,"gapFc":57,"pendenteFc":57,"pctFc":63.2},{"codMasc":13166,"variacao":"BRANCO#C/3 PTS GLASS#S/PES","solicitado":20,"reservado":20,"pendente":0,"pct":100.0,"mediaSemanal":5.0,"dias":11.8,"gap":0,"solicitadoCargaMae":20,"solicitadoForecast":51,"gapFc":31,"pendenteFc":31,"pctFc":39.2},{"codMasc":13167,"variacao":"BRANCO#C/3 PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":20.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":15,"gapFc":5,"pendenteFc":5,"pctFc":66.7},{"codMasc":13168,"variacao":"BRANCO#S/3PTS GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":14.3,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":21,"gapFc":11,"pendenteFc":11,"pctFc":47.6},{"codMasc":13164,"variacao":"BRANCO#C/1 PT GLASS#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":18.8,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":16,"gapFc":6,"pendenteFc":6,"pctFc":62.5}],"solicitadoCargaMae":300,"solicitadoForecast":416,"gapFc":162,"pendenteFc":162,"pctFc":61.1},{"codItem":73121,"produto":"CABECEIRA BOX 1,60 CALITAN 2023","categoria":"Complementos","solicitado":155,"reservado":100,"pendente":55,"pct":64.5,"alerta":false,"concluido":false,"mediaSemanal":38.75,"dias":20.0,"gap":55,"variacoes":[{"codMasc":16180,"variacao":"AMENDOA CLEAN/PRETO#KORINO PRETO#C/LED","solicitado":155,"reservado":100,"pendente":55,"pct":64.5,"mediaSemanal":38.75,"dias":20.0,"gap":55,"solicitadoCargaMae":155,"solicitadoForecast":150,"gapFc":50,"pendenteFc":50,"pctFc":66.7}],"solicitadoCargaMae":155,"solicitadoForecast":150,"gapFc":50,"pendenteFc":50,"pctFc":66.7},{"codItem":159,"produto":"MESA 1,80 ATHENAS BR","categoria":"Sala de Jantar","solicitado":25,"reservado":25,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":6.25,"dias":20.8,"gap":0,"variacoes":[{"codMasc":16481,"variacao":"AMENDOA CLEAN","solicitado":25,"reservado":25,"pendente":0,"pct":100.0,"mediaSemanal":6.25,"dias":20.8,"gap":0,"solicitadoCargaMae":25,"solicitadoForecast":36,"gapFc":11,"pendenteFc":11,"pctFc":69.4}],"solicitadoCargaMae":25,"solicitadoForecast":36,"gapFc":11,"pendenteFc":11,"pctFc":69.4},{"codItem":86042,"produto":"MESA  1,60 ASTRID 2023 C/VDO SERIG. C/06 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":17,"reservado":17,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":4.25,"dias":170.0,"gap":0,"variacoes":[{"codMasc":75985,"variacao":"AMENDOA CLEAN/OFF WH#LINHO RINZAI BEGE","solicitado":17,"reservado":17,"pendente":0,"pct":100.0,"mediaSemanal":4.25,"dias":170.0,"gap":0,"solicitadoCargaMae":17,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":566.7}],"solicitadoCargaMae":17,"solicitadoForecast":3,"gapFc":0,"pendenteFc":0,"pctFc":566.7},{"codItem":86051,"produto":"MESA 0,90 CELEBRARE 2023 C/VDO SERIG.C/04 CAD.APOGEU 2025","categoria":"Sala de Jantar","solicitado":18,"reservado":18,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":4.5,"dias":77.1,"gap":0,"variacoes":[{"codMasc":75610,"variacao":"AMENDOA CLEAN/OFF WH#LINHO RINZAI BEGE","solicitado":18,"reservado":18,"pendente":0,"pct":100.0,"mediaSemanal":4.5,"dias":77.1,"gap":0,"solicitadoCargaMae":18,"solicitadoForecast":7,"gapFc":0,"pendenteFc":0,"pctFc":257.1}],"solicitadoCargaMae":18,"solicitadoForecast":7,"gapFc":0,"pendenteFc":0,"pctFc":257.1},{"codItem":155,"produto":"MESA DE CABECEIRA MAGGIORE   NEW  03 GAV","categoria":"Complementos","solicitado":70,"reservado":55,"pendente":15,"pct":78.6,"alerta":false,"concluido":false,"mediaSemanal":17.5,"dias":35.1,"gap":15,"variacoes":[{"codMasc":51181,"variacao":"AMENDOA CLEAN/OFF WH","solicitado":24,"reservado":21,"pendente":3,"pct":87.5,"mediaSemanal":6.0,"dias":63.0,"gap":3,"solicitadoCargaMae":24,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":210.0},{"codMasc":51182,"variacao":"BRANCO","solicitado":23,"reservado":23,"pendente":0,"pct":100.0,"mediaSemanal":5.75,"dias":46.0,"gap":0,"solicitadoCargaMae":23,"solicitadoForecast":15,"gapFc":0,"pendenteFc":0,"pctFc":153.3},{"codMasc":51180,"variacao":"AMENDOA CLEAN","solicitado":23,"reservado":11,"pendente":12,"pct":47.8,"mediaSemanal":5.75,"dias":15.0,"gap":12,"solicitadoCargaMae":23,"solicitadoForecast":22,"gapFc":11,"pendenteFc":11,"pctFc":50.0}],"solicitadoCargaMae":70,"solicitadoForecast":47,"gapFc":0,"pendenteFc":0,"pctFc":117.0},{"codItem":87459,"produto":"GUARDA ROUPA 08 PTS SERENATA","categoria":"GR","solicitado":30,"reservado":30,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":7.5,"dias":28.0,"gap":0,"variacoes":[{"codMasc":91590,"variacao":"BRANCO#S/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codMasc":91589,"variacao":"BRANCO#C/ESP#S/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codMasc":91588,"variacao":"BRANCO#C/ESP#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":28.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0}],"solicitadoCargaMae":30,"solicitadoForecast":0,"gapFc":0,"pendenteFc":0,"pctFc":0.0},{"codItem":2101,"produto":"GUARDA ROUPA ARIES 6 PTS 2021","categoria":"GR","solicitado":10,"reservado":9,"pendente":1,"pct":90.0,"alerta":false,"concluido":false,"mediaSemanal":2.5,"dias":15.0,"gap":1,"variacoes":[{"codMasc":13940,"variacao":"AMENDOA CLEAN#S/ESP#S/PES","solicitado":10,"reservado":9,"pendente":1,"pct":90.0,"mediaSemanal":2.5,"dias":15.0,"gap":1,"solicitadoCargaMae":10,"solicitadoForecast":18,"gapFc":9,"pendenteFc":9,"pctFc":50.0}],"solicitadoCargaMae":10,"solicitadoForecast":18,"gapFc":9,"pendenteFc":9,"pctFc":50.0},{"codItem":2316,"produto":"GUARDA ROUPA NICE 3 PTS","categoria":"GR","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"alerta":false,"concluido":true,"mediaSemanal":2.5,"dias":30.0,"gap":0,"variacoes":[{"codMasc":13054,"variacao":"AMENDOA CL/OFF WHI/A#C/ESP#S/PES#S/KIT GAV","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":30.0,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0}],"solicitadoCargaMae":10,"solicitadoForecast":10,"gapFc":0,"pendenteFc":0,"pctFc":100.0},{"codItem":84794,"produto":"GUARDA ROUPA LOPAS 06 PTS LOOP 2025","categoria":"GR","solicitado":50,"reservado":38,"pendente":12,"pct":76.0,"alerta":false,"concluido":false,"mediaSemanal":12.5,"dias":39.3,"gap":12,"variacoes":[{"codMasc":42176,"variacao":"AMENDOA CLEAN/OFF WH#S/PES","solicitado":40,"reservado":28,"pendente":12,"pct":70.0,"mediaSemanal":10.0,"dias":70.0,"gap":12,"solicitadoCargaMae":40,"solicitadoForecast":12,"gapFc":0,"pendenteFc":0,"pctFc":233.3},{"codMasc":42175,"variacao":"AMENDOA CLEAN/OFF WH#C/PES","solicitado":10,"reservado":10,"pendente":0,"pct":100.0,"mediaSemanal":2.5,"dias":17.6,"gap":0,"solicitadoCargaMae":10,"solicitadoForecast":17,"gapFc":7,"pendenteFc":7,"pctFc":58.8}],"solicitadoCargaMae":50,"solicitadoForecast":29,"gapFc":0,"pendenteFc":0,"pctFc":131.0}],"categorias":[{"nome":"Complementos","produtos":18,"variacoes":45,"solicitado":2757,"reservado":1943,"pendente":814,"pct":70.5,"completos":7,"parcial":11,"alertas":0,"diasMedia":44.2,"solicitadoCargaMae":2757,"solicitadoForecast":2295,"pendenteFc":644,"pctFc":84.7},{"nome":"GR","produtos":10,"variacoes":56,"solicitado":2165,"reservado":1208,"pendente":957,"pct":55.8,"completos":2,"parcial":8,"alertas":0,"diasMedia":41.6,"solicitadoCargaMae":2165,"solicitadoForecast":2372,"pendenteFc":1242,"pctFc":50.9},{"nome":"Sala de Jantar","produtos":8,"variacoes":9,"solicitado":307,"reservado":284,"pendente":23,"pct":92.5,"completos":7,"parcial":1,"alertas":0,"diasMedia":167.1,"solicitadoCargaMae":307,"solicitadoForecast":135,"pendenteFc":23,"pctFc":210.4}],"top10":[{"codItem":73275,"produto":"COMODA HORIZONTAL MAGGIORE NEW 6GAV","categoria":"Complementos","codMasc":23853,"variacao":"BRANCO","solicitado":141,"solicitadoCargaMae":141,"solicitadoForecast":203,"reservado":14,"pendente":127,"pct":9.9,"pctFc":6.9,"gap":127,"gapFc":189,"pendenteFc":189,"dias":2.1},{"codItem":84821,"produto":"GUARDA ROUPA LOPAS 03 PTS OLLIE II 2025","categoria":"GR","codMasc":30742,"variacao":"AMENDOA CL/OFF WHI/A#S/2PTS GLASS#C/PES","solicitado":100,"solicitadoCargaMae":100,"solicitadoForecast":132,"reservado":10,"pendente":90,"pct":10.0,"pctFc":7.6,"gap":90,"gapFc":122,"pendenteFc":122,"dias":2.3},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","codMasc":12478,"variacao":"AMENDOA CLEAN/BRANCO#S/ESP#S/PES","solicitado":300,"solicitadoCargaMae":300,"solicitadoForecast":397,"reservado":47,"pendente":253,"pct":15.7,"pctFc":11.8,"gap":253,"gapFc":350,"pendenteFc":350,"dias":3.6},{"codItem":72565,"produto":"GUARDA ROUPA ZEINE 2 PTS 2024","categoria":"GR","codMasc":13279,"variacao":"AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES","solicitado":60,"solicitadoCargaMae":60,"solicitadoForecast":84,"reservado":16,"pendente":44,"pct":26.7,"pctFc":19.0,"gap":44,"gapFc":68,"pendenteFc":68,"dias":5.7},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","codMasc":12490,"variacao":"BRANCO#S/ESP#S/PES","solicitado":270,"solicitadoCargaMae":270,"solicitadoForecast":397,"reservado":86,"pendente":184,"pct":31.9,"pctFc":21.7,"gap":184,"gapFc":311,"pendenteFc":311,"dias":6.5},{"codItem":73139,"produto":"CAMA SOLTEIRO 0,90 ATHENAS 2022","categoria":"Complementos","codMasc":24414,"variacao":"AMENDOA CL/OFF WHI/A#C/CAMA AUXILIAR","solicitado":171,"solicitadoCargaMae":171,"solicitadoForecast":146,"reservado":38,"pendente":133,"pct":22.2,"pctFc":26.0,"gap":133,"gapFc":108,"pendenteFc":108,"dias":7.8},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","codMasc":12473,"variacao":"AMENDOA CLEAN#S/ESP#C/PES","solicitado":15,"solicitadoCargaMae":15,"solicitadoForecast":18,"reservado":5,"pendente":10,"pct":33.3,"pctFc":27.8,"gap":10,"gapFc":13,"pendenteFc":13,"dias":8.3},{"codItem":2083,"produto":"GUARDA ROUPA ALONZO 4 PTS 2021","categoria":"GR","codMasc":12474,"variacao":"AMENDOA CLEAN#S/ESP#S/PES","solicitado":60,"solicitadoCargaMae":60,"solicitadoForecast":57,"reservado":16,"pendente":44,"pct":26.7,"pctFc":28.1,"gap":44,"gapFc":41,"pendenteFc":41,"dias":8.4},{"codItem":2082,"produto":"CAMA CASAL 1,40 ATHENAS 2022","categoria":"Complementos","codMasc":15707,"variacao":"AMENDOA CL/OFF WHI/A","solicitado":95,"solicitadoCargaMae":95,"solicitadoForecast":67,"reservado":19,"pendente":76,"pct":20.0,"pctFc":28.4,"gap":76,"gapFc":48,"pendenteFc":48,"dias":8.5},{"codItem":84932,"produto":"CAMA LOPAS SOLT 0,90 LOOP 2025","categoria":"Complementos","codMasc":36952,"variacao":"BRANCO#KORINO BRANCO#C/CAMA AUXILIAR","solicitado":21,"solicitadoCargaMae":21,"solicitadoForecast":33,"reservado":10,"pendente":11,"pct":47.6,"pctFc":30.3,"gap":11,"gapFc":23,"pendenteFc":23,"dias":9.1}],"hist":[{"label":"0d","min":0,"max":0.01,"level":"crit","count":0},{"label":"1-10d","min":0.01,"max":10,"level":"crit","count":12},{"label":"11-20d","min":10,"max":20,"level":"warn","count":20},{"label":"21-30d","min":20,"max":30,"level":"warn","count":17},{"label":"≥31d","min":30,"max":9999,"level":"ok","count":54}],"categoriasFc":[{"nome":"Complementos","produtos":18,"variacoes":44,"solicitado":2295,"reservado":1943,"demandaDiariaFc":74.0,"diasAtendeFc":26.2},{"nome":"GR","produtos":9,"variacoes":50,"solicitado":2372,"reservado":1178,"demandaDiariaFc":76.5,"diasAtendeFc":15.4},{"nome":"Sala de Jantar","produtos":8,"variacoes":9,"solicitado":135,"reservado":284,"demandaDiariaFc":4.4,"diasAtendeFc":65.2}]};
 /* ═══════════════════════════════════════════════════════════════════
    EXCLUSÃO DE PRODUTOS DESCONTINUADOS
    ───────────────────────────────────────────────────────────────────
@@ -800,16 +1042,32 @@ const EXCLUIR_COD_ITEM = new Set([2405]);
     c.reservado  += (p.reservado||0);
     if ((p.pct||0) >= 100)               c.completos++;
     else if ((p.pct||0) > 0)             c.parcial++;
-    if (p.alerta)                        c.alertas++;
+    // Conta alertas por VARIAÇÃO (mesma régua do header "9 ALERTAS"):
+    // qualquer variação do produto com pct<30% gera alerta.
+    let hasAlertVar = false;
+    (p.variacoes || []).forEach(v => {
+      if ((v.solicitadoCargaMae || 0) > 0 && (v.pct || 0) < 30) {
+        hasAlertVar = true;
+      }
+    });
+    if (hasAlertVar || p.alerta || (p.pct||0) < 30)  c.alertas++;
     c.somaDias   += (p.dias||0);
   });
   // Preserva a ordem original das categorias quando possível
   const ordemCats = (BUNDLE.categorias || []).map(c => c.nome);
+  // Acha forecast original por categoria pra preservar (não dá pra recalcular sem o forecast por produto)
+  const fcByName = {};
+  (BUNDLE.categoriasFc || []).forEach(c => { fcByName[c.nome] = c.solicitado || 0; });
+  // Também copia solicitadoForecast da categoria original quando tiver
+  const fcOrigByName = {};
+  (BUNDLE.categorias || []).forEach(c => { fcOrigByName[c.nome] = c.solicitadoForecast || 0; });
+
   BUNDLE.categorias = ordemCats
     .filter(n => catMap.has(n))
     .concat(Array.from(catMap.keys()).filter(n => !ordemCats.includes(n)))
     .map(n => {
       const c = catMap.get(n);
+      const fc = fcByName[n] || fcOrigByName[n] || 0;
       return {
         nome: c.nome,
         produtos: c.produtos,
@@ -821,7 +1079,12 @@ const EXCLUIR_COD_ITEM = new Set([2405]);
         completos: c.completos,
         parcial: c.parcial,
         alertas: c.alertas,
-        diasMedia: c.produtos ? Math.round(c.somaDias/c.produtos*10)/10 : 0
+        diasMedia: c.produtos ? Math.round(c.somaDias/c.produtos*10)/10 : 0,
+        // Campos que faltavam — usados pelos cards de "Resumo por Categoria"
+        solicitadoCargaMae: c.solicitado,
+        solicitadoForecast: fc,
+        pctFc: fc > 0 ? Math.round(c.reservado/fc*1000)/10 : 0,
+        pendenteFc: Math.max(0, fc - c.reservado),
       };
     });
 
@@ -1193,11 +1456,19 @@ const CAT_STYLES = {
 };
 
 // Format helpers
-const fmt = n => new Intl.NumberFormat('pt-BR').format(n);
+const fmt = n => {
+  const v = Number(n);
+  if (!isFinite(v)) return '—';
+  return new Intl.NumberFormat('pt-BR').format(v);
+};
 const fmtPct = p => p.toFixed(1).replace('.', ',') + '%';
 const fmtDias = d => d.toFixed(1).replace('.', ',') + 'd';
 // Média de consumo diária = solicitado do forecast / 30 dias (arredondado pra cima)
-const fmtMedia = un => Math.ceil(un / 30) + ' un/dia';
+const fmtMedia = un => {
+  const n = Number(un);
+  if (!isFinite(n) || n <= 0) return '— un/dia';
+  return Math.ceil(n / 30) + ' un/dia';
+};
 // Quadradinho da curva ABC (A=verde, B=amarelo, C=vermelho, sem forecast=cinza)
 function curvaBadge(curva){
   const c = curva || 'none';
@@ -1269,6 +1540,122 @@ if (_pior) {
 } else {
   document.getElementById('kpi-atende-prox-sub').innerHTML = 'todas variações 100% reservadas';
 }
+
+// ─── HERO COBERTURA: card "SKU mais frágil" no topo (versão expandida) ───
+(function(){
+  const card = document.getElementById('hero-pior-card');
+  if (!card) return;
+  if (!_pior) {
+    card.style.display = 'none';
+    return;
+  }
+  // Status (texto curto)
+  let statusTxt = '', statusColor = '#22c98a';
+  if (diasPiorCaso < 7)       { statusTxt = '< 7 dias · CRÍTICO'; statusColor = '#f87171'; }
+  else if (diasPiorCaso < 15) { statusTxt = '< 15 dias · ATENÇÃO'; statusColor = '#fb923c'; }
+  else if (diasPiorCaso < 25) { statusTxt = '< 25 dias · ALERTA';   statusColor = '#facc15'; }
+  else                         { statusTxt = '≥ 25 dias · OK';      statusColor = '#22c98a'; }
+  const statusEl = document.getElementById('hero-pior-status');
+  if (statusEl) { statusEl.textContent = statusTxt; statusEl.style.color = statusColor; }
+
+  // Dias com cor adaptada
+  const diasEl = document.getElementById('hero-pior-dias');
+  if (diasEl) {
+    diasEl.innerHTML = prettyDias + '<span style="font-size:10px;color:var(--muted);font-weight:600;margin-left:2px;">d</span>';
+    diasEl.style.color = statusColor;
+  }
+
+  // Categoria
+  const catMap = { 'GR':'GR', 'Complementos':'COMP', 'Sala de Jantar':'SALA' };
+  document.getElementById('hero-pior-cat').textContent = catMap[_pior.categoria] || _pior.categoria || '—';
+  document.getElementById('hero-pior-cod').textContent = `cod ${_pior.codMasc}`;
+
+  // Curva ABC
+  const curvaEl = document.getElementById('hero-pior-curva');
+  if (curvaEl && _pior.curvaAbc) {
+    const cores = {
+      'A': {bg: 'rgba(34,201,138,0.18)', fg: '#22c98a'},
+      'B': {bg: 'rgba(245,158,11,0.18)', fg: '#f59e0b'},
+      'C': {bg: 'rgba(239,68,68,0.18)',  fg: '#ef4444'}
+    };
+    const c = cores[_pior.curvaAbc];
+    if (c) {
+      curvaEl.textContent = _pior.curvaAbc;
+      curvaEl.style.background = c.bg;
+      curvaEl.style.color = c.fg;
+    }
+  }
+
+  // Nome e variação
+  document.getElementById('hero-pior-nome').textContent = _pior.produto || '—';
+  document.getElementById('hero-pior-var').textContent = _pior.variacao || '—';
+
+  // Stats: RES, FC, MÉD/DIA
+  document.getElementById('hero-pior-res').textContent = _pior.reservado != null ? _pior.reservado : '—';
+  document.getElementById('hero-pior-fc').textContent  = _pior.solicitadoForecast != null ? _pior.solicitadoForecast : '—';
+  const med = (_pior.solicitadoForecast > 0) ? Math.ceil(_pior.solicitadoForecast / 30) : 0;
+  document.getElementById('hero-pior-med').textContent = med || '—';
+
+  // Borda do card adapta à criticidade
+  card.style.borderColor = statusColor.replace(/[\d.]+\)$/, '0.4)');
+
+  // ─── Próximo lote do SKU (busca pelo codItem no Firebase) ───
+  (async function carregarLoteHero(){
+    const wrap = document.getElementById('hero-pior-lote-wrap');
+    const dataEl = document.getElementById('hero-pior-lote-data');
+    const avisoEl = document.getElementById('hero-pior-lote-aviso');
+    if (!wrap || !dataEl || !avisoEl) return;
+    if (!_pior || !_pior.codItem) { wrap.style.display = 'none'; return; }
+    if (!window._mmDB) {
+      wrap.style.display = 'flex';
+      wrap.className = 'hero-pior-lote none';
+      dataEl.textContent = '— Firebase indisponível —';
+      avisoEl.textContent = '';
+      return;
+    }
+    try {
+      const snap = await window._mmDB.ref(`estoque_mm/datas_lote/${_pior.codItem}`).once('value');
+      const v = snap.val();
+      wrap.style.display = 'flex';
+      if (!v || !v.dataKey) {
+        wrap.className = 'hero-pior-lote none';
+        dataEl.textContent = 'Sem lote previsto cadastrado';
+        avisoEl.textContent = '';
+        return;
+      }
+      // Formata data e calcula dias até
+      const m = v.dataKey.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) { wrap.style.display = 'none'; return; }
+      const dataFmt = `${m[3]}/${m[2]}/${m[1]}`;
+      const alvo = new Date(+m[1], +m[2]-1, +m[3]);
+      const hoje = new Date(); hoje.setHours(0,0,0,0);
+      const diasAte = Math.round((alvo - hoje) / 86400000);
+      dataEl.textContent = dataFmt;
+      // Cor depende de quando o lote chega vs quando o estoque zera
+      let cls;
+      if (diasAte < 0)        { cls = 'gone';  avisoEl.textContent = `passou ${-diasAte}d`; }
+      else if (diasAte === 0) { cls = 'warn';  avisoEl.textContent = 'HOJE'; }
+      else if (diasAte <= diasPiorCaso) {
+        // lote chega ANTES do estoque zerar → bom!
+        cls = 'ok';
+        avisoEl.textContent = `em ${diasAte}d (chega antes!)`;
+      } else if (diasAte <= 7) {
+        cls = 'warn';
+        avisoEl.textContent = `em ${diasAte}d (após zerar)`;
+      } else {
+        cls = 'crit';
+        avisoEl.textContent = `em ${diasAte}d (tarde demais)`;
+      }
+      wrap.className = 'hero-pior-lote ' + cls;
+    } catch(e) {
+      console.warn('[hero-lote] erro:', e);
+      wrap.style.display = 'flex';
+      wrap.className = 'hero-pior-lote none';
+      dataEl.textContent = 'Erro ao carregar';
+      avisoEl.textContent = '';
+    }
+  })();
+})();
 
 // ─── ILHA DE DETALHAMENTO (SKU frágil + timeline clicável) ───
 const ilha = document.getElementById('cobertura-detalhe-card');
@@ -1462,11 +1849,31 @@ document.getElementById('st-danger-sub').textContent = `de ${stats.nVariacoes} v
 // ============ CATEGORY CARDS ============
 function renderCatCards(){
   const grid = document.getElementById('cat-grid');
+  // Mapa de cobertura forecast por categoria (pra calcular badge "atende o mês")
+  const fcByName = {};
+  (BUNDLE.categoriasFc || []).forEach(c => { fcByName[c.nome] = c; });
+  const diasMes = (BUNDLE.stats && BUNDLE.stats.diasMes) || 31;
+
   grid.innerHTML = categorias.map(c => {
     const sty = CAT_STYLES[c.nome] || {cls:'comp', icon:'📦'};
     const alertHtml = c.alertas > 0
       ? `<span class="cat-alert has">⚠️ ${c.alertas} alerta${c.alertas>1?'s':''}</span>`
       : `<span class="cat-alert none">✓ sem alertas</span>`;
+    // Badge de status: usa diasAtendeFc da categoria forecast
+    const fcCat = fcByName[c.nome];
+    const diasAtende = fcCat && fcCat.diasAtendeFc != null ? fcCat.diasAtendeFc : null;
+    let statusBadge = '';
+    if (diasAtende != null) {
+      if (diasAtende >= diasMes) {
+        statusBadge = `<span class="cat-status-badge ok">✓ atende o mês</span>`;
+      } else if (diasAtende >= 7) {
+        statusBadge = `<span class="cat-status-badge warn">⚠ cobertura parcial · ${diasAtende.toFixed(1).replace('.',',')}d</span>`;
+      } else if (diasAtende > 0) {
+        statusBadge = `<span class="cat-status-badge crit">🚨 cobertura curta · ${diasAtende.toFixed(1).replace('.',',')}d</span>`;
+      } else {
+        statusBadge = `<span class="cat-status-badge crit">🚨 sem cobertura</span>`;
+      }
+    }
     return `<div class="cat-card ${sty.cls}" onclick="setCatFromCard('${c.nome.replace(/'/g,"\\'")}')">
       <div class="cat-head">
         <div style="display:flex;align-items:center;gap:10px;">
@@ -1489,6 +1896,7 @@ function renderCatCards(){
         <div class="cat-meta-left">Cobertura: <span class="num">${fmtDias(c.diasMedia)}</span> · ${c.completos} completos</div>
         ${alertHtml}
       </div>
+      ${statusBadge ? `<div class="cat-status-row">${statusBadge}</div>` : ''}
     </div>`;
   }).join('');
   setTimeout(() => {
@@ -1820,8 +2228,16 @@ function renderTop10(){
 renderTop10();
 
 // ============ FILTER COUNTS ============
+// "Alerta" = produto que tem pelo menos 1 variação com reserva crítica (<30%)
+// Mesma régua usada pelo badge "X ALERTAS" do header (que conta variações).
+// Aqui conta produtos PAIS, mas usando o mesmo critério.
+function _produtoTemAlerta(d){
+  if (d.pct < 30) return true;
+  if (d.alerta)   return true;
+  return (d.variacoes || []).some(v => (v.solicitadoCargaMae||0) > 0 && (v.pct||0) < 30);
+}
 document.getElementById('cnt-all').textContent = data.length;
-document.getElementById('cnt-alert').textContent = data.filter(d=>d.pct<30 || d.alerta).length;
+document.getElementById('cnt-alert').textContent = data.filter(_produtoTemAlerta).length;
 document.getElementById('cnt-ok').textContent = stats.nCompletos;
 document.getElementById('cnt-part').textContent = stats.nParcial;
 document.getElementById('cnt-cat-all').textContent = data.length;
@@ -2177,7 +2593,7 @@ function exportarTabelaExcel(){
   // (não por produto) — formato mais útil pro fornecedor
   const search = (document.getElementById('searchInput').value || '').toLowerCase();
   let rows = [...data];
-  if (currentFilter === 'alert')   rows = rows.filter(r => r.pct < 30 || r.alerta);
+  if (currentFilter === 'alert')   rows = rows.filter(_produtoTemAlerta);
   else if (currentFilter === 'ok') rows = rows.filter(r => r.pct >= 100);
   else if (currentFilter === 'partial') rows = rows.filter(r => r.pct > 0 && r.pct < 100);
   if (currentCat !== 'all') rows = rows.filter(r => r.categoria === currentCat);
@@ -2286,7 +2702,7 @@ function exportarTabelaExcel(){
 function renderTable(){
   const search = (document.getElementById('searchInput').value||'').toLowerCase();
   let rows = [...data];
-  if (currentFilter==='alert') rows = rows.filter(r => r.pct<30 || r.alerta);
+  if (currentFilter==='alert') rows = rows.filter(_produtoTemAlerta);
   else if (currentFilter==='ok') rows = rows.filter(r => r.pct>=100);
   else if (currentFilter==='partial') rows = rows.filter(r => r.pct>0 && r.pct<100);
   if (currentCat !== 'all') rows = rows.filter(r => r.categoria === currentCat);
@@ -3030,6 +3446,753 @@ renderTable();
   } else {
     // Firebase pode não ter inicializado — tenta de novo em 500ms
     setTimeout(inicializarMonitor, 500);
+  }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HISTÓRICO DE SKU — modal acessado pelo botão no topo
+     Lê o histórico do Firebase (mesmo path do consumo: historico_consumo)
+     e mostra evolução de um SKU específico em tabela
+     ═══════════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  if (typeof BUNDLE === 'undefined') return;
+  const HISTORICO_FB_PATH = 'estoque_mm/historico_consumo';
+  let _historicoCache = null;  // { 'YYYY-MM-DD': {snap}, ... }
+  const _todosSKUs = [];
+
+  // Constrói lista de SKUs pra autocomplete (apenas carga mãe)
+  (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+    if ((v.solicitadoCargaMae || 0) > 0) {
+      _todosSKUs.push({
+        codMasc: v.codMasc, codItem: p.codItem,
+        produto: p.produto, variacao: v.variacao, curvaAbc: v.curvaAbc
+      });
+    }
+  }));
+
+  // Helper local pra converter data <-> key (caso as funções globais não existam)
+  function _dataParaKey(d){
+    if (typeof dataParaKey === 'function') return dataParaKey(d);
+    if (!d) return null;
+    const m = String(d).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    return m ? `${m[3]}-${m[2]}-${m[1]}` : String(d).replace(/[^\w-]/g,'_');
+  }
+  function _keyParaData(k){
+    if (typeof keyParaData === 'function') return keyParaData(k);
+    const m = String(k||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : k;
+  }
+  function _curvaBadge(c){
+    if (!c) return '';
+    const cores = {
+      'A':{bg:'rgba(34,201,138,0.18)',fg:'#22c98a'},
+      'B':{bg:'rgba(245,158,11,0.18)',fg:'#f59e0b'},
+      'C':{bg:'rgba(239,68,68,0.18)',fg:'#ef4444'}
+    };
+    const s = cores[c]; if (!s) return '';
+    return `<span style="display:inline-block;font-size:9px;font-weight:800;padding:1px 5px;border-radius:3px;background:${s.bg};color:${s.fg};margin-right:4px;">${c}</span>`;
+  }
+
+  window.abrirHistoricoModal = async function(){
+    const modal = document.getElementById('modal-historico');
+    if (!modal) return;
+    modal.classList.add('open');
+    document.getElementById('sku-search-input').focus();
+    document.getElementById('sku-search-input').value = '';
+    document.getElementById('historico-content').innerHTML = '';
+    document.getElementById('sku-suggestions').classList.remove('open');
+    if (!_historicoCache && window._mmDB) {
+      try {
+        const snap = await window._mmDB.ref(HISTORICO_FB_PATH).orderByKey().limitToLast(60).once('value');
+        _historicoCache = snap.val() || {};
+        console.log(`[hist-sku] ${Object.keys(_historicoCache).length} datas carregadas`);
+      } catch (e) {
+        console.warn('[hist-sku] erro ao carregar:', e);
+        _historicoCache = {};
+      }
+    }
+    filtrarSugestoesSKU('');
+  };
+  window.fecharHistoricoModal = function(){
+    const modal = document.getElementById('modal-historico');
+    if (modal) modal.classList.remove('open');
+  };
+  // Volta da visualização do SKU específico pra listagem
+  window.voltarParaListaSKU = function(){
+    document.getElementById('historico-content').innerHTML = '';
+    const inp = document.getElementById('sku-search-input');
+    inp.value = '';
+    inp.focus();
+    filtrarSugestoesSKU('');
+  };
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') fecharHistoricoModal();
+  });
+  const _modalEl = document.getElementById('modal-historico');
+  if (_modalEl) _modalEl.addEventListener('click', e => {
+    if (e.target.id === 'modal-historico') fecharHistoricoModal();
+  });
+
+  window.filtrarSugestoesSKU = function(q){
+    const sug = document.getElementById('sku-suggestions');
+    if (!sug) return;
+    q = (q || '').toLowerCase().trim();
+    const lista = q.length === 0
+      ? _todosSKUs.slice(0, 30)
+      : _todosSKUs.filter(s =>
+          String(s.codMasc).includes(q) ||
+          String(s.codItem).includes(q) ||
+          (s.produto || '').toLowerCase().includes(q) ||
+          (s.variacao || '').toLowerCase().includes(q)
+        ).slice(0, 30);
+    if (lista.length === 0) {
+      sug.innerHTML = `<div style="padding:14px;text-align:center;color:var(--muted);font-size:11.5px;">Nenhum SKU encontrado</div>`;
+      sug.classList.add('open');
+      return;
+    }
+    sug.innerHTML = lista.map(s =>
+      `<div class="sku-suggestion-item" onclick="renderHistoricoSKU(${s.codMasc})">
+        <span class="codmasc">${s.codMasc}</span>
+        <span class="curva-wrap">${_curvaBadge(s.curvaAbc)}</span>
+        <div class="info">
+          <span class="nome">${s.produto}</span>
+          <span class="var">${s.variacao}</span>
+        </div>
+      </div>`
+    ).join('');
+    sug.classList.add('open');
+  };
+
+  window.renderHistoricoSKU = function(codMasc){
+    document.getElementById('sku-suggestions').classList.remove('open');
+    const skuInfo = _todosSKUs.find(s => s.codMasc === codMasc);
+    if (!skuInfo) return;
+    document.getElementById('sku-search-input').value = `${codMasc} · ${skuInfo.produto} / ${skuInfo.variacao}`;
+
+    const datas = Object.keys(_historicoCache || {}).sort();
+    const linhas = [];
+    datas.forEach(data => {
+      const v = (_historicoCache[data] || {})[codMasc];
+      if (v) {
+        linhas.push({
+          data: _keyParaData(data),
+          reservado: v.r || 0,
+          forecast: v.f || 0,
+          solCM: v.s || 0,
+          mediaDia: v.m || 0,
+          pct: v.s > 0 ? +((v.r / v.s) * 100).toFixed(1) : 0,
+          dias: v.f > 0 ? +(v.r * 30 / v.f).toFixed(1) : 0
+        });
+      }
+    });
+
+    const cont = document.getElementById('historico-content');
+    const backBtn = `<button class="historico-back-btn" onclick="voltarParaListaSKU()" title="Voltar pra lista de SKUs">← Voltar à lista</button>`;
+    if (linhas.length === 0) {
+      cont.innerHTML = backBtn + `<div style="padding:24px;text-align:center;color:var(--muted);font-size:12px;line-height:1.6;">
+        <span style="font-size:32px;opacity:0.5;display:block;margin-bottom:8px;">📭</span>
+        <b style="color:var(--text);">Sem histórico ainda</b><br>
+        Esse SKU só será comparável a partir da próxima atualização do Excel.
+      </div>`;
+      return;
+    }
+    if (linhas.length === 1) {
+      const l = linhas[0];
+      cont.innerHTML = backBtn + `<div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:11.5px;line-height:1.6;color:var(--muted);">
+        <b style="color:var(--text);">Apenas 1 registro disponível</b> (${l.data})<br>
+        Reservado: <b style="color:var(--text);">${l.reservado}</b> · Sol. C.Mãe: <b style="color:var(--text);">${l.solCM}</b> · Forecast: <b style="color:var(--text);">${l.forecast}</b><br>
+        Próximas atualizações vão acumular histórico aqui.
+      </div>`;
+      return;
+    }
+
+    let html = backBtn + `<div style="margin-bottom:8px;font-size:11px;color:var(--muted);">
+      Mostrando ${linhas.length} atualizações · da mais antiga (topo) à mais recente (destaque)
+    </div>`;
+    html += `<table class="historico-table"><thead><tr>
+      <th>Data</th>
+      <th>Reservado</th>
+      <th title="Quanto saiu da reserva entre uma data e outra (positivo = consumo, negativo = reposição)">Consumo</th>
+      <th>Sol. C.Mãe</th>
+      <th>Forecast</th>
+      <th>% Atend.</th>
+      <th>Cobertura</th>
+    </tr></thead><tbody>`;
+    linhas.forEach((l, i) => {
+      const prev = i > 0 ? linhas[i-1] : null;
+      // Indicador de movimento — pill colorida (forte se mudou, neutro/oculto se igual)
+      const delta = (cur, p, suf, invertido) => {
+        if (p === undefined || p === null) return '';
+        const d = +(cur - p).toFixed(1);
+        if (Math.abs(d) < 0.05) return '';
+        const sinal = d > 0 ? '+' : '';
+        // invertido=true → subir é ruim (raramente, não usado aqui)
+        const cls = invertido ? (d < 0 ? 'up' : 'down') : (d > 0 ? 'up' : 'down');
+        const seta = d > 0 ? '↑' : '↓';
+        return `<span class="historico-delta ${cls}">${seta}${sinal}${d}${suf||''}</span>`;
+      };
+      // Coluna CONSUMO — quanto saiu da reserva entre essa data e a anterior
+      let consumoHtml = '<span style="color:var(--muted);font-size:10px;">—</span>';
+      if (prev) {
+        const consumo = prev.reservado - l.reservado;  // positivo = consumiu, negativo = repôs
+        const media = l.mediaDia || (l.forecast > 0 ? Math.ceil(l.forecast / 30) : 0);
+        if (consumo === 0) {
+          consumoHtml = `<span class="historico-consumo zero"><span class="num">0</span><span class="vs">un</span></span>`;
+        } else if (consumo < 0) {
+          // Reabastecido (reserva subiu)
+          consumoHtml = `<span class="historico-consumo repos" title="Reservado aumentou — reabastecimento de ${Math.abs(consumo)} un"><span class="num">+${Math.abs(consumo)}</span><span class="vs">un repostas</span></span>`;
+        } else {
+          // Consumiu — classifica intensidade vs média/dia esperada
+          let classe = 'normal';
+          let tip = '';
+          if (media > 0) {
+            const ratio = consumo / media;
+            if (ratio > 1.5)      { classe = 'alta';   tip = `Consumiu ${Math.round(ratio*100)}% da média/dia (${media} un esperadas)`; }
+            else if (ratio < 0.5) { classe = 'baixa';  tip = `Consumiu apenas ${Math.round(ratio*100)}% da média/dia (${media} un esperadas)`; }
+            else                  { classe = 'normal'; tip = `Consumo dentro do esperado (${media} un/dia esperadas)`; }
+          }
+          const vsMedia = media > 0 ? ` <span class="vs">de ${media}/dia</span>` : ` <span class="vs">un</span>`;
+          consumoHtml = `<span class="historico-consumo ${classe}" title="${tip}"><span class="num">-${consumo}</span>${vsMedia}</span>`;
+        }
+      }
+      const isLast = i === linhas.length - 1;
+      html += `<tr${isLast ? ' class="row-current"' : ''}>
+        <td>${l.data}${isLast ? ' <span style="font-size:9px;color:#a78bfa;font-weight:700;">ATUAL</span>' : ''}</td>
+        <td><b style="color:var(--text);">${l.reservado}</b>${delta(l.reservado, prev?.reservado, ' un')}</td>
+        <td>${consumoHtml}</td>
+        <td>${l.solCM}</td>
+        <td>${l.forecast}</td>
+        <td>${l.pct.toString().replace('.',',')}%${delta(l.pct, prev?.pct, 'pp')}</td>
+        <td>${l.dias.toString().replace('.',',')}d${delta(l.dias, prev?.dias, 'd')}</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    // Legenda das cores
+    html += `<div style="margin-top:12px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:10px;color:var(--muted);display:flex;flex-wrap:wrap;gap:14px;align-items:center;line-height:1.5;">
+      <span style="font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text);font-size:9.5px;">Consumo:</span>
+      <span><span class="historico-consumo alta"><span class="num">-X</span></span> &nbsp;acima da média (>1,5×)</span>
+      <span><span class="historico-consumo normal"><span class="num">-X</span></span> &nbsp;dentro do esperado</span>
+      <span><span class="historico-consumo baixa"><span class="num">-X</span></span> &nbsp;abaixo do esperado (<0,5×)</span>
+      <span><span class="historico-consumo repos"><span class="num">+X</span></span> &nbsp;reabastecido</span>
+    </div>`;
+    cont.innerHTML = html;
+  };
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SIMULAR RESERVA — calculadora pra decisões de cessão ao longo do dia
+     ═══════════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  if (typeof BUNDLE === 'undefined') return;
+
+  // Constrói lista de SKUs (mesma do histórico, mas independente)
+  const _todosSKUsSim = [];
+  (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+    if ((v.solicitadoCargaMae || 0) > 0) {
+      _todosSKUsSim.push({
+        codMasc: v.codMasc, codItem: p.codItem,
+        produto: p.produto, variacao: v.variacao, curvaAbc: v.curvaAbc,
+        reservadoSistema: v.reservado || 0,
+        solicitadoCargaMae: v.solicitadoCargaMae || 0,
+        solicitadoForecast: v.solicitadoForecast || 0,
+        mediaDia: (v.solicitadoForecast||0) > 0 ? Math.ceil(v.solicitadoForecast/30) : 0,
+      });
+    }
+  }));
+
+  function _curvaBadgeSim(c){
+    if (!c) return '';
+    const cores = {
+      'A':{bg:'rgba(34,201,138,0.18)',fg:'#22c98a'},
+      'B':{bg:'rgba(245,158,11,0.18)',fg:'#f59e0b'},
+      'C':{bg:'rgba(239,68,68,0.18)',fg:'#ef4444'}
+    };
+    const s = cores[c]; if (!s) return '';
+    return `<span style="display:inline-block;font-size:9px;font-weight:800;padding:1px 5px;border-radius:3px;background:${s.bg};color:${s.fg};margin-right:4px;">${c}</span>`;
+  }
+
+  let _skuSimSelecionado = null;  // SKU atualmente em simulação
+
+  window.abrirSimularModal = function(){
+    document.getElementById('modal-simular').classList.add('open');
+    document.getElementById('simular-busca').style.display = 'block';
+    document.getElementById('simular-content').style.display = 'none';
+    const inp = document.getElementById('simular-search-input');
+    inp.value = '';
+    inp.focus();
+    filtrarSimularSKU('');
+  };
+  window.fecharSimularModal = function(){
+    document.getElementById('modal-simular').classList.remove('open');
+  };
+  // Esc + clique fora fecham
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('modal-simular')?.classList.contains('open')) {
+      fecharSimularModal();
+    }
+  });
+  const _modalSimEl = document.getElementById('modal-simular');
+  if (_modalSimEl) _modalSimEl.addEventListener('click', e => {
+    if (e.target.id === 'modal-simular') fecharSimularModal();
+  });
+
+  window.filtrarSimularSKU = function(q){
+    const sug = document.getElementById('simular-suggestions');
+    if (!sug) return;
+    q = (q || '').toLowerCase().trim();
+    const lista = q.length === 0
+      ? _todosSKUsSim.slice(0, 30)
+      : _todosSKUsSim.filter(s =>
+          String(s.codMasc).includes(q) ||
+          String(s.codItem).includes(q) ||
+          (s.produto || '').toLowerCase().includes(q) ||
+          (s.variacao || '').toLowerCase().includes(q)
+        ).slice(0, 30);
+    if (lista.length === 0) {
+      sug.innerHTML = `<div style="padding:14px;text-align:center;color:var(--muted);font-size:11.5px;">Nenhum SKU encontrado</div>`;
+      sug.classList.add('open');
+      return;
+    }
+    sug.innerHTML = lista.map(s =>
+      `<div class="sku-suggestion-item" onclick="selecionarSKUSimular(${s.codMasc})">
+        <span class="codmasc">${s.codMasc}</span>
+        <span class="curva-wrap">${_curvaBadgeSim(s.curvaAbc)}</span>
+        <div class="info">
+          <span class="nome">${s.produto}</span>
+          <span class="var">${s.variacao}</span>
+        </div>
+      </div>`
+    ).join('');
+    sug.classList.add('open');
+  };
+
+  window.selecionarSKUSimular = function(codMasc){
+    const sku = _todosSKUsSim.find(s => s.codMasc === codMasc);
+    if (!sku) return;
+    _skuSimSelecionado = sku;
+    document.getElementById('simular-busca').style.display = 'none';
+    const cont = document.getElementById('simular-content');
+    cont.style.display = 'block';
+    cont.innerHTML = `
+      <button class="historico-back-btn" onclick="voltarParaListaSimular()" title="Voltar pra busca">← Voltar à busca</button>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+        ${_curvaBadgeSim(sku.curvaAbc)}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${sku.produto}</div>
+          <div style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${sku.variacao} · cod ${sku.codMasc}</div>
+        </div>
+      </div>
+
+      <!-- Cards 1 e 2 lado a lado: reserva atual (editável) + qtd querem reservar -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div class="sim-card" style="margin-bottom:0;">
+          <div class="sim-card-title">📦 Reserva atual <span style="font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0;font-size:9.5px;margin-left:auto;" title="O sistema mostra ${sku.reservadoSistema} un — edite se já mudou">editável</span></div>
+          <input type="number" class="sim-num-input" id="sim-reserva-atual" value="${sku.reservadoSistema}" min="0" oninput="recalcularSimulacao()" placeholder="0">
+          <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:6px;">Sistema (${BUNDLE.stats.dataAtualizacao}): <b style="color:var(--text);">${sku.reservadoSistema}</b> un</div>
+        </div>
+        <div class="sim-card" style="margin-bottom:0;">
+          <div class="sim-card-title">✋ Quanto querem reservar?</div>
+          <input type="number" class="sim-num-input" id="sim-qtd-ceder" min="0" oninput="recalcularSimulacao()" placeholder="0">
+          <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:6px;">Digite e veja o impacto abaixo</div>
+        </div>
+      </div>
+
+      <!-- Card de info adicional (forecast, média, lote) -->
+      <div class="sim-card">
+        <div class="sim-card-title">📊 Info adicional</div>
+        <div class="sim-info-row">
+          <span class="label">Forecast mensal:</span>
+          <span class="value">${sku.solicitadoForecast}<span class="unit">un</span></span>
+        </div>
+        <div class="sim-info-row">
+          <span class="label">Média/dia:</span>
+          <span class="value">${sku.mediaDia}<span class="unit">un/dia</span></span>
+        </div>
+        <div class="sim-info-row">
+          <span class="label">Solicitado carga mãe:</span>
+          <span class="value">${sku.solicitadoCargaMae}<span class="unit">un</span></span>
+        </div>
+        <div class="sim-info-row">
+          <span class="label" style="display:flex;align-items:center;gap:6px;">📅 Lote dia:</span>
+          <span class="value" id="sim-lote-display">
+            <span id="sim-lote-texto" style="color:var(--muted);font-weight:500;font-size:10.5px;">—</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Card 3: resultado (preenchido por recalcularSimulacao) -->
+      <div id="sim-resultado" class="sim-resultado-card empty">
+        Digite a quantidade pra ver o resultado
+      </div>
+    `;
+    // Carrega data do lote do Firebase pelo codItem (lote é por produto pai)
+    carregarLoteDia(sku.codItem);
+    // Recalcula com valor inicial (mostra estado atual mesmo sem qtd a ceder)
+    recalcularSimulacao();
+    setTimeout(() => document.getElementById('sim-qtd-ceder')?.focus(), 100);
+  };
+
+  window.voltarParaListaSimular = function(){
+    document.getElementById('simular-content').style.display = 'none';
+    document.getElementById('simular-busca').style.display = 'block';
+    const inp = document.getElementById('simular-search-input');
+    inp.value = '';
+    inp.focus();
+    filtrarSimularSKU('');
+  };
+
+  // ═══ RECALCULAR (chamado em tempo real ao digitar) ═══
+  window.recalcularSimulacao = function(){
+    if (!_skuSimSelecionado) return;
+    const sku = _skuSimSelecionado;
+    const reservaAtual = Math.max(0, parseInt(document.getElementById('sim-reserva-atual').value) || 0);
+    const qtdCeder    = Math.max(0, parseInt(document.getElementById('sim-qtd-ceder').value) || 0);
+
+    const resultEl = document.getElementById('sim-resultado');
+    if (qtdCeder === 0) {
+      // Sem qtd a ceder ainda — só mostra cobertura atual com a reserva editada
+      const coberturaAtual = sku.solicitadoForecast > 0
+        ? +(reservaAtual * 30 / sku.solicitadoForecast).toFixed(1)
+        : (reservaAtual > 0 ? 999 : 0);
+      const cls = coberturaAtual >= 14 ? 'ok' : coberturaAtual >= 7 ? 'warn' : 'crit';
+      const titulo = cls === 'ok' ? '✓ COBERTURA ATUAL' : cls === 'warn' ? '⚠ COBERTURA ATUAL' : '🚨 COBERTURA ATUAL';
+      const corNum = cls === 'ok' ? '#22c98a' : cls === 'warn' ? '#fb923c' : '#ef4444';
+      resultEl.className = 'sim-resultado-card ' + cls;
+      resultEl.innerHTML = `
+        <div class="sim-result-title ${cls}">${titulo}</div>
+        <div style="display:flex;align-items:baseline;gap:14px;">
+          <div>
+            <div class="sim-result-num" style="color:${corNum};">${coberturaAtual >= 999 ? '∞' : coberturaAtual.toString().replace('.',',')}<span style="font-size:14px;color:var(--muted);font-weight:600;margin-left:4px;">${coberturaAtual >= 999 ? '' : 'dias'}</span></div>
+            <div class="sim-result-label">Cobertura com ${reservaAtual} un</div>
+          </div>
+          <div style="margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.5;">
+            digite quantidade<br>pra simular cessão
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // Com qtd a ceder
+    const sobra = reservaAtual - qtdCeder;
+    const coberturaNova = sku.solicitadoForecast > 0
+      ? +(Math.max(0, sobra) * 30 / sku.solicitadoForecast).toFixed(1)
+      : (sobra > 0 ? 999 : 0);
+
+    const cls = sobra < 0 ? 'crit'
+              : coberturaNova >= 14 ? 'ok'
+              : coberturaNova >= 7 ? 'warn'
+              : 'crit';
+    const corNum = cls === 'ok' ? '#22c98a' : cls === 'warn' ? '#fb923c' : '#ef4444';
+
+    // Info de lote (se houver) entra no aviso — busca pelo codItem (produto pai)
+    const lote = _loteDiaCache[sku.codItem];
+    const loteTxt = lote ? ` Lote previsto pra <b>${lote.dataFmt}</b>${lote.diasAte !== null ? ` (em ${lote.diasAte} dia${lote.diasAte !== 1 ? 's' : ''})` : ''}.` : '';
+
+    let warningHtml = '';
+    if (sobra < 0) {
+      warningHtml = `<div class="sim-warning-text crit"><b>🚫 NÃO É POSSÍVEL CEDER</b><br>Pediram ${qtdCeder} un mas só tem ${reservaAtual} un disponíveis.</div>`;
+    } else if (coberturaNova < 7) {
+      warningHtml = `<div class="sim-warning-text crit"><b>🚨 CRÍTICO — não recomendado</b><br>Após ceder ${qtdCeder} un, o estoque cobre apenas <b>${coberturaNova.toString().replace('.',',')} dias</b>. ${sku.curvaAbc === 'A' ? 'É um SKU Curva A (alto giro) — risco alto de ruptura.' : 'Avalie se a urgência justifica.'}${loteTxt}</div>`;
+    } else if (coberturaNova < 14) {
+      warningHtml = `<div class="sim-warning-text warn"><b>⚠ Atenção</b><br>Após ceder ${qtdCeder} un, sobra ${coberturaNova.toString().replace('.',',')} dias de cobertura.${loteTxt || ' Confira se há lote previsto antes desse prazo.'}</div>`;
+    } else {
+      warningHtml = `<div class="sim-warning-text ok"><b>✓ Pode ceder com tranquilidade</b><br>Após ceder ${qtdCeder} un, ainda sobram ${coberturaNova.toString().replace('.',',')} dias de cobertura.</div>`;
+    }
+
+    const titulo = cls === 'ok' ? '✓ APROVAR CESSÃO' : cls === 'warn' ? '⚠ AVALIAR ANTES DE CEDER' : '🚨 CRÍTICO — REVISAR';
+
+    resultEl.className = 'sim-resultado-card ' + cls;
+    resultEl.innerHTML = `
+      <div class="sim-result-title ${cls}">${titulo}</div>
+      <div class="sim-result-grid">
+        <div>
+          <div class="sim-result-num-sm" style="color:${corNum};">${Math.max(0, sobra)}<span style="font-size:13px;color:var(--muted);font-weight:600;margin-left:4px;">un</span></div>
+          <div class="sim-result-label">Sobra após ceder</div>
+        </div>
+        <div>
+          <div class="sim-result-num" style="color:${corNum};">${coberturaNova >= 999 ? '∞' : coberturaNova.toString().replace('.',',')}<span style="font-size:14px;color:var(--muted);font-weight:600;margin-left:4px;">${coberturaNova >= 999 ? '' : 'dias'}</span></div>
+          <div class="sim-result-label">Cobertura nova</div>
+        </div>
+      </div>
+      ${warningHtml}
+    `;
+  };
+
+  // ═══ DATA DO LOTE — leitura do Firebase em estoque_mm/datas_lote/<codItem> ═══
+  // O cadastro/edição é feito na seção "Lotes Planejados". Aqui só lê.
+  // Lote é por PRODUTO PAI (codItem) — todas as máscaras compartilham a mesma data.
+  const _loteDiaCache = {};   // { codItem: { dataKey, dataFmt, diasAte } }
+
+  function _calcularDiasAte(dataKey){
+    if (!dataKey) return null;
+    const m = dataKey.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return null;
+    const alvo = new Date(+m[1], +m[2]-1, +m[3]);
+    const hoje = new Date();
+    hoje.setHours(0,0,0,0);
+    const diff = Math.round((alvo - hoje) / 86400000);
+    return diff;
+  }
+  function _formatarData(dataKey){
+    const m = dataKey.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : dataKey;
+  }
+
+  window.carregarLoteDia = async function(codItem){
+    const txt = document.getElementById('sim-lote-texto');
+    if (!txt) return;
+    if (!window._mmDB) {
+      txt.textContent = '— (Firebase indisponível)';
+      return;
+    }
+    try {
+      const snap = await window._mmDB.ref(`estoque_mm/datas_lote/${codItem}`).once('value');
+      const v = snap.val();
+      if (v && v.dataKey) {
+        const diasAte = _calcularDiasAte(v.dataKey);
+        const dataFmt = _formatarData(v.dataKey);
+        _loteDiaCache[codItem] = { dataKey: v.dataKey, dataFmt, diasAte };
+        let aviso = '';
+        let cor = 'var(--text)';
+        if (diasAte !== null) {
+          if (diasAte < 0)        { aviso = ` <span style="color:var(--muted);">(passou ${-diasAte}d)</span>`; cor = 'var(--muted)'; }
+          else if (diasAte === 0) { aviso = ` <span style="color:#fb923c;">(hoje)</span>`; cor = '#fb923c'; }
+          else if (diasAte <= 7)  { aviso = ` <span style="color:#22c98a;">(em ${diasAte}d)</span>`; cor = '#22c98a'; }
+          else                    { aviso = ` <span style="color:var(--muted);">(em ${diasAte}d)</span>`; cor = 'var(--text)'; }
+        }
+        txt.innerHTML = `<b style="color:${cor};font-size:11.5px;">${dataFmt}</b>${aviso}`;
+      } else {
+        _loteDiaCache[codItem] = null;
+        txt.innerHTML = '<span style="color:var(--muted);font-style:italic;font-size:10.5px;">não cadastrado · use a seção "Lotes Planejados"</span>';
+      }
+    } catch (e) {
+      console.warn('[lote] erro ao carregar:', e);
+      txt.textContent = '—';
+    }
+    // Recalcula resultado pra atualizar o aviso com info de lote
+    if (typeof recalcularSimulacao === 'function') recalcularSimulacao();
+  };
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     LOTES PLANEJADOS — seção de cadastro/listagem de datas previstas
+     Salvo no Firebase em estoque_mm/datas_lote/<codItem>
+     Lote é por PRODUTO PAI — todas as variações compartilham a data.
+     ═══════════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  if (typeof BUNDLE === 'undefined') return;
+  const FB_PATH = 'estoque_mm/datas_lote';
+
+  // Lista de produtos pais únicos pro select (codItem → produto)
+  const _produtosUnicos = [];
+  const _seenCods = new Set();
+  (BUNDLE.data || []).forEach(p => {
+    if (!_seenCods.has(p.codItem)) {
+      _seenCods.add(p.codItem);
+      // Conta quantas variações o produto tem
+      const nVars = (p.variacoes || []).filter(v => (v.solicitadoCargaMae || 0) > 0).length;
+      if (nVars > 0) {
+        _produtosUnicos.push({ codItem: p.codItem, produto: p.produto, categoria: p.categoria, nVars });
+      }
+    }
+  });
+  _produtosUnicos.sort((a, b) => a.produto.localeCompare(b.produto, 'pt-BR'));
+
+  // ═══ AUTOCOMPLETE — busca conforme digita ═══
+  function _normalizarBusca(s){
+    return (s || '').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // remove acentos
+  }
+  window.filtrarProdutosLote = function(q){
+    const sug = document.getElementById('lote-form-suggestions');
+    if (!sug) return;
+    const qNorm = _normalizarBusca(q).trim();
+    // Limpa o hidden (codItem) sempre que usuário digita — força ele a clicar numa sugestão
+    document.getElementById('lote-form-produto').value = '';
+    const lista = qNorm.length === 0
+      ? _produtosUnicos.slice(0, 50)
+      : _produtosUnicos.filter(p => _normalizarBusca(p.produto).includes(qNorm) || String(p.codItem).includes(qNorm)).slice(0, 50);
+    if (lista.length === 0) {
+      sug.innerHTML = '<div class="lote-form-suggestion-empty">Nenhum produto encontrado</div>';
+      sug.classList.add('open');
+      return;
+    }
+    sug.innerHTML = lista.map(p =>
+      `<div class="lote-form-suggestion-item" data-cod="${p.codItem}" data-nome="${p.produto.replace(/"/g,'&quot;')}" data-nvars="${p.nVars}" onclick="selecionarProdutoLote(this)">
+        <span>${p.produto}</span>
+        ${p.nVars > 1 ? `<span class="prod-vars">${p.nVars} variações</span>` : ''}
+      </div>`
+    ).join('');
+    sug.classList.add('open');
+  };
+
+  window.selecionarProdutoLote = function(el){
+    const cod = el.getAttribute('data-cod');
+    const nome = el.getAttribute('data-nome');
+    const nVars = parseInt(el.getAttribute('data-nvars')) || 1;
+    document.getElementById('lote-form-produto-search').value = nome + (nVars > 1 ? ` (${nVars} variações)` : '');
+    document.getElementById('lote-form-produto').value = cod;
+    document.getElementById('lote-form-suggestions').classList.remove('open');
+  };
+
+  // Fecha sugestões ao clicar fora
+  document.addEventListener('click', e => {
+    const wrap = document.querySelector('.lote-form-prod-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      const sug = document.getElementById('lote-form-suggestions');
+      if (sug) sug.classList.remove('open');
+    }
+  });
+
+  function _calcularDiasAteLP(dataKey){
+    const m = dataKey.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return null;
+    const alvo = new Date(+m[1], +m[2]-1, +m[3]);
+    const hoje = new Date();
+    hoje.setHours(0,0,0,0);
+    return Math.round((alvo - hoje) / 86400000);
+  }
+  function _formatarDataLP(dataKey){
+    const m = dataKey.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : dataKey;
+  }
+
+  // ═══ SALVAR NOVO LOTE ═══
+  window.salvarNovoLote = async function(){
+    const codItem = document.getElementById('lote-form-produto').value;
+    const dataKey = document.getElementById('lote-form-data').value;
+    if (!codItem) {
+      alert('Escolha um produto da lista de sugestões (digite e clique em uma opção).');
+      document.getElementById('lote-form-produto-search').focus();
+      return;
+    }
+    if (!dataKey) { alert('Selecione uma data.'); return; }
+    if (!window._mmDB) { alert('Firebase não disponível.'); return; }
+    const btn = document.getElementById('lote-form-btn');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    try {
+      await window._mmDB.ref(`${FB_PATH}/${codItem}`).set({
+        dataKey: dataKey,
+        ts: Date.now(),
+      });
+      // Limpa o form (visual + hidden)
+      document.getElementById('lote-form-produto-search').value = '';
+      document.getElementById('lote-form-produto').value = '';
+      document.getElementById('lote-form-data').value = '';
+      // Recarrega lista
+      await renderizarLotes();
+    } catch (e) {
+      alert('Erro ao salvar: ' + e.message);
+    }
+    btn.disabled = false; btn.textContent = '✓ Salvar lote';
+  };
+
+  // ═══ REMOVER LOTE ═══
+  window.removerLote = async function(codItem){
+    const prod = _produtosUnicos.find(p => p.codItem === codItem);
+    const nome = prod ? prod.produto : `cod ${codItem}`;
+    if (!confirm(`Remover o lote planejado de "${nome}"?`)) return;
+    if (!window._mmDB) return;
+    try {
+      await window._mmDB.ref(`${FB_PATH}/${codItem}`).remove();
+      await renderizarLotes();
+    } catch (e) {
+      alert('Erro: ' + e.message);
+    }
+  };
+
+  // ═══ RENDERIZAR LISTA ═══
+  async function renderizarLotes(){
+    const cont = document.getElementById('lotes-lista');
+    const sub  = document.getElementById('lotes-sub');
+    if (!cont) return;
+    if (!window._mmDB) {
+      cont.innerHTML = `<div class="empty-lotes"><div class="empty-lotes-icon">⚠</div><div class="empty-lotes-title">Firebase não disponível</div><div class="empty-lotes-text">Não foi possível conectar ao banco. Verifique a conexão.</div></div>`;
+      return;
+    }
+    try {
+      const snap = await window._mmDB.ref(FB_PATH).once('value');
+      const dados = snap.val() || {};
+      const lotes = [];
+      for (const [codItem, v] of Object.entries(dados)) {
+        if (!v || !v.dataKey) continue;
+        const diasAte = _calcularDiasAteLP(v.dataKey);
+        const prod = _produtosUnicos.find(p => p.codItem === parseInt(codItem));
+        if (!prod) continue;  // produto não existe mais no BUNDLE
+        lotes.push({
+          codItem: parseInt(codItem),
+          produto: prod.produto,
+          categoria: prod.categoria,
+          nVars: prod.nVars,
+          dataKey: v.dataKey,
+          dataFmt: _formatarDataLP(v.dataKey),
+          diasAte
+        });
+      }
+      // Ordena: futuros primeiro (mais próximo no topo), passados no fim
+      lotes.sort((a, b) => {
+        const aFut = a.diasAte >= 0, bFut = b.diasAte >= 0;
+        if (aFut && !bFut) return -1;
+        if (!aFut && bFut) return 1;
+        if (aFut) return a.diasAte - b.diasAte;
+        return b.diasAte - a.diasAte;
+      });
+      if (sub) sub.textContent = lotes.length === 0 ? 'nenhum lote cadastrado ainda' : `${lotes.length} lote${lotes.length > 1 ? 's' : ''} cadastrado${lotes.length > 1 ? 's' : ''}`;
+      if (lotes.length === 0) {
+        cont.innerHTML = `<div class="empty-lotes"><div class="empty-lotes-icon">📦</div><div class="empty-lotes-title">Nenhum lote cadastrado</div><div class="empty-lotes-text">Use o formulário acima pra cadastrar o primeiro lote planejado. A data ficará disponível pro time inteiro e aparecerá no simulador de reservas.</div></div>`;
+        return;
+      }
+      let html = '<div class="lotes-list">';
+      lotes.forEach(l => {
+        let corDataFundo, corDataTexto, aviso;
+        if (l.diasAte < 0) {
+          corDataFundo = 'rgba(255,255,255,0.04)'; corDataTexto = 'var(--muted)';
+          aviso = `passou ${-l.diasAte}d`;
+        } else if (l.diasAte === 0) {
+          corDataFundo = 'rgba(251,146,60,0.10)'; corDataTexto = '#fb923c';
+          aviso = 'HOJE';
+        } else if (l.diasAte <= 7) {
+          corDataFundo = 'rgba(34,201,138,0.10)'; corDataTexto = '#22c98a';
+          aviso = `em ${l.diasAte} dia${l.diasAte > 1 ? 's' : ''}`;
+        } else {
+          corDataFundo = 'rgba(255,255,255,0.04)'; corDataTexto = 'var(--text)';
+          aviso = `em ${l.diasAte} dias`;
+        }
+        html += `<div class="lote-item">
+          <div class="lote-item-data" style="background:${corDataFundo};color:${corDataTexto};padding:6px 10px;border-radius:8px;">
+            ${l.dataFmt}
+            <span class="dia-aviso">${aviso}</span>
+          </div>
+          <div class="lote-item-info">
+            <div class="lote-item-produto">${l.produto}</div>
+            <div class="lote-item-meta">${l.categoria} · cod ${l.codItem} · ${l.nVars} variaç${l.nVars > 1 ? 'ões' : 'ão'} atendida${l.nVars > 1 ? 's' : ''}</div>
+          </div>
+          <div class="lote-item-actions">
+            <button class="lote-item-btn" onclick="removerLote(${l.codItem})" title="Remover lote">🗑 Remover</button>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+      cont.innerHTML = html;
+    } catch (e) {
+      console.warn('[lotes] erro:', e);
+      cont.innerHTML = `<div class="empty-lotes"><div class="empty-lotes-icon">⚠</div><div class="empty-lotes-title">Erro ao carregar lotes</div><div class="empty-lotes-text">${e.message || 'Erro desconhecido'}</div></div>`;
+    }
+  }
+
+  // Renderiza ao carregar a página (com pequeno delay pra Firebase ficar pronto)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(renderizarLotes, 300));
+  } else {
+    setTimeout(renderizarLotes, 300);
   }
 })();
 </script>
