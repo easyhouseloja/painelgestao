@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Estoque · Carga Mãe Easy House · 29/04/2026</title>
+<title>Estoque · Carga Mãe Easy House · 04/05/2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root{--bg:#0d0f14;--surface:#151820;--surface2:#1c2030;--border:#252a3a;--text:#e8eaf2;--muted:#6b7494;--accent:#4f7cff;--accent2:#7b5ea7;--ok:#22c98a;--warn:#f59e0b;--danger:#ef4444;--danger-soft:rgba(239,68,68,0.12);--ok-soft:rgba(34,201,138,0.10);--warn-soft:rgba(245,158,11,0.10);--cat-gr:#4f7cff;--cat-comp:#a855f7;--cat-sj:#0ea5e9;}
@@ -13,6 +13,8 @@
   .header-left{display:flex;align-items:center;gap:16px;}
   .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
   .header-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;}
+  .header-owner{font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:0.3px;opacity:0.85;}
+  .header-owner b{color:var(--text);font-weight:700;}
   .header-sub{font-size:12px;color:var(--muted);margin-top:2px;}
   .header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .badge-date{background:rgba(79,124,255,0.12);border:1px solid rgba(79,124,255,0.3);color:#7b9fff;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;}
@@ -157,7 +159,74 @@
   footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);}
   @media(max-width:1100px){.lotes-grid-5{grid-template-columns:repeat(3,1fr);}.cat-grid{grid-template-columns:1fr 1fr;}}
   @media(max-width:900px){main{padding:16px;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.status-grid{grid-template-columns:1fr 1fr;}.cat-grid{grid-template-columns:1fr;}.lotes-grid-5{grid-template-columns:repeat(2,1fr);}.alert-row{grid-template-columns:1fr 1fr;}}
+  /* LOTES PLANEJADOS — formulário e lista (sincronizado via Firebase) */
+  .lote-form{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .lote-form-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+  .lote-form-select{flex:1;min-width:240px;background:var(--surface2,#0e1326);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;font-family:inherit;outline:none;transition:border-color 0.15s;}
+  .lote-form-select:focus{border-color:rgba(34,211,238,0.5);}
+
+  /* Autocomplete (substitui o select) */
+  .lote-form-prod-wrap{flex:1;min-width:240px;position:relative;}
+  .lote-form-input{width:100%;background:var(--surface2,#0e1326);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;font-family:inherit;outline:none;transition:border-color 0.15s;box-sizing:border-box;}
+  .lote-form-input:focus{border-color:rgba(34,211,238,0.5);}
+  .lote-form-input::placeholder{color:var(--muted);}
+  .lote-form-suggestions{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:280px;overflow-y:auto;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,0.4);z-index:50;}
+  .lote-form-suggestions.open{display:block;}
+  .lote-form-suggestion-item{padding:8px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;transition:background 0.12s;}
+  .lote-form-suggestion-item:last-child{border-bottom:none;}
+  .lote-form-suggestion-item:hover,.lote-form-suggestion-item.active{background:var(--surface2,#0e1326);color:#22d3ee;}
+  .lote-form-suggestion-item .prod-vars{font-size:10px;color:var(--muted);font-weight:500;flex-shrink:0;}
+  .lote-form-suggestion-empty{padding:12px;text-align:center;color:var(--muted);font-size:11px;}
+  .lote-form-date{background:var(--surface2,#0e1326);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;font-family:inherit;outline:none;transition:border-color 0.15s;}
+  .lote-form-date:focus{border-color:rgba(34,211,238,0.5);}
+  .lote-form-btn{background:rgba(34,211,238,0.10);border:1px solid rgba(34,211,238,0.40);color:#22d3ee;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;font-family:inherit;transition:all 0.15s;}
+  .lote-form-btn:hover{background:rgba(34,211,238,0.18);}
+  .lote-form-btn:disabled{opacity:0.4;cursor:not-allowed;}
+  .lotes-list{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .lote-list-item{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--border);}
+  .lote-list-item:last-child{border-bottom:none;}
+  .lote-list-item:hover{background:var(--surface2,#0e1326);}
+  .lote-list-datas-wrap{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .lote-list-data{position:relative;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;min-width:90px;text-align:center;line-height:1.1;padding:6px 24px 6px 10px;border-radius:8px;}
+  .lote-list-data .dia-aviso{font-size:9.5px;font-weight:600;display:block;margin-top:2px;opacity:0.9;}
+  .lote-data-remove{position:absolute;top:3px;right:4px;width:16px;height:16px;border:none;background:transparent;color:inherit;opacity:0.45;cursor:pointer;font-size:11px;line-height:1;padding:0;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:inherit;transition:opacity 0.15s,background 0.15s;}
+  .lote-data-remove:hover{opacity:1;background:rgba(239,68,68,0.18);color:#ef4444;}
+  .lote-list-info{flex:1;min-width:0;}
+  .lote-list-produto{font-size:12.5px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lote-list-meta{font-size:10px;color:var(--muted);margin-top:2px;}
+  .lote-list-actions{display:flex;gap:6px;}
+  .lote-list-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:9px;padding:4px 9px;border-radius:5px;cursor:pointer;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;font-family:inherit;transition:all 0.15s;}
+  .lote-list-btn:hover{color:#ef4444;border-color:rgba(239,68,68,0.4);}
+  .lote-empty{background:var(--surface);border:1px dashed var(--border);border-radius:14px;padding:36px 28px;text-align:center;}
+  .lote-empty-icon{font-size:32px;margin-bottom:12px;opacity:0.5;}
+  .lote-empty-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:6px;}
+  .lote-empty-text{font-size:12px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.6;}
 </style>
+<!-- Firebase Realtime Database (mesma config dos outros painéis) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+  (function(){
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4krP9uAnApsZl0GgBkHdEwcEZg8e2QTQ",
+      authDomain: "easyhouse-logs.firebaseapp.com",
+      databaseURL: "https://easyhouse-logs-default-rtdb.firebaseio.com",
+      projectId: "easyhouse-logs",
+      storageBucket: "easyhouse-logs.firebasestorage.app",
+      messagingSenderId: "205222626958",
+      appId: "1:205222626958:web:949d7438096201b62eebdf"
+    };
+    try {
+      if (!firebase.apps || !firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      window._ehDB = firebase.database();
+    } catch(e){
+      console.warn('[firebase] não inicializou:', e);
+      window._ehDB = null;
+    }
+  })();
+</script>
 </head>
 <body>
 <header>
@@ -165,108 +234,93 @@
     <div class="logo-icon">📦</div>
     <div>
       <div class="header-title">Carga Mãe · Easy House</div>
-      <div class="header-sub">DOC 2493 · Reserva de Estoque · 29/04/2026</div>
+      <div class="header-owner">controle de estoque carga mãe · <b>Janaína</b></div>
+      <div class="header-sub">DOC 2493 · Reserva de Estoque · 04/05/2026</div>
     </div>
   </div>
   <div class="header-right">
-    <div class="badge-date">📅 29/04/2026</div>
-    <div class="badge-alert"><div class="dot"></div>10 ALERTAS ATIVOS</div>
+    <div class="badge-date">📅 04/05/2026</div>
+    <div class="badge-alert"><div class="dot"></div>11 ALERTAS ATIVOS</div>
   </div>
 </header>
 <main>
 
   <div class="kpi-grid">
     <div class="kpi-card blue"><div class="kpi-icon">📋</div><div class="kpi-label">Total Solicitado</div><div class="kpi-value blue">8.759</div><div class="kpi-sub">143 variações · 51 produtos</div></div>
-    <div class="kpi-card amber"><div class="kpi-icon">✅</div><div class="kpi-label">Total Reservado</div><div class="kpi-value amber">6.611</div><div class="kpi-sub">75,5% do total da carga</div></div>
-    <div class="kpi-card amber"><div class="kpi-icon">⏳</div><div class="kpi-label">Pendente</div><div class="kpi-value amber">2.148</div><div class="kpi-sub">24,5% ainda sem reserva</div></div>
-    <div class="kpi-card red"><div class="kpi-icon">🚨</div><div class="kpi-label">Variações em Alerta</div><div class="kpi-value red">10</div><div class="kpi-sub">Abaixo de 30% reservado</div></div>
+    <div class="kpi-card amber"><div class="kpi-icon">✅</div><div class="kpi-label">Total Reservado</div><div class="kpi-value amber">6.860</div><div class="kpi-sub">78,3% do total da carga</div></div>
+    <div class="kpi-card amber"><div class="kpi-icon">⏳</div><div class="kpi-label">Pendente</div><div class="kpi-value amber">1.899</div><div class="kpi-sub">21,7% ainda sem reserva</div></div>
+    <div class="kpi-card red"><div class="kpi-icon">🚨</div><div class="kpi-label">Variações em Alerta</div><div class="kpi-value red">11</div><div class="kpi-sub">Abaixo de 30% reservado</div></div>
   </div>
 
   <div class="coverage-card">
     <div class="coverage-top">
       <div>
         <div class="coverage-title">📊 Cobertura Global da Carga</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:4px;">6.611 reservados de 8.759 solicitados · 2.148 pendentes</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">6.860 reservados de 8.759 solicitados · 1.899 pendentes</div>
       </div>
-      <div class="coverage-pct">75,5%</div>
+      <div class="coverage-pct">78,3%</div>
     </div>
-    <div class="coverage-bar-bg"><div class="coverage-bar-fill" style="width:75.5%"></div></div>
+    <div class="coverage-bar-bg"><div class="coverage-bar-fill" style="width:78.3%"></div></div>
     <div class="coverage-legend">
-      <div class="cov-item"><div class="cov-dot" style="background:var(--warn)"></div>Reservado: 75,5%</div>
-      <div class="cov-item"><div class="cov-dot" style="background:var(--border)"></div>Pendente: 24,5%</div>
+      <div class="cov-item"><div class="cov-dot" style="background:var(--warn)"></div>Reservado: 78,3%</div>
+      <div class="cov-item"><div class="cov-dot" style="background:var(--border)"></div>Pendente: 21,7%</div>
     </div>
   </div>
 
   <div class="cat-grid">
     <div class="cat-card gr">
       <div class="cat-header"><span class="cat-label gr">🚪 Guarda Roupas</span><span class="cat-badge gr">14 produtos</span></div>
-      <div class="cat-bar-bg"><div class="cat-bar-fill gr" style="width:62.1%"></div></div>
+      <div class="cat-bar-bg"><div class="cat-bar-fill gr" style="width:66.7%"></div></div>
       <div class="cat-stats">
-        <div class="cat-pct gr">62,1%</div>
-        <div class="cat-detail">Sol: 4.190 · Res: 2.601<br>Pendente: 1.589 · Alertas: 6</div>
+        <div class="cat-pct gr">66,7%</div>
+        <div class="cat-detail">Sol: 4.190 · Res: 2.796<br>Pendente: 1.394 · Alertas: 8</div>
       </div>
     </div>
     <div class="cat-card comp">
       <div class="cat-header"><span class="cat-label comp">🛏 Complementos</span><span class="cat-badge comp">22 produtos</span></div>
-      <div class="cat-bar-bg"><div class="cat-bar-fill comp" style="width:86.6%"></div></div>
+      <div class="cat-bar-bg"><div class="cat-bar-fill comp" style="width:85.5%"></div></div>
       <div class="cat-stats">
-        <div class="cat-pct comp">86,6%</div>
-        <div class="cat-detail">Sol: 2.584 · Res: 2.239<br>Pendente: 345 · Alertas: 1</div>
+        <div class="cat-pct comp">85,5%</div>
+        <div class="cat-detail">Sol: 2.584 · Res: 2.210<br>Pendente: 374 · Alertas: 2</div>
       </div>
     </div>
     <div class="cat-card sj">
       <div class="cat-header"><span class="cat-label sj">🪑 Sala de Jantar</span><span class="cat-badge sj">15 produtos</span></div>
-      <div class="cat-bar-bg"><div class="cat-bar-fill sj" style="width:89.2%"></div></div>
+      <div class="cat-bar-bg"><div class="cat-bar-fill sj" style="width:93.4%"></div></div>
       <div class="cat-stats">
-        <div class="cat-pct sj">89,2%</div>
-        <div class="cat-detail">Sol: 1.985 · Res: 1.771<br>Pendente: 214 · Alertas: 3</div>
+        <div class="cat-pct sj">93,4%</div>
+        <div class="cat-detail">Sol: 1.985 · Res: 1.854<br>Pendente: 131 · Alertas: 1</div>
       </div>
     </div>
   </div>
 
   <div class="status-grid">
-    <div class="status-card"><div class="status-icon ok">✅</div><div><div class="status-num ok">24</div><div class="status-desc">Produtos 100% reservados</div></div></div>
-    <div class="status-card"><div class="status-icon warn">⏳</div><div><div class="status-num warn">27</div><div class="status-desc">Produtos com reserva parcial</div></div></div>
-    <div class="status-card"><div class="status-icon danger">⚠️</div><div><div class="status-num danger">10</div><div class="status-desc">Variações abaixo de 30%</div></div></div>
+    <div class="status-card"><div class="status-icon ok">✅</div><div><div class="status-num ok">20</div><div class="status-desc">Produtos 100% reservados</div></div></div>
+    <div class="status-card"><div class="status-icon warn">⏳</div><div><div class="status-num warn">31</div><div class="status-desc">Produtos com reserva parcial</div></div></div>
+    <div class="status-card"><div class="status-icon danger">⚠️</div><div><div class="status-num danger">11</div><div class="status-desc">Variações abaixo de 30%</div></div></div>
   </div>
 
-  <div class="section-title">🚚 Lotes Planejados <span>situação em 29/04/2026</span></div>
-  <div class="lotes-section-label">Amanhã e próximas semanas</div>
-  <div class="lotes-grid-5" style="margin-bottom:24px;">
-    <div class="lote-card amanha">
-      <div class="lote-top"><div><div class="lote-date amanha">30/04/2026</div><div class="lote-dia">Quinta-feira · AMANHÃ</div></div><div class="lote-badge amanha">⚡ AMANHÃ</div></div>
-      <div class="lote-items">
-        <div class="lote-item"><span class="lote-item-name">GR EASY SLIM 8 PTS</span></div>
-        <div class="lote-item"><span class="lote-item-name">MESA 0,90 CELEBRARE 2023</span></div>
-      </div>
+  <div class="section-title">🚚 Lotes Planejados <span id="lotes-sub">datas previstas de chegada por produto</span></div>
+  <!-- Formulário de cadastro -->
+  <div class="lote-form no-print">
+    <span class="lote-form-label">+ NOVO LOTE</span>
+    <div class="lote-form-prod-wrap">
+      <input type="text" class="lote-form-input" id="lote-form-produto-search"
+             placeholder="🔍 Digite o produto..." autocomplete="off"
+             oninput="filtrarProdutosLote(this.value)"
+             onfocus="filtrarProdutosLote(this.value)">
+      <input type="hidden" id="lote-form-produto" value="">
+      <div class="lote-form-suggestions" id="lote-form-suggestions"></div>
     </div>
-    <div class="lote-card previsto">
-      <div class="lote-top"><div><div class="lote-date warn">04/05/2026</div><div class="lote-dia">Segunda-feira</div></div><div class="lote-badge previsto">📦 PREVISTO</div></div>
-      <div class="lote-items">
-        <div class="lote-item"><span class="lote-item-name">CÔMODA VEDRA 7GAV 2PTS</span></div>
-        <div class="lote-item"><span class="lote-item-name">CAMA CASAL 1,40 EASY LIKE</span></div>
-      </div>
-    </div>
-    <div class="lote-card previsto">
-      <div class="lote-top"><div><div class="lote-date warn">05/05/2026</div><div class="lote-dia">Terça-feira</div></div><div class="lote-badge previsto">📦 PREVISTO</div></div>
-      <div class="lote-items">
-        <div class="lote-item"><span class="lote-item-name">GR 06 PTS EASY SLIM 2025</span></div>
-        <div class="lote-item"><span class="lote-item-name">GR 08 PTS EASY GLOW</span></div>
-      </div>
-    </div>
-    <div class="lote-card previsto">
-      <div class="lote-top"><div><div class="lote-date warn">06/05/2026</div><div class="lote-dia">Quarta-feira</div></div><div class="lote-badge previsto">📦 PREVISTO</div></div>
-      <div class="lote-items"><div class="lote-item"><span class="lote-item-name">CÔMODA MAGGIORE NEW 6GAV</span></div></div>
-    </div>
-    <div class="lote-card previsto">
-      <div class="lote-top"><div><div class="lote-date warn">07/05/2026</div><div class="lote-dia">Quinta-feira</div></div><div class="lote-badge previsto">📦 PREVISTO</div></div>
-      <div class="lote-items"><div class="lote-item"><span class="lote-item-name">GR EASY SLIM 8 PTS</span></div></div>
-    </div>
+    <input type="date" class="lote-form-date" id="lote-form-data">
+    <button class="lote-form-btn" id="lote-form-btn" onclick="salvarNovoLote()">✓ Salvar lote</button>
   </div>
+  <!-- Lista de lotes (preenchida pelo JS) -->
+  <div id="lotes-lista" style="margin-bottom:24px;"></div>
 
   <div class="alert-banner"><div class="alert-icon">⚠️</div><div>
-    <div class="alert-title">10 variações com reserva crítica (&lt;30%)</div>
-    <div class="alert-text">GR: Easy Slim 8 PTS Off White (24,2%) e Branco (7,3%) — lote amanhã 30/04 · Easy Move (2 cores a 0%) · Easy Glow (0%) — lote 05/05 · Imperatore Frassino (13,3%). Complementos: Cama Lopas 0,90 C/Auxiliar (21,2%). Sala de Jantar: Mesa Celebrare (1,2%) — lote amanhã · Tessera C/6 e Apogeu C/4.</div>
+    <div class="alert-title">11 variações com reserva crítica (&lt;30%)</div>
+    <div class="alert-text">GR: GR EASY SLIM 8 PTS BRANCO#S/ESP#S/PES (0,0%) · GR 06 PTS EASY MOVE 2,40 AMENDOA CLEAN/OFF WH#S/ESP#S/P (0,0%) · GR 06 PTS EASY MOVE 2,40 AMENDOA CLEAN#S/ESP#S/PES (0,0%) · GR 08 PTS EASY GLOW AMENDOA CLEAN#S/ESP#S/PES (0,0%) · GR 08 PTS EASY GLOW AMENDOA CLEAN/OFF WH#S/ESP#S/P (20,0%) · GR IMPERATORE 6 PTS 2023 AMENDOA CLEAN/OFF WH#S/ESP#S/P (0,0%) | Complementos: CAMA LOPAS SOLT 0,90 EASY LIKE (0,0%) · COMODA LOPAS EASY LIKE (18,8%) | SJ: CADEIRA TESSERA C/6 (13,3%)</div>
   </div></div>
 
   <div class="section-title">🔴 Itens em Alerta <span>reserva &lt; 30% por variação</span></div>
@@ -286,9 +340,9 @@
   <div id="tableContainer"></div>
 
 </main>
-<footer>Dashboard gerado automaticamente · Carga Mãe EASY HOUSE · Doc 2493 · 29/04/2026</footer>
+<footer>Dashboard gerado automaticamente · Carga Mãe EASY HOUSE · Doc 2493 · 04/05/2026</footer>
 <script>
-const data = [{"produto": "CAMA LOPAS SOLT 0,90 EASY LIKE", "categoria": "COMPLEMENTOS", "solicitado": 190, "reservado": 84, "pendente": 106, "pct": 44.2, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#CORANO BEGE#C/CAMA AUXILIAR", "solicitado": 80, "reservado": 17, "pendente": 63, "pct": 21.2}, {"variacao": "AMENDOA CLEAN#BOUCLE SALVIA#C/CAMA AUXILIAR", "solicitado": 45, "reservado": 33, "pendente": 12, "pct": 73.3}, {"variacao": "BRANCO#KORINO BRANCO#C/CAMA AUXILIAR", "solicitado": 65, "reservado": 34, "pendente": 31, "pct": 52.3}]}, {"produto": "CABECEIRA BOX 1,60 EASY LIKE", "categoria": "COMPLEMENTOS", "solicitado": 60, "reservado": 34, "pendente": 26, "pct": 56.7, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#CORANO BEGE", "solicitado": 40, "reservado": 26, "pendente": 14, "pct": 65.0}, {"variacao": "BRANCO#KORINO BRANCO", "solicitado": 20, "reservado": 8, "pendente": 12, "pct": 40.0}]}, {"produto": "BELICHE 0,90 OLGA", "categoria": "COMPLEMENTOS", "solicitado": 30, "reservado": 19, "pendente": 11, "pct": 63.3, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#C/LED", "solicitado": 20, "reservado": 9, "pendente": 11, "pct": 45.0}, {"variacao": "BRANCO#C/LED", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0}]}, {"produto": "COMODA VEDRA 7GAV 2 PTS", "categoria": "COMPLEMENTOS", "solicitado": 175, "reservado": 111, "pendente": 64, "pct": 63.4, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 40, "reservado": 34, "pendente": 6, "pct": 85.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 85, "reservado": 43, "pendente": 42, "pct": 50.6}, {"variacao": "BRANCO", "solicitado": 50, "reservado": 34, "pendente": 16, "pct": 68.0}]}, {"produto": "CAMA CASAL 1,40 EASY LIKE", "categoria": "COMPLEMENTOS", "solicitado": 80, "reservado": 57, "pendente": 23, "pct": 71.2, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#CORANO BEGE", "solicitado": 80, "reservado": 57, "pendente": 23, "pct": 71.2}]}, {"produto": "MESA  EASY LINE C/4 CAD EASY LINE", "categoria": "COMPLEMENTOS", "solicitado": 400, "reservado": 319, "pendente": 81, "pct": 79.8, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 400, "reservado": 319, "pendente": 81, "pct": 79.8}]}, {"produto": "SAPATEIRA ESTHELA 2024", "categoria": "COMPLEMENTOS", "solicitado": 110, "reservado": 99, "pendente": 11, "pct": 90.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 40, "reservado": 38, "pendente": 2, "pct": 95.0}, {"variacao": "FRASSINO", "solicitado": 30, "reservado": 27, "pendente": 3, "pct": 90.0}, {"variacao": "BRANCO", "solicitado": 40, "reservado": 34, "pendente": 6, "pct": 85.0}]}, {"produto": "COMODA LOPAS EASY LIKE", "categoria": "COMPLEMENTOS", "solicitado": 190, "reservado": 178, "pendente": 12, "pct": 93.7, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO", "solicitado": 60, "reservado": 55, "pendente": 5, "pct": 91.7}, {"variacao": "AMENDOA CLEAN", "solicitado": 50, "reservado": 49, "pendente": 1, "pct": 98.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 80, "reservado": 74, "pendente": 6, "pct": 92.5}]}, {"produto": "CAMA CASAL 1,40 ATHENAS 2022", "categoria": "COMPLEMENTOS", "solicitado": 20, "reservado": 19, "pendente": 1, "pct": 95.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CL/OFF WHI/A", "solicitado": 20, "reservado": 19, "pendente": 1, "pct": 95.0}]}, {"produto": "MESA DE CABECEIRA MAGGIORE   NEW  03 GAV", "categoria": "COMPLEMENTOS", "solicitado": 40, "reservado": 39, "pendente": 1, "pct": 97.5, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 15, "reservado": 14, "pendente": 1, "pct": 93.3}, {"variacao": "BRANCO", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0}]}, {"produto": "COMODA HORIZONTAL MAGGIORE NEW 6GAV", "categoria": "COMPLEMENTOS", "solicitado": 219, "reservado": 214, "pendente": 5, "pct": 97.7, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO", "solicitado": 99, "reservado": 95, "pendente": 4, "pct": 96.0}, {"variacao": "FRASSINO/OFF WHITE", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "FRASSINO", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN", "solicitado": 50, "reservado": 49, "pendente": 1, "pct": 98.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA DE CABECEIRA EASY LIKE", "categoria": "COMPLEMENTOS", "solicitado": 180, "reservado": 176, "pendente": 4, "pct": 97.8, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/SALVIA", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 70, "reservado": 66, "pendente": 4, "pct": 94.3}, {"variacao": "AMENDOA CLEAN", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}]}, {"produto": "PENTEADEIRA LIVIA", "categoria": "COMPLEMENTOS", "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO", "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0}]}, {"produto": "CAMA SOLTEIRO 0,90 ATHENAS 2022", "categoria": "COMPLEMENTOS", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO#C/CAMA AUXILIAR", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#C/CAMA AUXILIAR", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}]}, {"produto": "COMODA ESSENZA", "categoria": "COMPLEMENTOS", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}]}, {"produto": "COMODA URBAN 2019 8GAV", "categoria": "COMPLEMENTOS", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA DE CABECEIRA BAIAO   2021  3 GAV", "categoria": "COMPLEMENTOS", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}]}, {"produto": "MULTIFUNCIONAL 2PTS DAVI", "categoria": "COMPLEMENTOS", "solicitado": 240, "reservado": 240, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/BRANCO", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}]}, {"produto": "CAMA SOLTEIRO 0,90 REALI 2022", "categoria": "COMPLEMENTOS", "solicitado": 90, "reservado": 90, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}]}, {"produto": "CABECEIRA BOX 1,60 EASY GLOW", "categoria": "COMPLEMENTOS", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#CORANO BEGE#C/LED", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/PRETO#KORINO PRETO#C/LED", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}]}, {"produto": "COMODA SUAVITA", "categoria": "COMPLEMENTOS", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}]}, {"produto": "COMODA TORONTO 2021 8GAV 2 PTS", "categoria": "COMPLEMENTOS", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA EASY SLIM 8 PTS", "categoria": "GUARDA ROUPAS", "solicitado": 1900, "reservado": 500, "pendente": 1400, "pct": 26.3, "alerta": true, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 400, "reservado": 188, "pendente": 212, "pct": 47.0}, {"variacao": "BRANCO#S/ESP#S/PES", "solicitado": 300, "reservado": 22, "pendente": 278, "pct": 7.3}, {"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 1200, "reservado": 290, "pendente": 910, "pct": 24.2}]}, {"produto": "GUARDA ROUPA 06 PTS EASY MOVE 2,40", "categoria": "GUARDA ROUPAS", "solicitado": 50, "reservado": 20, "pendente": 30, "pct": 40.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 15, "reservado": 0, "pendente": 15, "pct": 0.0}, {"variacao": "FRASSINO#S/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0}, {"variacao": "FRASSINO/OFF WHITE#S/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 15, "reservado": 0, "pendente": 15, "pct": 0.0}]}, {"produto": "GUARDA ROUPA 08 PTS EASY GLOW", "categoria": "GUARDA ROUPAS", "solicitado": 85, "reservado": 43, "pendente": 42, "pct": 50.6, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 25, "reservado": 0, "pendente": 25, "pct": 0.0}, {"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 30, "reservado": 13, "pendente": 17, "pct": 43.3}, {"variacao": "FRASSINO#S/ESP#S/PES", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "FRASSINO/OFF WHITE#S/ESP#S/PES", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA IMPERATORE 6 PTS 2023", "categoria": "GUARDA ROUPAS", "solicitado": 80, "reservado": 54, "pendente": 26, "pct": 67.5, "alerta": false, "concluido": false, "variacoes": [{"variacao": "FRASSINO/OFF WHITE#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 15, "reservado": 2, "pendente": 13, "pct": 13.3}, {"variacao": "AMENDOA CLEAN#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 20, "reservado": 8, "pendente": 12, "pct": 40.0}, {"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "FRASSINO#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 15, "reservado": 14, "pendente": 1, "pct": 93.3}]}, {"produto": "GUARDA ROUPA LOPAS 03 PTS ATLAS", "categoria": "GUARDA ROUPAS", "solicitado": 160, "reservado": 139, "pendente": 21, "pct": 86.9, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AM CL/BRANCO/AM CL#S/ESP#S/PES", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#S/ESP#S/PES", "solicitado": 80, "reservado": 59, "pendente": 21, "pct": 73.8}]}, {"produto": "GUARDA ROUPA ALONZO 6 PTS 2021", "categoria": "GUARDA ROUPAS", "solicitado": 90, "reservado": 80, "pendente": 10, "pct": 88.9, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 35, "reservado": 25, "pendente": 10, "pct": 71.4}, {"variacao": "BRANCO#S/ESP#S/PES", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA LOPAS 02 PTS EASY LIGHT", "categoria": "GUARDA ROUPAS", "solicitado": 160, "reservado": 146, "pendente": 14, "pct": 91.2, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CL/OFF WHI/A#S/1PT GLASS#S/PES", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#S/1PT GLASS#S/PES", "solicitado": 20, "reservado": 6, "pendente": 14, "pct": 30.0}, {"variacao": "BRANCO#C/1 PT GLASS#S/PES", "solicitado": 70, "reservado": 70, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA 06 PTS EASY SLIM 2025", "categoria": "GUARDA ROUPAS", "solicitado": 600, "reservado": 557, "pendente": 43, "pct": 92.8, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 300, "reservado": 257, "pendente": 43, "pct": 85.7}, {"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#C/PES", "solicitado": 300, "reservado": 300, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA LOPAS 06 PTS EASY LIKE", "categoria": "GUARDA ROUPAS", "solicitado": 145, "reservado": 142, "pendente": 3, "pct": 97.9, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#S/PES", "solicitado": 30, "reservado": 29, "pendente": 1, "pct": 96.7}, {"variacao": "BRANCO#S/PES", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH#S/PES", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/SALVIA#S/PES", "solicitado": 30, "reservado": 28, "pendente": 2, "pct": 93.3}]}, {"produto": "GUARDA ROUPA ALONZO 4 PTS 2021", "categoria": "GUARDA ROUPAS", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/BRANCO#S/ESP#S/PES", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#S/ESP#S/PES", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA SPAZIO 3 PTS 2,70", "categoria": "GUARDA ROUPAS", "solicitado": 165, "reservado": 165, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO#C/1 PT GLASS#S/PES", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#C/3 PTS GLASS#S/PES", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#S/3PTS GLASS#S/PES", "solicitado": 120, "reservado": 120, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA TORONTO 2 PTS PLUS", "categoria": "GUARDA ROUPAS", "solicitado": 295, "reservado": 295, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO#S/ESP#S/PES", "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#C/ESP#S/PES", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#C/ESP#S/PES", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#S/ESP#S/PES", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA 4PTS EASY LIKE", "categoria": "GUARDA ROUPAS", "solicitado": 180, "reservado": 180, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO#S/PES", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#S/PES", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH#S/PES", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA ELOS 3PTS", "categoria": "GUARDA ROUPAS", "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CL/OFF WHI/A#S/ESP E C/PES PVC", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#S/ESP E S/PES PVC", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#1PT GLASS E C/PES PV", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#1PT GLASS E S/PES PV", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 0,90 CELEBRARE 2023", "categoria": "SALA DE JANTAR", "solicitado": 80, "reservado": 1, "pendente": 79, "pct": 1.2, "alerta": true, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 900X900X4 SE", "solicitado": 80, "reservado": 1, "pendente": 79, "pct": 1.2}]}, {"produto": "MESA 1,70 EASY TOWER", "categoria": "SALA DE JANTAR", "solicitado": 60, "reservado": 38, "pendente": 22, "pct": 63.3, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#MAXI TAMPO 1,70", "solicitado": 60, "reservado": 38, "pendente": 22, "pct": 63.3}]}, {"produto": "COZINHA NINA", "categoria": "SALA DE JANTAR", "solicitado": 220, "reservado": 176, "pendente": 44, "pct": 80.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/BRANCO", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 120, "reservado": 76, "pendente": 44, "pct": 63.3}]}, {"produto": "CADEIRA TESSERA C/6", "categoria": "SALA DE JANTAR", "solicitado": 80, "reservado": 67, "pendente": 13, "pct": 83.8, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#VELUDO LISO CAPUCCINO", "solicitado": 15, "reservado": 2, "pendente": 13, "pct": 13.3}, {"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA APOGEU 2025 C/4", "categoria": "SALA DE JANTAR", "solicitado": 350, "reservado": 311, "pendente": 39, "pct": 88.9, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#VELUDO LISO CAPUCCINO", "solicitado": 50, "reservado": 11, "pendente": 39, "pct": 22.0}, {"variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 70, "reservado": 70, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA APOGEU 2025 C/6", "categoria": "SALA DE JANTAR", "solicitado": 330, "reservado": 313, "pendente": 17, "pct": 94.8, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 60, "reservado": 50, "pendente": 10, "pct": 83.3}, {"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO LISO CAPUCCINO", "solicitado": 80, "reservado": 73, "pendente": 7, "pct": 91.2}, {"variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 1,70 SINTONIA", "categoria": "SALA DE JANTAR", "solicitado": 130, "reservado": 130, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1700X900X4 S", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#NO GLASS TAMPO 1,70", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH#MAXI TAMPO 1,70", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA LUAR 2025 C/4", "categoria": "SALA DE JANTAR", "solicitado": 95, "reservado": 95, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 1,70 APOGEU 2023", "categoria": "SALA DE JANTAR", "solicitado": 70, "reservado": 70, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1700X900X4 S", "solicitado": 70, "reservado": 70, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA LUAR 2025 C/6", "categoria": "SALA DE JANTAR", "solicitado": 85, "reservado": 85, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA BONNA C/2", "categoria": "SALA DE JANTAR", "solicitado": 110, "reservado": 110, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 1,20 SINTONIA", "categoria": "SALA DE JANTAR", "solicitado": 165, "reservado": 165, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH#MAXI TAMPO 1,20", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#NO GLASS TAMPO 1,20", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA GUARAPARI C/4 CAD EASY LINE", "categoria": "SALA DE JANTAR", "solicitado": 120, "reservado": 120, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 120, "reservado": 120, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 1,20 CELEBRARE 2023", "categoria": "SALA DE JANTAR", "solicitado": 70, "reservado": 70, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S", "solicitado": 70, "reservado": 70, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA TESSERA C/4", "categoria": "SALA DE JANTAR", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}]}];
+const data = [{"produto": "CAMA LOPAS SOLT 0,90 EASY LIKE", "categoria": "COMPLEMENTOS", "solicitado": 190, "reservado": 49, "pendente": 141, "pct": 25.8, "alerta": true, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#CORANO BEGE#C/CAMA AUXILIAR", "solicitado": 80, "reservado": 0, "pendente": 80, "pct": 0.0}, {"variacao": "AMENDOA CLEAN#BOUCLE SALVIA#C/CAMA AUXILIAR", "solicitado": 45, "reservado": 20, "pendente": 25, "pct": 44.4}, {"variacao": "BRANCO#KORINO BRANCO#C/CAMA AUXILIAR", "solicitado": 65, "reservado": 29, "pendente": 36, "pct": 44.6}]}, {"produto": "CABECEIRA BOX 1,60 EASY LIKE", "categoria": "COMPLEMENTOS", "solicitado": 60, "reservado": 34, "pendente": 26, "pct": 56.7, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#CORANO BEGE", "solicitado": 40, "reservado": 26, "pendente": 14, "pct": 65.0}, {"variacao": "BRANCO#KORINO BRANCO", "solicitado": 20, "reservado": 8, "pendente": 12, "pct": 40.0}]}, {"produto": "BELICHE 0,90 OLGA", "categoria": "COMPLEMENTOS", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN#C/LED", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#C/LED", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0}]}, {"produto": "COMODA VEDRA 7GAV 2 PTS", "categoria": "COMPLEMENTOS", "solicitado": 175, "reservado": 171, "pendente": 4, "pct": 97.7, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 85, "reservado": 81, "pendente": 4, "pct": 95.3}, {"variacao": "BRANCO", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}]}, {"produto": "CAMA CASAL 1,40 EASY LIKE", "categoria": "COMPLEMENTOS", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN#CORANO BEGE", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA  EASY LINE C/4 CAD EASY LINE", "categoria": "COMPLEMENTOS", "solicitado": 400, "reservado": 384, "pendente": 16, "pct": 96.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 400, "reservado": 384, "pendente": 16, "pct": 96.0}]}, {"produto": "SAPATEIRA ESTHELA 2024", "categoria": "COMPLEMENTOS", "solicitado": 110, "reservado": 92, "pendente": 18, "pct": 83.6, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 40, "reservado": 27, "pendente": 13, "pct": 67.5}, {"variacao": "FRASSINO", "solicitado": 30, "reservado": 28, "pendente": 2, "pct": 93.3}, {"variacao": "BRANCO", "solicitado": 40, "reservado": 37, "pendente": 3, "pct": 92.5}]}, {"produto": "COMODA LOPAS EASY LIKE", "categoria": "COMPLEMENTOS", "solicitado": 190, "reservado": 69, "pendente": 121, "pct": 36.3, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO", "solicitado": 60, "reservado": 25, "pendente": 35, "pct": 41.7}, {"variacao": "AMENDOA CLEAN", "solicitado": 50, "reservado": 29, "pendente": 21, "pct": 58.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 80, "reservado": 15, "pendente": 65, "pct": 18.8}]}, {"produto": "CAMA CASAL 1,40 ATHENAS 2022", "categoria": "COMPLEMENTOS", "solicitado": 20, "reservado": 13, "pendente": 7, "pct": 65.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CL/OFF WHI/A", "solicitado": 20, "reservado": 13, "pendente": 7, "pct": 65.0}]}, {"produto": "MESA DE CABECEIRA MAGGIORE   NEW  03 GAV", "categoria": "COMPLEMENTOS", "solicitado": 40, "reservado": 34, "pendente": 6, "pct": 85.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 15, "reservado": 9, "pendente": 6, "pct": 60.0}, {"variacao": "BRANCO", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0}]}, {"produto": "COMODA HORIZONTAL MAGGIORE NEW 6GAV", "categoria": "COMPLEMENTOS", "solicitado": 219, "reservado": 201, "pendente": 18, "pct": 91.8, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO", "solicitado": 99, "reservado": 81, "pendente": 18, "pct": 81.8}, {"variacao": "FRASSINO/OFF WHITE", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "FRASSINO", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA DE CABECEIRA EASY LIKE", "categoria": "COMPLEMENTOS", "solicitado": 180, "reservado": 175, "pendente": 5, "pct": 97.2, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/SALVIA", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 30, "reservado": 28, "pendente": 2, "pct": 93.3}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 70, "reservado": 68, "pendente": 2, "pct": 97.1}, {"variacao": "AMENDOA CLEAN", "solicitado": 45, "reservado": 44, "pendente": 1, "pct": 97.8}]}, {"produto": "PENTEADEIRA LIVIA", "categoria": "COMPLEMENTOS", "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "BRANCO", "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0}]}, {"produto": "CAMA SOLTEIRO 0,90 ATHENAS 2022", "categoria": "COMPLEMENTOS", "solicitado": 40, "reservado": 33, "pendente": 7, "pct": 82.5, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO#C/CAMA AUXILIAR", "solicitado": 20, "reservado": 19, "pendente": 1, "pct": 95.0}, {"variacao": "AMENDOA CL/OFF WHI/A#C/CAMA AUXILIAR", "solicitado": 20, "reservado": 14, "pendente": 6, "pct": 70.0}]}, {"produto": "COMODA ESSENZA", "categoria": "COMPLEMENTOS", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}]}, {"produto": "COMODA URBAN 2019 8GAV", "categoria": "COMPLEMENTOS", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA DE CABECEIRA BAIAO   2021  3 GAV", "categoria": "COMPLEMENTOS", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}]}, {"produto": "MULTIFUNCIONAL 2PTS DAVI", "categoria": "COMPLEMENTOS", "solicitado": 240, "reservado": 240, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/BRANCO", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}]}, {"produto": "CAMA SOLTEIRO 0,90 REALI 2022", "categoria": "COMPLEMENTOS", "solicitado": 90, "reservado": 90, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}]}, {"produto": "CABECEIRA BOX 1,60 EASY GLOW", "categoria": "COMPLEMENTOS", "solicitado": 40, "reservado": 38, "pendente": 2, "pct": 95.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#CORANO BEGE#C/LED", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/PRETO#KORINO PRETO#C/LED", "solicitado": 20, "reservado": 18, "pendente": 2, "pct": 90.0}]}, {"produto": "COMODA SUAVITA", "categoria": "COMPLEMENTOS", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}]}, {"produto": "COMODA TORONTO 2021 8GAV 2 PTS", "categoria": "COMPLEMENTOS", "solicitado": 25, "reservado": 22, "pendente": 3, "pct": 88.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN", "solicitado": 15, "reservado": 12, "pendente": 3, "pct": 80.0}, {"variacao": "BRANCO", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA EASY SLIM 8 PTS", "categoria": "GUARDA ROUPAS", "solicitado": 1900, "reservado": 738, "pendente": 1162, "pct": 38.8, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 400, "reservado": 200, "pendente": 200, "pct": 50.0}, {"variacao": "BRANCO#S/ESP#S/PES", "solicitado": 300, "reservado": 0, "pendente": 300, "pct": 0.0}, {"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 1200, "reservado": 538, "pendente": 662, "pct": 44.8}]}, {"produto": "GUARDA ROUPA 06 PTS EASY MOVE 2,40", "categoria": "GUARDA ROUPAS", "solicitado": 50, "reservado": 20, "pendente": 30, "pct": 40.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 15, "reservado": 0, "pendente": 15, "pct": 0.0}, {"variacao": "FRASSINO#S/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0}, {"variacao": "FRASSINO/OFF WHITE#S/ESP#S/PES", "solicitado": 10, "reservado": 10, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 15, "reservado": 0, "pendente": 15, "pct": 0.0}]}, {"produto": "GUARDA ROUPA 08 PTS EASY GLOW", "categoria": "GUARDA ROUPAS", "solicitado": 85, "reservado": 36, "pendente": 49, "pct": 42.4, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 25, "reservado": 0, "pendente": 25, "pct": 0.0}, {"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 30, "reservado": 6, "pendente": 24, "pct": 20.0}, {"variacao": "FRASSINO#S/ESP#S/PES", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "FRASSINO/OFF WHITE#S/ESP#S/PES", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA IMPERATORE 6 PTS 2023", "categoria": "GUARDA ROUPAS", "solicitado": 80, "reservado": 54, "pendente": 26, "pct": 67.5, "alerta": false, "concluido": false, "variacoes": [{"variacao": "FRASSINO/OFF WHITE#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 20, "reservado": 9, "pendente": 11, "pct": 45.0}, {"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 15, "reservado": 0, "pendente": 15, "pct": 0.0}, {"variacao": "FRASSINO#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA LOPAS 03 PTS ATLAS", "categoria": "GUARDA ROUPAS", "solicitado": 160, "reservado": 136, "pendente": 24, "pct": 85.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AM CL/BRANCO/AM CL#S/ESP#S/PES", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#S/ESP#S/PES", "solicitado": 80, "reservado": 56, "pendente": 24, "pct": 70.0}]}, {"produto": "GUARDA ROUPA ALONZO 6 PTS 2021", "categoria": "GUARDA ROUPAS", "solicitado": 90, "reservado": 61, "pendente": 29, "pct": 67.8, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 35, "reservado": 10, "pendente": 25, "pct": 28.6}, {"variacao": "BRANCO#S/ESP#S/PES", "solicitado": 30, "reservado": 26, "pendente": 4, "pct": 86.7}, {"variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA LOPAS 02 PTS EASY LIGHT", "categoria": "GUARDA ROUPAS", "solicitado": 160, "reservado": 144, "pendente": 16, "pct": 90.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CL/OFF WHI/A#S/1PT GLASS#S/PES", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#S/1PT GLASS#S/PES", "solicitado": 20, "reservado": 6, "pendente": 14, "pct": 30.0}, {"variacao": "BRANCO#C/1 PT GLASS#S/PES", "solicitado": 70, "reservado": 69, "pendente": 1, "pct": 98.6}, {"variacao": "AMENDOA CL/OFF WHI/A#C/1 PT GLASS#S/PES", "solicitado": 50, "reservado": 49, "pendente": 1, "pct": 98.0}]}, {"produto": "GUARDA ROUPA 06 PTS EASY SLIM 2025", "categoria": "GUARDA ROUPAS", "solicitado": 600, "reservado": 589, "pendente": 11, "pct": 98.2, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 300, "reservado": 289, "pendente": 11, "pct": 96.3}, {"variacao": "AMENDOA CLEAN/OFF WH#S/ESP#C/PES", "solicitado": 300, "reservado": 300, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA LOPAS 06 PTS EASY LIKE", "categoria": "GUARDA ROUPAS", "solicitado": 145, "reservado": 134, "pendente": 11, "pct": 92.4, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#S/PES", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#S/PES", "solicitado": 45, "reservado": 40, "pendente": 5, "pct": 88.9}, {"variacao": "AMENDOA CLEAN/OFF WH#S/PES", "solicitado": 40, "reservado": 36, "pendente": 4, "pct": 90.0}, {"variacao": "AMENDOA CLEAN/SALVIA#S/PES", "solicitado": 30, "reservado": 28, "pendente": 2, "pct": 93.3}]}, {"produto": "GUARDA ROUPA ALONZO 4 PTS 2021", "categoria": "GUARDA ROUPAS", "solicitado": 80, "reservado": 50, "pendente": 30, "pct": 62.5, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/BRANCO#S/ESP#S/PES", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 30, "reservado": 3, "pendente": 27, "pct": 10.0}, {"variacao": "BRANCO#S/ESP#S/PES", "solicitado": 25, "reservado": 22, "pendente": 3, "pct": 88.0}]}, {"produto": "GUARDA ROUPA SPAZIO 3 PTS 2,70", "categoria": "GUARDA ROUPAS", "solicitado": 165, "reservado": 159, "pendente": 6, "pct": 96.4, "alerta": false, "concluido": false, "variacoes": [{"variacao": "BRANCO#C/1 PT GLASS#S/PES", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#C/3 PTS GLASS#S/PES", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#S/3PTS GLASS#S/PES", "solicitado": 120, "reservado": 114, "pendente": 6, "pct": 95.0}]}, {"produto": "GUARDA ROUPA TORONTO 2 PTS PLUS", "categoria": "GUARDA ROUPAS", "solicitado": 295, "reservado": 295, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "BRANCO#S/ESP#S/PES", "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO#C/ESP#S/PES", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#C/ESP#S/PES", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#S/ESP#S/PES", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA 4PTS EASY LIKE", "categoria": "GUARDA ROUPAS", "solicitado": 180, "reservado": 180, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "BRANCO#S/PES", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#S/PES", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH#S/PES", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}]}, {"produto": "GUARDA ROUPA ELOS 3PTS", "categoria": "GUARDA ROUPAS", "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CL/OFF WHI/A#S/ESP E C/PES PVC", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#S/ESP E S/PES PVC", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#1PT GLASS E C/PES PV", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#1PT GLASS E S/PES PV", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 0,90 CELEBRARE 2023", "categoria": "SALA DE JANTAR", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 900X900X4 SE", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 1,70 EASY TOWER", "categoria": "SALA DE JANTAR", "solicitado": 60, "reservado": 34, "pendente": 26, "pct": 56.7, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#MAXI TAMPO 1,70", "solicitado": 60, "reservado": 34, "pendente": 26, "pct": 56.7}]}, {"produto": "COZINHA NINA", "categoria": "SALA DE JANTAR", "solicitado": 220, "reservado": 176, "pendente": 44, "pct": 80.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/BRANCO", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0}, {"variacao": "BRANCO", "solicitado": 120, "reservado": 76, "pendente": 44, "pct": 63.3}]}, {"produto": "CADEIRA TESSERA C/6", "categoria": "SALA DE JANTAR", "solicitado": 80, "reservado": 67, "pendente": 13, "pct": 83.8, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#VELUDO LISO CAPUCCINO", "solicitado": 15, "reservado": 2, "pendente": 13, "pct": 13.3}, {"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA APOGEU 2025 C/4", "categoria": "SALA DE JANTAR", "solicitado": 350, "reservado": 350, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN#VELUDO LISO CAPUCCINO", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 70, "reservado": 70, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA APOGEU 2025 C/6", "categoria": "SALA DE JANTAR", "solicitado": 330, "reservado": 330, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO LISO CAPUCCINO", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 1,70 SINTONIA", "categoria": "SALA DE JANTAR", "solicitado": 130, "reservado": 130, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1700X900X4 S", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#NO GLASS TAMPO 1,70", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH#MAXI TAMPO 1,70", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA LUAR 2025 C/4", "categoria": "SALA DE JANTAR", "solicitado": 95, "reservado": 95, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 1,70 APOGEU 2023", "categoria": "SALA DE JANTAR", "solicitado": 70, "reservado": 29, "pendente": 41, "pct": 41.4, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1700X900X4 S", "solicitado": 70, "reservado": 29, "pendente": 41, "pct": 41.4}]}, {"produto": "CADEIRA LUAR 2025 C/6", "categoria": "SALA DE JANTAR", "solicitado": 85, "reservado": 84, "pendente": 1, "pct": 98.8, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 15, "reservado": 14, "pendente": 1, "pct": 93.3}, {"variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA BONNA C/2", "categoria": "SALA DE JANTAR", "solicitado": 110, "reservado": 110, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 1,20 SINTONIA", "categoria": "SALA DE JANTAR", "solicitado": 165, "reservado": 160, "pendente": 5, "pct": 97.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CLEAN/OFF WH#MAXI TAMPO 1,20", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"variacao": "AMENDOA CL/OFF WHI/A#NO GLASS TAMPO 1,20", "solicitado": 45, "reservado": 40, "pendente": 5, "pct": 88.9}]}, {"produto": "MESA GUARAPARI C/4 CAD EASY LINE", "categoria": "SALA DE JANTAR", "solicitado": 120, "reservado": 120, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 120, "reservado": 120, "pendente": 0, "pct": 100.0}]}, {"produto": "MESA 1,20 CELEBRARE 2023", "categoria": "SALA DE JANTAR", "solicitado": 70, "reservado": 70, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true, "variacoes": [{"variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S", "solicitado": 70, "reservado": 70, "pendente": 0, "pct": 100.0}]}, {"produto": "CADEIRA TESSERA C/4", "categoria": "SALA DE JANTAR", "solicitado": 20, "reservado": 19, "pendente": 1, "pct": 95.0, "alerta": false, "concluido": false, "variacoes": [{"variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 20, "reservado": 19, "pendente": 1, "pct": 95.0}]}];
 const loteProdutos={
   "GUARDA ROUPA EASY SLIM 8 PTS":"30/04 · 07/05",
   "MESA 0,90 CELEBRARE 2023":"30/04",
@@ -408,4 +462,291 @@ function setFilter(f,el){
 }
 function sortBy(key){if(sortKey===key)sortDir*=-1;else{sortKey=key;sortDir=1;}renderTable();}
 renderAlerts();renderTable();
-</script></body></html>
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     LOTES PLANEJADOS — Firebase em estoque_eh/datas_lote/<codItem|nomeNorm>
+     Como esse arquivo não tem código numérico de produto, usa o próprio
+     nome (normalizado: maiúsculo, sem acentos/espaços extras) como chave.
+     ═══════════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  if (typeof data === 'undefined' || !Array.isArray(data)) return;
+  const FB_PATH = 'estoque_eh/datas_lote';
+
+  // Normaliza nome do produto pra usar como chave (sem acento, maiúsculo, _)
+  function _normalizar(nome){
+    return (nome || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')   // remove acentos
+      .toUpperCase()
+      .replace(/[^A-Z0-9]+/g, '_')                          // qualquer não-alfanum vira _
+      .replace(/^_+|_+$/g, '');                             // trim _
+  }
+
+  // Lista de produtos únicos pelo nome (sem variações, lote é por produto)
+  const _produtosUnicos = [];
+  const _seen = new Set();
+  data.forEach(p => {
+    const key = _normalizar(p.produto);
+    if (!_seen.has(key)) {
+      _seen.add(key);
+      const nVars = (p.variacoes || []).length;
+      _produtosUnicos.push({
+        nomeKey: key,
+        produto: p.produto,
+        categoria: p.categoria,
+        nVars: nVars > 0 ? nVars : 1,
+      });
+    }
+  });
+  _produtosUnicos.sort((a, b) => a.produto.localeCompare(b.produto, 'pt-BR'));
+
+  // ═══ AUTOCOMPLETE — busca conforme digita ═══
+  function _normalizarBusca(s){
+    return (s || '').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+  window.filtrarProdutosLote = function(q){
+    const sug = document.getElementById('lote-form-suggestions');
+    if (!sug) return;
+    const qNorm = _normalizarBusca(q).trim();
+    document.getElementById('lote-form-produto').value = '';
+    const lista = qNorm.length === 0
+      ? _produtosUnicos.slice(0, 50)
+      : _produtosUnicos.filter(p => _normalizarBusca(p.produto).includes(qNorm)).slice(0, 50);
+    if (lista.length === 0) {
+      sug.innerHTML = '<div class="lote-form-suggestion-empty">Nenhum produto encontrado</div>';
+      sug.classList.add('open');
+      return;
+    }
+    sug.innerHTML = lista.map(p =>
+      `<div class="lote-form-suggestion-item" data-key="${p.nomeKey}" data-nome="${p.produto.replace(/"/g,'&quot;')}" data-nvars="${p.nVars}" onclick="selecionarProdutoLote(this)">
+        <span>${p.produto}</span>
+        ${p.nVars > 1 ? `<span class="prod-vars">${p.nVars} variações</span>` : ''}
+      </div>`
+    ).join('');
+    sug.classList.add('open');
+  };
+
+  window.selecionarProdutoLote = function(el){
+    const key = el.getAttribute('data-key');
+    const nome = el.getAttribute('data-nome');
+    const nVars = parseInt(el.getAttribute('data-nvars')) || 1;
+    document.getElementById('lote-form-produto-search').value = nome + (nVars > 1 ? ` (${nVars} variações)` : '');
+    document.getElementById('lote-form-produto').value = key;
+    document.getElementById('lote-form-suggestions').classList.remove('open');
+  };
+
+  // Fecha sugestões ao clicar fora
+  document.addEventListener('click', e => {
+    const wrap = document.querySelector('.lote-form-prod-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      const sug = document.getElementById('lote-form-suggestions');
+      if (sug) sug.classList.remove('open');
+    }
+  });
+
+  function _calcularDiasAte(dataKey){
+    const m = dataKey.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return null;
+    const alvo = new Date(+m[1], +m[2]-1, +m[3]);
+    const hoje = new Date();
+    hoje.setHours(0,0,0,0);
+    return Math.round((alvo - hoje) / 86400000);
+  }
+  function _formatarData(dataKey){
+    const m = dataKey.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : dataKey;
+  }
+
+  // SALVAR — estrutura: estoque_eh/datas_lote/<nomeKey>/<dataKey> = {ts, produto}
+  // Migra na hora qualquer entrada que ainda esteja no formato antigo (1 data direto no nó).
+  window.salvarNovoLote = async function(){
+    const nomeKey = document.getElementById('lote-form-produto').value;
+    const dataKey = document.getElementById('lote-form-data').value;
+    if (!nomeKey) {
+      alert('Escolha um produto da lista de sugestões (digite e clique em uma opção).');
+      document.getElementById('lote-form-produto-search').focus();
+      return;
+    }
+    if (!dataKey) { alert('Selecione uma data.'); return; }
+    if (!window._ehDB) { alert('Firebase não disponível.'); return; }
+    const btn = document.getElementById('lote-form-btn');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    try {
+      const prod = _produtosUnicos.find(p => p.nomeKey === nomeKey);
+      const nomeProd = prod ? prod.produto : nomeKey;
+      const ref = window._ehDB.ref(`${FB_PATH}/${nomeKey}`);
+      const snap = await ref.once('value');
+      const cur = snap.val();
+      // Se existe e está no formato antigo (campo dataKey direto), migra antes de adicionar
+      if (cur && typeof cur === 'object' && typeof cur.dataKey === 'string') {
+        const novo = {};
+        novo[cur.dataKey] = { ts: cur.ts || Date.now(), produto: cur.produto || nomeProd };
+        novo[dataKey]     = { ts: Date.now(),           produto: nomeProd };
+        await ref.set(novo);
+      } else {
+        // formato novo (ou ainda inexistente): só seta o filho da data
+        await ref.child(dataKey).set({ ts: Date.now(), produto: nomeProd });
+      }
+      document.getElementById('lote-form-produto-search').value = '';
+      document.getElementById('lote-form-produto').value = '';
+      document.getElementById('lote-form-data').value = '';
+      await renderizarLotes();
+    } catch (e) {
+      alert('Erro ao salvar: ' + e.message);
+    }
+    btn.disabled = false; btn.textContent = '✓ Salvar lote';
+  };
+
+  // REMOVER — se dataKey for passado, remove só essa data. Sem dataKey: remove o produto inteiro.
+  window.removerLote = async function(nomeKey, dataKey){
+    if (!window._ehDB) return;
+    const prod = _produtosUnicos.find(p => p.nomeKey === nomeKey);
+    const nomeProd = prod ? prod.produto : nomeKey;
+    try {
+      if (dataKey) {
+        if (!confirm(`Remover a data ${_formatarData(dataKey)} de "${nomeProd}"?`)) return;
+        // Se o nó ainda está no formato antigo (1 data direto no objeto), apaga o nó inteiro
+        // porque a data antiga é a única que existe ali.
+        const ref = window._ehDB.ref(`${FB_PATH}/${nomeKey}`);
+        const snap = await ref.once('value');
+        const cur = snap.val();
+        if (cur && typeof cur === 'object' && typeof cur.dataKey === 'string' && cur.dataKey === dataKey) {
+          await ref.remove();
+        } else {
+          await ref.child(dataKey).remove();
+        }
+      } else {
+        if (!confirm(`Remover TODAS as datas planejadas de "${nomeProd}"?`)) return;
+        await window._ehDB.ref(`${FB_PATH}/${nomeKey}`).remove();
+      }
+      await renderizarLotes();
+    } catch (e) {
+      alert('Erro: ' + e.message);
+    }
+  };
+
+  // RENDERIZAR — 1 linha por produto, várias datas como badges lado a lado.
+  // Lê tanto formato antigo (dataKey direto no nó) quanto novo (subchaves YYYY-MM-DD).
+  async function renderizarLotes(){
+    const cont = document.getElementById('lotes-lista');
+    const sub  = document.getElementById('lotes-sub');
+    if (!cont) return;
+    if (!window._ehDB) {
+      cont.innerHTML = `<div class="lote-empty"><div class="lote-empty-icon">⚠</div><div class="lote-empty-title">Firebase não disponível</div><div class="lote-empty-text">Não foi possível conectar ao banco. Verifique a conexão.</div></div>`;
+      return;
+    }
+    try {
+      const snap = await window._ehDB.ref(FB_PATH).once('value');
+      const dados = snap.val() || {};
+      const lotes = []; // [{nomeKey, produto, categoria, nVars, datas:[{dataKey,dataFmt,diasAte}]}]
+
+      for (const [nomeKey, v] of Object.entries(dados)) {
+        if (!v || typeof v !== 'object') continue;
+        const datas = [];
+
+        // formato antigo: {dataKey, produto, ts}
+        if (typeof v.dataKey === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v.dataKey)) {
+          datas.push({
+            dataKey: v.dataKey,
+            dataFmt: _formatarData(v.dataKey),
+            diasAte: _calcularDiasAte(v.dataKey),
+          });
+        }
+        // formato novo: subchaves no padrão YYYY-MM-DD
+        for (const k of Object.keys(v)) {
+          if (k === 'dataKey' || k === 'produto' || k === 'ts') continue;
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) continue;
+          // evita duplicar caso por algum motivo coexistam os dois formatos
+          if (datas.some(d => d.dataKey === k)) continue;
+          datas.push({
+            dataKey: k,
+            dataFmt: _formatarData(k),
+            diasAte: _calcularDiasAte(k),
+          });
+        }
+        if (datas.length === 0) continue;
+
+        // ordena datas dentro do produto: futuras primeiro (mais cedo → mais tarde), passadas no fim
+        datas.sort((a, b) => {
+          const aFut = a.diasAte >= 0, bFut = b.diasAte >= 0;
+          if (aFut && !bFut) return -1;
+          if (!aFut && bFut) return 1;
+          if (aFut) return a.diasAte - b.diasAte;
+          return b.diasAte - a.diasAte;
+        });
+
+        const prod = _produtosUnicos.find(p => p.nomeKey === nomeKey);
+        lotes.push({
+          nomeKey,
+          produto: (prod ? prod.produto : (v.produto || nomeKey)),
+          categoria: prod ? prod.categoria : '—',
+          nVars: prod ? prod.nVars : 0,
+          datas,
+        });
+      }
+
+      // ordena produtos pela primeira data (mais próxima primeiro)
+      lotes.sort((a, b) => {
+        const da = a.datas[0].diasAte;
+        const dbb = b.datas[0].diasAte;
+        const aFut = da >= 0, bFut = dbb >= 0;
+        if (aFut && !bFut) return -1;
+        if (!aFut && bFut) return 1;
+        if (aFut) return da - dbb;
+        return dbb - da;
+      });
+
+      const totalDatas = lotes.reduce((s, l) => s + l.datas.length, 0);
+      if (sub) sub.textContent = totalDatas === 0
+        ? 'nenhum lote cadastrado ainda'
+        : `${totalDatas} lote${totalDatas > 1 ? 's' : ''} em ${lotes.length} produto${lotes.length > 1 ? 's' : ''}`;
+
+      if (lotes.length === 0) {
+        cont.innerHTML = `<div class="lote-empty"><div class="lote-empty-icon">📦</div><div class="lote-empty-title">Nenhum lote cadastrado</div><div class="lote-empty-text">Use o formulário acima pra cadastrar o primeiro lote planejado. A data ficará disponível pro time inteiro.</div></div>`;
+        return;
+      }
+
+      let html = '<div class="lotes-list">';
+      lotes.forEach(l => {
+        const datasHtml = l.datas.map(d => {
+          let corBg, corTxt, aviso;
+          if (d.diasAte < 0)        { corBg = 'rgba(255,255,255,0.04)'; corTxt = 'var(--muted)'; aviso = `passou ${-d.diasAte}d`; }
+          else if (d.diasAte === 0) { corBg = 'rgba(251,146,60,0.10)';  corTxt = '#fb923c';      aviso = 'HOJE'; }
+          else if (d.diasAte <= 7)  { corBg = 'rgba(34,201,138,0.10)';  corTxt = '#22c98a';      aviso = `em ${d.diasAte} dia${d.diasAte > 1 ? 's' : ''}`; }
+          else                      { corBg = 'rgba(255,255,255,0.04)'; corTxt = 'var(--text)';   aviso = `em ${d.diasAte} dias`; }
+          return `<div class="lote-list-data" style="background:${corBg};color:${corTxt};">
+            ${d.dataFmt}
+            <span class="dia-aviso">${aviso}</span>
+            <button class="lote-data-remove" onclick="removerLote('${l.nomeKey}','${d.dataKey}')" title="Remover esta data">✕</button>
+          </div>`;
+        }).join('');
+
+        html += `<div class="lote-list-item">
+          <div class="lote-list-datas-wrap">${datasHtml}</div>
+          <div class="lote-list-info">
+            <div class="lote-list-produto">${l.produto}</div>
+            <div class="lote-list-meta">${l.categoria}${l.nVars > 1 ? ` · ${l.nVars} variações atendidas` : ''}${l.datas.length > 1 ? ` · ${l.datas.length} datas planejadas` : ''}</div>
+          </div>
+          <div class="lote-list-actions">
+            <button class="lote-list-btn" onclick="removerLote('${l.nomeKey}')" title="Remover todas as datas deste produto">🗑 Tudo</button>
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+      cont.innerHTML = html;
+    } catch (e) {
+      console.warn('[lotes-eh] erro:', e);
+      cont.innerHTML = `<div class="lote-empty"><div class="lote-empty-icon">⚠</div><div class="lote-empty-title">Erro ao carregar lotes</div><div class="lote-empty-text">${e.message || 'Erro desconhecido'}</div></div>`;
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(renderizarLotes, 300));
+  } else {
+    setTimeout(renderizarLotes, 300);
+  }
+})();
+</script>
+</body></html>
