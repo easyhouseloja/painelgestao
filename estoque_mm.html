@@ -568,6 +568,35 @@
   .sim-warning-text.crit{background:rgba(239,68,68,0.10);color:#fca5a5;border-left:3px solid #ef4444;}
   .sim-warning-text.warn{background:rgba(251,146,60,0.10);color:#fdba74;border-left:3px solid #fb923c;}
   .sim-warning-text.ok{background:rgba(34,201,138,0.08);color:#86efac;border-left:3px solid #22c98a;}
+
+  /* CESSÕES — registro de quem pegou unidades da reserva */
+  .sim-registrar-card{margin-top:12px;background:linear-gradient(135deg,rgba(167,139,250,0.06),rgba(167,139,250,0.02) 70%),var(--surface);border:1px solid rgba(167,139,250,0.25);border-radius:10px;padding:14px 16px;}
+  .sim-cessao-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+  .sim-cessao-label{display:block;font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;}
+  .sim-cessao-select,.sim-cessao-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:12px;font-family:inherit;outline:none;transition:border-color 0.15s;box-sizing:border-box;}
+  .sim-cessao-select:focus,.sim-cessao-input:focus{border-color:rgba(167,139,250,0.5);}
+  .sim-cessao-btn{width:100%;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.5);color:#a78bfa;padding:8px 14px;border-radius:7px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;font-family:inherit;transition:all 0.15s;}
+  .sim-cessao-btn:hover{background:rgba(167,139,250,0.25);}
+  .sim-cessao-btn:disabled{opacity:0.5;cursor:not-allowed;}
+  .sim-cessao-feedback{margin-top:8px;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:600;}
+  .sim-cessao-feedback.ok{background:rgba(34,201,138,0.12);color:#22c98a;border:1px solid rgba(34,201,138,0.35);}
+  .sim-cessao-feedback.erro{background:rgba(239,68,68,0.10);color:#f87171;border:1px solid rgba(239,68,68,0.35);}
+
+  /* Lista de cessões já registradas */
+  .sim-cessoes-lista-wrap{margin-top:14px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+  .sim-cessoes-titulo{display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;}
+  .sim-cessoes-contagem{font-size:9px;color:var(--muted);font-weight:600;}
+  .sim-cessao-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border);}
+  .sim-cessao-item:last-child{border-bottom:none;}
+  .sim-cessao-item-data{font-size:10px;color:var(--muted);font-weight:700;line-height:1.2;text-align:center;min-width:38px;flex-shrink:0;}
+  .sim-cessao-item-data span{font-size:9px;font-weight:500;color:var(--muted);opacity:0.7;}
+  .sim-cessao-item-info{flex:1;min-width:0;line-height:1.3;}
+  .sim-cessao-item-qtd{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:#f87171;}
+  .sim-cessao-item-quem{font-size:11px;color:var(--text);font-weight:600;}
+  .sim-cessao-item-obs{font-size:10px;color:var(--muted);font-style:italic;margin-top:1px;}
+  .sim-cessao-item-remover{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:5px;transition:all 0.15s;flex-shrink:0;}
+  .sim-cessao-item-remover:hover{background:rgba(239,68,68,0.10);color:#f87171;}
+  .sim-cessao-mais{font-size:10px;color:var(--muted);text-align:center;padding-top:6px;font-style:italic;}
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;}
   .modal-overlay.open{display:flex;}
   .modal-box{background:var(--bg);border:1px solid var(--border);border-radius:14px;width:100%;max-width:780px;padding:22px 26px;box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative;}
@@ -615,6 +644,44 @@
   .historico-consumo.baixa{color:#22c98a;}
   .historico-consumo.repos{color:#22c98a;}
   .historico-consumo.zero{color:var(--muted);}
+
+  /* Nova célula de consumo — mais explícita: ícone + valor + rótulo */
+  .hist-consumo-cell{display:inline-flex;align-items:center;gap:8px;padding:5px 10px;border-radius:7px;border:1px solid;line-height:1.2;}
+  .hist-consumo-cell .ic{font-size:13px;font-weight:800;line-height:1;}
+  .hist-consumo-cell .info{display:flex;flex-direction:column;gap:1px;}
+  .hist-consumo-cell .val{font-size:12.5px;font-weight:800;font-family:'Syne',sans-serif;letter-spacing:-0.01em;}
+  .hist-consumo-cell .lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;opacity:0.85;}
+  /* Estados (cor + fundo + borda combinam) */
+  .hist-consumo-cell.alta   {background:rgba(239,68,68,0.10);border-color:rgba(239,68,68,0.40);color:#f87171;}
+  .hist-consumo-cell.normal {background:rgba(255,255,255,0.04);border-color:var(--border);color:var(--text);}
+  .hist-consumo-cell.baixa  {background:rgba(34,201,138,0.08);border-color:rgba(34,201,138,0.30);color:#86efac;}
+  .hist-consumo-cell.repos  {background:rgba(34,201,138,0.10);border-color:rgba(34,201,138,0.40);color:#22c98a;}
+  .hist-consumo-cell.zero   {background:rgba(255,255,255,0.03);border-color:var(--border);color:var(--muted);border-style:dashed;}
+
+  /* Decomposição cessões/faturamento dentro da célula consumo */
+  .hist-cessoes-detalhe{margin-top:6px;display:flex;flex-direction:column;gap:4px;font-size:10px;}
+  .hist-cessao-bloco{padding:5px 8px;border-radius:6px;background:rgba(167,139,250,0.06);border-left:2px solid rgba(167,139,250,0.5);}
+  .hist-cessao-bloco.hist-cessao-faturamento{background:rgba(255,255,255,0.03);border-left-color:var(--border);}
+  .hist-cessao-titulo{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:2px;}
+  .hist-cessao-linha{font-size:10px;line-height:1.4;color:var(--text);}
+  .hist-cessao-linha b{color:#a78bfa;font-family:'Syne',sans-serif;}
+  .hist-cessao-linha i{color:var(--muted);font-style:italic;font-size:9.5px;}
+  .hist-cessao-fat{font-size:11px;line-height:1.3;}
+  .hist-cessao-fat b{font-family:'Syne',sans-serif;font-size:13px;}
+  .hist-cessao-fat .hint{display:block;font-size:9px;color:var(--muted);font-weight:500;margin-top:1px;}
+
+  /* Legenda detalhada do consumo (rodapé do modal histórico) */
+  .hist-legenda{margin-top:14px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+  .hist-legenda-titulo{font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.3px;display:flex;align-items:center;gap:6px;}
+  .hist-legenda-titulo b{color:#a78bfa;}
+  .hist-legenda-texto{font-size:11px;color:var(--muted);line-height:1.55;margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--border);}
+  .hist-legenda-texto b{color:var(--text);font-weight:700;}
+  .hist-legenda-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;}
+  .hist-legenda-item{display:flex;align-items:flex-start;gap:10px;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;}
+  .hist-legenda-item .hist-consumo-cell{flex-shrink:0;}
+  .hist-legenda-desc{font-size:11px;color:var(--text);line-height:1.5;flex:1;min-width:0;}
+  .hist-legenda-desc b{font-weight:700;}
+  .hist-legenda-desc .hint{display:block;font-size:10px;color:var(--muted);margin-top:2px;}
 </style>
 
 <!-- Firebase Realtime Database (mesma config do painel principal) -->
@@ -3520,7 +3587,7 @@ renderTable();
     sug.classList.add('open');
   };
 
-  window.renderHistoricoSKU = function(codMasc){
+  window.renderHistoricoSKU = async function(codMasc){
     document.getElementById('sku-suggestions').classList.remove('open');
     const skuInfo = _todosSKUs.find(s => s.codMasc === codMasc);
     if (!skuInfo) return;
@@ -3533,6 +3600,7 @@ renderTable();
       if (v) {
         linhas.push({
           data: _keyParaData(data),
+          dataKey: data,
           reservado: v.r || 0,
           forecast: v.f || 0,
           solCM: v.s || 0,
@@ -3542,6 +3610,20 @@ renderTable();
         });
       }
     });
+
+    // Carrega cessões registradas desse SKU (Firebase) — agrupa por dataKey
+    const cessoesPorData = {};  // { 'YYYY-MM-DD': [ {qtd, quem, obs, ts}, ... ] }
+    try {
+      if (window._mmDB) {
+        const snap = await window._mmDB.ref(`estoque_mm/cessoes/${codMasc}`).once('value');
+        const dados = snap.val() || {};
+        Object.values(dados).forEach(c => {
+          if (!c || !c.data) return;
+          if (!cessoesPorData[c.data]) cessoesPorData[c.data] = [];
+          cessoesPorData[c.data].push(c);
+        });
+      }
+    } catch(e) { console.warn('[hist-sku] erro carregando cessões:', e); }
 
     const cont = document.getElementById('historico-content');
     const backBtn = `<button class="historico-back-btn" onclick="voltarParaListaSKU()" title="Voltar pra lista de SKUs">← Voltar à lista</button>`;
@@ -3589,27 +3671,96 @@ renderTable();
         return `<span class="historico-delta ${cls}">${seta}${sinal}${d}${suf||''}</span>`;
       };
       // Coluna CONSUMO — quanto saiu da reserva entre essa data e a anterior
+      // Mostra de forma BEM clara: ícone + valor + rótulo + comparação com média
+      // E quebra em cessões (registradas) vs faturamento (consumo restante) se houver cessões.
       let consumoHtml = '<span style="color:var(--muted);font-size:10px;">—</span>';
       if (prev) {
         const consumo = prev.reservado - l.reservado;  // positivo = consumiu, negativo = repôs
         const media = l.mediaDia || (l.forecast > 0 ? Math.ceil(l.forecast / 30) : 0);
+        // Calcula cessões registradas no período entre o snapshot anterior e o atual
+        // (entre prev.dataKey 00:00 e l.dataKey 23:59 — usa data string YYYY-MM-DD)
+        const cessoesPeriodo = [];
+        Object.keys(cessoesPorData).forEach(d => {
+          if (d > prev.dataKey && d <= l.dataKey) {
+            cessoesPeriodo.push(...cessoesPorData[d]);
+          }
+        });
+        const totalCedido = cessoesPeriodo.reduce((s, c) => s + (c.qtd || 0), 0);
+        const faturado = consumo > 0 ? consumo - totalCedido : 0;
+
         if (consumo === 0) {
-          consumoHtml = `<span class="historico-consumo zero"><span class="num">0</span><span class="vs">un</span></span>`;
+          consumoHtml = `<div class="hist-consumo-cell zero">
+            <span class="ic">━</span>
+            <div class="info">
+              <div class="val">0 un</div>
+              <div class="lbl">sem mudança</div>
+            </div>
+          </div>`;
         } else if (consumo < 0) {
-          // Reabastecido (reserva subiu)
-          consumoHtml = `<span class="historico-consumo repos" title="Reservado aumentou — reabastecimento de ${Math.abs(consumo)} un"><span class="num">+${Math.abs(consumo)}</span><span class="vs">un repostas</span></span>`;
+          const qtd = Math.abs(consumo);
+          consumoHtml = `<div class="hist-consumo-cell repos" title="Reserva aumentou em ${qtd} un (reabastecimento ou correção)">
+            <span class="ic">▲</span>
+            <div class="info">
+              <div class="val">+${qtd} un</div>
+              <div class="lbl">reabastecido</div>
+            </div>
+          </div>`;
         } else {
-          // Consumiu — classifica intensidade vs média/dia esperada
           let classe = 'normal';
+          let lblTexto = '';
           let tip = '';
           if (media > 0) {
             const ratio = consumo / media;
-            if (ratio > 1.5)      { classe = 'alta';   tip = `Consumiu ${Math.round(ratio*100)}% da média/dia (${media} un esperadas)`; }
-            else if (ratio < 0.5) { classe = 'baixa';  tip = `Consumiu apenas ${Math.round(ratio*100)}% da média/dia (${media} un esperadas)`; }
-            else                  { classe = 'normal'; tip = `Consumo dentro do esperado (${media} un/dia esperadas)`; }
+            const pct = Math.round(ratio * 100);
+            if (ratio > 1.5) {
+              classe = 'alta';
+              lblTexto = `${pct}% da média ⚠ acima`;
+              tip = `Saiu ${pct}% da média diária (${media} un/dia). Consumo acima do normal.`;
+            } else if (ratio < 0.5) {
+              classe = 'baixa';
+              lblTexto = `${pct}% da média · abaixo`;
+              tip = `Saiu apenas ${pct}% da média diária (${media} un/dia). Tranquilo.`;
+            } else {
+              classe = 'normal';
+              lblTexto = `${pct}% da média · normal`;
+              tip = `Consumo dentro do esperado (média ${media} un/dia)`;
+            }
+          } else {
+            lblTexto = 'sem média de referência';
+            tip = 'SKU sem forecast — não dá pra calcular se é normal';
           }
-          const vsMedia = media > 0 ? ` <span class="vs">de ${media}/dia</span>` : ` <span class="vs">un</span>`;
-          consumoHtml = `<span class="historico-consumo ${classe}" title="${tip}"><span class="num">-${consumo}</span>${vsMedia}</span>`;
+          // Decomposição: se há cessões, mostra detalhe abaixo
+          let detalheCessoes = '';
+          if (cessoesPeriodo.length > 0) {
+            const quemList = cessoesPeriodo.map(c =>
+              `<div class="hist-cessao-linha"><b>−${c.qtd}</b> → ${c.quem}${c.obs ? ` <i>"${c.obs}"</i>` : ''}</div>`
+            ).join('');
+            const corFat = faturado < 0 ? '#22c98a' : faturado === 0 ? 'var(--muted)' : (consumo > media * 1.5 ? '#f87171' : 'var(--text)');
+            const lblFat = faturado < 0 ? '⚠ a mais que o consumo' : faturado === 0 ? 'tudo cessão' : 'faturamento';
+            detalheCessoes = `
+              <div class="hist-cessoes-detalhe">
+                <div class="hist-cessao-bloco">
+                  <div class="hist-cessao-titulo">📋 Cessões registradas (${totalCedido} un)</div>
+                  ${quemList}
+                </div>
+                <div class="hist-cessao-bloco hist-cessao-faturamento">
+                  <div class="hist-cessao-titulo">📦 Não-cessão (${lblFat})</div>
+                  <div class="hist-cessao-fat" style="color:${corFat};">
+                    <b>${faturado < 0 ? '+' + Math.abs(faturado) : faturado} un</b>
+                    ${faturado < 0 ? '<span class="hint">cessão excede consumo</span>' :
+                     faturado === 0 ? '<span class="hint">consumo todo explicado</span>' :
+                     '<span class="hint">faturado / outros</span>'}
+                  </div>
+                </div>
+              </div>`;
+          }
+          consumoHtml = `<div class="hist-consumo-cell ${classe}" title="${tip}">
+            <span class="ic">▼</span>
+            <div class="info">
+              <div class="val">-${consumo} un</div>
+              <div class="lbl">${lblTexto}</div>
+            </div>
+          </div>${detalheCessoes}`;
         }
       }
       const isLast = i === linhas.length - 1;
@@ -3624,13 +3775,81 @@ renderTable();
       </tr>`;
     });
     html += `</tbody></table>`;
-    // Legenda das cores
-    html += `<div style="margin-top:12px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:10px;color:var(--muted);display:flex;flex-wrap:wrap;gap:14px;align-items:center;line-height:1.5;">
-      <span style="font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--text);font-size:9.5px;">Consumo:</span>
-      <span><span class="historico-consumo alta"><span class="num">-X</span></span> &nbsp;acima da média (>1,5×)</span>
-      <span><span class="historico-consumo normal"><span class="num">-X</span></span> &nbsp;dentro do esperado</span>
-      <span><span class="historico-consumo baixa"><span class="num">-X</span></span> &nbsp;abaixo do esperado (<0,5×)</span>
-      <span><span class="historico-consumo repos"><span class="num">+X</span></span> &nbsp;reabastecido</span>
+    // ═══ LEGENDA DETALHADA ═══
+    html += `<div class="hist-legenda">
+      <div class="hist-legenda-titulo">
+        💡 Como ler a coluna <b>CONSUMO</b>
+      </div>
+      <div class="hist-legenda-texto">
+        Mostra a <b>diferença na reserva</b> entre uma data e a anterior. O número grande é a quantidade que <b>saiu</b> (ou <b>entrou</b>) e o rótulo abaixo compara com a <b>média/dia esperada</b> (forecast ÷ 30).
+      </div>
+      <div class="hist-legenda-grid">
+        <div class="hist-legenda-item">
+          <div class="hist-consumo-cell alta" style="cursor:default;">
+            <span class="ic">▼</span>
+            <div class="info">
+              <div class="val">-15 un</div>
+              <div class="lbl">500% da média ⚠ acima</div>
+            </div>
+          </div>
+          <div class="hist-legenda-desc">
+            <b>Consumo alto</b> — saiu mais de <b>1,5×</b> a média.<br>
+            <span class="hint">⚠ Investigar: pedido grande, cessão de unidades pra outra loja, ou erro de lançamento.</span>
+          </div>
+        </div>
+        <div class="hist-legenda-item">
+          <div class="hist-consumo-cell normal" style="cursor:default;">
+            <span class="ic">▼</span>
+            <div class="info">
+              <div class="val">-3 un</div>
+              <div class="lbl">100% da média · normal</div>
+            </div>
+          </div>
+          <div class="hist-legenda-desc">
+            <b>Consumo normal</b> — entre <b>0,5×</b> e <b>1,5×</b> a média.<br>
+            <span class="hint">✓ Dentro do esperado, sem ação necessária.</span>
+          </div>
+        </div>
+        <div class="hist-legenda-item">
+          <div class="hist-consumo-cell baixa" style="cursor:default;">
+            <span class="ic">▼</span>
+            <div class="info">
+              <div class="val">-1 un</div>
+              <div class="lbl">33% da média · abaixo</div>
+            </div>
+          </div>
+          <div class="hist-legenda-desc">
+            <b>Consumo baixo</b> — saiu menos de <b>0,5×</b> a média.<br>
+            <span class="hint">✓ Tranquilo, demanda fraca nesse dia.</span>
+          </div>
+        </div>
+        <div class="hist-legenda-item">
+          <div class="hist-consumo-cell repos" style="cursor:default;">
+            <span class="ic">▲</span>
+            <div class="info">
+              <div class="val">+10 un</div>
+              <div class="lbl">reabastecido</div>
+            </div>
+          </div>
+          <div class="hist-legenda-desc">
+            <b>Reabastecimento</b> — reserva <b>aumentou</b>.<br>
+            <span class="hint">🎉 Chegou lote ou liberou bloqueio.</span>
+          </div>
+        </div>
+        <div class="hist-legenda-item">
+          <div class="hist-consumo-cell zero" style="cursor:default;">
+            <span class="ic">━</span>
+            <div class="info">
+              <div class="val">0 un</div>
+              <div class="lbl">sem mudança</div>
+            </div>
+          </div>
+          <div class="hist-legenda-desc">
+            <b>Sem movimento</b> — reserva ficou igual.<br>
+            <span class="hint">— Nenhuma saída nem entrada.</span>
+          </div>
+        </div>
+      </div>
     </div>`;
     cont.innerHTML = html;
   };
@@ -3784,9 +4003,47 @@ renderTable();
       <div id="sim-resultado" class="sim-resultado-card empty">
         Digite a quantidade pra ver o resultado
       </div>
+
+      <!-- Card 4: REGISTRAR cessão (aparece quando qtd > 0 e pode ceder) -->
+      <div id="sim-registrar-card" style="display:none;" class="sim-registrar-card">
+        <div class="sim-card-title">💾 Registrar essa cessão</div>
+        <div class="sim-cessao-grid">
+          <div>
+            <label class="sim-cessao-label">Pra quem cedeu?</label>
+            <select id="sim-cessao-quem" class="sim-cessao-select" onchange="toggleCessaoOutro()">
+              <option value="">— escolha —</option>
+              <option value="Marcelly">Marcelly</option>
+              <option value="Jéssica">Jéssica</option>
+              <option value="Ana Clara">Ana Clara</option>
+              <option value="Leiliane">Leiliane</option>
+              <option value="__outro__">Outro…</option>
+            </select>
+            <input id="sim-cessao-outro" type="text" class="sim-cessao-input" placeholder="Digite o nome" style="display:none;margin-top:6px;">
+          </div>
+          <div>
+            <label class="sim-cessao-label">Observação <span style="font-weight:400;font-size:9px;color:var(--muted);">(opcional)</span></label>
+            <input id="sim-cessao-obs" type="text" class="sim-cessao-input" placeholder="Ex: Pedido #4521">
+          </div>
+        </div>
+        <button id="sim-cessao-btn" class="sim-cessao-btn" onclick="registrarCessao()">
+          ✓ Registrar cessão
+        </button>
+        <div id="sim-cessao-feedback" class="sim-cessao-feedback" style="display:none;"></div>
+      </div>
+
+      <!-- Lista de cessões já registradas desse SKU (carrega do Firebase) -->
+      <div id="sim-cessoes-lista-wrap" class="sim-cessoes-lista-wrap" style="display:none;">
+        <div class="sim-cessoes-titulo">
+          <span>📋 Últimas cessões deste SKU</span>
+          <span id="sim-cessoes-contagem" class="sim-cessoes-contagem"></span>
+        </div>
+        <div id="sim-cessoes-lista"></div>
+      </div>
     `;
     // Carrega data do lote do Firebase pelo codItem (lote é por produto pai)
     carregarLoteDia(sku.codItem);
+    // Carrega cessões registradas desse SKU
+    carregarCessoesDoSKU(sku.codMasc);
     // Recalcula com valor inicial (mostra estado atual mesmo sem qtd a ceder)
     recalcularSimulacao();
     setTimeout(() => document.getElementById('sim-qtd-ceder')?.focus(), 100);
@@ -3810,6 +4067,9 @@ renderTable();
 
     const resultEl = document.getElementById('sim-resultado');
     if (qtdCeder === 0) {
+      // Sem qtd a ceder ainda — esconde o card de registrar
+      const cardReg = document.getElementById('sim-registrar-card');
+      if (cardReg) cardReg.style.display = 'none';
       // Sem qtd a ceder ainda — só mostra cobertura atual com a reserva editada
       const coberturaAtual = sku.solicitadoForecast > 0
         ? +(reservaAtual * 30 / sku.solicitadoForecast).toFixed(1)
@@ -3877,6 +4137,126 @@ renderTable();
       </div>
       ${warningHtml}
     `;
+
+    // Mostra/esconde card de registrar conforme se faz sentido ceder
+    const cardReg = document.getElementById('sim-registrar-card');
+    if (cardReg) {
+      cardReg.style.display = (sobra >= 0 && qtdCeder > 0) ? 'block' : 'none';
+    }
+  };
+
+  // ═══ CESSÕES — registro/leitura/remoção (Firebase: estoque_mm/cessoes/<codMasc>/<id>) ═══
+  // Cada cessão tem: { quem, qtd, obs, ts (timestamp ms), data ('YYYY-MM-DD') }
+  // O id é o próprio timestamp (ms) pra ordenar fácil.
+
+  window.toggleCessaoOutro = function(){
+    const sel = document.getElementById('sim-cessao-quem');
+    const inp = document.getElementById('sim-cessao-outro');
+    if (!sel || !inp) return;
+    if (sel.value === '__outro__') {
+      inp.style.display = 'block';
+      inp.focus();
+    } else {
+      inp.style.display = 'none';
+      inp.value = '';
+    }
+  };
+
+  window.registrarCessao = async function(){
+    if (!_skuSimSelecionado) return;
+    const sku = _skuSimSelecionado;
+    const sel = document.getElementById('sim-cessao-quem');
+    const inpOutro = document.getElementById('sim-cessao-outro');
+    const inpObs = document.getElementById('sim-cessao-obs');
+    const qtd = Math.max(0, parseInt(document.getElementById('sim-qtd-ceder').value) || 0);
+    const fb = document.getElementById('sim-cessao-feedback');
+    const btn = document.getElementById('sim-cessao-btn');
+    if (qtd <= 0) { _cessaoFeedback('Informe a quantidade primeiro.', 'erro'); return; }
+    let quem = sel.value;
+    if (!quem) { _cessaoFeedback('Escolha pra quem foi a cessão.', 'erro'); sel.focus(); return; }
+    if (quem === '__outro__') {
+      quem = (inpOutro.value || '').trim();
+      if (!quem) { _cessaoFeedback('Digite o nome da pessoa.', 'erro'); inpOutro.focus(); return; }
+    }
+    const obs = (inpObs.value || '').trim();
+    if (!window._mmDB) { _cessaoFeedback('Firebase não disponível.', 'erro'); return; }
+
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    try {
+      const ts = Date.now();
+      const d = new Date(ts);
+      const dataKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      await window._mmDB.ref(`estoque_mm/cessoes/${sku.codMasc}/${ts}`).set({
+        quem, qtd, obs, ts, data: dataKey,
+      });
+      _cessaoFeedback(`✓ Cessão de ${qtd} un pra ${quem} registrada!`, 'ok');
+      // Limpa form
+      sel.value = ''; inpOutro.value = ''; inpOutro.style.display = 'none';
+      inpObs.value = '';
+      document.getElementById('sim-qtd-ceder').value = '';
+      // Recarrega lista e recalcula
+      carregarCessoesDoSKU(sku.codMasc);
+      recalcularSimulacao();
+    } catch(e) {
+      console.warn('[cessao] erro salvando:', e);
+      _cessaoFeedback('Erro ao salvar: ' + e.message, 'erro');
+    }
+    btn.disabled = false; btn.textContent = '✓ Registrar cessão';
+  };
+
+  function _cessaoFeedback(msg, tipo){
+    const fb = document.getElementById('sim-cessao-feedback');
+    if (!fb) return;
+    fb.textContent = msg;
+    fb.className = 'sim-cessao-feedback ' + tipo;
+    fb.style.display = 'block';
+    if (tipo === 'ok') {
+      setTimeout(() => { fb.style.display = 'none'; }, 4000);
+    }
+  }
+
+  window.removerCessao = async function(codMasc, id){
+    if (!confirm('Remover essa cessão? Não dá pra desfazer.')) return;
+    if (!window._mmDB) return;
+    try {
+      await window._mmDB.ref(`estoque_mm/cessoes/${codMasc}/${id}`).remove();
+      carregarCessoesDoSKU(codMasc);
+    } catch(e) { alert('Erro: ' + e.message); }
+  };
+
+  window.carregarCessoesDoSKU = async function(codMasc){
+    const wrap = document.getElementById('sim-cessoes-lista-wrap');
+    const lista = document.getElementById('sim-cessoes-lista');
+    const cont = document.getElementById('sim-cessoes-contagem');
+    if (!wrap || !lista) return;
+    if (!window._mmDB) { wrap.style.display = 'none'; return; }
+    try {
+      const snap = await window._mmDB.ref(`estoque_mm/cessoes/${codMasc}`).once('value');
+      const dados = snap.val() || {};
+      const arr = Object.entries(dados).map(([id, c]) => ({...c, id})).sort((a,b) => b.ts - a.ts);
+      if (arr.length === 0) { wrap.style.display = 'none'; return; }
+      wrap.style.display = 'block';
+      const total = arr.reduce((s,c) => s + (c.qtd||0), 0);
+      cont.textContent = `${arr.length} cessão${arr.length>1?'ões':''} · ${total} un total`;
+      lista.innerHTML = arr.slice(0, 10).map(c => {
+        const d = new Date(c.ts);
+        const hh = String(d.getHours()).padStart(2,'0');
+        const mm = String(d.getMinutes()).padStart(2,'0');
+        const data = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+        return `<div class="sim-cessao-item">
+          <div class="sim-cessao-item-data">${data}<br><span>${hh}:${mm}</span></div>
+          <div class="sim-cessao-item-info">
+            <div class="sim-cessao-item-qtd">−${c.qtd} un</div>
+            <div class="sim-cessao-item-quem">→ ${c.quem || '?'}</div>
+            ${c.obs ? `<div class="sim-cessao-item-obs">"${c.obs}"</div>` : ''}
+          </div>
+          <button class="sim-cessao-item-remover" onclick="removerCessao('${codMasc}','${c.id}')" title="Remover essa cessão">🗑</button>
+        </div>`;
+      }).join('') + (arr.length > 10 ? `<div class="sim-cessao-mais">+ ${arr.length - 10} mais antigas</div>` : '');
+    } catch(e) {
+      console.warn('[cessao] erro:', e);
+      wrap.style.display = 'none';
+    }
   };
 
   // ═══ DATA DO LOTE — leitura do Firebase em estoque_mm/datas_lote/<codItem> ═══
