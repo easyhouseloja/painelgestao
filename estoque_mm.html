@@ -195,6 +195,9 @@
   .export-btn{font-size:11px;font-weight:700;color:var(--muted);background:transparent;border:1px solid var(--border);padding:7px 14px;border-radius:8px;cursor:pointer;letter-spacing:0.4px;text-transform:uppercase;transition:color 0.15s,border-color 0.15s,background 0.15s,transform 0.15s;display:inline-flex;align-items:center;gap:6px;line-height:1.2;font-family:inherit;}
   .export-btn:hover{color:#22c98a;border-color:rgba(34,201,138,0.45);background:rgba(34,201,138,0.08);transform:translateY(-1px);}
   .export-btn:active{transform:translateY(0);}
+  /* Variante destaque: export do mês inteiro */
+  .export-btn.export-btn-mes{background:rgba(167,139,250,0.10);border-color:rgba(167,139,250,0.5);color:#a78bfa;}
+  .export-btn.export-btn-mes:hover{background:rgba(167,139,250,0.20);color:#c4b5fd;border-color:rgba(167,139,250,0.7);}
 
   /* DATA-UPDATED PULSE — destaca elementos cujos números mudaram desde a última visita */
   @keyframes data-pulse {
@@ -760,7 +763,12 @@
     <div class="modal-box">
       <div class="modal-header">
         <div class="modal-title">📜 Histórico de SKU <span style="font-weight:400;font-size:11.5px;color:var(--muted);margin-left:4px;">— evolução nas últimas atualizações</span></div>
-        <button class="modal-close" onclick="fecharHistoricoModal()" title="Fechar (Esc)">✕</button>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button onclick="exportarMesCompletoXLSX()" type="button" class="export-btn export-btn-mes" title="Exporta consolidado do mês inteiro em Excel (3 abas)" style="font-size:10.5px;">
+            📅 Exportar mês completo
+          </button>
+          <button class="modal-close" onclick="fecharHistoricoModal()" title="Fechar (Esc)">✕</button>
+        </div>
       </div>
       <div class="sku-search-box">
         <input type="text" id="sku-search-input" placeholder="🔍 Buscar produto, código ou variação..." autocomplete="off" oninput="filtrarSugestoesSKU(this.value)">
@@ -962,7 +970,10 @@
   <div class="section-title" id="section-consumo" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <span>📉 Consumo Diário <span id="consumo-sub" style="font-weight:400;font-size:11px;color:var(--muted);">comparativo de reserva entre datas</span></span>
     <div style="display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
-      <button onclick="exportarConsumoCompletoCSV()" type="button" class="export-btn" id="btn-export-consumo-tudo" title="Exporta consumo de TODOS os SKUs (com cessões registradas e diferença pra faturamento) em CSV">
+      <button onclick="exportarMesCompletoXLSX()" type="button" class="export-btn export-btn-mes" id="btn-export-mes" title="Exporta CONSOLIDADO do mês: 1 Excel com 3 abas (visão pivot, detalhada e resumo)">
+        📅 Exportar mês completo
+      </button>
+      <button onclick="exportarConsumoCompletoCSV()" type="button" class="export-btn" id="btn-export-consumo-tudo" title="Exporta consumo de TODOS os SKUs (com cessões registradas e diferença pra faturamento) — CSV de hoje vs ontem">
         📋 Exportar TUDO (CSV)
       </button>
       <button onclick="exportarConsumoExcel()" type="button" class="export-btn" id="btn-export-consumo" disabled style="opacity:0.4;cursor:not-allowed;" title="Disponível quando houver SKUs com consumo acima do esperado">
@@ -2534,6 +2545,306 @@ function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun){
   }
 
   c.innerHTML = html;
+}
+
+// ═══ EXPORTA MÊS COMPLETO (XLSX) — fechamento mensal com 3 abas ═══
+// Aba 1 (Pivot): 1 linha por SKU, todas as datas em colunas (visão executiva)
+// Aba 2 (Detalhe): 1 linha por SKU+data com cessões, observações etc
+// Aba 3 (Resumo): totais do mês, alertas, top consumidores
+async function exportarMesCompletoXLSX(){
+  if (typeof XLSX === 'undefined') { alert('Biblioteca de exportação ainda não carregou.'); return; }
+  if (!window._mmDB) { alert('Firebase não disponível.'); return; }
+
+  // Pega botão (qualquer um dos dois) pra mostrar loading
+  const btns = document.querySelectorAll('.export-btn-mes');
+  btns.forEach(b => { b._txt = b.textContent; b.textContent = '⏳ Carregando...'; b.disabled = true; });
+
+  try {
+    // 1. Buscar TODOS os snapshots e cessões do Firebase
+    const [snapsResp, cessoesResp] = await Promise.all([
+      window._mmDB.ref('estoque_mm/historico_consumo').once('value'),
+      window._mmDB.ref('estoque_mm/cessoes').once('value'),
+    ]);
+    const snaps = snapsResp.val() || {};
+    const cessoesPorSku = cessoesResp.val() || {};
+    const datasOrdenadas = Object.keys(snaps).sort();
+
+    if (datasOrdenadas.length === 0) {
+      alert('Nenhum snapshot encontrado no Firebase pra exportar.');
+      return;
+    }
+
+    // 2. Filtra só do MÊS atual (último snapshot determina o mês)
+    const ultimaData = datasOrdenadas[datasOrdenadas.length - 1];
+    const [anoRef, mesRef] = ultimaData.split('-');
+    const datasDoMes = datasOrdenadas.filter(d => d.startsWith(`${anoRef}-${mesRef}`));
+
+    if (datasDoMes.length === 0) {
+      alert('Nenhuma data do mês atual encontrada.');
+      return;
+    }
+
+    const nomesMeses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const nomeMes = `${nomesMeses[+mesRef-1]} ${anoRef}`;
+
+    // 3. Lookup pra dados de produto/categoria/curva
+    const lookup = {};
+    (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+      lookup[v.codMasc] = {
+        codItem: p.codItem, produto: p.produto, categoria: p.categoria,
+        variacao: v.variacao, curvaAbc: v.curvaAbc,
+      };
+    }));
+
+    // 4. Coletar TODOS os SKUs que apareceram em algum snapshot do mês
+    const todosCods = new Set();
+    datasDoMes.forEach(d => {
+      Object.keys(snaps[d] || {}).forEach(cm => todosCods.add(cm));
+    });
+
+    const fmtDataKey = key => {
+      const m = key.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      return m ? `${m[3]}/${m[2]}` : key;
+    };
+
+    // ═══ ABA 1: PIVOT HORIZONTAL ═══
+    const headerPivot = ['Cod', 'Produto', 'Variação', 'Categoria', 'Curva', 'Cons/dia esperado', 'Cons/dia real', 'Dentro da média?'];
+    datasDoMes.forEach(d => {
+      headerPivot.push(`${fmtDataKey(d)} Res`);
+      headerPivot.push(`${fmtDataKey(d)} Cons`);
+    });
+    headerPivot.push('Total Consumo Mês');
+    headerPivot.push('Total Cessões Mês');
+    headerPivot.push('Faturamento/Outros');
+
+    const linhasPivot = [];
+    Array.from(todosCods).forEach(cm => {
+      const info = lookup[cm] || {};
+      // Pega forecast e mediaDia do snapshot mais recente desse SKU
+      let mediaEsperada = 0;
+      for (let i = datasDoMes.length - 1; i >= 0; i--) {
+        const v = snaps[datasDoMes[i]][cm];
+        if (v && v.m) { mediaEsperada = v.m; break; }
+        if (v && v.f) { mediaEsperada = Math.ceil(v.f / 30); break; }
+      }
+      const row = [
+        cm,
+        info.produto || `(cod ${cm})`,
+        info.variacao || '',
+        info.categoria || '',
+        info.curvaAbc || '',
+        mediaEsperada || '',  // Cons/dia esperado — vamos preencher cons/dia real depois
+        '',  // placeholder pra Cons/dia real
+        '',  // placeholder pra Dentro da média?
+      ];
+      let totalCons = 0;
+      let diasComConsumo = 0;  // pra calcular média real
+      let prevRes = null;
+      datasDoMes.forEach(d => {
+        const v = snaps[d][cm];
+        const r = v ? v.r : null;
+        row.push(r != null ? r : '');
+        let cons = '';
+        if (prevRes != null && r != null) {
+          cons = prevRes - r;
+          if (cons > 0) {
+            totalCons += cons;
+            diasComConsumo++;
+          }
+        }
+        row.push(cons);
+        if (r != null) prevRes = r;
+      });
+      // Total cessões do mês pra esse SKU
+      const cessoesSku = cessoesPorSku[cm] || {};
+      let totalCedido = 0;
+      Object.values(cessoesSku).forEach(c => {
+        if (c && c.data && c.data.startsWith(`${anoRef}-${mesRef}`)) totalCedido += (c.qtd || 0);
+      });
+
+      // Cons/dia real e Dentro da média?
+      // Usa o nº de dias com snapshot - 1 (intervalos comparáveis)
+      const diasIntervalo = Math.max(1, datasDoMes.length - 1);
+      const consDiaReal = totalCons > 0 ? +(totalCons / diasIntervalo).toFixed(2) : 0;
+      let dentroMedia = '—';
+      if (mediaEsperada > 0 && totalCons > 0) {
+        // Tolerância 1.5× (mesma do alerta diário)
+        dentroMedia = consDiaReal <= mediaEsperada * 1.5 ? 'SIM' : 'NÃO';
+      } else if (totalCons === 0) {
+        dentroMedia = 'SIM';  // sem consumo é dentro
+      }
+      row[6] = consDiaReal;
+      row[7] = dentroMedia;
+
+      row.push(totalCons);
+      row.push(totalCedido);
+      row.push(totalCons - totalCedido);
+      linhasPivot.push(row);
+    });
+    // Ordena: NÃO (fora da média) primeiro, depois por consumo total desc
+    linhasPivot.sort((a, b) => {
+      const aFora = a[7] === 'NÃO' ? 0 : 1;
+      const bFora = b[7] === 'NÃO' ? 0 : 1;
+      if (aFora !== bFora) return aFora - bFora;
+      return (b[b.length-3] || 0) - (a[a.length-3] || 0);
+    });
+
+    // Adiciona header como primeira linha
+    const aoaPivot = [headerPivot, ...linhasPivot];
+    const wsPivot = XLSX.utils.aoa_to_sheet(aoaPivot);
+    // Larguras (Cod, Produto, Variação, Cat, Curva, depois 2 cols por data + 3 totais)
+    // Larguras: Cod, Produto, Variação, Cat, Curva, Cons/dia esp, Cons/dia real, Dentro?, depois 2 cols por data + 3 totais
+    const colsPivot = [{wch:8},{wch:38},{wch:30},{wch:14},{wch:7},{wch:14},{wch:13},{wch:14}];
+    datasDoMes.forEach(() => { colsPivot.push({wch:8}); colsPivot.push({wch:8}); });
+    colsPivot.push({wch:14},{wch:14},{wch:16});
+    wsPivot['!cols'] = colsPivot;
+    wsPivot['!freeze'] = { xSplit: 8, ySplit: 1 };
+
+    // ═══ ABA 2: DETALHE LONG FORMAT ═══
+    const headerDet = ['Data','Cod Produto','Produto','Cod Variação','Variação','Categoria','Curva','Reservado','Consumo','Média/dia','% da média','Status','Cedido','Pra quem','Observação','Faturamento/Outros'];
+    const linhasDet = [];
+    datasDoMes.forEach((d, idx) => {
+      const dataAnt = idx > 0 ? datasDoMes[idx-1] : null;
+      const snapAt = snaps[d] || {};
+      const snapAnt = dataAnt ? (snaps[dataAnt] || {}) : {};
+      Object.keys(snapAt).forEach(cm => {
+        const at = snapAt[cm];
+        const an = snapAnt[cm];
+        const info = lookup[cm] || {};
+        const reservado = at.r || 0;
+        const consumo = an ? (an.r - reservado) : null;
+        const media = at.m || 0;
+        // Cessões DESSE dia pra esse SKU
+        const cessoesDoSku = cessoesPorSku[cm] || {};
+        const cessoesDoDia = Object.values(cessoesDoSku).filter(c => c && c.data === d);
+        const totalCedido = cessoesDoDia.reduce((s,c) => s + (c.qtd || 0), 0);
+        const quem = cessoesDoDia.map(c => `${c.quem}: ${c.qtd}`).join('; ');
+        const obs = cessoesDoDia.map(c => c.obs || '').filter(o => o).join('; ');
+
+        let status = '';
+        if (consumo === null) status = 'Primeiro registro';
+        else if (consumo === 0) status = 'Sem mudança';
+        else if (consumo < 0) status = 'Reabastecido';
+        else if (media === 0) status = 'Sem média';
+        else if (consumo > media * 1.5) status = '⚠ ACIMA DA MÉDIA';
+        else if (consumo < media * 0.5) status = 'Abaixo do esperado';
+        else status = 'Normal';
+
+        const pctMedia = media > 0 && consumo > 0 ? Math.round((consumo / media) * 100) : '';
+        const fat = consumo > 0 ? consumo - totalCedido : '';
+
+        linhasDet.push([
+          fmtDataKey(d),
+          info.codItem || '',
+          info.produto || `(cod ${cm})`,
+          cm,
+          info.variacao || '',
+          info.categoria || '',
+          info.curvaAbc || '',
+          reservado,
+          consumo === null ? '' : consumo,
+          media,
+          pctMedia,
+          status,
+          totalCedido || '',
+          quem || '',
+          obs || '',
+          fat,
+        ]);
+      });
+    });
+
+    const aoaDet = [headerDet, ...linhasDet];
+    const wsDet = XLSX.utils.aoa_to_sheet(aoaDet);
+    wsDet['!cols'] = [
+      {wch:8},{wch:8},{wch:38},{wch:8},{wch:30},{wch:14},{wch:7},
+      {wch:11},{wch:10},{wch:11},{wch:11},{wch:22},{wch:9},{wch:24},{wch:24},{wch:18}
+    ];
+    wsDet['!freeze'] = { xSplit: 0, ySplit: 1 };
+
+    // ═══ ABA 3: RESUMO ═══
+    const totalSkus = todosCods.size;
+    let totalConsumoMes = 0;
+    let totalCedidoMes = 0;
+    let alertasMes = 0;
+    const consumoPorSku = {};
+    const cedidoPorPessoa = {};
+
+    linhasDet.forEach(row => {
+      const consumo = row[8];
+      const status = row[11];
+      const cedido = row[12];
+      const cm = row[3];
+      const quem = row[13];
+      if (typeof consumo === 'number' && consumo > 0) {
+        totalConsumoMes += consumo;
+        consumoPorSku[cm] = (consumoPorSku[cm] || { qtd: 0, produto: row[2], variacao: row[4] });
+        consumoPorSku[cm].qtd += consumo;
+      }
+      if (typeof cedido === 'number') totalCedidoMes += cedido;
+      if (status === '⚠ ACIMA DA MÉDIA') alertasMes++;
+      // Cessões por pessoa
+      if (quem) {
+        quem.split(';').forEach(part => {
+          const m = part.trim().match(/^(.+):\s*(\d+)$/);
+          if (m) {
+            const nome = m[1].trim();
+            const qtd = parseInt(m[2]);
+            cedidoPorPessoa[nome] = (cedidoPorPessoa[nome] || 0) + qtd;
+          }
+        });
+      }
+    });
+
+    const top10 = Object.entries(consumoPorSku)
+      .sort((a,b) => b[1].qtd - a[1].qtd)
+      .slice(0, 10);
+
+    const cedidoSorted = Object.entries(cedidoPorPessoa).sort((a,b) => b[1] - a[1]);
+
+    const aoaResumo = [
+      [`📅 RESUMO DO MÊS — ${nomeMes}`],
+      [],
+      ['Período', `${fmtDataKey(datasDoMes[0])} a ${fmtDataKey(datasDoMes[datasDoMes.length-1])}`],
+      ['Dias com snapshot', datasDoMes.length],
+      ['SKUs analisados', totalSkus],
+      [],
+      ['📊 TOTAIS DO MÊS'],
+      ['Total consumido', totalConsumoMes, 'un'],
+      ['Total cedido (registrado)', totalCedidoMes, 'un'],
+      ['Faturamento/Outros', totalConsumoMes - totalCedidoMes, 'un'],
+      ['Eventos de alerta (consumo > 1.5× média)', alertasMes],
+      ['SKUs fora da média no mês', linhasPivot.filter(r => r[7] === 'NÃO').length, '(de ' + linhasPivot.length + ')'],
+      [],
+      ['🏆 TOP 10 SKUs MAIS CONSUMIDOS NO MÊS'],
+      ['#', 'Cod', 'Produto', 'Variação', 'Total consumido (un)'],
+      ...top10.map(([cm, info], i) => [i+1, cm, info.produto, info.variacao, info.qtd]),
+      [],
+      ['👥 CESSÕES POR PESSOA'],
+      ['Nome', 'Total cedido (un)', '% do total'],
+      ...cedidoSorted.map(([nome, qtd]) => [
+        nome, qtd, totalCedidoMes > 0 ? `${(qtd/totalCedidoMes*100).toFixed(1)}%` : '0%'
+      ]),
+      [],
+      [`Gerado em: ${new Date().toLocaleString('pt-BR')}`],
+    ];
+    const wsResumo = XLSX.utils.aoa_to_sheet(aoaResumo);
+    wsResumo['!cols'] = [{wch:46},{wch:18},{wch:34},{wch:24},{wch:18}];
+
+    // ═══ Monta o workbook ═══
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, wsResumo, 'Resumo');
+    XLSX.utils.book_append_sheet(wb, wsPivot, 'Pivot');
+    XLSX.utils.book_append_sheet(wb, wsDet, 'Detalhe');
+
+    const filename = `consumo_${anoRef}_${mesRef}_${nomesMeses[+mesRef-1].toLowerCase()}.xlsx`;
+    XLSX.writeFile(wb, filename);
+
+  } catch(e) {
+    console.error('[xlsx-mes]', e);
+    alert('Erro ao gerar Excel do mês: ' + e.message);
+  }
+  btns.forEach(b => { b.textContent = b._txt; b.disabled = false; });
 }
 
 // ═══ EXPORTA CSV COMPLETO — TODOS os SKUs com decomposição cessões/faturamento ═══
