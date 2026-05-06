@@ -962,8 +962,11 @@
   <div class="section-title" id="section-consumo" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <span>📉 Consumo Diário <span id="consumo-sub" style="font-weight:400;font-size:11px;color:var(--muted);">comparativo de reserva entre datas</span></span>
     <div style="display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
+      <button onclick="exportarConsumoCompletoCSV()" type="button" class="export-btn" id="btn-export-consumo-tudo" title="Exporta consumo de TODOS os SKUs (com cessões registradas e diferença pra faturamento) em CSV">
+        📋 Exportar TUDO (CSV)
+      </button>
       <button onclick="exportarConsumoExcel()" type="button" class="export-btn" id="btn-export-consumo" disabled style="opacity:0.4;cursor:not-allowed;" title="Disponível quando houver SKUs com consumo acima do esperado">
-        📊 Exportar SKUs em alerta
+        ⚠ Só alertas (Excel)
       </button>
     </div>
   </div>
@@ -2531,6 +2534,178 @@ function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun){
   }
 
   c.innerHTML = html;
+}
+
+// ═══ EXPORTA CSV COMPLETO — TODOS os SKUs com decomposição cessões/faturamento ═══
+// Pega o snapshot ATUAL e o ANTERIOR, calcula consumo de cada SKU, busca cessões
+// registradas no período e gera CSV com diferença "consumo - cessões = faturamento"
+async function exportarConsumoCompletoCSV(){
+  if (!window._mmDB) { alert('Firebase não disponível.'); return; }
+  const btn = document.getElementById('btn-export-consumo-tudo');
+  const txtOriginal = btn.textContent;
+  btn.textContent = 'Carregando...'; btn.disabled = true;
+  try {
+    // 1. Buscar TODOS os snapshots e cessões do Firebase
+    const [snapsResp, cessoesResp] = await Promise.all([
+      window._mmDB.ref('estoque_mm/historico_consumo').once('value'),
+      window._mmDB.ref('estoque_mm/cessoes').once('value'),
+    ]);
+    const snaps = snapsResp.val() || {};
+    const cessoesPorSku = cessoesResp.val() || {};
+    const datasOrdenadas = Object.keys(snaps).sort();
+
+    if (datasOrdenadas.length < 2) {
+      alert('São necessários pelo menos 2 dias de snapshot pra calcular consumo. Hoje só tem ' + datasOrdenadas.length + '.');
+      return;
+    }
+
+    const dataAtualKey = datasOrdenadas[datasOrdenadas.length - 1];
+    const dataAnteriorKey = datasOrdenadas[datasOrdenadas.length - 2];
+    const snapAtual = snaps[dataAtualKey] || {};
+    const snapAnterior = snaps[dataAnteriorKey] || {};
+
+    // 2. Construir lookup pra dados não-snapshot (categoria, curva ABC, produto, variação)
+    const lookup = {};
+    (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+      lookup[v.codMasc] = {
+        codItem: p.codItem, produto: p.produto, categoria: p.categoria,
+        variacao: v.variacao, curvaAbc: v.curvaAbc,
+      };
+    }));
+
+    // 3. Montar linhas — todos os SKUs presentes em qualquer um dos snapshots
+    const todosCods = new Set([...Object.keys(snapAtual), ...Object.keys(snapAnterior)]);
+    const linhas = [];
+
+    todosCods.forEach(cm => {
+      const at = snapAtual[cm] || {};
+      const an = snapAnterior[cm] || {};
+      const reservadoAtual = at.r || 0;
+      const reservadoAnt = an.r || 0;
+      const consumo = reservadoAnt - reservadoAtual;  // positivo = consumiu
+      const media = at.m || an.m || 0;
+
+      // Cessões registradas no período (entre dataAnteriorKey e dataAtualKey)
+      const cessoesDoSku = cessoesPorSku[cm] || {};
+      const cessoesPeriodo = [];
+      Object.values(cessoesDoSku).forEach(c => {
+        if (!c || !c.data) return;
+        if (c.data > dataAnteriorKey && c.data <= dataAtualKey) {
+          cessoesPeriodo.push(c);
+        }
+      });
+      const totalCedido = cessoesPeriodo.reduce((s, c) => s + (c.qtd || 0), 0);
+      const naoExplicado = consumo - totalCedido;  // o que sobra = faturamento
+
+      // Classificação
+      let status = '';
+      if (consumo === 0)        status = 'Sem mudança';
+      else if (consumo < 0)     status = 'Reabastecido';
+      else if (media === 0)     status = 'Sem média de referência';
+      else if (consumo > media * 1.5) status = '⚠ ACIMA DA MÉDIA';
+      else if (consumo < media * 0.5) status = 'Abaixo do esperado';
+      else                              status = 'Normal';
+
+      // Detalhamento de cessões
+      const cessoesPorPessoa = {};
+      cessoesPeriodo.forEach(c => {
+        const k = c.quem || '?';
+        cessoesPorPessoa[k] = (cessoesPorPessoa[k] || 0) + (c.qtd || 0);
+      });
+      const cessoesStr = Object.entries(cessoesPorPessoa)
+        .map(([nome, qtd]) => `${nome}: ${qtd}`).join('; ');
+
+      const info = lookup[cm] || {};
+      const pctMedia = media > 0 ? Math.round((consumo / media) * 100) : 0;
+
+      linhas.push({
+        'Cod Produto':            info.codItem || '',
+        'Produto':                info.produto || `(cod ${cm})`,
+        'Cod Variação':           cm,
+        'Variação':               info.variacao || '',
+        'Categoria':              info.categoria || '',
+        'Curva ABC':              info.curvaAbc || '',
+        'Reservado anterior':     reservadoAnt,
+        'Reservado atual':        reservadoAtual,
+        'Consumo (un)':           consumo,
+        'Média/dia esperada':     media,
+        '% da média':             pctMedia,
+        'Status':                 status,
+        'Total cedido (un)':      totalCedido,
+        'Cessões detalhe':        cessoesStr || '—',
+        'Faturamento/Outros (un)': naoExplicado,
+        'Forecast mensal':        at.f || an.f || 0,
+      });
+    });
+
+    // 4. Ordenar: alertas primeiro (consumo alto), depois normais, depois sem mudança
+    const ordemStatus = {
+      '⚠ ACIMA DA MÉDIA': 0, 'Reabastecido': 1, 'Normal': 2,
+      'Abaixo do esperado': 3, 'Sem média de referência': 4, 'Sem mudança': 5,
+    };
+    linhas.sort((a, b) => {
+      const sa = ordemStatus[a.Status] ?? 99;
+      const sb = ordemStatus[b.Status] ?? 99;
+      if (sa !== sb) return sa - sb;
+      return (b['Consumo (un)'] || 0) - (a['Consumo (un)'] || 0);
+    });
+
+    // 5. Gerar CSV (usa ; como separador — padrão Excel BR)
+    const headers = Object.keys(linhas[0] || {});
+    const csvRows = [headers.join(';')];
+    linhas.forEach(l => {
+      csvRows.push(headers.map(h => {
+        const v = l[h];
+        if (v === null || v === undefined) return '';
+        const s = String(v).replace(/"/g, '""');
+        // Se contém ; ou " ou quebra de linha → envolver em aspas
+        return /[;"\n]/.test(s) ? `"${s}"` : s;
+      }).join(';'));
+    });
+
+    // Adicionar bloco de resumo no início
+    const totalConsumo = linhas.reduce((s, l) => s + Math.max(0, l['Consumo (un)']), 0);
+    const totalCedidoGeral = linhas.reduce((s, l) => s + l['Total cedido (un)'], 0);
+    const totalFaturado = linhas.reduce((s, l) => s + Math.max(0, l['Faturamento/Outros (un)']), 0);
+    const nAlertas = linhas.filter(l => l.Status === '⚠ ACIMA DA MÉDIA').length;
+
+    const resumo = [
+      `# RELATÓRIO DE CONSUMO DIÁRIO`,
+      `# Data anterior: ${_keyParaDataLeve(dataAnteriorKey)}`,
+      `# Data atual:    ${_keyParaDataLeve(dataAtualKey)}`,
+      `# Total SKUs analisados: ${linhas.length}`,
+      `# SKUs em alerta (consumo > 1.5× média): ${nAlertas}`,
+      `# Total consumido: ${totalConsumo} un`,
+      `# Total cedido (registrado): ${totalCedidoGeral} un`,
+      `# Faturamento/outros: ${totalFaturado} un`,
+      `# Gerado em: ${new Date().toLocaleString('pt-BR')}`,
+      ``,
+    ].join('\n');
+
+    const csv = '\ufeff' + resumo + csvRows.join('\n');  // BOM pra Excel abrir UTF-8
+
+    // 6. Download
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `consumo_completo_${dataAtualKey}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+  } catch(e) {
+    console.error('[csv-completo]', e);
+    alert('Erro ao gerar CSV: ' + e.message);
+  }
+  btn.textContent = txtOriginal; btn.disabled = false;
+}
+
+// Helper: converte 'YYYY-MM-DD' pra 'DD/MM/YYYY'
+function _keyParaDataLeve(key){
+  const m = key && key.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : key;
 }
 
 // Exporta SKUs em alerta de consumo pra Excel
