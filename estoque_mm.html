@@ -2112,56 +2112,11 @@ setTimeout(() => {
 }, 300);
 
 // Per-category forecast cards (uses forecast base, not carga)
+// NOTA: a seção visível foi removida — a função fica como no-op pra não quebrar nada.
+//       O badge "atende o mês" agora aparece dentro do Resumo por Categoria.
 function renderCatFcCards(){
-  const grid = document.getElementById('cat-fc-grid');
-  grid.innerHTML = categoriasFc.map(c => {
-    const sty = CAT_STYLES[c.nome] || {cls:'comp', icon:'📦'};
-    const dias = c.diasAtendeFc;
-    const st = statusFromDias(dias);
-    // Bar scale: cap at 2× DIAS_MES (so a category with 60 dias fills the bar)
-    const maxScale = diasMes * 2;
-    const fillW = Math.min(100, (dias / maxScale) * 100);
-    const markerLeft = (diasMes / maxScale) * 100; // 50% — marker for "1 mês"
-    return `<div class="cat-fc-card ${sty.cls}">
-      <div class="cat-fc-head">
-        <div class="cat-fc-name">
-          <div class="cat-fc-icon">${sty.icon}</div>
-          <div>
-            <div class="cat-fc-title">${c.nome}</div>
-            <div class="cat-fc-sub">${c.produtos} produtos · ${c.variacoes} variações</div>
-          </div>
-        </div>
-        <span class="cat-fc-status ${st.cls}">${st.lbl}</span>
-      </div>
-      <div class="cat-fc-row">
-        <span class="lbl">Demanda diária</span>
-        <span class="val">${c.demandaDiariaFc.toString().replace('.',',')} un/dia</span>
-      </div>
-      <div class="cat-fc-row">
-        <span class="lbl">Reserva atende</span>
-        <span class="val big" style="color:${st.cls==='ok'?'var(--ok)':st.cls==='warn'?'var(--warn)':'#f87171'}">${formatDiasCurto(dias)}</span>
-      </div>
-      <div class="cat-fc-detail" style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.5;">
-        📍 ${formatDiasAtende(dias)}
-      </div>
-      <div class="cat-fc-bar-wrap">
-        <div class="cat-fc-bar-bg">
-          <div class="cat-fc-bar-fill ${st.cls}" style="width:0%" data-w="${fillW}"></div>
-          <div class="cat-fc-bar-marker" style="left:${markerLeft}%" title="1 mês completo"></div>
-        </div>
-        <div class="cat-fc-bar-legend">
-          <span>0d</span>
-          <span>${diasMes}d (Maio completo)</span>
-          <span>${maxScale}d</span>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-  setTimeout(() => {
-    document.querySelectorAll('.cat-fc-bar-fill[data-w]').forEach(el => {
-      el.style.width = el.dataset.w + '%';
-    });
-  }, 400);
+  // O div continua existindo pra compatibilidade, mas escondido. Não vale a pena renderizar.
+  return;
 }
 renderCatFcCards();
 
