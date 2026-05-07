@@ -381,6 +381,36 @@
   .lote-item-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:9px;padding:4px 9px;border-radius:5px;cursor:pointer;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;font-family:inherit;transition:all 0.15s;}
   .lote-item-btn:hover{color:#ef4444;border-color:rgba(239,68,68,0.4);}
 
+  /* GRUPO de lotes (mesma data agrupada) */
+  .lote-grupo{display:flex;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border);align-items:flex-start;}
+  .lote-grupo:last-child{border-bottom:none;}
+  .lote-grupo-data{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;min-width:120px;text-align:center;line-height:1.1;padding:8px 12px;border-radius:8px;flex-shrink:0;}
+  .lote-grupo-data .dia-aviso{font-size:9.5px;font-weight:600;display:block;margin-top:2px;}
+  .lote-grupo-data .lote-grupo-count{display:block;font-size:9px;font-weight:600;opacity:0.7;margin-top:4px;font-family:inherit;text-transform:uppercase;letter-spacing:0.4px;}
+  .lote-grupo-produtos{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .lote-prod-row{display:flex;align-items:center;gap:10px;padding:6px 10px;background:var(--surface2);border-radius:7px;transition:background 0.12s;}
+  .lote-prod-row:hover{background:rgba(255,255,255,0.04);}
+  .lote-prod-info{flex:1;min-width:0;line-height:1.3;}
+  .lote-prod-nome{font-size:12px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lote-prod-meta{font-size:10px;color:var(--muted);}
+
+  /* BANNER LOTES PRA HOJE — destaque chamativo */
+  .banner-lotes-hoje{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(135deg,rgba(251,146,60,0.12),rgba(251,146,60,0.04) 70%),var(--surface);border:1px solid rgba(251,146,60,0.4);border-radius:12px;padding:14px 18px;margin-bottom:18px;position:relative;overflow:hidden;animation:bannerLotePulse 2.5s ease-in-out infinite;}
+  .banner-lotes-hoje::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#fb923c,#fbbf24,#fb923c);}
+  @keyframes bannerLotePulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(251,146,60,0);}
+    50%{box-shadow:0 0 0 4px rgba(251,146,60,0.10);}
+  }
+  .banner-lotes-icon{font-size:28px;flex-shrink:0;line-height:1;padding-top:2px;}
+  .banner-lotes-content{flex:1;min-width:0;}
+  .banner-lotes-title{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fb923c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+  .banner-lotes-count{font-family:inherit;font-size:10px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0.2px;}
+  .banner-lotes-produtos{display:flex;flex-direction:column;gap:4px;}
+  .banner-lote-prod{display:flex;align-items:baseline;gap:8px;font-size:11.5px;line-height:1.4;}
+  .banner-lote-bullet{color:#fb923c;font-weight:800;font-size:13px;flex-shrink:0;}
+  .banner-lote-nome{font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;}
+  .banner-lote-meta{font-size:10px;color:var(--muted);font-weight:500;flex-shrink:0;}
+
   /* TOP 10 GAP */
   .top10-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:grid;grid-template-columns:32px 1fr 70px 75px 75px 70px 70px 85px;align-items:center;gap:12px;transition:border-color 0.15s;margin-bottom:8px;}
   .top10-row:hover{border-color:#353b52;}
@@ -861,6 +891,9 @@
       <div id="kpi-atende-prox"></div><div id="kpi-atende-prox-sub"></div>
     </div>
   </div>
+
+  <!-- BANNER LOTES PRA HOJE — só aparece se houver lotes cadastrados pra hoje -->
+  <div id="banner-lotes-hoje" class="banner-lotes-hoje" style="display:none;"></div>
 
   <!-- LOTES -->
   <div class="section-title">🚚 Lotes Planejados <span id="lotes-sub">datas previstas de chegada por produto</span></div>
@@ -2831,15 +2864,94 @@ async function exportarMesCompletoXLSX(){
     const wsResumo = XLSX.utils.aoa_to_sheet(aoaResumo);
     wsResumo['!cols'] = [{wch:46},{wch:18},{wch:34},{wch:24},{wch:18}];
 
+    // ═══ ABA 4: CESSÕES (todas as cessões registradas no mês, em ordem cronológica) ═══
+    const headerCess = ['Data', 'Hora', 'Cod Variação', 'Produto', 'Variação', 'Categoria', 'Quem cedeu', 'Qtd', 'Observação'];
+    const linhasCess = [];
+    let totalCessoesMes = 0;
+    Object.entries(cessoesPorSku).forEach(([cm, cessoes]) => {
+      const info = lookup[cm] || {};
+      Object.values(cessoes || {}).forEach(c => {
+        if (!c || !c.data) return;
+        if (!c.data.startsWith(`${anoRef}-${mesRef}`)) return;  // só o mês atual
+        const d = new Date(c.ts || 0);
+        const hh = String(d.getHours()).padStart(2,'0');
+        const mm = String(d.getMinutes()).padStart(2,'0');
+        linhasCess.push([
+          fmtDataKey(c.data),
+          `${hh}:${mm}`,
+          cm,
+          info.produto || `(cod ${cm})`,
+          info.variacao || '',
+          info.categoria || '',
+          c.quem || '?',
+          c.qtd || 0,
+          c.obs || '',
+        ]);
+        totalCessoesMes++;
+      });
+    });
+    // Ordena por data + hora desc (mais recentes primeiro)
+    linhasCess.sort((a, b) => {
+      if (a[0] !== b[0]) return b[0].localeCompare(a[0]);
+      return b[1].localeCompare(a[1]);
+    });
+
+    let aoaCess;
+    if (linhasCess.length === 0) {
+      aoaCess = [
+        ['⚠ NENHUMA CESSÃO REGISTRADA NESTE MÊS'],
+        [],
+        ['Pra registrar cessões: abra o simulador (botão "🧮 Simular Reserva" no topo do dashboard),'],
+        ['busque o SKU, digite a quantidade que vai ceder, escolha a pessoa no select e clique "✓ Registrar cessão".'],
+        [],
+        ['As cessões registradas aparecerão aqui automaticamente.'],
+      ];
+    } else {
+      aoaCess = [
+        [`📋 TODAS AS CESSÕES DO MÊS (${linhasCess.length} registros · total ${linhasCess.reduce((s,r)=>s+r[7],0)} un cedidas)`],
+        [],
+        headerCess,
+        ...linhasCess
+      ];
+    }
+    const wsCess = XLSX.utils.aoa_to_sheet(aoaCess);
+    wsCess['!cols'] = [{wch:11},{wch:7},{wch:12},{wch:38},{wch:30},{wch:14},{wch:14},{wch:7},{wch:30}];
+    if (linhasCess.length > 0) {
+      wsCess['!freeze'] = { xSplit: 0, ySplit: 3 };
+    }
+
+    // Adiciona linha de cessões totais no Resumo (após o que já tinha)
+    // Procura "CESSÕES POR PESSOA" e injeta contagem total antes
+    aoaResumo.splice(aoaResumo.findIndex(r => r[0] === '👥 CESSÕES POR PESSOA'), 0,
+      ['🧾 TOTAL DE REGISTROS DE CESSÕES NO MÊS', linhasCess.length, 'registros'],
+      []
+    );
+    // Re-cria worksheet do Resumo com a info adicional
+    const wsResumoNovo = XLSX.utils.aoa_to_sheet(aoaResumo);
+    wsResumoNovo['!cols'] = [{wch:46},{wch:18},{wch:34},{wch:24},{wch:18}];
+
     // ═══ Monta o workbook ═══
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, wsResumo, 'Resumo');
+    XLSX.utils.book_append_sheet(wb, wsResumoNovo, 'Resumo');
+    XLSX.utils.book_append_sheet(wb, wsCess, 'Cessões');
     XLSX.utils.book_append_sheet(wb, wsPivot, 'Pivot');
     XLSX.utils.book_append_sheet(wb, wsDet, 'Detalhe');
 
     const filename = `consumo_${anoRef}_${mesRef}_${nomesMeses[+mesRef-1].toLowerCase()}.xlsx`;
     XLSX.writeFile(wb, filename);
 
+    // Feedback claro do que foi exportado
+    console.log(`[export-mes] ✓ Excel gerado: ${filename}`);
+    console.log(`[export-mes]   Snapshots do mês: ${datasDoMes.length}`);
+    console.log(`[export-mes]   Cessões registradas no mês: ${linhasCess.length}`);
+    console.log(`[export-mes]   Total cedido (un): ${linhasCess.reduce((s,r)=>s+r[7],0)}`);
+    if (linhasCess.length === 0) {
+      alert(`Excel gerado, mas ⚠ NENHUMA cessão estava registrada neste mês.\n\nVeja a aba "Cessões" pra entender como registrar.`);
+    } else {
+      alert(`✓ Excel gerado com sucesso!\n\n• ${datasDoMes.length} dias de snapshot\n• ${linhasCess.length} cessões registradas no mês\n• ${linhasCess.reduce((s,r)=>s+r[7],0)} unidades cedidas no total\n\nAbas: Resumo · Cessões · Pivot · Detalhe`);
+    }
+    btns.forEach(b => { b.textContent = b._txt; b.disabled = false; });
+    return;
   } catch(e) {
     console.error('[xlsx-mes]', e);
     alert('Erro ao gerar Excel do mês: ' + e.message);
@@ -4931,6 +5043,39 @@ renderTable();
   };
 
   // ═══ RENDERIZAR LISTA ═══
+  function _hojeKey(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  // Renderiza banner de lotes do dia logo abaixo do hero (só aparece se houver)
+  function renderBannerLotesHoje(produtos){
+    const wrap = document.getElementById('banner-lotes-hoje');
+    if (!wrap) return;
+    if (!produtos || produtos.length === 0) {
+      wrap.style.display = 'none';
+      return;
+    }
+    wrap.style.display = 'block';
+    const totalVars = produtos.reduce((s, p) => s + (p.nVars || 0), 0);
+    wrap.innerHTML = `
+      <div class="banner-lotes-icon">📦</div>
+      <div class="banner-lotes-content">
+        <div class="banner-lotes-title">
+          <span>LOTE${produtos.length > 1 ? 'S' : ''} PREVISTO${produtos.length > 1 ? 'S' : ''} PRA HOJE</span>
+          <span class="banner-lotes-count">${produtos.length} produto${produtos.length > 1 ? 's' : ''} · ${totalVars} variaç${totalVars > 1 ? 'ões' : 'ão'} atendida${totalVars > 1 ? 's' : ''}</span>
+        </div>
+        <div class="banner-lotes-produtos">
+          ${produtos.map(p => `<div class="banner-lote-prod">
+            <span class="banner-lote-bullet">▸</span>
+            <span class="banner-lote-nome">${p.produto}</span>
+            <span class="banner-lote-meta">${p.categoria} · ${p.nVars} var · cod ${p.codItem}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    `;
+  }
+
   async function renderizarLotes(){
     const cont = document.getElementById('lotes-lista');
     const sub  = document.getElementById('lotes-sub');
@@ -4969,36 +5114,69 @@ renderTable();
       if (sub) sub.textContent = lotes.length === 0 ? 'nenhum lote cadastrado ainda' : `${lotes.length} lote${lotes.length > 1 ? 's' : ''} cadastrado${lotes.length > 1 ? 's' : ''}`;
       if (lotes.length === 0) {
         cont.innerHTML = `<div class="empty-lotes"><div class="empty-lotes-icon">📦</div><div class="empty-lotes-title">Nenhum lote cadastrado</div><div class="empty-lotes-text">Use o formulário acima pra cadastrar o primeiro lote planejado. A data ficará disponível pro time inteiro e aparecerá no simulador de reservas.</div></div>`;
+        // Limpa banner "Hoje"
+        renderBannerLotesHoje([]);
         return;
       }
-      let html = '<div class="lotes-list">';
+
+      // Agrupa por dataKey
+      const grupos = {};
       lotes.forEach(l => {
+        if (!grupos[l.dataKey]) {
+          grupos[l.dataKey] = {
+            dataKey: l.dataKey,
+            dataFmt: l.dataFmt,
+            diasAte: l.diasAte,
+            produtos: []
+          };
+        }
+        grupos[l.dataKey].produtos.push(l);
+      });
+      // Lista ordenada de grupos
+      const gruposLista = Object.values(grupos).sort((a, b) => {
+        const aFut = a.diasAte >= 0, bFut = b.diasAte >= 0;
+        if (aFut && !bFut) return -1;
+        if (!aFut && bFut) return 1;
+        if (aFut) return a.diasAte - b.diasAte;
+        return b.diasAte - a.diasAte;
+      });
+
+      // Renderiza banner de "lotes pra hoje" no topo do dashboard
+      const lotesHoje = grupos[_hojeKey()] ? grupos[_hojeKey()].produtos : [];
+      renderBannerLotesHoje(lotesHoje);
+
+      let html = '<div class="lotes-list">';
+      gruposLista.forEach(g => {
         let corDataFundo, corDataTexto, aviso;
-        if (l.diasAte < 0) {
+        if (g.diasAte < 0) {
           corDataFundo = 'rgba(255,255,255,0.04)'; corDataTexto = 'var(--muted)';
-          aviso = `passou ${-l.diasAte}d`;
-        } else if (l.diasAte === 0) {
-          corDataFundo = 'rgba(251,146,60,0.10)'; corDataTexto = '#fb923c';
+          aviso = `passou ${-g.diasAte}d`;
+        } else if (g.diasAte === 0) {
+          corDataFundo = 'rgba(251,146,60,0.12)'; corDataTexto = '#fb923c';
           aviso = 'HOJE';
-        } else if (l.diasAte <= 7) {
+        } else if (g.diasAte <= 7) {
           corDataFundo = 'rgba(34,201,138,0.10)'; corDataTexto = '#22c98a';
-          aviso = `em ${l.diasAte} dia${l.diasAte > 1 ? 's' : ''}`;
+          aviso = `em ${g.diasAte} dia${g.diasAte > 1 ? 's' : ''}`;
         } else {
           corDataFundo = 'rgba(255,255,255,0.04)'; corDataTexto = 'var(--text)';
-          aviso = `em ${l.diasAte} dias`;
+          aviso = `em ${g.diasAte} dias`;
         }
-        html += `<div class="lote-item">
-          <div class="lote-item-data" style="background:${corDataFundo};color:${corDataTexto};padding:6px 10px;border-radius:8px;">
-            ${l.dataFmt}
+        const produtosHtml = g.produtos.map(p =>
+          `<div class="lote-prod-row">
+            <div class="lote-prod-info">
+              <div class="lote-prod-nome">${p.produto}</div>
+              <div class="lote-prod-meta">${p.categoria} · cod ${p.codItem} · ${p.nVars} variaç${p.nVars > 1 ? 'ões' : 'ão'} atendida${p.nVars > 1 ? 's' : ''}</div>
+            </div>
+            <button class="lote-item-btn" onclick="removerLote(${p.codItem})" title="Remover esse lote">🗑</button>
+          </div>`
+        ).join('');
+        html += `<div class="lote-grupo">
+          <div class="lote-grupo-data" style="background:${corDataFundo};color:${corDataTexto};">
+            ${g.dataFmt}
             <span class="dia-aviso">${aviso}</span>
+            <span class="lote-grupo-count">${g.produtos.length} produto${g.produtos.length > 1 ? 's' : ''}</span>
           </div>
-          <div class="lote-item-info">
-            <div class="lote-item-produto">${l.produto}</div>
-            <div class="lote-item-meta">${l.categoria} · cod ${l.codItem} · ${l.nVars} variaç${l.nVars > 1 ? 'ões' : 'ão'} atendida${l.nVars > 1 ? 's' : ''}</div>
-          </div>
-          <div class="lote-item-actions">
-            <button class="lote-item-btn" onclick="removerLote(${l.codItem})" title="Remover lote">🗑 Remover</button>
-          </div>
+          <div class="lote-grupo-produtos">${produtosHtml}</div>
         </div>`;
       });
       html += '</div>';
