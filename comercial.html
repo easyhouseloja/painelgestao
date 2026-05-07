@@ -2459,6 +2459,51 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- Insights YTD -->
 <!-- Categorias por Marketplace YTD -->
+<!-- Faturamento por Estado YTD -->
+<div class="section-title" style="margin-top:32px;">📍 Faturamento por Estado — Acumulado 2026 (YTD)</div>
+<div class="grid-2" style="margin-bottom:24px;">
+  <div class="chart-card">
+    <div class="chart-title">🗺️ Distribuição por Estado</div>
+    <div style="height:300px;"><canvas id="ytdEstadoChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">📊 Detalhamento por Estado</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
+      <div class="prog-row" style="grid-template-columns:60px 1fr 90px 70px;">
+        <div class="prog-label" style="color:#3b82f6;font-weight:700;">SP</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:100%;background:#3b82f6;"></div></div>
+        <div class="prog-val" style="color:#3b82f6;">R$ 13,43M</div>
+        <div style="color:#3b82f6;font-weight:700;font-size:.85rem;text-align:right;">40,61%</div>
+      </div>
+      <div class="prog-row" style="grid-template-columns:60px 1fr 90px 70px;">
+        <div class="prog-label" style="color:#34d399;font-weight:700;">MG</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:81.94%;background:#34d399;"></div></div>
+        <div class="prog-val" style="color:#34d399;">R$ 11,01M</div>
+        <div style="color:#34d399;font-weight:700;font-size:.85rem;text-align:right;">33,27%</div>
+      </div>
+      <div class="prog-row" style="grid-template-columns:60px 1fr 90px 70px;">
+        <div class="prog-label" style="color:#fb7185;font-weight:700;">RJ</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:64.07%;background:#fb7185;"></div></div>
+        <div class="prog-val" style="color:#fb7185;">R$ 8,61M</div>
+        <div style="color:#fb7185;font-weight:700;font-size:.85rem;text-align:right;">26,02%</div>
+      </div>
+      <div class="prog-row" style="grid-template-columns:60px 1fr 90px 70px;">
+        <div class="prog-label" style="color:#f59e0b;font-weight:700;">ES</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:.25%;background:#f59e0b;"></div></div>
+        <div class="prog-val" style="color:#f59e0b;">R$ 33,8K</div>
+        <div style="color:#f59e0b;font-weight:700;font-size:.85rem;text-align:right;">0,10%</div>
+      </div>
+    </div>
+    <div style="margin-top:20px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:baseline;">
+      <span style="font-size:.78rem;color:var(--muted);">Total nos 4 estados</span>
+      <span style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--accent);">R$ 33,08M</span>
+    </div>
+    <div style="margin-top:8px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      🥇 <strong style="color:#3b82f6;">SP</strong> lidera com 40,61% do faturamento. <strong style="color:#34d399;">MG</strong> e <strong style="color:#fb7185;">RJ</strong> juntos representam 59,29%. <strong style="color:#f59e0b;">ES</strong> ainda é incipiente.
+    </div>
+  </div>
+</div>
+
 <div class="section-title" style="margin-top:32px;">📊 Categorias por Marketplace — Acumulado 2026 (YTD)</div>
 <div class="cat-grid-mp" style="margin-bottom:24px;">
   <!-- SHOPEE -->
@@ -3284,6 +3329,38 @@ function buildYtdCharts() {
       scales: {
         x: { stacked: true, grid: gridCfg, ticks: tickCfg },
         y: { stacked: true, grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v / 1000000).toFixed(0) + 'M' } }
+      }
+    }
+  });
+
+  // Faturamento por Estado YTD (pizza)
+  new Chart(document.getElementById('ytdEstadoChart'), {
+    type: 'pie',
+    data: {
+      labels: ['SP', 'MG', 'RJ', 'ES'],
+      datasets: [{
+        data: [13432187.42, 11006694.36, 8606039.23, 33756.71],
+        backgroundColor: ['#3b82f6', '#34d399', '#fb7185', '#f59e0b'],
+        borderWidth: 2,
+        borderColor: '#161d2e'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { ...legendCfg, position: 'right' },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              const pct = (ctx.raw / total * 100).toFixed(2);
+              const val = ctx.raw >= 1000000
+                ? 'R$ ' + (ctx.raw / 1000000).toFixed(2) + 'M'
+                : 'R$ ' + (ctx.raw / 1000).toFixed(1) + 'K';
+              return ' ' + ctx.label + ': ' + val + ' (' + pct + '%)';
+            }
+          }
+        }
       }
     }
   });
