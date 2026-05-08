@@ -347,6 +347,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 .aprod-page { display: none; }
 .aprod-page.active { display: block; }
+.mprod-page { display: none; }
+.mprod-page.active { display: block; }
 
 
 /* ── ABA ADS & AFILIADOS ── */
@@ -2275,12 +2277,222 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- ═══ ABRIL: ANÁLISE DE PRODUTOS ═══ -->
 <div class="page" id="mai-page-produtos">
+
   <div class="section-title">📦 Análise de Produtos — Maio 2026</div>
-  <div style="background:linear-gradient(135deg,rgba(56,189,248,.05),rgba(124,58,237,.04));border:1px dashed rgba(56,189,248,.3);border-radius:14px;padding:60px 40px;text-align:center;margin-bottom:24px;">
-    <div style="font-size:3rem;margin-bottom:16px;">📦</div>
-    <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:8px;">Análise de Produtos — Em Atualização</div>
-    <div style="font-size:.9rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.6;">As informações detalhadas de produtos para Maio 2026 serão disponibilizadas no decorrer da semana. Período atual: <strong style="color:var(--accent);">01/05/2026 a 04/05/2026</strong>.</div>
+  <div style="font-size:.75rem;color:var(--muted);margin-bottom:16px;">Período 01/05 a 07/05 · 2,641 pedidos · R$ 2.75M faturado · 8 Marketplaces</div>
+
+  <div class="apr-prod-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+    <button class="mai-pt-btn" onclick="mprod_showPage('visao',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#0b0f1a;transition:all .2s;">📊 Visão Geral</button>
+    <button class="mai-pt-btn" onclick="mprod_showPage('marketplaces',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;">🛒 Marketplaces</button>
+    <button class="mai-pt-btn" onclick="mprod_showPage('produtos',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;">📦 Top Produtos</button>
+    <button class="mai-pt-btn" onclick="mprod_showPage('estados',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;">📍 Por Estado</button>
+    <button class="mai-pt-btn" onclick="mprod_showPage('mapa',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;">🗺️ Mapa de Calor</button>
+    <button class="mai-pt-btn" onclick="mprod_showPage('horarios',this)" style="padding:8px 18px;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:all .2s;">⏰ Horários de Pico</button>
   </div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 1 — VISÃO GERAL
+══════════════════════════════════════ -->
+<div class="mprod-page" id="mprod_page-visao">
+
+  <div class="kpi-strip">
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total Faturado</div>
+      <div class="kpi-value">R$ 2.75M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-blue">01–07 Mai/26</span></div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">Ticket Médio Geral</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 1,041</div>
+      <div class="kpi-sub">por pedido · 2,641 pedidos</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Unidades Vendidas</div>
+      <div class="kpi-value" style="color:var(--green)">2,687</div>
+      <div class="kpi-sub">unidades totais · 140 SKUs únicos</div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="kpi-label">Item Campeão</div>
+      <div class="kpi-value" style="font-size:1.1rem;line-height:1.3">GR Easy Slim 8P Esp. Amêndoa</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-yellow">367 un · 14.65% receita</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Distribuição por Marketplace</div>
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-title">Share de Receita por Canal</div>
+    <div id="mprod_mktRows"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">📊 Faturamento por Marketplace</div>
+      <div class="chart-wrap"><canvas id="mprod_barChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🥧 Share de Receita</div>
+      <div class="chart-wrap"><canvas id="mprod_donutChart"></canvas></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 2 — MARKETPLACES
+══════════════════════════════════════ -->
+<div class="mprod-page" id="mprod_page-marketplaces">
+
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Shopee · Líder</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 1.93M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">70.2% do total</span> · 1,849 pedidos</div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="kpi-label">Mercado Livre</div>
+      <div class="kpi-value" style="color:var(--ml)">R$ 435K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-yellow">15.8% do total</span> · 437 pedidos</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Magazine Luiza</div>
+      <div class="kpi-value" style="color:var(--magalu)">R$ 271K</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-blue">9.9% do total</span> · 270 pedidos</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Outros Canais</div>
+      <div class="kpi-value" style="color:var(--comp)">R$ 112K</div>
+      <div class="kpi-sub">Via + Madeira + Web + Zema · 4.1%</div>
+    </div>
+  </div>
+
+  <div class="section-title">Top 10 por Marketplace (clique para expandir)</div>
+  <div class="mp-accordion" id="mprod_mpAccordion"></div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 3 — PRODUTOS
+══════════════════════════════════════ -->
+<div class="mprod-page" id="mprod_page-produtos">
+
+  <div class="section-title">Top 10 Produtos Geral — por receita</div>
+  <div class="chart-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Produto</th>
+          <th>Qtd</th>
+          <th>Receita</th>
+          <th>% Receita</th>
+          <th>% Unidades</th>
+          <th style="min-width:140px">Representatividade</th>
+        </tr>
+      </thead>
+      <tbody id="mprod_top10tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 4 — ESTADOS
+══════════════════════════════════════ -->
+<div class="mprod-page" id="mprod_page-estados">
+
+  <div class="kpi-strip" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi-card blue">
+      <div class="kpi-label">São Paulo</div>
+      <div class="kpi-value" style="font-size:1.4rem">R$ 1.04M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-blue">37.7%</span> · 1,009 pedidos</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--sala)">
+      <div class="kpi-label">Rio de Janeiro</div>
+      <div class="kpi-value" style="font-size:1.4rem;color:var(--sala)">R$ 0.86M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-red">31.4%</span> · 832 pedidos</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Minas Gerais</div>
+      <div class="kpi-value" style="font-size:1.4rem;color:var(--green)">R$ 0.85M</div>
+      <div class="kpi-sub"><span class="kpi-pill pill-green">30.9%</span> · 795 pedidos</div>
+    </div>
+  </div>
+
+  <div class="section-title">Itens por Marketplace × Estado</div>
+  <div class="grid-auto" id="mprod_mpStateGrid"></div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 5 — MAPA
+══════════════════════════════════════ -->
+<div class="mprod-page" id="mprod_page-mapa">
+
+  <div class="section-title">Mapa de Calor — Concentração de Vendas por Estado</div>
+  <div class="map-container">
+    <div class="chart-title">Brasil · Mai 2026 · Receita por Estado</div>
+    <div class="map-flex">
+      <div class="map-svg-wrap">
+        <div class="map-tooltip" id="mprod_mapTooltip"></div>
+        <svg id="mprod_brazilMap" viewBox="0 0 800 760" width="520" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="map-side" id="mprod_mapSide"></div>
+    </div>
+    <div class="map-legend">
+      <span class="leg-lbl">Menor</span>
+      <div class="leg-gradient"></div>
+      <span class="leg-lbl">Maior receita</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 6 — HORÁRIOS
+══════════════════════════════════════ -->
+<div class="mprod-page" id="mprod_page-horarios">
+  <div class="section-title">⏰ Horários de Pico de Vendas por Marketplace</div>
+  <div style="font-size:.78rem;color:var(--muted);margin-bottom:20px;">Período 01/05 a 07/05/2026 · Base: 2,641 pedidos · Horário de Brasília (GMT-3)</div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;" id="mprod_horaCards"></div>
+
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="card-title" style="margin-bottom:16px;">📊 Distribuição Horária Geral — Pedidos por Hora do Dia</div>
+    <div style="position:relative;height:300px;"><canvas id="mprod_horaChart"></canvas></div>
+  </div>
+
+  <div class="section-title">💡 Insights Estratégicos — Quando Vender Mais</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px;">
+    <div style="background:var(--bg3);border:1px solid rgba(249,115,22,.3);border-radius:10px;padding:16px;">
+      <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--shopee);font-weight:700;margin-bottom:8px;">🟠 Shopee — Melhor Janela</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:6px;">12h → 21h</div>
+      <div style="font-size:.75rem;color:var(--muted);line-height:1.5;">Pico às 12h (137 pedidos) e 19h (122 pedidos). Tarde + noite somam <strong style="color:var(--green)">67,5%</strong>. Pico do meio-dia indica forte uso mobile no almoço.</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid rgba(0,134,255,.3);border-radius:10px;padding:16px;">
+      <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--magalu);font-weight:700;margin-bottom:8px;">🔵 Magalu — Melhor Janela</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:6px;">14h → 17h</div>
+      <div style="font-size:.75rem;color:var(--muted);line-height:1.5;">Pico às 16h e 17h (22 pedidos cada). Tarde domina com <strong style="color:var(--green)">39,7%</strong>. Concentrar campanhas Mês das Mães na segunda metade da tarde.</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid rgba(255,224,0,.2);border-radius:10px;padding:16px;">
+      <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--ml);font-weight:700;margin-bottom:8px;">🟡 Mercado Livre — Melhor Janela</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:6px;">17h → 21h</div>
+      <div style="font-size:.75rem;color:var(--muted);line-height:1.5;">Pico às 21h (34 pedidos). Noite domina com <strong style="color:var(--green)">38,7%</strong> — comportamento mais "pós-trabalho" que outros canais.</div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,rgba(249,115,22,.08),rgba(56,189,248,.04));border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:20px;">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;color:var(--shopee);margin-bottom:10px;">🎯 Recomendação Operacional</div>
+    <div style="font-size:.82rem;color:var(--text);line-height:1.6;">
+      <strong>Janela única forte: 12h-21h</strong> concentra <strong style="color:var(--green)">~74% de todos os pedidos</strong> (Shopee+ML+Magalu agregados).
+      <br>• Concentre orçamento de <strong style="color:var(--shopee)">Shopee CPC</strong> entre 11h-14h (pico almoço) e 18h-21h (pico noite).
+      <br>• <strong style="color:var(--magalu)">Magalu</strong> precisa estar agressivo às tardes (14h-17h) — quase 40% dos pedidos.
+      <br>• <strong style="color:var(--ml)">Mercado Livre</strong> é "noturno" — público diferente, conversão maior depois das 18h.
+      <br>• Madrugada (00h-05h) representa apenas ~6% — não vale CPM elevado nesse horário.
+    </div>
+  </div>
+</div>
+
 </div>
 
 <div class="page" id="mai-page-ads">
@@ -4088,6 +4300,12 @@ function showMaiPage(id, e) {
   document.getElementById('mai-page-' + id).classList.add('active');
   if (e && e.currentTarget) e.currentTarget.classList.add('active');
   if (!maiChartsBuilt[id]) { buildMaiCharts(id); maiChartsBuilt[id] = true; }
+  // Quando entrar na aba de Produtos, renderizar todo o módulo mprod_
+  if (id === 'produtos') {
+    setTimeout(function() {
+      if (typeof mprod_renderAll === 'function') mprod_renderAll();
+    }, 50);
+  }
 }
 
 function showMaiEstado(id, e) {
@@ -4149,6 +4367,65 @@ function buildMaiCharts(page) {
     const vals=maiDaily.map(d=>d.g);
     const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
     new Chart(document.getElementById('maiDailyChart'),{type:'bar',data:{labels,datasets:[{label:'Vendas Gerais',data:vals,backgroundColor:vals.map(v=>v>=avg?'rgba(34,197,94,.75)':'rgba(239,68,68,.75)'),borderRadius:5,order:2},{label:'Média Diária',data:Array(maiDaily.length).fill(avg),type:'line',borderColor:'#38bdf8',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}}}}});
+  }
+  if(page==='produtos'){
+    // Categoria
+    const e1 = Chart.getChart(document.getElementById('maiProdCatChart')); if(e1) e1.destroy();
+    new Chart(document.getElementById('maiProdCatChart'),{type:'doughnut',data:{labels:['GR (63,48%)','SALA (20,26%)','COMP (16,26%)'],datasets:[{data:[1744718.93,556887.51,447061.59],backgroundColor:['#34d399','#fb7185','#818cf8'],borderWidth:2,borderColor:'#161d2e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}}}});
+
+    // Top 10 produtos
+    const e2 = Chart.getChart(document.getElementById('maiProdTopChart')); if(e2) e2.destroy();
+    new Chart(document.getElementById('maiProdTopChart'),{
+      type:'bar',
+      data:{
+        labels:['Easy Slim 8P Esp. Amêndoa','Easy Slim 8P Esp+Pés Amêndoa','Easy Slim 8P Esp. Branco','6 Portas Easy Slim Amêndoa','Mesa 170 Apogeu Veludo','Toronto Plus 2P Correr','Conj. Sala 4 Cad. Easy Line','Easy Slim 8P Amêndoa','Cômoda Easy Like Amêndoa','Mesa 0,90 Celebrare 4 Cad.'],
+        datasets:[{
+          label:'Faturamento',
+          data:[402654.75,196038.23,188103.68,160039.84,121671.90,112474.31,103900.86,102843.25,83870.48,83362.30],
+          backgroundColor:['#34d399','#34d399','#34d399','#34d399','#fb7185','#34d399','#fb7185','#34d399','#818cf8','#fb7185'],
+          borderRadius:4
+        }]
+      },
+      options:{
+        indexAxis:'y',
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}},
+        scales:{x:{grid:gridCfg,ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'}},y:{grid:gridCfg,ticks:{...tickCfg,font:{size:10}}}}
+      }
+    });
+
+    // Estados
+    const e3 = Chart.getChart(document.getElementById('maiEstadoChart')); if(e3) e3.destroy();
+    new Chart(document.getElementById('maiEstadoChart'),{
+      type:'pie',
+      data:{
+        labels:['SP','RJ','MG','PR','SC','BA'],
+        datasets:[{
+          data:[1035788.28,861819.91,849649.54,809.70,300.61,299.99],
+          backgroundColor:['#3b82f6','#fb7185','#34d399','#f59e0b','#a78bfa','#64748b'],
+          borderWidth:2,borderColor:'#161d2e'
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{...legendCfg,position:'right'},tooltip:{callbacks:{label:ctx=>{const total=ctx.dataset.data.reduce((a,b)=>a+b,0);const pct=(ctx.raw/total*100).toFixed(2);const val=ctx.raw>=10000?'R$ '+(ctx.raw/1000).toFixed(1)+'K':'R$ '+ctx.raw.toFixed(0);return ' '+ctx.label+': '+val+' ('+pct+'%)';}}}}}
+    });
+
+    // Pedidos por hora
+    const e4 = Chart.getChart(document.getElementById('maiHoraChart')); if(e4) e4.destroy();
+    const horaLabels=['00h','01h','02h','03h','04h','05h','06h','07h','08h','09h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h','21h','22h','23h'];
+    const horaPedidos=[102,39,10,9,9,17,30,54,108,127,155,153,192,165,164,123,136,153,170,172,172,166,131,91];
+    new Chart(document.getElementById('maiHoraChart'),{
+      type:'bar',
+      data:{labels:horaLabels,datasets:[{label:'Pedidos',data:horaPedidos,backgroundColor:horaPedidos.map(v=>v>=170?'#f97316':v>=140?'#38bdf8':'rgba(56,189,248,.4)'),borderRadius:3}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.raw+' pedidos'}}},scales:{x:{grid:gridCfg,ticks:{...tickCfg,font:{size:9}}},y:{grid:gridCfg,ticks:tickCfg,beginAtZero:true}}}
+    });
+
+    // Pedidos por dia
+    const e5 = Chart.getChart(document.getElementById('maiDiaPedidosChart')); if(e5) e5.destroy();
+    new Chart(document.getElementById('maiDiaPedidosChart'),{
+      type:'bar',
+      data:{labels:['01/05','02/05','03/05','04/05','05/05','06/05','07/05'],datasets:[{label:'Pedidos',data:[275,293,299,276,715,409,381],backgroundColor:['#38bdf8','#38bdf8','#38bdf8','#38bdf8','#f97316','#34d399','#34d399'],borderRadius:5,yAxisID:'y'},{label:'Faturamento',data:[282643.44,314467.93,299531.87,304344.83,731377.05,413308.43,402994.48],type:'line',borderColor:'#fbbf24',borderWidth:2,pointRadius:4,pointBackgroundColor:'#fbbf24',fill:false,tension:.3,yAxisID:'y1'}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:legendCfg,tooltip:{callbacks:{label:ctx=>ctx.dataset.label==='Pedidos'?' '+ctx.raw+' pedidos':' R$ '+(ctx.raw/1000).toFixed(1)+'K'}}},scales:{x:{grid:gridCfg,ticks:tickCfg},y:{position:'left',grid:gridCfg,ticks:tickCfg,title:{display:true,text:'Pedidos',color:'#9aa3b6'}},y1:{position:'right',grid:{display:false},ticks:{...tickCfg,callback:v=>'R$'+(v/1000).toFixed(0)+'K'},title:{display:true,text:'Faturamento',color:'#9aa3b6'}}}}
+    });
   }
 }
 
@@ -4677,6 +4954,9 @@ const STATES_SVG = {
   TO:{d:"M 455 268 L 490 258 L 515 268 L 525 292 L 522 325 L 505 348 L 478 358 L 452 348 L 438 322 L 438 292 L 448 272 Z",lx:480,ly:310},
 };
 
+// Expor STATES_SVG globalmente para reuso (módulo Maio)
+window.STATES_SVG = STATES_SVG;
+
 // Função de cor do mapa de calor (ausente — adicionada)
 function aprod_heatColor(val) {
   if (!val || val === 0) return 'rgba(255,255,255,.06)';
@@ -4953,6 +5233,439 @@ window.aprod_renderAll = aprod_renderAll;
   setTimeout(doRender, 500);
 })();
 })();
+
+// ════════════════════════════════════════
+// DADOS MAIO 2026
+// ════════════════════════════════════════
+
+// MAIO DATA
+const M_TOTAL = 2748668.03;
+const M_TOTAL_QTY = 2687;
+
+const M_MP = [{"name": "Shopee", "color": "#f97316", "total": 1930202.3, "pedidos": 1849, "qty": 1877, "ticket": 1043.92, "pct": 70.22}, {"name": "Mercado Livre", "color": "#ffe000", "total": 435197.94, "pedidos": 437, "qty": 443, "ticket": 995.88, "pct": 15.83}, {"name": "Magazine Luiza", "color": "#0086ff", "total": 271442.2, "pedidos": 270, "qty": 275, "ticket": 1005.34, "pct": 9.88}, {"name": "Via Varejo", "color": "#c084fc", "total": 56725.0, "pedidos": 45, "qty": 48, "ticket": 1260.56, "pct": 2.06}, {"name": "Madeira Madeira", "color": "#e07b54", "total": 27796.96, "pedidos": 18, "qty": 22, "ticket": 1544.28, "pct": 1.01}, {"name": "Web Continental V2", "color": "#64748b", "total": 21451.07, "pedidos": 18, "qty": 18, "ticket": 1191.73, "pct": 0.78}, {"name": "Zema", "color": "#ef4444", "total": 3952.66, "pedidos": 3, "qty": 3, "ticket": 1317.55, "pct": 0.14}, {"name": "Amazon Global Api", "color": "#9333ea", "total": 1899.9, "pedidos": 1, "qty": 1, "ticket": 1899.9, "pct": 0.07}];
+
+const M_TOP10 = [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 367, "valor": 402654.75, "pct_v": 14.65, "pct_q": 13.66}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 177, "valor": 196038.23, "pct_v": 7.13, "pct_q": 6.59}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 172, "valor": 188103.68, "pct_v": 6.84, "pct_q": 6.4}, {"p": "Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White", "qty": 217, "valor": 160039.84, "pct_v": 5.82, "pct_q": 8.08}, {"p": "Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White", "qty": 81, "valor": 121671.9, "pct_v": 4.43, "pct_q": 3.01}, {"p": "Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco", "qty": 65, "valor": 112474.31, "pct_v": 4.09, "pct_q": 2.42}, {"p": "Conjunto Sala de Jantar com 4 Cadeiras Easy Line", "qty": 213, "valor": 103900.86, "pct_v": 3.78, "pct_q": 7.93}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White", "qty": 97, "valor": 102843.25, "pct_v": 3.74, "pct_q": 3.61}, {"p": "Comoda Lopas Easy Like  Amendoa Clean/Off White", "qty": 97, "valor": 83870.48, "pct_v": 3.05, "pct_q": 3.61}, {"p": "Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White", "qty": 77, "valor": 83362.3, "pct_v": 3.03, "pct_q": 2.87}];
+
+const M_MP_ITEMS = {"Shopee": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 249, "valor": 277305.1, "pct_mp": 14.37, "pct_t": 10.09}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 118, "valor": 130848.2, "pct_mp": 6.78, "pct_t": 4.76}, {"p": "Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White", "qty": 75, "valor": 112612.5, "pct_mp": 5.83, "pct_t": 4.1}, {"p": "Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White", "qty": 141, "valor": 108975.9, "pct_mp": 5.65, "pct_t": 3.96}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White", "qty": 92, "valor": 97510.8, "pct_mp": 5.05, "pct_t": 3.55}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 74, "valor": 85932.6, "pct_mp": 4.45, "pct_t": 3.13}, {"p": "Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White", "qty": 77, "valor": 83362.3, "pct_mp": 4.32, "pct_t": 3.03}, {"p": "Comoda Lopas Easy Like  Amendoa Clean/Off White", "qty": 81, "valor": 70551.9, "pct_mp": 3.66, "pct_t": 2.57}, {"p": "Conjunto Sala de Jantar com 4 Cadeiras Easy Line", "qty": 142, "valor": 70285.8, "pct_mp": 3.64, "pct_t": 2.56}, {"p": "Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco", "qty": 28, "valor": 49397.2, "pct_mp": 2.56, "pct_t": 1.8}], "Mercado Livre": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 99, "valor": 104392.53, "pct_mp": 23.99, "pct_t": 3.8}, {"p": "Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco", "qty": 36, "valor": 61287.21, "pct_mp": 14.08, "pct_t": 2.23}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 40, "valor": 42216.81, "pct_mp": 9.7, "pct_t": 1.54}, {"p": "Conjunto Sala de Jantar com 4 Cadeiras Easy Line", "qty": 70, "valor": 33115.16, "pct_mp": 7.61, "pct_t": 1.2}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean", "qty": 15, "valor": 17428.5, "pct_mp": 4.0, "pct_t": 0.63}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean", "qty": 14, "valor": 14838.6, "pct_mp": 3.41, "pct_t": 0.54}, {"p": "Comoda Lopas Easy Like  Amendoa Clean/Off White", "qty": 16, "valor": 13318.58, "pct_mp": 3.06, "pct_t": 0.48}, {"p": "Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White", "qty": 17, "valor": 13058.57, "pct_mp": 3.0, "pct_t": 0.48}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White", "qty": 12, "valor": 12739.25, "pct_mp": 2.93, "pct_t": 0.46}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 9, "valor": 10279.1, "pct_mp": 2.36, "pct_t": 0.37}], "Magazine Luiza": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 90, "valor": 94731.43, "pct_mp": 34.9, "pct_t": 3.45}, {"p": "Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White", "qty": 75, "valor": 50224.04, "pct_mp": 18.5, "pct_t": 1.83}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean", "qty": 33, "valor": 35967.43, "pct_mp": 13.25, "pct_t": 1.31}, {"p": "Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa /Off", "qty": 18, "valor": 25008.9, "pct_mp": 9.21, "pct_t": 0.91}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 11, "valor": 12024.42, "pct_mp": 4.43, "pct_t": 0.44}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean", "qty": 11, "valor": 11351.1, "pct_mp": 4.18, "pct_t": 0.41}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 10, "valor": 10590.07, "pct_mp": 3.9, "pct_t": 0.39}, {"p": "Dormitório Completo Casal Easy Like Amendoa Clean/Off White", "qty": 1, "valor": 4407.9, "pct_mp": 1.62, "pct_t": 0.16}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean", "qty": 4, "valor": 4153.62, "pct_mp": 1.53, "pct_t": 0.15}, {"p": "Guarda Roupa Casal com Espelho 3 Portas de Correr 6 Gavetas 270cm Spazio Glass 100% MDF Branco", "qty": 1, "valor": 2819.9, "pct_mp": 1.04, "pct_t": 0.1}], "Via Varejo": [{"p": "Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White", "qty": 27, "valor": 34061.1, "pct_mp": 60.05, "pct_t": 1.24}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 6, "valor": 6492.9, "pct_mp": 11.45, "pct_t": 0.24}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 3, "valor": 3218.7, "pct_mp": 5.67, "pct_t": 0.12}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 2, "valor": 2515.3, "pct_mp": 4.43, "pct_t": 0.09}, {"p": "Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Pés Amendoa Clean", "qty": 1, "valor": 2450.9, "pct_mp": 4.32, "pct_t": 0.09}, {"p": "Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White", "qty": 2, "valor": 1715.8, "pct_mp": 3.02, "pct_t": 0.06}, {"p": "Conjunto Sala de Jantar Mesa 170 com 6 cadeiras Apogeu Linho Rinzai Bege Amendoa/Off White", "qty": 1, "valor": 1659.9, "pct_mp": 2.93, "pct_t": 0.06}, {"p": "Sapateira Giratoria Esthela Com Espelho Amendoa Clean Lopas", "qty": 3, "valor": 1478.7, "pct_mp": 2.61, "pct_t": 0.05}, {"p": "Guarda-roupa Casal 2 Portas Easy Light com Espelho e Pés Branco", "qty": 1, "valor": 1359.9, "pct_mp": 2.4, "pct_t": 0.05}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White", "qty": 1, "valor": 1239.9, "pct_mp": 2.19, "pct_t": 0.05}], "Madeira Madeira": [{"p": "Comoda 8 Gavetas  Easy Like  Amendoa Clean", "qty": 4, "valor": 5920.67, "pct_mp": 21.3, "pct_t": 0.22}, {"p": "Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos Amendoa Clean/Off White", "qty": 1, "valor": 2739.9, "pct_mp": 9.86, "pct_t": 0.1}, {"p": "Guarda Roupa Solteiro 100% MDF 4 Portas Easy Like Amêndo Clean", "qty": 1, "valor": 2718.06, "pct_mp": 9.78, "pct_t": 0.1}, {"p": "Mesa De Cabeceira 2 Gavetas Easy Like  Amendoa Clean", "qty": 4, "valor": 2342.51, "pct_mp": 8.43, "pct_t": 0.09}, {"p": "Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco", "qty": 1, "valor": 2209.9, "pct_mp": 7.95, "pct_t": 0.08}, {"p": "Comoda 6 Gavetas Maggiore  Branco Lopas", "qty": 3, "valor": 2106.31, "pct_mp": 7.58, "pct_t": 0.08}, {"p": "Guarda Roupa Solteiro 100% MDF 4 Portas Easy Like Amêndoa Clean/Off White", "qty": 1, "valor": 2059.9, "pct_mp": 7.41, "pct_t": 0.07}, {"p": "Guarda Roupa Solteiro 100% MDF 4 Portas Easy Like Branco", "qty": 1, "valor": 1897.1, "pct_mp": 6.82, "pct_t": 0.07}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 1, "valor": 1229.9, "pct_mp": 4.42, "pct_t": 0.04}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 1, "valor": 1229.9, "pct_mp": 4.42, "pct_t": 0.04}], "Web Continental V2": [{"p": "Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White", "qty": 6, "valor": 5759.42, "pct_mp": 26.85, "pct_t": 0.21}, {"p": "Guarda Roupa Casal 100% MDF 6 Portas Easy Space Com Espelho  Amendoa Clean/Off White -Lopas", "qty": 1, "valor": 2666.31, "pct_mp": 12.43, "pct_t": 0.1}, {"p": "Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos e Pés Frassino/Off White", "qty": 1, "valor": 2589.9, "pct_mp": 12.07, "pct_t": 0.09}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 2, "valor": 2579.8, "pct_mp": 12.03, "pct_t": 0.09}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco", "qty": 2, "valor": 2425.01, "pct_mp": 11.3, "pct_t": 0.09}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 1, "valor": 1209.9, "pct_mp": 5.64, "pct_t": 0.04}, {"p": "Guarda-Roupa Solteiro 100%MDF Alonzo 4 portas Amêndoa Clean", "qty": 1, "valor": 985.51, "pct_mp": 4.59, "pct_t": 0.04}, {"p": "Comoda 8 Gavetas  Easy Like  Amendoa Clean", "qty": 1, "valor": 969.9, "pct_mp": 4.52, "pct_t": 0.04}, {"p": "Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White", "qty": 1, "valor": 839.9, "pct_mp": 3.92, "pct_t": 0.03}, {"p": "Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White", "qty": 1, "valor": 791.91, "pct_mp": 3.69, "pct_t": 0.03}], "Zema": [{"p": "Conjunto Sala de Jantar Mesa Easy Pop 170x90cm Tampo Vidro/MDF com 6 Cadeiras Seat Linho Mosaico Cinza Amendoa/Off White", "qty": 1, "valor": 1782.43, "pct_mp": 45.09, "pct_t": 0.06}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White", "qty": 1, "valor": 1100.35, "pct_mp": 27.84, "pct_t": 0.04}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White", "qty": 1, "valor": 1069.88, "pct_mp": 27.07, "pct_t": 0.04}], "Amazon Global Api": [{"p": "Guarda-Roupa Casal Alonzo 6 Portas 100% MDF Com Espelho Amêndoa Clean", "qty": 1, "valor": 1899.9, "pct_mp": 100.0, "pct_t": 0.07}]};
+
+const M_MP_STATE = {"Shopee": {"São Paulo": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 91, "valor": 101410.9}, {"p": "Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White", "qty": 33, "valor": 49616.7}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 40, "valor": 44296.0}, {"p": "Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White", "qty": 38, "valor": 41226.2}, {"p": "Conjunto Sala de Jantar com 4 Cadeiras Easy Line", "qty": 78, "valor": 38592.2}, {"p": "Comoda Lopas Easy Like  Amendoa Clean/Off White", "qty": 37, "valor": 32196.3}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 24, "valor": 28017.6}, {"p": "Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White", "qty": 35, "valor": 26996.5}], "Minas Gerais": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 56, "valor": 62164.4}, {"p": "Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White", "qty": 50, "valor": 38575.0}, {"p": "Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White", "qty": 22, "valor": 32977.8}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White", "qty": 30, "valor": 31697.0}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 28, "valor": 31107.2}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 21, "valor": 24537.9}, {"p": "Comoda Lopas Easy Like  Amendoa Clean/Off White", "qty": 26, "valor": 22677.4}, {"p": "Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White", "qty": 16, "valor": 17258.4}], "Rio de Janeiro": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 102, "valor": 113729.8}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 50, "valor": 55445.0}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean/Off White", "qty": 42, "valor": 44575.8}, {"p": "Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White", "qty": 56, "valor": 43404.4}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 29, "valor": 33377.1}, {"p": "Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White", "qty": 20, "valor": 30018.0}, {"p": "Mesa 0,90 Celebrare c/04 Cad.apogeu Tecido Linho Rinzai Bege Amendoa Clean/off White", "qty": 23, "valor": 24877.7}, {"p": "Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco", "qty": 14, "valor": 24638.6}]}, "Mercado Livre": {"São Paulo": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 33, "valor": 34797.51}, {"p": "Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco", "qty": 17, "valor": 28948.66}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 14, "valor": 14758.96}, {"p": "Conjunto Sala de Jantar com 4 Cadeiras Easy Line", "qty": 30, "valor": 14297.45}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White", "qty": 8, "valor": 8479.56}, {"p": "Comoda Lopas Easy Like  Amendoa Clean/Off White", "qty": 9, "valor": 7519.1}, {"p": "Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White", "qty": 9, "valor": 6919.19}, {"p": "Comoda 8 Gavetas  Easy Like  Amendoa Clean", "qty": 8, "valor": 6517.6}], "Minas Gerais": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 21, "valor": 22138.44}, {"p": "Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco", "qty": 11, "valor": 18719.17}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean", "qty": 9, "valor": 10429.1}, {"p": "Conjunto Sala de Jantar com 4 Cadeiras Easy Line", "qty": 16, "valor": 7519.12}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 7, "valor": 7379.48}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White", "qty": 4, "valor": 4259.69}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean", "qty": 4, "valor": 4239.6}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 3, "valor": 3459.7}], "Rio de Janeiro": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 45, "valor": 47456.58}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 19, "valor": 20078.37}, {"p": "Guarda-roupa Casal 2 Portas de Correr 6 Gavetas Toronto Plus 100% MDF Branco", "qty": 8, "valor": 13619.38}, {"p": "Conjunto Sala de Jantar com 4 Cadeiras Easy Line", "qty": 24, "valor": 11298.59}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean", "qty": 6, "valor": 6359.4}, {"p": "Conjunto Mesa 170 Tampo Vidro/MDF Apogeu com 6 cadeiras.Apogeu Veludo Creme Amêndoa/Off White", "qty": 4, "valor": 6039.6}, {"p": "Comoda Lopas Easy Like  Amendoa Clean/Off White", "qty": 5, "valor": 4179.59}, {"p": "Comoda Vedra 7 Gavetas 2 Portas Amendoa Clean/Off White", "qty": 5, "valor": 3829.68}]}, "Magazine Luiza": {"São Paulo": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 51, "valor": 52926.15}, {"p": "Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White", "qty": 39, "valor": 25726.87}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean", "qty": 14, "valor": 16025.08}, {"p": "Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa /Off", "qty": 9, "valor": 12194.76}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 5, "valor": 4871.57}, {"p": "Dormitório Completo Casal Easy Like Amendoa Clean/Off White", "qty": 1, "valor": 4407.9}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 3, "valor": 4200.64}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean", "qty": 2, "valor": 2139.8}], "Minas Gerais": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 26, "valor": 27749.81}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean", "qty": 17, "valor": 17924.71}, {"p": "Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White", "qty": 23, "valor": 15364.53}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean", "qty": 9, "valor": 9436.37}, {"p": "Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa /Off", "qty": 6, "valor": 8586.42}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 4, "valor": 4913.05}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 5, "valor": 4597.59}, {"p": "Guarda Roupa Casal com Espelho 3 Portas de Correr 6 Gavetas 270cm Spazio Glass 100% MDF Branco", "qty": 1, "valor": 2819.9}], "Rio de Janeiro": [{"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 13, "valor": 14055.47}, {"p": "Guarda Roupa Casal 6 Portas Easy Slim Amendoa Clean/off White", "qty": 13, "valor": 9132.64}, {"p": "Conjunto Mesa de Jantar 170 Apogeu com vidro e 6 cadeiras Apogeu tecido Suede Animale Amêndoa /Off", "qty": 3, "valor": 4227.72}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 2, "valor": 2239.8}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean", "qty": 2, "valor": 2017.64}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 2, "valor": 1791.84}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Branco", "qty": 1, "valor": 1149.9}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Amendoa Clean", "qty": 1, "valor": 997.41}]}, "Via Varejo": {"São Paulo": [{"p": "Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White", "qty": 10, "valor": 8819.0}, {"p": "Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Pés Amendoa Clean", "qty": 1, "valor": 2450.9}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 2, "valor": 2219.8}, {"p": "Conjunto Sala de Jantar Mesa 170 com 6 cadeiras Apogeu Linho Rinzai Bege Amendoa/Off White", "qty": 1, "valor": 1659.9}, {"p": "Guarda-roupa Casal 2 Portas Easy Light com Espelho e Pés Branco", "qty": 1, "valor": 1359.9}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 1, "valor": 1225.4}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 1, "valor": 1109.9}, {"p": "Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White", "qty": 1, "valor": 879.9}], "Minas Gerais": [{"p": "Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White", "qty": 8, "valor": 17188.0}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho e Pés Amendoa Clean/Off White", "qty": 1, "valor": 1289.9}, {"p": "Guarda-Roupa Casal 6 Portas Easy Slim com Espelho Amendoa/Off White", "qty": 1, "valor": 835.9}], "Rio de Janeiro": [{"p": "Guarda Roupa Casal 6 Portas Easy Slim com Espelho e Pés Amendoa/Off White", "qty": 9, "valor": 8054.1}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 4, "valor": 4273.1}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 2, "valor": 2108.8}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Pés Amendoa Clean/Off White", "qty": 1, "valor": 1239.9}, {"p": "Sapateira Giratoria Esthela Com Espelho Amendoa Clean Lopas", "qty": 2, "valor": 968.8}]}, "Madeira Madeira": {"São Paulo": [{"p": "Guarda-Roupa Casal 100% MDF 8 Portas Easy Glow com Espelhos Amendoa Clean/Off White", "qty": 1, "valor": 2739.9}, {"p": "Guarda-roupa Casal Spazio 270 3 portas 6 Gavetas Branco", "qty": 1, "valor": 2209.9}, {"p": "Guarda Roupa Solteiro 100% MDF 4 Portas Easy Like Amêndoa Clean/Off White", "qty": 1, "valor": 2059.9}, {"p": "Guarda Roupa Solteiro 100% MDF 4 Portas Easy Like Branco", "qty": 1, "valor": 1897.1}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Branco", "qty": 1, "valor": 1229.9}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas com Espelho Amendoa Clean", "qty": 1, "valor": 1229.9}, {"p": "Comoda 8 Gavetas Easy Like  Branco", "qty": 1, "valor": 969.9}, {"p": "Cômoda Vedra 7 Gavetas 2 Portas Branco", "qty": 1, "valor": 783.11}], "Minas Gerais": [{"p": "Comoda 8 Gavetas  Easy Like  Amendoa Clean", "qty": 1, "valor": 1262.81}, {"p": "Mesa De Cabeceira 2 Gavetas Easy Like  Amendoa Clean", "qty": 1, "valor": 1262.81}, {"p": "Comoda 6 Gavetas Maggiore  Branco Lopas", "qty": 1, "valor": 636.51}], "Rio de Janeiro": [{"p": "Comoda 8 Gavetas  Easy Like  Amendoa Clean", "qty": 3, "valor": 4657.86}, {"p": "Guarda Roupa Solteiro 100% MDF 4 Portas Easy Like Amêndo Clean", "qty": 1, "valor": 2718.06}, {"p": "Guarda-roupa Casal Easy Slim 8 Portas Com Espelho Amendoa Clean/Off White", "qty": 1, "valor": 1229.9}, {"p": "Comoda 6 Gavetas Maggiore  Branco Lopas", "qty": 1, "valor": 749.9}, {"p": "Mesa De Cabeceira 2 Gavetas Easy Like  Amendoa Clean", "qty": 2, "valor": 719.8}]}};
+
+const M_STATES_DATA = [{"abbr": "SP", "name": "São Paulo", "valor": 1035788.28, "pedidos": 1009, "pct": 37.68}, {"abbr": "RJ", "name": "Rio de Janeiro", "valor": 861819.91, "pedidos": 832, "pct": 31.35}, {"abbr": "MG", "name": "Minas Gerais", "valor": 849649.54, "pedidos": 795, "pct": 30.91}, {"abbr": "PR", "name": "Paraná", "valor": 809.7, "pedidos": 3, "pct": 0.03}, {"abbr": "SC", "name": "Santa Catarina", "valor": 300.61, "pedidos": 1, "pct": 0.01}, {"abbr": "BA", "name": "Bahia", "valor": 299.99, "pedidos": 1, "pct": 0.01}];
+
+const M_HORA_PICO = {"Shopee": {"pico": [{"h": 12, "ped": 137}, {"h": 19, "ped": 122}, {"h": 13, "ped": 121}], "periodos": {"madrugada": {"pct": 8.8, "label": "00–05h"}, "manha": {"pct": 23.7, "label": "06–11h"}, "tarde": {"pct": 34.5, "label": "12–17h"}, "noite": {"pct": 33.0, "label": "18–23h"}}, "melhorPeriodo": "Tarde"}, "Mercado Livre": {"pico": [{"h": 21, "ped": 34}, {"h": 17, "ped": 32}, {"h": 18, "ped": 32}], "periodos": {"madrugada": {"pct": 3.9, "label": "00–05h"}, "manha": {"pct": 23.1, "label": "06–11h"}, "tarde": {"pct": 34.3, "label": "12–17h"}, "noite": {"pct": 38.7, "label": "18–23h"}}, "melhorPeriodo": "Noite"}, "Magazine Luiza": {"pico": [{"h": 17, "ped": 22}, {"h": 16, "ped": 22}, {"h": 14, "ped": 21}], "periodos": {"madrugada": {"pct": 1.8, "label": "00–05h"}, "manha": {"pct": 25.0, "label": "06–11h"}, "tarde": {"pct": 39.7, "label": "12–17h"}, "noite": {"pct": 33.5, "label": "18–23h"}}, "melhorPeriodo": "Tarde"}, "Via Varejo": {"pico": [{"h": 10, "ped": 5}, {"h": 13, "ped": 5}, {"h": 21, "ped": 5}], "periodos": {"madrugada": {"pct": 0.0, "label": "00–05h"}, "manha": {"pct": 20.8, "label": "06–11h"}, "tarde": {"pct": 39.6, "label": "12–17h"}, "noite": {"pct": 39.6, "label": "18–23h"}}, "melhorPeriodo": "Tarde"}, "Madeira Madeira": {"pico": [{"h": 23, "ped": 2}, {"h": 13, "ped": 2}, {"h": 10, "ped": 2}], "periodos": {"madrugada": {"pct": 5.0, "label": "00–05h"}, "manha": {"pct": 30.0, "label": "06–11h"}, "tarde": {"pct": 35.0, "label": "12–17h"}, "noite": {"pct": 30.0, "label": "18–23h"}}, "melhorPeriodo": "Tarde"}, "Web Continental V2": {"pico": [{"h": 12, "ped": 4}, {"h": 20, "ped": 3}, {"h": 18, "ped": 2}], "periodos": {"madrugada": {"pct": 0.0, "label": "00–05h"}, "manha": {"pct": 22.2, "label": "06–11h"}, "tarde": {"pct": 50.0, "label": "12–17h"}, "noite": {"pct": 27.8, "label": "18–23h"}}, "melhorPeriodo": "Tarde"}, "Zema": {"pico": [{"h": 19, "ped": 2}, {"h": 12, "ped": 1}], "periodos": {"madrugada": {"pct": 0.0, "label": "00–05h"}, "manha": {"pct": 0.0, "label": "06–11h"}, "tarde": {"pct": 33.3, "label": "12–17h"}, "noite": {"pct": 66.7, "label": "18–23h"}}, "melhorPeriodo": "Noite"}};
+
+// Distribuição horária geral (24h) - Maio
+const M_HORA_DATA = [102,39,10,9,9,17,30,54,108,127,155,153,192,165,164,123,136,153,170,172,172,166,131,91];
+
+// Insights for hora_pico
+M_HORA_PICO['Shopee'].insight = 'Pico ao meio-dia (137 pedidos) e às 19h (122). Tarde+noite somam 67,5% das vendas. Forte uso mobile no almoço.';
+M_HORA_PICO['Mercado Livre'].insight = 'Distribuição mais noturna que outros canais. Pico às 21h (34 pedidos) e 17h-18h. Noite domina (38,7%) — público pós-trabalho.';
+M_HORA_PICO['Magazine Luiza'].insight = 'Pico às 16h-17h (22 pedidos cada). Tarde concentra 39,7% das vendas. Concentrar campanhas Mês das Mães na segunda metade da tarde.';
+M_HORA_PICO['Via Varejo'].insight = 'Distribuição equilibrada entre tarde e noite (39,6% cada). Pico múltiplo: 10h, 13h, 21h. Volume baixo, comportamento misto.';
+M_HORA_PICO['Madeira Madeira'].insight = 'Volume muito baixo (20 pedidos). Tarde lidera (35%). Pico inusual às 23h. Ticket médio mais alto (R$ 1.544).';
+M_HORA_PICO['Web Continental V2'].insight = 'Pico às 12h (4 pedidos). Tarde concentra 50% das vendas. Volume baixo, mas ticket médio R$ 1.191.';
+M_HORA_PICO['Zema'].insight = 'Volume mínimo (3 pedidos). Pico às 19h. Dados insuficientes para padrão definitivo.';
+
+
+// ══════════════════════════════════════════════
+// MÓDULO ANÁLISE DE PRODUTOS — MAIO 2026
+// ══════════════════════════════════════════════
+(function() {
+
+function mprod_showPage(id, clickedBtn) {
+  document.querySelectorAll('.mprod-page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.mai-pt-btn').forEach(function(b) {
+    b.style.background = 'var(--bg3)';
+    b.style.color = 'var(--muted)';
+    b.style.borderColor = 'var(--border)';
+  });
+  var page = document.getElementById('mprod_page-' + id);
+  if (page) page.classList.add('active');
+  if (clickedBtn) {
+    clickedBtn.style.background = 'var(--accent)';
+    clickedBtn.style.color = '#0b0f1a';
+    clickedBtn.style.borderColor = 'var(--accent)';
+  }
+  if (id === 'horarios' && typeof window._mrenderHorarios === 'function') {
+    setTimeout(window._mrenderHorarios, 100);
+  }
+  if (id === 'mapa' && typeof window._mrenderMap === 'function') {
+    setTimeout(window._mrenderMap, 100);
+  }
+  if (typeof mprod_renderAll === 'function') mprod_renderAll();
+  setTimeout(function(){ if(typeof mprod_renderAll === 'function') mprod_renderAll(); }, 100);
+}
+window.mprod_showPage = mprod_showPage;
+
+const m_fmtBR = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+const m_fmtK  = v => v >= 1e6 ? 'R$ ' + (v/1e6).toFixed(2) + 'M' : v >= 1e3 ? 'R$ ' + (v/1e3).toFixed(0) + 'k' : 'R$ ' + v.toFixed(0);
+
+function mprod_renderAll() {
+
+  // ── 1. TOP 10 GERAL ──
+  var tbody10 = document.getElementById('mprod_top10tbody');
+  if (tbody10 && M_TOP10) {
+    var maxV = M_TOP10[0].valor;
+    tbody10.innerHTML = M_TOP10.map(function(p, i) {
+      var barW = (p.valor / maxV * 100).toFixed(1);
+      var rank = i === 0 ? 'rank-badge rank-1' : i === 1 ? 'rank-badge rank-2' : i === 2 ? 'rank-badge rank-3' : 'rank-badge rank-n';
+      return '<tr>' +
+        '<td style="width:32px"><span class="' + rank + '">' + (i+1) + '</span></td>' +
+        '<td><div style="font-size:.82rem;line-height:1.4">' + p.p + '</div></td>' +
+        '<td class="mono" style="color:var(--muted)">' + p.qty.toLocaleString('pt-BR') + '</td>' +
+        '<td class="mono" style="color:var(--green)">R$ ' + p.valor.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) + '</td>' +
+        '<td class="mono">' + p.pct_v.toFixed(2) + '%</td>' +
+        '<td class="mono">' + p.pct_q.toFixed(2) + '%</td>' +
+        '<td><div style="display:flex;align-items:center;gap:6px">' +
+          '<div style="flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px">' +
+            '<div style="height:100%;width:' + barW + '%;background:linear-gradient(90deg,var(--accent),var(--comp));border-radius:3px"></div>' +
+          '</div>' +
+          '<span style="font-size:.7rem;color:var(--accent);white-space:nowrap">' + p.pct_v.toFixed(1) + '%</span>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  // ── 2. BARRAS DE PARTICIPAÇÃO ──
+  var mktRows = document.getElementById('mprod_mktRows');
+  if (mktRows && M_MP) {
+    var maxMp = M_MP[0].total;
+    mktRows.innerHTML = M_MP.map(function(m) {
+      var barW = (m.total / maxMp * 100).toFixed(1);
+      var valStr = m.total >= 1e6 ? 'R$ ' + (m.total/1e6).toFixed(2) + 'M' : 'R$ ' + (m.total/1e3).toFixed(0) + 'K';
+      return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
+        '<div style="width:140px;font-size:.78rem;color:' + m.color + ';font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + m.name + '</div>' +
+        '<div style="flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px">' +
+          '<div style="height:100%;width:' + barW + '%;background:' + m.color + ';border-radius:4px;opacity:.85"></div>' +
+        '</div>' +
+        '<div style="width:80px;text-align:right;font-size:.78rem;font-family:\'DM Mono\',monospace;color:var(--text)">' + valStr + '</div>' +
+        '<div style="width:42px;text-align:right;font-size:.72rem;color:var(--muted)">' + m.pct.toFixed(1) + '%</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ── 3. GRÁFICOS DA VISÃO GERAL ──
+  var barCanvas = document.getElementById('mprod_barChart');
+  if (barCanvas && M_MP && typeof Chart !== 'undefined' && !barCanvas._built) {
+    barCanvas._built = true;
+    var existB = Chart.getChart(barCanvas); if(existB) existB.destroy();
+    new Chart(barCanvas, {
+      type: 'bar',
+      data: {
+        labels: M_MP.map(function(m){return m.name;}),
+        datasets: [{
+          data: M_MP.map(function(m){return m.total;}),
+          backgroundColor: M_MP.map(function(m){return m.color;}),
+          borderRadius: 6, barThickness: 28
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){var v=ctx.raw;return v>=1e6?' R$ '+(v/1e6).toFixed(2)+'M':' R$ '+(v/1e3).toFixed(0)+'K';}}}},
+        scales:{
+          x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10},maxRotation:45,minRotation:30}},
+          y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10},callback:function(v){return v>=1e6?'R$'+(v/1e6).toFixed(1)+'M':'R$'+(v/1e3).toFixed(0)+'K';}}}
+        }
+      }
+    });
+  }
+
+  var donutCanvas = document.getElementById('mprod_donutChart');
+  if (donutCanvas && M_MP && typeof Chart !== 'undefined' && !donutCanvas._built) {
+    donutCanvas._built = true;
+    var existD = Chart.getChart(donutCanvas); if(existD) existD.destroy();
+    new Chart(donutCanvas, {
+      type: 'doughnut',
+      data: {
+        labels: M_MP.map(function(m){return m.name + ' ' + m.pct.toFixed(1) + '%';}),
+        datasets: [{data: M_MP.map(function(m){return m.total;}), backgroundColor: M_MP.map(function(m){return m.color;}), borderColor:'#161d2e', borderWidth:2, hoverOffset:8}]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false, cutout:'60%',
+        plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a8aab',font:{size:10},boxWidth:10,padding:6}},
+          tooltip:{callbacks:{label:function(ctx){var v=ctx.raw;var s=v>=1e6?'R$ '+(v/1e6).toFixed(2)+'M':'R$ '+(v/1e3).toFixed(0)+'K';return ' '+s+' ('+(v/M_TOTAL*100).toFixed(1)+'%)';}}}
+        }
+      }
+    });
+  }
+
+  // ── 4. ACCORDION DE MARKETPLACES ──
+  var accordion = document.getElementById('mprod_mpAccordion');
+  if (accordion && M_MP_ITEMS) {
+    var mpKeys = Object.keys(M_MP_ITEMS);
+    var mpColors2 = {Shopee:'#f97316','Magazine Luiza':'#0086ff','Mercado Livre':'#ffe000','Via Varejo':'#c084fc','Madeira Madeira':'#e07b54','Web Continental V2':'#64748b','Zema':'#ef4444','Amazon Global Api':'#9333ea'};
+    accordion.innerHTML = mpKeys.map(function(mp) {
+      var items = M_MP_ITEMS[mp];
+      var fatTotal = items.reduce(function(a,b){return a+b.valor;}, 0);
+      var color = mpColors2[mp] || '#888';
+      var id = 'm-acc-' + mp.replace(/\s+/g,'-');
+      var ticket = M_MP.find(function(m){return m.name===mp;});
+      var tm = ticket ? ticket.ticket : 0;
+      var rows = items.map(function(p, i) {
+        var rank = i===0?'rank-badge rank-1':i===1?'rank-badge rank-2':i===2?'rank-badge rank-3':'rank-badge rank-n';
+        var barW = (p.valor/items[0].valor*100).toFixed(1);
+        return '<tr>' +
+          '<td style="width:28px"><span class="' + rank + '">' + (i+1) + '</span></td>' +
+          '<td style="font-size:.8rem">' + p.p + '</td>' +
+          '<td class="mono" style="color:var(--green);white-space:nowrap">R$ ' + p.valor.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) + '</td>' +
+          '<td class="mono" style="color:var(--muted)">' + p.qty + ' un</td>' +
+          '<td class="mono" style="color:var(--accent)">' + p.pct_mp.toFixed(1) + '%</td>' +
+          '<td><div style="height:5px;width:' + barW + '%;background:' + color + ';border-radius:2px;opacity:.7"></div></td>' +
+        '</tr>';
+      }).join('');
+      var totalStr = fatTotal >= 1e6 ? (fatTotal/1e6).toFixed(2) + 'M' : (fatTotal/1e3).toFixed(0) + 'K';
+      return '<div style="border:1px solid rgba(255,255,255,.06);border-radius:10px;margin-bottom:10px;overflow:hidden">' +
+        '<div onclick="var c=document.getElementById(\'' + id + '\');c.style.display=c.style.display===\'none\'?\'block\':\'none\'" ' +
+          'style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;background:rgba(255,255,255,.03)">' +
+          '<div style="display:flex;align-items:center;gap:10px">' +
+            '<div style="width:10px;height:10px;border-radius:50%;background:' + color + '"></div>' +
+            '<span style="font-weight:700;color:var(--text)">' + mp + '</span>' +
+          '</div>' +
+          '<div style="display:flex;gap:20px;font-size:.78rem">' +
+            '<span style="color:var(--green)">R$ ' + totalStr + '</span>' +
+            '<span style="color:var(--muted)">TM: R$ ' + tm.toLocaleString('pt-BR',{maximumFractionDigits:0}) + '</span>' +
+            '<span style="color:var(--accent)">' + items.length + ' produtos ▼</span>' +
+          '</div>' +
+        '</div>' +
+        '<div id="' + id + '" style="display:none;padding:0 12px 12px">' +
+          '<table style="width:100%;border-collapse:collapse;font-size:.8rem"><thead><tr>' +
+            '<th style="padding:6px;text-align:left;color:var(--muted);font-size:.7rem">#</th>' +
+            '<th style="padding:6px;text-align:left;color:var(--muted);font-size:.7rem">Produto</th>' +
+            '<th style="padding:6px;text-align:right;color:var(--muted);font-size:.7rem">Faturamento</th>' +
+            '<th style="padding:6px;text-align:right;color:var(--muted);font-size:.7rem">Qtd</th>' +
+            '<th style="padding:6px;text-align:right;color:var(--muted);font-size:.7rem">% Canal</th>' +
+            '<th style="padding:6px;color:var(--muted);font-size:.7rem">Barra</th>' +
+          '</tr></thead><tbody>' + rows + '</tbody></table>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ── 5. GRID MP × ESTADO ──
+  var grid = document.getElementById('mprod_mpStateGrid');
+  if (grid && M_MP_STATE) {
+    var mps = Object.keys(M_MP_STATE);
+    var ests = ['São Paulo','Rio de Janeiro','Minas Gerais'];
+    var html2 = '';
+    mps.forEach(function(mp) {
+      ests.forEach(function(est) {
+        var items = M_MP_STATE[mp] && M_MP_STATE[mp][est];
+        if (!items || items.length === 0) return;
+        var color = {Shopee:'#f97316','Magazine Luiza':'#0086ff','Mercado Livre':'#ffe000','Via Varejo':'#c084fc','Madeira Madeira':'#e07b54'}[mp] || '#888';
+        var fatEst = items.reduce(function(a,b){return a+b.valor;},0);
+        var rows = items.map(function(p,i){
+          return '<tr style="border-bottom:1px solid rgba(255,255,255,.04)">' +
+            '<td style="padding:5px 8px;font-size:.75rem;color:var(--muted)">' + (i+1) + '</td>' +
+            '<td style="padding:5px 8px;font-size:.76rem">' + p.p + '</td>' +
+            '<td style="padding:5px 8px;font-size:.75rem;text-align:right;color:var(--green)">R$ ' + (p.valor/1e3).toFixed(1) + 'K</td>' +
+            '<td style="padding:5px 8px;font-size:.75rem;text-align:right;color:var(--muted)">' + p.qty + ' un</td>' +
+          '</tr>';
+        }).join('');
+        var fatStr = fatEst >= 1e6 ? (fatEst/1e6).toFixed(2) + 'M' : (fatEst/1e3).toFixed(0) + 'K';
+        html2 += '<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-top:2px solid ' + color + ';border-radius:10px;padding:14px;margin-bottom:14px">' +
+          '<div style="font-size:.75rem;font-weight:700;color:' + color + ';margin-bottom:4px">' + mp + ' · ' + est + '</div>' +
+          '<div style="font-size:.7rem;color:var(--muted);margin-bottom:10px">R$ ' + fatStr + ' neste estado</div>' +
+          '<table style="width:100%;border-collapse:collapse"><tbody>' + rows + '</tbody></table>' +
+        '</div>';
+      });
+    });
+    grid.innerHTML = html2 || '<div style="color:var(--muted);padding:20px">Nenhum dado disponível</div>';
+  }
+
+}
+window.mprod_renderAll = mprod_renderAll;
+
+// ── HORÁRIOS DE PICO — RENDERIZAÇÃO MAIO ──
+function mprod_renderHorarios() {
+  if (!M_HORA_PICO) return;
+  var container = document.getElementById('mprod_horaCards');
+  if (!container) return;
+
+  var mpColors = {
+    Shopee:'#f97316', MagazineLuiza:'#0086ff', MercadoLivre:'#ffe000',
+    ViaVarejo:'#c084fc', MadeiraMadeira:'#e07b54', WebContinentalV2:'#64748b', Zema:'#ef4444'
+  };
+  function getColor(mp) { var k = mp.replace(/\s+/g,''); return mpColors[k] || '#888'; }
+  var mpEmoji = { Shopee:'🟠', MagazineLuiza:'🔵', MercadoLivre:'🟡', ViaVarejo:'🟣', MadeiraMadeira:'🪵', WebContinentalV2:'⚪', Zema:'🔴' };
+  function getEmoji(mp) { var k = mp.replace(/\s+/g,''); return mpEmoji[k] || '•'; }
+  var periodoColors = { madrugada:'#64748b', manha:'#38bdf8', tarde:'#f97316', noite:'#818cf8' };
+  var periodoEmoji  = { madrugada:'🌙', manha:'🌅', tarde:'☀️', noite:'🌃' };
+
+  var out = '';
+  Object.entries(M_HORA_PICO).forEach(function(entry) {
+    var mp   = entry[0];
+    var data = entry[1];
+    var color = getColor(mp);
+    var emoji = getEmoji(mp);
+
+    var picosHtml = data.pico.map(function(p) {
+      var h = String(p.h).padStart(2,'0');
+      return '<span style="background:rgba(255,255,255,.08);border-radius:6px;padding:3px 8px;font-size:.8rem;">' + h + 'h <strong>' + p.ped + '</strong></span>';
+    }).join(' ');
+
+    var periodos = Object.keys(data.periodos);
+    var maxPct = Math.max.apply(null, periodos.map(function(k){ return data.periodos[k].pct; }));
+    var barrasHtml = periodos.map(function(k) {
+      var d = data.periodos[k];
+      var isMax = d.pct === maxPct;
+      var cor   = periodoColors[k];
+      var emo   = periodoEmoji[k];
+      return '<div style="margin-bottom:8px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
+            '<span style="font-size:.7rem;color:var(--muted);">' + emo + ' ' + d.label + '</span>' +
+            '<span style="font-size:.72rem;font-weight:' + (isMax?'700':'400') + ';color:' + (isMax?cor:'var(--muted)') + ';">' + d.pct.toFixed(1) + '%</span>' +
+          '</div>' +
+          '<div style="height:5px;background:rgba(255,255,255,.06);border-radius:3px;">' +
+            '<div style="height:100%;width:' + d.pct + '%;background:' + cor + ';border-radius:3px;opacity:' + (isMax?'1':'.45') + ';"></div>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+
+    out += '<div style="background:var(--card);border:1px solid rgba(255,255,255,.06);border-top:2px solid ' + color + ';border-radius:12px;padding:16px;">' +
+        '<div style="font-size:.9rem;font-weight:800;color:var(--text);margin-bottom:4px;">' + emoji + ' ' + mp + '</div>' +
+        '<div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;">Top 3 horários de pico</div>' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">' + picosHtml + '</div>' +
+        barrasHtml +
+        '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);font-size:.72rem;color:var(--muted);line-height:1.5;">💡 ' + (data.insight || '') + '</div>' +
+      '</div>';
+  });
+  container.innerHTML = out;
+
+  // Gráfico geral hora a hora
+  var labels = M_HORA_DATA.map(function(_,i){ return String(i).padStart(2,'0')+'h'; });
+  var colors = M_HORA_DATA.map(function(v,i){
+    if(i>=18&&i<=21) return 'rgba(249,115,22,.85)';
+    if(i>=12&&i<=17) return 'rgba(56,189,248,.65)';
+    return 'rgba(100,116,139,.5)';
+  });
+  var canvas = document.getElementById('mprod_horaChart');
+  if(canvas && !canvas._chartBuilt) {
+    canvas._chartBuilt = true;
+    var ex = Chart.getChart(canvas); if(ex) ex.destroy();
+    new Chart(canvas, {
+      type:'bar',
+      data:{labels:labels,datasets:[{data:M_HORA_DATA,backgroundColor:colors,borderRadius:3,barThickness:16}]},
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:{callbacks:{label:function(ctx){return ' '+ctx.parsed.y+' pedidos';}}} },
+        scales:{
+          x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10}}},
+          y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10},callback:function(v){return v+' ped';}}}
+        }
+      }
+    });
+  }
+}
+window._mrenderHorarios = mprod_renderHorarios;
+
+// ── MAPA DE CALOR — Brasil ──
+function mprod_renderMap() {
+  var svg = document.getElementById('mprod_brazilMap');
+  var tooltip = document.getElementById('mprod_mapTooltip');
+  var mapWrap = document.querySelector('#mprod_page-mapa .map-svg-wrap');
+  if (!svg) return;
+  // Acessar STATES_SVG globalmente (definido no módulo Abril)
+  var statesSvg = window.STATES_SVG || (typeof STATES_SVG !== 'undefined' ? STATES_SVG : null);
+  if (!statesSvg) return;
+  if (svg._rendered) return;
+
+  var stateVal = {};
+  M_STATES_DATA.forEach(function(s){ stateVal[s.abbr] = s.valor; });
+  var maxStateVal = Math.max.apply(null, M_STATES_DATA.map(function(s){ return s.valor; }));
+
+  function heatColor(val) {
+    if (!val || val === 0) return 'rgba(255,255,255,.06)';
+    var ratio = Math.min(val / maxStateVal, 1);
+    if (ratio < 0.3) return 'rgba(56,189,248,' + (0.2 + ratio * 0.8).toFixed(2) + ')';
+    if (ratio < 0.6) return 'rgba(249,115,22,' + (0.4 + ratio * 0.6).toFixed(2) + ')';
+    return 'rgba(34,197,94,' + (0.5 + ratio * 0.5).toFixed(2) + ')';
+  }
+
+  Object.entries(statesSvg).forEach(function(entry) {
+    var abbr = entry[0]; var st = entry[1];
+    var val = stateVal[abbr] || 0;
+    var fill = heatColor(val);
+    var stInfo = M_STATES_DATA.find(function(s){return s.abbr===abbr;});
+
+    var path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', st.d);
+    path.setAttribute('fill', fill);
+    path.setAttribute('class', 'state-path');
+
+    path.addEventListener('mouseenter', function() {
+      if (!tooltip) return;
+      tooltip.style.display = 'block';
+      tooltip.innerHTML = stInfo
+        ? '<strong style="color:var(--accent)">' + stInfo.name + '</strong><br>' + m_fmtK(stInfo.valor) + ' · ' + stInfo.pct + '% do total<br><span style="color:var(--muted)">' + stInfo.pedidos + ' pedidos</span>'
+        : '<strong>' + abbr + '</strong><br><span style="color:var(--muted)">Sem dados este período</span>';
+    });
+    path.addEventListener('mousemove', function(e) {
+      if (!tooltip || !mapWrap) return;
+      var r = mapWrap.getBoundingClientRect();
+      tooltip.style.left = (e.clientX - r.left + 14) + 'px';
+      tooltip.style.top  = (e.clientY - r.top - 44) + 'px';
+    });
+    path.addEventListener('mouseleave', function(){ if(tooltip) tooltip.style.display = 'none'; });
+    svg.appendChild(path);
+
+    var txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x', st.lx);
+    txt.setAttribute('y', st.ly);
+    txt.setAttribute('text-anchor','middle');
+    txt.setAttribute('dominant-baseline','middle');
+    txt.setAttribute('font-size', abbr==='DF'?'5':'7');
+    txt.setAttribute('font-family','DM Mono, monospace');
+    txt.setAttribute('fill', val > maxStateVal * 0.2 ? '#fff' : '#7a8aab');
+    txt.setAttribute('pointer-events','none');
+    txt.textContent = abbr;
+    svg.appendChild(txt);
+  });
+  svg._rendered = true;
+
+  // Side list
+  var mapSide = document.getElementById('mprod_mapSide');
+  if (mapSide && !mapSide._rendered) {
+    mapSide._rendered = true;
+    var sortedStates = M_STATES_DATA.slice().sort(function(a,b){return b.valor - a.valor;});
+    sortedStates.forEach(function(s) {
+      var div = document.createElement('div');
+      div.className = 'state-list-item';
+      var barW = Math.round((s.valor / maxStateVal) * 100);
+      div.innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:center">' +
+          '<span class="state-list-name">' + s.name + '</span>' +
+          '<span style="font-size:.68rem;background:rgba(56,189,248,.15);color:var(--accent);padding:1px 8px;border-radius:999px;font-family:\'DM Mono\';font-weight:600">' + s.pct + '%</span>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;margin-top:3px">' +
+          '<span class="state-list-val">' + m_fmtK(s.valor) + '</span>' +
+          '<span class="state-list-pct">' + s.pedidos + ' pedidos</span>' +
+        '</div>' +
+        '<div style="height:4px;background:var(--bg2);border-radius:2px;margin-top:6px;overflow:hidden">' +
+          '<div class="state-mini-bar" style="width:' + barW + '%;background:' + heatColor(s.valor) + '"></div>' +
+        '</div>';
+      mapSide.appendChild(div);
+    });
+  }
+}
+window._mrenderMap = mprod_renderMap;
+
+// Inicializar
+(function init() {
+  function doInit() {
+    var first = document.getElementById('mprod_page-visao');
+    if (first) first.classList.add('active');
+    if (typeof mprod_renderAll === 'function') mprod_renderAll();
+  }
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(doInit, 200);
+  } else {
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(doInit, 200); });
+  }
+})();
+
+})();
+
+
 </script>
 </body>
 </html>
