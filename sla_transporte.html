@@ -135,6 +135,54 @@ th.f1{background:rgba(39,174,96,.25);color:#27ae60;text-align:center}th.f2{backg
     <span id="filt-tf-count" style="padding:8px 12px;color:var(--muted);font-size:13px"></span>
   </div>
   <div class="tw ts"><table><thead><tr><th>Transportadora</th><th>UF</th><th>Total NFs</th><th>No Prazo</th><th>Em Atraso</th><th>% Atraso</th><th>% SLA</th><th>Barra</th></tr></thead><tbody id="tb-tf"></tbody></table></div>
+  <div class="sec" style="margin-top:28px">🔴 Detalhe das NFs Atrasadas <span style="font-weight:400;font-size:12px;color:var(--muted);margin-left:8px">78 NFs · ordenadas por dias de atraso (maior → menor)</span></div>
+  <div style="margin:8px 0 12px 0;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <select id="filt-atr-trans" onchange="filterAtrasados()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px;min-width:240px">
+      <option value="">Todas as transportadoras</option>
+      <option value="TS RJ - RJ">TS RJ - RJ</option>
+      <option value="NOVA ERA - MG">NOVA ERA - MG</option>
+      <option value="RGE - MG">RGE - MG</option>
+      <option value="TRANS EXPRESS - RJ">TRANS EXPRESS - RJ</option>
+      <option value="TRANS SUA LOG - SP">TRANS SUA LOG - SP</option>
+      <option value="GETLAR - RJ">GETLAR - RJ</option>
+      <option value="SOUL - MG">SOUL - MG</option>
+      <option value="TEMPO JUSTO - SP">TEMPO JUSTO - SP</option>
+      <option value="TRANSBARBOSA - SP">TRANSBARBOSA - SP</option>
+      <option value="MTC - SP">MTC - SP</option>
+    </select>
+    <input type="text" id="filt-atr-search" oninput="filterAtrasados()" placeholder="🔍 Buscar NF, cliente, CPF, código…" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px;min-width:280px">
+    <select id="filt-atr-faixa" onchange="filterAtrasados()" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-family:DM Sans,sans-serif;font-size:13px">
+      <option value="">Todas as faixas</option>
+      <option value="f1">🟡 1-3 dias</option>
+      <option value="f2">🟠 4-7 dias</option>
+      <option value="f3">🔶 8-14 dias</option>
+      <option value="f4">🔴 15-30 dias</option>
+      <option value="f5">⚫ 30+ dias</option>
+    </select>
+    <span id="filt-atr-count" style="padding:8px 12px;color:var(--muted);font-size:13px"></span>
+  </div>
+  <div class="tw ts" style="max-height:520px;overflow-y:auto">
+    <table>
+      <thead style="position:sticky;top:0;z-index:2;background:var(--card)">
+        <tr>
+          <th style="text-align:center">Dias Atraso</th>
+          <th>Nº NF</th>
+          <th>Transportadora</th>
+          <th>CPF/CNPJ</th>
+          <th>Cliente</th>
+          <th>Marketplace</th>
+          <th>Cód Pedido</th>
+          <th style="text-align:center">Data Pedido</th>
+          <th style="text-align:center">Data NF</th>
+          <th style="text-align:center">Entrega Esperada</th>
+          <th>Município/UF</th>
+          <th style="text-align:right">Valor</th>
+        </tr>
+      </thead>
+      <tbody id="tb-atrasados"></tbody>
+    </table>
+  </div>
+
   <div class="sec" style="margin-top:28px">📅 Prazos a Vencer</div>
   <div class="leg">
     <span><i class="dot" style="background:#27ae60"></i><span style="color:#27ae60">1-3 dias</span></span>
@@ -1063,6 +1111,54 @@ const ENTREGAS_DETAIL=[
 ];
 
 
+
+function filterAtrasados(){
+  const sel=document.getElementById('filt-atr-trans').value;
+  const q=document.getElementById('filt-atr-search').value.toLowerCase().trim();
+  const fx=document.getElementById('filt-atr-faixa').value;
+  const tb=document.getElementById('tb-atrasados');
+  if(!tb) return;
+  tb.innerHTML='';
+  let shown=0;
+  ATRASADOS_DETAIL.forEach((r,i)=>{
+    if(sel && r.ts!==sel) return;
+    if(q){
+      const hay=(r.nf+' '+r.cli+' '+r.cpf+' '+r.cod+' '+r.mun).toLowerCase();
+      if(!hay.includes(q)) return;
+    }
+    if(fx){
+      let f='';
+      if(r.da<=3) f='f1'; else if(r.da<=7) f='f2'; else if(r.da<=14) f='f3'; else if(r.da<=30) f='f4'; else f='f5';
+      if(f!==fx) return;
+    }
+    let bg='',bdg='',bdgC='';
+    if(r.da<=3){bg='rgba(230,168,23,.06)';bdg='1-3d';bdgC='bw';}
+    else if(r.da<=7){bg='rgba(230,126,34,.07)';bdg='4-7d';bdgC='by';}
+    else if(r.da<=14){bg='rgba(231,76,60,.08)';bdg='8-14d';bdgC='br';}
+    else if(r.da<=30){bg='rgba(192,57,43,.1)';bdg='15-30d';bdgC='br';}
+    else {bg='rgba(139,26,14,.15)';bdg='30+d';bdgC='br';}
+    const valor=r.val.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const tsShort=r.ts.split(' - ')[0];
+    const tsUF=r.ts.split(' - ')[1]||'';
+    tb.innerHTML+=`<tr style="background:${bg}">
+      <td class="mn" style="text-align:center;font-weight:700;color:var(--red);font-size:13px">${r.da}d <span class="bdg ${bdgC}" style="margin-left:4px;font-size:9px">${bdg}</span></td>
+      <td class="mn" style="text-align:center"><strong>${r.nf}</strong></td>
+      <td style="font-size:12px"><strong>${tsShort}</strong><span style="color:var(--muted);font-size:10px;margin-left:4px">${tsUF}</span></td>
+      <td class="mn" style="font-size:11px;color:#88BBFF">${r.cpf}</td>
+      <td style="font-size:12px">${r.cli}</td>
+      <td><span class="bdg" style="font-size:10px;background:rgba(44,74,136,.2);color:#88aaff;border:1px solid rgba(44,74,136,.3)">${r.mkt}</span></td>
+      <td class="mn" style="font-size:11px;color:#8899bb">${r.cod}</td>
+      <td class="mn" style="text-align:center;font-size:11px">${r.dp}</td>
+      <td class="mn" style="text-align:center;font-size:11px">${r.de}</td>
+      <td class="mn" style="text-align:center;font-size:11px;color:var(--red)">${r.ee}</td>
+      <td style="font-size:11px">${r.mun}</td>
+      <td class="mn" style="text-align:right;color:var(--yellow);font-weight:600">R$ ${valor}</td>
+    </tr>`;
+    shown++;
+  });
+  document.getElementById('filt-atr-count').textContent=shown+' / '+ATRASADOS_DETAIL.length+' NFs';
+}
+
 function filterTransp(){
   let q=(document.getElementById('filt-tf-search').value||'').toLowerCase().trim();
   let uf=document.getElementById('filt-tf-uf').value;
@@ -1318,7 +1414,7 @@ function init(){
     let nm=t.s.split(' · ')[0];
     document.getElementById('tb-tv').innerHTML+=`<tr><td><strong>${t.s}</strong></td><td class="mn">${t.tot}</td><td class="mn" style="color:#27ae60">${t.tot-t.at}</td><td class="mn" style="color:${t.at>0?'#e74c3c':'#888'}">${t.at}</td><td>${sb(t.sla)}</td><td>${sbar(t.sla)}</td></tr>`;
   });
-  filterTransp();
+  filterTransp();filterAtrasados();
   PRAZOS_VCTO.forEach((p,i)=>{
     let bg=i%2===1?'style="background:rgba(255,255,255,.025)"':'';
     let f1txt=p.f1>0?`<strong>⚠ ${p.f1}</strong>`:p.f1;
@@ -1358,6 +1454,87 @@ function initCharts(){
 }
 function S(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById('pg-'+id).classList.add('active');el.classList.add('active');}
 
+
+const ATRASADOS_DETAIL=[
+  {nf:'37565',da:60,ts:'TS RJ - RJ',cpf:'84764694700',cli:'magdo porto',mkt:'Mercado Livre',cod:'S-46446206296',dp:'10/02/2026',de:'11/02/2026',ee:'12/03/2026',mun:'Volta Redonda/RJ',val:2059.80},
+  {nf:'38057',da:49,ts:'NOVA ERA - MG',cpf:'17679382689',cli:'Geisiele Pereira De Aguiar',mkt:'Mercado Livre',cod:'S-46453962431',dp:'11/02/2026',de:'12/02/2026',ee:'23/03/2026',mun:'Rio Vermelho/MG',val:979.90},
+  {nf:'56544',da:40,ts:'RGE - MG',cpf:'12087811628',cli:'Ana Karolina Moura',mkt:'Magazine Luiza',cod:'LU-1517670101993699-1',dp:'06/03/2026',de:'11/03/2026',ee:'01/04/2026',mun:'BOTUMIRIM/MG',val:995.01},
+  {nf:'51242',da:39,ts:'NOVA ERA - MG',cpf:'31600886850',cli:'Angelica de Medeiros Fortunato Robello',mkt:'Mercado Livre',cod:'2000015397754048',dp:'04/03/2026',de:'05/03/2026',ee:'02/04/2026',mun:'Pouso Alegre/MG',val:1719.90},
+  {nf:'54309',da:38,ts:'TS RJ - RJ',cpf:'5809907709',cli:'Ursula Pereira Marcato',mkt:'Magazine Luiza',cod:'LU-1518570102378428-1',dp:'09/03/2026',de:'10/03/2026',ee:'03/04/2026',mun:'RIO DAS OSTRAS/RJ',val:697.41},
+  {nf:'59538',da:33,ts:'TS RJ - RJ',cpf:'21356427707',cli:'Josiane da Conceicao Souza',mkt:'Magazine Luiza',cod:'LU-1519070102678139-1',dp:'11/03/2026',de:'13/03/2026',ee:'08/04/2026',mun:'ARARUAMA/RJ',val:699.90},
+  {nf:'64522',da:33,ts:'TS RJ - RJ',cpf:'99681978749',cli:'Evandro Mattos',mkt:'Mercado Livre',cod:'2000015522268030',dp:'12/03/2026',de:'19/03/2026',ee:'08/04/2026',mun:'Valença/RJ',val:1049.90},
+  {nf:'61660',da:32,ts:'TS RJ - RJ',cpf:'18476142722',cli:'Yasmin Correa Baptista Retameiro Peixoto',mkt:'Magazine Luiza',cod:'LU-1520170103168529-1',dp:'15/03/2026',de:'16/03/2026',ee:'09/04/2026',mun:'ITAPERUNA/RJ',val:749.90},
+  {nf:'59557',da:31,ts:'TS RJ - RJ',cpf:'4801071732',cli:'Rodrigo Goncalves',mkt:'Madeira Madeira',cod:'9550781',dp:'13/03/2026',de:'13/03/2026',ee:'09/04/2026',mun:'Cachoeiras de Macacu/RJ',val:1929.90},
+  {nf:'65117',da:26,ts:'TRANS EXPRESS - RJ',cpf:'11051852730',cli:'Ana Gleyze Do Carmo Ramos',mkt:'Mercado Livre',cod:'2000015587145484',dp:'17/03/2026',de:'19/03/2026',ee:'15/04/2026',mun:'Angra dos Reis/RJ',val:989.90},
+  {nf:'69971',da:21,ts:'TS RJ - RJ',cpf:'15250033725',cli:'Rômulo Breder',mkt:'Mercado Livre',cod:'2000015671394662',dp:'23/03/2026',de:'24/03/2026',ee:'20/04/2026',mun:'Nova Friburgo/RJ',val:1759.90},
+  {nf:'67581',da:19,ts:'RGE - MG',cpf:'8086148602',cli:'christiane Aparecida Martins Veiga',mkt:'Magazine Luiza',cod:'LU-1521470103744659-1',dp:'20/03/2026',de:'20/03/2026',ee:'22/04/2026',mun:'CURVELO/MG',val:674.91},
+  {nf:'69650',da:19,ts:'RGE - MG',cpf:'14047875694',cli:'Marielle Junia Silva',mkt:'Magazine Luiza',cod:'LU-1522270104036313-1',dp:'23/03/2026',de:'24/03/2026',ee:'22/04/2026',mun:'ARCOS/MG',val:749.90},
+  {nf:'73514',da:18,ts:'TS RJ - RJ',cpf:'11064789757',cli:'Marilei Alves Lopes',mkt:'Magazine Luiza',cod:'LU-1523470104502359-1',dp:'27/03/2026',de:'30/03/2026',ee:'23/04/2026',mun:'VALENCA/RJ',val:1829.54},
+  {nf:'75494',da:17,ts:'TS RJ - RJ',cpf:'14817397780',cli:'Angelica Ferreira da Silva',mkt:'Magazine Luiza',cod:'LU-1524270104708139-1',dp:'30/03/2026',de:'31/03/2026',ee:'24/04/2026',mun:'RIO DAS OSTRAS/RJ',val:1063.91},
+  {nf:'64608',da:17,ts:'NOVA ERA - MG',cpf:'12213264651',cli:'Esdras Augusto',mkt:'Madeira Madeira',cod:'9564522',dp:'17/03/2026',de:'19/03/2026',ee:'23/04/2026',mun:'Ipatinga/MG',val:664.80},
+  {nf:'45760',da:17,ts:'NOVA ERA - MG',cpf:'9771427601',cli:'Edneia Lacerda Soares',mkt:'Shopee',cod:'260227R8VUK8X2',dp:'26/02/2026',de:'26/02/2026',ee:'23/04/2026',mun:'São Sebastião do Maranhão/MG',val:1069.90},
+  {nf:'68500',da:17,ts:'TS RJ - RJ',cpf:'8638880707',cli:'Leslie Dos Santos Chagas',mkt:'Shopee',cod:'260323TNN6CNWA',dp:'22/03/2026',de:'23/03/2026',ee:'24/04/2026',mun:'Nova Friburgo/RJ',val:1479.90},
+  {nf:'68501',da:17,ts:'TS RJ - RJ',cpf:'6011180736',cli:'Luciane Freire',mkt:'Shopee',cod:'260322SXB54AEA',dp:'22/03/2026',de:'23/03/2026',ee:'24/04/2026',mun:'Santa Maria Madalena/RJ',val:1069.90},
+  {nf:'79010',da:14,ts:'TS RJ - RJ',cpf:'10311839738',cli:'DOUGLAS OLIVEIRA DE SOUZA',mkt:'Magazine Luiza',cod:'LU-1525970105379452-1',dp:'05/04/2026',de:'07/04/2026',ee:'27/04/2026',mun:'NOVA IGUACU/RJ',val:1149.90},
+  {nf:'71596',da:14,ts:'NOVA ERA - MG',cpf:'1284374645',cli:'ELTON DE ALMEIDA SOUZA',mkt:'Magazine Luiza',cod:'LU-1523070104327267-1',dp:'26/03/2026',de:'26/03/2026',ee:'27/04/2026',mun:'MATIAS BARBOSA/MG',val:2129.90},
+  {nf:'71793',da:14,ts:'TRANS SUA LOG - SP',cpf:'37456220816',cli:'Valeria Ribeiro dos Santos',mkt:'Magazine Luiza',cod:'LU-1522870104253719-1',dp:'25/03/2026',de:'26/03/2026',ee:'27/04/2026',mun:'PRAIA GRANDE/SP',val:1063.91},
+  {nf:'64356',da:13,ts:'RGE - MG',cpf:'89348710168',cli:'Teresa Cristina Caetan',mkt:'Mercado Livre',cod:'2000015610429638',dp:'18/03/2026',de:'18/03/2026',ee:'28/04/2026',mun:'Pratinha/MG',val:1119.90},
+  {nf:'68502',da:13,ts:'TS RJ - RJ',cpf:'10375462708',cli:'Luiz Fernando',mkt:'Shopee',cod:'260323T5D02GN5',dp:'22/03/2026',de:'23/03/2026',ee:'28/04/2026',mun:'Cachoeiras de Macacu/RJ',val:1069.90},
+  {nf:'71606',da:13,ts:'NOVA ERA - MG',cpf:'19405075616',cli:'Lara emilly Jeremias Peres da Silva',mkt:'Magazine Luiza',cod:'LU-1522870104262850-1',dp:'25/03/2026',de:'26/03/2026',ee:'28/04/2026',mun:'MURIAE/MG',val:962.91},
+  {nf:'77307',da:13,ts:'GETLAR - RJ',cpf:'856382779',cli:'Maria do Socorro Galdino',mkt:'Magazine Luiza',cod:'LU-1525370105149274-1',dp:'03/04/2026',de:'06/04/2026',ee:'28/04/2026',mun:'MAGE/RJ',val:1069.41},
+  {nf:'80986',da:13,ts:'GETLAR - RJ',cpf:'14446589725',cli:'Rayan Carlos jardim veiga',mkt:'Magazine Luiza',cod:'LU-1526770105813796-1',dp:'08/04/2026',de:'09/04/2026',ee:'28/04/2026',mun:'RIO DE JANEIRO/RJ',val:2138.82},
+  {nf:'80927',da:11,ts:'GETLAR - RJ',cpf:'4134116724',cli:'Eliane Regina Leal Ramos',mkt:'Magazine Luiza',cod:'LU-1526870105876882-1',dp:'09/04/2026',de:'09/04/2026',ee:'30/04/2026',mun:'BELFORD ROXO/RJ',val:1149.90},
+  {nf:'73429',da:11,ts:'RGE - MG',cpf:'10156263602',cli:'verlane Cardoso ladeia',mkt:'Magazine Luiza',cod:'LU-1523770104562141-1',dp:'29/03/2026',de:'30/03/2026',ee:'30/04/2026',mun:'MONTES CLAROS/MG',val:1069.90},
+  {nf:'70155',da:11,ts:'SOUL - MG',cpf:'17513602611',cli:'Maria Clara Araujo Duarte Matos',mkt:'Shopee',cod:'2603251YRRVU9M',dp:'24/03/2026',de:'24/03/2026',ee:'30/04/2026',mun:'Laranjal/MG',val:749.90},
+  {nf:'79105',da:11,ts:'TRANS EXPRESS - RJ',cpf:'8812400795',cli:'Luiz Alexandre Silva do Nascimento',mkt:'Shopee',cod:'2604075U2Q71EW',dp:'06/04/2026',de:'07/04/2026',ee:'30/04/2026',mun:'Rio de Janeiro/RJ',val:1049.90},
+  {nf:'73526',da:7,ts:'TS RJ - RJ',cpf:'12672487774',cli:'Tamires Satyro Da Silva',mkt:'Shopee',cod:'260329D2J7QNTQ',dp:'28/03/2026',de:'30/03/2026',ee:'04/05/2026',mun:'Nova Friburgo/RJ',val:529.90},
+  {nf:'81959',da:7,ts:'TS RJ - RJ',cpf:'6294794706',cli:'Yasmim Dos Santos',mkt:'Magazine Luiza',cod:'LU-1527170106023745-1',dp:'10/04/2026',de:'10/04/2026',ee:'04/05/2026',mun:'BELFORD ROXO/RJ',val:697.41},
+  {nf:'79771',da:7,ts:'GETLAR - RJ',cpf:'1096953722',cli:'Claudia Guimaraes Rocha',mkt:'Shopee',cod:'2604076TARP4N8',dp:'07/04/2026',de:'08/04/2026',ee:'04/05/2026',mun:'Rio de Janeiro/RJ',val:1029.90},
+  {nf:'77083',da:7,ts:'TS RJ - RJ',cpf:'19472972799',cli:'Anna Carolina',mkt:'Shopee',cod:'2604040GAD44DA',dp:'04/04/2026',de:'06/04/2026',ee:'04/05/2026',mun:'Nova Iguaçu/RJ',val:1479.90},
+  {nf:'77362',da:7,ts:'TEMPO JUSTO - SP',cpf:'37213231812',cli:'Adriana Da Silva Bezerra',mkt:'Shopee',cod:'260403SKBBVCFV',dp:'02/04/2026',de:'06/04/2026',ee:'04/05/2026',mun:'Mauá/SP',val:1659.90},
+  {nf:'73491',da:7,ts:'TS RJ - RJ',cpf:'7634304395',cli:'Gilson Nascimento Dutra',mkt:'Shopee',cod:'260329EBC4Q8TM',dp:'29/03/2026',de:'30/03/2026',ee:'04/05/2026',mun:'Nova Friburgo/RJ',val:1029.90},
+  {nf:'75842',da:7,ts:'TRANS SUA LOG - SP',cpf:'30577203827',cli:'Paulo Eduardo da Cruz',mkt:'Shopee',cod:'260401M0FSSRDD',dp:'31/03/2026',de:'01/04/2026',ee:'04/05/2026',mun:'Duartina/SP',val:1749.90},
+  {nf:'80928',da:7,ts:'GETLAR - RJ',cpf:'11867926717',cli:'Elisangela Maria Dos Santos Silva Campos',mkt:'Magazine Luiza',cod:'LU-1526670105778495-1',dp:'08/04/2026',de:'09/04/2026',ee:'04/05/2026',mun:'SAO JOAO DE MERITI/RJ',val:683.91},
+  {nf:'80497',da:6,ts:'TRANSBARBOSA - SP',cpf:'7386852916',cli:'Leandro Martins Gabriel',mkt:'Magazine Luiza',cod:'LU-1526670105767925-1',dp:'08/04/2026',de:'09/04/2026',ee:'05/05/2026',mun:'MARILIA/SP',val:683.91},
+  {nf:'78304',da:6,ts:'RGE - MG',cpf:'5298746608',cli:'Joao Aparecido Rodrigues da Silva',mkt:'Magazine Luiza',cod:'LU-1525570105255284-1',dp:'04/04/2026',de:'06/04/2026',ee:'05/05/2026',mun:'MONTES CLAROS/MG',val:1099.90},
+  {nf:'76668',da:6,ts:'TS RJ - RJ',cpf:'5950235762',cli:'Priscila Francisca Guimaraes',mkt:'Shopee',cod:'260402P31FCT7G',dp:'01/04/2026',de:'02/04/2026',ee:'05/05/2026',mun:'Cachoeiras de Macacu/RJ',val:1099.90},
+  {nf:'72530',da:6,ts:'RGE - MG',cpf:'2424025690',cli:'Luciene Rosa De Oliveira',mkt:'Shopee',cod:'2603266VCVV43N',dp:'26/03/2026',de:'27/03/2026',ee:'05/05/2026',mun:'Serranópolis de Minas/MG',val:1479.90},
+  {nf:'76053',da:6,ts:'TS RJ - RJ',cpf:'75849330763',cli:'Tailane Gomes',mkt:'Shopee',cod:'260401M9DDUQSS',dp:'31/03/2026',de:'01/04/2026',ee:'05/05/2026',mun:'Araruama/RJ',val:2529.90},
+  {nf:'79879',da:6,ts:'RGE - MG',cpf:'7208919658',cli:'Luiz',mkt:'Shopee',cod:'260407812CSWJ5',dp:'07/04/2026',de:'08/04/2026',ee:'05/05/2026',mun:'Nova Lima/MG',val:1059.90},
+  {nf:'80917',da:6,ts:'GETLAR - RJ',cpf:'12897535717',cli:'Cristian Carlos dos Santos Mesquita',mkt:'Magazine Luiza',cod:'LU-1526670105785298-1',dp:'08/04/2026',de:'09/04/2026',ee:'05/05/2026',mun:'Campos dos Goytacazes/RJ',val:989.91},
+  {nf:'83194',da:5,ts:'TRANSBARBOSA - SP',cpf:'47156737899',cli:'kevin augusto severino',mkt:'Magazine Luiza',cod:'LU-1527570106206675-1',dp:'12/04/2026',de:'13/04/2026',ee:'06/05/2026',mun:'TAUBATE/SP',val:989.44},
+  {nf:'83892',da:5,ts:'TRANS EXPRESS - RJ',cpf:'17474098717',cli:'Ana Caroline da Silva Moreno',mkt:'Mercado Livre',cod:'2000015968515214',dp:'13/04/2026',de:'14/04/2026',ee:'06/05/2026',mun:'Belford Roxo/RJ',val:1654.81},
+  {nf:'82967',da:5,ts:'GETLAR - RJ',cpf:'10528047728',cli:'pricila batista dos santos',mkt:'Magazine Luiza',cod:'LU-1527470106139016-1',dp:'11/04/2026',de:'13/04/2026',ee:'06/05/2026',mun:'MAGE/RJ',val:749.90},
+  {nf:'83216',da:5,ts:'TRANSBARBOSA - SP',cpf:'43189174873',cli:'Nickole Caroline Evaristo Crema',mkt:'Madeira Madeira',cod:'9618636',dp:'10/04/2026',de:'13/04/2026',ee:'05/05/2026',mun:'São Paulo/SP',val:889.90},
+  {nf:'79850',da:5,ts:'RGE - MG',cpf:'2174466635',cli:'BIANCA GOMES FERREIRA',mkt:'Magazine Luiza',cod:'LU-1526570105708726-2',dp:'08/04/2026',de:'08/04/2026',ee:'06/05/2026',mun:'SETE LAGOAS/MG',val:983.17},
+  {nf:'78911',da:5,ts:'SOUL - MG',cpf:'5618060639',cli:'Eliane Borges de Souza',mkt:'Magazine Luiza',cod:'LU-1526070105439844-1',dp:'06/04/2026',de:'07/04/2026',ee:'06/05/2026',mun:'FELIXLANDIA/MG',val:1015.94},
+  {nf:'78883',da:5,ts:'SOUL - MG',cpf:'1987552601',cli:'ALESSANDRA SOARES PEREIRA DIAS',mkt:'Magazine Luiza',cod:'LU-1526070105430386-1',dp:'06/04/2026',de:'07/04/2026',ee:'06/05/2026',mun:'MONTES CLAROS/MG',val:1092.41},
+  {nf:'76640',da:5,ts:'TS RJ - RJ',cpf:'10785880747',cli:'Fernanda Ferreira Silva de Melo',mkt:'Shopee',cod:'260402PDK4F0GW',dp:'01/04/2026',de:'02/04/2026',ee:'06/05/2026',mun:'Barra Mansa/RJ',val:1659.90},
+  {nf:'69757',da:5,ts:'SOUL - MG',cpf:'9951517684',cli:'Elieni  Esteves',mkt:'Web Continental V2',cod:'288696590',dp:'23/03/2026',de:'24/03/2026',ee:'05/05/2026',mun:'Alfenas/MG',val:2739.90},
+  {nf:'73357',da:5,ts:'NOVA ERA - MG',cpf:'9047046617',cli:'MARIANNE SILVEIRA MERI',mkt:'Magazine Luiza',cod:'LU-1523470104480824-1',dp:'27/03/2026',de:'30/03/2026',ee:'06/05/2026',mun:'VARGINHA/MG',val:1309.90},
+  {nf:'78601',da:5,ts:'TRANS SUA LOG - SP',cpf:'18020383883',cli:'LAERCIO DE SOUZA',mkt:'Via Varejo',cod:'50803057801',dp:'06/04/2026',de:'07/04/2026',ee:'05/05/2026',mun:'Botucatu/SP',val:798.92},
+  {nf:'78921',da:5,ts:'SOUL - MG',cpf:'16056192644',cli:'Guilherme Mendes',mkt:'Magazine Luiza',cod:'LU-1525770105304066-1',dp:'05/04/2026',de:'07/04/2026',ee:'06/05/2026',mun:'MONTES CLAROS/MG',val:759.90},
+  {nf:'69610',da:4,ts:'RGE - MG',cpf:'299508137',cli:'Farmacia Melo',mkt:'Shopee',cod:'2603240DAF7154',dp:'23/03/2026',de:'24/03/2026',ee:'07/05/2026',mun:'Ituiutaba/MG',val:839.90},
+  {nf:'69671',da:4,ts:'RGE - MG',cpf:'2017651605',cli:'Victor Manoel Santos Souza',mkt:'Shopee',cod:'260324W29GDJ2V',dp:'23/03/2026',de:'24/03/2026',ee:'07/05/2026',mun:'Uberaba/MG',val:749.90},
+  {nf:'75984',da:4,ts:'RGE - MG',cpf:'15610789648',cli:'Danyette Jeniffer Oliveira Silva',mkt:'Shopee',cod:'260331K6K9PQ8J',dp:'31/03/2026',de:'01/04/2026',ee:'07/05/2026',mun:'Abaeté/MG',val:789.90},
+  {nf:'81945',da:4,ts:'TS RJ - RJ',cpf:'17721737702',cli:'Mayara santos Alves',mkt:'Magazine Luiza',cod:'LU-1526970105961656-1',dp:'09/04/2026',de:'10/04/2026',ee:'07/05/2026',mun:'MACAE/RJ',val:1119.90},
+  {nf:'85279',da:4,ts:'TRANS EXPRESS - RJ',cpf:'17373664792',cli:'Laura Fernandes',mkt:'Mercado Livre',cod:'2000015979177632',dp:'14/04/2026',de:'15/04/2026',ee:'07/05/2026',mun:'Nova Iguaçu/RJ',val:1039.90},
+  {nf:'83276',da:4,ts:'TEMPO JUSTO - SP',cpf:'53379940852',cli:'Luanny Yanka da Mata',mkt:'Mercado Livre',cod:'2000015955872814',dp:'12/04/2026',de:'13/04/2026',ee:'07/05/2026',mun:'São Paulo/SP',val:1654.81},
+  {nf:'80945',da:4,ts:'GETLAR - RJ',cpf:'4199709754',cli:'Jocieni da Silva Caetano',mkt:'Mercado Livre',cod:'2000015899096630',dp:'08/04/2026',de:'09/04/2026',ee:'07/05/2026',mun:'Campos dos Goytacazes/RJ',val:1026.25},
+  {nf:'79882',da:4,ts:'RGE - MG',cpf:'16882390657',cli:'Maria Vitoria Nunes Lima',mkt:'Magazine Luiza',cod:'LU-1526470105633768-1',dp:'07/04/2026',de:'08/04/2026',ee:'07/05/2026',mun:'ESPINOSA/MG',val:1034.91},
+  {nf:'79063',da:4,ts:'TRANS EXPRESS - RJ',cpf:'30465567720',cli:'Antonio Ligeiro',mkt:'Mercado Livre',cod:'2000015872894748',dp:'07/04/2026',de:'07/04/2026',ee:'07/05/2026',mun:'Petrópolis/RJ',val:449.90},
+  {nf:'81675',da:4,ts:'SOUL - MG',cpf:'70392981637',cli:'Sarah Maria',mkt:'Mercado Livre',cod:'S-46826607442',dp:'10/04/2026',de:'10/04/2026',ee:'07/05/2026',mun:'Betim/MG',val:1654.81},
+  {nf:'71665',da:3,ts:'RGE - MG',cpf:'6729603623',cli:'Francelio De Oliveira',mkt:'Shopee',cod:'2603264J9F4CV1',dp:'25/03/2026',de:'26/03/2026',ee:'08/05/2026',mun:'Mato Verde/MG',val:1069.90},
+  {nf:'70924',da:3,ts:'RGE - MG',cpf:'11593222602',cli:'Vinicius Ribeiro de Lima',mkt:'Shopee',cod:'2603251YP9PMSQ',dp:'24/03/2026',de:'25/03/2026',ee:'08/05/2026',mun:'Araxá/MG',val:1479.90},
+  {nf:'77174',da:3,ts:'TS RJ - RJ',cpf:'15094897705',cli:'Romilda De Freitas Rocha',mkt:'Shopee',cod:'2604051552RK6D',dp:'04/04/2026',de:'06/04/2026',ee:'08/05/2026',mun:'Nova Friburgo/RJ',val:749.90},
+  {nf:'73585',da:3,ts:'TRANSBARBOSA - SP',cpf:'50722446870',cli:'Ana Gabriela De Souza Piedade',mkt:'Shopee',cod:'260328BT287U7F',dp:'28/03/2026',de:'30/03/2026',ee:'08/05/2026',mun:'Cotia/SP',val:1069.90},
+  {nf:'77082',da:3,ts:'TS RJ - RJ',cpf:'33969662877',cli:'Anna Carolina Arena Kohlmann',mkt:'Shopee',cod:'2604052PUBTJY8',dp:'05/04/2026',de:'06/04/2026',ee:'08/05/2026',mun:'Cabo Frio/RJ',val:839.90},
+  {nf:'79861',da:3,ts:'RGE - MG',cpf:'70077151682',cli:'Helenice Santos Durval',mkt:'Shopee',cod:'2604089458AS2U',dp:'07/04/2026',de:'08/04/2026',ee:'08/05/2026',mun:'Contagem/MG',val:1089.90},
+  {nf:'87261',da:3,ts:'TRANS SUA LOG - SP',cpf:'39657783828',cli:'Alcione de Souza dos Santos da Paz',mkt:'Magazine Luiza',cod:'LU-1529370106945726-1',dp:'18/04/2026',de:'21/04/2026',ee:'08/05/2026',mun:'JANDIRA/SP',val:1119.90},
+  {nf:'83915',da:3,ts:'TRANS EXPRESS - RJ',cpf:'78610257720',cli:'Manoel Jose Lopes Caldas',mkt:'Magazine Luiza',cod:'LU-1528070106389463-1',dp:'13/04/2026',de:'14/04/2026',ee:'08/05/2026',mun:'NOVA IGUACU/RJ',val:1035.41},
+  {nf:'88713',da:3,ts:'MTC - SP',cpf:'43643239858',cli:'Joice dos Santos Pereira',mkt:'Magazine Luiza',cod:'LU-1529670107036967-1',dp:'19/04/2026',de:'21/04/2026',ee:'08/05/2026',mun:'SAO PAULO/SP',val:1119.90},
+  {nf:'78980',da:2,ts:'SOUL - MG',cpf:'22524553817',cli:'samuel faria',mkt:'Via Varejo',cod:'50798251401',dp:'06/04/2026',de:'07/04/2026',ee:'08/05/2026',mun:'São João Del Rei/MG',val:1199.90}
+];
 
 const VERIFICAR_REENVIO=[
   {nf:'65881',da:26,cpf:'8484794750',cli:'Allan de Sá Oliveira',mkt:'Mercado Livre',cod:'2000015609614290',dp:'18/03/2026',de:'19/03/2026',ee:'15/04/2026',mun:'Barra do Piraí/RJ',prod:'Cômoda Vedra 7 Gavetas 2 Portas Amêndoa Clean',val:779.90},
