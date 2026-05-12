@@ -1228,9 +1228,14 @@
   <div data-tab="cessoes">
     <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <span>👥 Cessões de Reserva <span style="font-weight:400;font-size:11px;color:var(--muted);">histórico completo · filtros por período</span></span>
-      <button onclick="exportarCessoesPorPeriodoXLSX()" type="button" class="export-btn export-btn-mes no-print" id="btn-export-cessoes-periodo">
-        📥 Exportar relatório
-      </button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
+        <button onclick="confirmarValoresReconstruidos()" type="button" class="export-btn" id="btn-confirmar-recons" style="display:none;background:rgba(34,201,138,0.10);color:#22c98a;border-color:rgba(34,201,138,0.4);" title="Salva os valores reconstruídos como definitivos (remove o ≈)">
+          ✓ Confirmar valores ≈
+        </button>
+        <button onclick="exportarCessoesPorPeriodoXLSX()" type="button" class="export-btn export-btn-mes" id="btn-export-cessoes-periodo">
+          📥 Exportar relatório
+        </button>
+      </div>
     </div>
 
     <!-- Filtros -->
@@ -5660,28 +5665,51 @@ async function _carregarCessoesCache(forceReload){
     const todas = [];
     Object.entries(raw).forEach(([cm, cessoes]) => {
       const info = lookup[cm] || { codItem: '', produto: `(cod ${cm})`, variacao: '', categoria: '', forecast: 0, mediaDia: 0 };
+      const lote = lotes[info.codItem];
+      const proxLote = lote && lote.dataKey ? lote.dataKey : null;
+
+      // Coleta as cessões desse SKU e agrupa por data, pra recalcular sequencialmente
+      const listaSku = [];
       Object.entries(cessoes || {}).forEach(([ts, c]) => {
         if (!c || !c.data) return;
+        listaSku.push({ ts: c.ts || +ts, c });
+      });
+      // Ordena por timestamp ASC (mais antiga primeiro pra propagar o cálculo)
+      listaSku.sort((a, b) => a.ts - b.ts);
+
+      // Pra cada data, pega o snapshot inicial e propaga as cessões em ordem
+      // estoqueAcumuladoPorDia: { 'YYYY-MM-DD': estoqueAtual após cessões já processadas }
+      const estoqueDia = {};
+      listaSku.forEach(({ ts, c }) => {
+        const data = c.data;
         let qtdAntes = c.qtdAntes != null ? c.qtdAntes : null;
         let qtdDepois = c.qtdDepois != null ? c.qtdDepois : null;
         let estimado = false;
-        // Tenta inferir retroativamente se não foi capturado
+
         if (qtdAntes == null) {
-          const snap = snapshotMaisProximo(cm, c.data);
-          if (snap != null) {
-            qtdAntes = snap;
-            qtdDepois = Math.max(0, snap - (c.qtd || 0));
+          // Calcula estimado: se já houve cessão hoje, parte do estoque pós-cessão anterior
+          if (estoqueDia[data] != null) {
+            qtdAntes = estoqueDia[data];
+          } else {
+            // Primeira cessão do dia: parte do snapshot do dia anterior à cessão
+            const snap = snapshotMaisProximo(cm, data);
+            qtdAntes = snap != null ? snap : null;
+          }
+          if (qtdAntes != null) {
+            qtdDepois = Math.max(0, qtdAntes - (c.qtd || 0));
             estimado = true;
           }
         }
-        // Cobertura após a cessão (em dias)
+
+        // Propaga pra próxima cessão do mesmo dia
+        if (qtdDepois != null) estoqueDia[data] = qtdDepois;
+
+        // Cobertura após
         let coberturaDepois = null;
         if (qtdDepois != null && info.mediaDia > 0) {
           coberturaDepois = Math.round(qtdDepois / info.mediaDia * 10) / 10;
         }
-        // Lote do produto (se cadastrado)
-        const lote = lotes[info.codItem];
-        const proxLote = lote && lote.dataKey ? lote.dataKey : null;
+
         todas.push({
           codMasc: cm, codItem: info.codItem,
           produto: info.produto, variacao: info.variacao, categoria: info.categoria,
@@ -5691,9 +5719,9 @@ async function _carregarCessoesCache(forceReload){
           mediaDia: info.mediaDia, forecast: info.forecast,
           estimado,
           obs: c.obs || '',
-          proxLote,  // 'YYYY-MM-DD' ou null
+          proxLote,
           data: c.data,
-          ts: c.ts || +ts,
+          ts,
         });
       });
     });
@@ -5776,6 +5804,18 @@ async function renderCessoesTab(forceReload){
     }
   }
 
+  // Mostra botão "Confirmar valores ≈" se houver estimadas no período visível
+  const btnConfirm = document.getElementById('btn-confirmar-recons');
+  if (btnConfirm) {
+    const nEstimadas = filtradas.filter(c => c.estimado && c.qtdAntes != null).length;
+    if (nEstimadas > 0) {
+      btnConfirm.style.display = '';
+      btnConfirm.textContent = `✓ Confirmar ${nEstimadas} valor${nEstimadas > 1 ? 'es' : ''} ≈`;
+    } else {
+      btnConfirm.style.display = 'none';
+    }
+  }
+
   // Tabela
   if (filtradas.length === 0) {
     tbody.innerHTML = `<tr><td colspan="11" class="cessoes-empty">
@@ -5853,6 +5893,42 @@ async function renderCessoesTab(forceReload){
 function _fmtData(key){
   const m = (key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
   return m ? `${m[3]}/${m[2]}/${m[1]}` : key;
+}
+
+// ═══ CONFIRMA VALORES RECONSTRUÍDOS — salva qtdAntes/qtdDepois no Firebase, remove o ≈ ═══
+async function confirmarValoresReconstruidos(){
+  if (!window._mmDB) { alert('Firebase não disponível.'); return; }
+  const todas = await _carregarCessoesCache();
+  const estimadas = todas.filter(c => c.estimado && c.qtdAntes != null);
+  if (estimadas.length === 0) {
+    alert('✓ Nenhuma cessão estimada pra confirmar.');
+    return;
+  }
+  const ok = confirm(`Confirmar ${estimadas.length} ${estimadas.length === 1 ? 'cessão' : 'cessões'} com valores reconstruídos?\n\nO sistema vai gravar os valores Antes/Depois calculados como definitivos. Depois disso, o símbolo ≈ some.`);
+  if (!ok) return;
+
+  const btn = document.getElementById('btn-confirmar-recons');
+  if (btn) { btn._txt = btn.textContent; btn.textContent = '⏳ Salvando...'; btn.disabled = true; }
+
+  try {
+    // Pra cada estimada, atualiza qtdAntes e qtdDepois no Firebase
+    const updates = {};
+    estimadas.forEach(c => {
+      const path = `estoque_mm/cessoes/${c.codMasc}/${c.ts}`;
+      updates[`${path}/qtdAntes`] = c.qtdAntes;
+      updates[`${path}/qtdDepois`] = c.qtdDepois;
+    });
+    await window._mmDB.ref().update(updates);
+    console.log(`[confirmar-recons] ✓ ${estimadas.length} cessões atualizadas`);
+    alert(`✓ ${estimadas.length} ${estimadas.length === 1 ? 'cessão confirmada' : 'cessões confirmadas'}!\nO símbolo ≈ foi removido.`);
+    // Limpa cache e recarrega
+    _cessoesCache = null;
+    renderCessoesTab(true);
+  } catch (e) {
+    console.error('[confirmar-recons]', e);
+    alert('Erro ao confirmar: ' + e.message);
+  }
+  if (btn) { btn.textContent = btn._txt; btn.disabled = false; }
 }
 
 // ═══ EXPORTA CESSÕES DO PERÍODO FILTRADO ═══
