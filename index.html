@@ -59,6 +59,8 @@
   --glow-teal: rgba(8,145,178,0.18);
   --accent-pink:  #ec4899;
   --glow-pink: rgba(236,72,153,0.20);
+  --accent-cyan:  #38bdf8;
+  --glow-cyan: rgba(56,189,248,0.22);
 }
 
 /* ── LIGHT MODE VARIABLES ── */
@@ -79,6 +81,7 @@ body.light-mode {
   --glow-financeiro: rgba(34,197,94,0.10);
   --glow-teal: rgba(8,145,178,0.10);
   --glow-pink: rgba(236,72,153,0.12);
+  --glow-cyan: rgba(56,189,248,0.12);
 }
 
 body.light-mode::before {
@@ -3190,10 +3193,128 @@ body.light-mode .btn-reputacao:hover {
 }
 .logs-user-select option { background: #1a1a2e; color: var(--text-primary); }
 
-/* Forçar 5 cards do painel 3P em uma única linha */
+/* ══════════════════════════════════════════════════════════════
+   EASY HOUSE (panel-3p) — SCROLL HORIZONTAL
+   6 cards: Estoque · Pós-venda · SLA · Comercial · ByBox · Financeiro
+   5 visíveis no tamanho original, o 6º revelado pela rolagem
+   ══════════════════════════════════════════════════════════════ */
+#panel-3p { position: relative; }
 #panel-3p .dashboard {
-  grid-template-columns: repeat(5, 1fr);
+  display: flex !important;
+  flex-wrap: nowrap;
+  grid-template-columns: none;
+  grid-auto-rows: initial;
+  gap: 20px;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 8px 0 14px;
+  scroll-snap-type: x proximity;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Esconde scrollbar — substituída pela seta indicativa */
+  scrollbar-width: none;
 }
+#panel-3p .dashboard::-webkit-scrollbar { display: none; }
+#panel-3p .dashboard > .card {
+  flex: 0 0 calc((100% - 80px) / 5); /* 5 cards + 4 gaps de 20px */
+  min-width: 0;
+  scroll-snap-align: start;
+  align-self: stretch;
+}
+
+/* ── SETA INDICATIVA DE ROLAGEM ── */
+.scroll-hint-arrow {
+  position: absolute;
+  top: 68%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(56,189,248,0.20), rgba(45,125,210,0.16));
+  border: 1px solid rgba(56,189,248,0.45);
+  border-radius: 50%;
+  color: #7fd6ff;
+  cursor: pointer;
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.45), 0 0 18px rgba(56,189,248,0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity 0.35s ease, transform 0.25s ease, background 0.2s, box-shadow 0.25s, border-color 0.2s;
+}
+.scroll-hint-arrow.next { right: -6px; animation: scrollHintFloatRight 2.4s ease-in-out infinite; }
+.scroll-hint-arrow.prev { left:  -6px; animation: scrollHintFloatLeft  2.4s ease-in-out infinite; }
+.scroll-hint-arrow.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.scroll-hint-arrow:hover {
+  background: linear-gradient(135deg, rgba(56,189,248,0.35), rgba(45,125,210,0.28));
+  border-color: rgba(56,189,248,0.75);
+  color: #b8e6ff;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.55);
+  transform: translateY(-50%) scale(1.08);
+  animation-play-state: paused;
+}
+.scroll-hint-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+.scroll-hint-arrow i {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.4px;
+}
+@keyframes scrollHintFloatRight {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  50%      { transform: translateY(-50%) translateX(5px); }
+}
+@keyframes scrollHintFloatLeft {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  50%      { transform: translateY(-50%) translateX(-5px); }
+}
+body.light-mode .scroll-hint-arrow {
+  background: linear-gradient(135deg, rgba(56,189,248,0.18), rgba(45,125,210,0.14));
+  border-color: rgba(45,125,210,0.5);
+  color: #2563eb;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18), 0 0 14px rgba(56,189,248,0.30);
+}
+body.light-mode .scroll-hint-arrow:hover {
+  background: linear-gradient(135deg, rgba(56,189,248,0.30), rgba(45,125,210,0.24));
+  color: #1e40af;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.25), 0 0 22px rgba(56,189,248,0.5);
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint-arrow { animation: none; }
+}
+@media (max-width: 768px) {
+  #panel-3p .dashboard {
+    gap: 12px;
+    padding: 6px 0 12px;
+  }
+  #panel-3p .dashboard > .card {
+    flex: 0 0 78vw;
+    max-width: 300px;
+  }
+  .scroll-hint-arrow {
+    width: 38px;
+    height: 38px;
+  }
+  .scroll-hint-arrow.next { right: 2px; }
+  .scroll-hint-arrow.prev { left:  2px; }
+  .scroll-hint-arrow i { width: 18px; height: 18px; }
+}
+
+/* ── CARD BYBOX PRICING INTELLIGENCE (cyan) ── */
+.card-bybox::before { background: var(--accent-cyan); box-shadow: 0 0 20px var(--glow-cyan); }
+.card-bybox:hover { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-cyan) inset; transform: translate3d(0, -2px, 0) !important; }
+.card-bybox .icon-wrap { background: rgba(56,189,248,0.10); border: 1px solid rgba(56,189,248,0.25); }
+.card-bybox .icon-wrap i { color: var(--accent-cyan); }
+.card-bybox:hover .icon-wrap { background: rgba(56,189,248,0.18); border-color: rgba(56,189,248,0.5); box-shadow: 0 0 18px rgba(56,189,248,0.3); }
+.card-bybox .card-tag { color: var(--accent-cyan); }
+
 #panel-3p .card {
   padding: 26px 20px;
 }
@@ -4128,6 +4249,19 @@ body.light-mode #iframe-page-title {
           <div class="card-tag">Comercial</div>
           <h2>Vendas & Faturamento</h2>
           <p>Faturamento por marketplace, desempenho por categoria de produto, evolução diária de vendas e comparativo mensal com projeção de meta.</p>
+          <div class="card-footer">
+            Acessar dashboard <i data-lucide="arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- BYBOX PRICING INTELLIGENCE -->
+        <a class="card card-bybox" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/bybox.html" data-title="ByBox Pricing Intelligence" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
+          <div class="icon-wrap">
+            <i data-lucide="radar" style="width:22px;height:22px"></i>
+          </div>
+          <div class="card-tag">Pricing Intelligence</div>
+          <h2>ByBox</h2>
+          <p>Monitoramento competitivo de preços nos canais — alertas de ruptura, oportunidades e benchmark por SKU.</p>
           <div class="card-footer">
             Acessar dashboard <i data-lucide="arrow-right"></i>
           </div>
@@ -5604,13 +5738,13 @@ function vtexCarregarResumo(force) {
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────────
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 let NOTIFICACOES_HOJE = [
-  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 14 variações em alerta ⚠️',desc:'70.1% reservado · ',hora:'11/05/2026',lida:false,link:'estoque.html',critico:true},
-  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 0,00%',desc:'98 em atraso · 502 sem faturar · Todas transportadoras na meta ✅',hora:'12/05/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 11 variações em alerta ⚠️',desc:'78,3% reservado · GR: GR EASY SLIM 8 PTS BRANCO#S/ESP#S/PES (0,0%) · GR 06 PTS EASY MOVE 2,40 AMENDOA CLEAN/OFF WH#S/ESP#S/P (0,0%) · GR 06 PTS EASY MOVE 2,40 AMENDOA CLEAN#S/ESP#S/PES (0,0%) · GR 0',hora:'04/05/2026',lida:false,link:'estoque.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(39,174,96,0.15)',titulo:'SLA: ✅ Acima da meta — 97,71%',desc:'96 em atraso · 211 sem faturar · Pior transp.: TS RJ 50,65%🔴 · TRANS EXPRESS 94,56%',hora:'05/05/2026',lida:false,link:'sla_transporte.html',critico:false},
   {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: Abr 118,56% da Meta (01–30/04)',desc:'R$ 9,05M faturado em 30 dias · Média diária R$ 302K · Meta R$ 8,6M · +168% Ano x Ano',hora:'30/04/2026',lida:false,link:'comercial.html',critico:false},
-  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado(s) ⚠️',desc:'99 itens · 67 pedidos · 4 em atraso · Atraso médio 8,7d · Maior: 32d (#495511 — Moderado (32d) · #548540 beira (29d)) · 1 moderado(s): ⚠ #86772 cruzou a faixa hoje · 0 críticos',hora:'11/05/2026',lida:false,link:'assistencia.html',critico:false},
-  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: ? recebido ✓',desc:'Cartas de Débito · ? recebido · R$ 38.274 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'11/05/2026',lida:false,link:'financeiro.html',critico:false},
-  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 697 no período',desc:'01/01 a 10/05/2026 · R$ 734,8K · 697 notas · Ticket médio R$ 1.054 · Top motivo: 39,2% (Desistência · 273 notas) · Top transp: 190 notas (Nova Era Express) · Maior mês: ? ',hora:'12/05/2026',lida:false,link:'devolucao.html',critico:false},
-  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'12/05/2026',lida:false,link:'reputacao.html',critico:false}
+  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado(s) ⚠️',desc:'94 itens · 67 pedidos · 4 em atraso · Atraso médio 8,0d · Maior: 32d (#495511 — Moderado (32d) · #548540 beira (29d)) · 1 moderado(s): ⚠ #86772 cruzou a faixa hoje · 0 críticos',hora:'05/05/2026',lida:false,link:'assistencia.html',critico:false},
+  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: ? recebido ✓',desc:'Cartas de Débito · ? recebido · R$ 40.610 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'04/05/2026',lida:false,link:'financeiro.html',critico:false},
+  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 666 no período',desc:'01/01 a 04/05/2026 · R$ 699,8K · 666 notas · Ticket médio R$ 1.051 · Top motivo: 39,0% (Desistência · 260 notas) · Top transp: 186 notas (Nova Era Express) · Maior mês: ? ',hora:'05/05/2026',lida:false,link:'devolucao.html',critico:false},
+  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'05/05/2026',lida:false,link:'reputacao.html',critico:false}
 ];
 let TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
 
@@ -10157,6 +10291,96 @@ body.light-mode #eh-busca-overlay { background: rgba(0,0,0,0.35); }
       return resumo + sep + original;
     };
     console.log('[ticker] Resumo do dia integrado ao ticker');
+  }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SETA INDICATIVA DE ROLAGEM — Painel Easy House (panel-3p)
+     Aparece quando há overflow horizontal e some ao chegar no fim
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  function init(){
+    var panel = document.getElementById('panel-3p');
+    if(!panel) return;
+    var dashboard = panel.querySelector('.dashboard');
+    if(!dashboard) return;
+    if(panel.querySelector('.scroll-hint-arrow')) return; // já criadas
+
+    // Cria as duas setas
+    function criarSeta(direcao){
+      var btn = document.createElement('button');
+      btn.className = 'scroll-hint-arrow ' + direcao;
+      btn.type = 'button';
+      btn.setAttribute('aria-label', direcao === 'next' ? 'Rolar para ver mais painéis' : 'Voltar painéis anteriores');
+      btn.setAttribute('title', direcao === 'next' ? 'Mais painéis →' : '← Voltar');
+      btn.innerHTML = direcao === 'next'
+        ? '<i data-lucide="chevron-right"></i>'
+        : '<i data-lucide="chevron-left"></i>';
+      panel.appendChild(btn);
+      return btn;
+    }
+    var setaNext = criarSeta('next');
+    var setaPrev = criarSeta('prev');
+
+    // Renderiza ícones Lucide
+    if(window.lucide && typeof window.lucide.createIcons === 'function'){
+      window.lucide.createIcons();
+    }
+
+    // Atualiza visibilidade das duas setas
+    function atualizar(){
+      var temOverflow = dashboard.scrollWidth > dashboard.clientWidth + 4;
+      var noInicio = dashboard.scrollLeft <= 4;
+      var noFim    = dashboard.scrollLeft + dashboard.clientWidth >= dashboard.scrollWidth - 6;
+      setaNext.classList.toggle('visible', temOverflow && !noFim);
+      setaPrev.classList.toggle('visible', temOverflow && !noInicio);
+    }
+
+    function passoCard(){
+      var card = dashboard.querySelector('.card');
+      return card ? (card.offsetWidth + 20) : 320;
+    }
+
+    // Avança ~1 card (ou pula direto pro fim se estiver perto)
+    setaNext.addEventListener('click', function(){
+      var passo = passoCard();
+      var restante = dashboard.scrollWidth - (dashboard.scrollLeft + dashboard.clientWidth);
+      if(restante < passo * 1.5){
+        dashboard.scrollTo({ left: dashboard.scrollWidth, behavior: 'smooth' });
+      } else {
+        dashboard.scrollBy({ left: passo, behavior: 'smooth' });
+      }
+    });
+
+    // Retrocede ~1 card (ou volta direto pro início se estiver perto)
+    setaPrev.addEventListener('click', function(){
+      var passo = passoCard();
+      if(dashboard.scrollLeft < passo * 1.5){
+        dashboard.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        dashboard.scrollBy({ left: -passo, behavior: 'smooth' });
+      }
+    });
+
+    dashboard.addEventListener('scroll', atualizar, { passive: true });
+    window.addEventListener('resize', atualizar);
+
+    // Checagens iniciais (espera layout e troca de painel)
+    setTimeout(atualizar, 100);
+    setTimeout(atualizar, 600);
+    setTimeout(atualizar, 1500);
+
+    // Observa mudanças no painel (ex: ativação da aba)
+    var mo = new MutationObserver(atualizar);
+    mo.observe(panel, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();
 </script>
