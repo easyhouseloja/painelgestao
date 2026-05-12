@@ -199,6 +199,58 @@
   .export-btn.export-btn-mes{background:rgba(167,139,250,0.10);border-color:rgba(167,139,250,0.5);color:#a78bfa;}
   .export-btn.export-btn-mes:hover{background:rgba(167,139,250,0.20);color:#c4b5fd;border-color:rgba(167,139,250,0.7);}
 
+  /* NAVEGAÇÃO DE ABAS */
+  .tabs-nav{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:20px;padding:0 4px;flex-wrap:wrap;}
+  .tab-btn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;background:transparent;border:none;color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.2px;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.15s;position:relative;}
+  .tab-btn:hover{color:var(--text);background:rgba(255,255,255,0.03);}
+  .tab-btn.active{color:#fb923c;border-bottom-color:#fb923c;}
+  .tab-btn .tab-ico{font-size:14px;line-height:1;}
+  .tab-btn .tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:18px;padding:0 6px;border-radius:9px;font-size:10px;font-weight:800;letter-spacing:0.3px;background:rgba(239,68,68,0.18);color:#f87171;border:1px solid rgba(239,68,68,0.35);}
+  .tab-btn .tab-badge.tab-badge-neutral{background:rgba(79,124,255,0.15);color:#93b4ff;border-color:rgba(79,124,255,0.35);}
+  .tab-btn.active .tab-badge{background:rgba(251,146,60,0.18);color:#fb923c;border-color:rgba(251,146,60,0.4);}
+  .tab-btn.active .tab-badge.tab-badge-neutral{background:rgba(79,124,255,0.20);color:#a5beff;border-color:rgba(79,124,255,0.5);}
+  @media(max-width:700px){
+    .tabs-nav{gap:0;}
+    .tab-btn{padding:9px 12px;font-size:11px;}
+    .tab-btn span:not(.tab-ico):not(.tab-badge){display:none;}
+  }
+
+  /* GRÁFICOS — grid e cards */
+  .graficos-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px;}
+  .grafico-wide{grid-column:span 2;}
+  .grafico-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:14px;}
+  .grafico-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+  .grafico-title{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:var(--text);letter-spacing:0.3px;}
+  .grafico-sub{font-size:10.5px;color:var(--muted);font-weight:500;}
+  .grafico-body{min-height:140px;}
+  .grafico-loading{text-align:center;padding:30px 0;color:var(--muted);font-size:11px;}
+  .grafico-empty{text-align:center;padding:24px 0;color:var(--muted);font-size:11px;line-height:1.6;}
+  .grafico-empty-icon{font-size:24px;opacity:0.4;display:block;margin-bottom:6px;}
+  @media(max-width:900px){
+    .graficos-grid{grid-template-columns:1fr;}
+    .grafico-wide{grid-column:span 1;}
+  }
+  /* Barras horizontais (gráficos 2, 5) */
+  .gbar-row{display:flex;align-items:center;gap:8px;font-size:10.5px;margin-bottom:5px;}
+  .gbar-label{min-width:140px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);font-weight:600;}
+  .gbar-track{flex:1;background:rgba(255,255,255,0.04);border-radius:3px;height:14px;overflow:hidden;}
+  .gbar-fill{height:100%;border-radius:3px;transition:width 0.4s;}
+  .gbar-val{min-width:48px;text-align:right;font-weight:700;font-family:'Syne',sans-serif;font-size:11px;}
+  /* Donut chart legenda */
+  .gdonut-wrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center;}
+  .gdonut-legend{display:flex;flex-direction:column;gap:6px;font-size:11px;}
+  .gdonut-leg-row{display:flex;align-items:center;gap:8px;line-height:1.3;}
+  .gdonut-leg-color{width:11px;height:11px;border-radius:3px;flex-shrink:0;}
+  /* Cat comparison */
+  .gcat-row{margin-bottom:14px;}
+  .gcat-name{font-size:11.5px;font-weight:700;margin-bottom:5px;color:var(--text);display:flex;justify-content:space-between;align-items:baseline;}
+  .gcat-status{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;padding:2px 7px;border-radius:4px;}
+  .gcat-bar{display:flex;align-items:center;gap:6px;font-size:10px;}
+  .gcat-bar:first-of-type{margin-bottom:3px;}
+  .gcat-track{flex:1;background:rgba(255,255,255,0.04);border-radius:3px;height:12px;overflow:hidden;position:relative;}
+  .gcat-fill{height:100%;border-radius:3px;}
+  .gcat-val{min-width:74px;text-align:right;font-weight:600;font-size:10px;}
+
   /* DATA-UPDATED PULSE — destaca elementos cujos números mudaram desde a última visita */
   @keyframes data-pulse {
     0%   { box-shadow: 0 0 0 0 rgba(34,201,138,0.55), 0 0 0 0 rgba(34,201,138,0.0); }
@@ -403,42 +455,25 @@
     50%{box-shadow:0 0 0 6px rgba(251,146,60,0),0 0 18px rgba(251,146,60,0.6);}
   }
 
-  /* BANNER LOTES PRA HOJE — destaque chamativo com pulse forte */
-  .banner-lotes-hoje{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(135deg,rgba(251,146,60,0.18),rgba(251,146,60,0.06) 70%),var(--surface);border:2px solid #fb923c;border-radius:12px;padding:14px 18px;margin-bottom:18px;position:relative;overflow:hidden;animation:bannerLoteGlow 1.4s ease-in-out infinite;}
-  .banner-lotes-hoje::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#fb923c,#fbbf24,#fb923c);animation:bannerStripe 2s linear infinite;background-size:200% 100%;}
-  .banner-lotes-hoje::after{content:'';position:absolute;top:0;bottom:0;left:0;width:6px;background:#fb923c;animation:bannerSidePulse 0.8s ease-in-out infinite;}
+  /* BANNER LOTES PRA HOJE — destaque elegante com pulse sutil */
+  .banner-lotes-hoje{background:linear-gradient(135deg,rgba(251,146,60,0.10),rgba(251,146,60,0.03) 60%),var(--surface);border:1px solid rgba(251,146,60,0.45);border-radius:12px;padding:14px 18px;margin-bottom:18px;position:relative;overflow:hidden;animation:bannerLoteGlow 2.4s ease-in-out infinite;}
+  .banner-lotes-hoje::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,#fb923c,#fbbf24);}
   @keyframes bannerLoteGlow{
-    0%,100%{box-shadow:0 0 0 0 rgba(251,146,60,0.5),0 0 20px rgba(251,146,60,0.2);border-color:#fb923c;}
-    50%{box-shadow:0 0 0 8px rgba(251,146,60,0),0 0 30px rgba(251,146,60,0.4);border-color:#fbbf24;}
+    0%,100%{box-shadow:0 0 0 0 rgba(251,146,60,0),0 0 16px rgba(251,146,60,0.18);border-color:rgba(251,146,60,0.45);}
+    50%{box-shadow:0 0 0 4px rgba(251,146,60,0),0 0 22px rgba(251,146,60,0.30);border-color:rgba(251,146,60,0.65);}
   }
-  @keyframes bannerStripe{
-    0%{background-position:0% 0%;}
-    100%{background-position:200% 0%;}
-  }
-  @keyframes bannerSidePulse{
-    0%,100%{opacity:1;width:6px;}
-    50%{opacity:0.5;width:4px;}
-  }
-  @keyframes bannerIconShake{
-    0%,100%{transform:rotate(0deg) scale(1);}
-    20%{transform:rotate(-8deg) scale(1.05);}
-    40%{transform:rotate(8deg) scale(1.1);}
-    60%{transform:rotate(-5deg) scale(1.05);}
-    80%{transform:rotate(5deg) scale(1);}
-  }
-  @keyframes bannerTitleBlink{
-    0%,100%{opacity:1;}
-    50%{opacity:0.7;}
-  }
-  .banner-lotes-icon{font-size:32px;flex-shrink:0;line-height:1;padding-top:2px;}
-  .banner-lotes-content{flex:1;min-width:0;}
-  .banner-lotes-title{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#fb923c;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;animation:bannerTitleBlink 1.4s ease-in-out infinite;}
-  .banner-lotes-count{font-family:inherit;font-size:10px;font-weight:700;color:#fbbf24;text-transform:uppercase;letter-spacing:0.4px;background:rgba(251,191,36,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(251,191,36,0.4);animation:none;}
-  .banner-lotes-produtos{display:flex;flex-direction:column;gap:4px;}
-  .banner-lote-prod{display:flex;align-items:baseline;gap:8px;font-size:11.5px;line-height:1.4;}
-  .banner-lote-bullet{color:#fb923c;font-weight:800;font-size:13px;flex-shrink:0;}
-  .banner-lote-nome{font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;}
-  .banner-lote-meta{font-size:10px;color:var(--muted);font-weight:500;flex-shrink:0;}
+  /* Header: ícone + título alinhados na mesma linha */
+  .banner-lotes-header{display:flex;align-items:center;gap:10px;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid rgba(251,146,60,0.18);}
+  .banner-lotes-icon{font-size:18px;flex-shrink:0;line-height:1;}
+  .banner-lotes-titulo{flex:1;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;min-width:0;}
+  .banner-lotes-title{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:#fb923c;text-transform:uppercase;letter-spacing:0.6px;line-height:1.2;}
+  .banner-lotes-count{font-family:inherit;font-size:10px;font-weight:600;color:#fbbf24;background:rgba(251,191,36,0.10);padding:2px 8px;border-radius:4px;border:1px solid rgba(251,191,36,0.32);letter-spacing:0.2px;}
+  /* Grid de produtos: até 3 colunas no desktop, 1 no mobile */
+  .banner-lotes-produtos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px;}
+  .banner-lote-prod{display:flex;flex-direction:column;gap:2px;padding:8px 12px;background:rgba(255,255,255,0.025);border:1px solid rgba(251,146,60,0.10);border-radius:7px;line-height:1.3;transition:all 0.15s;}
+  .banner-lote-prod:hover{background:rgba(255,255,255,0.04);border-color:rgba(251,146,60,0.25);}
+  .banner-lote-nome{font-size:12px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .banner-lote-meta{font-size:10px;color:var(--muted);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
   /* TOP 10 GAP */
   .top10-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:grid;grid-template-columns:32px 1fr 70px 75px 75px 70px 70px 85px;align-items:center;gap:12px;transition:border-color 0.15s;margin-bottom:8px;}
@@ -851,7 +886,7 @@
   </div>
 
   <!-- ═══ HERO COBERTURA — destaque principal mesclando Cobertura Global + Pior Caso ═══ -->
-  <div class="hero-cobertura">
+  <div class="hero-cobertura" data-tab="visao">
     <!-- Coluna esquerda: % Atendimento e barra global -->
     <div class="hero-cob-main">
       <div class="hero-cob-head">
@@ -913,7 +948,7 @@
   </div>
 
   <!-- KPI GRID compacto (6 cards menores agora, sem % Atend e Pior Caso que viraram hero) -->
-  <div class="kpi-grid kpi-grid-compact">
+  <div class="kpi-grid kpi-grid-compact" data-tab="visao">
     <div class="kpi-card blue"><div class="kpi-icon">📋</div><div class="kpi-label">Total Solicitado</div><div class="kpi-value blue" id="kpi-sol">—</div><div class="kpi-sub" id="kpi-sol-sub">—</div></div>
     <div class="kpi-card green"><div class="kpi-icon">✅</div><div class="kpi-label">Total Reservado</div><div class="kpi-value green" id="kpi-res">—</div><div class="kpi-sub" id="kpi-res-sub">—</div></div>
     <div class="kpi-card amber"><div class="kpi-icon">⏳</div><div class="kpi-label">Pendente</div><div class="kpi-value amber" id="kpi-pen">—</div><div class="kpi-sub" id="kpi-pen-sub">—</div></div>
@@ -927,10 +962,36 @@
     </div>
   </div>
 
-  <!-- BANNER LOTES PRA HOJE — só aparece se houver lotes cadastrados pra hoje -->
+  <!-- BANNER LOTES PRA HOJE — só aparece se houver lotes cadastrados pra hoje (sempre visível, fora das abas) -->
   <div id="banner-lotes-hoje" class="banner-lotes-hoje" style="display:none;"></div>
 
+  <!-- NAVEGAÇÃO DE ABAS -->
+  <nav class="tabs-nav no-print">
+    <button class="tab-btn active" data-tab="visao" onclick="setActiveTab('visao')">
+      <span class="tab-ico">📊</span><span>Visão Geral</span>
+    </button>
+    <button class="tab-btn" data-tab="graficos" onclick="setActiveTab('graficos')">
+      <span class="tab-ico">📈</span><span>Gráficos</span>
+    </button>
+    <button class="tab-btn" data-tab="lotes" onclick="setActiveTab('lotes')">
+      <span class="tab-ico">🚚</span><span>Lotes</span>
+    </button>
+    <button class="tab-btn" data-tab="alertas" onclick="setActiveTab('alertas')">
+      <span class="tab-ico">🔴</span><span>Alertas</span>
+      <span class="tab-badge" id="tab-badge-alertas">—</span>
+    </button>
+    <button class="tab-btn" data-tab="consumo" onclick="setActiveTab('consumo')">
+      <span class="tab-ico">📉</span><span>Consumo</span>
+      <span class="tab-badge" id="tab-badge-consumo">—</span>
+    </button>
+    <button class="tab-btn" data-tab="produtos" onclick="setActiveTab('produtos')">
+      <span class="tab-ico">📋</span><span>Produtos</span>
+      <span class="tab-badge tab-badge-neutral" id="tab-badge-produtos">—</span>
+    </button>
+  </nav>
+
   <!-- LOTES -->
+  <div data-tab="lotes">
   <div class="section-title">🚚 Lotes Planejados <span id="lotes-sub">datas previstas de chegada por produto</span></div>
   <div id="lotes-content" style="margin-bottom:24px;">
     <!-- Formulário de cadastro -->
@@ -951,11 +1012,12 @@
     <!-- Lista de lotes (preenchida pelo JS) -->
     <div id="lotes-lista"></div>
   </div>
+  </div>
 
   <!-- ═══ ILHA: ANÁLISE DE COBERTURA INDIVIDUAL ═══
        Detalhamento por SKU: pior caso + timeline de cobertura + monitor de divergência.
        Os chips da timeline são clicáveis e filtram a tabela embaixo. -->
-  <div id="cobertura-detalhe-card" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:24px;">
+  <div id="cobertura-detalhe-card" data-tab="graficos" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:24px;">
     <!-- Conteúdo dividido em 2 colunas desde o TOPO: esquerda = título+donut+chips · direita = SKUs filtrados -->
     <div style="display:grid;grid-template-columns:minmax(320px,1.05fr) minmax(320px,1fr);gap:24px;align-items:start;">
       <!-- ESQUERDA: título + donut/legenda + chips -->
@@ -993,12 +1055,66 @@
   </div>
 
   <!-- CATEGORIA -->
+  <div data-tab="visao">
   <div class="section-title">📂 Resumo por Categoria <span>clique no card para filtrar a tabela abaixo</span></div>
   <div class="cat-grid" id="cat-grid"></div>
+  </div>
 
   <!-- CURVA ABC DO FORECAST -->
+  <div data-tab="graficos">
   <div class="section-title">📊 Curva ABC do Forecast <span>classificação por demanda · A = top 80%, B = próximos 15%, C = restantes 5%</span></div>
   <div class="abc-grid" id="abc-grid"></div>
+
+  <!-- 5 GRÁFICOS NOVOS -->
+  <div class="section-title" style="margin-top:8px;">📈 Análise Visual <span>5 gráficos de evolução e distribuição</span></div>
+  <div class="graficos-grid">
+    <!-- 1. Evolução % Atendimento (linha temporal) -->
+    <div class="grafico-card grafico-wide">
+      <div class="grafico-header">
+        <div class="grafico-title">📈 Evolução do % Atendimento</div>
+        <div class="grafico-sub" id="g1-sub">— últimos dias</div>
+      </div>
+      <div id="g1-chart" class="grafico-body"></div>
+    </div>
+    <!-- 2. Top 10 mais consumidos no mês (barras horizontais) -->
+    <div class="grafico-card grafico-wide">
+      <div class="grafico-header">
+        <div class="grafico-title">🏆 Top 10 SKUs mais consumidos no mês</div>
+        <div class="grafico-sub" id="g2-sub">— calculado a partir dos snapshots do mês</div>
+      </div>
+      <div id="g2-chart" class="grafico-body"></div>
+    </div>
+    <!-- 3. Cessões por pessoa (donut) -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <div>
+          <div class="grafico-title">👥 Cessões por pessoa</div>
+          <div class="grafico-sub" id="g3-sub">— distribuição no mês</div>
+        </div>
+        <button onclick="exportarCessoesXLSX()" type="button" class="export-btn export-btn-mes no-print" id="btn-export-cessoes" disabled style="opacity:0.4;cursor:not-allowed;font-size:10px;padding:5px 10px;" title="Exporta as cessões do mês em Excel com 3 abas: Detalhe, Por pessoa, Por SKU">
+          📥 Exportar Cessões
+        </button>
+      </div>
+      <div id="g3-chart" class="grafico-body"></div>
+    </div>
+    <!-- 4. Reservado vs Forecast por categoria (com dias restantes) -->
+    <div class="grafico-card">
+      <div class="grafico-header">
+        <div class="grafico-title">📊 Reservado vs Forecast restante</div>
+        <div class="grafico-sub" id="g4-sub">— ajustado pelos dias que faltam no mês</div>
+      </div>
+      <div id="g4-chart" class="grafico-body"></div>
+    </div>
+    <!-- 5. Histograma de cobertura -->
+    <div class="grafico-card grafico-wide">
+      <div class="grafico-header">
+        <div class="grafico-title">📊 Distribuição de cobertura (dias)</div>
+        <div class="grafico-sub" id="g5-sub">— quantas variações estão em cada faixa</div>
+      </div>
+      <div id="g5-chart" class="grafico-body"></div>
+    </div>
+  </div>
+  </div>
 
   <!-- Seção "Cobertura com Base no Forecast de Maio" REMOVIDA — info já está no Resumo por Categoria -->
   <!-- IDs ocultos pra não quebrar o JS que ainda preenche esses elementos -->
@@ -1015,9 +1131,8 @@
     <div id="cat-fc-grid"></div>
   </div>
 
-  <!-- ALERT BANNER -->
-
-  <!-- ALERT BANNER -->
+  <!-- ALERTAS — banner + Top 10 + Variações em alerta -->
+  <div data-tab="alertas">
   <div class="alert-banner" id="alertBanner">
     <div class="alert-icon">⚠️</div>
     <div>
@@ -1033,7 +1148,10 @@
   <!-- VARIAÇÕES EM ALERTA -->
   <div class="section-title" id="section-alerts" style="display:none;">🚨 Variações em Alerta <span>reserva &lt; 30%</span></div>
   <div class="alert-cards" id="alertCards"></div>
+  </div><!-- /data-tab=alertas -->
 
+  <!-- CONSUMO DIÁRIO (aba própria) -->
+  <div data-tab="consumo">
   <!-- ANÁLISE DE CONSUMO DIÁRIO -->
   <div class="section-title" id="section-consumo" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <span>📉 Consumo Diário <span id="consumo-sub" style="font-weight:400;font-size:11px;color:var(--muted);">comparativo de reserva entre datas</span></span>
@@ -1055,7 +1173,10 @@
       Carregando histórico do Firebase...
     </div>
   </div>
+  </div><!-- /data-tab=consumo -->
 
+  <!-- PRODUTOS — tabela completa com filtros -->
+  <div data-tab="produtos">
   <!-- FULL TABLE -->
   <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <span>📋 Todos os Produtos</span>
@@ -1108,6 +1229,7 @@
       <tbody id="tableBody"></tbody>
     </table>
   </div>
+  </div><!-- /data-tab=produtos -->
 </main>
 <footer>Dashboard gerado automaticamente · Carga Mãe MADEIRA MADEIRA · Marketplace · Forecast Maio/2026 · Reserva e análises em <span id="footer-data">—</span></footer>
 
@@ -1245,11 +1367,13 @@ const EXCLUIR_COD_ITEM = new Set([2405]);
   // Quando o gerador for atualizado pra excluir o produto na origem, esses
   // números virão corretos automaticamente.
   if (Array.isArray(BUNDLE.categoriasFc)) {
+    const diasMesParaFc = (BUNDLE.stats && BUNDLE.stats.diasMes) || 31;
     BUNDLE.categoriasFc = BUNDLE.categoriasFc.map(catFc => {
       const prodsCat = produtos.filter(p => p.categoria === catFc.nome);
       const variacoesCat = prodsCat.flatMap(p => p.variacoes || []);
       const reservadoCat = prodsCat.reduce((s,p) => s + (p.reservado||0), 0);
-      const demDiaria    = catFc.demandaDiariaFc; // preservado
+      // Fallback: se demandaDiariaFc não vier no BUNDLE, calcula a partir do solicitado mensal
+      const demDiaria = catFc.demandaDiariaFc || (catFc.solicitado ? catFc.solicitado / diasMesParaFc : 0);
       return {
         ...catFc,
         produtos: prodsCat.length,
@@ -2471,7 +2595,9 @@ async function salvarSnapshotConsumo(dataAtualKey, snap){
 }
 
 // Compara o snapshot atual com o anterior, retorna lista de SKUs analisados
-function calcularConsumoSKUs(snapAtual, snapAnterior){
+// gapDias: número de dias entre os snapshots (1 se consecutivos, >1 se houver fim de semana ou pulo)
+function calcularConsumoSKUs(snapAtual, snapAnterior, gapDias){
+  const gap = Math.max(1, gapDias || 1);
   const result = [];
   for (const cm of Object.keys(snapAtual)) {
     const atual    = snapAtual[cm];
@@ -2480,18 +2606,20 @@ function calcularConsumoSKUs(snapAtual, snapAnterior){
     const consumo = (anterior.r || 0) - (atual.r || 0);
     if (consumo === 0 && (atual.r === anterior.r)) continue;  // sem mudança = ignora
     const media   = atual.m || 0;
+    // Consumo médio diário considerando o gap real (ex: fim de semana, feriado)
+    const consumoPorDia = consumo / gap;
     // Status:
-    //   "alerta": consumo > média × tolerância (acima do esperado)
+    //   "alerta": consumo POR DIA > média/dia × tolerância (acima do esperado)
     //   "aumento": reserva subiu (consumo negativo, ou seja, reabasteceu)
-    //   "normal": consumo dentro do esperado (≤ média × tolerância)
+    //   "normal": consumo POR DIA dentro do esperado (≤ média/dia × tolerância)
     let status, desvio;
     if (consumo < 0) { status = 'aumento'; desvio = consumo; }  // reserva subiu
-    else if (media > 0 && consumo > media * CONSUMO_TOLERANCIA) {
+    else if (media > 0 && consumoPorDia > media * CONSUMO_TOLERANCIA) {
       status = 'alerta';
-      desvio = consumo - media;  // quanto a mais que a média
+      desvio = consumo - (media * gap);  // quanto a mais que o esperado no período
     } else {
       status = 'normal';
-      desvio = media > 0 ? consumo - media : 0;
+      desvio = media > 0 ? consumo - (media * gap) : 0;
     }
     result.push({
       codMasc: parseInt(cm),
@@ -2502,6 +2630,8 @@ function calcularConsumoSKUs(snapAtual, snapAnterior){
       reservadoAnterior: anterior.r || 0,
       reservadoAtual:    atual.r || 0,
       consumo:           consumo,
+      consumoPorDia:     +consumoPorDia.toFixed(2),  // pra exibir
+      gapDias:           gap,                          // pra exibir
       mediaDia:          media,
       desvio:            desvio,
       status:            status,
@@ -2512,9 +2642,10 @@ function calcularConsumoSKUs(snapAtual, snapAnterior){
 }
 
 // Renderiza a seção
-function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun){
+function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun, gapDias){
   const c = document.getElementById('consumo-container');
   if (!c) return;
+  const gap = Math.max(1, gapDias || 1);
 
   if (isFirstRun) {
     c.innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted);font-size:12px;line-height:1.6;">
@@ -2541,6 +2672,9 @@ function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun){
   const totalAumento = comparacao.reduce((s,x) => s + Math.max(0, -x.consumo), 0);
 
   _consumoAlerts = alertas;  // pra exportar Excel
+  // Atualiza badge da aba Consumo com nº de SKUs em alerta
+  const badgeCons = document.getElementById('tab-badge-consumo');
+  if (badgeCons) badgeCons.textContent = alertas.length;
   // Habilita botão de exportar se há alertas
   const btnExp = document.getElementById('btn-export-consumo');
   if (btnExp) {
@@ -2550,7 +2684,8 @@ function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun){
       btnExp.disabled = true; btnExp.style.opacity = '0.4'; btnExp.style.cursor = 'not-allowed';
     }
   }
-  document.getElementById('consumo-sub').textContent = `de ${dataAnterior} → ${dataAtual}`;
+  const gapTxt = gap > 1 ? ` · período de ${gap} dia(s)` : '';
+  document.getElementById('consumo-sub').textContent = `de ${dataAnterior} → ${dataAtual}${gapTxt}`;
 
   // 4 mini-cards no topo + lista de alertas
   let html = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;">
@@ -2581,13 +2716,18 @@ function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun){
       ✓ Nenhum SKU consumiu acima do esperado entre ${dataAnterior} e ${dataAtual}
     </div>`;
   } else {
-    html += `<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:700;margin-bottom:8px;">⚠ SKUs com consumo acima da média (top ${Math.min(alertas.length, 15)})</div>`;
+    html += `<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;font-weight:700;margin-bottom:8px;">⚠ SKUs com consumo acima da média (top ${Math.min(alertas.length, 15)})${gap > 1 ? ` <span style="text-transform:none;letter-spacing:0;font-weight:500;color:#fbbf24;">— consumo médio diário no período de ${gap}d</span>` : ''}</div>`;
     html += `<div style="display:flex;flex-direction:column;gap:0;background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;">`;
     alertas.slice(0, 15).forEach((a, i) => {
       const sty = (a.codItem) ? '' : '';  // placeholder; categoria não vem no snap compacto
-      const desvioPct = a.mediaDia > 0 ? Math.round((a.consumo / a.mediaDia) * 100) : 0;
+      const consDia = a.consumoPorDia != null ? a.consumoPorDia : (a.consumo / gap);
+      const desvioPct = a.mediaDia > 0 ? Math.round((consDia / a.mediaDia) * 100) : 0;
+      // Display do consumo: se gap > 1, mostra "X un (em Yd, Z/dia)" senão só "X un"
+      const consumoDisplay = gap > 1
+        ? `${a.consumo}<span style="font-size:9px;opacity:0.7;display:block;font-weight:500;margin-top:1px;">em ${gap}d · ${consDia.toString().replace('.',',')}/dia</span>`
+        : `${a.consumo}<span style="font-size:10px;opacity:0.7;"> un</span>`;
       html += `<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;${i < Math.min(alertas.length, 15)-1 ? 'border-bottom:1px solid var(--border);' : ''}">
-        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:#ef4444;min-width:46px;text-align:right;">${a.consumo}<span style="font-size:10px;opacity:0.7;"> un</span></div>
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:#ef4444;min-width:60px;text-align:right;line-height:1.1;">${consumoDisplay}</div>
         <div style="flex:1;min-width:0;overflow:hidden;">
           <div style="font-size:11px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px;line-height:1.3;">
             <span style="opacity:0.55;font-size:9px;flex-shrink:0;">${a.codMasc}</span>
@@ -3234,8 +3374,19 @@ function exportarConsumoExcel(){
   }
   _consumoSnapshotAnterior = ant.snap;
   _consumoDataAnterior = keyParaData(ant.data);
-  const comparacao = calcularConsumoSKUs(snapAtual, ant.snap);
-  renderizarConsumo(comparacao, _consumoDataAnterior, stats.dataAtualizacao, false);
+  // Calcula gap em dias entre o snapshot anterior e o atual (pra ajustar análise)
+  const _diff = (k1, k2) => {
+    const m1 = k1.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const m2 = k2.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m1 || !m2) return 1;
+    const d1 = new Date(+m1[1], +m1[2]-1, +m1[3]);
+    const d2 = new Date(+m2[1], +m2[2]-1, +m2[3]);
+    return Math.max(1, Math.round((d2 - d1) / 86400000));
+  };
+  const gapDias = _diff(ant.data, dataAtualKey);
+  console.log(`[consumo] gap entre snapshots: ${gapDias} dia(s)`);
+  const comparacao = calcularConsumoSKUs(snapAtual, ant.snap, gapDias);
+  renderizarConsumo(comparacao, _consumoDataAnterior, stats.dataAtualizacao, false, gapDias);
 })();
 
 function exportarTabelaExcel(){
@@ -5124,19 +5275,18 @@ renderTable();
     }
     const totalVars = produtos.reduce((s, p) => s + (p.nVars || 0), 0);
     wrap.innerHTML = `
-      <div class="banner-lotes-icon">📦</div>
-      <div class="banner-lotes-content">
-        <div class="banner-lotes-title">
-          <span>LOTE${produtos.length > 1 ? 'S' : ''} PREVISTO${produtos.length > 1 ? 'S' : ''} PRA HOJE</span>
+      <div class="banner-lotes-header">
+        <div class="banner-lotes-icon">📦</div>
+        <div class="banner-lotes-titulo">
+          <span class="banner-lotes-title">LOTE${produtos.length > 1 ? 'S' : ''} PRA HOJE</span>
           <span class="banner-lotes-count">${produtos.length} produto${produtos.length > 1 ? 's' : ''} · ${totalVars} variaç${totalVars > 1 ? 'ões' : 'ão'} atendida${totalVars > 1 ? 's' : ''}</span>
         </div>
-        <div class="banner-lotes-produtos">
-          ${produtos.map(p => `<div class="banner-lote-prod">
-            <span class="banner-lote-bullet">▸</span>
-            <span class="banner-lote-nome">${p.produto}</span>
-            <span class="banner-lote-meta">${p.categoria} · ${p.nVars} var · cod ${p.codItem}</span>
-          </div>`).join('')}
-        </div>
+      </div>
+      <div class="banner-lotes-produtos">
+        ${produtos.map(p => `<div class="banner-lote-prod">
+          <div class="banner-lote-nome">${p.produto}</div>
+          <div class="banner-lote-meta">${p.categoria} · ${p.nVars} var · cod ${p.codItem}</div>
+        </div>`).join('')}
       </div>
     `;
   }
@@ -5258,6 +5408,553 @@ renderTable();
     document.addEventListener('DOMContentLoaded', () => setTimeout(renderizarLotes, 300));
   } else {
     setTimeout(renderizarLotes, 300);
+  }
+})();
+
+// ═══════════════════════════════════════════════════════════════════
+// EXPORTA CESSÕES DO MÊS — Excel focado só nas cessões
+// 3 abas: Detalhe (todas as cessões), Por pessoa, Por SKU
+// ═══════════════════════════════════════════════════════════════════
+async function exportarCessoesXLSX(){
+  if (typeof XLSX === 'undefined') { alert('Biblioteca de exportação ainda não carregou.'); return; }
+  if (!window._mmDB) { alert('Firebase não disponível.'); return; }
+
+  const btn = document.getElementById('btn-export-cessoes');
+  if (btn) { btn._txt = btn.textContent; btn.textContent = '⏳ Carregando...'; btn.disabled = true; }
+
+  try {
+    const cessoesResp = await window._mmDB.ref('estoque_mm/cessoes').once('value');
+    const cessoesPorSku = cessoesResp.val() || {};
+
+    // Determinar mês a partir do BUNDLE
+    const stats = BUNDLE.stats || {};
+    const dataMatch = (stats.dataAtualizacao || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    const mesRef = dataMatch ? dataMatch[2] : String(new Date().getMonth() + 1).padStart(2, '0');
+    const anoRef = dataMatch ? dataMatch[3] : String(new Date().getFullYear());
+    const nomesMeses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const nomeMes = `${nomesMeses[+mesRef-1]} ${anoRef}`;
+
+    // Lookup
+    const lookup = {};
+    (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+      lookup[v.codMasc] = { codItem: p.codItem, produto: p.produto, variacao: v.variacao, categoria: p.categoria };
+    }));
+
+    const fmtDataKey = key => {
+      const m = (key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      return m ? `${m[3]}/${m[2]}/${m[1]}` : key;
+    };
+
+    // Coletar todas as cessões do mês
+    const todas = [];
+    const porPessoa = {};
+    const porSku = {};
+    Object.entries(cessoesPorSku).forEach(([cm, cessoes]) => {
+      const info = lookup[cm] || { produto: `(cod ${cm})`, variacao: '', categoria: '', codItem: '' };
+      Object.values(cessoes || {}).forEach(c => {
+        if (!c || !c.data) return;
+        if (!c.data.startsWith(`${anoRef}-${mesRef}`)) return;
+        const d = new Date(c.ts || 0);
+        const hh = String(d.getHours()).padStart(2, '0');
+        const mm = String(d.getMinutes()).padStart(2, '0');
+        const qtd = c.qtd || 0;
+        const quem = c.quem || '?';
+        todas.push({
+          data: fmtDataKey(c.data),
+          dataKey: c.data,
+          hora: `${hh}:${mm}`,
+          codMasc: cm,
+          codItem: info.codItem,
+          produto: info.produto,
+          variacao: info.variacao,
+          categoria: info.categoria,
+          quem,
+          qtd,
+          obs: c.obs || '',
+        });
+        porPessoa[quem] = (porPessoa[quem] || 0) + qtd;
+        if (!porSku[cm]) porSku[cm] = { ...info, codMasc: cm, total: 0, cessoes: 0 };
+        porSku[cm].total += qtd;
+        porSku[cm].cessoes += 1;
+      });
+    });
+
+    if (todas.length === 0) {
+      alert('⚠ Nenhuma cessão registrada neste mês.');
+      if (btn) { btn.textContent = btn._txt; btn.disabled = false; }
+      return;
+    }
+
+    // Ordena por data + hora desc
+    todas.sort((a, b) => {
+      if (a.dataKey !== b.dataKey) return b.dataKey.localeCompare(a.dataKey);
+      return b.hora.localeCompare(a.hora);
+    });
+    const totalGeral = todas.reduce((s, c) => s + c.qtd, 0);
+
+    // ABA 1: Detalhe
+    const headerDet = ['Data', 'Hora', 'Cod Item', 'Cod Variação', 'Produto', 'Variação', 'Categoria', 'Pra quem', 'Qtd cedida', 'Observação'];
+    const linhasDet = todas.map(c => [
+      c.data, c.hora, c.codItem, c.codMasc, c.produto, c.variacao, c.categoria, c.quem, c.qtd, c.obs
+    ]);
+    const aoaDet = [
+      [`📋 CESSÕES DO MÊS — ${nomeMes}`],
+      [`${todas.length} registros · ${totalGeral} unidades cedidas no total`],
+      [],
+      headerDet,
+      ...linhasDet
+    ];
+    const wsDet = XLSX.utils.aoa_to_sheet(aoaDet);
+    wsDet['!cols'] = [{wch:11},{wch:7},{wch:10},{wch:12},{wch:38},{wch:30},{wch:14},{wch:14},{wch:11},{wch:30}];
+    wsDet['!freeze'] = { xSplit: 0, ySplit: 4 };
+
+    // ABA 2: Por pessoa
+    const pessoaSorted = Object.entries(porPessoa).sort((a, b) => b[1] - a[1]);
+    const aoaPessoa = [
+      [`👥 RESUMO POR PESSOA — ${nomeMes}`],
+      [],
+      ['Pessoa', 'Total cedido (un)', '% do total', 'Nº de cessões'],
+      ...pessoaSorted.map(([nome, qtd]) => {
+        const nReg = todas.filter(c => c.quem === nome).length;
+        return [nome, qtd, `${(qtd / totalGeral * 100).toFixed(1)}%`, nReg];
+      }),
+      [],
+      ['TOTAL', totalGeral, '100%', todas.length]
+    ];
+    const wsPessoa = XLSX.utils.aoa_to_sheet(aoaPessoa);
+    wsPessoa['!cols'] = [{wch:24},{wch:18},{wch:12},{wch:15}];
+
+    // ABA 3: Por SKU
+    const skuSorted = Object.values(porSku).sort((a, b) => b.total - a.total);
+    const aoaSku = [
+      [`📦 RESUMO POR SKU — ${nomeMes}`],
+      [],
+      ['Cod Item', 'Cod Variação', 'Produto', 'Variação', 'Categoria', 'Total cedido (un)', 'Nº de cessões'],
+      ...skuSorted.map(s => [s.codItem, s.codMasc, s.produto, s.variacao, s.categoria, s.total, s.cessoes])
+    ];
+    const wsSku = XLSX.utils.aoa_to_sheet(aoaSku);
+    wsSku['!cols'] = [{wch:10},{wch:12},{wch:38},{wch:30},{wch:14},{wch:18},{wch:14}];
+    wsSku['!freeze'] = { xSplit: 0, ySplit: 3 };
+
+    // Workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, wsDet, 'Cessões');
+    XLSX.utils.book_append_sheet(wb, wsPessoa, 'Por Pessoa');
+    XLSX.utils.book_append_sheet(wb, wsSku, 'Por SKU');
+
+    const filename = `cessoes_${anoRef}_${mesRef}_${nomesMeses[+mesRef-1].toLowerCase()}.xlsx`;
+    XLSX.writeFile(wb, filename);
+
+    console.log(`[export-cessoes] ✓ ${filename} · ${todas.length} cessões · ${totalGeral} un · ${pessoaSorted.length} pessoa(s)`);
+  } catch (e) {
+    console.error('[export-cessoes]', e);
+    alert('Erro ao gerar Excel: ' + e.message);
+  }
+
+  if (btn) { btn.textContent = btn._txt; btn.disabled = false; }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// GRÁFICOS DA ABA "GRÁFICOS" — 5 análises visuais
+// ═══════════════════════════════════════════════════════════════════
+(function setupGraficos(){
+  const escapeHTML = s => String(s ?? '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'})[c]);
+  const fmtNum = n => n != null ? n.toLocaleString('pt-BR') : '—';
+  const fmtDataKey = key => {
+    const m = (key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${m[3]}/${m[2]}` : key;
+  };
+
+  // ───── GRÁFICO 1: Evolução do % Atendimento ─────
+  function renderG1(snaps){
+    const cont = document.getElementById('g1-chart');
+    const sub = document.getElementById('g1-sub');
+    if (!cont) return;
+    const datas = Object.keys(snaps || {}).sort();
+    if (datas.length < 2) {
+      cont.innerHTML = `<div class="grafico-empty"><span class="grafico-empty-icon">📉</span>Precisa de ao menos 2 dias de snapshot pra ver evolução.<br><small>Hoje há ${datas.length} dia(s) registrado(s).</small></div>`;
+      return;
+    }
+    // Calcula % atendimento de cada dia = reservado / solicitado_carga_mae
+    // Lê solicitado da BUNDLE atual (não muda dia a dia)
+    const solicitadoPorCM = {};
+    (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+      if (!EXCLUIR_COD_ITEM.has(p.codItem)) solicitadoPorCM[v.codMasc] = v.solicitadoCargaMae || 0;
+    }));
+    const totalSol = Object.values(solicitadoPorCM).reduce((s,n) => s+n, 0);
+
+    const pontos = datas.map(d => {
+      const snap = snaps[d] || {};
+      let totalRes = 0;
+      Object.entries(snap).forEach(([cm, v]) => {
+        if (solicitadoPorCM[cm] != null) totalRes += (v.r || 0);
+      });
+      const pct = totalSol > 0 ? (totalRes / totalSol * 100) : 0;
+      return { data: d, pct, reservado: totalRes };
+    });
+
+    const w = 600, h = 180, padL = 40, padR = 20, padT = 20, padB = 32;
+    const innerW = w - padL - padR;
+    const innerH = h - padT - padB;
+    const minPct = Math.max(0, Math.min(...pontos.map(p => p.pct)) - 10);
+    const maxPct = Math.min(100, Math.max(...pontos.map(p => p.pct)) + 5);
+    const range = Math.max(5, maxPct - minPct);
+    const xFor = i => padL + (i / Math.max(1, pontos.length - 1)) * innerW;
+    const yFor = pct => padT + innerH - ((pct - minPct) / range) * innerH;
+
+    const polyline = pontos.map((p, i) => `${xFor(i)},${yFor(p.pct)}`).join(' ');
+    const dotsHtml = pontos.map((p, i) => {
+      const isLast = i === pontos.length - 1;
+      return `<circle cx="${xFor(i)}" cy="${yFor(p.pct)}" r="${isLast ? 4.5 : 3}" fill="#22c98a" stroke="${isLast ? '#fff' : 'none'}" stroke-width="${isLast ? 1.5 : 0}">
+        <title>${fmtDataKey(p.data)}: ${p.pct.toFixed(1)}% · ${fmtNum(p.reservado)} un</title>
+      </circle>`;
+    }).join('');
+    // Eixo X: mostra primeiro, último e até 4 intermediários
+    const step = Math.max(1, Math.ceil(pontos.length / 6));
+    const xLabels = pontos.map((p, i) => {
+      if (i === 0 || i === pontos.length - 1 || i % step === 0) {
+        return `<text x="${xFor(i)}" y="${h - padB + 14}" fill="var(--muted)" font-size="9" text-anchor="middle">${fmtDataKey(p.data)}</text>`;
+      }
+      return '';
+    }).join('');
+    // Eixo Y
+    const ySteps = [minPct, (minPct + maxPct) / 2, maxPct];
+    const yLabels = ySteps.map(v => `
+      <text x="${padL - 6}" y="${yFor(v) + 3}" fill="var(--muted)" font-size="9" text-anchor="end">${v.toFixed(0)}%</text>
+      <line x1="${padL}" y1="${yFor(v)}" x2="${w - padR}" y2="${yFor(v)}" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="2,3"/>`
+    ).join('');
+
+    const delta = pontos[pontos.length - 1].pct - pontos[0].pct;
+    const deltaCor = delta >= 0 ? '#22c98a' : '#ef4444';
+    const deltaTxt = `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} p.p.`;
+
+    cont.innerHTML = `
+      <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block;">
+        ${yLabels}
+        <polyline points="${polyline}" fill="none" stroke="#22c98a" stroke-width="2" stroke-linejoin="round"/>
+        ${dotsHtml}
+        ${xLabels}
+      </svg>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11px;padding:6px 4px 0;color:var(--muted);">
+        <span>${fmtDataKey(pontos[0].data)}: <b style="color:var(--text);">${pontos[0].pct.toFixed(1)}%</b></span>
+        <span style="color:${deltaCor};font-weight:700;font-family:'Syne',sans-serif;">${deltaTxt}</span>
+        <span>${fmtDataKey(pontos[pontos.length-1].data)}: <b style="color:var(--text);">${pontos[pontos.length-1].pct.toFixed(1)}%</b></span>
+      </div>
+    `;
+    if (sub) sub.textContent = `— ${pontos.length} dia${pontos.length > 1 ? 's' : ''} registrado${pontos.length > 1 ? 's' : ''}`;
+  }
+
+  // ───── GRÁFICO 2: Top 10 SKUs mais consumidos no mês ─────
+  function renderG2(snaps){
+    const cont = document.getElementById('g2-chart');
+    const sub = document.getElementById('g2-sub');
+    if (!cont) return;
+    const datas = Object.keys(snaps || {}).sort();
+    if (datas.length < 2) {
+      cont.innerHTML = `<div class="grafico-empty"><span class="grafico-empty-icon">🏆</span>Precisa de ao menos 2 dias de snapshot pra calcular consumo.</div>`;
+      return;
+    }
+    // Lookup pra nome/variação
+    const lookup = {};
+    (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+      lookup[v.codMasc] = { produto: p.produto, variacao: v.variacao };
+    }));
+    // Acumula consumo por SKU
+    const consumoPorSku = {};
+    for (let i = 1; i < datas.length; i++) {
+      const ant = snaps[datas[i - 1]] || {};
+      const at  = snaps[datas[i]] || {};
+      Object.keys(at).forEach(cm => {
+        if (ant[cm]) {
+          const c = (ant[cm].r || 0) - (at[cm].r || 0);
+          if (c > 0) consumoPorSku[cm] = (consumoPorSku[cm] || 0) + c;
+        }
+      });
+    }
+    const top = Object.entries(consumoPorSku)
+      .map(([cm, q]) => ({ cm, qtd: q, ...(lookup[cm] || { produto: `(cod ${cm})`, variacao: '' }) }))
+      .sort((a, b) => b.qtd - a.qtd)
+      .slice(0, 10);
+    if (top.length === 0) {
+      cont.innerHTML = `<div class="grafico-empty"><span class="grafico-empty-icon">📭</span>Nenhum consumo registrado entre os snapshots.</div>`;
+      return;
+    }
+    const max = top[0].qtd;
+    cont.innerHTML = top.map((s, i) => {
+      const w = (s.qtd / max) * 100;
+      let cor = '#22c98a';
+      if (i === 0) cor = '#ef4444';
+      else if (i <= 2) cor = '#fb923c';
+      else if (i <= 5) cor = '#fbbf24';
+      const nome = `${s.produto}${s.variacao ? ' · ' + s.variacao : ''}`;
+      return `<div class="gbar-row">
+        <span class="gbar-label" title="${escapeHTML(nome)}">${escapeHTML(s.produto)}</span>
+        <div class="gbar-track"><div class="gbar-fill" style="width:${w}%;background:${cor};"></div></div>
+        <span class="gbar-val" style="color:${cor};">${fmtNum(s.qtd)} un</span>
+      </div>`;
+    }).join('');
+    const total = top.reduce((s, t) => s + t.qtd, 0);
+    if (sub) sub.textContent = `— total no top 10: ${fmtNum(total)} un (${datas.length} dias)`;
+  }
+
+  // ───── GRÁFICO 3: Cessões por pessoa (donut) ─────
+  function renderG3(cessoesPorSku){
+    const cont = document.getElementById('g3-chart');
+    const sub = document.getElementById('g3-sub');
+    if (!cont) return;
+    // Determinar mês atual a partir do último snapshot ou data atual
+    const stats = BUNDLE.stats || {};
+    const dataMatch = (stats.dataAtualizacao || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    const mesRef = dataMatch ? dataMatch[2] : String(new Date().getMonth() + 1).padStart(2, '0');
+    const anoRef = dataMatch ? dataMatch[3] : String(new Date().getFullYear());
+
+    const porPessoa = {};
+    Object.values(cessoesPorSku || {}).forEach(cessoes => {
+      Object.values(cessoes || {}).forEach(c => {
+        if (!c || !c.data) return;
+        if (!c.data.startsWith(`${anoRef}-${mesRef}`)) return;
+        const k = c.quem || '?';
+        porPessoa[k] = (porPessoa[k] || 0) + (c.qtd || 0);
+      });
+    });
+    const entries = Object.entries(porPessoa).sort((a, b) => b[1] - a[1]);
+    const total = entries.reduce((s, [, q]) => s + q, 0);
+    // Habilita/desabilita botão de exportar
+    const btnExp = document.getElementById('btn-export-cessoes');
+    if (btnExp) {
+      if (total > 0) {
+        btnExp.disabled = false;
+        btnExp.style.opacity = '';
+        btnExp.style.cursor = 'pointer';
+      } else {
+        btnExp.disabled = true;
+        btnExp.style.opacity = '0.4';
+        btnExp.style.cursor = 'not-allowed';
+      }
+    }
+    if (total === 0) {
+      cont.innerHTML = `<div class="grafico-empty"><span class="grafico-empty-icon">👥</span>Nenhuma cessão registrada neste mês.<br><small>Use o simulador (botão 🧮 no topo) pra registrar.</small></div>`;
+      return;
+    }
+    const cores = ['#fb923c', '#a78bfa', '#22d3ee', '#22c98a', '#fbbf24', '#ef4444', '#93b4ff', '#f87171'];
+    // SVG donut
+    const R = 35, sw = 14, C = 2 * Math.PI * R;
+    let offset = 0;
+    const segs = entries.map(([, q], i) => {
+      const len = (q / total) * C;
+      const seg = `<circle cx="50" cy="50" r="${R}" fill="none" stroke="${cores[i % cores.length]}" stroke-width="${sw}" stroke-dasharray="${len} ${C}" stroke-dashoffset="${-offset}" transform="rotate(-90 50 50)"></circle>`;
+      offset += len;
+      return seg;
+    }).join('');
+    const legenda = entries.map(([nome, q], i) => `
+      <div class="gdonut-leg-row">
+        <span class="gdonut-leg-color" style="background:${cores[i % cores.length]};"></span>
+        <span style="color:var(--text);">${escapeHTML(nome)}</span>
+        <span style="color:var(--muted);">· <b style="color:var(--text);">${fmtNum(q)} un</b> (${((q / total) * 100).toFixed(0)}%)</span>
+      </div>`).join('');
+    cont.innerHTML = `
+      <div class="gdonut-wrap">
+        <svg viewBox="0 0 100 100" style="width:130px;flex-shrink:0;">
+          ${segs}
+          <text x="50" y="48" text-anchor="middle" font-size="15" font-weight="800" fill="var(--text)" font-family="Syne, sans-serif">${fmtNum(total)}</text>
+          <text x="50" y="60" text-anchor="middle" font-size="7" fill="var(--muted)">un cedidas</text>
+        </svg>
+        <div class="gdonut-legend">${legenda}</div>
+      </div>`;
+    if (sub) sub.textContent = `— ${entries.length} pessoa${entries.length > 1 ? 's' : ''} · ${fmtNum(total)} un`;
+  }
+
+  // ───── GRÁFICO 4: Reservado vs Forecast restante (ajustado pelos dias que faltam) ─────
+  function renderG4(){
+    const cont = document.getElementById('g4-chart');
+    const sub = document.getElementById('g4-sub');
+    if (!cont) return;
+    const stats = BUNDLE.stats || {};
+    const totalDiasMes = stats.diasMes || 31;
+    // Determinar dia atual do mês (do snapshot mais recente, ou data real se for o mesmo mês)
+    const dataMatch = (stats.dataAtualizacao || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    let diaAtual;
+    if (dataMatch) {
+      diaAtual = parseInt(dataMatch[1]);
+    } else {
+      diaAtual = new Date().getDate();
+    }
+    const diasRestantes = Math.max(1, totalDiasMes - diaAtual + 1);
+
+    // Pra cada categoria, calcula forecast restante = media_dia * dias_restantes
+    const categorias = (BUNDLE.categoriasFc || []);
+    if (categorias.length === 0) {
+      cont.innerHTML = `<div class="grafico-empty">Sem dados de categoria.</div>`;
+      return;
+    }
+    const dadosCat = categorias.map(c => {
+      const mediaDia = totalDiasMes > 0 ? c.solicitado / totalDiasMes : 0;
+      const forecastRestante = mediaDia * diasRestantes;
+      const cobertura = forecastRestante > 0 ? (c.reservado / forecastRestante) * 100 : 0;
+      return {
+        nome: c.nome,
+        reservado: c.reservado,
+        forecastRestante: Math.round(forecastRestante),
+        forecastTotal: c.solicitado,
+        cobertura,
+      };
+    });
+
+    const maxBase = Math.max(...dadosCat.map(d => Math.max(d.reservado, d.forecastRestante)));
+    cont.innerHTML = dadosCat.map(d => {
+      let cor, status;
+      if (d.cobertura >= 100) { cor = '#22c98a'; status = '✓ ATENDE'; }
+      else if (d.cobertura >= 70) { cor = '#fbbf24'; status = '⚠ PARCIAL'; }
+      else if (d.cobertura >= 40) { cor = '#fb923c'; status = '⚠ BAIXO'; }
+      else { cor = '#ef4444'; status = '🚨 CRÍTICO'; }
+      const wRes = (d.reservado / maxBase) * 100;
+      const wFc  = (d.forecastRestante / maxBase) * 100;
+      return `<div class="gcat-row">
+        <div class="gcat-name">
+          <span>${escapeHTML(d.nome)}</span>
+          <span class="gcat-status" style="background:${cor}20;color:${cor};">${status} ${d.cobertura.toFixed(0)}%</span>
+        </div>
+        <div class="gcat-bar">
+          <div class="gcat-track"><div class="gcat-fill" style="width:${wRes}%;background:${cor};"></div></div>
+          <span class="gcat-val" style="color:${cor};">${fmtNum(d.reservado)} <small style="opacity:0.6;">res</small></span>
+        </div>
+        <div class="gcat-bar">
+          <div class="gcat-track"><div class="gcat-fill" style="width:${wFc}%;background:rgba(255,255,255,0.18);"></div></div>
+          <span class="gcat-val" style="color:var(--muted);">${fmtNum(d.forecastRestante)} <small style="opacity:0.6;">fc</small></span>
+        </div>
+      </div>`;
+    }).join('');
+    if (sub) sub.textContent = `— dia ${diaAtual} · faltam ${diasRestantes} dias do mês (${totalDiasMes}d total)`;
+  }
+
+  // ───── GRÁFICO 5: Histograma de cobertura ─────
+  function renderG5(){
+    const cont = document.getElementById('g5-chart');
+    const sub = document.getElementById('g5-sub');
+    if (!cont) return;
+    const hist = BUNDLE.hist || [];
+    if (hist.length === 0) {
+      cont.innerHTML = `<div class="grafico-empty">Histograma não disponível.</div>`;
+      return;
+    }
+    const max = Math.max(...hist.map(h => h.count));
+    const total = hist.reduce((s, h) => s + h.count, 0);
+    cont.innerHTML = hist.map(h => {
+      const w = max > 0 ? (h.count / max) * 100 : 0;
+      let cor = '#22c98a';
+      if (h.level === 'crit') cor = '#ef4444';
+      else if (h.level === 'warn') cor = '#fb923c';
+      const icone = h.level === 'crit' ? '🚨' : (h.level === 'warn' ? '⚠' : '✓');
+      const pctTotal = total > 0 ? Math.round((h.count / total) * 100) : 0;
+      return `<div class="gbar-row">
+        <span class="gbar-label">${icone} ${h.label}</span>
+        <div class="gbar-track"><div class="gbar-fill" style="width:${w}%;background:${cor};"></div></div>
+        <span class="gbar-val" style="color:${cor};">${h.count} <small style="opacity:0.6;">(${pctTotal}%)</small></span>
+      </div>`;
+    }).join('');
+    if (sub) sub.textContent = `— ${total} variações classificadas`;
+  }
+
+  // ───── Loader: busca Firebase e renderiza ─────
+  async function renderTodos(){
+    // #4 e #5 não dependem do Firebase, renderiza primeiro
+    renderG4();
+    renderG5();
+    // #1, #2 e #3 dependem do Firebase
+    if (!window._mmDB) {
+      ['g1-chart', 'g2-chart', 'g3-chart'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<div class="grafico-empty"><span class="grafico-empty-icon">🔌</span>Firebase não conectado.</div>`;
+      });
+      return;
+    }
+    // Mostra loading
+    ['g1-chart', 'g2-chart', 'g3-chart'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = `<div class="grafico-loading">⏳ Carregando dados do histórico…</div>`;
+    });
+    try {
+      const [snapsResp, cessoesResp] = await Promise.all([
+        window._mmDB.ref('estoque_mm/historico_consumo').once('value'),
+        window._mmDB.ref('estoque_mm/cessoes').once('value'),
+      ]);
+      const snaps = snapsResp.val() || {};
+      const cessoes = cessoesResp.val() || {};
+      renderG1(snaps);
+      renderG2(snaps);
+      renderG3(cessoes);
+    } catch (e) {
+      console.error('[graficos]', e);
+      ['g1-chart', 'g2-chart', 'g3-chart'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<div class="grafico-empty">Erro: ${escapeHTML(e.message)}</div>`;
+      });
+    }
+  }
+  // Expor pra que setActiveTab possa chamar
+  window.renderGraficos = renderTodos;
+  // Renderiza na primeira carga (com pequeno atraso pra Firebase conectar)
+  setTimeout(renderTodos, 800);
+})();
+
+// ═══ NAVEGAÇÃO POR ABAS ═══
+window.setActiveTab = function(tabName){
+  // 1. Atualiza estado visual dos botões
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabName);
+  });
+  // 2. Mostra/esconde conteúdo
+  document.querySelectorAll('[data-tab]').forEach(el => {
+    if (el.classList.contains('tab-btn')) return; // só os botões já foram tratados
+    el.style.display = el.dataset.tab === tabName ? '' : 'none';
+  });
+  // 3. Caso especial: cobertura-detalhe-card só aparece quando tem filtro ativo
+  // (mantém a lógica original — se foi escondido por falta de filtro, fica oculto)
+  if (tabName === 'graficos') {
+    const cobCard = document.getElementById('cobertura-detalhe-card');
+    if (cobCard && !cobCard.dataset.shouldShow) {
+      // Se nunca foi ativado, manter escondido
+      cobCard.style.display = cobCard.dataset.activated === 'true' ? '' : 'none';
+    }
+    // Re-renderiza gráficos (caso dados tenham mudado: snapshot novo, cessão registrada etc)
+    if (typeof window.renderGraficos === 'function') {
+      setTimeout(() => window.renderGraficos(), 100);
+    }
+  }
+  // 4. Scrollar pro topo da área de conteúdo (acima das abas)
+  const tabsNav = document.querySelector('.tabs-nav');
+  if (tabsNav) {
+    const y = tabsNav.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({top: y, behavior: 'smooth'});
+  }
+  // 5. Salva preferência (volta na mesma aba ao recarregar)
+  try { sessionStorage.setItem('mm-active-tab', tabName); } catch(e){}
+};
+
+// Inicialização: recupera última aba e atualiza badges
+(function initTabs(){
+  // Badges
+  try {
+    const stats = (typeof BUNDLE !== 'undefined' && BUNDLE.stats) || {};
+    const badgeAlertas = document.getElementById('tab-badge-alertas');
+    const badgeProdutos = document.getElementById('tab-badge-produtos');
+    if (badgeAlertas) badgeAlertas.textContent = stats.nAlertVar != null ? stats.nAlertVar : '—';
+    if (badgeProdutos) {
+      const total = stats.nProdutos != null ? stats.nProdutos : ((BUNDLE.data || []).filter(p => !EXCLUIR_COD_ITEM.has(p.codItem)).length);
+      badgeProdutos.textContent = total;
+    }
+  } catch(e) { console.warn('[tabs] erro inicializando badges:', e); }
+
+  // Aba ativa
+  let tabInicial = 'visao';
+  try {
+    const salva = sessionStorage.getItem('mm-active-tab');
+    if (salva && ['visao','graficos','lotes','alertas','consumo','produtos'].includes(salva)) tabInicial = salva;
+  } catch(e){}
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setActiveTab(tabInicial));
+  } else {
+    setActiveTab(tabInicial);
   }
 })();
 </script>
