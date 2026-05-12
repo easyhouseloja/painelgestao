@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ByBox Pricing Intelligence — Easy House</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:      #0b0f1a;
+  --bg2:     #111827;
+  --bg3:     #1a2235;
+  --card:    #161d2e;
+  --border:  #1f2d45;
+  --text:    #e8eaf0;
+  --muted:   #7a8aab;
+  --shopee:  #f97316;
+  --magalu:  #0086ff;
+  --ml:      #ffe000;
+  --green:   #22c55e;
+  --red:     #ef4444;
+  --yellow:  #eab308;
+  --accent:  #38bdf8;
+  --comp:    #818cf8;
+  --gr:      #34d399;
+  --sala:    #fb7185;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'DM Sans', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  background:linear-gradient(135deg,#0b0f1a 0%,#0f1f3d 50%,#0b0f1a 100%);
+  border-bottom:1px solid var(--border);
+  padding:24px 40px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:100;
+}
+.header h1 {
+  font-family:'Syne', sans-serif; font-size:1.6rem; font-weight:800; letter-spacing:-.5px;
+  background:linear-gradient(90deg,#fff 0%,var(--accent) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.header-sub { font-size:.78rem; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-top:3px; }
+.header-badges { display:flex; gap:8px; flex-wrap:wrap; }
+.badge {
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:999px; padding:5px 14px;
+  font-size:.75rem; font-weight:600; color:var(--accent);
+}
+.badge.green { color:var(--green); }
+.badge.orange { color:var(--shopee); }
+.badge.red { color:var(--red); }
+
+/* ── PAGE ── */
+.page { padding:28px 40px 48px; }
+
+/* ── SECTION TITLE ── */
+.section-title {
+  font-family:'Syne', sans-serif; font-size:1rem; font-weight:700;
+  color:var(--muted); letter-spacing:1px; text-transform:uppercase;
+  margin:28px 0 14px; padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+}
+.section-title .sec-icon { font-size:1.05rem; }
+
+/* ── KPI STRIP ── */
+.kpi-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.kpi-card {
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:20px 22px; position:relative; overflow:hidden;
+}
+.kpi-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:var(--c, var(--accent));
+}
+.kpi-card.green { --c:var(--green); }
+.kpi-card.red { --c:var(--red); }
+.kpi-card.yellow { --c:var(--yellow); }
+.kpi-card.blue { --c:var(--accent); }
+.kpi-card.purple { --c:var(--comp); }
+.kpi-card.orange { --c:var(--shopee); }
+.kpi-label { font-size:.72rem; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:8px; font-weight:600; }
+.kpi-value { font-family:'Syne', sans-serif; font-size:1.8rem; font-weight:800; color:var(--text); margin-bottom:6px; }
+.kpi-value.green { color:var(--green); }
+.kpi-value.red { color:var(--red); }
+.kpi-sub { font-size:.76rem; color:var(--muted); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.kpi-pill { border-radius:999px; padding:2px 8px; font-size:.7rem; font-weight:700; }
+.pill-green { background:rgba(34,197,94,.15); color:var(--green); }
+.pill-red { background:rgba(239,68,68,.15); color:var(--red); }
+.pill-yellow { background:rgba(234,179,8,.15); color:var(--yellow); }
+
+/* ── GRID ── */
+.grid-2-1 { display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-bottom:24px; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+
+/* ── CHART CARD ── */
+.chart-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:14px; padding:22px 24px;
+}
+.chart-title { font-family:'Syne', sans-serif; font-size:.85rem; font-weight:700; color:var(--muted); margin-bottom:6px; letter-spacing:.3px; text-transform:uppercase; }
+.chart-sub { font-size:.72rem; color:var(--muted); margin-bottom:16px; }
+.chart-wrap { position:relative; }
+.chart-h-tall { height:540px; }
+.chart-h-med { height:240px; }
+
+/* ── GAP CARDS ── */
+.gap-card {
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:16px 18px; position:relative; overflow:hidden;
+}
+.gap-card::before {
+  content:''; position:absolute; top:0; left:0; bottom:0; width:3px;
+  background:var(--gap-c, var(--red));
+}
+.gap-card.win::before { background:var(--green); }
+.gap-card.warn::before { background:var(--yellow); }
+.gap-prod {
+  font-size:.78rem; font-weight:600; color:var(--text);
+  line-height:1.35; margin-bottom:8px; min-height:34px;
+}
+.gap-mp-pill {
+  display:inline-block; font-family:'DM Mono', monospace;
+  font-size:.65rem; font-weight:600; letter-spacing:.5px;
+  padding:3px 10px; border-radius:999px; margin-bottom:10px;
+  text-transform:uppercase;
+}
+.gap-mp-ml { background:rgba(255,224,0,.12); color:var(--ml); border:1px solid rgba(255,224,0,.25); }
+.gap-mp-shopee { background:rgba(249,115,22,.12); color:var(--shopee); border:1px solid rgba(249,115,22,.25); }
+.gap-mp-magalu { background:rgba(0,134,255,.12); color:var(--magalu); border:1px solid rgba(0,134,255,.25); }
+.gap-pct {
+  font-family:'Syne', sans-serif; font-size:1.5rem; font-weight:800;
+  color:var(--red); line-height:1;
+}
+.gap-card.win .gap-pct { color:var(--green); }
+.gap-card.warn .gap-pct { color:var(--yellow); }
+.gap-rs { font-family:'DM Mono', monospace; font-size:.72rem; color:var(--muted); margin-top:4px; }
+.gap-vs { font-size:.72rem; color:var(--muted); margin-top:8px; padding-top:8px; border-top:1px solid var(--border); }
+.gap-vs strong { color:var(--text); font-weight:600; }
+
+/* ── HEATMAP ── */
+.heatmap {
+  display:grid;
+  grid-template-columns:240px repeat(3,1fr);
+  gap:6px;
+  font-size:.75rem;
+}
+.hm-header {
+  background:var(--bg3); color:var(--text);
+  font-family:'Syne', sans-serif; font-weight:700; font-size:.72rem;
+  padding:10px 8px; border-radius:8px;
+  text-align:center; text-transform:uppercase; letter-spacing:.7px;
+  border:1px solid var(--border);
+}
+.hm-header.ml { color:var(--ml); }
+.hm-header.shopee { color:var(--shopee); }
+.hm-header.magalu { color:var(--magalu); }
+.hm-prod {
+  background:var(--bg3); border:1px solid var(--border);
+  color:var(--text); font-weight:500; font-size:.75rem;
+  padding:10px 12px; border-radius:8px;
+  display:flex; align-items:center;
+}
+.hm-cell {
+  padding:10px 8px; border-radius:8px;
+  text-align:center; font-weight:600;
+  color:#fff;
+  font-family:'DM Mono', monospace;
+  font-size:.85rem;
+  border:1px solid transparent;
+}
+.hm-cell-sub { display:block; font-size:.62rem; opacity:.85; margin-top:2px; font-weight:500; font-family:'DM Sans', sans-serif; letter-spacing:.3px; }
+/* gradient by gap */
+.hm-best  { background:#15803d; color:#fff; }
+.hm-good  { background:#22c55e; color:#fff; }
+.hm-mild  { background:#86efac; color:#0b0f1a; }
+.hm-eq    { background:var(--bg3); color:var(--muted); border-color:var(--border); }
+.hm-warn  { background:#eab308; color:#0b0f1a; }
+.hm-bad   { background:#ef4444; color:#fff; }
+.hm-worst { background:#991b1b; color:#fff; }
+.hm-empty { background:var(--bg2); color:var(--muted); border:1px dashed var(--border); }
+
+.hm-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:18px; font-size:.7rem; color:var(--muted); }
+.hm-leg-item { display:flex; align-items:center; gap:6px; }
+.hm-leg-dot { width:12px; height:12px; border-radius:3px; }
+
+/* ── TABLE ── */
+.ftable { width:100%; border-collapse:collapse; font-size:.78rem; }
+.ftable thead th {
+  background:var(--bg3); color:var(--muted);
+  font-family:'Syne', sans-serif; font-weight:700; font-size:.68rem;
+  padding:11px 10px; text-align:left;
+  text-transform:uppercase; letter-spacing:.7px;
+  border-bottom:1px solid var(--border);
+}
+.ftable tbody td {
+  padding:10px;
+  border-bottom:1px solid var(--border);
+  color:var(--text);
+  font-size:.77rem;
+}
+.ftable tbody tr:hover td { background:var(--bg3); }
+.ftable .num { text-align:right; font-family:'DM Mono', monospace; font-variant-numeric:tabular-nums; }
+.ftable .center { text-align:center; }
+.tag {
+  display:inline-block; font-family:'DM Mono', monospace;
+  font-size:.65rem; font-weight:700; letter-spacing:.5px;
+  padding:3px 10px; border-radius:999px; text-transform:uppercase;
+}
+.tag-win  { background:rgba(34,197,94,.15); color:var(--green); }
+.tag-warn { background:rgba(234,179,8,.15); color:var(--yellow); }
+.tag-bad  { background:rgba(239,68,68,.15); color:var(--red); }
+
+/* ── COMPETITOR PROFILE ── */
+.comp-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:14px; padding:20px 22px;
+  position:relative; overflow:hidden;
+}
+.comp-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:var(--threat-c, var(--accent));
+}
+.comp-card.high::before { background:var(--red); }
+.comp-card.med::before { background:var(--yellow); }
+.comp-card.low::before { background:var(--green); }
+
+.comp-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+.comp-name { font-family:'Syne', sans-serif; font-size:1.1rem; font-weight:800; color:var(--text); margin-bottom:2px; }
+.comp-meta { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; }
+.threat-pill {
+  font-family:'DM Mono', monospace; font-size:.65rem; font-weight:700;
+  padding:4px 12px; border-radius:999px; letter-spacing:.5px; text-transform:uppercase;
+}
+.threat-high { background:rgba(239,68,68,.15); color:var(--red); }
+.threat-med  { background:rgba(234,179,8,.15); color:var(--yellow); }
+.threat-low  { background:rgba(34,197,94,.15); color:var(--green); }
+.comp-desc { font-size:.8rem; color:var(--text); line-height:1.55; margin-bottom:14px; opacity:.9; }
+.comp-desc strong { color:var(--accent); font-weight:600; }
+.comp-stats {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
+  padding-top:14px; border-top:1px solid var(--border);
+}
+.comp-stat { text-align:center; }
+.comp-stat-val { font-family:'Syne', sans-serif; font-size:1.3rem; font-weight:800; color:var(--text); }
+.comp-stat-val.green { color:var(--green); }
+.comp-stat-val.red { color:var(--red); }
+.comp-stat-lab { font-size:.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:.7px; margin-top:3px; font-weight:600; }
+
+/* ── INSIGHTS ── */
+.insight-item {
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:16px 18px; margin-bottom:12px;
+  display:flex; gap:14px; align-items:flex-start;
+  position:relative; overflow:hidden;
+}
+.insight-item::before {
+  content:''; position:absolute; top:0; left:0; bottom:0; width:3px;
+  background:var(--in-c, var(--accent));
+}
+.insight-item.red::before { background:var(--red); }
+.insight-item.green::before { background:var(--green); }
+.insight-item.yellow::before { background:var(--yellow); }
+.insight-num {
+  flex-shrink:0; width:28px; height:28px;
+  border-radius:50%; background:var(--bg3);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Syne', sans-serif; font-size:.85rem; font-weight:800;
+  color:var(--accent); border:1px solid var(--border);
+}
+.insight-item.red .insight-num { color:var(--red); }
+.insight-item.green .insight-num { color:var(--green); }
+.insight-item.yellow .insight-num { color:var(--yellow); }
+.insight-body { flex:1; }
+.insight-title {
+  font-family:'Syne', sans-serif; font-size:.92rem; font-weight:700;
+  color:var(--text); margin-bottom:6px;
+}
+.insight-text { font-size:.82rem; color:var(--muted); line-height:1.6; }
+.insight-text strong { color:var(--text); font-weight:600; }
+
+/* ── FOOTER ── */
+.footer-note {
+  text-align:center; font-size:.72rem; color:var(--muted);
+  margin-top:30px; padding:18px;
+  font-family:'DM Mono', monospace; letter-spacing:.5px;
+  border-top:1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>ByBox Pricing Intelligence — Easy House</h1>
+    <div class="header-sub">9 produtos · 3 marketplaces · 4 concorrentes · CEP 05050-000</div>
+  </div>
+  <div class="header-badges">
+    <span class="badge">23 comparações</span>
+    <span class="badge green">13 competitivos</span>
+    <span class="badge red">6 em risco</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi-card green">
+      <div class="kpi-label">Posição Competitiva</div>
+      <div class="kpi-value green">57%</div>
+      <div class="kpi-sub">
+        <span class="kpi-pill pill-green">13 / 23</span>
+        anúncios competitivos
+      </div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Anúncios em Risco</div>
+      <div class="kpi-value red">26%</div>
+      <div class="kpi-sub">
+        <span class="kpi-pill pill-red">6 / 23</span>
+        gap acima de 5%
+      </div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Maior Gap Crítico</div>
+      <div class="kpi-value red">+55,6%</div>
+      <div class="kpi-sub">Cozinha Nina 6 Mód. · ML</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Maior Vantagem</div>
+      <div class="kpi-value green">−31,1%</div>
+      <div class="kpi-sub">Easy Slim 8 Portas · Magalu</div>
+    </div>
+  </div>
+
+  <!-- RANKING + DONUT -->
+  <div class="grid-2-1">
+    <div class="chart-card">
+      <div class="chart-title">Ranking de Competitividade</div>
+      <div class="chart-sub">Gap % vs menor preço do concorrente em cada canal · Verde = você mais barato · Vermelho = você mais caro</div>
+      <div class="chart-wrap chart-h-tall">
+        <canvas id="gapChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Status Geral</div>
+      <div class="chart-sub">Distribuição das 23 comparações</div>
+      <div class="chart-wrap chart-h-med" style="height:280px;">
+        <canvas id="statusDonut"></canvas>
+      </div>
+      <div style="margin-top:24px; padding-top:18px; border-top:1px solid var(--border);">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px;">Mercado Livre</span>
+              <span style="font-family:'DM Mono',monospace; font-size:.72rem; color:var(--ml);">5W · 1L · 2C</span>
+            </div>
+            <div style="height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; display:flex;">
+              <div style="width:62.5%; background:var(--green);"></div>
+              <div style="width:12.5%; background:var(--yellow);"></div>
+              <div style="width:25%; background:var(--red);"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px;">Shopee</span>
+              <span style="font-family:'DM Mono',monospace; font-size:.72rem; color:var(--shopee);">4W · 1L · 2C</span>
+            </div>
+            <div style="height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; display:flex;">
+              <div style="width:57%; background:var(--green);"></div>
+              <div style="width:14.5%; background:var(--yellow);"></div>
+              <div style="width:28.5%; background:var(--red);"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px;">Magazine Luiza</span>
+              <span style="font-family:'DM Mono',monospace; font-size:.72rem; color:var(--magalu);">4W · 2L · 2C</span>
+            </div>
+            <div style="height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; display:flex;">
+              <div style="width:50%; background:var(--green);"></div>
+              <div style="width:25%; background:var(--yellow);"></div>
+              <div style="width:25%; background:var(--red);"></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:14px; font-size:.68rem; color:var(--muted); font-family:'DM Mono',monospace;">W = win · L = limite · C = caro</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP GAPS CRÍTICOS -->
+  <div class="section-title">
+    <span class="sec-icon">🚨</span> Top Gaps Críticos — Atenção urgente
+  </div>
+  <div class="grid-3">
+    <div class="gap-card">
+      <div class="gap-prod">Cozinha Completa Paneleiro Nina 6 Módulos</div>
+      <span class="gap-mp-pill gap-mp-ml">Mercado Livre</span>
+      <div class="gap-pct">+55,6%</div>
+      <div class="gap-rs">+R$ 478,70 mais caro</div>
+      <div class="gap-vs">Você: <strong>R$ 1.339,90</strong> · Madesa: R$ 861,20</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-prod">Cozinha Compacta Paneleiro Nina 4 Módulos</div>
+      <span class="gap-mp-pill gap-mp-magalu">Magazine Luiza</span>
+      <div class="gap-pct">+42,4%</div>
+      <div class="gap-rs">+R$ 382,92 mais caro</div>
+      <div class="gap-vs">Você: <strong>R$ 1.286,91</strong> · Madesa: R$ 903,99</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-prod">Penteadeira Camarim Espelhada Lívia 7 gavetas</div>
+      <span class="gap-mp-pill gap-mp-shopee">Shopee</span>
+      <div class="gap-pct">+24,9%</div>
+      <div class="gap-rs">+R$ 141,30 mais caro</div>
+      <div class="gap-vs">Você: <strong>R$ 708,31</strong> · Cozy: R$ 567,01</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-prod">Penteadeira Camarim Espelhada Lívia 7 gavetas</div>
+      <span class="gap-mp-pill gap-mp-ml">Mercado Livre</span>
+      <div class="gap-pct">+16,1%</div>
+      <div class="gap-rs">+R$ 99,58 mais caro</div>
+      <div class="gap-vs">Você: <strong>R$ 719,99</strong> · Cozy: R$ 620,41</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-prod">Cozinha Completa Paneleiro Nina 6 Módulos</div>
+      <span class="gap-mp-pill gap-mp-shopee">Shopee</span>
+      <div class="gap-pct">+9,6%</div>
+      <div class="gap-rs">+R$ 90,31 mais caro</div>
+      <div class="gap-vs">Você: <strong>R$ 1.030,31</strong> · Madesa: R$ 940,00</div>
+    </div>
+    <div class="gap-card warn">
+      <div class="gap-prod">Conjunto Sala Jantar Guarapari — Linho Amêndoa</div>
+      <span class="gap-mp-pill gap-mp-magalu">Magazine Luiza</span>
+      <div class="gap-pct">+6,3%</div>
+      <div class="gap-rs">+R$ 27,92 mais caro</div>
+      <div class="gap-vs">Você: <strong>R$ 467,91</strong> · Madesa: R$ 439,99</div>
+    </div>
+  </div>
+
+  <!-- TOP VANTAGENS -->
+  <div class="section-title">
+    <span class="sec-icon">🏆</span> Top Vantagens — Onde você domina
+  </div>
+  <div class="grid-3">
+    <div class="gap-card win">
+      <div class="gap-prod">Guarda-roupa Easy Slim 8 portas c/ espelho</div>
+      <span class="gap-mp-pill gap-mp-magalu">Magazine Luiza</span>
+      <div class="gap-pct">−31,1%</div>
+      <div class="gap-rs">R$ 403,98 mais barato</div>
+      <div class="gap-vs">Você: <strong>R$ 895,92</strong> · Rufato: R$ 1.299,90</div>
+    </div>
+    <div class="gap-card win">
+      <div class="gap-prod">Conjunto Sala Jantar Easy Line 4 cadeiras</div>
+      <span class="gap-mp-pill gap-mp-ml">Mercado Livre</span>
+      <div class="gap-pct">−27,7%</div>
+      <div class="gap-rs">R$ 167,11 mais barato</div>
+      <div class="gap-vs">Você: <strong>R$ 436,99</strong> · Madesa: R$ 604,10</div>
+    </div>
+    <div class="gap-card win">
+      <div class="gap-prod">Guarda-roupa Easy Slim 8 portas c/ espelho</div>
+      <span class="gap-mp-pill gap-mp-ml">Mercado Livre</span>
+      <div class="gap-pct">−26,9%</div>
+      <div class="gap-rs">R$ 370,50 mais barato</div>
+      <div class="gap-vs">Você: <strong>R$ 1.006,90</strong> · Rufato: R$ 1.377,40</div>
+    </div>
+    <div class="gap-card win">
+      <div class="gap-prod">Guarda-roupa Easy Slim 8 portas c/ espelho</div>
+      <span class="gap-mp-pill gap-mp-shopee">Shopee</span>
+      <div class="gap-pct">−25,3%</div>
+      <div class="gap-rs">R$ 349,59 mais barato</div>
+      <div class="gap-vs">Você: <strong>R$ 1.030,31</strong> · Rufato: R$ 1.379,90</div>
+    </div>
+    <div class="gap-card win">
+      <div class="gap-prod">Conjunto Sala Jantar Easy Line 4 cadeiras</div>
+      <span class="gap-mp-pill gap-mp-shopee">Shopee</span>
+      <div class="gap-pct">−24,6%</div>
+      <div class="gap-rs">R$ 155,08 mais barato</div>
+      <div class="gap-vs">Você: <strong>R$ 474,91</strong> · Madesa: R$ 629,99</div>
+    </div>
+    <div class="gap-card win">
+      <div class="gap-prod">Guarda-roupa Easy Slim 6 portas</div>
+      <span class="gap-mp-pill gap-mp-magalu">Magazine Luiza</span>
+      <div class="gap-pct">−18,2%</div>
+      <div class="gap-rs">R$ 138,42 mais barato</div>
+      <div class="gap-vs">Você: <strong>R$ 623,92</strong> · Madeira: R$ 762,34</div>
+    </div>
+  </div>
+
+  <!-- HEATMAP -->
+  <div class="section-title">
+    <span class="sec-icon">🗺️</span> Mapa de Calor — Produto × Marketplace
+  </div>
+  <div class="chart-card">
+    <div class="chart-sub" style="margin-bottom:18px;">Cada célula mostra o gap % entre seu preço e o melhor concorrente naquele canal</div>
+    <div class="heatmap">
+      <div></div>
+      <div class="hm-header ml">Mercado Livre</div>
+      <div class="hm-header shopee">Shopee</div>
+      <div class="hm-header magalu">Magazine Luiza</div>
+
+      <div class="hm-prod">Easy Slim 8 portas c/ espelho</div>
+      <div class="hm-cell hm-best">−26,9%<span class="hm-cell-sub">vs Rufato</span></div>
+      <div class="hm-cell hm-best">−25,3%<span class="hm-cell-sub">vs Rufato</span></div>
+      <div class="hm-cell hm-best">−31,1%<span class="hm-cell-sub">vs Rufato</span></div>
+
+      <div class="hm-prod">Easy Slim 6 portas</div>
+      <div class="hm-cell hm-mild">−2,5%<span class="hm-cell-sub">vs Madeira</span></div>
+      <div class="hm-cell hm-good">−6,0%<span class="hm-cell-sub">vs Madeira</span></div>
+      <div class="hm-cell hm-best">−18,2%<span class="hm-cell-sub">vs Madeira</span></div>
+
+      <div class="hm-prod">Guarda-roupa MDP 2 portas</div>
+      <div class="hm-cell hm-good">−7,0%<span class="hm-cell-sub">vs Madeira</span></div>
+      <div class="hm-cell hm-empty">—</div>
+      <div class="hm-cell hm-good">−5,5%<span class="hm-cell-sub">vs Madeira</span></div>
+
+      <div class="hm-prod">Conjunto Sala Easy Line</div>
+      <div class="hm-cell hm-best">−27,7%<span class="hm-cell-sub">vs Madesa</span></div>
+      <div class="hm-cell hm-best">−24,6%<span class="hm-cell-sub">vs Madesa</span></div>
+      <div class="hm-cell hm-good">−16,2%<span class="hm-cell-sub">vs Madesa</span></div>
+
+      <div class="hm-prod">Conjunto Sala Guarapari</div>
+      <div class="hm-cell hm-good">−6,8%<span class="hm-cell-sub">vs Madesa</span></div>
+      <div class="hm-cell hm-good">−8,0%<span class="hm-cell-sub">vs Madesa</span></div>
+      <div class="hm-cell hm-warn">+6,3%<span class="hm-cell-sub">vs Madesa</span></div>
+
+      <div class="hm-prod">Penteadeira Lívia</div>
+      <div class="hm-cell hm-bad">+16,1%<span class="hm-cell-sub">vs Cozy</span></div>
+      <div class="hm-cell hm-worst">+24,9%<span class="hm-cell-sub">vs Cozy</span></div>
+      <div class="hm-cell hm-warn">+3,7%<span class="hm-cell-sub">vs Cozy</span></div>
+
+      <div class="hm-prod">Cozinha Nina 6 Módulos</div>
+      <div class="hm-cell hm-worst">+55,6%<span class="hm-cell-sub">vs Madesa</span></div>
+      <div class="hm-cell hm-bad">+9,6%<span class="hm-cell-sub">vs Madesa</span></div>
+      <div class="hm-cell hm-empty">—</div>
+
+      <div class="hm-prod">Cozinha Nina 4 Mód. Compacta</div>
+      <div class="hm-cell hm-empty">—</div>
+      <div class="hm-cell hm-empty">—</div>
+      <div class="hm-cell hm-worst">+42,4%<span class="hm-cell-sub">vs Madesa</span></div>
+
+      <div class="hm-prod">Guarda-roupa Atlas 3 portas</div>
+      <div class="hm-cell hm-eq">0,0%<span class="hm-cell-sub">vs Madesa</span></div>
+      <div class="hm-cell hm-eq">−1,6%<span class="hm-cell-sub">vs Madesa</span></div>
+      <div class="hm-cell hm-eq">+0,5%<span class="hm-cell-sub">vs Madesa</span></div>
+    </div>
+    <div class="hm-legend">
+      <div class="hm-leg-item"><span class="hm-leg-dot" style="background:#15803d;"></span>−20% ou mais barato</div>
+      <div class="hm-leg-item"><span class="hm-leg-dot" style="background:#22c55e;"></span>−5% a −20%</div>
+      <div class="hm-leg-item"><span class="hm-leg-dot" style="background:#86efac;"></span>−2% a −5%</div>
+      <div class="hm-leg-item"><span class="hm-leg-dot" style="background:#1a2235; border:1px solid #1f2d45;"></span>±2% (empate)</div>
+      <div class="hm-leg-item"><span class="hm-leg-dot" style="background:#eab308;"></span>+2% a +10%</div>
+      <div class="hm-leg-item"><span class="hm-leg-dot" style="background:#ef4444;"></span>+10% a +25%</div>
+      <div class="hm-leg-item"><span class="hm-leg-dot" style="background:#991b1b;"></span>+25% ou mais caro</div>
+    </div>
+  </div>
+
+  <!-- PERFIL DOS CONCORRENTES -->
+  <div class="section-title">
+    <span class="sec-icon">⚔️</span> Perfil dos Concorrentes
+  </div>
+  <div class="grid-2">
+    <div class="comp-card high">
+      <div class="comp-header">
+        <div>
+          <div class="comp-name">Madesa</div>
+          <div class="comp-meta">5 produtos · 12 comparações</div>
+        </div>
+        <span class="threat-pill threat-high">Ameaça alta</span>
+      </div>
+      <div class="comp-desc">
+        Concorrente mais agressivo em <strong>cozinhas modulares e conjuntos de sala</strong>. Pratica preços muito baixos no segmento de cozinhas (Cozinha Nina 6 e 4 Mód.) e tem prazo médio de entrega de apenas <strong>6 dias</strong> (você: 11). Usa cupons de frete grátis.
+      </div>
+      <div class="comp-stats">
+        <div class="comp-stat">
+          <div class="comp-stat-val red">4</div>
+          <div class="comp-stat-lab">Gaps Críticos</div>
+        </div>
+        <div class="comp-stat">
+          <div class="comp-stat-val">6 dias</div>
+          <div class="comp-stat-lab">Prazo Médio</div>
+        </div>
+        <div class="comp-stat">
+          <div class="comp-stat-val green">5</div>
+          <div class="comp-stat-lab">Onde Ganha</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card high">
+      <div class="comp-header">
+        <div>
+          <div class="comp-name">Cozy</div>
+          <div class="comp-meta">1 produto · 3 comparações</div>
+        </div>
+        <span class="threat-pill threat-high">Ameaça alta</span>
+      </div>
+      <div class="comp-desc">
+        Especialista em <strong>penteadeiras</strong>. Domina o segmento com preços agressivos em todos os canais. <strong>Você perde em 100% das comparações</strong> (3 de 3). Avaliações altas (4,9 estrelas) e volume alto de vendas no histórico.
+      </div>
+      <div class="comp-stats">
+        <div class="comp-stat">
+          <div class="comp-stat-val red">2</div>
+          <div class="comp-stat-lab">Gaps Críticos</div>
+        </div>
+        <div class="comp-stat">
+          <div class="comp-stat-val">6 dias</div>
+          <div class="comp-stat-lab">Prazo Médio</div>
+        </div>
+        <div class="comp-stat">
+          <div class="comp-stat-val green">0</div>
+          <div class="comp-stat-lab">Onde Ganha</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card low">
+      <div class="comp-header">
+        <div>
+          <div class="comp-name">Madeira</div>
+          <div class="comp-meta">2 produtos · 5 comparações</div>
+        </div>
+        <span class="threat-pill threat-low">Ameaça baixa</span>
+      </div>
+      <div class="comp-desc">
+        Concorrente nos <strong>guarda-roupas Easy Slim 6 portas e MDP</strong>. <strong>Você é mais barato em 100% das comparações</strong>. Compensa com prazos longos (16-27 dias) que jogam a favor da sua proposta. Reputação verde escuro.
+      </div>
+      <div class="comp-stats">
+        <div class="comp-stat">
+          <div class="comp-stat-val">0</div>
+          <div class="comp-stat-lab">Gaps Críticos</div>
+        </div>
+        <div class="comp-stat">
+          <div class="comp-stat-val">21 dias</div>
+          <div class="comp-stat-lab">Prazo Médio</div>
+        </div>
+        <div class="comp-stat">
+          <div class="comp-stat-val green">5</div>
+          <div class="comp-stat-lab">Onde Ganha</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card low">
+      <div class="comp-header">
+        <div>
+          <div class="comp-name">Rufato / Moderna Mobília</div>
+          <div class="comp-meta">1 produto · 3 comparações</div>
+        </div>
+        <span class="threat-pill threat-low">Ameaça baixa</span>
+      </div>
+      <div class="comp-desc">
+        Concorrente apenas no <strong>Easy Slim 8 portas</strong>. <strong>Você está 25-31% mais barato</strong> em todos os canais. Preço premium não competitivo. Pouco volume de vendas (29-100 unidades visíveis).
+      </div>
+      <div class="comp-stats">
+        <div class="comp-stat">
+          <div class="comp-stat-val">0</div>
+          <div class="comp-stat-lab">Gaps Críticos</div>
+        </div>
+        <div class="comp-stat">
+          <div class="comp-stat-val">12 dias</div>
+          <div class="comp-stat-lab">Prazo Médio</div>
+        </div>
+        <div class="comp-stat">
+          <div class="comp-stat-val green">3</div>
+          <div class="comp-stat-lab">Onde Ganha</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABELA DETALHADA -->
+  <div class="section-title">
+    <span class="sec-icon">📊</span> Tabela Detalhada
+  </div>
+  <div class="chart-card" style="padding:0; overflow:hidden;">
+    <table class="ftable">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th class="center">Canal</th>
+          <th class="num">Seu Preço</th>
+          <th>Concorrente</th>
+          <th class="num">Preço Conc.</th>
+          <th class="num">Gap %</th>
+          <th class="center">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Cozinha Nina 6 Mód.</td><td class="center" style="color:var(--ml);">ML</td><td class="num">R$ 1.339,90</td><td>Madesa</td><td class="num">R$ 861,20</td><td class="num" style="color:var(--red);font-weight:700;">+55,6%</td><td class="center"><span class="tag tag-bad">Caro</span></td></tr>
+        <tr><td>Cozinha Nina 4 Mód.</td><td class="center" style="color:var(--magalu);">Magalu</td><td class="num">R$ 1.286,91</td><td>Madesa</td><td class="num">R$ 903,99</td><td class="num" style="color:var(--red);font-weight:700;">+42,4%</td><td class="center"><span class="tag tag-bad">Caro</span></td></tr>
+        <tr><td>Penteadeira Lívia</td><td class="center" style="color:var(--shopee);">Shopee</td><td class="num">R$ 708,31</td><td>Cozy</td><td class="num">R$ 567,01</td><td class="num" style="color:var(--red);font-weight:700;">+24,9%</td><td class="center"><span class="tag tag-bad">Caro</span></td></tr>
+        <tr><td>Penteadeira Lívia</td><td class="center" style="color:var(--ml);">ML</td><td class="num">R$ 719,99</td><td>Cozy</td><td class="num">R$ 620,41</td><td class="num" style="color:var(--red);font-weight:700;">+16,1%</td><td class="center"><span class="tag tag-bad">Caro</span></td></tr>
+        <tr><td>Cozinha Nina 6 Mód.</td><td class="center" style="color:var(--shopee);">Shopee</td><td class="num">R$ 1.030,31</td><td>Madesa</td><td class="num">R$ 940,00</td><td class="num" style="color:var(--red);font-weight:700;">+9,6%</td><td class="center"><span class="tag tag-bad">Caro</span></td></tr>
+        <tr><td>Conjunto Guarapari</td><td class="center" style="color:var(--magalu);">Magalu</td><td class="num">R$ 467,91</td><td>Madesa</td><td class="num">R$ 439,99</td><td class="num" style="color:var(--red);font-weight:700;">+6,3%</td><td class="center"><span class="tag tag-bad">Caro</span></td></tr>
+        <tr><td>Penteadeira Lívia</td><td class="center" style="color:var(--magalu);">Magalu</td><td class="num">R$ 692,91</td><td>Cozy</td><td class="num">R$ 668,17</td><td class="num" style="color:var(--yellow);font-weight:700;">+3,7%</td><td class="center"><span class="tag tag-warn">Limite</span></td></tr>
+        <tr><td>Atlas 3 portas</td><td class="center" style="color:var(--magalu);">Magalu</td><td class="num">R$ 827,91</td><td>Madesa</td><td class="num">R$ 823,99</td><td class="num" style="color:var(--yellow);font-weight:700;">+0,5%</td><td class="center"><span class="tag tag-warn">Limite</span></td></tr>
+        <tr><td>Atlas 3 portas</td><td class="center" style="color:var(--ml);">ML</td><td class="num">R$ 859,99</td><td>Madesa</td><td class="num">R$ 859,99</td><td class="num" style="color:var(--muted);font-weight:700;">0,0%</td><td class="center"><span class="tag tag-warn">Limite</span></td></tr>
+        <tr><td>Atlas 3 portas</td><td class="center" style="color:var(--shopee);">Shopee</td><td class="num">R$ 846,31</td><td>Madesa</td><td class="num">R$ 859,99</td><td class="num" style="color:var(--green);font-weight:700;">−1,6%</td><td class="center"><span class="tag tag-warn">Limite</span></td></tr>
+        <tr><td>Easy Slim 6 portas</td><td class="center" style="color:var(--ml);">ML</td><td class="num">R$ 740,91</td><td>Madeira</td><td class="num">R$ 759,99</td><td class="num" style="color:var(--green);font-weight:700;">−2,5%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>MDP 2 portas</td><td class="center" style="color:var(--magalu);">Magalu</td><td class="num">R$ 1.700,41</td><td>Madeira</td><td class="num">R$ 1.799,98</td><td class="num" style="color:var(--green);font-weight:700;">−5,5%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>Easy Slim 6 portas</td><td class="center" style="color:var(--shopee);">Shopee</td><td class="num">R$ 717,51</td><td>Madeira</td><td class="num">R$ 763,60</td><td class="num" style="color:var(--green);font-weight:700;">−6,0%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>Conjunto Guarapari</td><td class="center" style="color:var(--ml);">ML</td><td class="num">R$ 469,11</td><td>Madesa</td><td class="num">R$ 503,49</td><td class="num" style="color:var(--green);font-weight:700;">−6,8%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>MDP 2 portas</td><td class="center" style="color:var(--ml);">ML</td><td class="num">R$ 1.679,99</td><td>Madeira</td><td class="num">R$ 1.807,27</td><td class="num" style="color:var(--green);font-weight:700;">−7,0%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>Conjunto Guarapari</td><td class="center" style="color:var(--shopee);">Shopee</td><td class="num">R$ 478,31</td><td>Madesa</td><td class="num">R$ 520,00</td><td class="num" style="color:var(--green);font-weight:700;">−8,0%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>Conjunto Easy Line</td><td class="center" style="color:var(--magalu);">Magalu</td><td class="num">R$ 474,91</td><td>Madesa</td><td class="num">R$ 566,99</td><td class="num" style="color:var(--green);font-weight:700;">−16,2%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>Easy Slim 6 portas</td><td class="center" style="color:var(--magalu);">Magalu</td><td class="num">R$ 623,92</td><td>Madeira</td><td class="num">R$ 762,34</td><td class="num" style="color:var(--green);font-weight:700;">−18,2%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>Conjunto Easy Line</td><td class="center" style="color:var(--shopee);">Shopee</td><td class="num">R$ 474,91</td><td>Madesa</td><td class="num">R$ 629,99</td><td class="num" style="color:var(--green);font-weight:700;">−24,6%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>Easy Slim 8 portas</td><td class="center" style="color:var(--shopee);">Shopee</td><td class="num">R$ 1.030,31</td><td>Rufato</td><td class="num">R$ 1.379,90</td><td class="num" style="color:var(--green);font-weight:700;">−25,3%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>Easy Slim 8 portas</td><td class="center" style="color:var(--ml);">ML</td><td class="num">R$ 1.006,90</td><td>Rufato</td><td class="num">R$ 1.377,40</td><td class="num" style="color:var(--green);font-weight:700;">−26,9%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>Conjunto Easy Line</td><td class="center" style="color:var(--ml);">ML</td><td class="num">R$ 436,99</td><td>Madesa</td><td class="num">R$ 604,10</td><td class="num" style="color:var(--green);font-weight:700;">−27,7%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+        <tr><td>Easy Slim 8 portas</td><td class="center" style="color:var(--magalu);">Magalu</td><td class="num">R$ 895,92</td><td>Rufato</td><td class="num">R$ 1.299,90</td><td class="num" style="color:var(--green);font-weight:700;">−31,1%</td><td class="center"><span class="tag tag-win">Competitivo</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="section-title">
+    <span class="sec-icon">💡</span> Insights & Recomendações Priorizadas
+  </div>
+  <div>
+    <div class="insight-item red">
+      <div class="insight-num">1</div>
+      <div class="insight-body">
+        <div class="insight-title">🚨 Cozinha Nina é a maior fonte de queda de faturamento (provável)</div>
+        <div class="insight-text">
+          Você está <strong>+55,6% mais caro no ML</strong> e <strong>+42,4% no Magalu</strong> que a Madesa. Em ticket médio de ~R$ 1.300, o cliente economiza ~R$ 400-480 escolhendo o concorrente. <strong>Ação:</strong> revisar custo do produto, criar política de cupom específica para essa SKU e considerar campanha Full no ML pra reduzir frete.
+        </div>
+      </div>
+    </div>
+    <div class="insight-item red">
+      <div class="insight-num">2</div>
+      <div class="insight-body">
+        <div class="insight-title">🚨 Penteadeira Lívia: Cozy está dominando o segmento</div>
+        <div class="insight-text">
+          Você perde em <strong>100% dos 3 canais</strong> avaliados (+16,1% ML, +24,9% Shopee, +3,7% Magalu). Cozy é especializado e tem reputação Verde Claro com 5.000+ vendas no ML. <strong>Ação:</strong> avaliar se vale continuar competindo nessa SKU ou reposicionar como produto premium (qualidade, garantia, materiais melhores). Cortar preço pode não bastar.
+        </div>
+      </div>
+    </div>
+    <div class="insight-item yellow">
+      <div class="insight-num">3</div>
+      <div class="insight-body">
+        <div class="insight-title">⚠ Desvantagem logística: prazo de entrega 2× mais lento que Madesa</div>
+        <div class="insight-text">
+          Seu prazo médio é <strong>~11 dias</strong>; Madesa entrega em <strong>~6 dias</strong>. Para móveis de pronta-entrega, isso é decisivo na conversão. <strong>Ação:</strong> ativar Full / Magalu Entrega / Envio Pelo Shopee nos produtos top, mesmo que reduza margem unitária — o ganho de conversão tende a compensar.
+        </div>
+      </div>
+    </div>
+    <div class="insight-item green">
+      <div class="insight-num">4</div>
+      <div class="insight-body">
+        <div class="insight-title">✓ Linha Easy Slim é sua maior vantagem competitiva</div>
+        <div class="insight-text">
+          Você é <strong>25-31% mais barato</strong> que Rufato no Easy Slim 8 portas em todos os 3 canais, e <strong>2-18% mais barato</strong> que Madeira no 6 portas. <strong>Ação:</strong> investir mais em ads/destaque nesses anúncios — eles têm margem competitiva pra absorver custos de mídia. Pode ser o motor pra recuperar volume.
+        </div>
+      </div>
+    </div>
+    <div class="insight-item green">
+      <div class="insight-num">5</div>
+      <div class="insight-body">
+        <div class="insight-title">✓ Conjunto Easy Line: liderança clara em ML e Shopee</div>
+        <div class="insight-text">
+          Você é <strong>−27,7% no ML</strong> e <strong>−24,6% na Shopee</strong> vs Madesa. Mesmo no Magalu o gap é favorável (−16,2%). <strong>Ação:</strong> reforçar título e fotos pra capturar mais tráfego — você já está com preço competitivo, falta visibilidade.
+        </div>
+      </div>
+    </div>
+    <div class="insight-item yellow">
+      <div class="insight-num">6</div>
+      <div class="insight-body">
+        <div class="insight-title">⚠ Magalu inverte sua vantagem em alguns produtos</div>
+        <div class="insight-text">
+          Você ganha em Easy Slim 6 (−18%) e Easy Line (−16%) no Magalu, mas perde em Guarapari (+6,3%) e Cozinha Nina 4 Módulos (+42,4%). Esse perfil sugere que <strong>os concorrentes têm condições comerciais diferenciadas no canal Magalu</strong> (talvez taxas menores ou frete subsidiado). <strong>Ação:</strong> negociar com Magalu condições de campanha ou subsídio de frete pros produtos onde o gap é grande.
+        </div>
+      </div>
+    </div>
+    <div class="insight-item red">
+      <div class="insight-num">7</div>
+      <div class="insight-body">
+        <div class="insight-title">🚨 Atlas 3 portas: margem em risco (empate técnico)</div>
+        <div class="insight-text">
+          Atlas está em empate exato com Madesa nos 3 canais (gap entre −1,6% e +0,5%). Madesa tem 5.000 vendas no ML, você tem 5. <strong>Ação:</strong> Madesa está cobrindo seu preço em tempo real — você precisa de diferenciação (combo, garantia estendida, parcelamento melhor) ou aceitar guerra de preço com desconto agressivo pra ganhar histórico de vendas.
+        </div>
+      </div>
+    </div>
+    <div class="insight-item green">
+      <div class="insight-num">8</div>
+      <div class="insight-body">
+        <div class="insight-title">💡 Síntese: foco em 2 frentes</div>
+        <div class="insight-text">
+          <strong>Defesa:</strong> revisar Cozinha Nina (urgência máxima) e reposicionar Penteadeira Lívia. <strong>Ataque:</strong> investir em mídia paga nos produtos onde você lidera (Easy Slim + Easy Line) — eles compensam a perda de receita das categorias problemáticas.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Dados coletados em maio/2026 · Frete simulado para CEP 05050-000 (São Paulo/SP) · Análise sujeita a variação conforme condições atuais dos marketplaces
+  </div>
+
+</div>
+
+<script>
+Chart.defaults.color = '#7a8aab';
+Chart.defaults.font.family = 'DM Sans, sans-serif';
+
+// GRÁFICO 1: Ranking horizontal
+const gapData = [
+  {label:"Cozinha Nina 6 (ML)", gap:55.6},
+  {label:"Cozinha Nina 4 (Magalu)", gap:42.4},
+  {label:"Penteadeira Lívia (Shopee)", gap:24.9},
+  {label:"Penteadeira Lívia (ML)", gap:16.1},
+  {label:"Cozinha Nina 6 (Shopee)", gap:9.6},
+  {label:"Guarapari (Magalu)", gap:6.3},
+  {label:"Penteadeira Lívia (Magalu)", gap:3.7},
+  {label:"Atlas (Magalu)", gap:0.5},
+  {label:"Atlas (ML)", gap:0.0},
+  {label:"Atlas (Shopee)", gap:-1.6},
+  {label:"Easy Slim 6 (ML)", gap:-2.5},
+  {label:"MDP 2p (Magalu)", gap:-5.5},
+  {label:"Easy Slim 6 (Shopee)", gap:-6.0},
+  {label:"Guarapari (ML)", gap:-6.8},
+  {label:"MDP 2p (ML)", gap:-7.0},
+  {label:"Guarapari (Shopee)", gap:-8.0},
+  {label:"Easy Line (Magalu)", gap:-16.2},
+  {label:"Easy Slim 6 (Magalu)", gap:-18.2},
+  {label:"Easy Line (Shopee)", gap:-24.6},
+  {label:"Easy Slim 8 (Shopee)", gap:-25.3},
+  {label:"Easy Slim 8 (ML)", gap:-26.9},
+  {label:"Easy Line (ML)", gap:-27.7},
+  {label:"Easy Slim 8 (Magalu)", gap:-31.1},
+];
+
+new Chart(document.getElementById('gapChart'), {
+  type:'bar',
+  data:{
+    labels: gapData.map(d => d.label),
+    datasets:[{
+      label:'Gap %',
+      data: gapData.map(d => d.gap),
+      backgroundColor: gapData.map(d => {
+        if (d.gap > 10) return '#991b1b';
+        if (d.gap > 2) return '#ef4444';
+        if (d.gap > -2) return '#7a8aab';
+        if (d.gap > -10) return '#86efac';
+        return '#22c55e';
+      }),
+      borderRadius:4,
+      barThickness:16,
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#161d2e',
+        borderColor:'#1f2d45',
+        borderWidth:1,
+        titleColor:'#e8eaf0',
+        bodyColor:'#e8eaf0',
+        callbacks:{
+          label: ctx => ' Gap: ' + (ctx.parsed.x > 0 ? '+' : '') + ctx.parsed.x.toFixed(1) + '%'
+        }
+      }
+    },
+    scales:{
+      x:{
+        grid:{ color:'rgba(255,255,255,.04)' },
+        ticks:{
+          color:'#7a8aab',
+          font:{ size:10, family:'DM Mono, monospace' },
+          callback: v => (v > 0 ? '+' : '') + v + '%'
+        },
+        min:-40, max:60
+      },
+      y:{
+        grid:{ display:false },
+        ticks:{ color:'#e8eaf0', font:{ size:10 } }
+      }
+    }
+  }
+});
+
+// GRÁFICO 2: Donut
+new Chart(document.getElementById('statusDonut'), {
+  type:'doughnut',
+  data:{
+    labels:['Competitivo','Limite','Caro'],
+    datasets:[{
+      data:[13,4,6],
+      backgroundColor:['#22c55e','#eab308','#ef4444'],
+      borderColor:'#0b0f1a',
+      borderWidth:3,
+      hoverOffset:8
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    cutout:'62%',
+    plugins:{
+      legend:{
+        display:true,
+        position:'bottom',
+        labels:{
+          color:'#7a8aab',
+          font:{ size:11, family:'DM Sans, sans-serif' },
+          boxWidth:10, padding:12,
+          usePointStyle:true, pointStyleWidth:10,
+          generateLabels:(chart) => {
+            const data = chart.data;
+            return data.labels.map((label,i) => ({
+              text: label + ' · ' + data.datasets[0].data[i] + ' (' + ((data.datasets[0].data[i]/23)*100).toFixed(0) + '%)',
+              fillStyle: data.datasets[0].backgroundColor[i],
+              strokeStyle: data.datasets[0].backgroundColor[i],
+              pointStyle:'circle',
+              index:i
+            }));
+          }
+        }
+      },
+      tooltip:{
+        backgroundColor:'#161d2e',
+        borderColor:'#1f2d45',
+        borderWidth:1,
+        titleColor:'#e8eaf0',
+        bodyColor:'#e8eaf0',
+        callbacks:{
+          label: ctx => ' ' + ctx.label + ' — ' + ((ctx.parsed/23)*100).toFixed(1) + '%'
+        }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
