@@ -1257,12 +1257,15 @@
             <th>Produto</th>
             <th>Máscara (Variação)</th>
             <th>Pra quem</th>
+            <th style="text-align:right;" title="Reserva no momento da cessão">Antes</th>
             <th style="text-align:right;">Qtd</th>
+            <th style="text-align:right;" title="Reserva após a cessão">Depois</th>
+            <th style="text-align:right;" title="Cobertura em dias após a cessão (Reserva depois ÷ Média/dia)">Cobertura</th>
             <th>Observação</th>
           </tr>
         </thead>
         <tbody id="cessoes-tbody">
-          <tr><td colspan="8" class="cessoes-empty"><span class="cessoes-empty-icon">⏳</span>Carregando...</td></tr>
+          <tr><td colspan="11" class="cessoes-empty"><span class="cessoes-empty-icon">⏳</span>Carregando...</td></tr>
         </tbody>
       </table>
     </div>
@@ -5063,9 +5066,16 @@ renderTable();
     const inpOutro = document.getElementById('sim-cessao-outro');
     const inpObs = document.getElementById('sim-cessao-obs');
     const qtd = Math.max(0, parseInt(document.getElementById('sim-qtd-ceder').value) || 0);
+    // Captura a "Reserva Atual" do input (o que está em estoque ANTES da cessão)
+    const qtdAntes = Math.max(0, parseInt(document.getElementById('sim-reserva-atual').value) || 0);
+    const qtdDepois = Math.max(0, qtdAntes - qtd);
     const fb = document.getElementById('sim-cessao-feedback');
     const btn = document.getElementById('sim-cessao-btn');
     if (qtd <= 0) { _cessaoFeedback('Informe a quantidade primeiro.', 'erro'); return; }
+    if (qtdAntes < qtd) {
+      _cessaoFeedback(`Reserva atual (${qtdAntes}) menor que a cessão (${qtd}). Confira o valor da Reserva Atual.`, 'erro');
+      return;
+    }
     let quem = sel.value;
     if (!quem) { _cessaoFeedback('Escolha pra quem foi a cessão.', 'erro'); sel.focus(); return; }
     if (quem === '__outro__') {
@@ -5082,14 +5092,18 @@ renderTable();
       const dataKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
       await window._mmDB.ref(`estoque_mm/cessoes/${sku.codMasc}/${ts}`).set({
         quem, qtd, obs, ts, data: dataKey,
+        qtdAntes,    // Reserva no momento da cessão
+        qtdDepois,   // qtdAntes - qtd (reserva após ceder)
       });
-      _cessaoFeedback(`✓ Cessão de ${qtd} un pra ${quem} registrada!`, 'ok');
+      _cessaoFeedback(`✓ Cessão de ${qtd} un pra ${quem} registrada! (${qtdAntes} → ${qtdDepois})`, 'ok');
       // Limpa form
       sel.value = ''; inpOutro.value = ''; inpOutro.style.display = 'none';
       inpObs.value = '';
       document.getElementById('sim-qtd-ceder').value = '';
       // Recarrega lista e recalcula
       carregarCessoesDoSKU(sku.codMasc);
+      // Limpa cache da aba Cessões pra refletir nova entrada
+      if (typeof _cessoesCache !== 'undefined') _cessoesCache = null;
       recalcularSimulacao();
     } catch(e) {
       console.warn('[cessao] erro salvando:', e);
@@ -5559,25 +5573,72 @@ async function _carregarCessoesCache(forceReload){
   if (_cessoesCache && !forceReload) return _cessoesCache;
   if (!window._mmDB) { _cessoesCache = []; return _cessoesCache; }
   try {
-    const resp = await window._mmDB.ref('estoque_mm/cessoes').once('value');
-    const raw = resp.val() || {};
+    // Carrega cessões E snapshots históricos em paralelo (snapshots usados pra inferir reserva ANTES em cessões antigas)
+    const [respCess, respSnap] = await Promise.all([
+      window._mmDB.ref('estoque_mm/cessoes').once('value'),
+      window._mmDB.ref('estoque_mm/historico_consumo').once('value'),
+    ]);
+    const raw = respCess.val() || {};
+    const snapshots = respSnap.val() || {};
+    const datasOrdenadas = Object.keys(snapshots).sort();
+
     const lookup = {};
     (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
-      lookup[v.codMasc] = { codItem: p.codItem, produto: p.produto, variacao: v.variacao, categoria: p.categoria };
+      lookup[v.codMasc] = {
+        codItem: p.codItem, produto: p.produto, variacao: v.variacao, categoria: p.categoria,
+        forecast: v.solicitadoForecast || 0,
+        mediaDia: v.solicitadoForecast > 0 ? Math.ceil(v.solicitadoForecast / 30) : 0
+      };
     }));
+
+    // Busca o reservado MAIS PRÓXIMO de uma data específica pra um SKU (snapshot do dia, ou mais recente anterior)
+    function snapshotMaisProximo(cm, dataKey){
+      if (snapshots[dataKey] && snapshots[dataKey][cm]) return snapshots[dataKey][cm].r;
+      const idx = datasOrdenadas.indexOf(dataKey);
+      // Procura snapshot anterior à data da cessão
+      const start = idx >= 0 ? idx - 1 : datasOrdenadas.length - 1;
+      for (let i = start; i >= 0; i--) {
+        const d = datasOrdenadas[i];
+        if (snapshots[d] && snapshots[d][cm]) return snapshots[d][cm].r;
+      }
+      // Última tentativa: qualquer snapshot futuro
+      for (let i = idx + 1; i < datasOrdenadas.length; i++) {
+        const d = datasOrdenadas[i];
+        if (snapshots[d] && snapshots[d][cm]) return snapshots[d][cm].r;
+      }
+      return null;
+    }
+
     const todas = [];
     Object.entries(raw).forEach(([cm, cessoes]) => {
-      const info = lookup[cm] || { codItem: '', produto: `(cod ${cm})`, variacao: '', categoria: '' };
+      const info = lookup[cm] || { codItem: '', produto: `(cod ${cm})`, variacao: '', categoria: '', forecast: 0, mediaDia: 0 };
       Object.entries(cessoes || {}).forEach(([ts, c]) => {
         if (!c || !c.data) return;
+        let qtdAntes = c.qtdAntes != null ? c.qtdAntes : null;
+        let qtdDepois = c.qtdDepois != null ? c.qtdDepois : null;
+        let estimado = false;
+        // Tenta inferir retroativamente se não foi capturado
+        if (qtdAntes == null) {
+          const snap = snapshotMaisProximo(cm, c.data);
+          if (snap != null) {
+            qtdAntes = snap;
+            qtdDepois = Math.max(0, snap - (c.qtd || 0));
+            estimado = true;
+          }
+        }
+        // Cobertura após a cessão (em dias)
+        let coberturaDepois = null;
+        if (qtdDepois != null && info.mediaDia > 0) {
+          coberturaDepois = Math.round(qtdDepois / info.mediaDia * 10) / 10;
+        }
         todas.push({
-          codMasc: cm,
-          codItem: info.codItem,
-          produto: info.produto,
-          variacao: info.variacao,
-          categoria: info.categoria,
+          codMasc: cm, codItem: info.codItem,
+          produto: info.produto, variacao: info.variacao, categoria: info.categoria,
           quem: c.quem || '?',
           qtd: c.qtd || 0,
+          qtdAntes, qtdDepois, coberturaDepois,
+          mediaDia: info.mediaDia, forecast: info.forecast,
+          estimado,
           obs: c.obs || '',
           data: c.data,
           ts: c.ts || +ts,
@@ -5665,7 +5726,7 @@ async function renderCessoesTab(forceReload){
 
   // Tabela
   if (filtradas.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" class="cessoes-empty">
+    tbody.innerHTML = `<tr><td colspan="11" class="cessoes-empty">
       <span class="cessoes-empty-icon">📭</span>
       Nenhuma cessão registrada nesse período.<br>
       <small>Use o simulador (botão 🧮 no topo) pra registrar cessões.</small>
@@ -5679,6 +5740,25 @@ async function renderCessoesTab(forceReload){
     const d = new Date(c.ts || 0);
     const hh = String(d.getHours()).padStart(2, '0');
     const mm = String(d.getMinutes()).padStart(2, '0');
+    const estTag = c.estimado ? ' <span style="color:#fbbf24;font-size:9px;" title="Valor estimado a partir do snapshot diário (não foi capturado no momento exato da cessão)">≈</span>' : '';
+    // Antes / Depois
+    const antesCell  = c.qtdAntes != null
+      ? `<td class="cessoes-td-qtd" style="color:var(--text);font-size:11.5px;">${c.qtdAntes}${estTag}</td>`
+      : `<td style="text-align:right;color:var(--muted);font-size:10px;font-style:italic;">—</td>`;
+    const depoisCell = c.qtdDepois != null
+      ? `<td class="cessoes-td-qtd" style="color:#22c98a;font-size:11.5px;">${c.qtdDepois}${estTag}</td>`
+      : `<td style="text-align:right;color:var(--muted);font-size:10px;font-style:italic;">—</td>`;
+    // Cobertura depois (em dias)
+    let cobCell;
+    if (c.coberturaDepois != null) {
+      let cor = '#22c98a';   // verde se >=21d
+      if (c.coberturaDepois < 7) cor = '#ef4444';
+      else if (c.coberturaDepois < 14) cor = '#fb923c';
+      else if (c.coberturaDepois < 21) cor = '#fbbf24';
+      cobCell = `<td class="cessoes-td-qtd" style="color:${cor};font-size:11.5px;" title="Após esta cessão: ${c.qtdDepois} un ÷ ${c.mediaDia} un/dia = ${c.coberturaDepois}d de cobertura">${c.coberturaDepois.toString().replace('.',',')}d</td>`;
+    } else {
+      cobCell = `<td style="text-align:right;color:var(--muted);font-size:10px;font-style:italic;">—</td>`;
+    }
     return `<tr>
       <td class="cessoes-td-data">${_fmtData(c.data)}<br><small>${hh}:${mm}</small></td>
       <td class="cessoes-td-cod">${esc(c.codItem)}</td>
@@ -5686,7 +5766,10 @@ async function renderCessoesTab(forceReload){
       <td class="cessoes-td-produto" title="${esc(c.produto)}">${esc(c.produto)}</td>
       <td class="cessoes-td-variacao" title="${esc(c.variacao)}">${esc(c.variacao) || '—'}</td>
       <td class="cessoes-td-quem">${esc(c.quem)}</td>
-      <td class="cessoes-td-qtd">${c.qtd}</td>
+      ${antesCell}
+      <td class="cessoes-td-qtd">−${c.qtd}</td>
+      ${depoisCell}
+      ${cobCell}
       <td class="cessoes-td-obs" title="${esc(c.obs)}">${esc(c.obs) || '—'}</td>
     </tr>`;
   }).join('');
@@ -5732,26 +5815,41 @@ async function exportarCessoesPorPeriodoXLSX(){
       filenameFragment = `${_cessoesPeriodoCustom.de.replace(/-/g,'_')}_a_${_cessoesPeriodoCustom.ate.replace(/-/g,'_')}`;
     }
 
-    // ABA 1: Relatório simplificado (as 4 colunas pedidas)
+    // ABA 1: Relatório simplificado (Item, Máscara, Antes, Cedido, Depois, Cobertura, Pra quem)
     const aoaRelat = [
       [`📋 RELATÓRIO DE CESSÕES — ${labelPeriodo}`],
       [`${filtradas.length} registros · ${totalQtd} un cedidas`],
+      [`Cobertura = quantos dias o estoque atende após a cessão (média/dia)`],
       [],
-      ['Item', 'Máscara (Variação)', 'Qtd cedida', 'Pra quem'],
-      ...filtradas.map(c => [c.produto, c.variacao || '—', c.qtd, c.quem])
+      ['Item', 'Máscara (Variação)', 'Reserva antes', 'Qtd cedida', 'Reserva depois', 'Cobertura depois (d)', 'Pra quem'],
+      ...filtradas.map(c => [
+        c.produto,
+        c.variacao || '—',
+        c.qtdAntes != null ? c.qtdAntes : '',
+        c.qtd,
+        c.qtdDepois != null ? c.qtdDepois : '',
+        c.coberturaDepois != null ? c.coberturaDepois : '',
+        c.quem
+      ])
     ];
     const wsRelat = XLSX.utils.aoa_to_sheet(aoaRelat);
-    wsRelat['!cols'] = [{wch:42},{wch:30},{wch:12},{wch:18}];
-    wsRelat['!freeze'] = { xSplit: 0, ySplit: 4 };
+    wsRelat['!cols'] = [{wch:42},{wch:30},{wch:14},{wch:12},{wch:15},{wch:18},{wch:18}];
+    wsRelat['!freeze'] = { xSplit: 0, ySplit: 5 };
 
     // ABA 2: Detalhe completo
-    const headerDet = ['Data', 'Hora', 'Cod Item', 'Cod Máscara', 'Produto', 'Variação', 'Categoria', 'Pra quem', 'Qtd', 'Observação'];
+    const headerDet = ['Data', 'Hora', 'Cod Item', 'Cod Máscara', 'Produto', 'Variação', 'Categoria', 'Pra quem', 'Reserva antes', 'Qtd cedida', 'Reserva depois', 'Cobertura depois (d)', 'Média/dia', 'Observação'];
     const linhasDet = filtradas.map(c => {
       const d = new Date(c.ts || 0);
       return [
         _fmtData(c.data),
         `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`,
-        c.codItem, c.codMasc, c.produto, c.variacao, c.categoria, c.quem, c.qtd, c.obs
+        c.codItem, c.codMasc, c.produto, c.variacao, c.categoria, c.quem,
+        c.qtdAntes != null ? c.qtdAntes : '',
+        c.qtd,
+        c.qtdDepois != null ? c.qtdDepois : '',
+        c.coberturaDepois != null ? c.coberturaDepois : '',
+        c.mediaDia || '',
+        c.obs
       ];
     });
     const aoaDet = [
@@ -5761,7 +5859,7 @@ async function exportarCessoesPorPeriodoXLSX(){
       ...linhasDet
     ];
     const wsDet = XLSX.utils.aoa_to_sheet(aoaDet);
-    wsDet['!cols'] = [{wch:11},{wch:7},{wch:10},{wch:12},{wch:38},{wch:30},{wch:14},{wch:14},{wch:9},{wch:28}];
+    wsDet['!cols'] = [{wch:11},{wch:7},{wch:10},{wch:12},{wch:38},{wch:30},{wch:14},{wch:14},{wch:14},{wch:11},{wch:14},{wch:18},{wch:11},{wch:28}];
     wsDet['!freeze'] = { xSplit: 0, ySplit: 3 };
 
     // ABA 3: Resumo por pessoa
