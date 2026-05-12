@@ -715,6 +715,14 @@
   .sim-cessao-feedback{margin-top:8px;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:600;}
   .sim-cessao-feedback.ok{background:rgba(34,201,138,0.12);color:#22c98a;border:1px solid rgba(34,201,138,0.35);}
   .sim-cessao-feedback.erro{background:rgba(239,68,68,0.10);color:#f87171;border:1px solid rgba(239,68,68,0.35);}
+  /* Preview do que será salvo */
+  .sim-cessao-preview{margin-bottom:8px;padding:9px 12px;border-radius:7px;background:rgba(34,201,138,0.06);border:1px solid rgba(34,201,138,0.25);}
+  .sim-cessao-preview .preview-label{font-size:9px;font-weight:700;color:#22c98a;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;}
+  .sim-cessao-preview .preview-content{font-size:11.5px;color:var(--text);font-weight:600;line-height:1.4;}
+  .sim-cessao-preview .preview-content b{font-family:'Syne',sans-serif;font-weight:800;color:#22c98a;}
+  .sim-cessao-preview .preview-content .seta{color:var(--muted);margin:0 4px;}
+  .sim-cessao-preview .preview-content .qtd-ceder{font-family:'Syne',sans-serif;font-weight:800;color:#fb923c;}
+  .sim-cessao-preview .preview-warn{font-size:10px;color:#fbbf24;margin-top:5px;padding-top:5px;border-top:1px dashed rgba(251,191,36,0.3);line-height:1.4;}
 
   /* Lista de cessões já registradas */
   .sim-cessoes-lista-wrap{margin-top:14px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
@@ -4922,6 +4930,12 @@ renderTable();
             <input id="sim-cessao-obs" type="text" class="sim-cessao-input" placeholder="Ex: Pedido #4521">
           </div>
         </div>
+        <!-- Preview do que será salvo (atualiza em tempo real conforme edita) -->
+        <div id="sim-cessao-preview" class="sim-cessao-preview" style="display:none;">
+          <div class="preview-label">Será registrado:</div>
+          <div class="preview-content" id="sim-cessao-preview-content">—</div>
+          <div class="preview-warn" id="sim-cessao-preview-warn" style="display:none;"></div>
+        </div>
         <button id="sim-cessao-btn" class="sim-cessao-btn" onclick="registrarCessao()">
           ✓ Registrar cessão
         </button>
@@ -4961,6 +4975,9 @@ renderTable();
     const sku = _skuSimSelecionado;
     const reservaAtual = Math.max(0, parseInt(document.getElementById('sim-reserva-atual').value) || 0);
     const qtdCeder    = Math.max(0, parseInt(document.getElementById('sim-qtd-ceder').value) || 0);
+
+    // Atualiza preview de "Será registrado" em tempo real
+    _atualizarPreviewCessao(sku, reservaAtual, qtdCeder);
 
     const resultEl = document.getElementById('sim-resultado');
     if (qtdCeder === 0) {
@@ -5058,6 +5075,35 @@ renderTable();
       inp.value = '';
     }
   };
+
+  // Atualiza o preview "Será registrado" em tempo real
+  function _atualizarPreviewCessao(sku, reservaAtual, qtdCeder){
+    const wrap = document.getElementById('sim-cessao-preview');
+    const content = document.getElementById('sim-cessao-preview-content');
+    const warn = document.getElementById('sim-cessao-preview-warn');
+    if (!wrap || !content) return;
+    if (qtdCeder <= 0) {
+      wrap.style.display = 'none';
+      return;
+    }
+    wrap.style.display = 'block';
+    const qtdDepois = Math.max(0, reservaAtual - qtdCeder);
+    const media = sku.solicitadoForecast > 0 ? Math.ceil(sku.solicitadoForecast / 30) : 0;
+    const cobertura = media > 0 ? +(qtdDepois / media).toFixed(1) : null;
+    content.innerHTML = `
+      Antes: <b>${reservaAtual}</b><span class="seta">→</span>cede: <span class="qtd-ceder">−${qtdCeder}</span><span class="seta">→</span>depois: <b>${qtdDepois}</b>
+      ${cobertura != null ? `<span class="seta">·</span>cobertura: <b>${cobertura.toString().replace('.',',')}d</b>` : ''}
+    `;
+    // Aviso quando a reserva atual digitada é diferente do sistema
+    const sistemaValor = sku.reservadoSistema != null ? sku.reservadoSistema : sku.reservado;
+    if (sistemaValor != null && reservaAtual !== sistemaValor) {
+      const dif = reservaAtual - sistemaValor;
+      warn.innerHTML = `✏ Você editou: sistema tinha <b>${sistemaValor}</b>, você confirmou <b>${reservaAtual}</b> (${dif > 0 ? '+' : ''}${dif}). <i>O relatório vai com o valor que você confirmou.</i>`;
+      warn.style.display = 'block';
+    } else {
+      warn.style.display = 'none';
+    }
+  }
 
   window.registrarCessao = async function(){
     if (!_skuSimSelecionado) return;
@@ -5573,13 +5619,15 @@ async function _carregarCessoesCache(forceReload){
   if (_cessoesCache && !forceReload) return _cessoesCache;
   if (!window._mmDB) { _cessoesCache = []; return _cessoesCache; }
   try {
-    // Carrega cessões E snapshots históricos em paralelo (snapshots usados pra inferir reserva ANTES em cessões antigas)
-    const [respCess, respSnap] = await Promise.all([
+    // Carrega cessões, snapshots históricos E lotes em paralelo
+    const [respCess, respSnap, respLotes] = await Promise.all([
       window._mmDB.ref('estoque_mm/cessoes').once('value'),
       window._mmDB.ref('estoque_mm/historico_consumo').once('value'),
+      window._mmDB.ref('estoque_mm/datas_lote').once('value'),
     ]);
     const raw = respCess.val() || {};
     const snapshots = respSnap.val() || {};
+    const lotes = respLotes.val() || {};   // { codItem: {dataKey, ts} }
     const datasOrdenadas = Object.keys(snapshots).sort();
 
     const lookup = {};
@@ -5631,6 +5679,9 @@ async function _carregarCessoesCache(forceReload){
         if (qtdDepois != null && info.mediaDia > 0) {
           coberturaDepois = Math.round(qtdDepois / info.mediaDia * 10) / 10;
         }
+        // Lote do produto (se cadastrado)
+        const lote = lotes[info.codItem];
+        const proxLote = lote && lote.dataKey ? lote.dataKey : null;
         todas.push({
           codMasc: cm, codItem: info.codItem,
           produto: info.produto, variacao: info.variacao, categoria: info.categoria,
@@ -5640,6 +5691,7 @@ async function _carregarCessoesCache(forceReload){
           mediaDia: info.mediaDia, forecast: info.forecast,
           estimado,
           obs: c.obs || '',
+          proxLote,  // 'YYYY-MM-DD' ou null
           data: c.data,
           ts: c.ts || +ts,
         });
@@ -5759,6 +5811,29 @@ async function renderCessoesTab(forceReload){
     } else {
       cobCell = `<td style="text-align:right;color:var(--muted);font-size:10px;font-style:italic;">—</td>`;
     }
+    // Observação: combina próx lote (se houver) + obs livre
+    let obsHtml = '';
+    if (c.proxLote) {
+      const loteFmt = _fmtData(c.proxLote);
+      // Calcula se o lote já passou ou está chegando
+      const hojeKey = _hojeKeyLocal();
+      let corLote = '#22c98a';
+      let label = `lote ${loteFmt}`;
+      if (c.proxLote < hojeKey) {
+        corLote = 'var(--muted)';
+        label = `lote ${loteFmt} (passou)`;
+      } else if (c.proxLote === hojeKey) {
+        corLote = '#fb923c';
+        label = `lote hoje (${loteFmt})`;
+      }
+      obsHtml = `<span style="color:${corLote};font-weight:600;font-size:10px;">📦 ${label}</span>`;
+    }
+    if (c.obs) {
+      if (obsHtml) obsHtml += '<br>';
+      obsHtml += `<span style="color:var(--muted);font-size:10px;font-style:italic;">${esc(c.obs)}</span>`;
+    }
+    if (!obsHtml) obsHtml = '<span style="color:var(--muted);font-size:10px;font-style:italic;">—</span>';
+
     return `<tr>
       <td class="cessoes-td-data">${_fmtData(c.data)}<br><small>${hh}:${mm}</small></td>
       <td class="cessoes-td-cod">${esc(c.codItem)}</td>
@@ -5770,7 +5845,7 @@ async function renderCessoesTab(forceReload){
       <td class="cessoes-td-qtd">−${c.qtd}</td>
       ${depoisCell}
       ${cobCell}
-      <td class="cessoes-td-obs" title="${esc(c.obs)}">${esc(c.obs) || '—'}</td>
+      <td class="cessoes-td-obs">${obsHtml}</td>
     </tr>`;
   }).join('');
 }
@@ -5815,13 +5890,13 @@ async function exportarCessoesPorPeriodoXLSX(){
       filenameFragment = `${_cessoesPeriodoCustom.de.replace(/-/g,'_')}_a_${_cessoesPeriodoCustom.ate.replace(/-/g,'_')}`;
     }
 
-    // ABA 1: Relatório simplificado (Item, Máscara, Antes, Cedido, Depois, Cobertura, Pra quem)
+    // ABA 1: Relatório simplificado (Item, Máscara, Antes, Cedido, Depois, Cobertura, Próx lote, Pra quem)
     const aoaRelat = [
       [`📋 RELATÓRIO DE CESSÕES — ${labelPeriodo}`],
       [`${filtradas.length} registros · ${totalQtd} un cedidas`],
       [`Cobertura = quantos dias o estoque atende após a cessão (média/dia)`],
       [],
-      ['Item', 'Máscara (Variação)', 'Reserva antes', 'Qtd cedida', 'Reserva depois', 'Cobertura depois (d)', 'Pra quem'],
+      ['Item', 'Máscara (Variação)', 'Reserva antes', 'Qtd cedida', 'Reserva depois', 'Cobertura depois (d)', 'Próx lote', 'Pra quem', 'Observação'],
       ...filtradas.map(c => [
         c.produto,
         c.variacao || '—',
@@ -5829,15 +5904,17 @@ async function exportarCessoesPorPeriodoXLSX(){
         c.qtd,
         c.qtdDepois != null ? c.qtdDepois : '',
         c.coberturaDepois != null ? c.coberturaDepois : '',
-        c.quem
+        c.proxLote ? _fmtData(c.proxLote) : '',
+        c.quem,
+        c.obs || ''
       ])
     ];
     const wsRelat = XLSX.utils.aoa_to_sheet(aoaRelat);
-    wsRelat['!cols'] = [{wch:42},{wch:30},{wch:14},{wch:12},{wch:15},{wch:18},{wch:18}];
+    wsRelat['!cols'] = [{wch:42},{wch:30},{wch:14},{wch:12},{wch:15},{wch:18},{wch:12},{wch:18},{wch:28}];
     wsRelat['!freeze'] = { xSplit: 0, ySplit: 5 };
 
     // ABA 2: Detalhe completo
-    const headerDet = ['Data', 'Hora', 'Cod Item', 'Cod Máscara', 'Produto', 'Variação', 'Categoria', 'Pra quem', 'Reserva antes', 'Qtd cedida', 'Reserva depois', 'Cobertura depois (d)', 'Média/dia', 'Observação'];
+    const headerDet = ['Data', 'Hora', 'Cod Item', 'Cod Máscara', 'Produto', 'Variação', 'Categoria', 'Pra quem', 'Reserva antes', 'Qtd cedida', 'Reserva depois', 'Cobertura depois (d)', 'Média/dia', 'Próx lote', 'Observação'];
     const linhasDet = filtradas.map(c => {
       const d = new Date(c.ts || 0);
       return [
@@ -5849,6 +5926,7 @@ async function exportarCessoesPorPeriodoXLSX(){
         c.qtdDepois != null ? c.qtdDepois : '',
         c.coberturaDepois != null ? c.coberturaDepois : '',
         c.mediaDia || '',
+        c.proxLote ? _fmtData(c.proxLote) : '',
         c.obs
       ];
     });
@@ -5859,7 +5937,7 @@ async function exportarCessoesPorPeriodoXLSX(){
       ...linhasDet
     ];
     const wsDet = XLSX.utils.aoa_to_sheet(aoaDet);
-    wsDet['!cols'] = [{wch:11},{wch:7},{wch:10},{wch:12},{wch:38},{wch:30},{wch:14},{wch:14},{wch:14},{wch:11},{wch:14},{wch:18},{wch:11},{wch:28}];
+    wsDet['!cols'] = [{wch:11},{wch:7},{wch:10},{wch:12},{wch:38},{wch:30},{wch:14},{wch:14},{wch:14},{wch:11},{wch:14},{wch:18},{wch:11},{wch:12},{wch:28}];
     wsDet['!freeze'] = { xSplit: 0, ySplit: 3 };
 
     // ABA 3: Resumo por pessoa
