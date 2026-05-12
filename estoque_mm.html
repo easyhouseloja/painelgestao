@@ -207,13 +207,50 @@
   .tab-btn .tab-ico{font-size:14px;line-height:1;}
   .tab-btn .tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:18px;padding:0 6px;border-radius:9px;font-size:10px;font-weight:800;letter-spacing:0.3px;background:rgba(239,68,68,0.18);color:#f87171;border:1px solid rgba(239,68,68,0.35);}
   .tab-btn .tab-badge.tab-badge-neutral{background:rgba(79,124,255,0.15);color:#93b4ff;border-color:rgba(79,124,255,0.35);}
+  .tab-btn .tab-badge.tab-badge-purple{background:rgba(167,139,250,0.15);color:#c4b5fd;border-color:rgba(167,139,250,0.40);}
   .tab-btn.active .tab-badge{background:rgba(251,146,60,0.18);color:#fb923c;border-color:rgba(251,146,60,0.4);}
   .tab-btn.active .tab-badge.tab-badge-neutral{background:rgba(79,124,255,0.20);color:#a5beff;border-color:rgba(79,124,255,0.5);}
+  .tab-btn.active .tab-badge.tab-badge-purple{background:rgba(167,139,250,0.22);color:#d8caff;border-color:rgba(167,139,250,0.6);}
   @media(max-width:700px){
     .tabs-nav{gap:0;}
     .tab-btn{padding:9px 12px;font-size:11px;}
     .tab-btn span:not(.tab-ico):not(.tab-badge){display:none;}
   }
+
+  /* ABA CESSÕES — filtros, KPIs e tabela */
+  .cessoes-toolbar{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;margin-bottom:16px;}
+  .cessoes-filtros{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .cessoes-filt-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-right:4px;}
+  .cessoes-filt-btn{font-size:11px;font-weight:700;padding:7px 14px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;letter-spacing:0.2px;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
+  .cessoes-filt-btn:hover{color:var(--text);border-color:rgba(167,139,250,0.4);}
+  .cessoes-filt-btn.active{background:rgba(167,139,250,0.15);color:#c4b5fd;border-color:rgba(167,139,250,0.55);}
+  .cessoes-periodo-range{display:flex;align-items:center;gap:6px;padding:4px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;}
+  .cessoes-periodo-range input[type="date"]{background:transparent;border:none;color:var(--text);font-family:inherit;font-size:11px;padding:4px 0;}
+  .cessoes-periodo-range input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.55);cursor:pointer;}
+  .cessoes-periodo-range span{font-size:10px;color:var(--muted);}
+  .cessoes-periodo-range button{font-size:10px;font-weight:700;padding:4px 10px;border-radius:5px;border:none;background:#a78bfa;color:#1a0f33;cursor:pointer;text-transform:uppercase;letter-spacing:0.4px;}
+  .cessoes-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px;}
+  .cessoes-kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+  .cessoes-kpi-label{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;}
+  .cessoes-kpi-value{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--text);line-height:1.1;}
+  .cessoes-kpi.purple .cessoes-kpi-value{color:#c4b5fd;}
+  .cessoes-kpi.orange .cessoes-kpi-value{color:#fb923c;}
+  .cessoes-kpi.green .cessoes-kpi-value{color:#22c98a;}
+  .cessoes-tabela-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:auto;max-height:560px;}
+  .cessoes-tabela{width:100%;border-collapse:collapse;font-size:11px;}
+  .cessoes-tabela thead th{background:var(--surface2);text-align:left;padding:10px 12px;font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1;}
+  .cessoes-tabela tbody td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  .cessoes-tabela tbody tr:hover{background:rgba(255,255,255,0.02);}
+  .cessoes-tabela tbody tr:last-child td{border-bottom:none;}
+  .cessoes-td-data{color:var(--muted);font-size:10px;white-space:nowrap;}
+  .cessoes-td-cod{color:var(--muted);font-family:'JetBrains Mono', monospace;font-size:10px;}
+  .cessoes-td-produto{font-weight:700;color:var(--text);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cessoes-td-variacao{color:var(--muted);font-size:10px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cessoes-td-quem{font-weight:700;color:#c4b5fd;}
+  .cessoes-td-qtd{font-family:'Syne',sans-serif;font-weight:800;color:#fb923c;text-align:right;font-size:13px;}
+  .cessoes-td-obs{color:var(--muted);font-size:10px;font-style:italic;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cessoes-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:12px;line-height:1.6;}
+  .cessoes-empty-icon{font-size:36px;opacity:0.4;display:block;margin-bottom:10px;}
 
   /* GRÁFICOS — grid e cards */
   .graficos-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px;}
@@ -984,6 +1021,10 @@
       <span class="tab-ico">📉</span><span>Consumo</span>
       <span class="tab-badge" id="tab-badge-consumo">—</span>
     </button>
+    <button class="tab-btn" data-tab="cessoes" onclick="setActiveTab('cessoes')">
+      <span class="tab-ico">👥</span><span>Cessões</span>
+      <span class="tab-badge tab-badge-purple" id="tab-badge-cessoes">—</span>
+    </button>
     <button class="tab-btn" data-tab="produtos" onclick="setActiveTab('produtos')">
       <span class="tab-ico">📋</span><span>Produtos</span>
       <span class="tab-badge tab-badge-neutral" id="tab-badge-produtos">—</span>
@@ -1174,6 +1215,58 @@
     </div>
   </div>
   </div><!-- /data-tab=consumo -->
+
+  <!-- CESSÕES (aba própria com filtros e export) -->
+  <div data-tab="cessoes">
+    <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <span>👥 Cessões de Reserva <span style="font-weight:400;font-size:11px;color:var(--muted);">histórico completo · filtros por período</span></span>
+      <button onclick="exportarCessoesPorPeriodoXLSX()" type="button" class="export-btn export-btn-mes no-print" id="btn-export-cessoes-periodo">
+        📥 Exportar relatório
+      </button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="cessoes-toolbar">
+      <div class="cessoes-filtros">
+        <span class="cessoes-filt-label">Período:</span>
+        <button class="cessoes-filt-btn active" data-filtro="hoje" onclick="setFiltroCessoes('hoje')">📅 Hoje</button>
+        <button class="cessoes-filt-btn" data-filtro="mes" onclick="setFiltroCessoes('mes')">🗓 Este mês</button>
+        <button class="cessoes-filt-btn" data-filtro="periodo" onclick="setFiltroCessoes('periodo')">📆 Período</button>
+        <div class="cessoes-periodo-range" id="cessoes-periodo-range" style="display:none;">
+          <input type="date" id="cessoes-de" title="De">
+          <span>até</span>
+          <input type="date" id="cessoes-ate" title="Até">
+          <button onclick="aplicarPeriodoCessoes()">Aplicar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs do período -->
+    <div class="cessoes-kpis" id="cessoes-kpis">
+      <!-- preenchido pelo JS -->
+    </div>
+
+    <!-- Tabela -->
+    <div class="cessoes-tabela-wrap">
+      <table class="cessoes-tabela">
+        <thead>
+          <tr>
+            <th>Data/Hora</th>
+            <th>Cod Item</th>
+            <th>Cod Máscara</th>
+            <th>Produto</th>
+            <th>Máscara (Variação)</th>
+            <th>Pra quem</th>
+            <th style="text-align:right;">Qtd</th>
+            <th>Observação</th>
+          </tr>
+        </thead>
+        <tbody id="cessoes-tbody">
+          <tr><td colspan="8" class="cessoes-empty"><span class="cessoes-empty-icon">⏳</span>Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div><!-- /data-tab=cessoes -->
 
   <!-- PRODUTOS — tabela completa com filtros -->
   <div data-tab="produtos">
@@ -5038,7 +5131,7 @@ renderTable();
       if (arr.length === 0) { wrap.style.display = 'none'; return; }
       wrap.style.display = 'block';
       const total = arr.reduce((s,c) => s + (c.qtd||0), 0);
-      cont.textContent = `${arr.length} cessão${arr.length>1?'ões':''} · ${total} un total`;
+      cont.textContent = `${arr.length} ${arr.length === 1 ? 'cessão' : 'cessões'} · ${total} un total`;
       lista.innerHTML = arr.slice(0, 10).map(c => {
         const d = new Date(c.ts);
         const hh = String(d.getHours()).padStart(2,'0');
@@ -5410,6 +5503,314 @@ renderTable();
     setTimeout(renderizarLotes, 300);
   }
 })();
+
+// ═══════════════════════════════════════════════════════════════════
+// ABA CESSÕES — Carrega, filtra e renderiza
+// ═══════════════════════════════════════════════════════════════════
+let _cessoesCache = null;        // Todas as cessões já carregadas do Firebase
+let _cessoesFiltroAtual = 'hoje'; // 'hoje' | 'mes' | 'periodo'
+let _cessoesPeriodoCustom = null; // { de: 'YYYY-MM-DD', ate: 'YYYY-MM-DD' }
+
+window.setFiltroCessoes = function(filtro){
+  _cessoesFiltroAtual = filtro;
+  // Atualiza visual dos botões
+  document.querySelectorAll('.cessoes-filt-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.filtro === filtro);
+  });
+  // Mostra/esconde range de data
+  const range = document.getElementById('cessoes-periodo-range');
+  if (range) range.style.display = filtro === 'periodo' ? 'flex' : 'none';
+  // Re-renderiza
+  if (filtro !== 'periodo' || _cessoesPeriodoCustom) renderCessoesTab();
+};
+
+window.aplicarPeriodoCessoes = function(){
+  const de  = document.getElementById('cessoes-de').value;
+  const ate = document.getElementById('cessoes-ate').value;
+  if (!de || !ate) { alert('Selecione as datas de início e fim.'); return; }
+  if (de > ate) { alert('A data inicial deve ser anterior à data final.'); return; }
+  _cessoesPeriodoCustom = { de, ate };
+  renderCessoesTab();
+};
+
+function _hojeKeyLocal(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function _filtrarCessoes(todas){
+  const stats = (typeof BUNDLE !== 'undefined' && BUNDLE.stats) || {};
+  const dataMatch = (stats.dataAtualizacao || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (_cessoesFiltroAtual === 'hoje') {
+    const hoje = _hojeKeyLocal();
+    return todas.filter(c => c.data === hoje);
+  } else if (_cessoesFiltroAtual === 'mes') {
+    const mesRef = dataMatch ? dataMatch[2] : String(new Date().getMonth() + 1).padStart(2, '0');
+    const anoRef = dataMatch ? dataMatch[3] : String(new Date().getFullYear());
+    return todas.filter(c => c.data && c.data.startsWith(`${anoRef}-${mesRef}`));
+  } else if (_cessoesFiltroAtual === 'periodo' && _cessoesPeriodoCustom) {
+    const { de, ate } = _cessoesPeriodoCustom;
+    return todas.filter(c => c.data >= de && c.data <= ate);
+  }
+  return [];
+}
+
+async function _carregarCessoesCache(forceReload){
+  if (_cessoesCache && !forceReload) return _cessoesCache;
+  if (!window._mmDB) { _cessoesCache = []; return _cessoesCache; }
+  try {
+    const resp = await window._mmDB.ref('estoque_mm/cessoes').once('value');
+    const raw = resp.val() || {};
+    const lookup = {};
+    (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+      lookup[v.codMasc] = { codItem: p.codItem, produto: p.produto, variacao: v.variacao, categoria: p.categoria };
+    }));
+    const todas = [];
+    Object.entries(raw).forEach(([cm, cessoes]) => {
+      const info = lookup[cm] || { codItem: '', produto: `(cod ${cm})`, variacao: '', categoria: '' };
+      Object.entries(cessoes || {}).forEach(([ts, c]) => {
+        if (!c || !c.data) return;
+        todas.push({
+          codMasc: cm,
+          codItem: info.codItem,
+          produto: info.produto,
+          variacao: info.variacao,
+          categoria: info.categoria,
+          quem: c.quem || '?',
+          qtd: c.qtd || 0,
+          obs: c.obs || '',
+          data: c.data,
+          ts: c.ts || +ts,
+        });
+      });
+    });
+    _cessoesCache = todas;
+    return todas;
+  } catch (e) {
+    console.error('[cessoes-cache]', e);
+    _cessoesCache = [];
+    return [];
+  }
+}
+
+async function renderCessoesTab(forceReload){
+  const tbody = document.getElementById('cessoes-tbody');
+  const kpisDiv = document.getElementById('cessoes-kpis');
+  if (!tbody) return;
+
+  // Loading
+  if (!_cessoesCache || forceReload) {
+    tbody.innerHTML = `<tr><td colspan="8" class="cessoes-empty"><span class="cessoes-empty-icon">⏳</span>Carregando cessões do Firebase...</td></tr>`;
+  }
+
+  const todas = await _carregarCessoesCache(forceReload);
+  const filtradas = _filtrarCessoes(todas);
+
+  // KPIs
+  const totalQtd = filtradas.reduce((s, c) => s + c.qtd, 0);
+  const skusUnicos = new Set(filtradas.map(c => c.codMasc)).size;
+  const pessoasUnicas = new Set(filtradas.map(c => c.quem)).size;
+  // Calcula label do período
+  let labelPeriodo = '';
+  if (_cessoesFiltroAtual === 'hoje') labelPeriodo = `Hoje (${_fmtData(_hojeKeyLocal())})`;
+  else if (_cessoesFiltroAtual === 'mes') {
+    const stats = BUNDLE.stats || {};
+    const m = (stats.dataAtualizacao || '').match(/^\d{2}\/(\d{2})\/(\d{4})$/);
+    const nomesMeses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    labelPeriodo = m ? `${nomesMeses[+m[1]-1]} ${m[2]}` : 'Este mês';
+  }
+  else if (_cessoesFiltroAtual === 'periodo' && _cessoesPeriodoCustom) {
+    labelPeriodo = `${_fmtData(_cessoesPeriodoCustom.de)} → ${_fmtData(_cessoesPeriodoCustom.ate)}`;
+  }
+  kpisDiv.innerHTML = `
+    <div class="cessoes-kpi purple">
+      <div class="cessoes-kpi-label">Período</div>
+      <div class="cessoes-kpi-value" style="font-size:13px;">${labelPeriodo || '—'}</div>
+    </div>
+    <div class="cessoes-kpi orange">
+      <div class="cessoes-kpi-label">Total cedido</div>
+      <div class="cessoes-kpi-value">${totalQtd} <span style="font-size:11px;opacity:0.7;">un</span></div>
+    </div>
+    <div class="cessoes-kpi">
+      <div class="cessoes-kpi-label">Cessões registradas</div>
+      <div class="cessoes-kpi-value">${filtradas.length}</div>
+    </div>
+    <div class="cessoes-kpi green">
+      <div class="cessoes-kpi-label">SKUs cedidos</div>
+      <div class="cessoes-kpi-value">${skusUnicos}</div>
+    </div>
+    <div class="cessoes-kpi">
+      <div class="cessoes-kpi-label">Pessoas</div>
+      <div class="cessoes-kpi-value">${pessoasUnicas}</div>
+    </div>
+  `;
+
+  // Atualiza badge da aba (total geral, não filtrado)
+  const badge = document.getElementById('tab-badge-cessoes');
+  if (badge) badge.textContent = todas.length;
+
+  // Habilita/desabilita botão export
+  const btnExp = document.getElementById('btn-export-cessoes-periodo');
+  if (btnExp) {
+    if (filtradas.length === 0) {
+      btnExp.disabled = true;
+      btnExp.style.opacity = '0.4';
+      btnExp.style.cursor = 'not-allowed';
+    } else {
+      btnExp.disabled = false;
+      btnExp.style.opacity = '';
+      btnExp.style.cursor = 'pointer';
+    }
+  }
+
+  // Tabela
+  if (filtradas.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" class="cessoes-empty">
+      <span class="cessoes-empty-icon">📭</span>
+      Nenhuma cessão registrada nesse período.<br>
+      <small>Use o simulador (botão 🧮 no topo) pra registrar cessões.</small>
+    </td></tr>`;
+    return;
+  }
+  // Ordena por data + hora desc
+  filtradas.sort((a, b) => b.ts - a.ts);
+  const esc = s => String(s ?? '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'})[c]);
+  tbody.innerHTML = filtradas.map(c => {
+    const d = new Date(c.ts || 0);
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    return `<tr>
+      <td class="cessoes-td-data">${_fmtData(c.data)}<br><small>${hh}:${mm}</small></td>
+      <td class="cessoes-td-cod">${esc(c.codItem)}</td>
+      <td class="cessoes-td-cod">${esc(c.codMasc)}</td>
+      <td class="cessoes-td-produto" title="${esc(c.produto)}">${esc(c.produto)}</td>
+      <td class="cessoes-td-variacao" title="${esc(c.variacao)}">${esc(c.variacao) || '—'}</td>
+      <td class="cessoes-td-quem">${esc(c.quem)}</td>
+      <td class="cessoes-td-qtd">${c.qtd}</td>
+      <td class="cessoes-td-obs" title="${esc(c.obs)}">${esc(c.obs) || '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function _fmtData(key){
+  const m = (key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : key;
+}
+
+// ═══ EXPORTA CESSÕES DO PERÍODO FILTRADO ═══
+async function exportarCessoesPorPeriodoXLSX(){
+  if (typeof XLSX === 'undefined') { alert('Biblioteca de exportação ainda não carregou.'); return; }
+  if (!window._mmDB) { alert('Firebase não disponível.'); return; }
+
+  const btn = document.getElementById('btn-export-cessoes-periodo');
+  if (btn) { btn._txt = btn.textContent; btn.textContent = '⏳ Gerando...'; btn.disabled = true; }
+
+  try {
+    const todas = await _carregarCessoesCache();
+    const filtradas = _filtrarCessoes(todas);
+    if (filtradas.length === 0) {
+      alert('⚠ Nenhuma cessão no período selecionado.');
+      if (btn) { btn.textContent = btn._txt; btn.disabled = false; }
+      return;
+    }
+    filtradas.sort((a, b) => b.ts - a.ts);
+    const totalQtd = filtradas.reduce((s, c) => s + c.qtd, 0);
+
+    // Label do período (pra título e nome do arquivo)
+    let labelPeriodo, filenameFragment;
+    if (_cessoesFiltroAtual === 'hoje') {
+      labelPeriodo = `Hoje (${_fmtData(_hojeKeyLocal())})`;
+      filenameFragment = `dia_${_hojeKeyLocal().replace(/-/g,'_')}`;
+    } else if (_cessoesFiltroAtual === 'mes') {
+      const stats = BUNDLE.stats || {};
+      const m = (stats.dataAtualizacao || '').match(/^\d{2}\/(\d{2})\/(\d{4})$/);
+      const nomesMeses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+      labelPeriodo = m ? `${nomesMeses[+m[1]-1]} ${m[2]}` : 'Este mês';
+      filenameFragment = m ? `mes_${m[2]}_${m[1]}` : 'mes';
+    } else {
+      labelPeriodo = `${_fmtData(_cessoesPeriodoCustom.de)} a ${_fmtData(_cessoesPeriodoCustom.ate)}`;
+      filenameFragment = `${_cessoesPeriodoCustom.de.replace(/-/g,'_')}_a_${_cessoesPeriodoCustom.ate.replace(/-/g,'_')}`;
+    }
+
+    // ABA 1: Relatório simplificado (as 4 colunas pedidas)
+    const aoaRelat = [
+      [`📋 RELATÓRIO DE CESSÕES — ${labelPeriodo}`],
+      [`${filtradas.length} registros · ${totalQtd} un cedidas`],
+      [],
+      ['Item', 'Máscara (Variação)', 'Qtd cedida', 'Pra quem'],
+      ...filtradas.map(c => [c.produto, c.variacao || '—', c.qtd, c.quem])
+    ];
+    const wsRelat = XLSX.utils.aoa_to_sheet(aoaRelat);
+    wsRelat['!cols'] = [{wch:42},{wch:30},{wch:12},{wch:18}];
+    wsRelat['!freeze'] = { xSplit: 0, ySplit: 4 };
+
+    // ABA 2: Detalhe completo
+    const headerDet = ['Data', 'Hora', 'Cod Item', 'Cod Máscara', 'Produto', 'Variação', 'Categoria', 'Pra quem', 'Qtd', 'Observação'];
+    const linhasDet = filtradas.map(c => {
+      const d = new Date(c.ts || 0);
+      return [
+        _fmtData(c.data),
+        `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`,
+        c.codItem, c.codMasc, c.produto, c.variacao, c.categoria, c.quem, c.qtd, c.obs
+      ];
+    });
+    const aoaDet = [
+      [`📋 DETALHE COMPLETO — ${labelPeriodo}`],
+      [],
+      headerDet,
+      ...linhasDet
+    ];
+    const wsDet = XLSX.utils.aoa_to_sheet(aoaDet);
+    wsDet['!cols'] = [{wch:11},{wch:7},{wch:10},{wch:12},{wch:38},{wch:30},{wch:14},{wch:14},{wch:9},{wch:28}];
+    wsDet['!freeze'] = { xSplit: 0, ySplit: 3 };
+
+    // ABA 3: Resumo por pessoa
+    const porPessoa = {};
+    filtradas.forEach(c => {
+      if (!porPessoa[c.quem]) porPessoa[c.quem] = { qtd: 0, n: 0 };
+      porPessoa[c.quem].qtd += c.qtd;
+      porPessoa[c.quem].n += 1;
+    });
+    const pessoaSorted = Object.entries(porPessoa).sort((a, b) => b[1].qtd - a[1].qtd);
+    const aoaPessoa = [
+      [`👥 RESUMO POR PESSOA — ${labelPeriodo}`],
+      [],
+      ['Pessoa', 'Qtd cedida (un)', '% do total', 'Nº de cessões'],
+      ...pessoaSorted.map(([nome, d]) => [nome, d.qtd, `${(d.qtd/totalQtd*100).toFixed(1)}%`, d.n]),
+      [],
+      ['TOTAL', totalQtd, '100%', filtradas.length]
+    ];
+    const wsPessoa = XLSX.utils.aoa_to_sheet(aoaPessoa);
+    wsPessoa['!cols'] = [{wch:22},{wch:16},{wch:12},{wch:15}];
+
+    // Workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, wsRelat, 'Relatório');
+    XLSX.utils.book_append_sheet(wb, wsPessoa, 'Por Pessoa');
+    XLSX.utils.book_append_sheet(wb, wsDet, 'Detalhe Completo');
+
+    const filename = `cessoes_${filenameFragment}.xlsx`;
+    XLSX.writeFile(wb, filename);
+    console.log(`[export-cessoes-periodo] ✓ ${filename} · ${filtradas.length} cessões · ${totalQtd} un`);
+  } catch (e) {
+    console.error('[export-cessoes-periodo]', e);
+    alert('Erro ao gerar relatório: ' + e.message);
+  }
+  if (btn) { btn.textContent = btn._txt; btn.disabled = false; }
+}
+
+// Inicializa inputs de data quando renderizar aba
+function _initInputsDataCessoes(){
+  const inputDe  = document.getElementById('cessoes-de');
+  const inputAte = document.getElementById('cessoes-ate');
+  if (inputDe && !inputDe.value) {
+    // Default: 1º do mês até hoje
+    const hoje = new Date();
+    const primeiro = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+    inputDe.value = primeiro.toISOString().slice(0, 10);
+    inputAte.value = hoje.toISOString().slice(0, 10);
+  }
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // EXPORTA CESSÕES DO MÊS — Excel focado só nas cessões
@@ -5921,6 +6322,11 @@ window.setActiveTab = function(tabName){
       setTimeout(() => window.renderGraficos(), 100);
     }
   }
+  // Quando entra na aba Cessões, carrega/atualiza dados
+  if (tabName === 'cessoes') {
+    _initInputsDataCessoes();
+    setTimeout(() => renderCessoesTab(true), 100);
+  }
   // 4. Scrollar pro topo da área de conteúdo (acima das abas)
   const tabsNav = document.querySelector('.tabs-nav');
   if (tabsNav) {
@@ -5943,13 +6349,20 @@ window.setActiveTab = function(tabName){
       const total = stats.nProdutos != null ? stats.nProdutos : ((BUNDLE.data || []).filter(p => !EXCLUIR_COD_ITEM.has(p.codItem)).length);
       badgeProdutos.textContent = total;
     }
+    // Badge cessões: carrega cache do Firebase em background
+    if (typeof _carregarCessoesCache === 'function') {
+      _carregarCessoesCache().then(todas => {
+        const badgeCess = document.getElementById('tab-badge-cessoes');
+        if (badgeCess) badgeCess.textContent = todas.length;
+      }).catch(() => {});
+    }
   } catch(e) { console.warn('[tabs] erro inicializando badges:', e); }
 
   // Aba ativa
   let tabInicial = 'visao';
   try {
     const salva = sessionStorage.getItem('mm-active-tab');
-    if (salva && ['visao','graficos','lotes','alertas','consumo','produtos'].includes(salva)) tabInicial = salva;
+    if (salva && ['visao','graficos','lotes','alertas','consumo','cessoes','produtos'].includes(salva)) tabInicial = salva;
   } catch(e){}
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => setActiveTab(tabInicial));
