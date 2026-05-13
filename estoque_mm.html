@@ -2845,6 +2845,7 @@ function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun, gapD
           </div>
           <div style="font-size:9.5px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.variacao}</div>
         </div>
+        <div data-consumo-cessao="${a.codMasc}" style="display:none;text-align:right;font-size:10px;font-weight:700;color:#c4b5fd;line-height:1.3;flex-shrink:0;min-width:96px;padding:4px 8px;background:rgba(167,139,250,0.10);border-radius:6px;"></div>
         <div style="text-align:right;font-size:9px;color:var(--muted);font-weight:600;line-height:1.3;flex-shrink:0;min-width:88px;">
           <div>esperado <b style="color:var(--text);font-size:10.5px;">${a.mediaDia} un/dia</b></div>
           <div style="color:#ef4444;">${desvioPct}% da média</div>
@@ -2862,6 +2863,45 @@ function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun, gapD
   }
 
   c.innerHTML = html;
+
+  // Async: busca cessões do período pra cada SKU em alerta e popula a célula 💜
+  if (window._mmDB && alertas.length > 0) {
+    // Converte dd/mm/yyyy → YYYY-MM-DD
+    const toKey = s => {
+      const m = (s||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      return m ? `${m[3]}-${m[2]}-${m[1]}` : null;
+    };
+    const dataAnteriorKey = toKey(dataAnterior);
+    const dataAtualKey    = toKey(dataAtual);
+    if (dataAnteriorKey && dataAtualKey) {
+      window._mmDB.ref('estoque_mm/cessoes').once('value').then(snap => {
+        const cessoesPorSku = {};
+        const detalhesPorSku = {};
+        Object.entries(snap.val() || {}).forEach(([cm, cessoes]) => {
+          Object.values(cessoes || {}).forEach(c => {
+            if (!c || !c.data) return;
+            // Cessão dentro do período (anterior < data <= atual)
+            if (c.data > dataAnteriorKey && c.data <= dataAtualKey) {
+              cessoesPorSku[cm] = (cessoesPorSku[cm] || 0) + (c.qtd || 0);
+              if (!detalhesPorSku[cm]) detalhesPorSku[cm] = [];
+              detalhesPorSku[cm].push(`${c.quem || '?'}: ${c.qtd}`);
+            }
+          });
+        });
+        // Popula cada célula data-consumo-cessao
+        document.querySelectorAll('[data-consumo-cessao]').forEach(el => {
+          const cm = el.dataset.consumoCessao;
+          const qtd = cessoesPorSku[cm];
+          if (qtd && qtd > 0) {
+            const detalhes = (detalhesPorSku[cm] || []).join(' · ');
+            el.innerHTML = `<div style="font-size:11px;font-weight:800;font-family:'Syne',sans-serif;color:#c4b5fd;">${qtd} <span style="font-size:8.5px;opacity:0.7;font-weight:600;font-family:inherit;text-transform:uppercase;letter-spacing:0.4px;">cedidas</span></div><div style="font-size:9px;opacity:0.85;font-weight:500;margin-top:2px;">${detalhes}</div>`;
+            el.style.display = 'block';
+            el.title = `Você registrou cessão deste SKU pra: ${detalhes}. Isso explica parte do consumo.`;
+          }
+        });
+      }).catch(e => console.warn('[consumo-cessoes]', e));
+    }
+  }
 }
 
 // ═══ EXPORTA MÊS COMPLETO (XLSX) — fechamento mensal com 3 abas ═══
