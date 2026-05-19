@@ -521,6 +521,11 @@
   .lote-form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;font-family:inherit;outline:none;transition:border-color 0.15s;box-sizing:border-box;}
   .lote-form-input:focus{border-color:rgba(34,211,238,0.5);}
   .lote-form-input::placeholder{color:var(--muted);}
+  /* Input estreito pro código do lote (opcional) */
+  .lote-form-codigo{flex:0 0 170px;width:170px;font-family:'JetBrains Mono', monospace;font-size:11.5px;letter-spacing:0.3px;text-transform:uppercase;}
+  .lote-form-codigo::placeholder{text-transform:none;letter-spacing:normal;font-family:inherit;}
+  /* Badge mostrando o código do lote na lista renderizada */
+  .lote-cod-badge{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:9.5px;font-weight:700;color:#22d3ee;background:rgba(34,211,238,0.10);border:1px solid rgba(34,211,238,0.30);padding:1px 6px;border-radius:4px;letter-spacing:0.4px;margin-right:6px;vertical-align:1px;}
   .lote-form-suggestions{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:280px;overflow-y:auto;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,0.4);z-index:50;}
   .lote-form-suggestions.open{display:block;}
   .lote-form-suggestion-item{padding:8px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;transition:background 0.12s;}
@@ -1171,6 +1176,8 @@
         <input type="hidden" id="lote-form-produto" value="">
         <div class="lote-form-suggestions" id="lote-form-suggestions"></div>
       </div>
+      <input type="text" class="lote-form-input lote-form-codigo" id="lote-form-codigo"
+             placeholder="Cód. do lote (opcional)" autocomplete="off" maxlength="40">
       <input type="date" class="lote-form-date" id="lote-form-data">
       <button class="lote-form-btn" id="lote-form-btn" onclick="salvarNovoLote()">✓ Salvar lote</button>
     </div>
@@ -5832,8 +5839,8 @@ renderTable();
   // Estrutura antiga (retrocompatível): codItem: {dataKey, ts} (1 lote)
   function _parseLotes(data){
     if (!data) return [];
-    if (data.dataKey) return [{ id: '_legacy', dataKey: data.dataKey, ts: data.ts || 0 }];
-    return Object.entries(data).map(([id, l]) => ({ id, dataKey: l.dataKey, ts: l.ts || 0 }))
+    if (data.dataKey) return [{ id: '_legacy', dataKey: data.dataKey, codLote: data.codLote || null, ts: data.ts || 0 }];
+    return Object.entries(data).map(([id, l]) => ({ id, dataKey: l.dataKey, codLote: l.codLote || null, ts: l.ts || 0 }))
       .filter(l => l.dataKey);
   }
   // Retorna o próximo lote futuro (ou hoje); se só tem passados, retorna o mais recente passado
@@ -5927,6 +5934,7 @@ renderTable();
   window.salvarNovoLote = async function(){
     const codItem = document.getElementById('lote-form-produto').value;
     const dataKey = document.getElementById('lote-form-data').value;
+    const codLote = (document.getElementById('lote-form-codigo').value || '').trim().toUpperCase();
     if (!codItem) {
       alert('Escolha um produto da lista de sugestões (digite e clique em uma opção).');
       document.getElementById('lote-form-produto-search').focus();
@@ -5959,13 +5967,13 @@ renderTable();
       }
       // Salva o novo lote como item separado (não sobrescreve)
       const newId = window._mmDB.ref().push().key;
-      await window._mmDB.ref(`${FB_PATH}/${codItem}/${newId}`).set({
-        dataKey: dataKey,
-        ts: Date.now(),
-      });
+      const novoLote = { dataKey: dataKey, ts: Date.now() };
+      if (codLote) novoLote.codLote = codLote;  // só grava se preenchido
+      await window._mmDB.ref(`${FB_PATH}/${codItem}/${newId}`).set(novoLote);
       document.getElementById('lote-form-produto-search').value = '';
       document.getElementById('lote-form-produto').value = '';
       document.getElementById('lote-form-data').value = '';
+      document.getElementById('lote-form-codigo').value = '';
       await renderizarLotes();
       _atualizarProximaAnaliseEmBg();
     } catch (e) {
@@ -6135,7 +6143,8 @@ renderTable();
             nVars: prod.nVars,
             dataKey: l.dataKey,
             dataFmt: _formatarDataLP(l.dataKey),
-            diasAte
+            diasAte,
+            codLote: l.codLote || null
           });
         }
       }
@@ -6199,9 +6208,9 @@ renderTable();
           aviso = `em ${g.diasAte} dias`;
         }
         const produtosHtml = g.produtos.map(p =>
-          `<div class="lote-prod-row" data-search="${(p.produto + ' ' + p.categoria + ' ' + p.codItem + ' ' + g.dataFmt + ' ' + g.dataKey).toLowerCase()}">
+          `<div class="lote-prod-row" data-search="${(p.produto + ' ' + p.categoria + ' ' + p.codItem + ' ' + g.dataFmt + ' ' + g.dataKey + ' ' + (p.codLote || '')).toLowerCase()}">
             <div class="lote-prod-info">
-              <div class="lote-prod-nome">${p.produto}</div>
+              <div class="lote-prod-nome">${p.codLote ? `<span class="lote-cod-badge" title="Código do lote">${p.codLote}</span>` : ''}${p.produto}</div>
               <div class="lote-prod-meta">${p.categoria} · cod ${p.codItem} · ${p.nVars} variaç${p.nVars > 1 ? 'ões' : 'ão'} atendida${p.nVars > 1 ? 's' : ''}</div>
             </div>
             <button class="lote-item-btn" onclick="removerLote(${p.codItem}, '${p.loteId}')" title="Remover esse lote">🗑</button>
