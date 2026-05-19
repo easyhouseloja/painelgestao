@@ -2141,6 +2141,39 @@ const fmtMedia = un => {
   if (!isFinite(n) || n <= 0) return '— un/dia';
   return Math.ceil(n / 30) + ' un/dia';
 };
+
+// === CONSOLIDAÇÃO DE CESSÕES → LOGÍSTICA ===
+// Jessica / Marcelly / Ana Clara / Leiliane são tratados como "LOGÍSTICA" tanto na
+// gravação (registrarCessao) quanto na leitura (todas as cargas do Firebase). Registros
+// antigos não são reescritos — só normalizados em memória na hora de exibir/agregar.
+const _LOGISTICA_NOMES = new Set(['jessica','marcelly','ana clara','leiliane']);
+function _normQuem(quem){
+  if (!quem) return '?';
+  const norm = String(quem).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  return _LOGISTICA_NOMES.has(norm) ? 'LOGÍSTICA' : quem;
+}
+// Para a estrutura completa {codMasc: {ts: {quem,...}}}
+function _normCessoesRaw(raw){
+  if (!raw || typeof raw !== 'object') return raw;
+  const out = {};
+  Object.entries(raw).forEach(([cm, byTs]) => {
+    if (!byTs || typeof byTs !== 'object') { out[cm] = byTs; return; }
+    out[cm] = {};
+    Object.entries(byTs).forEach(([ts, c]) => {
+      out[cm][ts] = (c && typeof c === 'object') ? Object.assign({}, c, { quem: _normQuem(c.quem) }) : c;
+    });
+  });
+  return out;
+}
+// Para a estrutura per-SKU {ts: {quem,...}} (sem o codMasc envolvendo)
+function _normCessoesSku(dados){
+  if (!dados || typeof dados !== 'object') return dados;
+  const out = {};
+  Object.entries(dados).forEach(([ts, c]) => {
+    out[ts] = (c && typeof c === 'object') ? Object.assign({}, c, { quem: _normQuem(c.quem) }) : c;
+  });
+  return out;
+}
 // Quadradinho da curva ABC (A=verde, B=amarelo, C=vermelho, sem forecast=cinza)
 function curvaBadge(curva){
   const c = curva || 'none';
@@ -3361,7 +3394,7 @@ async function exportarMesCompletoXLSX(){
       window._mmDB.ref('estoque_mm/cessoes').once('value'),
     ]);
     const snaps = snapsResp.val() || {};
-    const cessoesPorSku = cessoesResp.val() || {};
+    const cessoesPorSku = _normCessoesRaw(cessoesResp.val() || {});
     const datasOrdenadas = Object.keys(snaps).sort();
 
     if (datasOrdenadas.length === 0) {
@@ -3736,7 +3769,7 @@ async function exportarConsumoCompletoCSV(){
       window._mmDB.ref('estoque_mm/cessoes').once('value'),
     ]);
     const snaps = snapsResp.val() || {};
-    const cessoesPorSku = cessoesResp.val() || {};
+    const cessoesPorSku = _normCessoesRaw(cessoesResp.val() || {});
     const datasOrdenadas = Object.keys(snaps).sort();
 
     if (datasOrdenadas.length < 2) {
@@ -5407,10 +5440,7 @@ renderTable();
             <label class="sim-cessao-label">Pra quem cedeu?</label>
             <select id="sim-cessao-quem" class="sim-cessao-select" onchange="toggleCessaoOutro()">
               <option value="">— escolha —</option>
-              <option value="Marcelly">Marcelly</option>
-              <option value="Jéssica">Jéssica</option>
-              <option value="Ana Clara">Ana Clara</option>
-              <option value="Leiliane">Leiliane</option>
+              <option value="LOGÍSTICA">LOGÍSTICA</option>
               <option value="__outro__">Outro…</option>
             </select>
             <input id="sim-cessao-outro" type="text" class="sim-cessao-input" placeholder="Digite o nome" style="display:none;margin-top:6px;">
@@ -5618,6 +5648,8 @@ renderTable();
       quem = (inpOutro.value || '').trim();
       if (!quem) { _cessaoFeedback('Digite o nome da pessoa.', 'erro'); inpOutro.focus(); return; }
     }
+    // Consolida nomes do grupo de logística antes de gravar
+    quem = _normQuem(quem);
     const obs = (inpObs.value || '').trim();
     if (!window._mmDB) { _cessaoFeedback('Firebase não disponível.', 'erro'); return; }
 
@@ -5689,7 +5721,7 @@ renderTable();
     if (!window._mmDB) { wrap.style.display = 'none'; return; }
     try {
       const snap = await window._mmDB.ref(`estoque_mm/cessoes/${codMasc}`).once('value');
-      const dados = snap.val() || {};
+      const dados = _normCessoesSku(snap.val() || {});
       const arr = Object.entries(dados).map(([id, c]) => ({...c, id})).sort((a,b) => b.ts - a.ts);
       if (arr.length === 0) { wrap.style.display = 'none'; return; }
       wrap.style.display = 'block';
@@ -6224,7 +6256,7 @@ async function calcularProximaAnalise(){
   ]);
   const lotes = respLotes.val() || {};
   const snapshots = respSnaps.val() || {};
-  const cessoes = respCessoes.val() || {};
+  const cessoes = _normCessoesRaw(respCessoes.val() || {});
   const hoje = _hojeKeyLocal();
 
   // Pega snapshot anterior mais próximo (ontem ou último dia útil registrado)
@@ -6870,7 +6902,7 @@ async function calcularProjecaoMes(){
     window._mmDB.ref('estoque_mm/cessoes').once('value'),
   ]);
   const snapshots = respSnaps.val() || {};
-  const cessoes   = respCessoes.val() || {};
+  const cessoes   = _normCessoesRaw(respCessoes.val() || {});
 
   // Filtra só snapshots desse mês, ordenados
   const datasDoMes = Object.keys(snapshots)
@@ -7928,7 +7960,7 @@ async function _carregarCessoesCache(forceReload){
       window._mmDB.ref('estoque_mm/historico_consumo').once('value'),
       window._mmDB.ref('estoque_mm/datas_lote').once('value'),
     ]);
-    const raw = respCess.val() || {};
+    const raw = _normCessoesRaw(respCess.val() || {});
     const snapshots = respSnap.val() || {};
     const lotes = respLotes.val() || {};   // { codItem: {dataKey, ts} }
     const datasOrdenadas = Object.keys(snapshots).sort();
@@ -8375,7 +8407,7 @@ async function exportarCessoesXLSX(){
 
   try {
     const cessoesResp = await window._mmDB.ref('estoque_mm/cessoes').once('value');
-    const cessoesPorSku = cessoesResp.val() || {};
+    const cessoesPorSku = _normCessoesRaw(cessoesResp.val() || {});
 
     // Determinar mês a partir do BUNDLE
     const stats = BUNDLE.stats || {};
@@ -8830,7 +8862,7 @@ async function exportarCessoesXLSX(){
         window._mmDB.ref('estoque_mm/cessoes').once('value'),
       ]);
       const snaps = snapsResp.val() || {};
-      const cessoes = cessoesResp.val() || {};
+      const cessoes = _normCessoesRaw(cessoesResp.val() || {});
       renderG1(snaps);
       renderG2(snaps);
       renderG3(cessoes);
