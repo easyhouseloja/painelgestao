@@ -3194,6 +3194,89 @@ body.light-mode .btn-reputacao:hover {
 .logs-user-select option { background: #1a1a2e; color: var(--text-primary); }
 
 /* ══════════════════════════════════════════════════════════════
+   MADEIRA MADEIRA (panel-1p) — GRID 3 COLUNAS, LARGURA IGUAL AO 3P
+   3 cards fixos: Vendas · Portfólio · Estoque Interno MM
+   Cards centralizados, largura próxima dos cards do 3P (~320-360px)
+   ══════════════════════════════════════════════════════════════ */
+#panel-1p .dashboard {
+  grid-template-columns: repeat(3, minmax(0, 360px));
+  justify-content: center;
+  margin-left: 0;
+  margin-right: 0;
+}
+@media (max-width: 900px) {
+  #panel-1p .dashboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 600px) {
+  #panel-1p .dashboard {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── BARRA FLUTUANTE MADEIRA MADEIRA (1P) — Pior caso de estoque ──
+   Espelha o estilo da .any-float-bar, mas em tema âmbar/vermelho. */
+.mm-float-bar {
+  margin: 0 56px 20px;
+  background: rgba(212,160,23,0.06);
+  border: 1px solid rgba(212,160,23,0.22);
+  border-left: 4px solid var(--accent-amber);
+  border-radius: 12px;
+  padding: 0 24px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 0 20px rgba(212,160,23,0.06);
+}
+.mm-float-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  box-shadow: 0 0 7px rgba(212,160,23,0.8);
+  animation: dotPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.mm-float-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9px;
+  background: rgba(212,160,23,0.10);
+  border: 1px solid rgba(212,160,23,0.30);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.mm-float-cta:hover {
+  background: rgba(212,160,23,0.18);
+  border-color: rgba(212,160,23,0.55);
+  box-shadow: 0 0 14px rgba(212,160,23,0.22);
+}
+.mm-float-cta i { color: var(--accent-amber); }
+
+@media (max-width: 700px) {
+  .mm-float-bar {
+    margin: 0 16px 16px;
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    min-height: 0;
+  }
+  .mm-float-bar .any-float-inner {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .mm-float-bar #estoque-mm-pior-bloco { width: 100%; }
+}
+
+/* ══════════════════════════════════════════════════════════════
    EASY HOUSE (panel-3p) — SCROLL HORIZONTAL
    6 cards: Estoque · Pós-venda · SLA · Comercial · ByBox · Financeiro
    5 visíveis no tamanho original, o 6º revelado pela rolagem
@@ -3954,6 +4037,20 @@ body.light-mode #iframe-page-title {
 .estoque-mm-animated.estoque-mm-ready > span:nth-of-type(1) {
   animation: sla-verde-entrada 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s backwards;
 }
+
+/* ─── WIDGETS: VENDAS 1P + PORTFÓLIO (chips do painel Madeira 1P) ─── */
+.vendas-1p-animated,
+.portfolio-animated {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.vendas-1p-animated.vendas-1p-ready,
+.portfolio-animated.portfolio-ready {
+  animation: meta-fade-in 0.7s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+.vendas-1p-animated.vendas-1p-ready > span:nth-of-type(1),
+.portfolio-animated.portfolio-ready > span:nth-of-type(1) {
+  animation: sla-verde-entrada 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s backwards;
+}
 @media (prefers-reduced-motion: reduce) {
   .estoque-mm-animated,
   .estoque-mm-animated.estoque-mm-ready,
@@ -4435,6 +4532,17 @@ body.light-mode #iframe-page-title {
           <div class="card-tag">Marketplace · 1P</div>
           <h2>Vendas Madeira Madeira</h2>
           <p>Acompanhamento de faturamento, metas e projeção de vendas 1P na Madeira Madeira, com performance por categoria e comparativos mensais.</p>
+
+          <!-- CHIP META + FATURAMENTO 1P — atualizado pelo script no final (busca vendas_1P.html) -->
+          <div id="vendas-1p-widget" class="vendas-1p-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados de vendas 1P...">
+            <span id="vendas-1p-chip" style="font-size:11px;font-weight:700;color:#bfa8ff;background:rgba(156,111,255,0.12);border:1px solid rgba(156,111,255,0.22);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
+              <span id="vendas-1p-label">Meta</span> · <span id="vendas-1p-percent" style="font-size:14px;font-weight:800;letter-spacing:0.2px;">—</span>
+            </span>
+            <span style="font-size:9.5px;font-weight:500;color:var(--text-secondary);opacity:0.75;letter-spacing:0.3px;padding-left:4px;">
+              <span id="vendas-1p-valores">carregando...</span>
+            </span>
+          </div>
+
           <div class="card-footer">
             Acessar dashboard <i data-lucide="arrow-right"></i>
           </div>
@@ -4448,6 +4556,21 @@ body.light-mode #iframe-page-title {
           <div class="card-tag">Mix de Produtos · Visão por Cliente</div>
           <h2>Portfólio</h2>
           <p>Visão completa do portfólio ativo na Madeira Madeira: SKUs, modelos, categorias, variações e distribuição por cliente. Atualizado diariamente.</p>
+
+          <!-- CHIP SKUs ativos · modelos · categorias — atualizado pelo script no final (busca portfolio_ecom.html) -->
+          <div id="portfolio-widget" class="portfolio-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do portfólio...">
+            <span id="portfolio-chip" style="font-size:11px;font-weight:700;color:#22c0d8;background:rgba(8,145,178,0.12);border:1px solid rgba(8,145,178,0.22);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
+              <span id="portfolio-skus-total" style="font-size:14px;font-weight:800;letter-spacing:0.2px;">—</span>
+              <span style="opacity:0.85;">SKUs</span>
+              <span style="opacity:0.4;">·</span>
+              <span id="portfolio-modelos" style="font-size:13px;font-weight:800;letter-spacing:0.2px;">—</span>
+              <span style="opacity:0.85;">modelos</span>
+            </span>
+            <span style="font-size:9.5px;font-weight:500;color:var(--text-secondary);opacity:0.75;letter-spacing:0.3px;padding-left:4px;">
+              <span id="portfolio-cats">carregando...</span>
+            </span>
+          </div>
+
           <div class="card-footer">
             Acessar dashboard <i data-lucide="arrow-right"></i>
           </div>
@@ -4465,46 +4588,21 @@ body.light-mode #iframe-page-title {
           <h2>Estoque Interno MM</h2>
           <p>Reservas da carga mãe, cobertura por SKU e alertas de ruptura.</p>
 
-          <!-- WIDGET: % ATENDIMENTO (com delta vs ontem) + PIOR CASO — atualizado pelo script no final -->
-          <div id="estoque-mm-widget" class="estoque-mm-animated" style="display:flex;flex-direction:column;align-items:stretch;gap:8px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do estoque MM...">
-            <span id="estoque-mm-chip-pct" style="font-size:11px;font-weight:600;color:#6b7494;letter-spacing:0.2px;line-height:1.4;display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;padding:0 2px;">
-              <span>Atendimento carga mãe:</span>
-              <span id="estoque-mm-pct" style="font-size:12.5px;font-weight:800;color:#d4a017;letter-spacing:0.3px;">—</span>
+          <!-- WIDGET: % ATENDIMENTO (com delta vs ontem) — bloco "Pior caso" foi movido para a barra flutuante abaixo dos cards -->
+          <div id="estoque-mm-widget" class="estoque-mm-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do estoque MM...">
+            <span id="estoque-mm-chip-pct" style="font-size:11px;font-weight:700;color:#d4a017;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.22);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
+              <span style="color:var(--text-secondary);font-weight:600;">Atendimento carga mãe</span>
+              <span>·</span>
+              <span id="estoque-mm-pct" style="font-size:14px;font-weight:800;color:#d4a017;letter-spacing:0.2px;">—</span>
               <!-- Delta vs ontem (aparece quando há comparação histórica disponível) -->
-              <span id="estoque-mm-pct-delta" style="display:none;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:5px;letter-spacing:0.2px;line-height:1.3;"></span>
+              <span id="estoque-mm-pct-delta" style="display:none;font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;letter-spacing:0.2px;line-height:1.3;"></span>
             </span>
-            <!-- Bloco PIOR CASO movido pra cá (substitui a timeline antiga) -->
-            <div id="estoque-mm-pior-bloco" style="display:none;margin-top:6px;padding-top:8px;border-top:1px dashed rgba(0,0,0,0.08);">
-              <!-- Linha 1: label + número de dias -->
-              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;line-height:1.15;margin-bottom:7px;">
-                <span style="font-size:9.5px;font-weight:700;color:#6b7494;text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;">Pior caso · atende</span>
-                <span style="display:flex;align-items:baseline;gap:5px;">
-                  <span id="estoque-mm-dias" style="font-family:'Syne','Inter',sans-serif;font-size:22px;font-weight:800;color:#d4a017;letter-spacing:-0.01em;line-height:1;">—</span>
-                  <span style="font-size:11px;font-weight:600;color:#6b7494;">dias</span>
-                </span>
-              </div>
-              <!-- Linha 2: caixa colorida com nome do SKU em largura total -->
-              <div id="estoque-mm-pior-sku" style="line-height:1.3;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);border-left:3px solid #ef4444;border-radius:6px;padding:7px 10px;">
-                <div style="display:flex;align-items:center;gap:6px;min-width:0;">
-                  <span id="estoque-mm-pior-curva" style="display:none;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:4px;letter-spacing:0.4px;line-height:1.4;flex-shrink:0;"></span>
-                  <span id="estoque-mm-pior-nome" style="font-size:11px;font-weight:700;color:#ef4444;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-                </div>
-                <span id="estoque-mm-pior-var" style="font-size:10px;font-weight:500;color:#94a3b8;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;"></span>
-              </div>
-            </div>
           </div>
 
           <div class="card-footer">
             Acessar controle <i data-lucide="arrow-right"></i>
           </div>
         </a>
-
-        <!-- PLACEHOLDER (em breve) -->
-        <div class="coming-soon-card">
-          <i data-lucide="plus-circle" style="width:28px;height:28px"></i>
-          <strong>Em breve</strong>
-          <span>Novos dashboards 1P serão adicionados aqui.</span>
-        </div>
 
       </div>
     </div>
@@ -4528,6 +4626,42 @@ body.light-mode #iframe-page-title {
             <i data-lucide="shopping-bag" style="width:13px;height:13px;"></i>
             Pedidos · Pendente & Pago
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA FLUTUANTE MADEIRA MADEIRA (1P): Pior caso de estoque — só aparece no painel 1P -->
+  <div class="mm-float-bar" id="mmFloatBar" style="display:none;">
+    <div class="any-float-inner">
+      <div class="any-float-left">
+        <div class="mm-float-dot"></div>
+        <div class="any-float-info">
+          <span class="any-float-title">Estoque MM</span>
+          <span class="any-float-sep">·</span>
+          <span class="any-float-sub">Pior caso de atendimento</span>
+        </div>
+      </div>
+      <!-- Wrapper que o JS já controla (display: block/none). Conteúdo interno é flex. -->
+      <div id="estoque-mm-pior-bloco" style="display:none;">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end;">
+          <!-- Caixa colorida com SKU pior caso (cores setadas dinamicamente pelo JS) -->
+          <div id="estoque-mm-pior-sku" style="display:flex;align-items:center;gap:10px;padding:6px 12px;border-radius:8px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);border-left:3px solid #ef4444;line-height:1.3;max-width:420px;">
+            <span id="estoque-mm-pior-curva" style="display:none;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:4px;letter-spacing:0.4px;line-height:1.4;flex-shrink:0;"></span>
+            <div style="display:flex;flex-direction:column;line-height:1.2;min-width:0;">
+              <span id="estoque-mm-pior-nome" style="font-size:12px;font-weight:700;color:#ef4444;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+              <span id="estoque-mm-pior-var" style="font-size:10px;font-weight:500;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+            </div>
+          </div>
+          <!-- CTA com número de dias — abre o dashboard de Estoque MM -->
+          <a href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/estoque_mm.html" data-title="Controle de Estoque Interno · Madeira Madeira" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)" class="mm-float-cta">
+            <span style="font-size:10px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;">atende</span>
+            <span style="display:inline-flex;align-items:baseline;gap:4px;">
+              <span id="estoque-mm-dias" style="font-family:'Syne','Inter',sans-serif;font-size:22px;font-weight:800;color:#d4a017;letter-spacing:-0.01em;line-height:1;">—</span>
+              <span style="font-size:11px;font-weight:600;color:var(--text-secondary);">dias</span>
+            </span>
+            <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -5740,13 +5874,13 @@ function vtexCarregarResumo(force) {
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────────
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 let NOTIFICACOES_HOJE = [
-  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 10 variações em alerta ⚠️',desc:'71,5% reservado · ',hora:'12/05/2026',lida:false,link:'estoque.html',critico:true},
-  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 0,00%',desc:'85 em atraso · 408 sem faturar · Todas transportadoras na meta ✅',hora:'20/05/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 11 variações em alerta ⚠️',desc:'78,3% reservado · GR: GR EASY SLIM 8 PTS BRANCO#S/ESP#S/PES (0,0%) · GR 06 PTS EASY MOVE 2,40 AMENDOA CLEAN/OFF WH#S/ESP#S/P (0,0%) · GR 06 PTS EASY MOVE 2,40 AMENDOA CLEAN#S/ESP#S/PES (0,0%) · GR 0',hora:'04/05/2026',lida:false,link:'estoque.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(39,174,96,0.15)',titulo:'SLA: ✅ Acima da meta — 97,71%',desc:'96 em atraso · 211 sem faturar · Pior transp.: TS RJ 50,65%🔴 · TRANS EXPRESS 94,56%',hora:'05/05/2026',lida:false,link:'sla_transporte.html',critico:false},
   {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: Abr 118,56% da Meta (01–30/04)',desc:'R$ 9,05M faturado em 30 dias · Média diária R$ 302K · Meta R$ 8,6M · +168% Ano x Ano',hora:'30/04/2026',lida:false,link:'comercial.html',critico:false},
-  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado(s) ⚠️',desc:'83 itens · 58 pedidos · 4 em atraso · Atraso médio 8,7d · Maior: 32d (#495511 — Moderado (32d) · #548540 beira (29d)) · 1 moderado(s): ⚠ #86772 cruzou a faixa hoje · 0 críticos',hora:'19/05/2026',lida:false,link:'assistencia.html',critico:false},
-  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: ? recebido ✓',desc:'Cartas de Débito · ? recebido · R$ 28.278 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'19/05/2026',lida:false,link:'financeiro.html',critico:false},
-  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 722 no período',desc:'01/01 a 18/05/2026 · R$ 761,5K · 722 notas · Ticket médio R$ 1.055 · Top motivo: 38,6% (Desistência · 279 notas) · Top transp: 192 notas (Nova Era Express) · Maior mês: ? ',hora:'18/05/2026',lida:false,link:'devolucao.html',critico:false},
-  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'20/05/2026',lida:false,link:'reputacao.html',critico:false}
+  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado(s) ⚠️',desc:'94 itens · 67 pedidos · 4 em atraso · Atraso médio 8,0d · Maior: 32d (#495511 — Moderado (32d) · #548540 beira (29d)) · 1 moderado(s): ⚠ #86772 cruzou a faixa hoje · 0 críticos',hora:'05/05/2026',lida:false,link:'assistencia.html',critico:false},
+  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: ? recebido ✓',desc:'Cartas de Débito · ? recebido · R$ 40.610 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'04/05/2026',lida:false,link:'financeiro.html',critico:false},
+  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 666 no período',desc:'01/01 a 04/05/2026 · R$ 699,8K · 666 notas · Ticket médio R$ 1.051 · Top motivo: 39,0% (Desistência · 260 notas) · Top transp: 186 notas (Nova Era Express) · Maior mês: ? ',hora:'05/05/2026',lida:false,link:'devolucao.html',critico:false},
+  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'05/05/2026',lida:false,link:'reputacao.html',critico:false}
 ];
 let TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
 
@@ -6263,6 +6397,9 @@ function switchChannel(ch) {
   if (notifWrap) notifWrap.style.display = is3p ? '' : 'none';
   const floatBar = document.getElementById('anyFloatBar');
   if (floatBar) floatBar.style.display = is3p ? '' : 'none';
+  // Barra Pior Caso (Madeira 1P): inversa — só aparece no painel 1P
+  const mmFloatBar = document.getElementById('mmFloatBar');
+  if (mmFloatBar) mmFloatBar.style.display = (ch === '1p') ? 'flex' : 'none';
 
 
   // Persistir escolha na sessão
@@ -9782,6 +9919,237 @@ document.addEventListener('DOMContentLoaded', function() {
     atualizarEstoqueMM();
   }
   setInterval(atualizarEstoqueMM, 10 * 60 * 1000);
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     WIDGET VENDAS 1P + PORTFÓLIO — chips do painel Madeira 1P
+     Parsers calibrados para a estrutura real dos dashboards de origem:
+       vendas_1P.html → .month-page#pgN com .kpi-card > (.kpi-lbl + .kpi-val + .kpi-sub)
+         pgN = N do mês corrente + 1 (pg0=visão geral, pg1=jan, ..., pg5=maio)
+         Card [0]: "Faturamento Total/Parcial" + Meta Mensal embutida (div com R$ font-weight 800)
+         Card [2]: "Projeção Faturamento" + sub "Tendência ▼/▲ X% da meta"
+         Card [3]: "% Atingimento Meta" → valor principal do chip
+       portfolio_ecom.html → KPIs são populados via JS a partir de "const RAW = [...]"
+         Extraímos o array por regex e contamos: total SKUs, modelos únicos (cliente+descrição), categorias
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  const VENDAS_1P_URL = 'https://easyhouseloja.github.io/painelgestao/vendas_1P.html';
+  const PORTFOLIO_URL = 'https://easyhouseloja.github.io/painelgestao/portfolio_ecom.html';
+
+  const MESES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+  function parseNumBr(txt){
+    if(!txt) return null;
+    const m = String(txt).replace(/\s+/g,'').match(/-?\d+(?:[.,]\d+)?/);
+    if(!m) return null;
+    return parseFloat(m[0].replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.'));
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // VENDAS 1P — busca .month-page#pgN do mês corrente (fallback: última disponível)
+  // ─────────────────────────────────────────────────────────────
+  async function atualizarVendas1P(){
+    const widget = document.getElementById('vendas-1p-widget');
+    if(!widget) return;
+
+    try{
+      const res = await fetch(VENDAS_1P_URL, { cache:'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      // 1) Encontra a month-page do mês corrente; fallback pra mais recente disponível.
+      const mesIdx = new Date().getMonth();        // 0=jan
+      const mesAbrev = MESES_ABREV[mesIdx];
+      let monthPage = doc.getElementById('pg' + (mesIdx + 1));
+      if(!monthPage){
+        const pages = [...doc.querySelectorAll('.month-page[id^="pg"]')]
+                       .filter(p => /^pg\d+$/.test(p.id) && p.id !== 'pg0')
+                       .sort((a,b) => parseInt(b.id.slice(2)) - parseInt(a.id.slice(2)));
+        monthPage = pages[0];
+      }
+      if(!monthPage) throw new Error('Nenhuma month-page encontrada em vendas_1P.html');
+
+      // 2) Itera os .kpi-card dentro da month-page e identifica por label.
+      let faturado=null, metaPct=null, metaVal=null, projVal=null, projPctRaw=null, projDir=null;
+
+      monthPage.querySelectorAll('.kpi-card').forEach(card=>{
+        const lbl = (card.querySelector('.kpi-lbl')?.textContent || '').trim();
+        const val = (card.querySelector('.kpi-val')?.textContent || '').trim();
+        const sub = (card.querySelector('.kpi-sub')?.textContent || '').trim();
+
+        if(/^Faturamento\s+(Total|Parcial|Acumulado)\b/i.test(lbl)){
+          faturado = val;
+          // Meta Mensal vem como dois divs filhos extras: label "Meta Mensal" + valor R$
+          const divs = [...card.children].filter(c => c.tagName === 'DIV');
+          const metaIdx = divs.findIndex(d => /Meta\s+Mensal/i.test(d.textContent));
+          if(metaIdx >= 0 && metaIdx + 1 < divs.length){
+            metaVal = divs[metaIdx + 1].textContent.trim();
+          }
+        } else if(/Atingimento\s+Meta/i.test(lbl)){
+          metaPct = val;
+        } else if(/Proje[çc][ãa]o/i.test(lbl)){
+          projVal = val;
+          // sub tem padrão "Tendência ▼ 27% da meta" ou "▲ X% acima"
+          const m = sub.match(/([▼▲])\s*(\d+(?:[.,]\d+)?%)/);
+          if(m){ projDir = m[1]; projPctRaw = m[2]; }
+        }
+      });
+
+      if(!metaPct) throw new Error('% Atingimento Meta não encontrado no mês corrente');
+
+      // 3) Renderiza no chip
+      const labelEl   = document.getElementById('vendas-1p-label');
+      const pctEl     = document.getElementById('vendas-1p-percent');
+      const valoresEl = document.getElementById('vendas-1p-valores');
+      const chipEl    = document.getElementById('vendas-1p-chip');
+
+      if(labelEl) labelEl.textContent = 'Meta ' + mesAbrev;
+      if(pctEl)   pctEl.textContent   = metaPct.replace(/\s+/g,'');
+
+      if(valoresEl){
+        const partes = [];
+        if(faturado && metaVal){
+          const metaSemPrefix = metaVal.replace(/^R\$\s*/i,'');
+          partes.push(`${faturado} / ${metaSemPrefix}`);
+        } else if(faturado){
+          partes.push(faturado);
+        }
+        if(projVal){
+          const projTxt = projPctRaw
+            ? `proj. ${projVal} (${projDir||''}${projPctRaw})`.replace(/\s+/g,' ').trim()
+            : `proj. ${projVal}`;
+          partes.push(projTxt);
+        }
+        valoresEl.textContent = partes.length ? partes.join(' · ') : '—';
+      }
+
+      // 4) Cor dinâmica do chip por % atingimento
+      const pctNum = parseNumBr(metaPct);
+      if(chipEl && pctNum !== null && isFinite(pctNum)){
+        if(pctNum >= 100){
+          chipEl.style.color = '#86efac';
+          chipEl.style.background = 'rgba(34,197,94,0.14)';
+          chipEl.style.borderColor = 'rgba(34,197,94,0.32)';
+        } else if(pctNum >= 80){
+          chipEl.style.color = '#bfa8ff';
+          chipEl.style.background = 'rgba(156,111,255,0.12)';
+          chipEl.style.borderColor = 'rgba(156,111,255,0.22)';
+        } else if(pctNum >= 60){
+          chipEl.style.color = '#fdba74';
+          chipEl.style.background = 'rgba(251,146,60,0.12)';
+          chipEl.style.borderColor = 'rgba(251,146,60,0.30)';
+        } else {
+          chipEl.style.color = '#fca5a5';
+          chipEl.style.background = 'rgba(239,68,68,0.12)';
+          chipEl.style.borderColor = 'rgba(239,68,68,0.30)';
+        }
+      }
+
+      widget.setAttribute('title',
+        `Vendas 1P · ${mesAbrev}: ${faturado||'—'} de ${metaVal||'—'} (${metaPct})` +
+        (projVal ? ` · projeção ${projVal}${projPctRaw ? ' ('+projDir+projPctRaw+')' : ''}` : '')
+      );
+
+      if(!widget.classList.contains('vendas-1p-ready')){
+        requestAnimationFrame(()=>widget.classList.add('vendas-1p-ready'));
+      }
+    } catch(err){
+      console.warn('[vendas-1p] Falha ao atualizar:', err);
+      const valoresEl = document.getElementById('vendas-1p-valores');
+      if(valoresEl && valoresEl.textContent === 'carregando...'){
+        valoresEl.textContent = 'dados indisponíveis';
+      }
+      if(widget && !widget.classList.contains('vendas-1p-ready')){
+        requestAnimationFrame(()=>widget.classList.add('vendas-1p-ready'));
+      }
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // PORTFÓLIO — parseia o array "const RAW = [...]" inline no HTML
+  // Conta total SKUs, modelos únicos (cliente+descrição) e categorias
+  // ─────────────────────────────────────────────────────────────
+  async function atualizarPortfolio(){
+    const widget = document.getElementById('portfolio-widget');
+    if(!widget) return;
+
+    try{
+      const res = await fetch(PORTFOLIO_URL, { cache:'no-store' });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const html = await res.text();
+
+      // Extrai o bloco "const RAW = [ ... ];"
+      const rawMatch = html.match(/const\s+RAW\s*=\s*\[([\s\S]*?)\]\s*;/);
+      if(!rawMatch) throw new Error('Array RAW não encontrado em portfolio_ecom.html');
+      const rawBody = rawMatch[1];
+
+      // Cada SKU é um objeto que começa com {codigo:
+      const totalSKUs = (rawBody.match(/\{\s*codigo\s*:/g) || []).length;
+      if(totalSKUs === 0) throw new Error('Nenhum SKU encontrado no RAW');
+
+      // Extrai os valores de descricao, cliente, cat em ordem (mesmo índice = mesmo registro)
+      const descMatches = [...rawBody.matchAll(/descricao\s*:\s*'([^']*)'/g)];
+      const cliMatches  = [...rawBody.matchAll(/cliente\s*:\s*'([^']*)'/g)];
+      const catMatches  = [...rawBody.matchAll(/cat\s*:\s*'([^']*)'/g)];
+
+      // Modelos únicos = combinações distintas cliente||descricao (mesma lógica do dashboard de origem)
+      const modelosSet = new Set();
+      const len = Math.min(descMatches.length, cliMatches.length);
+      for(let i = 0; i < len; i++){
+        modelosSet.add(cliMatches[i][1] + '||' + descMatches[i][1]);
+      }
+      const totalModelos = modelosSet.size;
+
+      // Categorias únicas
+      const catsSet = new Set(catMatches.map(m => m[1]));
+      const totalCats = catsSet.size;
+
+      const fmt = (n)=> n.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+
+      const skusEl = document.getElementById('portfolio-skus-total');
+      const modEl  = document.getElementById('portfolio-modelos');
+      const catsEl = document.getElementById('portfolio-cats');
+
+      if(skusEl) skusEl.textContent = fmt(totalSKUs);
+      if(modEl)  modEl.textContent  = fmt(totalModelos);
+      if(catsEl){
+        catsEl.textContent = `${fmt(totalCats)} categoria${totalCats === 1 ? '' : 's'} · média ${(totalSKUs / Math.max(totalModelos, 1)).toFixed(1)} variações/modelo`;
+      }
+
+      widget.setAttribute('title',
+        `Portfólio · ${fmt(totalSKUs)} SKUs · ${fmt(totalModelos)} modelos · ${fmt(totalCats)} categorias`
+      );
+
+      if(!widget.classList.contains('portfolio-ready')){
+        requestAnimationFrame(()=>widget.classList.add('portfolio-ready'));
+      }
+    } catch(err){
+      console.warn('[portfolio] Falha ao atualizar:', err);
+      const catsEl = document.getElementById('portfolio-cats');
+      if(catsEl && catsEl.textContent === 'carregando...'){
+        catsEl.textContent = 'dados indisponíveis';
+      }
+      if(widget && !widget.classList.contains('portfolio-ready')){
+        requestAnimationFrame(()=>widget.classList.add('portfolio-ready'));
+      }
+    }
+  }
+
+  // Executa ao carregar e depois a cada 10 minutos
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', () => {
+      atualizarVendas1P();
+      atualizarPortfolio();
+    });
+  } else {
+    atualizarVendas1P();
+    atualizarPortfolio();
+  }
+  setInterval(atualizarVendas1P, 10 * 60 * 1000);
+  setInterval(atualizarPortfolio, 10 * 60 * 1000);
 })();
 </script>
 
