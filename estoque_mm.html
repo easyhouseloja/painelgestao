@@ -3354,15 +3354,16 @@ function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun, gapD
     if (dataAnteriorKey && dataAtualKey) {
       window._mmDB.ref('estoque_mm/cessoes').once('value').then(snap => {
         const cessoesPorSku = {};
-        const detalhesPorSku = {};
-        Object.entries(snap.val() || {}).forEach(([cm, cessoes]) => {
+        const detalhesPorSku = {};   // { codMasc: { quem: totalQtd } } — agregado por pessoa
+        Object.entries(_normCessoesRaw(snap.val() || {})).forEach(([cm, cessoes]) => {
           Object.values(cessoes || {}).forEach(c => {
             if (!c || !c.data) return;
             // Cessão dentro do período (anterior < data <= atual)
             if (c.data > dataAnteriorKey && c.data <= dataAtualKey) {
               cessoesPorSku[cm] = (cessoesPorSku[cm] || 0) + (c.qtd || 0);
-              if (!detalhesPorSku[cm]) detalhesPorSku[cm] = [];
-              detalhesPorSku[cm].push(`${c.quem || '?'}: ${c.qtd}`);
+              if (!detalhesPorSku[cm]) detalhesPorSku[cm] = {};
+              const quem = c.quem || '?';
+              detalhesPorSku[cm][quem] = (detalhesPorSku[cm][quem] || 0) + (c.qtd || 0);
             }
           });
         });
@@ -3371,7 +3372,10 @@ function renderizarConsumo(comparacao, dataAnterior, dataAtual, isFirstRun, gapD
           const cm = el.dataset.consumoCessao;
           const qtd = cessoesPorSku[cm];
           if (qtd && qtd > 0) {
-            const detalhes = (detalhesPorSku[cm] || []).join(' · ');
+            const detalhes = Object.entries(detalhesPorSku[cm] || {})
+              .sort((a, b) => b[1] - a[1])   // maior cessão primeiro
+              .map(([quem, total]) => `${quem}: ${total}`)
+              .join(' · ');
             el.innerHTML = `<div style="font-size:11px;font-weight:800;font-family:'Syne',sans-serif;color:#c4b5fd;">${qtd} <span style="font-size:8.5px;opacity:0.7;font-weight:600;font-family:inherit;text-transform:uppercase;letter-spacing:0.4px;">cedidas</span></div><div style="font-size:9px;opacity:0.85;font-weight:500;margin-top:2px;">${detalhes}</div>`;
             el.style.display = 'block';
             el.title = `Você registrou cessão deste SKU pra: ${detalhes}. Isso explica parte do consumo.`;
@@ -5034,7 +5038,7 @@ renderTable();
     try {
       if (window._mmDB) {
         const snap = await window._mmDB.ref(`estoque_mm/cessoes/${codMasc}`).once('value');
-        const dados = snap.val() || {};
+        const dados = _normCessoesSku(snap.val() || {});
         Object.values(dados).forEach(c => {
           if (!c || !c.data) return;
           if (!cessoesPorData[c.data]) cessoesPorData[c.data] = [];
