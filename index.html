@@ -3215,67 +3215,6 @@ body.light-mode .btn-reputacao:hover {
   }
 }
 
-/* ── BARRA FLUTUANTE MADEIRA MADEIRA (1P) — Pior caso de estoque ──
-   Espelha o estilo da .any-float-bar, mas em tema âmbar/vermelho. */
-.mm-float-bar {
-  margin: 0 56px 20px;
-  background: rgba(212,160,23,0.06);
-  border: 1px solid rgba(212,160,23,0.22);
-  border-left: 4px solid var(--accent-amber);
-  border-radius: 12px;
-  padding: 0 24px;
-  min-height: 56px;
-  display: flex;
-  align-items: center;
-  position: relative;
-  z-index: 10;
-  box-shadow: 0 0 20px rgba(212,160,23,0.06);
-}
-.mm-float-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent-amber);
-  box-shadow: 0 0 7px rgba(212,160,23,0.8);
-  animation: dotPulse 2s ease-in-out infinite;
-  flex-shrink: 0;
-}
-.mm-float-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  border-radius: 9px;
-  background: rgba(212,160,23,0.10);
-  border: 1px solid rgba(212,160,23,0.30);
-  color: var(--text-primary);
-  text-decoration: none;
-  font-family: 'DM Sans', sans-serif;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.mm-float-cta:hover {
-  background: rgba(212,160,23,0.18);
-  border-color: rgba(212,160,23,0.55);
-  box-shadow: 0 0 14px rgba(212,160,23,0.22);
-}
-.mm-float-cta i { color: var(--accent-amber); }
-
-@media (max-width: 700px) {
-  .mm-float-bar {
-    margin: 0 16px 16px;
-    padding: 10px 14px;
-    flex-wrap: wrap;
-    min-height: 0;
-  }
-  .mm-float-bar .any-float-inner {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .mm-float-bar #estoque-mm-pior-bloco { width: 100%; }
-}
-
 /* ══════════════════════════════════════════════════════════════
    EASY HOUSE (panel-3p) — SCROLL HORIZONTAL
    6 cards: Estoque · Pós-venda · SLA · Comercial · ByBox · Financeiro
@@ -4588,15 +4527,31 @@ body.light-mode #iframe-page-title {
           <h2>Estoque Interno MM</h2>
           <p>Reservas da carga mãe, cobertura por SKU e alertas de ruptura.</p>
 
-          <!-- WIDGET: % ATENDIMENTO (com delta vs ontem) — bloco "Pior caso" foi movido para a barra flutuante abaixo dos cards -->
-          <div id="estoque-mm-widget" class="estoque-mm-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do estoque MM...">
-            <span id="estoque-mm-chip-pct" style="font-size:11px;font-weight:700;color:#d4a017;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.22);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
+          <!-- WIDGET: % ATENDIMENTO + PIOR CASO (de volta dentro do card) -->
+          <div id="estoque-mm-widget" class="estoque-mm-animated" style="display:flex;flex-direction:column;align-items:stretch;gap:8px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do estoque MM...">
+            <span id="estoque-mm-chip-pct" style="font-size:11px;font-weight:700;color:#d4a017;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.22);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;align-self:flex-start;">
               <span style="color:var(--text-secondary);font-weight:600;">Atendimento carga mãe</span>
               <span>·</span>
               <span id="estoque-mm-pct" style="font-size:14px;font-weight:800;color:#d4a017;letter-spacing:0.2px;">—</span>
-              <!-- Delta vs ontem (aparece quando há comparação histórica disponível) -->
               <span id="estoque-mm-pct-delta" style="display:none;font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;letter-spacing:0.2px;line-height:1.3;"></span>
             </span>
+            <!-- Bloco PIOR CASO (vertical: label+dias em cima, caixa SKU embaixo) -->
+            <div id="estoque-mm-pior-bloco" style="display:none;margin-top:6px;padding-top:10px;border-top:1px dashed rgba(255,255,255,0.08);">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;line-height:1.15;margin-bottom:8px;">
+                <span style="font-size:9.5px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;">Pior caso · atende</span>
+                <span style="display:flex;align-items:baseline;gap:5px;">
+                  <span id="estoque-mm-dias" style="font-family:'Syne','Inter',sans-serif;font-size:22px;font-weight:800;color:#d4a017;letter-spacing:-0.01em;line-height:1;">—</span>
+                  <span style="font-size:11px;font-weight:600;color:var(--text-secondary);">dias</span>
+                </span>
+              </div>
+              <div id="estoque-mm-pior-sku" style="line-height:1.3;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);border-left:3px solid #ef4444;border-radius:6px;padding:7px 10px;">
+                <div style="display:flex;align-items:center;gap:6px;min-width:0;">
+                  <span id="estoque-mm-pior-curva" style="display:none;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:4px;letter-spacing:0.4px;line-height:1.4;flex-shrink:0;"></span>
+                  <span id="estoque-mm-pior-nome" style="font-size:11px;font-weight:700;color:#ef4444;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+                </div>
+                <span id="estoque-mm-pior-var" style="font-size:10px;font-weight:500;color:#94a3b8;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;"></span>
+              </div>
+            </div>
           </div>
 
           <div class="card-footer">
@@ -4626,42 +4581,6 @@ body.light-mode #iframe-page-title {
             <i data-lucide="shopping-bag" style="width:13px;height:13px;"></i>
             Pedidos · Pendente & Pago
           </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- BARRA FLUTUANTE MADEIRA MADEIRA (1P): Pior caso de estoque — só aparece no painel 1P -->
-  <div class="mm-float-bar" id="mmFloatBar" style="display:none;">
-    <div class="any-float-inner">
-      <div class="any-float-left">
-        <div class="mm-float-dot"></div>
-        <div class="any-float-info">
-          <span class="any-float-title">Estoque MM</span>
-          <span class="any-float-sep">·</span>
-          <span class="any-float-sub">Pior caso de atendimento</span>
-        </div>
-      </div>
-      <!-- Wrapper que o JS já controla (display: block/none). Conteúdo interno é flex. -->
-      <div id="estoque-mm-pior-bloco" style="display:none;">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end;">
-          <!-- Caixa colorida com SKU pior caso (cores setadas dinamicamente pelo JS) -->
-          <div id="estoque-mm-pior-sku" style="display:flex;align-items:center;gap:10px;padding:6px 12px;border-radius:8px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);border-left:3px solid #ef4444;line-height:1.3;max-width:420px;">
-            <span id="estoque-mm-pior-curva" style="display:none;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:4px;letter-spacing:0.4px;line-height:1.4;flex-shrink:0;"></span>
-            <div style="display:flex;flex-direction:column;line-height:1.2;min-width:0;">
-              <span id="estoque-mm-pior-nome" style="font-size:12px;font-weight:700;color:#ef4444;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-              <span id="estoque-mm-pior-var" style="font-size:10px;font-weight:500;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-            </div>
-          </div>
-          <!-- CTA com número de dias — abre o dashboard de Estoque MM -->
-          <a href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/estoque_mm.html" data-title="Controle de Estoque Interno · Madeira Madeira" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)" class="mm-float-cta">
-            <span style="font-size:10px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;">atende</span>
-            <span style="display:inline-flex;align-items:baseline;gap:4px;">
-              <span id="estoque-mm-dias" style="font-family:'Syne','Inter',sans-serif;font-size:22px;font-weight:800;color:#d4a017;letter-spacing:-0.01em;line-height:1;">—</span>
-              <span style="font-size:11px;font-weight:600;color:var(--text-secondary);">dias</span>
-            </span>
-            <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
-          </a>
         </div>
       </div>
     </div>
@@ -5874,13 +5793,13 @@ function vtexCarregarResumo(force) {
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────────
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 let NOTIFICACOES_HOJE = [
-  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 10 variações em alerta ⚠️',desc:'71,5% reservado · ',hora:'12/05/2026',lida:false,link:'estoque.html',critico:true},
-  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 0,00%',desc:'85 em atraso · 408 sem faturar · Todas transportadoras na meta ✅',hora:'20/05/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 11 variações em alerta ⚠️',desc:'78,3% reservado · GR: GR EASY SLIM 8 PTS BRANCO#S/ESP#S/PES (0,0%) · GR 06 PTS EASY MOVE 2,40 AMENDOA CLEAN/OFF WH#S/ESP#S/P (0,0%) · GR 06 PTS EASY MOVE 2,40 AMENDOA CLEAN#S/ESP#S/PES (0,0%) · GR 0',hora:'04/05/2026',lida:false,link:'estoque.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(39,174,96,0.15)',titulo:'SLA: ✅ Acima da meta — 97,71%',desc:'96 em atraso · 211 sem faturar · Pior transp.: TS RJ 50,65%🔴 · TRANS EXPRESS 94,56%',hora:'05/05/2026',lida:false,link:'sla_transporte.html',critico:false},
   {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: Abr 118,56% da Meta (01–30/04)',desc:'R$ 9,05M faturado em 30 dias · Média diária R$ 302K · Meta R$ 8,6M · +168% Ano x Ano',hora:'30/04/2026',lida:false,link:'comercial.html',critico:false},
-  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado(s) ⚠️',desc:'83 itens · 58 pedidos · 4 em atraso · Atraso médio 8,7d · Maior: 32d (#495511 — Moderado (32d) · #548540 beira (29d)) · 1 moderado(s): ⚠ #86772 cruzou a faixa hoje · 0 críticos',hora:'19/05/2026',lida:false,link:'assistencia.html',critico:false},
-  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: ? recebido ✓',desc:'Cartas de Débito · ? recebido · R$ 28.278 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'19/05/2026',lida:false,link:'financeiro.html',critico:false},
-  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 722 no período',desc:'01/01 a 18/05/2026 · R$ 761,5K · 722 notas · Ticket médio R$ 1.055 · Top motivo: 38,6% (Desistência · 279 notas) · Top transp: 192 notas (Nova Era Express) · Maior mês: ? ',hora:'18/05/2026',lida:false,link:'devolucao.html',critico:false},
-  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'21/05/2026',lida:false,link:'reputacao.html',critico:false}
+  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado(s) ⚠️',desc:'94 itens · 67 pedidos · 4 em atraso · Atraso médio 8,0d · Maior: 32d (#495511 — Moderado (32d) · #548540 beira (29d)) · 1 moderado(s): ⚠ #86772 cruzou a faixa hoje · 0 críticos',hora:'05/05/2026',lida:false,link:'assistencia.html',critico:false},
+  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: ? recebido ✓',desc:'Cartas de Débito · ? recebido · R$ 40.610 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'04/05/2026',lida:false,link:'financeiro.html',critico:false},
+  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 666 no período',desc:'01/01 a 04/05/2026 · R$ 699,8K · 666 notas · Ticket médio R$ 1.051 · Top motivo: 39,0% (Desistência · 260 notas) · Top transp: 186 notas (Nova Era Express) · Maior mês: ? ',hora:'05/05/2026',lida:false,link:'devolucao.html',critico:false},
+  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'05/05/2026',lida:false,link:'reputacao.html',critico:false}
 ];
 let TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
 
@@ -6397,9 +6316,6 @@ function switchChannel(ch) {
   if (notifWrap) notifWrap.style.display = is3p ? '' : 'none';
   const floatBar = document.getElementById('anyFloatBar');
   if (floatBar) floatBar.style.display = is3p ? '' : 'none';
-  // Barra Pior Caso (Madeira 1P): inversa — só aparece no painel 1P
-  const mmFloatBar = document.getElementById('mmFloatBar');
-  if (mmFloatBar) mmFloatBar.style.display = (ch === '1p') ? 'flex' : 'none';
 
 
   // Persistir escolha na sessão
@@ -6435,9 +6351,13 @@ function atualizarModo(tipo){
     if(label) label.innerText="MADEIRA MADEIRA";
 
     if(track){
-      // Conteúdo duplicado para loop contínuo sem espaço vazio
+      // Coloca hashtags como FALLBACK imediato — o fetch assíncrono substitui por dados reais quando completar
       const bloco = `<span>#partiuvender #1PMadeiraMadeira</span><span class="sep">◆</span><span>#focoNoCliente</span><span class="sep">◆</span><span>Evoluindo o 1P</span><span class="sep">◆</span><span>MadeiraMadeira · canal 1P</span><span class="sep">◆</span><span>#partiuvender #1PMadeiraMadeira</span><span class="sep">◆</span><span>#focoNoCliente</span><span class="sep">◆</span><span>Evoluindo o 1P</span><span class="sep">◆</span><span>MadeiraMadeira · canal 1P</span><span class="sep">◆</span>`;
       track.innerHTML = bloco + bloco;
+      // Dispara substituição por dados reais (async)
+      if(typeof window.popularTicker1PReal === 'function'){
+        window.popularTicker1PReal();
+      }
     }
 
   }else if(tipo==="VTEX"){
@@ -10150,6 +10070,241 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   setInterval(atualizarVendas1P, 10 * 60 * 1000);
   setInterval(atualizarPortfolio, 10 * 60 * 1000);
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TICKER 1P COM DADOS REAIS — substitui hashtags por métricas vivas
+     Fontes:
+       vendas_1P.html → const D={...} → top SKU, categoria líder, melhor dia,
+                        faturamento atual, projeção, carteira, comparativo YoY
+     Cache de 10 min. Fallback silencioso pras hashtags se algo falhar.
+     Chamado por window.popularTicker1PReal() dentro de atualizarModo("1P").
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  const VENDAS_URL = 'https://easyhouseloja.github.io/painelgestao/vendas_1P.html';
+  const MESES_KEY  = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const MESES_NOME = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const MESES_ABV  = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const CACHE_MS   = 10 * 60 * 1000;
+
+  let cacheHtml = null;
+  let cacheTime = 0;
+  let fetching  = false;
+
+  const BRLm = v => v >= 1e6
+    ? 'R$ ' + (v/1e6).toFixed(2).replace('.',',') + 'M'
+    : 'R$ ' + (v/1e3).toFixed(0).replace('.',',') + 'K';
+  const PCT  = v => v.toFixed(1).replace('.',',') + '%';
+
+  // Extrai const D = {...} do HTML de vendas_1P.html via brace counter (robusto a objetos aninhados)
+  function extrairObjetoD(html){
+    const marker = 'const D=';
+    let idx = html.indexOf(marker);
+    if(idx < 0){
+      const m2 = html.match(/const\s+D\s*=/);
+      if(!m2) return null;
+      idx = m2.index;
+      const sliceFromIdx = html.slice(idx);
+      const eqIdx = sliceFromIdx.indexOf('=');
+      const objStart = idx + eqIdx + 1;
+      return extrairObjeto(html, objStart);
+    }
+    return extrairObjeto(html, idx + marker.length);
+  }
+
+  function extrairObjeto(html, objStart){
+    // Pula espaços iniciais
+    while(objStart < html.length && /\s/.test(html[objStart])) objStart++;
+    if(html[objStart] !== '{') return null;
+    let depth = 0;
+    for(let i = objStart; i < html.length; i++){
+      const ch = html[i];
+      if(ch === '{') depth++;
+      else if(ch === '}'){ depth--; if(depth === 0) return html.slice(objStart, i+1); }
+    }
+    return null;
+  }
+
+  async function gerarHtmlTicker(){
+    const res = await fetch(VENDAS_URL, { cache:'no-store' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const html = await res.text();
+
+    const dStr = extrairObjetoD(html);
+    if(!dStr) throw new Error('Objeto D não encontrado em vendas_1P.html');
+
+    let D;
+    try { D = (new Function('return ' + dStr))(); }
+    catch(e){ throw new Error('Falha ao avaliar D: ' + e.message); }
+
+    // Escolhe o mês corrente; fallback: último mês com dados
+    let mesIdx = new Date().getMonth();
+    let mesKey = MESES_KEY[mesIdx];
+    if(!D[mesKey]){
+      for(let i = MESES_KEY.length - 1; i >= 0; i--){
+        if(D[MESES_KEY[i]]){ mesIdx = i; mesKey = MESES_KEY[i]; break; }
+      }
+    }
+    const m = D[mesKey];
+    if(!m) throw new Error('Nenhum mês com dados em D');
+
+    const mesNome  = MESES_NOME[mesIdx];
+    const mesAbrev = MESES_ABV[mesIdx];
+    const mesNum   = String(mesIdx + 1).padStart(2,'0');
+    const items = [];
+
+    // 1) Faturamento do mês vs meta (com cor por % atingido)
+    if(m.total && m.meta_total){
+      const pctMeta = m.total / m.meta_total * 100;
+      const cor = pctMeta < 60 ? 'alert' : pctMeta < 80 ? 'warn' : pctMeta < 100 ? '' : 'ok';
+      items.push({
+        cor,
+        html: `Faturamento ${mesNome} · <b>${BRLm(m.total)}</b> de ${BRLm(m.meta_total)} · <b>${PCT(pctMeta)}</b> da meta`
+      });
+    }
+
+    // 2) Comparativo ano anterior (mesmo mês 2025)
+    if(m.total25 && m.total25 > 0 && m.total){
+      const vsLY = (m.total / m.total25 - 1) * 100;
+      const cor = vsLY >= 0 ? 'ok' : 'alert';
+      const sym = vsLY >= 0 ? '▲' : '▼';
+      items.push({
+        cor,
+        html: `vs ${mesAbrev}/2025 · <b>${sym} ${PCT(Math.abs(vsLY))}</b> · ${BRLm(m.total)} vs ${BRLm(m.total25)}`
+      });
+    }
+
+    // 3) Top SKU do mês
+    if(m.top10 && m.top10[0]){
+      const top = m.top10[0];
+      // Tira o sufixo de variação (depois de #) e trunca pra caber bem
+      const nomeBase = top.n.split('#')[0].trim();
+      const nome = nomeBase.length > 38 ? nomeBase.slice(0, 38) + '…' : nomeBase;
+      items.push({
+        cor: '',
+        html: `Top SKU do mês · <b>${nome}</b> · ${BRLm(top.f)}`
+      });
+    }
+
+    // 4) Categoria líder
+    if(m.cls){
+      const cats = [
+        { nome: 'Guarda Roupas', fat: m.cls.gr   ? m.cls.gr.fat   : 0 },
+        { nome: 'Complementos', fat: m.cls.comp ? m.cls.comp.fat : 0 },
+        { nome: 'Salas',        fat: m.cls.sala ? m.cls.sala.fat : 0 }
+      ].sort((a,b) => b.fat - a.fat);
+      if(cats[0].fat > 0 && m.total){
+        const pctCat = cats[0].fat / m.total * 100;
+        items.push({
+          cor: '',
+          html: `Categoria líder · <b>${cats[0].nome}</b> · ${BRLm(cats[0].fat)} (${PCT(pctCat)} do mês)`
+        });
+      }
+    }
+
+    // 5) Melhor dia do mês (pico de faturamento)
+    if(m.daily && m.daily.length){
+      const melhor = m.daily.slice().sort((a,b) => b.f - a.f)[0];
+      if(melhor && melhor.f > 0){
+        items.push({
+          cor: '',
+          html: `Melhor dia ${mesAbrev} · <b>${String(melhor.d).padStart(2,'0')}/${mesNum}</b> · ${BRLm(melhor.f)}`
+        });
+      }
+    }
+
+    // 6) Última venda registrada
+    if(m.daily && m.daily.length){
+      const ultimo = m.daily[m.daily.length - 1];
+      if(ultimo && ultimo.f > 0){
+        items.push({
+          cor: '',
+          html: `Última venda · <b>${String(ultimo.d).padStart(2,'0')}/${mesNum}</b> · ${BRLm(ultimo.f)}`
+        });
+      }
+    }
+
+    // 7) Carteira em reserva (pedidos pendentes em valor)
+    if(m.carteira && m.carteira.comReserva && m.carteira.comReserva.valor > 0){
+      items.push({
+        cor: '',
+        html: `Carteira reservada · <b>${BRLm(m.carteira.comReserva.valor)}</b> em pedidos pendentes`
+      });
+    }
+
+    // 8) Projeção do mês (extrapolação linear pelos dias decorridos)
+    if(m.daily && m.daily.length && m.total && m.meta_total){
+      const diasDecorridos = m.daily[m.daily.length - 1].d;
+      if(diasDecorridos > 0){
+        const proj = m.total / diasDecorridos * 31;
+        const projPct = proj / m.meta_total * 100;
+        const projDir = projPct >= 100 ? '▲' : '▼';
+        const cor = projPct >= 100 ? 'ok' : projPct >= 80 ? 'warn' : 'alert';
+        items.push({
+          cor,
+          html: `Projeção ${mesNome} · <b>${BRLm(proj)}</b> · <b>${projDir} ${PCT(Math.abs(projPct - 100))}</b> da meta`
+        });
+      }
+    }
+
+    if(items.length === 0) throw new Error('Nenhum item gerado');
+
+    // Monta HTML do track (duplicado pra loop contínuo)
+    const sep = `<span class="sep">◆</span>`;
+    const bloco = items.map(it => {
+      const cls = it.cor ? `ticker-data ticker-data-${it.cor}` : 'ticker-data';
+      return `<span class="${cls}">${it.html}</span>`;
+    }).join(sep) + sep;
+
+    return bloco + bloco;
+  }
+
+  async function popularTickerReal(){
+    const track = document.getElementById('tickerTrack');
+    if(!track) return;
+    if(fetching) return;
+
+    // Cache válido — usa direto
+    if(cacheHtml && (Date.now() - cacheTime) < CACHE_MS){
+      track.innerHTML = cacheHtml;
+      return;
+    }
+
+    fetching = true;
+    try{
+      const html = await gerarHtmlTicker();
+      cacheHtml = html;
+      cacheTime = Date.now();
+      // Só substitui se ainda estamos no 1P quando o fetch terminou
+      if(document.body.classList.contains('body-1p')){
+        track.innerHTML = html;
+      }
+    }catch(err){
+      console.warn('[ticker-1p] Falha ao gerar — mantendo hashtags como fallback:', err);
+    }finally{
+      fetching = false;
+    }
+  }
+
+  // Expõe pra ser chamado por atualizarModo("1P")
+  window.popularTicker1PReal = popularTickerReal;
+
+  // Refresh periódico enquanto estiver no 1P
+  setInterval(() => {
+    if(document.body && document.body.classList.contains('body-1p')){
+      // Invalida cache pra forçar refetch
+      cacheTime = 0;
+      popularTickerReal();
+    }
+  }, CACHE_MS);
+
+  // Se a página já abrir no 1P (via sessionStorage), atualizarModo já foi chamada antes deste script.
+  // Roda uma vez agora pra cobrir esse caso.
+  if(document.body && document.body.classList.contains('body-1p')){
+    popularTickerReal();
+  }
 })();
 </script>
 
