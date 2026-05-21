@@ -1163,7 +1163,12 @@
 
   <!-- LOTES -->
   <div data-tab="lotes">
-  <div class="section-title">🚚 Lotes Planejados <span id="lotes-sub">datas previstas de chegada por produto</span></div>
+  <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+    <div>🚚 Lotes Planejados <span id="lotes-sub">datas previstas de chegada por produto</span></div>
+    <button onclick="exportarLotesXLSX()" type="button" class="export-btn no-print" id="btn-export-lotes" title="Exporta todos os lotes em Excel (.xlsx)">
+      📊 Exportar Lotes (Excel)
+    </button>
+  </div>
   <div id="lotes-content" style="margin-bottom:24px;">
     <!-- Formulário de cadastro -->
     <div class="lote-form no-print">
@@ -6078,6 +6083,60 @@ renderTable();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
 
+  // Exporta lotes pra .xlsx com 4 colunas: Código do Item, Descrição do Item, Código do Lote, DT FINAL PREVISTA
+  window.exportarLotesXLSX = async function(){
+    if (!window._mmDB) { alert('Firebase não disponível.'); return; }
+    if (typeof XLSX === 'undefined') { alert('SheetJS não carregado.'); return; }
+    const btn = document.getElementById('btn-export-lotes');
+    const labelOrig = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Gerando...'; }
+    try {
+      // Mapa codItem → nome do produto (a partir do BUNDLE em memória)
+      const nomePorCodItem = {};
+      (BUNDLE.data || []).forEach(p => { nomePorCodItem[p.codItem] = p.produto; });
+
+      const snap = await window._mmDB.ref('estoque_mm/datas_lote').once('value');
+      const todos = snap.val() || {};
+      const linhas = [];
+      Object.entries(todos).forEach(([codItem, raw]) => {
+        _parseLotes(raw).forEach(l => {
+          const cod = parseInt(codItem);
+          linhas.push({
+            'Código do Item': cod,
+            'Descrição do Item': nomePorCodItem[cod] || '',
+            'Código do Lote': l.codLote || '',
+            'DT FINAL PREVISTA': l.dataKey.split('-').reverse().join('/'),   // dd/mm/yyyy
+            '_sortKey': l.dataKey,                                            // pra ordenar
+          });
+        });
+      });
+      if (linhas.length === 0) {
+        alert('Nenhum lote cadastrado pra exportar.');
+        if (btn) { btn.disabled = false; btn.innerHTML = labelOrig; }
+        return;
+      }
+      // Ordena cronologicamente, mais antigo primeiro
+      linhas.sort((a, b) => a._sortKey.localeCompare(b._sortKey));
+      // Remove a coluna auxiliar de ordenação
+      linhas.forEach(l => delete l._sortKey);
+
+      const ws = XLSX.utils.json_to_sheet(linhas, { header: ['Código do Item','Descrição do Item','Código do Lote','DT FINAL PREVISTA'] });
+      ws['!cols'] = [{ wch: 16 }, { wch: 45 }, { wch: 22 }, { wch: 20 }];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Lotes');
+
+      const d = new Date();
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yyyy = d.getFullYear();
+      const fname = `lotes_${dd}-${mm}-${yyyy}.xlsx`;
+      XLSX.writeFile(wb, fname);
+    } catch (e) {
+      alert('Erro ao exportar: ' + e.message);
+    }
+    if (btn) { btn.disabled = false; btn.innerHTML = labelOrig; }
+  };
+
   // Renderiza banner de lotes do dia logo abaixo do hero (só aparece se houver)
   function renderBannerLotesHoje(produtos){
     const wrap = document.getElementById('banner-lotes-hoje');
@@ -6114,7 +6173,7 @@ renderTable();
       </div>
       <div class="banner-lotes-produtos">
         ${produtos.map(p => `<div class="banner-lote-prod">
-          <div class="banner-lote-nome">${p.produto}</div>
+          <div class="banner-lote-nome">${p.codLote ? `<span class="lote-cod-badge" title="Código do lote">${p.codLote}</span>` : ''}${p.produto}</div>
           <div class="banner-lote-meta">${p.categoria} · ${p.nVars} var · cod ${p.codItem}</div>
         </div>`).join('')}
       </div>
