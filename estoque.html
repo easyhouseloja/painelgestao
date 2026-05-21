@@ -1124,7 +1124,9 @@ renderAlerts = function(){
   window._normalizarBusca = function(s){
     return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
   };
-  const _normalizar = window._normalizarBusca;
+  function _normalizar(s){
+    return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+  }
 
   let _produtosUnicos = [];
   data.forEach(p=>{
