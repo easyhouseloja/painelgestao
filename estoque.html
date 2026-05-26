@@ -396,8 +396,20 @@
   .lote-prod-row:last-child{border-bottom:none;}
   .lote-prod-row:hover{background:var(--surface2);}
   .lote-prod-info{flex:1;min-width:0;}
-  .lote-prod-nome{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .lote-prod-nome{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text);display:flex;align-items:center;gap:10px;min-width:0;}
+  .lote-prod-nome-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
   .lote-prod-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+
+  /* GRUPO de lotes — layout horizontal: data à esquerda, produtos à direita */
+  .lotes-list{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .lote-grupo{display:flex;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border);align-items:flex-start;}
+  .lote-grupo:last-child{border-bottom:none;}
+  .lote-grupo-data{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;min-width:120px;text-align:center;line-height:1.1;padding:8px 12px;border-radius:8px;flex-shrink:0;}
+  .lote-grupo-data .dia-aviso{font-size:9.5px;font-weight:600;display:block;margin-top:2px;}
+  .lote-grupo-data .lote-grupo-count{display:block;font-size:9px;font-weight:600;opacity:0.7;margin-top:4px;font-family:inherit;text-transform:uppercase;letter-spacing:0.4px;}
+  .lote-grupo-produtos{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .lote-grupo .lote-prod-row{background:var(--surface2);border:1px solid transparent;border-bottom:none;border-radius:7px;padding:8px 12px;transition:background 0.12s;}
+  .lote-grupo .lote-prod-row:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.08);}
   .lote-item-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--muted);font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
   .lote-item-btn:hover{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.4);color:#f87171;}
   .lote-hist-item{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:12px;color:var(--muted);}
@@ -405,7 +417,28 @@
   .lote-hist-data{font-family:monospace;font-size:11px;}
 
 
-  .lote-cod-badge{display:inline-flex;align-items:center;font-family:monospace;font-size:12px;font-weight:800;background:rgba(34,197,94,0.18);border:1.5px solid rgba(34,197,94,0.55);color:#22c55e;padding:3px 12px;border-radius:6px;letter-spacing:0.5px;margin-left:8px;transition:all 0.15s;user-select:all;}.lote-cod-badge:hover{background:rgba(34,197,94,0.30);border-color:#22c55e;color:#fff;transform:scale(1.04);}
+  /* CÓDIGO DO LOTE — badge copiável após o nome do produto */
+  .lote-cod-badge{
+    display:inline-flex;align-items:center;gap:5px;
+    font-family:'JetBrains Mono','Courier New',monospace;
+    font-size:11px;font-weight:700;
+    color:#22d3ee;background:rgba(34,211,238,0.10);
+    border:1px solid rgba(34,211,238,0.35);
+    padding:3px 8px;border-radius:5px;letter-spacing:0.4px;
+    cursor:pointer;user-select:all;
+    transition:all 0.15s ease;flex-shrink:0;line-height:1.3;
+  }
+  .lote-cod-badge::before{content:'⧉';font-size:10px;opacity:0.55;transition:opacity 0.15s;}
+  .lote-cod-badge:hover{background:rgba(34,211,238,0.20);border-color:rgba(34,211,238,0.65);color:#67e8f9;}
+  .lote-cod-badge:hover::before{opacity:0.95;}
+  .lote-cod-badge:active{transform:scale(0.96);}
+  .lote-cod-badge.copied{background:rgba(34,201,138,0.20);border-color:rgba(34,201,138,0.70);color:#5eefc0;animation:loteCodCopiedPulse 0.4s ease;}
+  .lote-cod-badge.copied::before{content:'✓';opacity:1;}
+  @keyframes loteCodCopiedPulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.06);}
+    100%{transform:scale(1);}
+  }
 
 
   /* ── Banner lote hoje ── */
@@ -413,13 +446,34 @@
   #banner-lote-hoje:hover{background:linear-gradient(90deg,rgba(251,146,60,0.25),rgba(251,146,60,0.08));}
   #banner-lote-hoje .banner-produtos{font-weight:400;color:#fdba74;margin-left:6px;}
 
-  .lote-form-codigo{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
+  .lote-form-codigo{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'JetBrains Mono','Courier New',monospace;font-size:11.5px;letter-spacing:0.3px;text-transform:uppercase;outline:none;transition:border-color 0.2s;}
   .lote-form-codigo:focus{border-color:var(--accent);}
-  .lote-form-codigo::placeholder{color:var(--muted);}
+  .lote-form-codigo::placeholder{color:var(--muted);text-transform:none;letter-spacing:normal;font-family:'DM Sans',sans-serif;}
+
+  /* FAIXA DE PÍLULAS POR DATA — filtro rápido acima da busca */
+  .lotes-date-pills{display:flex;align-items:center;gap:6px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 8px;margin-bottom:6px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.15) transparent;}
+  .lotes-date-pills::-webkit-scrollbar{height:5px;}
+  .lotes-date-pills::-webkit-scrollbar-track{background:transparent;}
+  .lotes-date-pills::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px;}
+  .lote-date-pill{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;padding:4px 9px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:10px;font-weight:600;color:var(--text);cursor:pointer;transition:all 0.12s;white-space:nowrap;line-height:1.2;}
+  .lote-date-pill:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.15);}
+  .lote-date-pill .pill-data{font-family:inherit;font-weight:700;font-size:10.5px;letter-spacing:0.1px;}
+  .lote-date-pill .pill-aviso{font-size:8.5px;font-weight:600;opacity:0.65;text-transform:uppercase;letter-spacing:0.35px;}
+  .lote-date-pill .pill-count{background:rgba(255,255,255,0.10);padding:1px 5px;border-radius:7px;font-size:9.5px;font-weight:700;min-width:16px;text-align:center;line-height:1.3;}
+  .lote-date-pill.is-hoje{background:rgba(251,146,60,0.10);border-color:rgba(251,146,60,0.40);color:#fb923c;}
+  .lote-date-pill.is-hoje:hover{background:rgba(251,146,60,0.18);}
+  .lote-date-pill.is-proxima{background:rgba(34,201,138,0.08);border-color:rgba(34,201,138,0.28);color:#22c98a;}
+  .lote-date-pill.is-proxima:hover{background:rgba(34,201,138,0.14);}
+  .lote-date-pill.active{box-shadow:0 0 0 2px rgba(34,211,238,0.45);border-color:rgba(34,211,238,0.7);}
+  .lote-date-pill.active .pill-count{background:rgba(34,211,238,0.25);}
+  .lote-date-pill-todas{font-weight:700;text-transform:uppercase;letter-spacing:0.4px;font-size:9.5px;}
+  .lote-date-pill-todas.active{background:rgba(34,211,238,0.18);border-color:rgba(34,211,238,0.55);color:#67e8f9;box-shadow:none;}
 </style>
 <!-- Firebase Realtime Database (mesma config dos outros painéis) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<!-- SheetJS pra export XLSX de lotes -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script>
   (function(){
     const firebaseConfig = {
@@ -818,7 +872,7 @@
     </div>
     <div style="display:flex;gap:8px;">
       <button class="tab no-print" style="font-size:10px;padding:4px 10px;" onclick="toggleHistLotes()">🕐 Ver histórico</button>
-      <button onclick="exportarLotesXLSX()" class="export-btn no-print" style="font-size:12px;padding:7px 14px;">📊 Exportar Lotes (CSV)</button>
+      <button onclick="exportarLotesXLSX()" class="export-btn no-print" id="btn-export-lotes" style="font-size:12px;padding:7px 14px;">📊 Exportar Lotes (Excel)</button>
     </div>
   </div>
   <!-- Formulário de cadastro -->
@@ -836,10 +890,12 @@
     <input type="text" class="lote-form-codigo" id="lote-form-codigo" placeholder="Cód. do lote (opcional)" style="width:180px;" maxlength="20">
     <button class="lote-form-btn" id="lote-form-btn" onclick="salvarNovoLote()">✓ Salvar lote</button>
   </div>
+  <!-- Faixa de pílulas por data (preenchida pelo JS) -->
+  <div id="lotes-date-pills" class="lotes-date-pills no-print" style="display:none;"></div>
   <!-- Lista de lotes (preenchida pelo JS) -->
-  <div class="lotes-filter-wrap no-print">
+  <div class="lotes-filter-wrap no-print" id="lotes-filter-wrap">
     <input class="lotes-search" type="text" id="lotesSearchInput"
-           placeholder="🔍  Filtrar lotes por produto..."
+           placeholder="🔍  Filtrar lotes por produto, código ou data..."
            oninput="filtrarListaLotes(this.value)">
     <span class="lotes-filter-count" id="lotesFilterCount"></span>
   </div>
@@ -1675,11 +1731,12 @@ if(document.readyState==='loading'){
     return m ? `${m[3]}/${m[2]}/${m[1]}` : dataKey;
   }
 
-  // SALVAR — estrutura: estoque_eh/datas_lote/<nomeKey>/<dataKey> = {ts, produto}
+  // SALVAR — estrutura: estoque_eh/datas_lote/<nomeKey>/<dataKey> = {ts, produto, codLote}
   // Migra na hora qualquer entrada que ainda esteja no formato antigo (1 data direto no nó).
   window.salvarNovoLote = async function(){
     const nomeKey = document.getElementById('lote-form-produto').value;
     const dataKey = document.getElementById('lote-form-data').value;
+    const codLote = (document.getElementById('lote-form-codigo').value || '').trim().toUpperCase();
     if (!nomeKey) {
       alert('Escolha um produto da lista de sugestões (digite e clique em uma opção).');
       document.getElementById('lote-form-produto-search').focus();
@@ -1695,19 +1752,24 @@ if(document.readyState==='loading'){
       const ref = window._ehDB.ref(`${FB_PATH}/${nomeKey}`);
       const snap = await ref.once('value');
       const cur = snap.val();
+      // Monta o novo registro — só inclui codLote se foi preenchido
+      const novoLote = { ts: Date.now(), produto: nomeProd };
+      if (codLote) novoLote.codLote = codLote;
       // Se existe e está no formato antigo (campo dataKey direto), migra antes de adicionar
       if (cur && typeof cur === 'object' && typeof cur.dataKey === 'string') {
         const novo = {};
         novo[cur.dataKey] = { ts: cur.ts || Date.now(), produto: cur.produto || nomeProd };
-        novo[dataKey]     = { ts: Date.now(),           produto: nomeProd };
+        if (cur.codLote) novo[cur.dataKey].codLote = cur.codLote;
+        novo[dataKey]    = novoLote;
         await ref.set(novo);
       } else {
         // formato novo (ou ainda inexistente): só seta o filho da data
-        await ref.child(dataKey).set({ ts: Date.now(), produto: nomeProd });
+        await ref.child(dataKey).set(novoLote);
       }
       document.getElementById('lote-form-produto-search').value = '';
       document.getElementById('lote-form-produto').value = '';
       document.getElementById('lote-form-data').value = '';
+      document.getElementById('lote-form-codigo').value = '';
       await carregarDadosFirebase(); // carregar dados mais recentes
       renderizarLotes();
       renderAlerts(); // atualiza badges de lote nos alertas
@@ -1897,39 +1959,80 @@ if(document.readyState==='loading'){
       let html2 = '<div class="lotes-list">';
       Object.values(grupos).sort((a,b) => a.dataKey.localeCompare(b.dataKey)).forEach(g => {
         const isHoje = g.diasAte === 0, isAmanha = g.diasAte === 1;
-        const cor = isHoje ? '#22c98a' : isAmanha ? '#fbbf24' : '#f59e0b';
+        // Cores e bgs alinhadas com a régua de MM (laranja=hoje, amber/verde=próx, etc.)
+        const cor = isHoje ? '#fb923c' : isAmanha ? '#fbbf24' : (g.diasAte <= 7 ? '#22c98a' : '#22c98a');
         const label = isHoje ? 'HOJE' : isAmanha ? 'em 1 dia' : 'em '+g.diasAte+' dias';
-        const bg = isHoje ? 'rgba(34,201,138,0.12)' : isAmanha ? 'rgba(251,191,36,0.12)' : 'rgba(245,158,11,0.10)';
-        const bd = isHoje ? 'rgba(34,201,138,0.35)' : isAmanha ? 'rgba(251,191,36,0.35)' : 'rgba(245,158,11,0.30)';
+        const bgInline = isHoje
+          ? 'background:rgba(251,146,60,0.12);border:1px solid rgba(251,146,60,0.35);'
+          : isAmanha
+            ? 'background:rgba(251,191,36,0.10);border:1px solid rgba(251,191,36,0.30);'
+            : 'background:rgba(34,201,138,0.08);border:1px solid rgba(34,201,138,0.25);';
 
         const prodsHtml = g.produtos.map(p => {
-          const catIcon = p.cat === 'GUARDA ROUPAS' ? '🚪' : p.cat === 'SALA DE JANTAR' ? '🪑' : '🛏';
           const catLabel = p.cat === 'GUARDA ROUPAS' ? 'GR' : p.cat === 'SALA DE JANTAR' ? 'SJ' : 'Comp.';
-          const codBadge = '';
           const loteBadge = p.codLote
-          ? '<span class="lote-cod-badge" title="Clique para copiar" onclick="navigator.clipboard.writeText(\''+p.codLote+'\').then(()=>{this.textContent=\'✓ Copiado!\';setTimeout(()=>{this.textContent=\''+p.codLote+'\'},1200)})" style="cursor:pointer">'+p.codLote+'</span>'
-          : '';
-          const meta = catLabel + (p.codItem ? ' · cod '+p.codItem : '') + (p.nVars > 0 ? ' · '+p.nVars+' variação'+(p.nVars !== 1 ? 'ões atendidas' : ' atendida') : '');
-          return '<div class="lote-prod-row" data-produto="'+p.nomeKey+'">'
+            ? `<span class="lote-cod-badge" data-cod="${p.codLote}" onclick="copiarCodLote(this, event)" title="Clique pra copiar o código">${p.codLote}</span>`
+            : '';
+          const varTxt = p.nVars === 1 ? '1 variação atendida' : (p.nVars > 1 ? p.nVars + ' variações atendidas' : '');
+          const meta = catLabel + (p.codItem ? ' · cod '+p.codItem : '') + (varTxt ? ' · ' + varTxt : '');
+          const searchStr = (p.produto + ' ' + p.cat + ' ' + (p.codItem||'') + ' ' + (p.codLote||'') + ' ' + p.dataFmt + ' ' + p.dataKey).toLowerCase();
+          return '<div class="lote-prod-row" data-produto="'+p.nomeKey+'" data-search="'+searchStr.replace(/"/g,'&quot;')+'">'
             +'<div class="lote-prod-info">'
-              +'<div class="lote-prod-nome">'+codBadge+p.produto+loteBadge+'</div>'
+              +'<div class="lote-prod-nome">'
+                +'<span class="lote-prod-nome-text">'+p.produto+'</span>'
+                +loteBadge
+              +'</div>'
               +'<div class="lote-prod-meta">'+meta+'</div>'
             +'</div>'
             +'<button class="lote-item-btn lote-remove-btn" data-nomekey="'+p.nomeKey+'" data-loteid="'+p.loteId+'">🗑 remover</button>'
           +'</div>';
         }).join('');
 
-        html2 += '<div class="lote-grupo" style="border:1px solid '+bd+';border-radius:14px;margin-bottom:12px;overflow:hidden;background:var(--surface);">'
-          +'<div class="lote-grupo-data" style="background:'+bg+';border-bottom:1px solid '+bd+';padding:10px 16px;display:flex;align-items:center;gap:10px;">'
-            +'<span style="font-family:Syne,sans-serif;font-weight:800;font-size:18px;color:'+cor+'">'+g.dataFmt+'</span>'
-            +'<span class="dia-aviso" style="font-size:10px;font-weight:700;color:'+cor+';background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:8px;">'+label+'</span>'
-            +'<span style="font-size:10px;color:var(--muted);margin-left:auto;font-weight:600;text-transform:uppercase;">'+g.produtos.length+' produto'+(g.produtos.length !== 1 ? 's' : '')+'</span>'
+        html2 += '<div class="lote-grupo" data-grupo-data="'+g.dataKey+'">'
+          +'<div class="lote-grupo-data" style="color:'+cor+';'+bgInline+'">'
+            + g.dataFmt
+            +'<span class="dia-aviso">'+label+'</span>'
+            +'<span class="lote-grupo-count">'+g.produtos.length+' produto'+(g.produtos.length !== 1 ? 's' : '')+'</span>'
           +'</div>'
           +'<div class="lote-grupo-produtos">'+prodsHtml+'</div>'
         +'</div>';
       });
       html2 += '</div>';
       cont.innerHTML = html2;
+
+      // ═══ RENDERIZA AS PÍLULAS DE DATA ═══
+      const pillsWrap = document.getElementById('lotes-date-pills');
+      const gruposArr = Object.values(grupos).sort((a,b) => a.dataKey.localeCompare(b.dataKey));
+      if (pillsWrap) {
+        if (gruposArr.length > 1) {
+          let pillsHtml = `<button type="button" class="lote-date-pill lote-date-pill-todas ${!_loteDateActive ? 'active' : ''}" data-data-key="" onclick="setLoteDateFilter(null)">Todas <span class="pill-count">${futuros.length}</span></button>`;
+          gruposArr.forEach(g2 => {
+            let cls = '', aviso = '';
+            if (g2.diasAte === 0)      { cls = 'is-hoje';    aviso = 'HOJE'; }
+            else if (g2.diasAte <= 7)  { cls = 'is-proxima'; aviso = `+${g2.diasAte}d`; }
+            else                       { cls = '';            aviso = `+${g2.diasAte}d`; }
+            const isActive = _loteDateActive === g2.dataKey ? 'active' : '';
+            const dataCurta = g2.dataFmt.length >= 5 ? g2.dataFmt.slice(0,5) : g2.dataFmt;
+            pillsHtml += `<button type="button" class="lote-date-pill ${cls} ${isActive}" data-data-key="${g2.dataKey}" onclick="setLoteDateFilter('${g2.dataKey}')">
+              <span class="pill-data">${dataCurta}</span>
+              <span class="pill-aviso">${aviso}</span>
+              <span class="pill-count">${g2.produtos.length}</span>
+            </button>`;
+          });
+          pillsWrap.innerHTML = pillsHtml;
+          pillsWrap.style.display = '';
+        } else {
+          pillsWrap.innerHTML = '';
+          pillsWrap.style.display = 'none';
+          _loteDateActive = null;
+        }
+      }
+
+      // Reaplica filtro atual (busca + data) após o re-render
+      const inp = document.getElementById('lotesSearchInput');
+      if ((inp && inp.value.trim()) || _loteDateActive) {
+        filtrarListaLotes(inp ? inp.value : '');
+      }
 
       renderAlerts && renderAlerts();
 
@@ -2056,53 +2159,131 @@ if(document.readyState==='loading'){
   setInterval(carregarDadosFirebase, 5 * 60 * 1000);
 
 
-// ── Filtro de busca na lista de lotes ──
+// ── Estado e helpers do filtro de lotes ──
+let _loteDateActive = null;  // dataKey ativa ou null = todas
+
+// Copia código do lote pro clipboard com feedback visual de 1.5s
+window.copiarCodLote = async function(el, evt){
+  if (evt) { evt.stopPropagation(); }
+  const cod = el.dataset.cod || el.textContent.trim();
+  try {
+    await navigator.clipboard.writeText(cod);
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = cod; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch(_){}
+    document.body.removeChild(ta);
+  }
+  el.classList.add('copied');
+  setTimeout(() => el.classList.remove('copied'), 1500);
+};
+
+// Click numa pílula de data → ativa/desativa filtro
+window.setLoteDateFilter = function(dataKey){
+  _loteDateActive = dataKey || null;
+  document.querySelectorAll('.lote-date-pill').forEach(p => {
+    const pk = p.dataset.dataKey || '';
+    p.classList.toggle('active', pk === (_loteDateActive || ''));
+  });
+  const inp = document.getElementById('lotesSearchInput');
+  filtrarListaLotes(inp ? inp.value : '');
+};
+
+// ── Filtro combinado: texto (produto, código, data) + data ativa ──
 window.filtrarListaLotes = function(q){
-  const norm = (q||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  const cards = document.querySelectorAll('#lotes-lista .lote-list-card, #lotes-lista [data-produto]');
-  let visiveis = 0;
-  cards.forEach(card=>{
-    const nome = (card.getAttribute('data-produto')||card.querySelector('.lote-list-produto')?.textContent||'')
-      .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    const show = !norm || nome.includes(norm);
-    card.style.display = show ? '' : 'none';
-    if(show) visiveis++;
+  const norm = (q||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  const grupos = document.querySelectorAll('#lotes-lista .lote-grupo');
+  let totalVisivel = 0, totalGeral = 0;
+  grupos.forEach(grp => {
+    const grpData = grp.getAttribute('data-grupo-data') || '';
+    // 1) Filtro por data ativa: se há data e o grupo não bate, esconde tudo
+    if (_loteDateActive && grpData !== _loteDateActive) {
+      grp.style.display = 'none';
+      const rs = grp.querySelectorAll('.lote-prod-row');
+      totalGeral += rs.length;
+      return;
+    }
+    // 2) Filtro por texto nas linhas do grupo
+    const rows = grp.querySelectorAll('.lote-prod-row');
+    let algum = false;
+    rows.forEach(r => {
+      totalGeral++;
+      const s = (r.getAttribute('data-search') || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const match = norm === '' || s.includes(norm);
+      r.style.display = match ? '' : 'none';
+      if (match) { algum = true; totalVisivel++; }
+    });
+    grp.style.display = algum ? '' : 'none';
   });
   const count = document.getElementById('lotesFilterCount');
-  if(count){
-    count.textContent = norm
-      ? `${visiveis} lote${visiveis!==1?'s':''} encontrado${visiveis!==1?'s':''}`
-      : '';
+  if (count) {
+    const ativo = norm !== '' || _loteDateActive;
+    if (!ativo) {
+      count.textContent = '';
+    } else {
+      count.textContent = `${totalVisivel} de ${totalGeral}`;
+      count.style.color = totalVisivel === 0 ? '#ef4444' : 'var(--muted)';
+    }
   }
 };
 
 
 
+  // Exporta lotes pra .xlsx com 4 colunas: Código do Item, Descrição do Item, Código do Lote, DT FINAL PREVISTA
   window.exportarLotesXLSX = async function(){
-    if(!window._ehDB){ alert('Firebase não disponível.'); return; }
-    try{
+    if (!window._ehDB) { alert('Firebase não disponível.'); return; }
+    if (typeof XLSX === 'undefined') { alert('SheetJS não carregado.'); return; }
+    const btn = document.getElementById('btn-export-lotes');
+    const labelOrig = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Gerando...'; }
+    try {
       const snap = await window._ehDB.ref(FB_PATH).once('value');
-      const val = snap.val()||{};
-      const rows = [['Cod Produto','Produto','Cod Lote','Data','Dias ate']];
-      for(const [nomeKey, raw] of Object.entries(val)){
-        const prod = _produtosUnicos.find(p=>p.nomeKey===nomeKey);
-        const nomeProd = prod?prod.produto:nomeKey;
+      const val = snap.val() || {};
+      const linhas = [];
+      for (const [nomeKey, raw] of Object.entries(val)) {
+        if (!raw || typeof raw !== 'object') continue;
+        const prod = _produtosUnicos.find(p => p.nomeKey === nomeKey);
+        const nomeProd = prod ? prod.produto : nomeKey;
         let entries = [];
-        if(raw&&raw.dataKey) entries=[{dataKey:raw.dataKey,codLote:raw.codLote||'',produto:raw.produto||nomeProd,codItem:raw.codItem||''}];
-        else entries=Object.values(raw||{}).map(v=>({dataKey:v.dataKey,codLote:v.codLote||'',produto:v.produto||nomeProd,codItem:v.codItem||''}));
-        entries.forEach(e=>{
-          const dias=Math.round((new Date(e.dataKey+'T00:00:00')-new Date().setHours(0,0,0,0))/86400000);
-          const codProd = e.codItem || (prod&&prod.codItem?String(prod.codItem):'') || '';
-          rows.push([codProd,e.produto,e.codLote,e.dataKey?e.dataKey.split('-').reverse().join('/'):'',dias]);
+        if (raw.dataKey) {
+          entries = [{ dataKey: raw.dataKey, codLote: raw.codLote || '', produto: raw.produto || nomeProd, codItem: raw.codItem || (prod && prod.codItem) || '' }];
+        } else {
+          entries = Object.values(raw).map(v => ({ dataKey: v.dataKey, codLote: v.codLote || '', produto: v.produto || nomeProd, codItem: v.codItem || (prod && prod.codItem) || '' }));
+        }
+        entries.forEach(e => {
+          if (!e.dataKey) return;
+          linhas.push({
+            'Código do Item': e.codItem || '',
+            'Descrição do Item': e.produto,
+            'Código do Lote': e.codLote || '',
+            'DT FINAL PREVISTA': e.dataKey.split('-').reverse().join('/'),
+            '_sortKey': e.dataKey,
+          });
         });
       }
-      const bom=String.fromCharCode(0xFEFF);
-      const csv=bom+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(';')).join('\n');
-      const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a'); a.href=url; a.download='lotes_'+new Date().toISOString().slice(0,10)+'.csv';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-    }catch(e){ alert('Erro: '+e.message); }
+      if (linhas.length === 0) {
+        alert('Nenhum lote cadastrado pra exportar.');
+        if (btn) { btn.disabled = false; btn.innerHTML = labelOrig; }
+        return;
+      }
+      linhas.sort((a, b) => a._sortKey.localeCompare(b._sortKey));
+      linhas.forEach(l => delete l._sortKey);
+
+      const ws = XLSX.utils.json_to_sheet(linhas, { header: ['Código do Item','Descrição do Item','Código do Lote','DT FINAL PREVISTA'] });
+      ws['!cols'] = [{ wch: 16 }, { wch: 45 }, { wch: 22 }, { wch: 20 }];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Lotes');
+
+      const d = new Date();
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yyyy = d.getFullYear();
+      XLSX.writeFile(wb, `lotes_${dd}-${mm}-${yyyy}.xlsx`);
+    } catch (e) {
+      alert('Erro ao exportar: ' + e.message);
+    }
+    if (btn) { btn.disabled = false; btn.innerHTML = labelOrig; }
   };
 
   window.toggleHistLotes = function(){
