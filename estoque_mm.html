@@ -303,10 +303,20 @@
   .cessoes-periodo-range input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(0.55);cursor:pointer;}
   .cessoes-periodo-range span{font-size:10px;color:var(--muted);}
   .cessoes-periodo-range button{font-size:10px;font-weight:700;padding:4px 10px;border-radius:5px;border:none;background:#a78bfa;color:#1a0f33;cursor:pointer;text-transform:uppercase;letter-spacing:0.4px;}
+  /* Busca por item dentro do período ativo */
+  .cessoes-search-wrap{position:relative;display:flex;align-items:center;flex:1;min-width:240px;max-width:420px;margin-left:auto;}
+  .cessoes-search-icon{position:absolute;left:10px;font-size:11px;opacity:0.55;pointer-events:none;}
+  .cessoes-search-input{flex:1;width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 30px 7px 30px;color:var(--text);font-family:inherit;font-size:11.5px;outline:none;transition:border-color 0.15s, background 0.15s;}
+  .cessoes-search-input:focus{border-color:rgba(167,139,250,0.5);background:rgba(167,139,250,0.04);}
+  .cessoes-search-input::placeholder{color:var(--muted);font-size:11px;}
+  .cessoes-search-clear{position:absolute;right:8px;background:transparent;border:none;color:var(--muted);font-size:16px;line-height:1;cursor:pointer;padding:2px 6px;border-radius:4px;}
+  .cessoes-search-clear:hover{color:var(--text);background:rgba(255,255,255,0.06);}
+  .cessoes-search-count{position:absolute;right:34px;font-size:9.5px;color:var(--muted);font-weight:600;letter-spacing:0.2px;pointer-events:none;}
   .cessoes-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px;}
   .cessoes-kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
   .cessoes-kpi-label{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px;}
   .cessoes-kpi-value{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--text);line-height:1.1;}
+  .cessoes-kpi-sub{font-size:9.5px;color:var(--muted);font-weight:500;margin-top:4px;letter-spacing:0.1px;}
   .cessoes-kpi.purple .cessoes-kpi-value{color:#c4b5fd;}
   .cessoes-kpi.orange .cessoes-kpi-value{color:#fb923c;}
   .cessoes-kpi.green .cessoes-kpi-value{color:#22c98a;}
@@ -1469,6 +1479,18 @@
           <span>até</span>
           <input type="date" id="cessoes-ate" title="Até">
           <button onclick="aplicarPeriodoCessoes()">Aplicar</button>
+        </div>
+        <!-- Busca por item dentro do período ativo -->
+        <div class="cessoes-search-wrap">
+          <span class="cessoes-search-icon">🔍</span>
+          <input type="text" id="cessoes-search" class="cessoes-search-input"
+                 placeholder="Buscar item: produto, código, máscara..."
+                 oninput="filtrarCessoesTabela(this.value)"
+                 autocomplete="off">
+          <button type="button" class="cessoes-search-clear" id="cessoes-search-clear"
+                  onclick="document.getElementById('cessoes-search').value=''; filtrarCessoesTabela('');"
+                  style="display:none;" title="Limpar">×</button>
+          <span class="cessoes-search-count" id="cessoes-search-count"></span>
         </div>
       </div>
     </div>
@@ -8136,6 +8158,89 @@ window.exportarProjecaoMesXLSX = exportarProjecaoMesXLSX;
 let _cessoesCache = null;        // Todas as cessões já carregadas do Firebase
 let _cessoesFiltroAtual = 'hoje'; // 'hoje' | 'mes' | 'periodo'
 let _cessoesPeriodoCustom = null; // { de: 'YYYY-MM-DD', ate: 'YYYY-MM-DD' }
+let _cessoesSearchTerm = '';      // texto de busca por item dentro do período ativo
+let _cessoesFiltradasCache = null; // dataset do período (sem busca aplicada) — cacheado pra recompute
+let _cessoesPeriodoLabel = '';     // label calculado no último render (Hoje/Maio/etc)
+
+// Renderiza os 5 KPIs com base num subset (filtrado) e o conjunto base (período total)
+function _renderKPIsCessoes(subset, base, labelPeriodo){
+  const kpisDiv = document.getElementById('cessoes-kpis');
+  if (!kpisDiv) return;
+  const totalQtd = subset.reduce((s, c) => s + (c.qtd || 0), 0);
+  const skusUnicos = new Set(subset.map(c => c.codMasc)).size;
+  const pessoasUnicas = new Set(subset.map(c => c.quem)).size;
+  const baseQtd = base.reduce((s, c) => s + (c.qtd || 0), 0);
+  const baseSkus = new Set(base.map(c => c.codMasc)).size;
+  const basePessoas = new Set(base.map(c => c.quem)).size;
+  const filtrando = subset.length !== base.length;
+  const sub = (filtrandoTxt) => filtrando
+    ? `<div class="cessoes-kpi-sub">${filtrandoTxt}</div>`
+    : '';
+  kpisDiv.innerHTML = `
+    <div class="cessoes-kpi purple">
+      <div class="cessoes-kpi-label">Período</div>
+      <div class="cessoes-kpi-value" style="font-size:13px;">${labelPeriodo || '—'}</div>
+      ${filtrando ? `<div class="cessoes-kpi-sub" style="color:#c084fc;">🔍 busca ativa</div>` : ''}
+    </div>
+    <div class="cessoes-kpi orange">
+      <div class="cessoes-kpi-label">Total cedido</div>
+      <div class="cessoes-kpi-value">${totalQtd} <span style="font-size:11px;opacity:0.7;">un</span></div>
+      ${sub(`de ${baseQtd} un no período`)}
+    </div>
+    <div class="cessoes-kpi">
+      <div class="cessoes-kpi-label">Cessões registradas</div>
+      <div class="cessoes-kpi-value">${subset.length}</div>
+      ${sub(`de ${base.length} no período`)}
+    </div>
+    <div class="cessoes-kpi green">
+      <div class="cessoes-kpi-label">SKUs cedidos</div>
+      <div class="cessoes-kpi-value">${skusUnicos}</div>
+      ${sub(`de ${baseSkus} no período`)}
+    </div>
+    <div class="cessoes-kpi">
+      <div class="cessoes-kpi-label">Pessoas</div>
+      <div class="cessoes-kpi-value">${pessoasUnicas}</div>
+      ${sub(`de ${basePessoas} no período`)}
+    </div>
+  `;
+}
+
+// Filtra as linhas da tabela de cessões pelo termo (produto, codItem, codMasc, máscara, quem)
+window.filtrarCessoesTabela = function(termo){
+  _cessoesSearchTerm = (termo || '').trim().toLowerCase();
+  const tbody = document.getElementById('cessoes-tbody');
+  const clearBtn = document.getElementById('cessoes-search-clear');
+  const counter = document.getElementById('cessoes-search-count');
+  if (!tbody) return;
+  const rows = tbody.querySelectorAll('tr[data-search]');
+  let visiveis = 0;
+  rows.forEach(r => {
+    const s = r.dataset.search || '';
+    const match = _cessoesSearchTerm === '' || s.includes(_cessoesSearchTerm);
+    r.style.display = match ? '' : 'none';
+    if (match) visiveis++;
+  });
+  if (clearBtn) clearBtn.style.display = _cessoesSearchTerm ? '' : 'none';
+  if (counter) {
+    if (_cessoesSearchTerm) {
+      counter.textContent = `${visiveis} de ${rows.length}`;
+      counter.style.color = visiveis === 0 ? '#ef4444' : 'var(--muted)';
+    } else {
+      counter.textContent = '';
+    }
+  }
+  // Recalcula KPIs com o subset filtrado pela busca
+  if (_cessoesFiltradasCache) {
+    const subset = _cessoesSearchTerm
+      ? _cessoesFiltradasCache.filter(c => {
+          const s = [c.codItem, c.codMasc, c.produto, c.variacao, c.quem]
+            .map(v => String(v ?? '').toLowerCase()).join(' ');
+          return s.includes(_cessoesSearchTerm);
+        })
+      : _cessoesFiltradasCache;
+    _renderKPIsCessoes(subset, _cessoesFiltradasCache, _cessoesPeriodoLabel);
+  }
+};
 
 window.setFiltroCessoes = function(filtro){
   _cessoesFiltroAtual = filtro;
@@ -8307,11 +8412,8 @@ async function renderCessoesTab(forceReload){
 
   const todas = await _carregarCessoesCache(forceReload);
   const filtradas = _filtrarCessoes(todas);
+  _cessoesFiltradasCache = filtradas;   // pra busca recalcular KPIs sem refazer load
 
-  // KPIs
-  const totalQtd = filtradas.reduce((s, c) => s + c.qtd, 0);
-  const skusUnicos = new Set(filtradas.map(c => c.codMasc)).size;
-  const pessoasUnicas = new Set(filtradas.map(c => c.quem)).size;
   // Calcula label do período
   let labelPeriodo = '';
   if (_cessoesFiltroAtual === 'hoje') labelPeriodo = `Hoje (${_fmtData(_hojeKeyLocal())})`;
@@ -8324,28 +8426,9 @@ async function renderCessoesTab(forceReload){
   else if (_cessoesFiltroAtual === 'periodo' && _cessoesPeriodoCustom) {
     labelPeriodo = `${_fmtData(_cessoesPeriodoCustom.de)} → ${_fmtData(_cessoesPeriodoCustom.ate)}`;
   }
-  kpisDiv.innerHTML = `
-    <div class="cessoes-kpi purple">
-      <div class="cessoes-kpi-label">Período</div>
-      <div class="cessoes-kpi-value" style="font-size:13px;">${labelPeriodo || '—'}</div>
-    </div>
-    <div class="cessoes-kpi orange">
-      <div class="cessoes-kpi-label">Total cedido</div>
-      <div class="cessoes-kpi-value">${totalQtd} <span style="font-size:11px;opacity:0.7;">un</span></div>
-    </div>
-    <div class="cessoes-kpi">
-      <div class="cessoes-kpi-label">Cessões registradas</div>
-      <div class="cessoes-kpi-value">${filtradas.length}</div>
-    </div>
-    <div class="cessoes-kpi green">
-      <div class="cessoes-kpi-label">SKUs cedidos</div>
-      <div class="cessoes-kpi-value">${skusUnicos}</div>
-    </div>
-    <div class="cessoes-kpi">
-      <div class="cessoes-kpi-label">Pessoas</div>
-      <div class="cessoes-kpi-value">${pessoasUnicas}</div>
-    </div>
-  `;
+  _cessoesPeriodoLabel = labelPeriodo;
+  // Render inicial: sem busca, KPIs refletem todo o período
+  _renderKPIsCessoes(filtradas, filtradas, labelPeriodo);
 
   // Atualiza badge da aba (total geral, não filtrado)
   const badge = document.getElementById('tab-badge-cessoes');
@@ -8435,7 +8518,11 @@ async function renderCessoesTab(forceReload){
     }
     if (!obsHtml) obsHtml = '<span style="color:var(--muted);font-size:10px;font-style:italic;">—</span>';
 
-    return `<tr>
+    // Termo searchable: concatena todos os campos relevantes em lowercase
+    const searchableStr = [c.codItem, c.codMasc, c.produto, c.variacao, c.quem]
+      .map(v => String(v ?? '').toLowerCase()).join(' ');
+
+    return `<tr data-search="${esc(searchableStr)}">
       <td class="cessoes-td-data">${_fmtData(c.data)}<br><small>${hh}:${mm}</small></td>
       <td class="cessoes-td-cod">${esc(c.codItem)}</td>
       <td class="cessoes-td-cod">${esc(c.codMasc)}</td>
@@ -8449,6 +8536,13 @@ async function renderCessoesTab(forceReload){
       <td class="cessoes-td-obs">${obsHtml}</td>
     </tr>`;
   }).join('');
+
+  // Reaplica a busca atual (se houver) após o re-render
+  if (_cessoesSearchTerm) {
+    const inp = document.getElementById('cessoes-search');
+    if (inp && inp.value !== _cessoesSearchTerm) inp.value = _cessoesSearchTerm;
+    filtrarCessoesTabela(_cessoesSearchTerm);
+  }
 }
 
 function _fmtData(key){
