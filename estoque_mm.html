@@ -1232,6 +1232,10 @@
       <span class="tab-ico">📉</span><span>Consumo</span>
       <span class="tab-badge" id="tab-badge-consumo">—</span>
     </button>
+    <button class="tab-btn" data-tab="repostos" onclick="setActiveTab('repostos')">
+      <span class="tab-ico">📦</span><span>Repostos</span>
+      <span class="tab-badge" id="tab-badge-repostos" style="background:rgba(34,201,138,0.2);color:#22c98a;border-color:rgba(34,201,138,0.4);">—</span>
+    </button>
     <button class="tab-btn" data-tab="cessoes" onclick="setActiveTab('cessoes')">
       <span class="tab-ico">👥</span><span>Cessões</span>
       <span class="tab-badge tab-badge-purple" id="tab-badge-cessoes">—</span>
@@ -1452,6 +1456,70 @@
     </div>
   </div>
   </div><!-- /data-tab=consumo -->
+
+  <!-- REPOSTOS — itens que ganharam reserva no período (entrada de lotes/reposição) -->
+  <div data-tab="repostos">
+    <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <span>📦 Itens Repostos <span style="font-weight:400;font-size:11px;color:var(--muted);">reservas que aumentaram entre snapshots · pra verificar chegada de lotes</span></span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;" class="no-print">
+        <button onclick="exportarRepostosXLSX()" type="button" class="export-btn" id="btn-export-repostos">
+          📥 Exportar Excel
+        </button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="cessoes-toolbar">
+      <div class="cessoes-filtros">
+        <span class="cessoes-filt-label">Período:</span>
+        <button class="cessoes-filt-btn active" data-filtro-repostos="hoje" onclick="setFiltroRepostos('hoje')">📅 Hoje</button>
+        <button class="cessoes-filt-btn" data-filtro-repostos="mes" onclick="setFiltroRepostos('mes')">🗓 Este mês</button>
+        <button class="cessoes-filt-btn" data-filtro-repostos="periodo" onclick="setFiltroRepostos('periodo')">📆 Período</button>
+        <div class="cessoes-periodo-range" id="repostos-periodo-range" style="display:none;">
+          <input type="date" id="repostos-de" title="De">
+          <span>até</span>
+          <input type="date" id="repostos-ate" title="Até">
+          <button onclick="aplicarPeriodoRepostos()">Aplicar</button>
+        </div>
+        <div class="cessoes-search-wrap">
+          <span class="cessoes-search-icon">🔍</span>
+          <input type="text" id="repostos-search" class="cessoes-search-input"
+                 placeholder="Buscar: produto, código, máscara..."
+                 oninput="filtrarRepostosTabela(this.value)"
+                 autocomplete="off">
+          <button type="button" class="cessoes-search-clear" id="repostos-search-clear"
+                  onclick="document.getElementById('repostos-search').value=''; filtrarRepostosTabela('');"
+                  style="display:none;" title="Limpar">×</button>
+          <span class="cessoes-search-count" id="repostos-search-count"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="cessoes-kpis" id="repostos-kpis"></div>
+
+    <!-- Tabela -->
+    <div class="cessoes-table-wrap">
+      <table class="cessoes-table">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Cod Item</th>
+            <th>Cod Máscara</th>
+            <th>Produto</th>
+            <th>Máscara (Variação)</th>
+            <th style="text-align:right;">Antes</th>
+            <th style="text-align:right;">+ Qtd</th>
+            <th style="text-align:right;">Depois</th>
+            <th>Lote Esperado</th>
+          </tr>
+        </thead>
+        <tbody id="repostos-tbody">
+          <tr><td colspan="9" class="cessoes-empty"><span class="cessoes-empty-icon">⏳</span>Carregando histórico do Firebase...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div><!-- /data-tab=repostos -->
 
   <!-- CESSÕES (aba própria com filtros e export) -->
   <div data-tab="cessoes">
@@ -9318,6 +9386,379 @@ window.setActiveTab = function(tabName){
     document.addEventListener('DOMContentLoaded', () => setActiveTab(tabInicial));
   } else {
     setActiveTab(tabInicial);
+  }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     REPOSTOS — itens que ganharam reserva entre snapshots do Firebase.
+     Permite verificar se a reposição esperada (lotes) aconteceu de fato.
+     Estrutura espelha a aba Cessões (período/busca/KPIs/tabela/export).
+     ═══════════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  if (typeof BUNDLE === 'undefined') return;
+
+  let _repFiltro = 'hoje';                  // 'hoje' | 'mes' | 'periodo'
+  let _repPeriodoCustom = null;             // { de, ate }
+  let _repSearchTerm = '';
+  let _repCache = null;                     // [{data, codItem, codMasc, produto, variacao, antes, qtd, depois, loteInfo}]
+  let _repHistoricoCache = null;            // raw snapshots do Firebase
+  let _repLotesCache = null;                // raw lotes
+  let _repFiltradosCache = null;            // filtrados por período
+  let _repPeriodoLabel = '';
+
+  function _fmtDataRep(k){
+    if (!k) return '—';
+    const m = String(k).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : k;
+  }
+  function _hojeKeyRep(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ── Carrega tudo do Firebase e calcula reposições (deltas positivos entre snapshots) ──
+  async function _carregarRepostos(forceReload){
+    if (_repCache && !forceReload) return _repCache;
+    if (!window._mmDB) return [];
+
+    const [snapsResp, lotesResp] = await Promise.all([
+      window._mmDB.ref('estoque_mm/historico_consumo').once('value'),
+      window._mmDB.ref('estoque_mm/datas_lote').once('value'),
+    ]);
+    _repHistoricoCache = snapsResp.val() || {};
+    _repLotesCache = lotesResp.val() || {};
+    const snaps = _repHistoricoCache;
+    const datas = Object.keys(snaps).sort();
+    if (datas.length < 2) { _repCache = []; return _repCache; }
+
+    // Lookup pra produto/variação/codItem por codMasc
+    const lookup = {};
+    (BUNDLE.data || []).forEach(p => (p.variacoes || []).forEach(v => {
+      lookup[v.codMasc] = { codItem: p.codItem, produto: p.produto, variacao: v.variacao, categoria: p.categoria };
+    }));
+
+    // Indexa lotes por codItem → [{dataKey, codLote, diasAte}]
+    const lotesPorCodItem = {};
+    Object.entries(_repLotesCache).forEach(([codItem, raw]) => {
+      const entries = [];
+      if (raw && raw.dataKey) entries.push({ dataKey: raw.dataKey, codLote: raw.codLote || '' });
+      else if (raw && typeof raw === 'object') {
+        Object.values(raw).forEach(l => { if (l && l.dataKey) entries.push({ dataKey: l.dataKey, codLote: l.codLote || '' }); });
+      }
+      if (entries.length > 0) lotesPorCodItem[codItem] = entries;
+    });
+
+    // Pra cada par consecutivo de datas, computa reposições (r aumentou) por codMasc
+    const repos = [];
+    for (let i = 1; i < datas.length; i++) {
+      const dataAnterior = datas[i-1];
+      const dataAtual = datas[i];
+      const snapAnt = snaps[dataAnterior] || {};
+      const snapAtu = snaps[dataAtual] || {};
+      Object.keys(snapAtu).forEach(cm => {
+        const rAnt = (snapAnt[cm] && typeof snapAnt[cm].r === 'number') ? snapAnt[cm].r : null;
+        const rAtu = (snapAtu[cm] && typeof snapAtu[cm].r === 'number') ? snapAtu[cm].r : null;
+        if (rAnt == null || rAtu == null) return;
+        const delta = rAtu - rAnt;
+        if (delta <= 0) return; // só repostos
+        const info = lookup[cm] || { codItem: '', produto: `(cod ${cm})`, variacao: '', categoria: '' };
+
+        // Procura lote do produto com dataKey próximo da data de reposição (±3 dias)
+        let loteInfo = null;
+        const lotesDoProd = lotesPorCodItem[info.codItem] || [];
+        let melhor = null;
+        lotesDoProd.forEach(l => {
+          const dDiff = Math.abs((new Date(l.dataKey) - new Date(dataAtual)) / 86400000);
+          if (dDiff <= 3 && (!melhor || dDiff < melhor.diff)) {
+            melhor = { dataKey: l.dataKey, codLote: l.codLote, diff: dDiff };
+          }
+        });
+        if (melhor) loteInfo = melhor;
+
+        repos.push({
+          data: dataAtual,
+          codItem: info.codItem,
+          codMasc: cm,
+          produto: info.produto,
+          variacao: info.variacao,
+          categoria: info.categoria,
+          antes: rAnt,
+          qtd: delta,
+          depois: rAtu,
+          loteInfo,
+        });
+      });
+    }
+    // Ordena: mais recente primeiro, dentro do mesmo dia ordena por maior qtd
+    repos.sort((a, b) => {
+      if (a.data !== b.data) return b.data.localeCompare(a.data);
+      return b.qtd - a.qtd;
+    });
+    _repCache = repos;
+    return _repCache;
+  }
+
+  // Filtra por período ativo
+  function _filtrarPorPeriodo(repos){
+    if (_repFiltro === 'hoje') {
+      // Pega só a data MAIS RECENTE disponível (= reposições do último snapshot vs anterior)
+      if (repos.length === 0) return [];
+      const ultimaData = repos[0].data;  // já ordenado desc por data
+      return repos.filter(r => r.data === ultimaData);
+    }
+    if (_repFiltro === 'mes') {
+      // Mês do snapshot mais recente
+      if (repos.length === 0) return [];
+      const ultimaData = repos[0].data;
+      const prefix = ultimaData.slice(0, 7);  // YYYY-MM
+      return repos.filter(r => r.data.startsWith(prefix));
+    }
+    if (_repFiltro === 'periodo' && _repPeriodoCustom) {
+      return repos.filter(r => r.data >= _repPeriodoCustom.de && r.data <= _repPeriodoCustom.ate);
+    }
+    return repos;
+  }
+
+  // ═══ RENDER ═══
+  async function renderRepostosTab(forceReload){
+    const tbody = document.getElementById('repostos-tbody');
+    const kpisDiv = document.getElementById('repostos-kpis');
+    const badge = document.getElementById('tab-badge-repostos');
+    if (!tbody) return;
+
+    tbody.innerHTML = `<tr><td colspan="9" class="cessoes-empty"><span class="cessoes-empty-icon">⏳</span>Carregando histórico do Firebase...</td></tr>`;
+
+    try {
+      const todos = await _carregarRepostos(forceReload);
+      const filtrados = _filtrarPorPeriodo(todos);
+      _repFiltradosCache = filtrados;
+
+      // Label do período
+      let labelPeriodo = '';
+      if (_repFiltro === 'hoje') {
+        const ultima = todos.length > 0 ? todos[0].data : _hojeKeyRep();
+        labelPeriodo = `Último snapshot (${_fmtDataRep(ultima)})`;
+      } else if (_repFiltro === 'mes') {
+        const stats = BUNDLE.stats || {};
+        const m = (stats.dataAtualizacao || '').match(/^\d{2}\/(\d{2})\/(\d{4})$/);
+        const nomesMeses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+        labelPeriodo = m ? `${nomesMeses[+m[1]-1]} ${m[2]}` : 'Este mês';
+      } else if (_repFiltro === 'periodo' && _repPeriodoCustom) {
+        labelPeriodo = `${_fmtDataRep(_repPeriodoCustom.de)} → ${_fmtDataRep(_repPeriodoCustom.ate)}`;
+      }
+      _repPeriodoLabel = labelPeriodo;
+
+      // Atualiza badge da aba com o total de reposições do período
+      if (badge) badge.textContent = filtrados.length || '0';
+
+      // KPIs iniciais (sem busca)
+      _renderKPIsRepostos(filtrados, filtrados, labelPeriodo);
+
+      // Tabela
+      if (filtrados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="cessoes-empty">
+          <span class="cessoes-empty-icon">📦</span>Nenhuma reposição encontrada nesse período.<br>
+          <span style="font-size:11px;color:var(--muted);">Reposições aparecem quando o reservado de algum SKU aumenta entre snapshots consecutivos.</span>
+        </td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtrados.map(r => {
+        const dataHoje = _fmtDataRep(r.data).slice(0, 5);
+        const dataAno = _fmtDataRep(r.data).slice(6);
+        const loteCell = r.loteInfo
+          ? `<span style="color:#22c98a;font-weight:700;">${r.loteInfo.codLote ? esc(r.loteInfo.codLote) : '✓'}</span>
+             <small style="display:block;color:var(--muted);font-size:9.5px;">${_fmtDataRep(r.loteInfo.dataKey)}${r.loteInfo.diff > 0 ? ` · ${r.loteInfo.diff}d off` : ''}</small>`
+          : `<span style="color:var(--muted);font-style:italic;font-size:10.5px;">sem lote cadastrado</span>`;
+        const searchableStr = [r.codItem, r.codMasc, r.produto, r.variacao, r.loteInfo ? r.loteInfo.codLote : '']
+          .map(v => String(v ?? '').toLowerCase()).join(' ');
+        return `<tr data-search="${esc(searchableStr)}">
+          <td class="cessoes-td-data">${dataHoje}<br><small>${dataAno}</small></td>
+          <td class="cessoes-td-cod">${esc(r.codItem)}</td>
+          <td class="cessoes-td-cod">${esc(r.codMasc)}</td>
+          <td class="cessoes-td-produto" title="${esc(r.produto)}">${esc(r.produto)}</td>
+          <td class="cessoes-td-variacao" title="${esc(r.variacao)}">${esc(r.variacao) || '—'}</td>
+          <td style="text-align:right;color:var(--muted);">${r.antes}</td>
+          <td style="text-align:right;color:#22c98a;font-weight:800;font-family:'Syne',sans-serif;">+${r.qtd}</td>
+          <td style="text-align:right;color:var(--text);font-weight:700;">${r.depois}</td>
+          <td>${loteCell}</td>
+        </tr>`;
+      }).join('');
+
+      // Reaplica busca se houver
+      if (_repSearchTerm) {
+        const inp = document.getElementById('repostos-search');
+        if (inp && inp.value !== _repSearchTerm) inp.value = _repSearchTerm;
+        filtrarRepostosTabela(_repSearchTerm);
+      }
+    } catch (e) {
+      console.error('[repostos]', e);
+      tbody.innerHTML = `<tr><td colspan="9" class="cessoes-empty"><span class="cessoes-empty-icon">⚠</span>Erro: ${esc(e.message)}</td></tr>`;
+    }
+  }
+
+  // KPIs com suporte a "filtrado" (subset vs base)
+  function _renderKPIsRepostos(subset, base, labelPeriodo){
+    const div = document.getElementById('repostos-kpis');
+    if (!div) return;
+    const totalQtd = subset.reduce((s, r) => s + r.qtd, 0);
+    const skusUnicos = new Set(subset.map(r => r.codMasc)).size;
+    const comLote = subset.filter(r => r.loteInfo).length;
+    const semLote = subset.length - comLote;
+    const baseQtd = base.reduce((s, r) => s + r.qtd, 0);
+    const baseSkus = new Set(base.map(r => r.codMasc)).size;
+    const baseComLote = base.filter(r => r.loteInfo).length;
+    const baseSemLote = base.length - baseComLote;
+    const filtrando = subset.length !== base.length;
+    const sub = (txt) => filtrando ? `<div class="cessoes-kpi-sub">${txt}</div>` : '';
+    div.innerHTML = `
+      <div class="cessoes-kpi purple">
+        <div class="cessoes-kpi-label">Período</div>
+        <div class="cessoes-kpi-value" style="font-size:13px;">${esc(labelPeriodo) || '—'}</div>
+        ${filtrando ? `<div class="cessoes-kpi-sub" style="color:#c084fc;">🔍 busca ativa</div>` : ''}
+      </div>
+      <div class="cessoes-kpi green">
+        <div class="cessoes-kpi-label">Total reposto</div>
+        <div class="cessoes-kpi-value">+${totalQtd} <span style="font-size:11px;opacity:0.7;">un</span></div>
+        ${sub(`de +${baseQtd} no período`)}
+      </div>
+      <div class="cessoes-kpi">
+        <div class="cessoes-kpi-label">SKUs repostos</div>
+        <div class="cessoes-kpi-value">${skusUnicos}</div>
+        ${sub(`de ${baseSkus} no período`)}
+      </div>
+      <div class="cessoes-kpi green">
+        <div class="cessoes-kpi-label">Com lote esperado</div>
+        <div class="cessoes-kpi-value">${comLote}</div>
+        ${sub(`de ${baseComLote} no período`)}
+      </div>
+      <div class="cessoes-kpi">
+        <div class="cessoes-kpi-label">Sem lote</div>
+        <div class="cessoes-kpi-value" style="color:${semLote > 0 ? '#fbbf24' : 'var(--text)'};">${semLote}</div>
+        ${sub(`de ${baseSemLote} no período`)}
+      </div>
+    `;
+  }
+
+  // ═══ AÇÕES ═══
+  window.setFiltroRepostos = function(filtro){
+    _repFiltro = filtro;
+    document.querySelectorAll('[data-filtro-repostos]').forEach(b => {
+      b.classList.toggle('active', b.dataset.filtroRepostos === filtro);
+    });
+    const range = document.getElementById('repostos-periodo-range');
+    if (range) range.style.display = filtro === 'periodo' ? '' : 'none';
+    if (filtro !== 'periodo' || _repPeriodoCustom) renderRepostosTab();
+  };
+  window.aplicarPeriodoRepostos = function(){
+    const de = document.getElementById('repostos-de').value;
+    const ate = document.getElementById('repostos-ate').value;
+    if (!de || !ate) { alert('Selecione as duas datas.'); return; }
+    if (de > ate) { alert('A data inicial precisa ser anterior à data final.'); return; }
+    _repPeriodoCustom = { de, ate };
+    renderRepostosTab();
+  };
+
+  window.filtrarRepostosTabela = function(termo){
+    _repSearchTerm = (termo || '').trim().toLowerCase();
+    const tbody = document.getElementById('repostos-tbody');
+    const clearBtn = document.getElementById('repostos-search-clear');
+    const counter = document.getElementById('repostos-search-count');
+    if (!tbody) return;
+    const rows = tbody.querySelectorAll('tr[data-search]');
+    let visiveis = 0;
+    rows.forEach(r => {
+      const s = r.dataset.search || '';
+      const match = _repSearchTerm === '' || s.includes(_repSearchTerm);
+      r.style.display = match ? '' : 'none';
+      if (match) visiveis++;
+    });
+    if (clearBtn) clearBtn.style.display = _repSearchTerm ? '' : 'none';
+    if (counter) {
+      if (_repSearchTerm) {
+        counter.textContent = `${visiveis} de ${rows.length}`;
+        counter.style.color = visiveis === 0 ? '#ef4444' : 'var(--muted)';
+      } else {
+        counter.textContent = '';
+      }
+    }
+    if (_repFiltradosCache) {
+      const subset = _repSearchTerm
+        ? _repFiltradosCache.filter(r => {
+            const s = [r.codItem, r.codMasc, r.produto, r.variacao, r.loteInfo ? r.loteInfo.codLote : '']
+              .map(v => String(v ?? '').toLowerCase()).join(' ');
+            return s.includes(_repSearchTerm);
+          })
+        : _repFiltradosCache;
+      _renderKPIsRepostos(subset, _repFiltradosCache, _repPeriodoLabel);
+    }
+  };
+
+  // ═══ EXPORT XLSX ═══
+  window.exportarRepostosXLSX = async function(){
+    if (typeof XLSX === 'undefined') { alert('SheetJS não carregado.'); return; }
+    if (!_repFiltradosCache || _repFiltradosCache.length === 0) { alert('Nada pra exportar nesse período.'); return; }
+    const linhas = _repFiltradosCache.map(r => ({
+      'Data': _fmtDataRep(r.data),
+      'Cod Item': r.codItem,
+      'Cod Máscara': r.codMasc,
+      'Produto': r.produto,
+      'Variação': r.variacao || '',
+      'Reservado Antes': r.antes,
+      'Qtd Reposta': r.qtd,
+      'Reservado Depois': r.depois,
+      'Lote Esperado (data)': r.loteInfo ? _fmtDataRep(r.loteInfo.dataKey) : '',
+      'Lote Esperado (código)': r.loteInfo ? r.loteInfo.codLote : '',
+      'Match (dias off)': r.loteInfo ? (r.loteInfo.diff === 0 ? 'EXATO' : `${r.loteInfo.diff}d`) : 'SEM LOTE',
+    }));
+    const ws = XLSX.utils.json_to_sheet(linhas);
+    ws['!cols'] = [
+      { wch: 12 }, { wch: 10 }, { wch: 12 }, { wch: 45 }, { wch: 35 },
+      { wch: 14 }, { wch: 12 }, { wch: 16 }, { wch: 20 }, { wch: 20 }, { wch: 14 }
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Repostos');
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    XLSX.writeFile(wb, `repostos_${dd}-${mm}-${d.getFullYear()}.xlsx`);
+  };
+
+  // ═══ INTEGRAÇÃO COM TAB SWITCHING ═══
+  // Quando a aba Repostos for ativada, carrega/renderiza. Hook no setActiveTab existente.
+  const _origSetActiveTab = window.setActiveTab;
+  window.setActiveTab = function(tab){
+    if (_origSetActiveTab) _origSetActiveTab(tab);
+    if (tab === 'repostos') {
+      renderRepostosTab(false);
+    }
+  };
+
+  // Pré-carrega o badge da aba na inicialização (mostra contagem do dia)
+  if (window._mmDB) {
+    _carregarRepostos(false).then(todos => {
+      const filtrados = _filtrarPorPeriodo(todos);
+      const badge = document.getElementById('tab-badge-repostos');
+      if (badge) badge.textContent = filtrados.length || '0';
+    }).catch(() => {});
+  } else {
+    // Aguarda o Firebase conectar
+    const wait = setInterval(() => {
+      if (window._mmDB) {
+        clearInterval(wait);
+        _carregarRepostos(false).then(todos => {
+          const filtrados = _filtrarPorPeriodo(todos);
+          const badge = document.getElementById('tab-badge-repostos');
+          if (badge) badge.textContent = filtrados.length || '0';
+        }).catch(() => {});
+      }
+    }, 250);
+    setTimeout(() => clearInterval(wait), 8000);
   }
 })();
 </script>
