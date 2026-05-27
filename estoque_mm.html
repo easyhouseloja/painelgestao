@@ -604,6 +604,8 @@
   .lote-item-actions{display:flex;gap:6px;}
   .lote-item-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:9px;padding:4px 9px;border-radius:5px;cursor:pointer;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;font-family:inherit;transition:all 0.15s;}
   .lote-item-btn:hover{color:#ef4444;border-color:rgba(239,68,68,0.4);}
+  .lote-item-btn-ok{color:#22c98a;border-color:rgba(34,201,138,0.35);}
+  .lote-item-btn-ok:hover{color:#5eefc0;border-color:rgba(34,201,138,0.7);background:rgba(34,201,138,0.10);}
 
   /* GRUPO de lotes (mesma data agrupada) */
   .lote-grupo{display:flex;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border);align-items:flex-start;}
@@ -6221,6 +6223,50 @@ renderTable();
     }
   };
 
+  // ═══ MARCAR LOTE COMO COLETADO ═══
+  // Arquiva em estoque_mm/lotes_coletados/<codItem>/<loteId> e remove do datas_lote.
+  // O arquivo permanece pra cruzamento histórico na aba Repostos.
+  window.marcarLoteColetado = async function(codItem, loteId){
+    const prod = _produtosUnicos.find(p => p.codItem === codItem);
+    const nome = prod ? prod.produto : `cod ${codItem}`;
+    if (!confirm(`Marcar lote de "${nome}" como coletado?\n\nO lote sai da lista de planejados e fica arquivado pra consulta histórica na aba Repostos.`)) return;
+    if (!window._mmDB) return;
+    try {
+      let loteData = null;
+      if (loteId && loteId !== '_legacy') {
+        const snap = await window._mmDB.ref(`${FB_PATH}/${codItem}/${loteId}`).once('value');
+        loteData = snap.val();
+        if (!loteData) { alert('Lote não encontrado no Firebase.'); return; }
+      } else {
+        // formato antigo
+        const snap = await window._mmDB.ref(`${FB_PATH}/${codItem}`).once('value');
+        loteData = snap.val();
+        if (!loteData || !loteData.dataKey) { alert('Lote não encontrado.'); return; }
+      }
+      // Arquiva com timestamp de coleta
+      const arquivado = Object.assign({}, loteData, {
+        coletadoEm: Date.now(),
+        coletadoEmData: new Date().toISOString().slice(0,10),  // YYYY-MM-DD
+      });
+      const archiveId = loteId && loteId !== '_legacy' ? loteId : window._mmDB.ref().push().key;
+      await window._mmDB.ref(`estoque_mm/lotes_coletados/${codItem}/${archiveId}`).set(arquivado);
+      // Remove do datas_lote
+      if (loteId && loteId !== '_legacy') {
+        await window._mmDB.ref(`${FB_PATH}/${codItem}/${loteId}`).remove();
+        const check = await window._mmDB.ref(`${FB_PATH}/${codItem}`).once('value');
+        if (!check.val()) await window._mmDB.ref(`${FB_PATH}/${codItem}`).remove();
+      } else {
+        await window._mmDB.ref(`${FB_PATH}/${codItem}`).remove();
+      }
+      await renderizarLotes();
+      _atualizarProximaAnaliseEmBg();
+      // Limpa cache da aba Repostos pra forçar recarga no próximo acesso
+      if (typeof window._invalidarRepostosCache === 'function') window._invalidarRepostosCache();
+    } catch (e) {
+      alert('Erro ao arquivar: ' + e.message);
+    }
+  };
+
   // ═══ REMOVER LOTE ═══
   // Aceita 1 ou 2 args: remover(codItem) → remove TODOS lotes (legado) | remover(codItem, loteId) → remove só esse
   window.removerLote = async function(codItem, loteId){
@@ -6495,7 +6541,8 @@ renderTable();
               </div>
               <div class="lote-prod-meta">${p.categoria} · cod ${p.codItem} · ${p.nVars} variaç${p.nVars > 1 ? 'ões' : 'ão'} atendida${p.nVars > 1 ? 's' : ''}</div>
             </div>
-            <button class="lote-item-btn" onclick="removerLote(${p.codItem}, '${p.loteId}')" title="Remover esse lote">🗑</button>
+            <button class="lote-item-btn lote-item-btn-ok" onclick="marcarLoteColetado(${p.codItem}, '${p.loteId}')" title="Marcar como coletado (arquiva o lote pra cruzamento histórico em Repostos)">✓ COLETADO</button>
+            <button class="lote-item-btn" onclick="removerLote(${p.codItem}, '${p.loteId}')" title="Remover permanentemente (use só pra erro de cadastro)">🗑</button>
           </div>`
         ).join('');
         html += `<div class="lote-grupo" data-grupo-data="${g.dataKey}" data-grupo-search="${(g.dataFmt + ' ' + g.dataKey).toLowerCase()}">
@@ -9426,12 +9473,15 @@ window.setActiveTab = function(tabName){
     if (_repCache && !forceReload) return _repCache;
     if (!window._mmDB) return [];
 
-    const [snapsResp, lotesResp] = await Promise.all([
+    // Carrega snapshots, lotes planejados E lotes coletados (arquivados)
+    const [snapsResp, lotesResp, coletadosResp] = await Promise.all([
       window._mmDB.ref('estoque_mm/historico_consumo').once('value'),
       window._mmDB.ref('estoque_mm/datas_lote').once('value'),
+      window._mmDB.ref('estoque_mm/lotes_coletados').once('value'),
     ]);
     _repHistoricoCache = snapsResp.val() || {};
     _repLotesCache = lotesResp.val() || {};
+    const lotesColetadosRaw = coletadosResp.val() || {};
     const snaps = _repHistoricoCache;
     const datas = Object.keys(snaps).sort();
     if (datas.length < 2) { _repCache = []; return _repCache; }
@@ -9442,15 +9492,22 @@ window.setActiveTab = function(tabName){
       lookup[v.codMasc] = { codItem: p.codItem, produto: p.produto, variacao: v.variacao, categoria: p.categoria };
     }));
 
-    // Indexa lotes por codItem → [{dataKey, codLote, diasAte}]
+    // Indexa lotes por codItem → [{dataKey, codLote, status}]
+    // Inclui PLANEJADOS (datas_lote) E COLETADOS (lotes_coletados/arquivados)
     const lotesPorCodItem = {};
+    const _addLote = (codItem, l, status) => {
+      if (!l || !l.dataKey) return;
+      if (!lotesPorCodItem[codItem]) lotesPorCodItem[codItem] = [];
+      lotesPorCodItem[codItem].push({ dataKey: l.dataKey, codLote: l.codLote || '', status });
+    };
     Object.entries(_repLotesCache).forEach(([codItem, raw]) => {
-      const entries = [];
-      if (raw && raw.dataKey) entries.push({ dataKey: raw.dataKey, codLote: raw.codLote || '' });
-      else if (raw && typeof raw === 'object') {
-        Object.values(raw).forEach(l => { if (l && l.dataKey) entries.push({ dataKey: l.dataKey, codLote: l.codLote || '' }); });
-      }
-      if (entries.length > 0) lotesPorCodItem[codItem] = entries;
+      if (!raw) return;
+      if (raw.dataKey) _addLote(codItem, raw, 'planejado');
+      else if (typeof raw === 'object') Object.values(raw).forEach(l => _addLote(codItem, l, 'planejado'));
+    });
+    Object.entries(lotesColetadosRaw).forEach(([codItem, raw]) => {
+      if (!raw || typeof raw !== 'object') return;
+      Object.values(raw).forEach(l => _addLote(codItem, l, 'coletado'));
     });
 
     // Pra cada par consecutivo de datas, computa reposições (r aumentou) por codMasc
@@ -9468,17 +9525,15 @@ window.setActiveTab = function(tabName){
         if (delta <= 0) return; // só repostos
         const info = lookup[cm] || { codItem: '', produto: `(cod ${cm})`, variacao: '', categoria: '' };
 
-        // Procura lote do produto com dataKey próximo da data de reposição (±3 dias)
-        let loteInfo = null;
+        // Procura lote do produto (planejado OU coletado) com dataKey próximo (±3 dias)
         const lotesDoProd = lotesPorCodItem[info.codItem] || [];
         let melhor = null;
         lotesDoProd.forEach(l => {
           const dDiff = Math.abs((new Date(l.dataKey) - new Date(dataAtual)) / 86400000);
           if (dDiff <= 3 && (!melhor || dDiff < melhor.diff)) {
-            melhor = { dataKey: l.dataKey, codLote: l.codLote, diff: dDiff };
+            melhor = { dataKey: l.dataKey, codLote: l.codLote, diff: dDiff, status: l.status };
           }
         });
-        if (melhor) loteInfo = melhor;
 
         repos.push({
           data: dataAtual,
@@ -9490,7 +9545,7 @@ window.setActiveTab = function(tabName){
           antes: rAnt,
           qtd: delta,
           depois: rAtu,
-          loteInfo,
+          loteInfo: melhor,
         });
       });
     }
@@ -9502,6 +9557,9 @@ window.setActiveTab = function(tabName){
     _repCache = repos;
     return _repCache;
   }
+
+  // Permite invalidar cache de fora (ex: após coletar/remover lote)
+  window._invalidarRepostosCache = function(){ _repCache = null; };
 
   // Filtra por período ativo
   function _filtrarPorPeriodo(repos){
@@ -9572,8 +9630,8 @@ window.setActiveTab = function(tabName){
         const dataHoje = _fmtDataRep(r.data).slice(0, 5);
         const dataAno = _fmtDataRep(r.data).slice(6);
         const loteCell = r.loteInfo
-          ? `<span style="color:#22c98a;font-weight:700;">${r.loteInfo.codLote ? esc(r.loteInfo.codLote) : '✓'}</span>
-             <small style="display:block;color:var(--muted);font-size:9.5px;">${_fmtDataRep(r.loteInfo.dataKey)}${r.loteInfo.diff > 0 ? ` · ${r.loteInfo.diff}d off` : ''}</small>`
+          ? `<span style="color:${r.loteInfo.status === 'coletado' ? '#22c98a' : '#67e8f9'};font-weight:700;">${r.loteInfo.codLote ? esc(r.loteInfo.codLote) : '✓'}</span>
+             <small style="display:block;color:var(--muted);font-size:9.5px;">${_fmtDataRep(r.loteInfo.dataKey)}${r.loteInfo.diff > 0 ? ` · ${r.loteInfo.diff}d off` : ''}${r.loteInfo.status === 'coletado' ? ' · ✓ coletado' : ' · planejado'}</small>`
           : `<span style="color:var(--muted);font-style:italic;font-size:10.5px;">sem lote cadastrado</span>`;
         const searchableStr = [r.codItem, r.codMasc, r.produto, r.variacao, r.loteInfo ? r.loteInfo.codLote : '']
           .map(v => String(v ?? '').toLowerCase()).join(' ');
