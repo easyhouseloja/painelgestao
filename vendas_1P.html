@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard MM · Maio 2026 (01/05 a 24/05)</title>
+<title>Dashboard MM · Maio 2026 (01/05 a 27/05)</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -53,6 +53,10 @@ body{background:var(--bg-base);font-family:var(--fb);color:var(--txt);min-height
 .gr .prog-pct{color:var(--green)}.comp .prog-pct{color:var(--orange)}.sala .prog-pct{color:var(--purple)}
 .class-footer{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .cf-item{display:flex;flex-direction:column;gap:2px}
+.total-row{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;margin-top:6px}
+.total-big{min-width:180px}
+.total-foot{flex:1;min-width:300px;margin:0;padding:0;border:0;grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:560px){.total-foot{grid-template-columns:repeat(2,1fr)}}
 .cf-lbl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3)}
 .cf-val{font-family:var(--fd);font-size:14px;font-weight:700}
 .cf-val.meta{color:var(--yellow);font-size:22px}.cf-val.ok{color:var(--green)}.cf-val.warn{color:var(--orange)}.cf-val.bad{color:var(--red)}.cf-val.pos{color:var(--green)}.cf-val.neg{color:var(--red)}
@@ -106,14 +110,14 @@ table.dt tbody tr:hover{background:#ffffff04}
 <div class="topbar">
   <div class="topbar-left">
     <h1><span class="icon-sq"></span>Dashboard MM · Maio 2026</h1>
-    <div class="period">Período de Apuração 01/05 à 24/05 · Análise por Data NF · Meta · Ano vs Ano</div>
+    <div class="period">Período de Apuração 01/05 à 27/05 · Análise por Data NF · Meta · Ano vs Ano</div>
   </div>
   <div class="topbar-right">
     <span class="tb tb-green">Jan: R$ 2,84M</span>
     <span class="tb tb-blue">Fev: R$ 2,73M</span>
     <span class="tb tb-orange">Mar: R$ 3,81M</span>
     <span class="tb tb-pink">Abr: R$ 1,91M</span>
-    <span class="tb tb-purple">Mai: R$ 1,85M*</span>
+    <span class="tb tb-purple">Mai: R$ 2,21M*</span>
   </div>
 </div>
 <div class="month-tabs">
@@ -129,20 +133,20 @@ table.dt tbody tr:hover{background:#ffffff04}
 <div class="month-page active" id="pg0">
   <div class="section-lbl">Resumo Consolidado · Jan–Mai 2026</div>
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-lbl">Faturamento Acumulado</div><div class="kpi-val">R$ 13,14M</div><div class="kpi-sub">Jan + Fev + Mar + Abr + Mai (01-24)</div></div>
-    <div class="kpi-card"><div class="kpi-lbl">Guarda Roupas</div><div class="kpi-val">R$ 8,46M</div><div class="kpi-sub">64,4% do acumulado</div></div>
-    <div class="kpi-card"><div class="kpi-lbl">Complementos</div><div class="kpi-val">R$ 4,02M</div><div class="kpi-sub">30,6% do acumulado</div></div>
-    <div class="kpi-card"><div class="kpi-lbl">Salas</div><div class="kpi-val">R$ 654K</div><div class="kpi-sub">5,0% do acumulado</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Faturamento Acumulado</div><div class="kpi-val">R$ 13,51M</div><div class="kpi-sub">Jan + Fev + Mar + Abr + Mai (01-27)</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Guarda Roupas</div><div class="kpi-val">R$ 8,71M</div><div class="kpi-sub">64,5% do acumulado</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Complementos</div><div class="kpi-val">R$ 4,13M</div><div class="kpi-sub">30,6% do acumulado</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Salas</div><div class="kpi-val">R$ 667K</div><div class="kpi-sub">4,9% do acumulado</div></div>
   </div>
   <div class="section-lbl">Faturamento Mensal · 2026 vs Meta vs 2025</div>
   <div class="chart-row-2">
     <div class="chart-card"><div class="chart-title">Faturamento Mensal</div><div class="chart-sub">Realizado 2026 · Meta · Realizado 2025</div><div style="position:relative;height:280px"><canvas id="cOvMes"></canvas></div></div>
-    <div class="chart-card" style="border-top-color:var(--green)"><div class="chart-title">Mix Acumulado por Classificação</div><div class="chart-sub">Jan–Mai 2026 (Mai parcial 01-24)</div><div style="position:relative;height:220px"><canvas id="cOvMix"></canvas></div><div class="chart-legend" id="lgOv"></div></div>
+    <div class="chart-card" style="border-top-color:var(--green)"><div class="chart-title">Mix Acumulado por Classificação</div><div class="chart-sub">Jan–Mai 2026 (Mai parcial 01-27)</div><div style="position:relative;height:220px"><canvas id="cOvMix"></canvas></div><div class="chart-legend" id="lgOv"></div></div>
   </div>
   <div class="section-lbl">Comparativo Mensal</div>
   <div class="ov-card"><div style="overflow-x:auto"><table class="ov"><thead><tr><th>Mês</th><th class="r">Fat. 2026</th><th class="r">Meta</th><th class="r">% Ating.</th><th class="r">Fat. 2025</th><th class="r">Ano vs Ano</th><th class="r" style="color:var(--green)">GR</th><th class="r" style="color:var(--orange)">Complementos</th><th class="r" style="color:var(--purple)">Salas</th></tr></thead><tbody id="ovTb"></tbody></table></div></div>
   <div class="section-lbl">Evolução por Classificação</div>
-  <div class="chart-card" style="margin-top:0"><div class="chart-title">Faturamento por Classificação · Jan–Mai 2026</div><div class="chart-sub">GR · Complementos · Salas (Mai parcial 01-24)</div><div style="position:relative;height:260px"><canvas id="cOvCls"></canvas></div></div>
+  <div class="chart-card" style="margin-top:0"><div class="chart-title">Faturamento por Classificação · Jan–Mai 2026</div><div class="chart-sub">GR · Complementos · Salas (Mai parcial 01-27)</div><div style="position:relative;height:260px"><canvas id="cOvCls"></canvas></div></div>
 </div>
 
 <!-- JANEIRO -->
@@ -239,12 +243,12 @@ table.dt tbody tr:hover{background:#ffffff04}
 
 <!-- MAIO -->
 <div class="month-page" id="pg5">
-  <div class="section-lbl">Indicadores Gerais · Maio 2026 <span style="color:var(--orange);font-size:9px">✦ Período 01/05 à 24/05</span></div>
+  <div class="section-lbl">Indicadores Gerais · Maio 2026 <span style="color:var(--orange);font-size:9px">✦ Período 01/05 à 27/05</span></div>
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-lbl">Faturamento Parcial</div><div class="kpi-val">R$ 1,85M</div><div class="kpi-sub"><span class="badge-sm bg-red">▼ 19,4% vs Mai/25 (01-24)</span></div><div style="margin-top:6px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3)">Meta Mensal</div><div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--yellow)">R$ 3,52M</div></div>
-    <div class="kpi-card"><div class="kpi-lbl">Venda Realizada</div><div class="kpi-val">R$ 2,08M</div><div class="kpi-sub">24 dias corridos · 01/05 à 24/05</div></div>
-    <div class="kpi-card"><div class="kpi-lbl">Projeção Faturamento</div><div class="kpi-val" style="color:var(--orange)">R$ 2,46M</div><div class="kpi-sub"><span class="badge-sm bg-red">Tendência ▼ 30% da meta</span></div></div>
-    <div class="kpi-card"><div class="kpi-lbl">% Atingimento Meta</div><div class="kpi-val" style="color:var(--red)">52,5%</div><div class="kpi-sub"><span class="badge-sm bg-red">▼ R$ 1,67M da meta</span></div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Faturamento Parcial</div><div class="kpi-val">R$ 2,21M</div><div class="kpi-sub"><span class="badge-sm bg-red">▼ 24,7% vs Mai/25 (01-27)</span></div><div style="margin-top:6px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3)">Meta Mensal</div><div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--yellow)">R$ 3,52M</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Venda Realizada</div><div class="kpi-val">R$ 2,33M</div><div class="kpi-sub">27 dias corridos · 01/05 à 27/05</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Projeção Faturamento</div><div class="kpi-val" style="color:var(--orange)">R$ 2,33M</div><div class="kpi-sub"><span class="badge-sm bg-red">Tendência ▼ 34% da meta</span></div></div>
+    <div class="kpi-card"><div class="kpi-lbl">% Atingimento Meta</div><div class="kpi-val" style="color:var(--red)">63,0%</div><div class="kpi-sub"><span class="badge-sm bg-red">▼ R$ 1,30M da meta</span></div></div>
   </div>
   <div class="section-lbl">Classificação · Realizado vs Meta vs 2025</div>
   <div class="class-grid" id="clMai"></div>
@@ -252,11 +256,11 @@ table.dt tbody tr:hover{background:#ffffff04}
   <div id="carteiraMai" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
   <div class="section-lbl">Evolução Diária</div>
   <div class="chart-row-2">
-    <div class="chart-card"><div class="chart-title">Faturamento por Dia · Maio</div><div class="chart-sub">Valor líquido por data da NF · 01/05 à 24/05</div><div style="position:relative;height:260px"><canvas id="cDMai"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Faturamento por Dia · Maio</div><div class="chart-sub">Valor líquido por data da NF · 01/05 à 27/05</div><div style="position:relative;height:260px"><canvas id="cDMai"></canvas></div></div>
     <div class="chart-card" style="border-top-color:var(--green)"><div class="chart-title">Mix por Classificação</div><div class="chart-sub">Distribuição do faturamento</div><div style="position:relative;height:220px"><canvas id="cMMai"></canvas></div><div class="chart-legend" id="lgMai"></div></div>
   </div>
   <div class="section-lbl">Top 10 Produtos · Maio</div>
-  <div class="table-card"><div class="table-header"><div class="table-title">Ranking por Faturamento</div><div class="table-sub">Top 10 · Mai 2026 (01/05 à 24/05)</div></div><div style="overflow-x:auto"><table class="tp"><thead><tr><th>#</th><th>Produto</th><th class="r">Qtde</th><th class="r">Faturamento</th><th style="width:130px">Part.</th></tr></thead><tbody id="t10Mai"></tbody></table></div></div>
+  <div class="table-card"><div class="table-header"><div class="table-title">Ranking por Faturamento</div><div class="table-sub">Top 10 · Mai 2026 (01/05 à 27/05)</div></div><div style="overflow-x:auto"><table class="tp"><thead><tr><th>#</th><th>Produto</th><th class="r">Qtde</th><th class="r">Faturamento</th><th style="width:130px">Part.</th></tr></thead><tbody id="t10Mai"></tbody></table></div></div>
   <div class="section-lbl">Detalhe Diário · Maio</div>
   <div class="daily-card"><div style="overflow-x:auto"><table class="dt"><thead><tr><th>Dia</th><th class="r">Faturamento</th><th class="r">Qtde</th><th>% Acumulado</th></tr></thead><tbody id="dtMai"></tbody></table></div></div>
 </div>
@@ -285,17 +289,17 @@ const D={
     daily:[{d:1,f:25347.01,q:38},{d:2,f:19705.11,q:31},{d:6,f:33363.73,q:50},{d:7,f:37192.65,q:55},{d:8,f:99766.15,q:146},{d:9,f:85946.01,q:123},{d:10,f:108270.85,q:158},{d:13,f:91000.45,q:150},{d:14,f:91532.62,q:140},{d:15,f:91184.83,q:141},{d:16,f:98911.21,q:145},{d:17,f:11076.00,q:13},{d:21,f:121129.92,q:181},{d:22,f:110380.89,q:178},{d:23,f:99230.69,q:149},{d:24,f:287046.86,q:433},{d:27,f:74560.49,q:115},{d:28,f:124256.19,q:0},{d:29,f:88599.14,q:0},{d:30,f:212615.52,q:0}],
     top10:[{n:'GR ALONZO 4 PTS AMENDOA CL/BRANCO#S/ESP#S/PES',f:182572.68,q:298},{n:'GR LOPAS 03 PTS OLLIE II 2025 AMENDOA#S/2PTS GLASS#C/PES',f:125630.05,q:91},{n:'GR SPAZIO 3 PTS BRANCO#C/1 PT GLASS#S/PES',f:97236.42,q:58},{n:'GR SPAZIO 3 PTS BRANCO#S/3PTS GLASS#S/PES',f:79291.46,q:61},{n:'GR ALONZO 4 PTS BRANCO#S/ESP#S/PES',f:78991.86,q:129},{n:'GR ALONZO 6 PTS BRANCO#S/ESP#S/PES',f:55482.70,q:65},{n:'COMODA LOOP 2024 II AMENDOA CLEAN/OFF WH',f:46259.48,q:82},{n:'GR ALONZO 6 PTS AMENDOA/OFF WH#S/ESP#S/PES',f:39264.68,q:46},{n:'GR ZEINE 2 PTS 2024 AMENDOA#C/1 PT GLASS#S/PES',f:31538.00,q:40},{n:'CAMA SOLTEIRO ATHENAS 2022 AMENDOA#C/CAMA AUX',f:31070.56,q:68}],
     carteira:{semReserva:{peso:2000,valor:19000},comReserva:{peso:110000,valor:690000}}},
-  mai:{total:1845051.86,meta_total:3516865.47,qtde:0,nfs:0,peso:0,total25:2290292.65,
-    cls:{gr:{fat:1294516.89,meta:2250793.90,fat25:0,qtde:0,peso:0},comp:{fat:492472.63,meta:773710.40,fat25:0,qtde:0,peso:0},sala:{fat:58062.34,meta:492361.17,fat25:0,qtde:0,peso:0}},
-    daily:[{d:1,f:65474.00,q:0},{d:2,f:82451.00,q:0},{d:3,f:84444.00,q:0},{d:4,f:84254.00,q:0},{d:5,f:155042.00,q:0},{d:6,f:96605.00,q:0},{d:7,f:101511.00,q:0},{d:8,f:62466.00,q:0},{d:9,f:107460.00,q:0},{d:10,f:80092.00,q:0},{d:11,f:103411.00,q:0},{d:12,f:88167.00,q:0},{d:13,f:81000.00,q:0},{d:14,f:80560.00,q:0},{d:15,f:84346.00,q:0},{d:16,f:101207.00,q:0},{d:17,f:80398.00,q:0},{d:18,f:98635.00,q:0},{d:19,f:101028.00,q:0},{d:20,f:97553.00,q:0},{d:21,f:77889.00,q:0},{d:22,f:48638.00,q:0},{d:23,f:75573.00,q:0},{d:24,f:75616.00,q:0}],
+  mai:{total:2214522.53,meta_total:3516865.47,qtde:0,nfs:0,peso:0,total25:2940973.42,
+    cls:{gr:{fat:1546511.36,meta:2250793.90,fat25:0,qtde:0,peso:0},comp:{fat:597280.03,meta:773710.40,fat25:0,qtde:0,peso:0},sala:{fat:70731.14,meta:492361.17,fat25:0,qtde:0,peso:0}},
+    daily:[{d:4,f:102574.70,q:0},{d:5,f:151088.77,q:0},{d:6,f:71266.81,q:0},{d:7,f:75233.92,q:0},{d:8,f:322137.67,q:0},{d:11,f:147331.64,q:0},{d:12,f:141759.78,q:0},{d:13,f:159038.12,q:0},{d:14,f:59231.76,q:0},{d:15,f:115713.97,q:0},{d:18,f:83453.97,q:0},{d:19,f:118624.54,q:0},{d:20,f:73109.04,q:0},{d:21,f:128583.66,q:0},{d:22,f:95903.51,q:0},{d:25,f:144320.96,q:0},{d:26,f:98859.00,q:0},{d:27,f:126290.71,q:0}],
     top10:[{n:'GR ALONZO 4 PTS AMENDOA CL/BRANCO#S/ESP#S/PES',f:55000.00,q:0},{n:'GR ALONZO 4 PTS BRANCO#S/ESP#S/PES',f:40000.00,q:0},{n:'GR SPAZIO 3 PTS BRANCO#C/1 PT GLASS#S/PES',f:33000.00,q:0},{n:'GR LOPAS 03 PTS OLLIE II 2025 AMENDOA#S/2PTS GLASS#C/PES',f:27000.00,q:0},{n:'GR SPAZIO 3 PTS BRANCO#S/3PTS GLASS#S/PES',f:22000.00,q:0},{n:'COMODA LOOP 2024 II AMENDOA CLEAN/OFF WH',f:18000.00,q:0},{n:'GR ALONZO 6 PTS BRANCO#S/ESP#S/PES',f:15000.00,q:0},{n:'GR ALONZO 6 PTS AMENDOA/OFF WH#S/ESP#S/PES',f:13000.00,q:0},{n:'GR ZEINE 2 PTS 2024 AMENDOA#C/1 PT GLASS#S/PES',f:11000.00,q:0},{n:'CAMA SOLTEIRO ATHENAS 2022 AMENDOA#C/CAMA AUX',f:9000.00,q:0}],
-    carteira:{semReserva:{peso:27900.69,valor:180588.58},comReserva:{peso:53708.12,valor:333842.76}}}
+    carteira:{semReserva:{peso:34263.94,valor:221174.68},comReserva:{peso:53708.12,valor:409751.49}}}
 };
 const CLS=[{k:'gr',c:'gr',dot:'var(--green)',l:'Guarda Roupas'},{k:'comp',c:'comp',dot:'var(--orange)',l:'Complementos'},{k:'sala',c:'sala',dot:'var(--purple)',l:'Salas'}];
 function sw(n){document.querySelectorAll('.month-tab').forEach((t,i)=>t.classList.toggle('active',i===n));document.querySelectorAll('.month-page').forEach((p,i)=>p.classList.toggle('active',i===n));}
 function buildCls(id,mk){
   const m=D[mk],tot=m.total,pw=m.cls.gr.peso+m.cls.comp.peso+m.cls.sala.peso;
-  document.getElementById(id).innerHTML=CLS.map(cfg=>{
+  const cards=CLS.map(cfg=>{
     const c=m.cls[cfg.k];
     const pF=(c.fat/tot*100),pQ=(c.qtde/m.qtde*100),pP=(c.peso/pw*100);
     const aM=(c.fat/c.meta*100),aA=c.fat25>0?AVA(c.fat,c.fat25):null;
@@ -313,6 +317,22 @@ function buildCls(id,mk){
       <div class="cf-item"><div class="cf-lbl">Ano vs Ano</div><div class="cf-val ${aAc}">${aA===null?'N/D':sym+' '+Math.abs(aA).toFixed(1)+'%'}</div></div>
     </div></div>`;
   }).join('');
+  const tMeta=m.cls.gr.meta+m.cls.comp.meta+m.cls.sala.meta;
+  const tAtg=tot/tMeta*100, tAtgc=tAtg>=100?'ok':tAtg>=80?'warn':'bad';
+  const tA=m.total25>0?AVA(tot,m.total25):null;
+  const tAc=tA===null?'':(tA>=0?'pos':'neg'),tSym=tA===null?'':(tA>=0?'▲':'▼');
+  const totalCard=`<div class="class-card total" style="grid-column:1/-1;border-top:2px solid var(--blue)">
+    <div class="class-head"><div class="class-dot" style="background:var(--blue)"></div><div class="class-title">Total · Acumulado</div></div>
+    <div class="total-row">
+      <div class="total-big"><div class="cf-lbl">Faturamento Acumulado</div><div class="class-val" style="color:var(--blue);margin:2px 0 0">${BRLk(tot)}</div></div>
+      <div class="class-footer total-foot">
+        <div class="cf-item"><div class="cf-lbl">Meta Acumulada</div><div class="cf-val meta" style="font-size:15px">${BRLk(tMeta)}</div></div>
+        <div class="cf-item"><div class="cf-lbl">% Ating. Meta</div><div class="cf-val ${tAtgc}">${PCT(tAtg)}</div></div>
+        <div class="cf-item"><div class="cf-lbl">2025</div><div class="cf-val" style="color:var(--txt2)">${m.total25>0?BRLk(m.total25):'N/D'}</div></div>
+        <div class="cf-item"><div class="cf-lbl">Ano vs Ano</div><div class="cf-val ${tAc}">${tA===null?'N/D':tSym+' '+Math.abs(tA).toFixed(1)+'%'}</div></div>
+      </div>
+    </div></div>`;
+  document.getElementById(id).innerHTML=cards+totalCard;
 }
 function buildBar(id,daily,col='#29b6f6'){
   new Chart(document.getElementById(id),{type:'bar',data:{labels:daily.map(x=>'D'+x.d),datasets:[{data:daily.map(x=>x.f),backgroundColor:col+'55',borderColor:col,borderWidth:1.5,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+BRL(c.raw)}}},scales:{x:{ticks:{color:'#8892a4',font:{size:9},maxRotation:50},grid:{display:false}},y:{ticks:{color:'#8892a4',font:{size:9},callback:v=>BRLk(v)},grid:{color:'#ffffff08'}}}}});
