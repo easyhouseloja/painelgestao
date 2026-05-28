@@ -830,6 +830,8 @@ body::before {
 .card-portfolio:hover    { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-teal) inset; transform: translate3d(0, -2px, 0) !important; }
 .card-estoque-mm::before { background: var(--accent-amber); box-shadow: 0 0 20px var(--glow-amber); }
 .card-estoque-mm:hover   { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-amber) inset; transform: translate3d(0, -2px, 0) !important; }
+.card-assistencia-1p::before { background: var(--accent-pink); box-shadow: 0 0 20px var(--glow-pink); }
+.card-assistencia-1p:hover   { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-pink) inset; transform: translate3d(0, -2px, 0) !important; }
 
 /* ═══════════ HOVER DO CARD PÓS-VENDA (CONTAINER, NÃO CLICÁVEL) ═══════════
    O card Pós-venda usa <div class="card card-astec"> (não <a>), portanto não é
@@ -1473,6 +1475,7 @@ div.card.card-astec:hover .card-posvendasub-btn-orange {
 .card-financeiro .icon-wrap { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); }
 .card-portfolio  .icon-wrap { background: rgba(8,145,178,0.1);  border: 1px solid rgba(8,145,178,0.25); }
 .card-estoque-mm .icon-wrap { background: rgba(212,160,23,0.1); border: 1px solid rgba(212,160,23,0.25); }
+.card-assistencia-1p .icon-wrap { background: rgba(236,72,153,0.1); border: 1px solid rgba(236,72,153,0.25); }
 
 .card-estoque .icon-wrap i { color: var(--accent-amber); }
 .card-astec   .icon-wrap i { color: var(--accent-orange); }
@@ -1482,6 +1485,7 @@ div.card.card-astec:hover .card-posvendasub-btn-orange {
 .card-financeiro .icon-wrap i { color: var(--accent-financeiro); }
 .card-portfolio  .icon-wrap i { color: var(--accent-teal); }
 .card-estoque-mm .icon-wrap i { color: var(--accent-amber); }
+.card-assistencia-1p .icon-wrap i { color: var(--accent-pink); }
 
 .card-estoque:hover .icon-wrap   { background: rgba(212,160,23,0.18);  border-color: rgba(212,160,23,0.5);  box-shadow: 0 0 18px rgba(212,160,23,0.3); }
 .card-astec:hover   .icon-wrap   { background: rgba(217,94,16,0.18);   border-color: rgba(217,94,16,0.5);   box-shadow: 0 0 18px rgba(217,94,16,0.3); }
@@ -1491,6 +1495,7 @@ div.card.card-astec:hover .card-posvendasub-btn-orange {
 .card-financeiro:hover .icon-wrap{ background: rgba(34,197,94,0.18);   border-color: rgba(34,197,94,0.5);   box-shadow: 0 0 18px rgba(34,197,94,0.28); }
 .card-portfolio:hover  .icon-wrap { background: rgba(8,145,178,0.18);  border-color: rgba(8,145,178,0.5);  box-shadow: 0 0 18px rgba(8,145,178,0.3); }
 .card-estoque-mm:hover .icon-wrap { background: rgba(212,160,23,0.2);   border-color: rgba(212,160,23,0.55); box-shadow: 0 0 18px rgba(212,160,23,0.38); }
+.card-assistencia-1p:hover .icon-wrap { background: rgba(236,72,153,0.2); border-color: rgba(236,72,153,0.55); box-shadow: 0 0 18px rgba(236,72,153,0.38); }
 
 /* ── CARD TEXT ── */
 .card-tag {
@@ -1510,18 +1515,21 @@ div.card.card-astec:hover .card-posvendasub-btn-orange {
 .card-mm1p       .card-tag { color: var(--text-secondary); }
 .card-portfolio  .card-tag { color: var(--text-secondary); }
 .card-estoque-mm .card-tag { color: var(--text-secondary); }
+.card-assistencia-1p .card-tag { color: var(--text-secondary); }
 
 /* Aba Madeira 1P: ponto colorido sutil antes da tag (5px na cor do card) */
 .card-mm1p       .card-tag,
 .card-portfolio  .card-tag,
-.card-estoque-mm .card-tag {
+.card-estoque-mm .card-tag,
+.card-assistencia-1p .card-tag {
   display: flex;
   align-items: flex-start;
   gap: 8px;
 }
 .card-mm1p       .card-tag::before,
 .card-portfolio  .card-tag::before,
-.card-estoque-mm .card-tag::before {
+.card-estoque-mm .card-tag::before,
+.card-assistencia-1p .card-tag::before {
   content: '';
   width: 5px;
   height: 5px;
@@ -1532,6 +1540,7 @@ div.card.card-astec:hover .card-posvendasub-btn-orange {
 .card-mm1p       .card-tag::before { background: var(--accent-purple); }
 .card-portfolio  .card-tag::before { background: var(--accent-teal); }
 .card-estoque-mm .card-tag::before { background: var(--accent-amber); }
+.card-assistencia-1p .card-tag::before { background: var(--accent-pink); }
 
 .card h2 {
   font-family: 'Syne', sans-serif;
@@ -3194,22 +3203,22 @@ body.light-mode .btn-reputacao:hover {
 .logs-user-select option { background: #1a1a2e; color: var(--text-primary); }
 
 /* ══════════════════════════════════════════════════════════════
-   MADEIRA MADEIRA (panel-1p) — GRID 3 COLUNAS, LARGURA IGUAL AO 3P
-   3 cards fixos: Vendas · Portfólio · Estoque Interno MM
-   Cards centralizados, largura próxima dos cards do 3P (~320-360px)
+   MADEIRA MADEIRA (panel-1p) — GRID 4 COLUNAS
+   4 cards: Vendas · Portfólio · Estoque Interno MM · Assistência Asteca
+   Cards centralizados, largura ~280-320px (próxima dos cards do 3P)
    ══════════════════════════════════════════════════════════════ */
 #panel-1p .dashboard {
-  grid-template-columns: repeat(3, minmax(0, 360px));
+  grid-template-columns: repeat(4, minmax(0, 320px));
   justify-content: center;
   margin-left: 0;
   margin-right: 0;
 }
-@media (max-width: 900px) {
+@media (max-width: 1280px) {
   #panel-1p .dashboard {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(0, 360px)) !important;
   }
 }
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   #panel-1p .dashboard {
     grid-template-columns: 1fr !important;
   }
@@ -3977,17 +3986,20 @@ body.light-mode #iframe-page-title {
   animation: sla-verde-entrada 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s backwards;
 }
 
-/* ─── WIDGETS: VENDAS 1P + PORTFÓLIO (chips do painel Madeira 1P) ─── */
+/* ─── WIDGETS: VENDAS 1P + PORTFÓLIO + ASSISTÊNCIA (chips do painel Madeira 1P) ─── */
 .vendas-1p-animated,
-.portfolio-animated {
+.portfolio-animated,
+.assistencia-animated {
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
 .vendas-1p-animated.vendas-1p-ready,
-.portfolio-animated.portfolio-ready {
+.portfolio-animated.portfolio-ready,
+.assistencia-animated.assistencia-ready {
   animation: meta-fade-in 0.7s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
 }
 .vendas-1p-animated.vendas-1p-ready > span:nth-of-type(1),
-.portfolio-animated.portfolio-ready > span:nth-of-type(1) {
+.portfolio-animated.portfolio-ready > span:nth-of-type(1),
+.assistencia-animated.assistencia-ready > span:nth-of-type(1) {
   animation: sla-verde-entrada 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s backwards;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4556,6 +4568,33 @@ body.light-mode #iframe-page-title {
 
           <div class="card-footer">
             Acessar controle <i data-lucide="arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- ASSISTÊNCIA TÉCNICA · ASTECA — Pós-venda 1P -->
+        <a class="card card-assistencia-1p" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/assistencia_mm.html" data-title="Assistência Técnica · Asteca — Madeira Madeira" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
+          <div class="icon-wrap">
+            <i data-lucide="life-buoy" style="width:22px;height:22px;"></i>
+          </div>
+          <div class="card-tag">Pós-venda · Assistência</div>
+          <h2>Assistência Asteca</h2>
+          <p>Prazos de entrega e faturamento de chamados Asteca, monitoramento de pendências e itens vencidos versus meta de 15 dias.</p>
+
+          <!-- CHIP "venceram a meta" + sub "total / pendentes" — atualizado pelo script no final (busca assistencia_mm.html) -->
+          <div id="assistencia-widget" class="assistencia-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados de assistência...">
+            <span id="assistencia-chip" style="font-size:11px;font-weight:700;color:#fca5a5;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.22);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
+              <span style="color:var(--text-secondary);font-weight:600;">Venceram meta</span>
+              <span>·</span>
+              <span id="assistencia-vencidos-pct" style="font-size:14px;font-weight:800;letter-spacing:0.2px;">—</span>
+              <span id="assistencia-urgentes" style="display:none;font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;background:rgba(239,68,68,0.25);color:#fecaca;letter-spacing:0.2px;line-height:1.3;"></span>
+            </span>
+            <span style="font-size:9.5px;font-weight:500;color:var(--text-secondary);opacity:0.75;letter-spacing:0.3px;padding-left:4px;">
+              <span id="assistencia-sub">carregando...</span>
+            </span>
+          </div>
+
+          <div class="card-footer">
+            Acessar dashboard <i data-lucide="arrow-right"></i>
           </div>
         </a>
 
@@ -5793,13 +5832,13 @@ function vtexCarregarResumo(force) {
 // ── NOTIFICAÇÕES ─────────────────────────────────────────────────────
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 let NOTIFICACOES_HOJE = [
-  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 14 variações em alerta ⚠️',desc:'65,3% reservado · ',hora:'26/05/2026',lida:false,link:'estoque.html',critico:true},
-  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 0,00%',desc:'117 em atraso · 556 sem faturar · Todas transportadoras na meta ✅',hora:'28/05/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 11 variações em alerta ⚠️',desc:'78,3% reservado · GR: GR EASY SLIM 8 PTS BRANCO#S/ESP#S/PES (0,0%) · GR 06 PTS EASY MOVE 2,40 AMENDOA CLEAN/OFF WH#S/ESP#S/P (0,0%) · GR 06 PTS EASY MOVE 2,40 AMENDOA CLEAN#S/ESP#S/PES (0,0%) · GR 0',hora:'04/05/2026',lida:false,link:'estoque.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(39,174,96,0.15)',titulo:'SLA: ✅ Acima da meta — 97,71%',desc:'96 em atraso · 211 sem faturar · Pior transp.: TS RJ 50,65%🔴 · TRANS EXPRESS 94,56%',hora:'05/05/2026',lida:false,link:'sla_transporte.html',critico:false},
   {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: Abr 118,56% da Meta (01–30/04)',desc:'R$ 9,05M faturado em 30 dias · Média diária R$ 302K · Meta R$ 8,6M · +168% Ano x Ano',hora:'30/04/2026',lida:false,link:'comercial.html',critico:false},
-  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: Em dia ✅',desc:'81 itens · 53 pedidos · 11 em atraso · Atraso médio 7,0d · Maior: 48d (#804404 (José Rod./MG) — 🔴 Crítico) · 0 moderado(s):  · 3 críticos',hora:'28/05/2026',lida:false,link:'assistencia.html',critico:false},
-  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: ? recebido ✓',desc:'Cartas de Débito · ? recebido · R$ 26.994 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'27/05/2026',lida:false,link:'financeiro.html',critico:false},
-  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 801 no período',desc:'01/01 a 27/05/2026 · R$ 843,2K · 801 notas · Ticket médio R$ 1.053 · Top motivo: 38,0% (Desistência · 304 notas) · Top transp: 214 notas (Nova Era Express) · Maior mês: ? ',hora:'27/05/2026',lida:false,link:'devolucao.html',critico:false},
-  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'28/05/2026',lida:false,link:'reputacao.html',critico:false}
+  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: 1 moderado(s) ⚠️',desc:'94 itens · 67 pedidos · 4 em atraso · Atraso médio 8,0d · Maior: 32d (#495511 — Moderado (32d) · #548540 beira (29d)) · 1 moderado(s): ⚠ #86772 cruzou a faixa hoje · 0 críticos',hora:'05/05/2026',lida:false,link:'assistencia.html',critico:false},
+  {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: ? recebido ✓',desc:'Cartas de Débito · ? recebido · R$ 40.610 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'04/05/2026',lida:false,link:'financeiro.html',critico:false},
+  {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 666 no período',desc:'01/01 a 04/05/2026 · R$ 699,8K · 666 notas · Ticket médio R$ 1.051 · Top motivo: 39,0% (Desistência · 260 notas) · Top transp: 186 notas (Nova Era Express) · Maior mês: ? ',hora:'05/05/2026',lida:false,link:'devolucao.html',critico:false},
+  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'05/05/2026',lida:false,link:'reputacao.html',critico:false}
 ];
 let TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
 
@@ -10058,18 +10097,129 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // ─────────────────────────────────────────────────────────────
+  // ASSISTÊNCIA TÉCNICA (Asteca) — chip "Venceram meta · X%" + sub "Y itens · Z pendentes"
+  // Estrutura do assistencia_mm.html: .kpi-card > .kpi-label + .kpi-value + .kpi-sub
+  // Métrica principal: % de itens que venceram a meta (entrega > pedido+15d)
+  // Bônus: extrai "N já vencidos" do alert-banner (pedidos críticos AGORA)
+  // ─────────────────────────────────────────────────────────────
+  const ASSISTENCIA_URL = 'https://easyhouseloja.github.io/painelgestao/assistencia_mm.html';
+
+  async function atualizarAssistencia(){
+    const widget = document.getElementById('assistencia-widget');
+    if(!widget) return;
+
+    try{
+      const res = await fetch(ASSISTENCIA_URL, { cache:'no-store' });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      // Coleta TODOS os .kpi-card e indexa por label
+      const kpis = {};
+      doc.querySelectorAll('.kpi-card').forEach(card => {
+        const lbl = (card.querySelector('.kpi-label')?.textContent || '').trim().toLowerCase();
+        const val = (card.querySelector('.kpi-value')?.textContent || '').trim();
+        const sub = (card.querySelector('.kpi-sub')?.textContent || '').trim();
+        if(lbl && val) kpis[lbl] = { val, sub };
+      });
+
+      // Métricas-chave (busca tolerante a variações de label)
+      const venceram  = kpis['venceram a meta']  || kpis['itens vencidos'];
+      const pendentes = kpis['itens pendentes'];
+      const total     = kpis['total de itens'];
+
+      if(!venceram) throw new Error('"Venceram a Meta" não encontrado nos KPIs');
+
+      // Bônus: itens já vencidos AGORA (do alert-banner ou texto)
+      let urgentes = null;
+      const urgM = html.match(/(\d+)\s+já\s+vencidos/i);
+      if(urgM) urgentes = parseInt(urgM[1], 10);
+
+      // Renderiza
+      const pctEl       = document.getElementById('assistencia-vencidos-pct');
+      const urgentesEl  = document.getElementById('assistencia-urgentes');
+      const subEl       = document.getElementById('assistencia-sub');
+      const chipEl      = document.getElementById('assistencia-chip');
+
+      if(pctEl) pctEl.textContent = venceram.val.replace(/\s+/g,'');
+
+      // Badge "X urgentes" no chip — só aparece se >0
+      if(urgentesEl){
+        if(urgentes !== null && urgentes > 0){
+          urgentesEl.textContent = urgentes + ' urgentes';
+          urgentesEl.style.display = 'inline-flex';
+        } else {
+          urgentesEl.style.display = 'none';
+        }
+      }
+
+      // Sub: total + pendentes
+      if(subEl){
+        const partes = [];
+        if(total)     partes.push(`${total.val} itens`);
+        if(pendentes) partes.push(`${pendentes.val} pendentes`);
+        subEl.textContent = partes.length ? partes.join(' · ') : '';
+      }
+
+      // Cor dinâmica do chip por % vencidos (quanto maior, pior)
+      const pctNum = parseFloat(venceram.val.replace(/[^\d.,]/g,'').replace(',','.'));
+      if(chipEl && isFinite(pctNum)){
+        if(pctNum >= 40){
+          // crítico — vermelho
+          chipEl.style.color = '#fca5a5';
+          chipEl.style.background = 'rgba(239,68,68,0.12)';
+          chipEl.style.borderColor = 'rgba(239,68,68,0.22)';
+        } else if(pctNum >= 20){
+          // atenção — laranja
+          chipEl.style.color = '#fdba74';
+          chipEl.style.background = 'rgba(251,146,60,0.12)';
+          chipEl.style.borderColor = 'rgba(251,146,60,0.30)';
+        } else {
+          // OK — verde
+          chipEl.style.color = '#86efac';
+          chipEl.style.background = 'rgba(34,197,94,0.12)';
+          chipEl.style.borderColor = 'rgba(34,197,94,0.30)';
+        }
+      }
+
+      widget.setAttribute('title',
+        `Assistência Asteca · ${venceram.val} venceram a meta` +
+        (total ? ` · ${total.val} itens totais` : '') +
+        (pendentes ? ` · ${pendentes.val} pendentes` : '') +
+        (urgentes ? ` · ${urgentes} já vencidos AGORA` : '')
+      );
+
+      if(!widget.classList.contains('assistencia-ready')){
+        requestAnimationFrame(()=>widget.classList.add('assistencia-ready'));
+      }
+    } catch(err){
+      console.warn('[assistencia] Falha ao atualizar:', err);
+      const subEl = document.getElementById('assistencia-sub');
+      if(subEl && subEl.textContent === 'carregando...'){
+        subEl.textContent = 'dados indisponíveis';
+      }
+      if(widget && !widget.classList.contains('assistencia-ready')){
+        requestAnimationFrame(()=>widget.classList.add('assistencia-ready'));
+      }
+    }
+  }
+
   // Executa ao carregar e depois a cada 10 minutos
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', () => {
       atualizarVendas1P();
       atualizarPortfolio();
+      atualizarAssistencia();
     });
   } else {
     atualizarVendas1P();
     atualizarPortfolio();
+    atualizarAssistencia();
   }
   setInterval(atualizarVendas1P, 10 * 60 * 1000);
   setInterval(atualizarPortfolio, 10 * 60 * 1000);
+  setInterval(atualizarAssistencia, 10 * 60 * 1000);
 })();
 </script>
 
