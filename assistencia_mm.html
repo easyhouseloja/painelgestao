@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard Asteca — Prazos & Peças — 28/05/2026</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard Asteca — 29/05/2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
@@ -18,8 +17,7 @@
   .nav-tab{padding:12px 18px;font-size:12px;font-family:var(--mono);cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s}
   .nav-tab.active{color:var(--text);border-bottom-color:var(--blue)}
   .nav-tab:hover:not(.active){color:var(--text)}
-  .tab-pane{display:none}
-  .tab-pane.active{display:block}
+  .tab-pane{display:none}.tab-pane.active{display:block}
   .alert-banner{background:linear-gradient(90deg,rgba(59,130,246,.14),rgba(59,130,246,.03));border-bottom:2px solid rgba(59,130,246,.35);padding:13px 40px;display:flex;align-items:center;gap:10px;font-size:12px;color:#93c5fd;font-family:var(--mono);flex-wrap:wrap}
   main{padding:28px 40px}
   .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
@@ -44,8 +42,6 @@
   .chart-title{font-size:13px;font-weight:700;margin-bottom:3px}
   .chart-desc{font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:14px}
   .chart-wrap{position:relative;height:230px}
-  .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
-  .donut-label{font-size:9px;color:var(--muted);font-family:var(--mono)}
   .table-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:20px}
   table{width:100%;border-collapse:collapse}
   thead th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-family:var(--mono);padding:8px 10px;border-bottom:1px solid var(--border)}
@@ -53,35 +49,28 @@
   tbody tr:last-child td{border-bottom:none}
   tbody tr:hover td{background:var(--surface2)}
   .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-family:var(--mono);font-weight:600}
-  .b-ok{background:rgba(34,197,94,.15);color:#86efac}
-  .b-w{background:rgba(234,179,8,.15);color:#fde047}
-  .b-d{background:rgba(249,115,22,.15);color:#fb923c}
-  .b-c{background:rgba(239,68,68,.15);color:#fca5a5}
+  .b-ok{background:rgba(34,197,94,.15);color:#86efac}.b-w{background:rgba(234,179,8,.15);color:#fde047}
+  .b-d{background:rgba(249,115,22,.15);color:#fb923c}.b-c{background:rgba(239,68,68,.15);color:#fca5a5}
   .b-blue{background:rgba(59,130,246,.15);color:#93c5fd}
   .uf-bar-bg{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:12px}
   .uf-bar{height:100%;border-radius:4px}
   .meter-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-  .meter-label{font-size:11px;font-family:var(--mono);width:140px;flex-shrink:0}
+  .meter-label{font-size:11px;font-family:var(--mono);width:150px;flex-shrink:0}
   .meter-bg{flex:1;height:10px;background:var(--surface2);border-radius:5px;overflow:hidden}
   .meter-fill{height:100%;border-radius:5px}
   .meter-count{font-family:var(--mono);font-size:11px;width:60px;text-align:right;flex-shrink:0;font-weight:600}
   .note{padding:14px;border-radius:10px;font-size:11px;font-family:var(--mono);line-height:1.8;margin-top:8px}
-  footer{text-align:center;padding:20px;font-size:10px;color:var(--muted);font-family:var(--mono);border-top:1px solid var(--border);margin-top:10px}
-  @media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr}.chart-grid-3{grid-template-columns:1fr}.chart-grid-2{grid-template-columns:1fr}.kpi-grid-3{grid-template-columns:1fr 1fr}.kpi-grid-4{grid-template-columns:1fr 1fr}main{padding:16px}header,.nav-tabs,.alert-banner{padding-left:16px;padding-right:16px}}
-
   .ped-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;margin-bottom:10px;overflow:hidden}
   .ped-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;flex-wrap:wrap}
   .ped-head:hover{background:var(--surface2)}
   .ped-num{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--blue)}
-  .ped-info{font-size:11px;color:var(--muted);font-family:var(--mono)}
-  .ped-info strong{color:var(--text)}
-  .chev{font-size:12px;color:var(--muted);transition:transform .2s}
-  .ped-card.open .chev{transform:rotate(180deg)}
-  .ped-items{max-height:0;overflow:hidden;transition:max-height .25s ease}
-  .ped-card.open .ped-items{max-height:800px}
+  .ped-info{font-size:11px;color:var(--muted);font-family:var(--mono)}.ped-info strong{color:var(--text)}
+  .chev{font-size:12px;color:var(--muted);transition:transform .2s}.ped-card.open .chev{transform:rotate(180deg)}
+  .ped-items{max-height:0;overflow:hidden;transition:max-height .25s ease}.ped-card.open .ped-items{max-height:900px}
   .item-line{display:flex;justify-content:space-between;gap:10px;padding:8px 16px 8px 28px;border-top:1px solid rgba(37,45,74,.5);font-size:11px;flex-wrap:wrap}
-  .item-desc{flex:1;min-width:200px}
-  .item-meta{font-family:var(--mono);color:var(--muted);font-size:10px}
+  .item-desc{flex:1;min-width:200px}.item-meta{font-family:var(--mono);color:var(--muted);font-size:10px}
+  footer{text-align:center;padding:20px;font-size:10px;color:var(--muted);font-family:var(--mono);border-top:1px solid var(--border);margin-top:10px}
+  @media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr}.chart-grid-3{grid-template-columns:1fr}.chart-grid-2{grid-template-columns:1fr}.kpi-grid-3{grid-template-columns:1fr 1fr}.kpi-grid-4{grid-template-columns:1fr 1fr}main{padding:16px}header,.nav-tabs,.alert-banner{padding-left:16px;padding-right:16px}}
 </style>
 </head>
 <body>
@@ -89,21 +78,21 @@
 <header>
   <div>
     <div class="logo">🛠 Assistência Técnica · Asteca — Madeira Madeira</div>
-    <div class="subtitle">Fonte: Relatório Asteca MM · 28/05/2026 · 2.049 itens · 1.510 pedidos · Meta de envio: 15 dias</div>
+    <div class="subtitle">Fonte: Relatório Asteca MM · 29/05/2026 · 2.058 itens · Vencimento = DT ENTREGA PED vs DT PEDIDO</div>
   </div>
-  <div class="date-badge">Atualizado em <span style="color:var(--text);font-weight:600">28/05/2026</span></div>
+  <div class="date-badge">Atualizado em <span style="color:var(--text);font-weight:600">29/05/2026</span></div>
 </header>
 
 <div class="alert-banner">
-  📦 <strong>2.049 itens</strong> · Meta: entrega (vencimento) ≤ 15d do pedido · <strong>959 itens venceram</strong> a meta (49,5%) · atraso médio 9,2d · <strong>111 pendentes</strong> (54 pedidos) — <strong>21 já vencidos</strong>
+  📦 <strong>2.058 itens</strong> · 1.944 atendidos · <strong>114 pendentes</strong> (57 pedidos · R$ 3.453) — <strong>25 itens já vencidos</strong> · Prazo médio de entrega: <strong>18,4d</strong> (mediana 15,5d)
 </div>
 
 <div class="nav-tabs">
   <button class="nav-tab active" onclick="showTab('resumo',this)">📊 Resumo</button>
+  <button class="nav-tab" onclick="showTab('mensal',this)">📆 Visão Geral por Mês</button>
   <button class="nav-tab" onclick="showTab('entrega',this)">🚚 Prazo de Entrega</button>
-  <button class="nav-tab" onclick="showTab('faturamento',this)">🧾 Prazo de Faturamento</button>
   <button class="nav-tab" onclick="showTab('pendentes',this)">⏳ Pendentes</button>
-  <button class="nav-tab" onclick="showTab('pecas',this)">📦 Itens & Assistência</button>
+  <button class="nav-tab" onclick="showTab('pecas',this)">🔥 Peças que + Geram Asteca</button>
 </div>
 
 <main>
@@ -111,117 +100,122 @@
 <!-- RESUMO -->
 <div id="tab-resumo" class="tab-pane active">
   <div class="kpi-grid">
-    <div class="kpi-card b"><div class="kpi-label">Total de Itens</div><div class="kpi-value b">2.049</div><div class="kpi-sub">1.510 pedidos únicos</div><div class="kpi-icon">📦</div></div>
-    <div class="kpi-card w"><div class="kpi-label">Prazo Médio Entrega</div><div class="kpi-value w">18,4d</div><div class="kpi-sub">mediana 15d · pedido → vencimento</div><div class="kpi-icon">🚚</div></div>
-    <div class="kpi-card ok"><div class="kpi-label">Prazo Médio Faturamento</div><div class="kpi-value ok">9,6d</div><div class="kpi-sub">mediana 6d · pedido → NF</div><div class="kpi-icon">🧾</div></div>
-    <div class="kpi-card d"><div class="kpi-label">Venceram a Meta</div><div class="kpi-value d">49,5%</div><div class="kpi-sub">959 itens · vencimento &gt; pedido+15d</div><div class="kpi-icon">⏰</div></div>
-    <div class="kpi-card o"><div class="kpi-label">Itens Pendentes</div><div class="kpi-value o">111</div><div class="kpi-sub">54 pedidos · sem NF emitida</div><div class="kpi-icon">⏳</div></div>
+    <div class="kpi-card b"><div class="kpi-label">Total de Itens</div><div class="kpi-value b">2.058</div><div class="kpi-sub">chamados de assistência</div><div class="kpi-icon">📦</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Atendidos</div><div class="kpi-value ok">1.944</div><div class="kpi-sub">94,5% · já faturados</div><div class="kpi-icon">✅</div></div>
+    <div class="kpi-card o"><div class="kpi-label">Pendentes</div><div class="kpi-value o">114</div><div class="kpi-sub">57 pedidos · sem NF</div><div class="kpi-icon">⏳</div></div>
+    <div class="kpi-card w"><div class="kpi-label">Prazo Médio Entrega</div><div class="kpi-value w">18,4d</div><div class="kpi-sub">pedido → vencimento (entrega)</div><div class="kpi-icon">🚚</div></div>
+    <div class="kpi-card d"><div class="kpi-label">Itens Vencidos</div><div class="kpi-value d">25</div><div class="kpi-sub">entrega prevista já passou</div><div class="kpi-icon">⏰</div></div>
   </div>
 
   <div class="chart-grid-3">
     <div class="chart-card">
-      <div class="chart-title">Atraso vs Meta (entrega)</div>
-      <div class="chart-desc">itens por faixa de atraso sobre a meta de 15d</div>
-      <div class="chart-wrap" style="height:210px"><canvas id="cEntFaixa"></canvas></div>
+      <div class="chart-title">Volume de Asteca por Mês</div>
+      <div class="chart-desc">itens por mês do pedido</div>
+      <div class="chart-wrap" style="height:210px"><canvas id="cVolMes"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">Distribuição do Prazo de Faturamento</div>
-      <div class="chart-desc">itens faturados por faixa de dias (pedido → NF)</div>
-      <div class="chart-wrap" style="height:210px"><canvas id="cFatFaixa"></canvas></div>
+      <div class="chart-title">Distribuição do Prazo de Entrega</div>
+      <div class="chart-desc">pedido → vencimento (DT ENTREGA PED)</div>
+      <div class="chart-wrap" style="height:210px"><canvas id="cPrazoFaixa"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">Evolução Mensal</div>
-      <div class="chart-desc">% vencidos × prazo médio de faturamento</div>
-      <div class="chart-wrap" style="height:210px"><canvas id="cEvol"></canvas></div>
+      <div class="chart-title">Asteca por Classificação</div>
+      <div class="chart-desc">tipo de unidade</div>
+      <div class="chart-wrap" style="height:210px"><canvas id="cClass"></canvas></div>
     </div>
   </div>
 
   <div class="chart-grid-2">
     <div class="chart-card">
-      <div class="section-title">Meta × Vencimento (entrega)</div>
+      <div class="section-title">Como o vencimento é calculado</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;font-family:var(--mono)"><span style="color:var(--muted)">Meta (data pedido + 15 dias)</span><span style="color:var(--ok);font-weight:700">prazo limite</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;font-family:var(--mono)"><span style="color:var(--muted)">Itens no prazo (venc ≤ meta)</span><span style="color:var(--ok);font-weight:700">1.029 (50,5%)</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;font-family:var(--mono)"><span style="color:var(--muted)">Itens que venceram (venc &gt; meta)</span><span style="color:var(--danger);font-weight:700">959 (49,5%)</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;font-family:var(--mono)"><span style="color:var(--muted)">Atraso médio dos vencidos</span><span style="color:var(--warn);font-weight:700">9,2 dias (máx 28d)</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;font-family:var(--mono)"><span style="color:var(--muted)">Prazo médio de faturamento</span><span style="color:var(--ok);font-weight:700">9,6 dias (NF)</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-family:var(--mono)"><span style="color:var(--muted)">Vencimento</span><span style="color:var(--text);font-weight:700">DT ENTREGA PED</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-family:var(--mono)"><span style="color:var(--muted)">Prazo de entrega</span><span style="color:var(--warn);font-weight:700">vencimento − DT PEDIDO</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-family:var(--mono)"><span style="color:var(--muted)">Prazo médio</span><span style="color:var(--text);font-weight:700">18,4 dias</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-family:var(--mono)"><span style="color:var(--muted)">Mediana / Máximo</span><span style="color:var(--text);font-weight:700">15,5d / 43d</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-family:var(--mono)"><span style="color:var(--muted)">Pendentes já vencidos</span><span style="color:var(--danger);font-weight:700">25 itens (7 pedidos)</span></div>
       </div>
       <div class="note" style="background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);color:#93c5fd">
-        🔎 <strong>Vencimento = data de entrega.</strong> Compara-se a meta (pedido + 15d) com a entrega real: 49,5% dos itens venceram a meta, com atraso médio de 9,2 dias.<br>
-        ⬇ A taxa de vencidos oscila por mês: fev foi o pior (86,9%) e mar/mai os melhores (~22–31%).
+        🔎 Sem regra de 15 dias: o <strong>vencimento é sempre a DT ENTREGA PED</strong>, comparada à data do pedido para medir o prazo de entrega. Um item pendente está "vencido" quando a data prevista de entrega já passou e ele ainda não foi faturado.
       </div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">Prazos Médios por Transportadora</div>
-      <div class="chart-desc">dias médios — entrega vs faturamento</div>
-      <div class="chart-wrap" style="height:200px"><canvas id="cTransp"></canvas></div>
+      <div class="chart-title">Prazo Médio de Entrega por Mês</div>
+      <div class="chart-desc">dias entre pedido e vencimento</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="cPrazoMes"></canvas></div>
     </div>
+  </div>
+</div>
+
+<!-- VISÃO GERAL POR MÊS -->
+<div id="tab-mensal" class="tab-pane">
+  <div class="kpi-grid-4">
+    <div class="kpi-card b"><div class="kpi-label">Pico de Entradas</div><div class="kpi-value b">491</div><div class="kpi-sub">Março · mês mais movimentado</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Melhor Prazo</div><div class="kpi-value ok">14,3d</div><div class="kpi-sub">Março · entrega mais rápida</div></div>
+    <div class="kpi-card d"><div class="kpi-label">Pior Prazo</div><div class="kpi-value d">25,6d</div><div class="kpi-sub">Fevereiro · entrega mais lenta</div></div>
+    <div class="kpi-card o"><div class="kpi-label">Pendências Atuais</div><div class="kpi-value o">114</div><div class="kpi-sub">todas concentradas em Maio</div></div>
+  </div>
+
+  <div class="table-card">
+    <div class="section-title">📆 Assistência Técnica Mês a Mês</div>
+    <div style="font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:12px">Atraso médio = dias além da entrega prevista (apenas pendentes vencidos) · Prazo de entrega = dias entre pedido e vencimento dos itens atendidos</div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>Mês (pedido)</th><th style="text-align:center">Entraram</th><th style="text-align:center">Atendidas</th><th style="text-align:center">Pendentes</th><th style="text-align:center">Pend. Vencidos</th><th style="text-align:center">% Atendido</th><th style="text-align:center">Prazo Entrega</th><th style="text-align:center">Atraso Médio</th></tr></thead>
+      <tbody><tr><td style='font-weight:700'>Jan</td><td style='text-align:center;font-family:var(--mono)'>280</td><td style='text-align:center;font-family:var(--mono);color:var(--ok)'>280</td><td style='text-align:center;font-family:var(--mono);color:var(--accent)'>0</td><td style='text-align:center;font-family:var(--mono);color:var(--danger)'>0</td><td style='text-align:center;font-family:var(--mono);font-weight:600;color:var(--ok)'>100.0%</td><td style='text-align:center;font-family:var(--mono)'>21.4d</td><td style='text-align:center;font-family:var(--mono)'>—</td></tr>
+<tr><td style='font-weight:700'>Fev</td><td style='text-align:center;font-family:var(--mono)'>405</td><td style='text-align:center;font-family:var(--mono);color:var(--ok)'>405</td><td style='text-align:center;font-family:var(--mono);color:var(--accent)'>0</td><td style='text-align:center;font-family:var(--mono);color:var(--danger)'>0</td><td style='text-align:center;font-family:var(--mono);font-weight:600;color:var(--ok)'>100.0%</td><td style='text-align:center;font-family:var(--mono)'>25.6d</td><td style='text-align:center;font-family:var(--mono)'>—</td></tr>
+<tr><td style='font-weight:700'>Mar</td><td style='text-align:center;font-family:var(--mono)'>491</td><td style='text-align:center;font-family:var(--mono);color:var(--ok)'>491</td><td style='text-align:center;font-family:var(--mono);color:var(--accent)'>0</td><td style='text-align:center;font-family:var(--mono);color:var(--danger)'>0</td><td style='text-align:center;font-family:var(--mono);font-weight:600;color:var(--ok)'>100.0%</td><td style='text-align:center;font-family:var(--mono)'>14.3d</td><td style='text-align:center;font-family:var(--mono)'>—</td></tr>
+<tr><td style='font-weight:700'>Abr</td><td style='text-align:center;font-family:var(--mono)'>430</td><td style='text-align:center;font-family:var(--mono);color:var(--ok)'>430</td><td style='text-align:center;font-family:var(--mono);color:var(--accent)'>0</td><td style='text-align:center;font-family:var(--mono);color:var(--danger)'>0</td><td style='text-align:center;font-family:var(--mono);font-weight:600;color:var(--ok)'>100.0%</td><td style='text-align:center;font-family:var(--mono)'>18.0d</td><td style='text-align:center;font-family:var(--mono)'>—</td></tr>
+<tr><td style='font-weight:700'>Mai</td><td style='text-align:center;font-family:var(--mono)'>452</td><td style='text-align:center;font-family:var(--mono);color:var(--ok)'>338</td><td style='text-align:center;font-family:var(--mono);color:var(--accent)'>114</td><td style='text-align:center;font-family:var(--mono);color:var(--danger)'>25</td><td style='text-align:center;font-family:var(--mono);font-weight:600;color:var(--danger)'>74.8%</td><td style='text-align:center;font-family:var(--mono)'>14.7d</td><td style='text-align:center;font-family:var(--mono)'>5.6d</td></tr>
+</tbody>
+    </table></div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Entradas × Atendidas × Pendentes</div>
+      <div class="chart-desc">volume de asteca por mês</div>
+      <div class="chart-wrap"><canvas id="cMesStack"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Prazo Médio de Entrega por Mês</div>
+      <div class="chart-desc">dias entre pedido e entrega (vencimento)</div>
+      <div class="chart-wrap"><canvas id="cMesPrazo"></canvas></div>
+    </div>
+  </div>
+  <div class="note" style="background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);color:#fb923c">
+    📌 Janeiro a Abril estão <strong>100% atendidos</strong>. Todas as 114 pendências (25 já vencidas) são de pedidos de <strong>Maio</strong> — a taxa de atendimento de maio é 74,8% por ser o mês corrente. O prazo de entrega melhorou de 25,6d (fev) para ~14,7d (mai), com atraso médio de 5,6 dias nos itens vencidos.
   </div>
 </div>
 
 <!-- ENTREGA -->
 <div id="tab-entrega" class="tab-pane">
   <div class="kpi-grid-4">
-    <div class="kpi-card ok"><div class="kpi-label">Itens no Prazo</div><div class="kpi-value ok">50,5%</div><div class="kpi-sub">1.029 itens · venc ≤ pedido+15d</div></div>
-    <div class="kpi-card d"><div class="kpi-label">Itens Vencidos</div><div class="kpi-value d">49,5%</div><div class="kpi-sub">959 itens · venc &gt; meta</div></div>
-    <div class="kpi-card w"><div class="kpi-label">Atraso Médio (vencidos)</div><div class="kpi-value w">9,2d</div><div class="kpi-sub">dias além da meta de 15d</div></div>
-    <div class="kpi-card d"><div class="kpi-label">Maior Atraso</div><div class="kpi-value d">28d</div><div class="kpi-sub">além do prazo-meta</div></div>
+    <div class="kpi-card w"><div class="kpi-label">Prazo Médio</div><div class="kpi-value w">18,4d</div><div class="kpi-sub">pedido → vencimento</div></div>
+    <div class="kpi-card b"><div class="kpi-label">Mediana</div><div class="kpi-value b">15,5d</div><div class="kpi-sub">metade entregue até 15,5d</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Entregue em ≤14d</div><div class="kpi-value ok">32,5%</div><div class="kpi-sub">669 itens</div></div>
+    <div class="kpi-card d"><div class="kpi-label">Maior Prazo</div><div class="kpi-value d">43d</div><div class="kpi-sub">pedido → entrega</div></div>
   </div>
   <div class="chart-grid-2">
     <div class="chart-card">
-      <div class="chart-title">Itens por Faixa de Atraso vs Meta</div>
-      <div class="chart-desc">vencimento (entrega) − meta (pedido + 15d)</div>
+      <div class="chart-title">Itens por Faixa de Prazo de Entrega</div>
+      <div class="chart-desc">pedido → vencimento (DT ENTREGA PED)</div>
       <div class="chart-wrap"><canvas id="cEntBar"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">% de Itens Vencidos por Mês</div>
-      <div class="chart-desc">parcela que ultrapassou a meta de 15 dias</div>
-      <div class="chart-wrap"><canvas id="cEntMes"></canvas></div>
+      <div class="chart-title">Prazo Médio de Entrega por Transportadora</div>
+      <div class="chart-desc">dias entre pedido e entrega</div>
+      <div class="chart-wrap"><canvas id="cEntTransp"></canvas></div>
     </div>
   </div>
   <div class="table-card">
-    <div class="section-title">Distribuição detalhada — Atraso vs Meta (15 dias)</div>
-    <div class="meter-row"><div class="meter-label">No prazo (≤ meta)</div><div class="meter-bg"><div class="meter-fill" style="width:50.2%;background:var(--ok)"></div></div><div class="meter-count" style="color:var(--ok)">1.029</div></div>
-    <div class="meter-row"><div class="meter-label">Venceu 1–5 dias</div><div class="meter-bg"><div class="meter-fill" style="width:26.9%;background:var(--warn)"></div></div><div class="meter-count" style="color:var(--warn)">551</div></div>
-    <div class="meter-row"><div class="meter-label">Venceu 6–10 dias</div><div class="meter-bg"><div class="meter-fill" style="width:7.2%;background:var(--accent)"></div></div><div class="meter-count" style="color:var(--accent)">147</div></div>
-    <div class="meter-row"><div class="meter-label">Venceu 11–15 dias</div><div class="meter-bg"><div class="meter-fill" style="width:2.6%;background:var(--accent)"></div></div><div class="meter-count" style="color:var(--accent)">54</div></div>
-    <div class="meter-row"><div class="meter-label">Venceu &gt; 15 dias</div><div class="meter-bg"><div class="meter-fill" style="width:13.1%;background:var(--danger)"></div></div><div class="meter-count" style="color:var(--danger)">268</div></div>
+    <div class="section-title">Distribuição detalhada — Prazo de Entrega</div>
+    <div class="meter-row"><div class="meter-label">0–7 dias</div><div class="meter-bg"><div class="meter-fill" style="width:4.7%;background:var(--ok)"></div></div><div class="meter-count" style="color:var(--ok)">96</div></div>
+    <div class="meter-row"><div class="meter-label">8–14 dias</div><div class="meter-bg"><div class="meter-fill" style="width:27.8%;background:var(--ok)"></div></div><div class="meter-count" style="color:var(--ok)">573</div></div>
+    <div class="meter-row"><div class="meter-label">15–21 dias</div><div class="meter-bg"><div class="meter-fill" style="width:47.1%;background:var(--warn)"></div></div><div class="meter-count" style="color:var(--warn)">970</div></div>
+    <div class="meter-row"><div class="meter-label">22–30 dias</div><div class="meter-bg"><div class="meter-fill" style="width:7.3%;background:var(--accent)"></div></div><div class="meter-count" style="color:var(--accent)">151</div></div>
+    <div class="meter-row"><div class="meter-label">Acima de 30 dias</div><div class="meter-bg"><div class="meter-fill" style="width:13.0%;background:var(--danger)"></div></div><div class="meter-count" style="color:var(--danger)">268</div></div>
     <div class="note" style="background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);color:#fde047">
-      ⚠ <strong>Vencimento = data de entrega.</strong> 959 itens (49,5%) foram entregues após a meta de 15 dias contada da data do pedido. A maioria dos vencidos (551) atrasou de 1 a 5 dias, mas 268 itens venceram em mais de 15 dias além da meta.
-    </div>
-  </div>
-</div>
-
-<!-- FATURAMENTO -->
-<div id="tab-faturamento" class="tab-pane">
-  <div class="kpi-grid-4">
-    <div class="kpi-card ok"><div class="kpi-label">Prazo Médio</div><div class="kpi-value ok">9,6d</div><div class="kpi-sub">pedido → emissão da NF</div></div>
-    <div class="kpi-card b"><div class="kpi-label">Mediana</div><div class="kpi-value b">6d</div><div class="kpi-sub">metade faturada em até 6d</div></div>
-    <div class="kpi-card ok"><div class="kpi-label">Faturado em ≤7d</div><div class="kpi-value ok">63,1%</div><div class="kpi-sub">1.222 itens</div></div>
-    <div class="kpi-card d"><div class="kpi-label">Maior Prazo</div><div class="kpi-value d">88d</div><div class="kpi-sub">de pedido à NF</div></div>
-  </div>
-  <div class="chart-grid-2">
-    <div class="chart-card">
-      <div class="chart-title">Itens por Faixa de Prazo de Faturamento</div>
-      <div class="chart-desc">pedido → emissão da nota fiscal</div>
-      <div class="chart-wrap"><canvas id="cFatBar"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Prazo Médio de Faturamento por Mês</div>
-      <div class="chart-desc">tendência de melhoria ao longo de 2026</div>
-      <div class="chart-wrap"><canvas id="cFatMes"></canvas></div>
-    </div>
-  </div>
-  <div class="table-card">
-    <div class="section-title">Distribuição detalhada — Prazo de Faturamento</div>
-    <div class="meter-row"><div class="meter-label">0–3 dias</div><div class="meter-bg"><div class="meter-fill" style="width:29.7%;background:var(--ok)"></div></div><div class="meter-count" style="color:var(--ok)">576</div></div>
-    <div class="meter-row"><div class="meter-label">4–7 dias</div><div class="meter-bg"><div class="meter-fill" style="width:33.3%;background:var(--ok)"></div></div><div class="meter-count" style="color:var(--ok)">646</div></div>
-    <div class="meter-row"><div class="meter-label">8–15 dias</div><div class="meter-bg"><div class="meter-fill" style="width:16.5%;background:var(--warn)"></div></div><div class="meter-count" style="color:var(--warn)">319</div></div>
-    <div class="meter-row"><div class="meter-label">16–30 dias</div><div class="meter-bg"><div class="meter-fill" style="width:16.3%;background:var(--accent)"></div></div><div class="meter-count" style="color:var(--accent)">315</div></div>
-    <div class="meter-row"><div class="meter-label">Acima de 30 dias</div><div class="meter-bg"><div class="meter-fill" style="width:4.2%;background:var(--danger)"></div></div><div class="meter-count" style="color:var(--danger)">82</div></div>
-    <div class="note" style="background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:#86efac">
-      ✅ <strong>63,1% dos itens são faturados em até 7 dias.</strong> Apenas 20,5% levam mais de 15 dias. Os 111 itens pendentes ainda não têm NF emitida (não entram nesta base).<br>
-      ⬇ O prazo médio de faturamento caiu de 16,8d (Jan) para 4,9d (Mai) — melhora consistente mês a mês.
+      ⚠ A maior concentração está na faixa 15–21 dias (970 itens). 268 itens levaram mais de 30 dias entre o pedido e a entrega. Prazo médio geral de 18,4 dias.
     </div>
   </div>
 </div>
@@ -229,27 +223,25 @@
 <!-- PENDENTES -->
 <div id="tab-pendentes" class="tab-pane">
   <div class="kpi-grid-4">
-    <div class="kpi-card o"><div class="kpi-label">Itens Pendentes</div><div class="kpi-value o">111</div><div class="kpi-sub">54 pedidos · sem NF</div></div>
-    <div class="kpi-card d"><div class="kpi-label">Itens já Vencidos</div><div class="kpi-value d">21</div><div class="kpi-sub">5 pedidos · entrega prevista passou</div></div>
-    <div class="kpi-card w"><div class="kpi-label">Tempo Médio em Aberto</div><div class="kpi-value w">8,0d</div><div class="kpi-sub">desde a data do pedido</div></div>
-    <div class="kpi-card d"><div class="kpi-label">Vencimento Mais Antigo</div><div class="kpi-value d">22/05</div><div class="kpi-sub">venceu há 6 dias</div></div>
+    <div class="kpi-card o"><div class="kpi-label">Itens Pendentes</div><div class="kpi-value o">114</div><div class="kpi-sub">57 pedidos · sem NF</div></div>
+    <div class="kpi-card d"><div class="kpi-label">Itens já Vencidos</div><div class="kpi-value d">25</div><div class="kpi-sub">7 pedidos · entrega passou</div></div>
+    <div class="kpi-card w"><div class="kpi-label">Tempo Médio em Aberto</div><div class="kpi-value w">8,7d</div><div class="kpi-sub">desde a data do pedido</div></div>
+    <div class="kpi-card d"><div class="kpi-label">Vencimento + Antigo</div><div class="kpi-value d">22/05</div><div class="kpi-sub">venceu há 7 dias</div></div>
   </div>
   <div class="note" style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.25);color:#fca5a5;margin-bottom:18px">
-    🔴 <strong>5 pedidos já venceram</strong> (entrega prevista anterior a 28/05): #1289503, #1294213, #1305058 e #1466566 (venc. 22/05, há 6 dias) e #1363311 (venc. 26/05, há 2 dias) — somam 21 itens. Os demais 49 pedidos ainda estão dentro do prazo de entrega previsto.
+    🔴 <strong>7 pedidos já venceram</strong> (25 itens): #1289503, #1294213, #1305058 e #1466566 (venc. 22/05, há 7 dias) e #1363311 (venc. 26/05, há 3 dias), entre outros. Os demais 50 pedidos ainda estão dentro do prazo de entrega previsto.
   </div>
   <div class="table-card">
     <div class="section-title">Pedidos Pendentes — clique para ver os itens · ordenado por vencimento</div>
-    <div style="font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:12px">Vencimento = data de entrega prevista. 🔴 vencidos no topo.</div>
+    <div style="font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:12px">Vencimento = DT ENTREGA PED (data prevista de entrega). 🔴 vencidos no topo.</div>
     <div class="ped-card" style="border-left:3px solid var(--danger)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1289503</span>
-          <span class="ped-info">📅 Pedido 08/05 → Vencimento (entrega) <strong>22/05</strong></span>
-          <span class='badge b-c'>🔴 Venceu há 6d</span>
+          <span class="ped-info">📅 Pedido 08/05 → Vencimento <strong>22/05</strong></span><span class='badge b-c'>🔴 Venceu há 7d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 50,71</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 50,71</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS OLLIE 2170X845X12 MDF FRASSINO</span><span class='item-meta'>qt 1 · R$ 50,71 · Guarda Roupas</span></div></div>
@@ -258,12 +250,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1294213</span>
-          <span class="ped-info">📅 Pedido 08/05 → Vencimento (entrega) <strong>22/05</strong></span>
-          <span class='badge b-c'>🔴 Venceu há 6d</span>
+          <span class="ped-info">📅 Pedido 08/05 → Vencimento <strong>22/05</strong></span><span class='badge b-c'>🔴 Venceu há 7d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">9 itens · qt 15 · R$ 218,10</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">9 itens · qt 15 · R$ 218,10</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>COSTAS GR LEDER/OLLIE/CALEB/VINCE 2230X896X2,7 HDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 17,71 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>FRENTE GAV GR OLLIE 2025 805X160X15 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 6 · R$ 30,00 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>KIT FERRAGEM GR LOPAS 03PTS OLLIE 2025 AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 47,45 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>MOLDURA SUP LAT GR 03PTS OLLIE 2025 495X70X15 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 1,32 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>RODAPE FRONT GR OLLIE 2025 2670X70X15 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 6,04 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>RODAPE TRAS GR 6PTS LEDER/OLLIE 2025 2670X70X15 MDF</span><span class='item-meta'>qt 1 · R$ 5,00 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>TAMPO INF GR LEDER/OLLIE 2025 2670X540X15 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 43,34 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>TAMPO SUP GR LEDER/OLLIE 2025 2670X540X15 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 43,34 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PRATELEIRA SUP GR 6PTS LEDER/OLLIE 2025 880X420X15 MDF AMENDOA C</span><span class='item-meta'>qt 2 · R$ 23,90 · Guarda Roupas</span></div></div>
@@ -272,12 +262,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1305058</span>
-          <span class="ped-info">📅 Pedido 09/05 → Vencimento (entrega) <strong>22/05</strong></span>
-          <span class='badge b-c'>🔴 Venceu há 6d</span>
+          <span class="ped-info">📅 Pedido 09/05 → Vencimento <strong>22/05</strong></span><span class='badge b-c'>🔴 Venceu há 7d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">3 itens · qt 9 · R$ 121,09</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">3 itens · qt 9 · R$ 121,09</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS OLLIE 2170X845X12 MDF FRASSINO</span><span class='item-meta'>qt 1 · R$ 50,71 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>RIPADO GR 3 PTS OLLIE 2168X131X6 MDF FRASSINO</span><span class='item-meta'>qt 6 · R$ 67,74 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>MOLDURA SUP LAT GR 03PTS OLLIE 2025 495X70X15 MDF FRASSINO</span><span class='item-meta'>qt 2 · R$ 2,64 · Guarda Roupas</span></div></div>
@@ -286,12 +274,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1466566</span>
-          <span class="ped-info">📅 Pedido 18/05 → Vencimento (entrega) <strong>22/05</strong></span>
-          <span class='badge b-c'>🔴 Venceu há 6d</span>
+          <span class="ped-info">📅 Pedido 18/05 → Vencimento <strong>22/05</strong></span><span class='badge b-c'>🔴 Venceu há 7d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">5 itens · qt 5 · R$ 25,00</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">5 itens · qt 5 · R$ 25,00</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>FRENTE GAV GR 2/3PTS QUADRIX 690X160X15 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 5,00 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>FUNDO GAV GR 2/3 PTS QUADRIX 661X357X2,7 HDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 5,00 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>TRASEIRO GAV GR 2/3PTS QUADRIX 649X80X12 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 5,00 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>LATERAL GAV DIR GR 2/3PTS QUADRIX 350X120X12 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 5,00 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>LATERAL GAV ESQ GR 2/3PTS QUADRIX 350X120X12 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 5,00 · Guarda Roupas</span></div></div>
@@ -300,40 +286,34 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1363311</span>
-          <span class="ped-info">📅 Pedido 12/05 → Vencimento (entrega) <strong>26/05</strong></span>
-          <span class='badge b-c'>🔴 Venceu há 2d</span>
+          <span class="ped-info">📅 Pedido 12/05 → Vencimento <strong>26/05</strong></span><span class='badge b-c'>🔴 Venceu há 3d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">3 itens · qt 5 · R$ 11,75</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">3 itens · qt 5 · R$ 11,75</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 2 · R$ 1,60 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMENDOA CL</span><span class='item-meta'>qt 2 · R$ 1,68 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>KIT FERRAGEM GR 4PTS ALONZO 2021 AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 8,47 · Guarda Roupas</span></div></div>
     </div>
-<div class="ped-card" style="border-left:3px solid var(--warn)">
+<div class="ped-card" style="border-left:3px solid var(--danger)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1392116</span>
-          <span class="ped-info">📅 Pedido 14/05 → Vencimento (entrega) <strong>28/05</strong></span>
-          <span class='badge b-w'>⚠ Vence em 0d</span>
+          <span class="ped-info">📅 Pedido 14/05 → Vencimento <strong>28/05</strong></span><span class='badge b-c'>🔴 Venceu há 1d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 8 · R$ 6,56</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 8 · R$ 6,56</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 4 · R$ 3,20 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMENDOA CL</span><span class='item-meta'>qt 4 · R$ 3,36 · Guarda Roupas</span></div></div>
     </div>
-<div class="ped-card" style="border-left:3px solid var(--warn)">
+<div class="ped-card" style="border-left:3px solid var(--danger)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1394336</span>
-          <span class="ped-info">📅 Pedido 14/05 → Vencimento (entrega) <strong>28/05</strong></span>
-          <span class='badge b-w'>⚠ Vence em 0d</span>
+          <span class="ped-info">📅 Pedido 14/05 → Vencimento <strong>28/05</strong></span><span class='badge b-c'>🔴 Venceu há 1d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 2 · R$ 1,60 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMENDOA CL</span><span class='item-meta'>qt 2 · R$ 1,68 · Guarda Roupas</span></div></div>
@@ -342,12 +322,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1409965</span>
-          <span class="ped-info">📅 Pedido 15/05 → Vencimento (entrega) <strong>29/05</strong></span>
-          <span class='badge b-w'>⚠ Vence em 1d</span>
+          <span class="ped-info">📅 Pedido 15/05 → Vencimento <strong>29/05</strong></span><span class='badge b-w'>⚠ Vence em 0d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 41,74</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 41,74</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>TAMPO INF GR 6PTS LOOP 2025 2661X505X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 41,74 · Guarda Roupas</span></div></div>
@@ -356,12 +334,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1430748</span>
-          <span class="ped-info">📅 Pedido 16/05 → Vencimento (entrega) <strong>29/05</strong></span>
-          <span class='badge b-w'>⚠ Vence em 1d</span>
+          <span class="ped-info">📅 Pedido 16/05 → Vencimento <strong>29/05</strong></span><span class='badge b-w'>⚠ Vence em 0d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 4 · R$ 94,22</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 4 · R$ 94,22</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>COSTAS GR 3 PTS NICE 2110X896X2,7 HDF AMENDOA CLEAN</span><span class='item-meta'>qt 3 · R$ 49,68 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS SPECIALE/NICE 2048X930X12 MDP AMENDOA CLE</span><span class='item-meta'>qt 1 · R$ 44,54 · Guarda Roupas</span></div></div>
@@ -370,82 +346,70 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1451698</span>
-          <span class="ped-info">📅 Pedido 17/05 → Vencimento (entrega) <strong>29/05</strong></span>
-          <span class='badge b-w'>⚠ Vence em 1d</span>
+          <span class="ped-info">📅 Pedido 17/05 → Vencimento <strong>29/05</strong></span><span class='badge b-w'>⚠ Vence em 0d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 31,23</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 31,23</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>LATERAL DIREITA GR 4 PTS ALONZO 2300X450X12 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 31,23 · Guarda Roupas</span></div></div>
     </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
+<div class="ped-card" style="border-left:3px solid var(--warn)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1464384</span>
-          <span class="ped-info">📅 Pedido 18/05 → Vencimento (entrega) <strong>01/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 4d</span>
+          <span class="ped-info">📅 Pedido 18/05 → Vencimento <strong>01/06</strong></span><span class='badge b-w'>⚠ Vence em 3d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 2 · R$ 1,60 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF BRANCO</span><span class='item-meta'>qt 2 · R$ 1,68 · Guarda Roupas</span></div></div>
     </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
+<div class="ped-card" style="border-left:3px solid var(--warn)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1464911</span>
-          <span class="ped-info">📅 Pedido 18/05 → Vencimento (entrega) <strong>01/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 4d</span>
+          <span class="ped-info">📅 Pedido 18/05 → Vencimento <strong>01/06</strong></span><span class='badge b-w'>⚠ Vence em 3d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 2 · R$ 1,60 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMENDOA CL</span><span class='item-meta'>qt 2 · R$ 1,68 · Guarda Roupas</span></div></div>
     </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
+<div class="ped-card" style="border-left:3px solid var(--warn)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1467651</span>
-          <span class="ped-info">📅 Pedido 18/05 → Vencimento (entrega) <strong>01/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 4d</span>
+          <span class="ped-info">📅 Pedido 18/05 → Vencimento <strong>01/06</strong></span><span class='badge b-w'>⚠ Vence em 3d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 3 · R$ 142,29</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 3 · R$ 142,29</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 56,67 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PORTA LATERAL GR 3 PTS SPAZIO/EASY 1,80 2248X850X15 MDF BRANCO</span><span class='item-meta'>qt 2 · R$ 85,62 · Guarda Roupas</span></div></div>
     </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
+<div class="ped-card" style="border-left:3px solid var(--warn)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1469541</span>
-          <span class="ped-info">📅 Pedido 18/05 → Vencimento (entrega) <strong>01/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 4d</span>
+          <span class="ped-info">📅 Pedido 18/05 → Vencimento <strong>01/06</strong></span><span class='badge b-w'>⚠ Vence em 3d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 8,47</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 8,47</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>KIT FERRAGEM GR 4PTS ALONZO 2021 BRANCO</span><span class='item-meta'>qt 1 · R$ 8,47 · Guarda Roupas</span></div></div>
     </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
+<div class="ped-card" style="border-left:3px solid var(--warn)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1472202</span>
-          <span class="ped-info">📅 Pedido 18/05 → Vencimento (entrega) <strong>01/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 4d</span>
+          <span class="ped-info">📅 Pedido 18/05 → Vencimento <strong>01/06</strong></span><span class='badge b-w'>⚠ Vence em 3d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">5 itens · qt 16 · R$ 126,95</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">5 itens · qt 16 · R$ 126,95</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR LEDER/OLLIE/CALEB/VINCE 510X38X25 MDF AMEN</span><span class='item-meta'>qt 4 · R$ 6,64 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR LEDER/OLLIE/CALEB/VINCE 510X38X25 MDF</span><span class='item-meta'>qt 4 · R$ 5,32 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PRATELEIRA INF GR 6PTS LEDER/OLLIE 2025 880X420X15 MDF AMENDOA C</span><span class='item-meta'>qt 3 · R$ 15,00 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DIVISAO GR 03PTS OLLIE 2025 2200X450X15 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 2 · R$ 64,14 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PRATELEIRA SUP GR 6PTS LEDER/OLLIE 2025 880X420X15 MDF AMENDOA C</span><span class='item-meta'>qt 3 · R$ 35,85 · Guarda Roupas</span></div></div>
@@ -454,12 +418,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1485788</span>
-          <span class="ped-info">📅 Pedido 19/05 → Vencimento (entrega) <strong>02/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 5d</span>
+          <span class="ped-info">📅 Pedido 19/05 → Vencimento <strong>02/06</strong></span><span class='badge b-ok'>No prazo · vence em 4d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 2 · R$ 78,75</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 2 · R$ 78,75</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>TAMPO SUPERIOR GR 3 PTS SPAZIO/EASY 2,70 2625X600X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 33,75 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>LATERAL ESQUERDA GR 3 PTS SPAZIO/EASY 1,60/1,80/2,70 2380X600X15</span><span class='item-meta'>qt 1 · R$ 45,00 · Guarda Roupas</span></div></div>
@@ -468,12 +430,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1488625</span>
-          <span class="ped-info">📅 Pedido 19/05 → Vencimento (entrega) <strong>02/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 5d</span>
+          <span class="ped-info">📅 Pedido 19/05 → Vencimento <strong>02/06</strong></span><span class='badge b-ok'>No prazo · vence em 4d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 2 · R$ 1,60 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMENDOA CL</span><span class='item-meta'>qt 2 · R$ 1,68 · Guarda Roupas</span></div></div>
@@ -482,12 +442,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1488627</span>
-          <span class="ped-info">📅 Pedido 19/05 → Vencimento (entrega) <strong>02/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 5d</span>
+          <span class="ped-info">📅 Pedido 19/05 → Vencimento <strong>02/06</strong></span><span class='badge b-ok'>No prazo · vence em 4d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 3 · R$ 53,13</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 3 · R$ 53,13</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>COSTAS GR LEDER/OLLIE/CALEB/VINCE 2230X896X2,7 HDF AMENDOA CLEAN</span><span class='item-meta'>qt 3 · R$ 53,13 · Guarda Roupas</span></div></div>
@@ -496,12 +454,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1488831</span>
-          <span class="ped-info">📅 Pedido 19/05 → Vencimento (entrega) <strong>02/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 5d</span>
+          <span class="ped-info">📅 Pedido 19/05 → Vencimento <strong>02/06</strong></span><span class='badge b-ok'>No prazo · vence em 4d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 6,04</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 6,04</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>RODAPE FRONT GR OLLIE 2025 2670X70X15 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 6,04 · Guarda Roupas</span></div></div>
@@ -510,12 +466,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1490755</span>
-          <span class="ped-info">📅 Pedido 19/05 → Vencimento (entrega) <strong>02/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 5d</span>
+          <span class="ped-info">📅 Pedido 19/05 → Vencimento <strong>02/06</strong></span><span class='badge b-ok'>No prazo · vence em 4d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 4 · R$ 62,96</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 4 · R$ 62,96</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PERFIL PUXADOR 2247MM BRONZE GR SPAZIO RX1034</span><span class='item-meta'>qt 4 · R$ 62,96 · Item Comprado</span></div></div>
@@ -524,12 +478,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1491772</span>
-          <span class="ped-info">📅 Pedido 19/05 → Vencimento (entrega) <strong>02/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 5d</span>
+          <span class="ped-info">📅 Pedido 19/05 → Vencimento <strong>02/06</strong></span><span class='badge b-ok'>No prazo · vence em 4d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 2 · R$ 1,60 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF BRANCO</span><span class='item-meta'>qt 2 · R$ 1,68 · Guarda Roupas</span></div></div>
@@ -538,12 +490,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1501442</span>
-          <span class="ped-info">📅 Pedido 20/05 → Vencimento (entrega) <strong>08/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 11d</span>
+          <span class="ped-info">📅 Pedido 20/05 → Vencimento <strong>08/06</strong></span><span class='badge b-ok'>No prazo · vence em 10d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">3 itens · qt 3 · R$ 164,72</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">3 itens · qt 3 · R$ 164,72</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>MOLDURA GR 2 PTS LANI/ZEINE/ELISE 1790X90X12 MDP AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 3,76 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PORTA MONTADA GR 2 PTS ZEINE 2024 BRANCO</span><span class='item-meta'>qt 1 · R$ 146,11 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>MOLD/PUXADOR LAT PORTA GR 2 PTS ZEINE 1905X70X25 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 14,85 · Guarda Roupas</span></div></div>
@@ -552,12 +502,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1506230</span>
-          <span class="ped-info">📅 Pedido 20/05 → Vencimento (entrega) <strong>08/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 11d</span>
+          <span class="ped-info">📅 Pedido 20/05 → Vencimento <strong>08/06</strong></span><span class='badge b-ok'>No prazo · vence em 10d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 2 · R$ 15,08</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 2 · R$ 15,08</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL KIT PES C/6 PES LOPAS PVC 0,282X0,140X0,069 BRANCO</span><span class='item-meta'>qt 1 · R$ 6,61 · Embalagem Jogo De Pes</span></div><div class='item-line'><span class='item-desc'>KIT FERRAGEM GR 4PTS ALONZO 2021 BRANCO</span><span class='item-meta'>qt 1 · R$ 8,47 · Guarda Roupas</span></div></div>
@@ -566,12 +514,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1508416</span>
-          <span class="ped-info">📅 Pedido 20/05 → Vencimento (entrega) <strong>08/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 11d</span>
+          <span class="ped-info">📅 Pedido 20/05 → Vencimento <strong>08/06</strong></span><span class='badge b-ok'>No prazo · vence em 10d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 4 · R$ 52,10</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 4 · R$ 52,10</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>MOLD/PUXADOR LAT PORTA GR RASGO 12 3 PTS OLLIE/CALEB 2170X70X25 </span><span class='item-meta'>qt 2 · R$ 27,88 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>MOLDURA LATERAL GR OLLIE 2325X65X18 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 2 · R$ 24,22 · Guarda Roupas</span></div></div>
@@ -580,12 +526,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1509444</span>
-          <span class="ped-info">📅 Pedido 20/05 → Vencimento (entrega) <strong>08/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 11d</span>
+          <span class="ped-info">📅 Pedido 20/05 → Vencimento <strong>08/06</strong></span><span class='badge b-ok'>No prazo · vence em 10d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 0,80</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 0,80</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 1 · R$ 0,80 · Guarda Roupas</span></div></div>
@@ -594,12 +538,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1520883</span>
-          <span class="ped-info">📅 Pedido 21/05 → Vencimento (entrega) <strong>09/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 12d</span>
+          <span class="ped-info">📅 Pedido 21/05 → Vencimento <strong>09/06</strong></span><span class='badge b-ok'>No prazo · vence em 11d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 2 · R$ 1,60 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMENDOA CL</span><span class='item-meta'>qt 2 · R$ 1,68 · Guarda Roupas</span></div></div>
@@ -608,12 +550,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1524735</span>
-          <span class="ped-info">📅 Pedido 21/05 → Vencimento (entrega) <strong>09/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 12d</span>
+          <span class="ped-info">📅 Pedido 21/05 → Vencimento <strong>09/06</strong></span><span class='badge b-ok'>No prazo · vence em 11d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">5 itens · qt 6 · R$ 26,22</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">5 itens · qt 6 · R$ 26,22</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 1 · R$ 0,80 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMENDOA CL</span><span class='item-meta'>qt 1 · R$ 0,84 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>TRILHO TELESCOPICO H30 350MM 3 ESTAGIOS - SUP 6KG</span><span class='item-meta'>qt 1 · R$ 2,64 · Item Comprado</span></div><div class='item-line'><span class='item-desc'>KIT FERRAGEM GR 4PTS ALONZO 2021 AMENDOA CLEAN</span><span class='item-meta'>qt 2 · R$ 16,94 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PERFIL H  1515MM AMENDOA/IMBUIA (GR ALONZO 4PTS)</span><span class='item-meta'>qt 1 · R$ 5,00 · Item Comprado</span></div></div>
@@ -622,12 +562,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1536962</span>
-          <span class="ped-info">📅 Pedido 22/05 → Vencimento (entrega) <strong>10/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 13d</span>
+          <span class="ped-info">📅 Pedido 22/05 → Vencimento <strong>10/06</strong></span><span class='badge b-ok'>No prazo · vence em 12d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 5 · R$ 119,63</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 5 · R$ 119,63</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PERFIL PUXADOR 2247MM BRONZE GR SPAZIO RX1034</span><span class='item-meta'>qt 4 · R$ 62,96 · Item Comprado</span></div><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 56,67 · Guarda Roupas</span></div></div>
@@ -636,12 +574,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1539810</span>
-          <span class="ped-info">📅 Pedido 22/05 → Vencimento (entrega) <strong>10/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 13d</span>
+          <span class="ped-info">📅 Pedido 22/05 → Vencimento <strong>10/06</strong></span><span class='badge b-ok'>No prazo · vence em 12d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 2 · R$ 1,64</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 2 · R$ 1,64</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 1 · R$ 0,80 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMENDOA CL</span><span class='item-meta'>qt 1 · R$ 0,84 · Guarda Roupas</span></div></div>
@@ -650,12 +586,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1543207</span>
-          <span class="ped-info">📅 Pedido 22/05 → Vencimento (entrega) <strong>10/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 13d</span>
+          <span class="ped-info">📅 Pedido 22/05 → Vencimento <strong>10/06</strong></span><span class='badge b-ok'>No prazo · vence em 12d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">3 itens · qt 3 · R$ 84,58</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">3 itens · qt 3 · R$ 84,58</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PERFIL PUXADOR 2247MM BRONZE GR SPAZIO RX1034</span><span class='item-meta'>qt 1 · R$ 15,74 · Item Comprado</span></div><div class='item-line'><span class='item-desc'>KIT FERRAGEM GR 3PTS SPAZIO BRANCO</span><span class='item-meta'>qt 1 · R$ 12,17 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 56,67 · Guarda Roupas</span></div></div>
@@ -664,12 +598,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1544108</span>
-          <span class="ped-info">📅 Pedido 22/05 → Vencimento (entrega) <strong>10/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 13d</span>
+          <span class="ped-info">📅 Pedido 22/05 → Vencimento <strong>10/06</strong></span><span class='badge b-ok'>No prazo · vence em 12d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 2 · R$ 67,50</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 2 · R$ 67,50</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>TAMPO INFERIOR GR 3 PTS SPAZIO/EASY 2,70 2625X600X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 33,75 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>TAMPO SUPERIOR GR 3 PTS SPAZIO/EASY 2,70 2625X600X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 33,75 · Guarda Roupas</span></div></div>
@@ -678,12 +610,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1558772</span>
-          <span class="ped-info">📅 Pedido 23/05 → Vencimento (entrega) <strong>10/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 13d</span>
+          <span class="ped-info">📅 Pedido 23/05 → Vencimento <strong>10/06</strong></span><span class='badge b-ok'>No prazo · vence em 12d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 2 · R$ 31,48</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 2 · R$ 31,48</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PERFIL PUXADOR 2247MM BRONZE GR SPAZIO RX1034</span><span class='item-meta'>qt 2 · R$ 31,48 · Item Comprado</span></div></div>
@@ -692,12 +622,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1592781</span>
-          <span class="ped-info">📅 Pedido 25/05 → Vencimento (entrega) <strong>11/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 14d</span>
+          <span class="ped-info">📅 Pedido 25/05 → Vencimento <strong>11/06</strong></span><span class='badge b-ok'>No prazo · vence em 13d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 56,67</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 56,67</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 56,67 · Guarda Roupas</span></div></div>
@@ -706,12 +634,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1594642</span>
-          <span class="ped-info">📅 Pedido 25/05 → Vencimento (entrega) <strong>11/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 14d</span>
+          <span class="ped-info">📅 Pedido 25/05 → Vencimento <strong>11/06</strong></span><span class='badge b-ok'>No prazo · vence em 13d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 56,67</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 56,67</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 56,67 · Guarda Roupas</span></div></div>
@@ -720,12 +646,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1598755</span>
-          <span class="ped-info">📅 Pedido 25/05 → Vencimento (entrega) <strong>11/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 14d</span>
+          <span class="ped-info">📅 Pedido 25/05 → Vencimento <strong>11/06</strong></span><span class='badge b-ok'>No prazo · vence em 13d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 4 · R$ 3,28</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 2 · R$ 1,60 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMENDOA CL</span><span class='item-meta'>qt 2 · R$ 1,68 · Guarda Roupas</span></div></div>
@@ -734,12 +658,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1600598</span>
-          <span class="ped-info">📅 Pedido 25/05 → Vencimento (entrega) <strong>11/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 14d</span>
+          <span class="ped-info">📅 Pedido 25/05 → Vencimento <strong>11/06</strong></span><span class='badge b-ok'>No prazo · vence em 13d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">3 itens · qt 3 · R$ 44,22</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">3 itens · qt 3 · R$ 44,22</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>KIT FERRAGEM COMODA 8GAV 2PTS TORONTO/IMPERADOR 2021 AMENDOA CLE</span><span class='item-meta'>qt 1 · R$ 27,70 · Kit Ferragem</span></div><div class='item-line'><span class='item-desc'>LATERAL ESQUERDA COMODA 2 PTS 8 GAV TORONTO 2016 1160X450X15 MDP</span><span class='item-meta'>qt 1 · R$ 14,43 · Complementos</span></div><div class='item-line'><span class='item-desc'>FUNDO GAV GRA COMODA 2 PTS 8 GAV TORONTO 2016 613X407X2,7 HDF AM</span><span class='item-meta'>qt 1 · R$ 2,09 · Complementos</span></div></div>
@@ -748,12 +670,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1615095</span>
-          <span class="ped-info">📅 Pedido 26/05 → Vencimento (entrega) <strong>12/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 15d</span>
+          <span class="ped-info">📅 Pedido 26/05 → Vencimento <strong>12/06</strong></span><span class='badge b-ok'>No prazo · vence em 14d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 2 · R$ 58,23</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 2 · R$ 58,23</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 56,67 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PERFIL H  2625MM BRANCO/PRETO (GR TORONTO/SPAZIO 2,70/UNIQUE)</span><span class='item-meta'>qt 1 · R$ 1,56 · Item Comprado</span></div></div>
@@ -762,12 +682,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1616783</span>
-          <span class="ped-info">📅 Pedido 26/05 → Vencimento (entrega) <strong>12/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 15d</span>
+          <span class="ped-info">📅 Pedido 26/05 → Vencimento <strong>12/06</strong></span><span class='badge b-ok'>No prazo · vence em 14d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">5 itens · qt 5 · R$ 35,11</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">5 itens · qt 5 · R$ 35,11</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</span><span class='item-meta'>qt 1 · R$ 0,80 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMENDOA CL</span><span class='item-meta'>qt 1 · R$ 0,84 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>DIVISAO MALEIRO GR 4/6 PTS ALONZO/LISSA/LIKE 423X80X15 MDF AMEND</span><span class='item-meta'>qt 1 · R$ 1,30 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PORTA GR  4/6 PTS ALONZO 2021/LIKE 2160X378X15 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 29,69 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>ASS - PUXADOR BRA-M-1121 1050X18MM  AMENDOA</span><span class='item-meta'>qt 1 · R$ 2,48 · Item Comprado</span></div></div>
@@ -775,55 +693,11 @@
 <div class="ped-card" style="border-left:3px solid var(--ok)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <span class="ped-num">#1628796</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 87,61</span>
-          <span class="chev">▾</span>
-        </div>
-      </div>
-      <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL CX ESPELHO C/1 ESP 1795X385X3 SAP.ESTHELA 1,930X0,570X0,060</span><span class='item-meta'>qt 1 · R$ 87,61 · Complementos</span></div></div>
-    </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
-      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <span class="ped-num">#1628797</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 274,16</span>
-          <span class="chev">▾</span>
-        </div>
-      </div>
-      <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL CX GR 2 PTS ZEINE 2024 1PT GLASS 1,990X0,980X0,044 AMENDOA C</span><span class='item-meta'>qt 1 · R$ 274,16 · Guarda Roupas</span></div></div>
-    </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
-      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <span class="ped-num">#1628798</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 274,16</span>
-          <span class="chev">▾</span>
-        </div>
-      </div>
-      <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL CX GR 2 PTS ZEINE 2024 1PT GLASS 1,990X0,980X0,044 AMENDOA C</span><span class='item-meta'>qt 1 · R$ 274,16 · Guarda Roupas</span></div></div>
-    </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
-      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1628799</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
+          <span class="ped-info">📅 Pedido 27/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 12,51</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 12,51</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>FRENTE  CAMA BIBOX 1890X300X15 MDP AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 12,51 · Complementos</span></div></div>
@@ -831,41 +705,11 @@
 <div class="ped-card" style="border-left:3px solid var(--ok)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <span class="ped-num">#1629325</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 209,86</span>
-          <span class="chev">▾</span>
-        </div>
-      </div>
-      <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL CX GR 2 PTS ZEINE 2024 LAT 2,155X0,520X0,078 AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 209,86 · Guarda Roupas</span></div></div>
-    </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
-      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <span class="ped-num">#1629326</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 512,00</span>
-          <span class="chev">▾</span>
-        </div>
-      </div>
-      <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL CX GR 3 PTS SPAZIO 2,70 1 PT GLASS 2,320X1,040X0,067</span><span class='item-meta'>qt 1 · R$ 512,00 · Guarda Roupas</span></div></div>
-    </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
-      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1629921</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
+          <span class="ped-info">📅 Pedido 27/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 6 · R$ 123,30</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 6 · R$ 123,30</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>FUNDO GAVETA GR 4/6 PTS ALONZO NEW/LISSA/LIKE 661X357X2,7 HDF AM</span><span class='item-meta'>qt 2 · R$ 4,54 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PORTA GR  4/6 PTS ALONZO 2021/LIKE 2160X378X15 MDF OFF WHITE</span><span class='item-meta'>qt 4 · R$ 118,76 · Guarda Roupas</span></div></div>
@@ -874,12 +718,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1630954</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
+          <span class="ped-info">📅 Pedido 27/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">3 itens · qt 4 · R$ 162,23</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">3 itens · qt 4 · R$ 162,23</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>MOLDURA ENCAB LAT PORTA  GR  RASGO 12 3 PTS OLLIE/CALEB 2170X55X</span><span class='item-meta'>qt 2 · R$ 23,50 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS OLLIE 2170X845X12 MDF AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 91,28 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>KIT FERRAGEM GR LOPAS 03PTS OLLIE 2025 AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 47,45 · Guarda Roupas</span></div></div>
@@ -888,12 +730,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1631485</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
+          <span class="ped-info">📅 Pedido 27/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 12,51</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 12,51</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>FRENTE  CAMA BIBOX 1890X300X15 MDP AMENDOA CLEAN</span><span class='item-meta'>qt 1 · R$ 12,51 · Complementos</span></div></div>
@@ -901,27 +741,11 @@
 <div class="ped-card" style="border-left:3px solid var(--ok)">
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <span class="ped-num">#1632299</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 12,49</span>
-          <span class="chev">▾</span>
-        </div>
-      </div>
-      <div class="ped-items"><div class='item-line'><span class='item-desc'>KIT FERRAGEM GR 6PTS ALONZO 2021 BRANCO</span><span class='item-meta'>qt 1 · R$ 12,49 · Guarda Roupas</span></div></div>
-    </div>
-<div class="ped-card" style="border-left:3px solid var(--ok)">
-      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1633334</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
+          <span class="ped-info">📅 Pedido 27/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 40,03</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 40,03</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA GR 2 PTS LANI/ZEINE 1905X830X12 MDP BRANCO</span><span class='item-meta'>qt 1 · R$ 40,03 · Guarda Roupas</span></div></div>
@@ -930,12 +754,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1633335</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
+          <span class="ped-info">📅 Pedido 27/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 29,69</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 29,69</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA GR  4/6 PTS ALONZO 2021/LIKE 2160X378X15 MDF OFF WHITE</span><span class='item-meta'>qt 1 · R$ 29,69 · Guarda Roupas</span></div></div>
@@ -944,12 +766,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1636735</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
+          <span class="ped-info">📅 Pedido 27/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">3 itens · qt 3 · R$ 25,12</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">3 itens · qt 3 · R$ 25,12</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PAIN FRIZ CAMA SOLT ATHENAS 2012 780X160X15 MDF FRASSINO</span><span class='item-meta'>qt 1 · R$ 3,34 · Complementos</span></div><div class='item-line'><span class='item-desc'>FRENTE  CAMA BIBOX 1890X300X15 MDP FRASSINO</span><span class='item-meta'>qt 1 · R$ 12,51 · Complementos</span></div><div class='item-line'><span class='item-desc'>TRASEIRO   CAMA  BIBOX 1890X220X15 MDP FRASSINO</span><span class='item-meta'>qt 1 · R$ 9,27 · Complementos</span></div></div>
@@ -958,12 +778,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1637606</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
+          <span class="ped-info">📅 Pedido 27/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 8,47</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 8,47</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>KIT FERRAGEM GR 4PTS ALONZO 2021 BRANCO</span><span class='item-meta'>qt 1 · R$ 8,47 · Guarda Roupas</span></div></div>
@@ -972,12 +790,10 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1637846</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
+          <span class="ped-info">📅 Pedido 27/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">2 itens · qt 2 · R$ 283,51</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">2 itens · qt 2 · R$ 283,51</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL CX GR 3 PTS SPAZIO 2,70 2 PORTAS MDF 2,290X0,895X0,067 BRANC</span><span class='item-meta'>qt 1 · R$ 275,40 · Guarda Roupas</span></div><div class='item-line'><span class='item-desc'>PRATELEIRA INFERIOR GR 3 PTS SPAZIO/EASY 1,80/2,70 865X448X15 MD</span><span class='item-meta'>qt 1 · R$ 8,11 · Guarda Roupas</span></div></div>
@@ -986,15 +802,121 @@
       <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="ped-num">#1637847</span>
-          <span class="ped-info">📅 Pedido 27/05 → Vencimento (entrega) <strong>15/06</strong></span>
-          <span class='badge b-ok'>No prazo · vence em 18d</span>
+          <span class="ped-info">📅 Pedido 27/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
         </div>
         <div style="display:flex;align-items:center;gap:14px">
-          <span class="ped-info">1 itens · qt 1 · R$ 15,74</span>
-          <span class="chev">▾</span>
+          <span class="ped-info">1 itens · qt 1 · R$ 15,74</span><span class="chev">▾</span>
         </div>
       </div>
       <div class="ped-items"><div class='item-line'><span class='item-desc'>PERFIL PUXADOR 2247MM BRONZE GR SPAZIO RX1034</span><span class='item-meta'>qt 1 · R$ 15,74 · Item Comprado</span></div></div>
+    </div>
+<div class="ped-card" style="border-left:3px solid var(--ok)">
+      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="ped-num">#1651361</span>
+          <span class="ped-info">📅 Pedido 28/05 → Vencimento <strong>15/06</strong></span><span class='badge b-ok'>No prazo · vence em 17d</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="ped-info">1 itens · qt 1 · R$ 56,67</span><span class="chev">▾</span>
+        </div>
+      </div>
+      <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 56,67 · Guarda Roupas</span></div></div>
+    </div>
+<div class="ped-card" style="border-left:3px solid var(--ok)">
+      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="ped-num">#1651362</span>
+          <span class="ped-info">📅 Pedido 28/05 → Vencimento <strong>16/06</strong></span><span class='badge b-ok'>No prazo · vence em 18d</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="ped-info">1 itens · qt 2 · R$ 4,54</span><span class="chev">▾</span>
+        </div>
+      </div>
+      <div class="ped-items"><div class='item-line'><span class='item-desc'>FUNDO GAVETA GR 4/6 PTS ALONZO NEW/LISSA/LIKE 661X357X2,7 HDF BR</span><span class='item-meta'>qt 2 · R$ 4,54 · Guarda Roupas</span></div></div>
+    </div>
+<div class="ped-card" style="border-left:3px solid var(--ok)">
+      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="ped-num">#1646401</span>
+          <span class="ped-info">📅 Pedido 28/05 → Vencimento <strong>17/06</strong></span><span class='badge b-ok'>No prazo · vence em 19d</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="ped-info">1 itens · qt 1 · R$ 56,67</span><span class="chev">▾</span>
+        </div>
+      </div>
+      <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 56,67 · Guarda Roupas</span></div></div>
+    </div>
+<div class="ped-card" style="border-left:3px solid var(--ok)">
+      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="ped-num">#1647250</span>
+          <span class="ped-info">📅 Pedido 28/05 → Vencimento <strong>17/06</strong></span><span class='badge b-ok'>No prazo · vence em 19d</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="ped-info">1 itens · qt 1 · R$ 95,81</span><span class="chev">▾</span>
+        </div>
+      </div>
+      <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL CX ESPELHO C/4 ESP 900X235X3 C/8 SUP CROMADO 0,960X0,295X0,0</span><span class='item-meta'>qt 1 · R$ 95,81 · Guarda Roupas</span></div></div>
+    </div>
+<div class="ped-card" style="border-left:3px solid var(--ok)">
+      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="ped-num">#1648005</span>
+          <span class="ped-info">📅 Pedido 28/05 → Vencimento <strong>17/06</strong></span><span class='badge b-ok'>No prazo · vence em 19d</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="ped-info">1 itens · qt 1 · R$ 173,41</span><span class="chev">▾</span>
+        </div>
+      </div>
+      <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL CX ESPELHO C/1 ESP 1668X874X3 C/4 SUP CROMADO 1,710X0,982X0,</span><span class='item-meta'>qt 1 · R$ 173,41 · Guarda Roupas</span></div></div>
+    </div>
+<div class="ped-card" style="border-left:3px solid var(--ok)">
+      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="ped-num">#1648006</span>
+          <span class="ped-info">📅 Pedido 28/05 → Vencimento <strong>17/06</strong></span><span class='badge b-ok'>No prazo · vence em 19d</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="ped-info">1 itens · qt 1 · R$ 87,61</span><span class="chev">▾</span>
+        </div>
+      </div>
+      <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL CX ESPELHO C/1 ESP 1795X385X3 SAP.ESTHELA 1,930X0,570X0,060</span><span class='item-meta'>qt 1 · R$ 87,61 · Complementos</span></div></div>
+    </div>
+<div class="ped-card" style="border-left:3px solid var(--ok)">
+      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="ped-num">#1648524</span>
+          <span class="ped-info">📅 Pedido 28/05 → Vencimento <strong>17/06</strong></span><span class='badge b-ok'>No prazo · vence em 19d</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="ped-info">1 itens · qt 2 · R$ 31,48</span><span class="chev">▾</span>
+        </div>
+      </div>
+      <div class="ped-items"><div class='item-line'><span class='item-desc'>PERFIL PUXADOR 2247MM BRONZE GR SPAZIO RX1034</span><span class='item-meta'>qt 2 · R$ 31,48 · Item Comprado</span></div></div>
+    </div>
+<div class="ped-card" style="border-left:3px solid var(--ok)">
+      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="ped-num">#1663632</span>
+          <span class="ped-info">📅 Pedido 29/05 → Vencimento <strong>17/06</strong></span><span class='badge b-ok'>No prazo · vence em 19d</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="ped-info">1 itens · qt 1 · R$ 42,81</span><span class="chev">▾</span>
+        </div>
+      </div>
+      <div class="ped-items"><div class='item-line'><span class='item-desc'>PORTA LATERAL GR 3 PTS SPAZIO/EASY 1,80 2248X850X15 MDF BRANCO</span><span class='item-meta'>qt 1 · R$ 42,81 · Guarda Roupas</span></div></div>
+    </div>
+<div class="ped-card" style="border-left:3px solid var(--ok)">
+      <div class="ped-head" onclick="this.parentElement.classList.toggle('open')">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="ped-num">#1664188</span>
+          <span class="ped-info">📅 Pedido 29/05 → Vencimento <strong>17/06</strong></span><span class='badge b-ok'>No prazo · vence em 19d</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span class="ped-info">1 itens · qt 1 · R$ 274,16</span><span class="chev">▾</span>
+        </div>
+      </div>
+      <div class="ped-items"><div class='item-line'><span class='item-desc'>VOL CX GR 2 PTS ZEINE 2024 1PT GLASS 1,990X0,980X0,044 AMENDOA C</span><span class='item-meta'>qt 1 · R$ 274,16 · Guarda Roupas</span></div></div>
     </div>
 
   </div>
@@ -1003,120 +925,111 @@
 <!-- PEÇAS -->
 <div id="tab-pecas" class="tab-pane">
   <div class="kpi-grid-4">
-    <div class="kpi-card b"><div class="kpi-label">Peças Distintas</div><div class="kpi-value b">583</div><div class="kpi-sub">SKUs diferentes em chamados</div></div>
-    <div class="kpi-card o"><div class="kpi-label">Item que + Gera Assistência</div><div class="kpi-value o" style="font-size:17px">VOL CX 3 PTS</div><div class="kpi-sub">CALEB/OLLIE — 96 chamados (4,7%)</div></div>
-    <div class="kpi-card ok"><div class="kpi-label">Qtde Total de Peças</div><div class="kpi-value ok">3.107</div><div class="kpi-sub">unidades solicitadas</div></div>
-    <div class="kpi-card o"><div class="kpi-label">Categoria Líder</div><div class="kpi-value o" style="font-size:19px">Guarda-Roupas</div><div class="kpi-sub">1.184 chamados (57,8%)</div></div>
+    <div class="kpi-card b"><div class="kpi-label">Peças Distintas</div><div class="kpi-value b">583</div><div class="kpi-sub">SKUs diferentes em asteca</div></div>
+    <div class="kpi-card o"><div class="kpi-label">Peça que + Gera Asteca</div><div class="kpi-value o" style="font-size:16px">VOL CX 3 PTS</div><div class="kpi-sub">CALEB/OLLIE — 96 (4,7%)</div></div>
+    <div class="kpi-card ok"><div class="kpi-label">Qtde Total de Peças</div><div class="kpi-value ok">3.118</div><div class="kpi-sub">unidades solicitadas</div></div>
+    <div class="kpi-card o"><div class="kpi-label">Categoria Líder</div><div class="kpi-value o" style="font-size:18px">Guarda-Roupas</div><div class="kpi-sub">1.191 itens (57,9%)</div></div>
   </div>
   <div class="chart-grid-2">
     <div class="chart-card">
-      <div class="chart-title">Assistência por Classificação</div>
-      <div class="chart-desc">nº de chamados por tipo de unidade</div>
-      <div class="chart-wrap"><canvas id="cClass"></canvas></div>
+      <div class="chart-title">Top 10 Peças que Mais Geram Asteca</div>
+      <div class="chart-desc">nº de chamados por peça</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="cTopPecas"></canvas></div>
     </div>
     <div class="chart-card">
       <div class="chart-title">Com Receita × Sem Receita</div>
       <div class="chart-desc">divisão por valor das peças</div>
-      <div class="chart-wrap"><canvas id="cDiv"></canvas></div>
+      <div class="chart-wrap" style="height:280px"><canvas id="cDiv"></canvas></div>
     </div>
   </div>
   <div class="table-card">
-    <div class="section-title">🔥 Itens que Mais Geram Assistência — Top 25</div>
-    <div style="font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:12px">"Ocorr." = nº de chamados em que a peça apareceu · "% Venc." = parcela desses chamados que ultrapassou a meta de 15 dias</div>
+    <div class="section-title">🔥 Detalhamento — Peças que Mais Geram Asteca (Top 25)</div>
+    <div style="font-size:10px;font-family:var(--mono);color:var(--muted);margin-bottom:12px">"Ocorr." = nº de chamados em que a peça apareceu · "Prazo Méd." = média de dias pedido→entrega dessa peça</div>
     <div style="overflow-x:auto"><table>
-      <thead><tr><th style="text-align:center">#</th><th>Descrição da Peça</th><th style="text-align:center">Ocorr.</th><th style="text-align:center">% do Total</th><th style="text-align:center">Qtde</th><th>Valor Total</th><th style="text-align:center">Prazo Méd.</th><th style="text-align:center">% Venc.</th><th>Frequência</th></tr></thead>
-      <tbody><tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>1</td><td style='max-width:300px'>VOL CX GR 3 PTS CALEB/OLLIE 1 PORTA LAT GLASS 2,260X0,990X0,</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>96</td><td style='text-align:center;font-family:var(--mono)'>4.7%</td><td style='text-align:center;font-family:var(--mono)'>146</td><td style='font-family:var(--mono)'>R$ 49.842,93</td><td style='text-align:center;font-family:var(--mono)'>18.0d</td><td><span class='badge b-d'>46%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:100%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>2</td><td style='max-width:300px'>VOL CX GR 3 PTS SPAZIO 2,70 1 PT GLASS 2,320X1,040X0,067</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>96</td><td style='text-align:center;font-family:var(--mono)'>4.7%</td><td style='text-align:center;font-family:var(--mono)'>99</td><td style='font-family:var(--mono)'>R$ 50.688,00</td><td style='text-align:center;font-family:var(--mono)'>17.8d</td><td><span class='badge b-d'>49%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:100%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>3</td><td style='max-width:300px'>VOL CX GR 2 PTS ZEINE 2024 1PT GLASS 1,990X0,980X0,044 AMEND</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>59</td><td style='text-align:center;font-family:var(--mono)'>2.9%</td><td style='text-align:center;font-family:var(--mono)'>60</td><td style='font-family:var(--mono)'>R$ 16.449,60</td><td style='text-align:center;font-family:var(--mono)'>18.1d</td><td><span class='badge b-w'>36%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:61%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>4</td><td style='max-width:300px'>PORTA GR  4/6 PTS ALONZO 2021/LIKE 2160X378X15 MDF OFF WHITE</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>40</td><td style='text-align:center;font-family:var(--mono)'>2.0%</td><td style='text-align:center;font-family:var(--mono)'>100</td><td style='font-family:var(--mono)'>R$ 2.906,18</td><td style='text-align:center;font-family:var(--mono)'>19.3d</td><td><span class='badge b-d'>57%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:42%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>5</td><td style='max-width:300px'>VOL CX GR 2 PTS ZEINE 2024 1PT GLASS 1,990X0,980X0,044 BRANC</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>36</td><td style='text-align:center;font-family:var(--mono)'>1.8%</td><td style='text-align:center;font-family:var(--mono)'>36</td><td style='font-family:var(--mono)'>R$ 10.107,25</td><td style='text-align:center;font-family:var(--mono)'>18.8d</td><td><span class='badge b-d'>53%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:38%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>6</td><td style='max-width:300px'>PORTA GR  4/6 PTS ALONZO 2021/LIKE 2160X378X15 MDF BRANCO</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>36</td><td style='text-align:center;font-family:var(--mono)'>1.8%</td><td style='text-align:center;font-family:var(--mono)'>88</td><td style='font-family:var(--mono)'>R$ 2.612,72</td><td style='text-align:center;font-family:var(--mono)'>17.5d</td><td><span class='badge b-d'>47%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:38%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>7</td><td style='max-width:300px'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>32</td><td style='text-align:center;font-family:var(--mono)'>1.6%</td><td style='text-align:center;font-family:var(--mono)'>32</td><td style='font-family:var(--mono)'>R$ 1.813,44</td><td style='text-align:center;font-family:var(--mono)'>20.1d</td><td><span class='badge b-d'>59%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:33%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>8</td><td style='max-width:300px'>VOL CX ESPELHO C/1 ESP 1795X385X3 SAP.ESTHELA 1,930X0,570X0,</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>29</td><td style='text-align:center;font-family:var(--mono)'>1.4%</td><td style='text-align:center;font-family:var(--mono)'>29</td><td style='font-family:var(--mono)'>R$ 2.544,80</td><td style='text-align:center;font-family:var(--mono)'>19.5d</td><td><span class='badge b-c'>72%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:30%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>9</td><td style='max-width:300px'>PORTA LATERAL GR 3 PTS SPAZIO/EASY 1,80 2248X850X15 MDF BRAN</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>24</td><td style='text-align:center;font-family:var(--mono)'>1.2%</td><td style='text-align:center;font-family:var(--mono)'>30</td><td style='font-family:var(--mono)'>R$ 1.284,30</td><td style='text-align:center;font-family:var(--mono)'>18.5d</td><td><span class='badge b-w'>38%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:25%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>10</td><td style='max-width:300px'>VOL CX ESPELHO C/4 ESP 900X300X3 C/8 SUP CROMADO 0,960X0,360</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>20</td><td style='text-align:center;font-family:var(--mono)'>1.0%</td><td style='text-align:center;font-family:var(--mono)'>20</td><td style='font-family:var(--mono)'>R$ 2.586,57</td><td style='text-align:center;font-family:var(--mono)'>16.7d</td><td><span class='badge b-w'>40%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:21%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>11</td><td style='max-width:300px'>KIT FERRAGEM GR 3PTS SPAZIO BRANCO</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>20</td><td style='text-align:center;font-family:var(--mono)'>1.0%</td><td style='text-align:center;font-family:var(--mono)'>24</td><td style='font-family:var(--mono)'>R$ 292,08</td><td style='text-align:center;font-family:var(--mono)'>19.2d</td><td><span class='badge b-c'>70%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:21%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>12</td><td style='max-width:300px'>FRENTE  CAMA BIBOX 1890X300X15 MDP AMENDOA CLEAN</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>20</td><td style='text-align:center;font-family:var(--mono)'>1.0%</td><td style='text-align:center;font-family:var(--mono)'>21</td><td style='font-family:var(--mono)'>R$ 262,71</td><td style='text-align:center;font-family:var(--mono)'>17.5d</td><td><span class='badge b-d'>50%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:21%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>13</td><td style='max-width:300px'>VOL CX GR 3 PTS SPAZIO 2,70 DIV 2,290X0,460X0,070 BRANCO</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>19</td><td style='text-align:center;font-family:var(--mono)'>0.9%</td><td style='text-align:center;font-family:var(--mono)'>19</td><td style='font-family:var(--mono)'>R$ 2.118,11</td><td style='text-align:center;font-family:var(--mono)'>17.7d</td><td><span class='badge b-w'>37%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:20%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>14</td><td style='max-width:300px'>VOL CX ESPELHO C/4 ESP 1105X374X3 C/2 FUROS C/8 SUP CROMADO </td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>19</td><td style='text-align:center;font-family:var(--mono)'>0.9%</td><td style='text-align:center;font-family:var(--mono)'>19</td><td style='font-family:var(--mono)'>R$ 2.831,92</td><td style='text-align:center;font-family:var(--mono)'>22.9d</td><td><span class='badge b-c'>63%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:20%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>15</td><td style='max-width:300px'>LATERAL ESQUERDA GR 4/6 PTS ALONZO NEW/LIKE 2300X450X12 MDF </td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>17</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>18</td><td style='font-family:var(--mono)'>R$ 561,98</td><td style='text-align:center;font-family:var(--mono)'>20.2d</td><td><span class='badge b-c'>65%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>16</td><td style='max-width:300px'>FRENTE  CAMA BIBOX 1890X300X15 MDP BRANCO</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>17</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='font-family:var(--mono)'>R$ 212,67</td><td style='text-align:center;font-family:var(--mono)'>15.6d</td><td><span class='badge b-ok'>29%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>17</td><td style='max-width:300px'>VOL CX ESPELHO C/1 ESP 1668X874X3 C/4 SUP CROMADO 1,710X0,98</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>17</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>18</td><td style='font-family:var(--mono)'>R$ 3.211,83</td><td style='text-align:center;font-family:var(--mono)'>16.7d</td><td><span class='badge b-c'>71%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>18</td><td style='max-width:300px'>KIT LED CAB BOX CALITAN 4X400MM ( INT PRETO)</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>17</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='font-family:var(--mono)'>R$ 728,92</td><td style='text-align:center;font-family:var(--mono)'>15.8d</td><td><span class='badge b-d'>47%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>19</td><td style='max-width:300px'>LATERAL ESQUERDA GR 4/6 PTS ALONZO NEW/LIKE 2300X450X12 MDF </td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>17</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>18</td><td style='font-family:var(--mono)'>R$ 562,14</td><td style='text-align:center;font-family:var(--mono)'>13.4d</td><td><span class='badge b-ok'>12%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>20</td><td style='max-width:300px'>TRILHO TELESCOPICO H30 350MM 3 ESTAGIOS - SUP 6KG</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>16</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>61</td><td style='font-family:var(--mono)'>R$ 161,04</td><td style='text-align:center;font-family:var(--mono)'>15.1d</td><td><span class='badge b-c'>62%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:17%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>21</td><td style='max-width:300px'>PERFIL PUXADOR 2247MM BRONZE GR SPAZIO RX1034</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>16</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>32</td><td style='font-family:var(--mono)'>R$ 503,68</td><td style='text-align:center;font-family:var(--mono)'>21.4d</td><td><span class='badge b-d'>56%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:17%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>22</td><td style='max-width:300px'>LATERAL DIREITA COMODA LOOP 2024 825X480X15 MDF AMENDOA CLEA</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>14</td><td style='text-align:center;font-family:var(--mono)'>0.7%</td><td style='text-align:center;font-family:var(--mono)'>14</td><td style='font-family:var(--mono)'>R$ 224,70</td><td style='text-align:center;font-family:var(--mono)'>23.6d</td><td><span class='badge b-c'>71%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:15%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>23</td><td style='max-width:300px'>PORTA GR  6 PTS LOOP 2024 2325X406X15 MDF OFF WHITE</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>14</td><td style='text-align:center;font-family:var(--mono)'>0.7%</td><td style='text-align:center;font-family:var(--mono)'>29</td><td style='font-family:var(--mono)'>R$ 967,44</td><td style='text-align:center;font-family:var(--mono)'>15.8d</td><td><span class='badge b-w'>43%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:15%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>24</td><td style='max-width:300px'>COSTAS GR LEDER/OLLIE/CALEB/VINCE 2230X896X2,7 HDF AMENDOA C</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>13</td><td style='text-align:center;font-family:var(--mono)'>0.6%</td><td style='text-align:center;font-family:var(--mono)'>37</td><td style='font-family:var(--mono)'>R$ 655,27</td><td style='text-align:center;font-family:var(--mono)'>14.2d</td><td><span class='badge b-ok'>15%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:14%;background:var(--accent)'></div></div></td></tr>
-<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>25</td><td style='max-width:300px'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>13</td><td style='text-align:center;font-family:var(--mono)'>0.6%</td><td style='text-align:center;font-family:var(--mono)'>24</td><td style='font-family:var(--mono)'>R$ 19,20</td><td style='text-align:center;font-family:var(--mono)'>16.0d</td><td><span class='badge b-d'>46%</span></td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:14%;background:var(--accent)'></div></div></td></tr>
+      <thead><tr><th style="text-align:center">#</th><th>Descrição da Peça</th><th>Categoria</th><th style="text-align:center">Ocorr.</th><th style="text-align:center">% Total</th><th style="text-align:center">Qtde</th><th>Valor</th><th style="text-align:center">Prazo Méd.</th><th>Frequência</th></tr></thead>
+      <tbody><tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>1</td><td style='max-width:300px'>VOL CX GR 3 PTS CALEB/OLLIE 1 PORTA LAT GLASS 2,260X0,990X0,</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>96</td><td style='text-align:center;font-family:var(--mono)'>4.7%</td><td style='text-align:center;font-family:var(--mono)'>146</td><td style='font-family:var(--mono)'>R$ 49.842,93</td><td style='text-align:center;font-family:var(--mono)'>18.0d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:100%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>2</td><td style='max-width:300px'>VOL CX GR 3 PTS SPAZIO 2,70 1 PT GLASS 2,320X1,040X0,067</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>96</td><td style='text-align:center;font-family:var(--mono)'>4.7%</td><td style='text-align:center;font-family:var(--mono)'>99</td><td style='font-family:var(--mono)'>R$ 50.688,00</td><td style='text-align:center;font-family:var(--mono)'>17.8d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:100%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>3</td><td style='max-width:300px'>VOL CX GR 2 PTS ZEINE 2024 1PT GLASS 1,990X0,980X0,044 AMEND</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>60</td><td style='text-align:center;font-family:var(--mono)'>2.9%</td><td style='text-align:center;font-family:var(--mono)'>61</td><td style='font-family:var(--mono)'>R$ 16.723,76</td><td style='text-align:center;font-family:var(--mono)'>18.1d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:62%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>4</td><td style='max-width:300px'>PORTA GR  4/6 PTS ALONZO 2021/LIKE 2160X378X15 MDF OFF WHITE</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>40</td><td style='text-align:center;font-family:var(--mono)'>1.9%</td><td style='text-align:center;font-family:var(--mono)'>100</td><td style='font-family:var(--mono)'>R$ 2.906,18</td><td style='text-align:center;font-family:var(--mono)'>19.3d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:42%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>5</td><td style='max-width:300px'>PORTA GR  4/6 PTS ALONZO 2021/LIKE 2160X378X15 MDF BRANCO</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>36</td><td style='text-align:center;font-family:var(--mono)'>1.7%</td><td style='text-align:center;font-family:var(--mono)'>88</td><td style='font-family:var(--mono)'>R$ 2.612,72</td><td style='text-align:center;font-family:var(--mono)'>17.5d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:38%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>6</td><td style='max-width:300px'>VOL CX GR 2 PTS ZEINE 2024 1PT GLASS 1,990X0,980X0,044 BRANC</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>36</td><td style='text-align:center;font-family:var(--mono)'>1.7%</td><td style='text-align:center;font-family:var(--mono)'>36</td><td style='font-family:var(--mono)'>R$ 10.107,25</td><td style='text-align:center;font-family:var(--mono)'>18.8d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:38%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>7</td><td style='max-width:300px'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>34</td><td style='text-align:center;font-family:var(--mono)'>1.7%</td><td style='text-align:center;font-family:var(--mono)'>34</td><td style='font-family:var(--mono)'>R$ 1.926,78</td><td style='text-align:center;font-family:var(--mono)'>20.0d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:35%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>8</td><td style='max-width:300px'>VOL CX ESPELHO C/1 ESP 1795X385X3 SAP.ESTHELA 1,930X0,570X0,</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Complementos</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>30</td><td style='text-align:center;font-family:var(--mono)'>1.5%</td><td style='text-align:center;font-family:var(--mono)'>30</td><td style='font-family:var(--mono)'>R$ 2.632,41</td><td style='text-align:center;font-family:var(--mono)'>19.5d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:31%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>9</td><td style='max-width:300px'>PORTA LATERAL GR 3 PTS SPAZIO/EASY 1,80 2248X850X15 MDF BRAN</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>25</td><td style='text-align:center;font-family:var(--mono)'>1.2%</td><td style='text-align:center;font-family:var(--mono)'>31</td><td style='font-family:var(--mono)'>R$ 1.327,11</td><td style='text-align:center;font-family:var(--mono)'>18.6d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:26%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>10</td><td style='max-width:300px'>VOL CX ESPELHO C/4 ESP 900X300X3 C/8 SUP CROMADO 0,960X0,360</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>20</td><td style='text-align:center;font-family:var(--mono)'>1.0%</td><td style='text-align:center;font-family:var(--mono)'>20</td><td style='font-family:var(--mono)'>R$ 2.586,57</td><td style='text-align:center;font-family:var(--mono)'>16.7d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:21%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>11</td><td style='max-width:300px'>FRENTE  CAMA BIBOX 1890X300X15 MDP AMENDOA CLEAN</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Complementos</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>20</td><td style='text-align:center;font-family:var(--mono)'>1.0%</td><td style='text-align:center;font-family:var(--mono)'>21</td><td style='font-family:var(--mono)'>R$ 262,71</td><td style='text-align:center;font-family:var(--mono)'>17.5d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:21%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>12</td><td style='max-width:300px'>KIT FERRAGEM GR 3PTS SPAZIO BRANCO</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>20</td><td style='text-align:center;font-family:var(--mono)'>1.0%</td><td style='text-align:center;font-family:var(--mono)'>24</td><td style='font-family:var(--mono)'>R$ 292,08</td><td style='text-align:center;font-family:var(--mono)'>19.2d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:21%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>13</td><td style='max-width:300px'>VOL CX GR 3 PTS SPAZIO 2,70 DIV 2,290X0,460X0,070 BRANCO</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>19</td><td style='text-align:center;font-family:var(--mono)'>0.9%</td><td style='text-align:center;font-family:var(--mono)'>19</td><td style='font-family:var(--mono)'>R$ 2.118,11</td><td style='text-align:center;font-family:var(--mono)'>17.7d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:20%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>14</td><td style='max-width:300px'>VOL CX ESPELHO C/4 ESP 1105X374X3 C/2 FUROS C/8 SUP CROMADO </td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>19</td><td style='text-align:center;font-family:var(--mono)'>0.9%</td><td style='text-align:center;font-family:var(--mono)'>19</td><td style='font-family:var(--mono)'>R$ 2.831,92</td><td style='text-align:center;font-family:var(--mono)'>22.9d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:20%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>15</td><td style='max-width:300px'>VOL CX ESPELHO C/1 ESP 1668X874X3 C/4 SUP CROMADO 1,710X0,98</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>18</td><td style='text-align:center;font-family:var(--mono)'>0.9%</td><td style='text-align:center;font-family:var(--mono)'>19</td><td style='font-family:var(--mono)'>R$ 3.385,24</td><td style='text-align:center;font-family:var(--mono)'>16.9d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:19%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>16</td><td style='max-width:300px'>PERFIL PUXADOR 2247MM BRONZE GR SPAZIO RX1034</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Item Comprado</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>17</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>34</td><td style='font-family:var(--mono)'>R$ 535,16</td><td style='text-align:center;font-family:var(--mono)'>21.3d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>17</td><td style='max-width:300px'>FRENTE  CAMA BIBOX 1890X300X15 MDP BRANCO</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Complementos</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>17</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='font-family:var(--mono)'>R$ 212,67</td><td style='text-align:center;font-family:var(--mono)'>15.6d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>18</td><td style='max-width:300px'>LATERAL ESQUERDA GR 4/6 PTS ALONZO NEW/LIKE 2300X450X12 MDF </td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>17</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>18</td><td style='font-family:var(--mono)'>R$ 561,98</td><td style='text-align:center;font-family:var(--mono)'>20.2d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>19</td><td style='max-width:300px'>KIT LED CAB BOX CALITAN 4X400MM ( INT PRETO)</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Item Comprado</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>17</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='font-family:var(--mono)'>R$ 728,92</td><td style='text-align:center;font-family:var(--mono)'>15.8d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>20</td><td style='max-width:300px'>LATERAL ESQUERDA GR 4/6 PTS ALONZO NEW/LIKE 2300X450X12 MDF </td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>17</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>18</td><td style='font-family:var(--mono)'>R$ 562,14</td><td style='text-align:center;font-family:var(--mono)'>13.4d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>21</td><td style='max-width:300px'>TRILHO TELESCOPICO H30 350MM 3 ESTAGIOS - SUP 6KG</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Item Comprado</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>16</td><td style='text-align:center;font-family:var(--mono)'>0.8%</td><td style='text-align:center;font-family:var(--mono)'>61</td><td style='font-family:var(--mono)'>R$ 161,04</td><td style='text-align:center;font-family:var(--mono)'>15.1d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:17%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>22</td><td style='max-width:300px'>LATERAL DIREITA COMODA LOOP 2024 825X480X15 MDF AMENDOA CLEA</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Complementos</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>14</td><td style='text-align:center;font-family:var(--mono)'>0.7%</td><td style='text-align:center;font-family:var(--mono)'>14</td><td style='font-family:var(--mono)'>R$ 224,70</td><td style='text-align:center;font-family:var(--mono)'>23.6d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:15%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>23</td><td style='max-width:300px'>PORTA GR  6 PTS LOOP 2024 2325X406X15 MDF OFF WHITE</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>14</td><td style='text-align:center;font-family:var(--mono)'>0.7%</td><td style='text-align:center;font-family:var(--mono)'>29</td><td style='font-family:var(--mono)'>R$ 967,44</td><td style='text-align:center;font-family:var(--mono)'>15.8d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:15%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>24</td><td style='max-width:300px'>LATERAL DIREITA GR 4 PTS ALONZO 2300X450X12 MDF AMENDOA CLEA</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>13</td><td style='text-align:center;font-family:var(--mono)'>0.6%</td><td style='text-align:center;font-family:var(--mono)'>13</td><td style='font-family:var(--mono)'>R$ 405,99</td><td style='text-align:center;font-family:var(--mono)'>19.3d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:14%;background:var(--accent)'></div></div></td></tr>
+<tr><td style='text-align:center;font-family:var(--mono);color:var(--muted)'>25</td><td style='max-width:300px'>COSTAS GR LEDER/OLLIE/CALEB/VINCE 2230X896X2,7 HDF AMENDOA C</td><td style='font-family:var(--mono);font-size:10px;color:var(--muted)'>Guarda Roupas</td><td style='text-align:center;font-family:var(--mono);font-weight:700;color:var(--accent)'>13</td><td style='text-align:center;font-family:var(--mono)'>0.6%</td><td style='text-align:center;font-family:var(--mono)'>37</td><td style='font-family:var(--mono)'>R$ 655,27</td><td style='text-align:center;font-family:var(--mono)'>14.2d</td><td style='width:90px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:14%;background:var(--accent)'></div></div></td></tr>
 </tbody>
     </table></div>
   </div>
   <div class="table-card">
     <div class="section-title">📦 Peças Pendentes (aguardando faturamento)</div>
     <div style="overflow-x:auto"><table>
-      <thead><tr><th>Descrição da Peça</th><th style="text-align:center">Ocorr.</th><th style="text-align:center">Qtde</th><th>Vlr Saldo</th><th>Frequência</th></tr></thead>
-      <tbody><tr><td style='max-width:340px'>VOL CX GR 3 PTS CALEB/OLLIE 1 PORTA LAT GLASS 2,260X0,990X0,05</td><td style='text-align:center;font-family:var(--mono)'>96</td><td style='text-align:center;font-family:var(--mono)'>146</td><td style='font-family:var(--mono)'>R$ 49.842,93</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:100%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>VOL CX GR 3 PTS SPAZIO 2,70 1 PT GLASS 2,320X1,040X0,067</td><td style='text-align:center;font-family:var(--mono)'>96</td><td style='text-align:center;font-family:var(--mono)'>99</td><td style='font-family:var(--mono)'>R$ 50.688,00</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:100%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>VOL CX GR 2 PTS ZEINE 2024 1PT GLASS 1,990X0,980X0,044 AMENDOA</td><td style='text-align:center;font-family:var(--mono)'>59</td><td style='text-align:center;font-family:var(--mono)'>60</td><td style='font-family:var(--mono)'>R$ 16.449,60</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:61%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>PORTA GR  4/6 PTS ALONZO 2021/LIKE 2160X378X15 MDF OFF WHITE</td><td style='text-align:center;font-family:var(--mono)'>40</td><td style='text-align:center;font-family:var(--mono)'>100</td><td style='font-family:var(--mono)'>R$ 2.906,18</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:42%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>VOL CX GR 2 PTS ZEINE 2024 1PT GLASS 1,990X0,980X0,044 BRANCO</td><td style='text-align:center;font-family:var(--mono)'>36</td><td style='text-align:center;font-family:var(--mono)'>36</td><td style='font-family:var(--mono)'>R$ 10.107,25</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:38%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>PORTA GR  4/6 PTS ALONZO 2021/LIKE 2160X378X15 MDF BRANCO</td><td style='text-align:center;font-family:var(--mono)'>36</td><td style='text-align:center;font-family:var(--mono)'>88</td><td style='font-family:var(--mono)'>R$ 2.612,72</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:38%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</td><td style='text-align:center;font-family:var(--mono)'>32</td><td style='text-align:center;font-family:var(--mono)'>32</td><td style='font-family:var(--mono)'>R$ 1.813,44</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:33%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>VOL CX ESPELHO C/1 ESP 1795X385X3 SAP.ESTHELA 1,930X0,570X0,06</td><td style='text-align:center;font-family:var(--mono)'>29</td><td style='text-align:center;font-family:var(--mono)'>29</td><td style='font-family:var(--mono)'>R$ 2.544,80</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:30%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>PORTA LATERAL GR 3 PTS SPAZIO/EASY 1,80 2248X850X15 MDF BRANCO</td><td style='text-align:center;font-family:var(--mono)'>24</td><td style='text-align:center;font-family:var(--mono)'>30</td><td style='font-family:var(--mono)'>R$ 1.284,30</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:25%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>VOL CX ESPELHO C/4 ESP 900X300X3 C/8 SUP CROMADO 0,960X0,360X0</td><td style='text-align:center;font-family:var(--mono)'>20</td><td style='text-align:center;font-family:var(--mono)'>20</td><td style='font-family:var(--mono)'>R$ 2.586,57</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:21%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>KIT FERRAGEM GR 3PTS SPAZIO BRANCO</td><td style='text-align:center;font-family:var(--mono)'>20</td><td style='text-align:center;font-family:var(--mono)'>24</td><td style='font-family:var(--mono)'>R$ 292,08</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:21%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>FRENTE  CAMA BIBOX 1890X300X15 MDP AMENDOA CLEAN</td><td style='text-align:center;font-family:var(--mono)'>20</td><td style='text-align:center;font-family:var(--mono)'>21</td><td style='font-family:var(--mono)'>R$ 262,71</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:21%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>VOL CX GR 3 PTS SPAZIO 2,70 DIV 2,290X0,460X0,070 BRANCO</td><td style='text-align:center;font-family:var(--mono)'>19</td><td style='text-align:center;font-family:var(--mono)'>19</td><td style='font-family:var(--mono)'>R$ 2.118,11</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:20%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>VOL CX ESPELHO C/4 ESP 1105X374X3 C/2 FUROS C/8 SUP CROMADO 1,</td><td style='text-align:center;font-family:var(--mono)'>19</td><td style='text-align:center;font-family:var(--mono)'>19</td><td style='font-family:var(--mono)'>R$ 2.831,92</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:20%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>LATERAL ESQUERDA GR 4/6 PTS ALONZO NEW/LIKE 2300X450X12 MDF AM</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='text-align:center;font-family:var(--mono)'>18</td><td style='font-family:var(--mono)'>R$ 561,98</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>FRENTE  CAMA BIBOX 1890X300X15 MDP BRANCO</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='font-family:var(--mono)'>R$ 212,67</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>VOL CX ESPELHO C/1 ESP 1668X874X3 C/4 SUP CROMADO 1,710X0,982X</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='text-align:center;font-family:var(--mono)'>18</td><td style='font-family:var(--mono)'>R$ 3.211,83</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>KIT LED CAB BOX CALITAN 4X400MM ( INT PRETO)</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='font-family:var(--mono)'>R$ 728,92</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>LATERAL ESQUERDA GR 4/6 PTS ALONZO NEW/LIKE 2300X450X12 MDF BR</td><td style='text-align:center;font-family:var(--mono)'>17</td><td style='text-align:center;font-family:var(--mono)'>18</td><td style='font-family:var(--mono)'>R$ 562,14</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:18%;background:var(--blue)'></div></div></td></tr>
-<tr><td style='max-width:340px'>TRILHO TELESCOPICO H30 350MM 3 ESTAGIOS - SUP 6KG</td><td style='text-align:center;font-family:var(--mono)'>16</td><td style='text-align:center;font-family:var(--mono)'>61</td><td style='font-family:var(--mono)'>R$ 161,04</td><td style='width:120px'><div class='uf-bar-bg' style='margin:0'><div class='uf-bar' style='width:17%;background:var(--blue)'></div></div></td></tr>
+      <thead><tr><th>Descrição da Peça</th><th style="text-align:center">Ocorr.</th><th style="text-align:center">Qtde</th><th>Vlr Saldo</th><th style="text-align:center">Mais Antigo</th></tr></thead>
+      <tbody><tr><td style='max-width:320px'>DISTANCIADOR TRAS GR ALONZO/LISSA/LIKE 380X25X25 MDF</td><td style='text-align:center;font-family:var(--mono)'>13</td><td style='text-align:center;font-family:var(--mono)'>24</td><td style='font-family:var(--mono)'>R$ 19,20</td><td style='text-align:center;font-family:var(--mono)'>17d</td></tr>
+<tr><td style='max-width:320px'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF AMEN</td><td style='text-align:center;font-family:var(--mono)'>10</td><td style='text-align:center;font-family:var(--mono)'>19</td><td style='font-family:var(--mono)'>R$ 15,96</td><td style='text-align:center;font-family:var(--mono)'>17d</td></tr>
+<tr><td style='max-width:320px'>PORTA CENTRAL GR 3 PTS SPAZIO/EASY 2248X850X15 MDF BRANCO</td><td style='text-align:center;font-family:var(--mono)'>8</td><td style='text-align:center;font-family:var(--mono)'>8</td><td style='font-family:var(--mono)'>R$ 453,36</td><td style='text-align:center;font-family:var(--mono)'>11d</td></tr>
+<tr><td style='max-width:320px'>PERFIL PUXADOR 2247MM BRONZE GR SPAZIO RX1034</td><td style='text-align:center;font-family:var(--mono)'>6</td><td style='text-align:center;font-family:var(--mono)'>14</td><td style='font-family:var(--mono)'>R$ 220,36</td><td style='text-align:center;font-family:var(--mono)'>10d</td></tr>
+<tr><td style='max-width:320px'>KIT FERRAGEM GR 4PTS ALONZO 2021 BRANCO</td><td style='text-align:center;font-family:var(--mono)'>3</td><td style='text-align:center;font-family:var(--mono)'>3</td><td style='font-family:var(--mono)'>R$ 25,41</td><td style='text-align:center;font-family:var(--mono)'>11d</td></tr>
+<tr><td style='max-width:320px'>RODAPE FRONT GR OLLIE 2025 2670X70X15 MDF AMENDOA CLEAN</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='font-family:var(--mono)'>R$ 12,08</td><td style='text-align:center;font-family:var(--mono)'>21d</td></tr>
+<tr><td style='max-width:320px'>COSTAS GR LEDER/OLLIE/CALEB/VINCE 2230X896X2,7 HDF AMENDOA</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='text-align:center;font-family:var(--mono)'>4</td><td style='font-family:var(--mono)'>R$ 70,84</td><td style='text-align:center;font-family:var(--mono)'>21d</td></tr>
+<tr><td style='max-width:320px'>TAMPO SUPERIOR GR 3 PTS SPAZIO/EASY 2,70 2625X600X15 MDF B</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='font-family:var(--mono)'>R$ 67,50</td><td style='text-align:center;font-family:var(--mono)'>10d</td></tr>
+<tr><td style='max-width:320px'>KIT FERRAGEM GR 4PTS ALONZO 2021 AMENDOA CLEAN</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='text-align:center;font-family:var(--mono)'>3</td><td style='font-family:var(--mono)'>R$ 25,41</td><td style='text-align:center;font-family:var(--mono)'>17d</td></tr>
+<tr><td style='max-width:320px'>KIT FERRAGEM GR LOPAS 03PTS OLLIE 2025 AMENDOA CLEAN</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='font-family:var(--mono)'>R$ 94,90</td><td style='text-align:center;font-family:var(--mono)'>21d</td></tr>
+<tr><td style='max-width:320px'>FRENTE  CAMA BIBOX 1890X300X15 MDP AMENDOA CLEAN</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='font-family:var(--mono)'>R$ 25,02</td><td style='text-align:center;font-family:var(--mono)'>2d</td></tr>
+<tr><td style='max-width:320px'>DISTANCIADOR FRONT GR ALONZO/LISSA/LIKE 380X25X25 MDF BRAN</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='text-align:center;font-family:var(--mono)'>4</td><td style='font-family:var(--mono)'>R$ 3,36</td><td style='text-align:center;font-family:var(--mono)'>11d</td></tr>
+<tr><td style='max-width:320px'>PORTA GR  4/6 PTS ALONZO 2021/LIKE 2160X378X15 MDF OFF WHI</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='text-align:center;font-family:var(--mono)'>5</td><td style='font-family:var(--mono)'>R$ 148,45</td><td style='text-align:center;font-family:var(--mono)'>2d</td></tr>
+<tr><td style='max-width:320px'>PORTA CENTRAL GR 3 PTS OLLIE 2170X845X12 MDF FRASSINO</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='font-family:var(--mono)'>R$ 101,42</td><td style='text-align:center;font-family:var(--mono)'>21d</td></tr>
+<tr><td style='max-width:320px'>PRATELEIRA SUP GR 6PTS LEDER/OLLIE 2025 880X420X15 MDF AME</td><td style='text-align:center;font-family:var(--mono)'>2</td><td style='text-align:center;font-family:var(--mono)'>5</td><td style='font-family:var(--mono)'>R$ 59,75</td><td style='text-align:center;font-family:var(--mono)'>21d</td></tr>
 </tbody>
     </table></div>
   </div>
 </div>
 
 </main>
-
-<footer>Dashboard Asteca Madeira Madeira · Gerado em 28/05/2026 · Prazos calculados a partir de DT PEDIDO, DT ENTREGA PED e DATA NOTA</footer>
+<footer>Dashboard Asteca Madeira Madeira · 29/05/2026 · Vencimento = DT ENTREGA PED comparado com DT PEDIDO (sem regra de 15 dias)</footer>
 
 <script>
 function showTab(id,el){
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  el.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active'); el.classList.add('active');
 }
 const C={ok:'#22c55e',warn:'#eab308',danger:'#ef4444',blue:'#3b82f6',accent:'#f97316',muted:'#64748b',text:'#e2e8f0'};
 const grid='rgba(255,255,255,.05)';
-const baseOpts=(stacked=false)=>({responsive:true,maintainAspectRatio:false,scales:{x:{stacked,grid:{color:grid},ticks:{color:C.muted,font:{size:10}}},y:{stacked,grid:{color:grid},ticks:{color:C.muted,font:{size:10}},beginAtZero:true}},plugins:{legend:{labels:{color:C.muted,font:{size:10}}}}});
+const base=(stacked=false)=>({responsive:true,maintainAspectRatio:false,scales:{x:{stacked,grid:{color:grid},ticks:{color:C.muted,font:{size:10}}},y:{stacked,grid:{color:grid},ticks:{color:C.muted,font:{size:10}},beginAtZero:true}},plugins:{legend:{labels:{color:C.muted,font:{size:10}}}}});
+const MES=['Jan', 'Fev', 'Mar', 'Abr', 'Mai'];
 
 // RESUMO
-new Chart(cEntFaixa,{type:'bar',data:{labels:['No prazo','1-5d','6-10d','11-15d','>15d'],datasets:[{label:'Itens',data:[1029,551,147,54,268],backgroundColor:[C.ok,C.warn,C.accent,C.accent,C.danger],borderRadius:4}]},options:{...baseOpts(),plugins:{legend:{display:false}}}});
-new Chart(cFatFaixa,{type:'bar',data:{labels:['0-3d','4-7d','8-15d','16-30d','>30d'],datasets:[{label:'Itens',data:[576,646,319,315,82],backgroundColor:[C.ok,C.ok,C.warn,C.accent,C.danger],borderRadius:4}]},options:{...baseOpts(),plugins:{legend:{display:false}}}});
-new Chart(cEvol,{type:'line',data:{labels:['Jan','Fev','Mar','Abr','Mai'],datasets:[{label:'% Vencidos',data:[49.6,86.9,21.8,65.8,31.4],borderColor:C.danger,backgroundColor:C.danger+'33',tension:.3,yAxisID:'y',fill:false},{label:'Faturamento méd (d)',data:[16.8,13.3,8.3,6.4,4.9],borderColor:C.ok,backgroundColor:C.ok+'33',tension:.3,yAxisID:'y1',fill:false}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{grid:{color:grid},ticks:{color:C.muted,font:{size:10}}},y:{position:'left',grid:{color:grid},ticks:{color:C.muted,font:{size:10},callback:v=>v+'%'}},y1:{position:'right',grid:{display:false},ticks:{color:C.muted,font:{size:10}}}},plugins:{legend:{labels:{color:C.muted,font:{size:9}}}}}});
-new Chart(cTransp,{type:'bar',data:{labels:['Correios','Alliance','Bulky Log'],datasets:[{label:'Entrega',data:[17.1,18.3,18.9],backgroundColor:C.warn+'cc',borderRadius:4},{label:'Faturamento',data:[6.1,10.0,9.0],backgroundColor:C.ok+'cc',borderRadius:4}]},options:{...baseOpts(),indexAxis:'y'}});
+new Chart(cVolMes,{type:'bar',data:{labels:MES,datasets:[{label:'Itens',data:[280, 405, 491, 430, 452],backgroundColor:C.blue+'cc',borderRadius:4}]},options:{...base(),plugins:{legend:{display:false}}}});
+new Chart(cPrazoFaixa,{type:'bar',data:{labels:['0-7d','8-14d','15-21d','22-30d','>30d'],datasets:[{label:'Itens',data:[96,573,970,151,268],backgroundColor:[C.ok,C.ok,C.warn,C.accent,C.danger],borderRadius:4}]},options:{...base(),plugins:{legend:{display:false}}}});
+new Chart(cClass,{type:'doughnut',data:{labels:['Guarda-Roupas','Complementos','Item Comprado','Salas','Outros'],datasets:[{data:[1191,506,238,115,8],backgroundColor:[C.blue,C.accent,C.warn,C.ok,C.muted],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:C.muted,font:{size:9},boxWidth:10}}}}});
+new Chart(cPrazoMes,{type:'line',data:{labels:MES,datasets:[{label:'Prazo médio (d)',data:[21.4, 25.6, 14.3, 18.0, 14.7],borderColor:C.warn,backgroundColor:C.warn+'33',tension:.3,fill:true}]},options:base()});
+
+// MENSAL
+new Chart(cMesStack,{type:'bar',data:{labels:MES,datasets:[{label:'Atendidas',data:[280, 405, 491, 430, 338],backgroundColor:C.ok+'cc',borderRadius:3},{label:'Pendentes',data:[0, 0, 0, 0, 114],backgroundColor:C.accent+'cc',borderRadius:3}]},options:base(true)});
+new Chart(cMesPrazo,{type:'line',data:{labels:MES,datasets:[{label:'Prazo entrega (d)',data:[21.4, 25.6, 14.3, 18.0, 14.7],borderColor:C.warn,backgroundColor:C.warn+'33',tension:.3,fill:true}]},options:base()});
 
 // ENTREGA
-new Chart(cEntBar,{type:'bar',data:{labels:['No prazo','1-5d','6-10d','11-15d','>15d'],datasets:[{label:'Itens',data:[1029,551,147,54,268],backgroundColor:[C.ok,C.warn,C.accent,C.accent,C.danger],borderRadius:4}]},options:{...baseOpts(),plugins:{legend:{display:false}}}});
-new Chart(cEntMes,{type:'line',data:{labels:['Jan','Fev','Mar','Abr','Mai'],datasets:[{label:'% Vencidos',data:[49.6,86.9,21.8,65.8,31.4],borderColor:C.danger,backgroundColor:C.danger+'33',tension:.3,fill:true}]},options:{...baseOpts(),scales:{x:{grid:{color:grid},ticks:{color:C.muted,font:{size:10}}},y:{beginAtZero:true,max:100,grid:{color:grid},ticks:{color:C.muted,font:{size:10},callback:v=>v+'%'}}}}});
-
-// FATURAMENTO
-new Chart(cFatBar,{type:'bar',data:{labels:['0-3d','4-7d','8-15d','16-30d','>30d'],datasets:[{label:'Itens',data:[576,646,319,315,82],backgroundColor:[C.ok,C.ok,C.warn,C.accent,C.danger],borderRadius:4}]},options:{...baseOpts(),plugins:{legend:{display:false}}}});
-new Chart(cFatMes,{type:'line',data:{labels:['Jan','Fev','Mar','Abr','Mai'],datasets:[{label:'Prazo médio (d)',data:[16.8,13.3,8.3,6.4,4.9],borderColor:C.ok,backgroundColor:C.ok+'33',tension:.3,fill:true}]},options:baseOpts()});
-
-// PENDENTES
-
+new Chart(cEntBar,{type:'bar',data:{labels:['0-7d','8-14d','15-21d','22-30d','>30d'],datasets:[{label:'Itens',data:[96,573,970,151,268],backgroundColor:[C.ok,C.ok,C.warn,C.accent,C.danger],borderRadius:4}]},options:{...base(),plugins:{legend:{display:false}}}});
+new Chart(cEntTransp,{type:'bar',data:{labels:['Correios','Alliance','Bulky Log'],datasets:[{label:'Prazo médio (d)',data:[17.1,18.3,18.9],backgroundColor:C.blue+'cc',borderRadius:4}]},options:{...base(),indexAxis:'y',plugins:{legend:{display:false}}}});
 
 // PEÇAS
-new Chart(cClass,{type:'bar',data:{labels:['Guarda-Roupas','Complementos','Item Comprado','Salas','Emb. Jogo Pés','Kit Ferragem'],datasets:[{label:'Itens',data:[1184,505,237,115,4,4],backgroundColor:C.blue+'cc',borderRadius:4}]},options:{...baseOpts(),indexAxis:'y',plugins:{legend:{display:false}}}});
-new Chart(cDiv,{type:'doughnut',data:{labels:['Com Receita (R$196k)','Sem Receita (R$31k)'],datasets:[{data:[196117,31025],backgroundColor:[C.blue,C.accent],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:C.muted,font:{size:10}}}}}});
+new Chart(cTopPecas,{type:'bar',data:{labels:['VOL CX 3PTS CALEB/OLLIE','VOL CX 3PTS SPAZIO 2,70','VOL CX 2PTS ZEINE','PORTA 4/6PTS ALONZO (OFF)','PORTA 4/6PTS ALONZO (BR)','VOL CX 2PTS ZEINE (2)','PORTA CENTRAL 3PTS SPAZIO','VOL CX ESPELHO ESTHELA','PORTA LAT 3PTS SPAZIO','VOL CX ESPELHO C/4'],datasets:[{label:'Chamados',data:[96,96,60,40,36,36,34,30,25,20],backgroundColor:C.accent+'cc',borderRadius:4}]},options:{...base(),indexAxis:'y',plugins:{legend:{display:false}}}});
+new Chart(cDiv,{type:'doughnut',data:{labels:['Com Receita (R$197k)','Sem Receita (R$31k)'],datasets:[{data:[196748,31217],backgroundColor:[C.blue,C.accent],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:C.muted,font:{size:10}}}}}});
 </script>
 </body>
 </html>
