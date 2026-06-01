@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo De Produtos — EasyHouse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1115;
+  --panel:#161a21;
+  --panel-2:#1d222b;
+  --line:#272d38;
+  --line-soft:#1f242e;
+  --txt:#e8ecf2;
+  --txt-dim:#8b94a3;
+  --txt-faint:#5a6472;
+  --accent:#ff6a2b;
+  --accent-soft:#ff6a2b22;
+  --livre:#3bb273;
+  --easy:#ff6a2b;
+  --madeira:#c08a3e;
+  --esplanada:#4a90d9;
+  --belmicro:#9b6bd6;
+  --radius:14px;
+  --shadow:0 8px 30px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1200px 600px at 85% -10%, #1b2a3a55, transparent 60%),
+    radial-gradient(900px 500px at -5% 110%, #2a1a1255, transparent 55%),
+    var(--bg);
+  color:var(--txt);
+  font-family:'Inter Tight',sans-serif;
+  min-height:100vh;
+  padding:28px clamp(14px,4vw,48px);
+}
+.wrap{max-width:1280px;margin:0 auto}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{
+  width:46px;height:46px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),#ff9a5b);
+  display:grid;place-items:center;font-family:'Sora';font-weight:800;
+  color:#0f1115;font-size:22px;box-shadow:0 6px 18px var(--accent-soft)}
+.title h1{font-family:'Sora';font-weight:800;font-size:clamp(20px,2.6vw,28px);letter-spacing:-.5px;line-height:1.05}
+.title .sub{color:var(--txt-dim);font-size:13px;margin-top:3px}
+.title .sub b{color:var(--accent);font-weight:600}
+.kpis{display:flex;gap:12px;flex-wrap:wrap}
+.kpi{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:10px 16px;min-width:96px}
+.kpi .n{font-family:'Sora';font-weight:700;font-size:20px;line-height:1}
+.kpi .l{color:var(--txt-dim);font-size:11px;text-transform:uppercase;letter-spacing:.6px;margin-top:5px}
+.filters{
+  background:linear-gradient(180deg,var(--panel),var(--panel-2));
+  border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;margin-bottom:20px;box-shadow:var(--shadow)}
+.filters-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--txt-dim);margin-bottom:7px;font-weight:600}
+.field input,.field select{
+  width:100%;background:var(--bg);border:1px solid var(--line);
+  color:var(--txt);border-radius:10px;padding:10px 12px;font-size:14px;
+  font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
+.field input::placeholder{color:var(--txt-faint)}
+.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.field select{appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%238b94a3' stroke-width='2'><path d='M3 5l4 4 4-4'/></svg>");
+  background-repeat:no-repeat;background-position:right 12px center}
+.filter-foot{display:flex;align-items:center;justify-content:space-between;margin-top:16px;flex-wrap:wrap;gap:10px}
+.count{font-size:13px;color:var(--txt-dim)}
+.count b{color:var(--txt);font-family:'Sora';font-weight:700}
+.clear{
+  background:transparent;border:1px solid var(--line);color:var(--txt-dim);
+  padding:8px 16px;border-radius:9px;cursor:pointer;font-size:13px;font-family:inherit;
+  transition:.15s}
+.clear:hover{border-color:var(--accent);color:var(--accent)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:14px;font-size:12px;color:var(--txt-dim)}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%}
+.table-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.thead{
+  display:grid;grid-template-columns:1.7fr 1fr .9fr 1.4fr;gap:14px;
+  padding:14px 20px;background:var(--panel-2);border-bottom:1px solid var(--line);
+  font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--txt-dim);font-weight:600}
+.rows{max-height:60vh;overflow-y:auto}
+.rows::-webkit-scrollbar{width:9px}
+.rows::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+.row{
+  display:grid;grid-template-columns:1.7fr 1fr .9fr 1.4fr;gap:14px;align-items:center;
+  padding:14px 20px;border-bottom:1px solid var(--line-soft);transition:background .12s}
+.row:hover{background:var(--panel-2)}
+.row:last-child{border-bottom:none}
+.item-name{font-weight:600;font-size:14.5px;letter-spacing:-.2px}
+.item-tek{font-size:11.5px;color:var(--txt-faint);margin-top:3px}
+.item-tek span{color:var(--txt-dim)}
+.cod-pill{
+  display:inline-block;font-family:'Sora';font-weight:600;font-size:13px;
+  background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:3px 9px;color:var(--txt)}
+.mask-wrap{display:flex;flex-direction:column;gap:4px}
+.mask-name{font-size:13.5px;font-weight:500}
+.mask-empty{font-size:13px;color:var(--txt-faint);font-style:italic}
+.lojistas{display:flex;flex-direction:column;gap:5px}
+.lojista{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.lojista .dot{flex-shrink:0}
+.lojista.pref{font-weight:700}
+.lojista.pref::after{content:'\2605';color:var(--accent);font-size:12px;margin-left:2px}
+.lojista.dimmed{color:var(--txt-dim);font-weight:400}
+.badge-livre{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--livre)}
+.empty-state{padding:60px 20px;text-align:center;color:var(--txt-dim)}
+.empty-state .big{font-size:34px;margin-bottom:10px}
+footer{margin-top:22px;text-align:center;color:var(--txt-faint);font-size:12px}
+@media(max-width:760px){
+  .thead{display:none}
+  .row{grid-template-columns:1fr;gap:10px;padding:16px 18px}
+  .row>div::before{content:attr(data-l);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--txt-faint);margin-bottom:4px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">EH</div>
+      <div class="title">
+        <h1>Catálogo De Produtos</h1>
+        <div class="sub">Negociação por lojista &middot; Novo catálogo <b>EasyHouse</b></div>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="n" id="kpiItens">0</div><div class="l">Itens</div></div>
+      <div class="kpi"><div class="n" id="kpiVar">0</div><div class="l">Variações</div></div>
+      <div class="kpi"><div class="n" id="kpiLivre">0</div><div class="l">Livres</div></div>
+    </div>
+  </header>
+
+  <div class="filters">
+    <div class="filters-grid">
+      <div class="field">
+        <label>Código do Item</label>
+        <input id="fCod" placeholder="Ex: 85650">
+      </div>
+      <div class="field">
+        <label>Descrição do Item</label>
+        <input id="fDesc" placeholder="Buscar produto...">
+      </div>
+      <div class="field">
+        <label>Máscara</label>
+        <select id="fMask"><option value="">Todas</option></select>
+      </div>
+      <div class="field">
+        <label>Lojista de Preferência</label>
+        <select id="fPref"><option value="">Todos</option></select>
+      </div>
+    </div>
+    <div class="filter-foot">
+      <div class="count"><b id="visCount">0</b> de <span id="totCount">0</span> registros</div>
+      <button class="clear" id="btnClear">Limpar filtros</button>
+    </div>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="table-card">
+    <div class="thead">
+      <div>Item</div>
+      <div>Cód. Item</div>
+      <div>Máscara</div>
+      <div>Lojistas / Preferência</div>
+    </div>
+    <div class="rows" id="rows"></div>
+  </div>
+
+  <footer>Catálogo gerado a partir de <b>Catálogo_de_produto_28_05</b> &middot; &#9733; indica o lojista com preferência de negociação</footer>
+</div>
+
+<script>
+const DATA = [{"cod": "85650", "tek": "100113", "desc": "CAMA CASAL LOPAS 1,60 FREETOWN 2025", "codMask": "49965", "mask": "SEM LED", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "85650", "tek": "100113", "desc": "CAMA CASAL LOPAS 1,60 FREETOWN 2025", "codMask": "49964", "mask": "COM LED", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "86070", "tek": "100583", "desc": "MESA 1,70 TESSERA", "codMask": "68017", "mask": "NO GLASS", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "86070", "tek": "100583", "desc": "MESA 1,70 TESSERA", "codMask": "68018", "mask": "COM VIDRO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "86070", "tek": "100583", "desc": "MESA 1,70 TESSERA", "codMask": "68019", "mask": "MAXI TAMPO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "87096", "tek": "104347", "desc": "COZINHA NINA", "codMask": "90666", "mask": "", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87118", "tek": "104473", "desc": "GUARDA ROUPA LOOP 04 PTS", "codMask": "90702", "mask": "SEM ESPELHO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87138", "tek": "104503", "desc": "GUARDA ROUPA LOPAS 03 PTS ATLAS", "codMask": "90806", "mask": "SEM ESPELHO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87138", "tek": "104503", "desc": "GUARDA ROUPA LOPAS 03 PTS ATLAS", "codMask": "90804", "mask": "COM ESPELHO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87375", "tek": "104731", "desc": "MESA DE CABECEIRA SUAVITA", "codMask": "91513", "mask": "", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "87167", "tek": "104829", "desc": "COMODA SUAVITA", "codMask": "90914", "mask": "", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "87141", "tek": "104882", "desc": "PENTEADEIRA LIVIA", "codMask": "90816", "mask": "BRANCO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87162", "tek": "104988", "desc": "MULTIFUNCIONAL 2PTS DAVI", "codMask": "90909", "mask": "", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87552", "tek": "105088", "desc": "GUARDA ROUPA 06PTS SUAVITA", "codMask": "93178", "mask": "SEM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "ESPLANADA", "pref": "MADEIRA MADEIRA"}, {"cod": "97249", "tek": "105088", "desc": "GUARDA ROUPA 06PTS SUAVITA", "codMask": "99701", "mask": "6 PT GLASS", "loj1": "MADEIRA MADEIRA", "loj2": "ESPLANADA", "pref": "MADEIRA MADEIRA"}, {"cod": "2382", "tek": "42508", "desc": "GUARDA ROUPA SPAZIO 3 PTS 2,70", "codMask": "13166", "mask": "3 PT GLASS", "loj1": "MADEIRA MADEIRA", "loj2": "BELMICRO", "pref": "MADEIRA MADEIRA"}, {"cod": "2382", "tek": "42508", "desc": "GUARDA ROUPA SPAZIO 3 PTS 2,70", "codMask": "13164", "mask": "1 PT GLASS", "loj1": "MADEIRA MADEIRA", "loj2": "BELMICRO", "pref": "MADEIRA MADEIRA"}, {"cod": "73281", "tek": "45136", "desc": "COMODA URBAN 2019 8GAV", "codMask": "23866", "mask": "", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73497", "tek": "45638", "desc": "MESA 1,30 NEVADA PLUS", "codMask": "50611", "mask": "COM VIDRO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "2405", "tek": "45888", "desc": "GUARDA ROUPA TORONTO 2 PTS PLUS", "codMask": "13686", "mask": "COM ESPELHO", "loj1": "EASY HOUSE", "loj2": "BELMICRO", "pref": "EASY HOUSE"}, {"cod": "2405", "tek": "45888", "desc": "GUARDA ROUPA TORONTO 2 PTS PLUS", "codMask": "13688", "mask": "SEM ESPELHO", "loj1": "EASY HOUSE", "loj2": "BELMICRO", "pref": "EASY HOUSE"}, {"cod": "74197", "tek": "59224", "desc": "MESA DE CABECEIRA BAIAO   2021  3 GAV", "codMask": "32906", "mask": "", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "74200", "tek": "59247", "desc": "COMODA BAIAO 2021 4GAV", "codMask": "33230", "mask": "", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73256", "tek": "59347", "desc": "COMODA DA VINCI 2021 6GAV 1 PTS", "codMask": "24426", "mask": "", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73278", "tek": "59517", "desc": "COMODA TORONTO 2021 8GAV 2 PTS", "codMask": "32707", "mask": "", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "182", "tek": "59602", "desc": "GUARDA ROUPA ZEUS 4 PTS 2021", "codMask": "13821", "mask": "COM ESPELHO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "182", "tek": "59602", "desc": "GUARDA ROUPA ZEUS 4 PTS 2021", "codMask": "13815", "mask": "SEM ESPELHO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "100", "tek": "59617", "desc": "GUARDA ROUPA ZEUS 06 PTS 2021", "codMask": "13480", "mask": "SEM ESPELHO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "100", "tek": "59617", "desc": "GUARDA ROUPA ZEUS 06 PTS 2021", "codMask": "4509", "mask": "COM ESPELHO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "2101", "tek": "59621", "desc": "GUARDA ROUPA ARIES 6 PTS 2021", "codMask": "13942", "mask": "COM ESPELHO", "loj1": "ESPLANADA", "loj2": "", "pref": "ESPLANADA"}, {"cod": "2101", "tek": "59621", "desc": "GUARDA ROUPA ARIES 6 PTS 2021", "codMask": "13940", "mask": "SEM ESPELHO", "loj1": "ESPLANADA", "loj2": "", "pref": "ESPLANADA"}, {"cod": "273", "tek": "59944", "desc": "GUARDA ROUPA ALONZO 6 PTS 2021", "codMask": "12439", "mask": "SEM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "273", "tek": "59944", "desc": "GUARDA ROUPA ALONZO 6 PTS 2021", "codMask": "12443", "mask": "COM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "2083", "tek": "59957", "desc": "GUARDA ROUPA ALONZO 4 PTS 2021", "codMask": "12473", "mask": "SEM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "2083", "tek": "59957", "desc": "GUARDA ROUPA ALONZO 4 PTS 2021", "codMask": "12484", "mask": "COM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73139", "tek": "67916", "desc": "CAMA SOLTEIRO 0,90 ATHENAS 2022", "codMask": "24417", "mask": "COM AUXILIAR", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73139", "tek": "67916", "desc": "CAMA SOLTEIRO 0,90 ATHENAS 2022", "codMask": "24417", "mask": "SEM AUXILIAR", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73173", "tek": "67923", "desc": "CAMA SOLTEIRO 0,90 REALI 2022", "codMask": "16516", "mask": "", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "2082", "tek": "67928", "desc": "CAMA CASAL 1,40 ATHENAS 2022", "codMask": "15709", "mask": "", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73074", "tek": "67932", "desc": "CAMA CASAL 1,40 REALI 2022", "codMask": "15959", "mask": "", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73395", "tek": "72608", "desc": "MESA 1,0 RED CELEBRARE 2023", "codMask": "50499", "mask": "TAMPO REDONDO COM VIDRO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73395", "tek": "72608", "desc": "MESA 1,0 RED CELEBRARE 2023", "codMask": "50504", "mask": "TAMPO REDONDO SEM VIDRO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73363", "tek": "72680", "desc": "MESA 1,20 APOGEU", "codMask": "50229", "mask": "NO GLASS", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73363", "tek": "72680", "desc": "MESA 1,20 APOGEU", "codMask": "50237", "mask": "COM VIDRO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73363", "tek": "72680", "desc": "MESA 1,20 APOGEU", "codMask": "50231", "mask": "MAXI TAMPO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73365", "tek": "72703", "desc": "MESA 1,60 APOGEU", "codMask": "50239", "mask": "COM VIDRO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73365", "tek": "72703", "desc": "MESA 1,60 APOGEU", "codMask": "50240", "mask": "NO GLASS", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73365", "tek": "72703", "desc": "MESA 1,60 APOGEU", "codMask": "98839", "mask": "MAXI TAMPO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73367", "tek": "72716", "desc": "MESA 1,70 APOGEU 2023", "codMask": "50256", "mask": "COM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "73367", "tek": "72716", "desc": "MESA 1,70 APOGEU 2023", "codMask": "50247", "mask": "NO GLASS", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "73367", "tek": "72716", "desc": "MESA 1,70 APOGEU 2023", "codMask": "50249", "mask": "MAXI TAMPO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "2106", "tek": "72911", "desc": "GUARDA ROUPA BERTHA 6 PTS", "codMask": "13362", "mask": "COM ESPELHO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "2106", "tek": "72911", "desc": "GUARDA ROUPA BERTHA 6 PTS", "codMask": "13366", "mask": "SEM ESPELHO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "2236", "tek": "73939", "desc": "GUARDA ROUPA JAZZ 6 PTS 2023", "codMask": "13859", "mask": "COM ESPELHO", "loj1": "ESPLANADA", "loj2": "", "pref": "ESPLANADA"}, {"cod": "2236", "tek": "73939", "desc": "GUARDA ROUPA JAZZ 6 PTS 2023", "codMask": "13865", "mask": "SEM ESPELHO", "loj1": "ESPLANADA", "loj2": "", "pref": "ESPLANADA"}, {"cod": "73379", "tek": "74058", "desc": "MESA 1,70 ASTRID 2023", "codMask": "50450", "mask": "NO GLASS", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73379", "tek": "74058", "desc": "MESA 1,70 ASTRID 2023", "codMask": "50446", "mask": "MAXI TAMPO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73379", "tek": "74058", "desc": "MESA 1,70 ASTRID 2023", "codMask": "50445", "mask": "COM VIDRO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73379", "tek": "74058", "desc": "MESA 1,70 ASTRID 2023", "codMask": "50447", "mask": "SEM VIDRO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73376", "tek": "74061", "desc": "MESA 1,60 ASTRID 2023", "codMask": "50426", "mask": "COM VIDRO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73376", "tek": "74061", "desc": "MESA 1,60 ASTRID 2023", "codMask": "50425", "mask": "SEM VIDRO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73376", "tek": "74061", "desc": "MESA 1,60 ASTRID 2023", "codMask": "50424", "mask": "MAXI TAMPO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73376", "tek": "74061", "desc": "MESA 1,60 ASTRID 2023", "codMask": "50423", "mask": "NO GLASS", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73386", "tek": "74064", "desc": "MESA 1,20 CELEBRARE 2023", "codMask": "50485", "mask": "SEM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "73386", "tek": "74064", "desc": "MESA 1,20 CELEBRARE 2023", "codMask": "50484", "mask": "MAXI TAMPO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "73386", "tek": "74064", "desc": "MESA 1,20 CELEBRARE 2023", "codMask": "50482", "mask": "NO GLASS", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "73386", "tek": "74064", "desc": "MESA 1,20 CELEBRARE 2023", "codMask": "50483", "mask": "COM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "263", "tek": "74150", "desc": "MESA 1,20 ATHENAS BR", "codMask": "15492", "mask": "NO GLASS", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "159", "tek": "74165", "desc": "MESA 1,80 ATHENAS BR", "codMask": "16481", "mask": "NO GLASS", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "255", "tek": "74174", "desc": "MESA 2,00 ATHENAS BR", "codMask": "16478", "mask": "NO GLASS", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73384", "tek": "74629", "desc": "MESA 0,90 CELEBRARE 2023", "codMask": "50466", "mask": "SEM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "73384", "tek": "74629", "desc": "MESA 0,90 CELEBRARE 2023", "codMask": "50465", "mask": "COM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "73284", "tek": "76413", "desc": "COMODA VEDRA 7GAV 2 PTS", "codMask": "23857", "mask": "", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "73121", "tek": "81576", "desc": "CABECEIRA BOX 1,60 CALITAN 2023", "codMask": "49903", "mask": "SEM LED", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "73121", "tek": "81576", "desc": "CABECEIRA BOX 1,60 CALITAN 2023", "codMask": "49901", "mask": "COM LED", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "2169", "tek": "81668", "desc": "GUARDA ROUPA IMPERATORE 6 PTS 2023", "codMask": "51010", "mask": "COM ESPELHO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "2169", "tek": "81668", "desc": "GUARDA ROUPA IMPERATORE 6 PTS 2023", "codMask": "51011", "mask": "SEM ESPELHO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "74549", "tek": "82080", "desc": "BELICHE 0,90 OLGA", "codMask": "33428", "mask": "COM LED", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "2251", "tek": "86808", "desc": "GUARDA ROUPA LOOP 6 PTS", "codMask": "33303", "mask": "SEM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "72873", "tek": "87198", "desc": "CAMA CASAL 1,40 LOOP", "codMask": "15792", "mask": "", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "73253", "tek": "87325", "desc": "MESA DE CABECEIRA LOOP  2 GAV", "codMask": "33115", "mask": "", "loj1": "MADEIRA MADEIRA", "loj2": "EASY HOUSE", "pref": "MADEIRA MADEIRA"}, {"cod": "219", "tek": "87394", "desc": "COMODA LOPAS LOOP", "codMask": "16413", "mask": "", "loj1": "EASY HOUSE", "loj2": "MADEIRA MADEIRA", "pref": "EASY HOUSE"}, {"cod": "73161", "tek": "87521", "desc": "CAMA SOLTEIRO 0,90 LOOP", "codMask": "33656", "mask": "", "loj1": "MADEIRA MADEIRA", "loj2": "EASY HOUSE", "pref": "MADEIRA MADEIRA"}, {"cod": "73161", "tek": "87521", "desc": "CAMA SOLTEIRO 0,90 LOOP", "codMask": "16511", "mask": "", "loj1": "MADEIRA MADEIRA", "loj2": "EASY HOUSE", "pref": "MADEIRA MADEIRA"}, {"cod": "72774", "tek": "87672", "desc": "GUARDA ROUPA OLLIE 6 PTS 1GAV2", "codMask": "33105", "mask": "SEM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "72774", "tek": "87672", "desc": "GUARDA ROUPA OLLIE 6 PTS 1GAV2", "codMask": "33099", "mask": "COM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "72763", "tek": "87834", "desc": "GUARDA ROUPA OLLIE 3 PTS 1GAV2", "codMask": "33719", "mask": "2 PT GLASS", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "72763", "tek": "87834", "desc": "GUARDA ROUPA OLLIE 3 PTS 1GAV2", "codMask": "33709", "mask": "SEM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "72565", "tek": "88113", "desc": "GUARDA ROUPA ZEINE 2 PTS 2024", "codMask": "13277", "mask": "SEM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "72565", "tek": "88113", "desc": "GUARDA ROUPA ZEINE 2 PTS 2024", "codMask": "13276", "mask": "1 PT GLASS", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "72632", "tek": "88694", "desc": "GUARDA ROUPA ANDARA 8 PTS SOFT", "codMask": "78677", "mask": "COM ESPELHO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "72632", "tek": "88694", "desc": "GUARDA ROUPA ANDARA 8 PTS SOFT", "codMask": "78675", "mask": "SEM ESPELHO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "72878", "tek": "89015", "desc": "CAMA CASAL 1,60 LOOP", "codMask": "16319", "mask": "", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73124", "tek": "90751", "desc": "CABECEIRA BOX 1,40/1,60 REGULAVEL LIKE", "codMask": "16189", "mask": "", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "73177", "tek": "91015", "desc": "SAPATEIRA ESTHELA 2024", "codMask": "23848", "mask": "", "loj1": "EASY HOUSE", "loj2": "MADEIRA MADEIRA", "pref": "EASY HOUSE"}, {"cod": "81714", "tek": "92830", "desc": "MESA  EASY LINE C/4 CAD EASY LINE", "codMask": "23864", "mask": "", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "81929", "tek": "93681", "desc": "COMODA MAGGIORE", "codMask": "66449", "mask": "", "loj1": "MADEIRA MADEIRA", "loj2": "EASY HOUSE", "pref": "MADEIRA MADEIRA"}, {"cod": "84309", "tek": "96219", "desc": "MESA 1,60 SINTONIA", "codMask": "50781", "mask": "SEM VIDRO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "84309", "tek": "96219", "desc": "MESA 1,60 SINTONIA", "codMask": "50780", "mask": "COM VIDRO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "84309", "tek": "96219", "desc": "MESA 1,60 SINTONIA", "codMask": "50780", "mask": "MAXI TAMPO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "85026", "tek": "96235", "desc": "MESA 1,70 SINTONIA", "codMask": "51167", "mask": "SEM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "85026", "tek": "96235", "desc": "MESA 1,70 SINTONIA", "codMask": "51165", "mask": "COM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "85026", "tek": "96235", "desc": "MESA 1,70 SINTONIA", "codMask": "51166", "mask": "MAXI TAMPO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "85123", "tek": "96237", "desc": "MESA 1,20 SINTONIA", "codMask": "46252", "mask": "SEM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "85123", "tek": "96237", "desc": "MESA 1,20 SINTONIA", "codMask": "46250", "mask": "COM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "85123", "tek": "96237", "desc": "MESA 1,20 SINTONIA", "codMask": "46253", "mask": "MAXI TAMPO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "84945", "tek": "96464", "desc": "CABECEIRA BOX LOPAS CASAL 1,60 LOOP 2025", "codMask": "36921", "mask": "", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "87459", "tek": "99477", "desc": "GUARDA ROUPA 08 PTS SERENATA", "codMask": "91587", "mask": "SEM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "ESPLANADA", "pref": "MADEIRA MADEIRA"}, {"cod": "87459", "tek": "99477", "desc": "GUARDA ROUPA 08 PTS SERENATA", "codMask": "91585", "mask": "COM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "ESPLANADA", "pref": "MADEIRA MADEIRA"}, {"cod": "85647", "tek": "99952", "desc": "MESA 1,20 TESSERA", "codMask": "67991", "mask": "SEM VIDRO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "85647", "tek": "99952", "desc": "MESA 1,20 TESSERA", "codMask": "48780", "mask": "COM VIDRO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "85647", "tek": "99952", "desc": "MESA 1,20 TESSERA", "codMask": "48779", "mask": "MAXI TAMPO", "loj1": "", "loj2": "", "pref": "LIVRE PARA NEGOCIAR"}, {"cod": "87871", "tek": "", "desc": "GUARDA ROUPA 6PTS ANDARA SOFT", "codMask": "101047", "mask": "COM ESPELHO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87871", "tek": "", "desc": "GUARDA ROUPA 6PTS ANDARA SOFT", "codMask": "95490", "mask": "SEM ESPELHO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87841", "tek": "", "desc": "MESA 1,60 LAINI", "codMask": "95159", "mask": "COM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87841", "tek": "", "desc": "MESA 1,60 LAINI", "codMask": "95159", "mask": "SEM VIDRO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87841", "tek": "", "desc": "MESA 1,60 LAINI", "codMask": "95159", "mask": "MAXI TAMPO", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "97649", "tek": "", "desc": "MESA EASY LINE C/6 CAD EASY LINE", "codMask": "102414", "mask": "", "loj1": "EASY HOUSE", "loj2": "", "pref": "EASY HOUSE"}, {"cod": "87471", "tek": "105014", "desc": "MESA GUARAPARI C/4 CAD EASY LINE", "codMask": "91621", "mask": "SEM VIDRO", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}, {"cod": "2382", "tek": "42508", "desc": "GUARDA ROUPA SPAZIO 3 PTS 2,70", "codMask": "13164", "mask": "SEM ESPELHO", "loj1": "MADEIRA MADEIRA", "loj2": "BELMICRO", "pref": "MADEIRA MADEIRA"}, {"cod": "73253", "tek": "87325", "desc": "MESA DE CABECEIRA MAGGIORE", "codMask": "33115", "mask": "", "loj1": "MADEIRA MADEIRA", "loj2": "", "pref": "MADEIRA MADEIRA"}];
+
+const COLORS = {
+  'LIVRE PARA NEGOCIAR':'var(--livre)',
+  'EASY HOUSE':'var(--easy)',
+  'MADEIRA MADEIRA':'var(--madeira)',
+  'ESPLANADA':'var(--esplanada)',
+  'BELMICRO':'var(--belmicro)'
+};
+function colorOf(name){return COLORS[name]||'var(--txt-dim)';}
+
+const masks=[...new Set(DATA.map(d=>d.mask).filter(Boolean))].sort();
+const prefs=[...new Set(DATA.map(d=>d.pref).filter(Boolean))].sort();
+const selMask=document.getElementById('fMask');
+masks.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;selMask.appendChild(o);});
+const selPref=document.getElementById('fPref');
+prefs.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;selPref.appendChild(o);});
+
+const legend=document.getElementById('legend');
+prefs.forEach(p=>{
+  const s=document.createElement('span');
+  s.innerHTML='<i class="dot" style="background:'+colorOf(p)+'"></i>'+p;
+  legend.appendChild(s);
+});
+
+const els={
+  cod:document.getElementById('fCod'),
+  desc:document.getElementById('fDesc'),
+  mask:selMask, pref:selPref,
+  rows:document.getElementById('rows'),
+  vis:document.getElementById('visCount'),
+  tot:document.getElementById('totCount'),
+};
+
+function lojistaLine(name,isPref){
+  if(!name)return '';
+  const cls='lojista'+(isPref?' pref':(isPref===false?' dimmed':''));
+  return '<div class="'+cls+'"><i class="dot" style="background:'+colorOf(name)+'"></i>'+name+'</div>';
+}
+
+function render(list){
+  els.rows.innerHTML='';
+  if(!list.length){
+    els.rows.innerHTML='<div class="empty-state"><div class="big">&#8709;</div>Nenhum registro encontrado com esses filtros.</div>';
+  }
+  list.forEach(d=>{
+    const row=document.createElement('div');
+    row.className='row';
+    let lojHtml='';
+    const hasLoj = d.loj1 || d.loj2;
+    if(!hasLoj){
+      lojHtml='<span class="badge-livre"><i class="dot" style="background:'+colorOf(d.pref)+'"></i>'+(d.pref||'—')+'</span>';
+    } else {
+      const l1pref = d.loj1 && d.loj1===d.pref;
+      const l2pref = d.loj2 && d.loj2===d.pref;
+      const both = d.loj1 && d.loj2;
+      lojHtml += lojistaLine(d.loj1, both ? l1pref : (l1pref?true:null));
+      if(d.loj2) lojHtml += lojistaLine(d.loj2, l2pref);
+    }
+    const maskHtml = d.mask
+      ? '<div class="mask-name">'+d.mask+'</div>'
+      : '<div class="mask-empty">— sem máscara —</div>';
+    row.innerHTML=
+      '<div data-l="Item"><div class="item-name">'+d.desc+'</div>'+
+      '<div class="item-tek">Tek System: <span>'+(d.tek||'—')+'</span></div></div>'+
+      '<div data-l="Cód. Item"><span class="cod-pill">'+d.cod+'</span></div>'+
+      '<div data-l="Máscara" class="mask-wrap">'+maskHtml+'</div>'+
+      '<div data-l="Lojistas" class="lojistas">'+lojHtml+'</div>';
+    els.rows.appendChild(row);
+  });
+  els.vis.textContent=list.length;
+}
+
+function applyFilters(){
+  const cod=els.cod.value.trim().toLowerCase();
+  const desc=els.desc.value.trim().toLowerCase();
+  const mask=els.mask.value;
+  const pref=els.pref.value;
+  const out=DATA.filter(d=>
+    (!cod||d.cod.toLowerCase().includes(cod))&&
+    (!desc||d.desc.toLowerCase().includes(desc))&&
+    (!mask||d.mask===mask)&&
+    (!pref||d.pref===pref)
+  );
+  render(out);
+}
+
+[els.cod,els.desc].forEach(e=>e.addEventListener('input',applyFilters));
+[els.mask,els.pref].forEach(e=>e.addEventListener('change',applyFilters));
+document.getElementById('btnClear').addEventListener('click',function(){
+  els.cod.value='';els.desc.value='';els.mask.value='';els.pref.value='';
+  applyFilters();
+});
+
+const uniqItems=new Set(DATA.map(d=>d.cod)).size;
+document.getElementById('kpiItens').textContent=uniqItems;
+document.getElementById('kpiVar').textContent=DATA.length;
+document.getElementById('kpiLivre').textContent=DATA.filter(d=>d.pref==='LIVRE PARA NEGOCIAR').length;
+els.tot.textContent=DATA.length;
+
+applyFilters();
+</script>
+</body>
+</html>
