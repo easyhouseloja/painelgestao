@@ -592,6 +592,17 @@ body::before {
   border-color: rgba(255,255,255,0.15);
 }
 
+/* Botão de Catálogo — ação (abre iframe), não é canal */
+.ch-btn-catalogo {
+  min-width: auto;
+  color: var(--accent-amber);
+}
+.ch-btn-catalogo:hover {
+  color: var(--accent-amber);
+  background: rgba(245,158,11,0.10);
+  border-color: rgba(245,158,11,0.45);
+}
+
 /* Separador entre botões */
 .ch-btn + .ch-btn {
   border-left: 1px solid rgba(255,255,255,0.06);
@@ -3208,7 +3219,7 @@ body.light-mode .btn-reputacao:hover {
    Cards centralizados, largura ~280-320px (próxima dos cards do 3P)
    ══════════════════════════════════════════════════════════════ */
 #panel-1p .dashboard {
-  grid-template-columns: repeat(4, minmax(0, 320px));
+  grid-template-columns: repeat(3, minmax(0, 320px));
   justify-content: center;
   margin-left: 0;
   margin-right: 0;
@@ -3345,6 +3356,14 @@ body.light-mode .scroll-hint-arrow:hover {
 .card-bybox .icon-wrap i { color: var(--accent-cyan); }
 .card-bybox:hover .icon-wrap { background: rgba(56,189,248,0.18); border-color: rgba(56,189,248,0.5); box-shadow: 0 0 18px rgba(56,189,248,0.3); }
 .card-bybox .card-tag { color: var(--accent-cyan); }
+
+/* ── CARD PERFORMANCE POR ITEM (green) ── */
+.card-perfitem::before { background: var(--accent-green); box-shadow: 0 0 20px rgba(31,189,114,0.5); }
+.card-perfitem:hover { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px rgba(31,189,114,0.3) inset; transform: translate3d(0, -2px, 0) !important; }
+.card-perfitem .icon-wrap { background: rgba(31,189,114,0.10); border: 1px solid rgba(31,189,114,0.25); }
+.card-perfitem .icon-wrap i { color: var(--accent-green); }
+.card-perfitem:hover .icon-wrap { background: rgba(31,189,114,0.18); border-color: rgba(31,189,114,0.5); box-shadow: 0 0 18px rgba(31,189,114,0.3); }
+.card-perfitem .card-tag { color: var(--accent-green); }
 
 #panel-3p .card {
   padding: 26px 20px;
@@ -4184,6 +4203,10 @@ body.light-mode #iframe-page-title {
       <span class="ch-label-main">VTEX</span>
       <span class="ch-badge">Site</span>
     </button>
+    <button class="ch-btn ch-btn-catalogo" id="btn-catalogo" onclick="iframeAbrir('https://easyhouseloja.github.io/painelgestao/catalogos_produtos.html','Catálogo de Produtos')">
+      <i data-lucide="book-open" style="width:15px;height:15px;"></i>
+      <span class="ch-label-main">Catálogo</span>
+    </button>
   </div>
 
   <!-- DATE BAR -->
@@ -4310,6 +4333,19 @@ body.light-mode #iframe-page-title {
           <div class="card-tag">Pricing Intelligence</div>
           <h2>ByBox</h2>
           <p>Monitoramento competitivo de preços nos canais — alertas de ruptura, oportunidades e benchmark por SKU.</p>
+          <div class="card-footer">
+            Acessar dashboard <i data-lucide="arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- PERFORMANCE POR ITEM -->
+        <a class="card card-perfitem" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/performece_por_item.html" data-title="Performance por Item" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
+          <div class="icon-wrap">
+            <i data-lucide="chart-column-big" style="width:22px;height:22px"></i>
+          </div>
+          <div class="card-tag">Análise Comparativa</div>
+          <h2>Performance por Item</h2>
+          <p>Comparativo de desempenho por SKU — vendas, giro e evolução de cada item ao longo do período.</p>
           <div class="card-footer">
             Acessar dashboard <i data-lucide="arrow-right"></i>
           </div>
@@ -4491,34 +4527,6 @@ body.light-mode #iframe-page-title {
             </span>
             <span style="font-size:9.5px;font-weight:500;color:var(--text-secondary);opacity:0.75;letter-spacing:0.3px;padding-left:4px;">
               <span id="vendas-1p-valores">carregando...</span>
-            </span>
-          </div>
-
-          <div class="card-footer">
-            Acessar dashboard <i data-lucide="arrow-right"></i>
-          </div>
-        </a>
-
-        <!-- PORTFÓLIO E-COM -->
-        <a class="card card-portfolio" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/portfolio_ecom.html" data-title="Portfólio E-COM · 1P" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
-          <div class="icon-wrap">
-            <i data-lucide="layers" style="width:22px;height:22px;"></i>
-          </div>
-          <div class="card-tag">Mix de Produtos · Visão por Cliente</div>
-          <h2>Portfólio</h2>
-          <p>Visão completa do portfólio ativo na Madeira Madeira: SKUs, modelos, categorias, variações e distribuição por cliente. Atualizado diariamente.</p>
-
-          <!-- CHIP SKUs ativos · modelos · categorias — atualizado pelo script no final (busca portfolio_ecom.html) -->
-          <div id="portfolio-widget" class="portfolio-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin-top:12px;opacity:0;transform:translateY(-6px);" title="Carregando dados do portfólio...">
-            <span id="portfolio-chip" style="font-size:11px;font-weight:700;color:#22c0d8;background:rgba(8,145,178,0.12);border:1px solid rgba(8,145,178,0.22);padding:5px 12px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:6px;">
-              <span id="portfolio-skus-total" style="font-size:14px;font-weight:800;letter-spacing:0.2px;">—</span>
-              <span style="opacity:0.85;">SKUs</span>
-              <span style="opacity:0.4;">·</span>
-              <span id="portfolio-modelos" style="font-size:13px;font-weight:800;letter-spacing:0.2px;">—</span>
-              <span style="opacity:0.85;">modelos</span>
-            </span>
-            <span style="font-size:9.5px;font-weight:500;color:var(--text-secondary);opacity:0.75;letter-spacing:0.3px;padding-left:4px;">
-              <span id="portfolio-cats">carregando...</span>
             </span>
           </div>
 
@@ -9295,14 +9303,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
-      // Pega o painel do mês atual (ou mais recente disponível)
-      let painel = mesAtual.id ? doc.getElementById(mesAtual.id) : null;
+      // Pega o painel do mês atual; se não existir, procura o mês mais
+      // recente disponível andando para trás (Jun→Mai→Abr→…→Mar).
+      let painel = null;
+      let mesUsado = mesAtual;
+      for(let i = mesAtual.num; i >= 0 && !painel; i--){
+        const m = MESES[i];
+        if(m.id){
+          const p = doc.getElementById(m.id);
+          if(p){ painel = p; mesUsado = m; }
+        }
+      }
 
-      // Fallback: se não achou o mês atual, procura o mês ativo no comercial
+      // Fallback: pega qualquer painel "-page-visao" mensal (o último do
+      // documento tende a ser o mês mais recente) ou o page-visao base.
       if(!painel){
-        painel = doc.querySelector('.month-dashboard.active .page.active') ||
-                 doc.querySelector('[id$="-page-visao"]') ||
-                 doc.getElementById('page-visao');
+        const todos = [...doc.querySelectorAll('[id$="-page-visao"]')];
+        painel = todos.length ? todos[todos.length - 1] : doc.getElementById('page-visao');
       }
 
       if(!painel) throw new Error('Painel do mês não encontrado');
@@ -9323,9 +9340,11 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if(/meta\s*(atingida|batida|super)/i.test(label) || (label.includes('meta') && value.includes('%'))){
           // Aceita "% Meta Atingida", "🎯 Meta Batida!", "Meta Superada", ou qualquer label com "meta" cujo valor seja %
           metaPct = value; // ex: "85,90%" ou "102,82%"
-          // Meta total vem no sub: "Meta: R$ 7,16M · 22 dias"
-          const m = sub.match(/Meta:\s*(R\$\s*[\d.,]+M?)/i);
-          if(m) metaVal = m[1];
+          // Meta total vem no sub. Aceita os dois formatos:
+          //   "Meta: R$ 7,16M · 22 dias"  (mês em andamento)
+          //   "🏆 Meta R$ 8,40M · superou em …" (mês fechado)
+          const m = sub.match(/Meta:?\s*(R\$\s*[\d.,]+\s*M?)/i);
+          if(m) metaVal = m[1].trim();
         } else if(label.includes('proje')){
           projVal = value; // ex: "R$ 8,39M"
           // % acima/abaixo vem no sub
@@ -9334,6 +9353,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
 
+      // Meta e faturamento são obrigatórios; projeção é opcional (meses
+      // fechados não têm card de projeção).
       if(!metaPct || !faturado || !metaVal) throw new Error('Dados incompletos');
 
       // Atualiza os textos
@@ -9345,7 +9366,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const barraReal = document.getElementById('meta-comercial-barra-real');
       const barraProj = document.getElementById('meta-comercial-barra-proj');
 
-      if(labelEl) labelEl.textContent = 'Meta ' + mesAtual.abrev;
+      if(labelEl) labelEl.textContent = 'Meta ' + mesUsado.abrev;
       if(pctEl) pctEl.textContent = metaPct.replace(/\s+/g,'').replace('%0','%');
 
       // "R$ 6,15M / 7,16M" — remove "R$" do segundo para compactar
@@ -9354,8 +9375,10 @@ document.addEventListener('DOMContentLoaded', function() {
         valoresEl.textContent = `${faturado} / ${metaNoPrefix}`;
       }
 
-      if(projEl) projEl.textContent = projVal;
-      if(projPctEl) projPctEl.textContent = projPctRaw || '—';
+      // Projeção é opcional: meses fechados não têm. Sem ela, mostra "—".
+      const temProj = !!projVal;
+      if(projEl) projEl.textContent = temProj ? projVal : '—';
+      if(projPctEl) projPctEl.textContent = (temProj && projPctRaw) ? projPctRaw : '—';
 
       // Barras
       const pctNum = parseNum(metaPct);
@@ -9375,17 +9398,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // Calcula largura da "projeção extra" baseada na relação projeção/meta
         const projN = parseNum(projVal);
         const metaN = parseNum(metaVal);
-        if(projN && metaN){
+        if(temProj && projN && metaN){
           const projPctDaMeta = (projN / metaN) * 100; // ex: 117
           const extra = Math.max(0, Math.min(projPctDaMeta, 100) - pctClamped);
           barraProj.style.left = pctClamped + '%';
           barraProj.style.width = extra + '%';
+        } else {
+          // Sem projeção (mês fechado): esconde a barra tracejada
+          barraProj.style.width = '0%';
         }
       }
 
       // Tooltip completo
       widget.setAttribute('title',
-        `Meta ${mesAtual.nome}: ${faturado} realizado de ${metaVal} (${metaPct}) · Projeção ${projVal}${projPctRaw ? ' ('+projPctRaw+' vs meta)' : ''}`
+        `Meta ${mesUsado.nome}: ${faturado} realizado de ${metaVal} (${metaPct})` +
+        (temProj ? ` · Projeção ${projVal}${projPctRaw ? ' ('+projPctRaw+' vs meta)' : ''}` : '')
       );
 
       // Dispara animação de entrada (só uma vez por sessão de carregamento)
