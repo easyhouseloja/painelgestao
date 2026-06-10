@@ -6666,20 +6666,15 @@ const J_MP_STATE = {"Shopee": {"São Paulo": [{"p": "Guarda-roupa Casal Easy Sli
 
 const J_STATES_DATA = [{"abbr": "SP", "name": "São Paulo", "valor": 1402354.8, "pedidos": 1333, "pct": 43.7}, {"abbr": "MG", "name": "Minas Gerais", "valor": 1076994.84, "pedidos": 1045, "pct": 33.5}, {"abbr": "RJ", "name": "Rio de Janeiro", "valor": 732321.16, "pedidos": 693, "pct": 22.8}];
 
-const J_HORA_PICO = {"Shopee": {"pico": [{"h": 11, "ped": 137}, {"h": 12, "ped": 136}, {"h": 21, "ped": 125}], "periodos": {"madrugada": {"pct": 7.8, "ped": 156}, "manha": {"pct": 24.5, "ped": 489}, "tarde": {"pct": 35.1, "ped": 700}, "noite": {"pct": 32.5, "ped": 648}}}, "Magazine Luiza": {"pico": [{"h": 20, "ped": 42}, {"h": 15, "ped": 42}, {"h": 12, "ped": 39}], "periodos": {"madrugada": {"pct": 4.3, "ped": 23}, "manha": {"pct": 19.0, "ped": 101}, "tarde": {"pct": 40.8, "ped": 217}, "noite": {"pct": 35.9, "ped": 191}}}, "Mercado Livre": {"pico": [{"h": 20, "ped": 40}, {"h": 12, "ped": 38}, {"h": 15, "ped": 37}], "periodos": {"madrugada": {"pct": 4.7, "ped": 22}, "manha": {"pct": 18.5, "ped": 86}, "tarde": {"pct": 42.1, "ped": 196}, "noite": {"pct": 34.8, "ped": 162}}}};
+const J_HORA_PICO = {"Shopee": {"pico": [{"h": 11, "ped": 137}, {"h": 12, "ped": 136}, {"h": 21, "ped": 125}], "periodos": {"madrugada": {"pct": 7.8, "label": "00–05h"}, "manha": {"pct": 24.5, "label": "06–11h"}, "tarde": {"pct": 35.1, "label": "12–17h"}, "noite": {"pct": 32.5, "label": "18–23h"}}, "melhorPeriodo": "Tarde"}, "Magazine Luiza": {"pico": [{"h": 15, "ped": 42}, {"h": 20, "ped": 42}, {"h": 12, "ped": 39}], "periodos": {"madrugada": {"pct": 4.3, "label": "00–05h"}, "manha": {"pct": 18.8, "label": "06–11h"}, "tarde": {"pct": 40.9, "label": "12–17h"}, "noite": {"pct": 36.0, "label": "18–23h"}}, "melhorPeriodo": "Tarde"}, "Mercado Livre": {"pico": [{"h": 20, "ped": 40}, {"h": 12, "ped": 38}, {"h": 15, "ped": 37}], "periodos": {"madrugada": {"pct": 4.7, "label": "00–05h"}, "manha": {"pct": 18.5, "label": "06–11h"}, "tarde": {"pct": 42.1, "label": "12–17h"}, "noite": {"pct": 34.8, "label": "18–23h"}}, "melhorPeriodo": "Tarde"}};
 
-const J_HORA_DATA = [129, 41, 14, 6, 6, 13, 33, 61, 99, 134, 156, 207, 219, 193, 193, 196, 180, 170, 176, 196, 205, 184, 167, 96];
+const J_HORA_DATA = [129, 41, 14, 6, 6, 13, 33, 61, 99, 133, 156, 207, 219, 193, 193, 195, 180, 170, 176, 196, 205, 184, 166, 96];
 
 
-// Insights para cada marketplace (auto-gerados)
-J_HORA_PICO['Shopee'].insight = 'Pico às 12h (493 pedidos) e 19h (485). Tarde 35.7% e noite 34.6% somam o grosso. Forte volume em horário comercial.';
-J_HORA_PICO['Mercado Livre'].insight = 'Pico noturno: 21h (134 pedidos), 12h (124) e 11h (122). Tarde 36.6% e noite 34.1% — público pós-trabalho.';
-J_HORA_PICO['Magazine Luiza'].insight = 'Pico às 20h (220 pedidos) e 19h (196). Tarde 38.6% e noite 36.1%. Concentrar campanhas no fim da tarde e noite.';
-J_HORA_PICO['Via Varejo'].insight = 'Pico às 21h (13), 12h (12) e 18h (12). Tarde 36.4% e noite 41.1%. Volume baixo (129 pedidos).';
-J_HORA_PICO['Madeira Madeira'].insight = 'Volume baixo (54 pedidos). Picos às 9h (5) e 17h (5). Tarde 40.7%. Ticket médio R$ 1.462.';
-J_HORA_PICO['Web Continental V2'].insight = 'Pico às 12h (5 pedidos). Tarde 53.3% das vendas. Volume baixo (30 pedidos), ticket médio R$ 1.238.';
-J_HORA_PICO['Zema'].insight = 'Volume mínimo (7 pedidos). Pico às 19h (2 pedidos). Dados insuficientes para padrão.';
-J_HORA_PICO['Amazon Global Api'].insight = 'Apenas 1 pedido às 13h. Volume insuficiente para padrão.';
+// Insights por marketplace (calculados a partir da planilha de Junho 01–07/06)
+J_HORA_PICO['Shopee'].insight = "Picos às 11h (137 pedidos), 12h (136) e 21h (125). Tarde 35.1% e noite 32.5% concentram o volume — 1993 pedidos, ticket médio R$ 1.055.";
+J_HORA_PICO['Magazine Luiza'].insight = "Picos às 15h (42 pedidos), 20h (42) e 12h (39). Tarde 40.9% e noite 36.0% concentram o volume — 531 pedidos, ticket médio R$ 1.013.";
+J_HORA_PICO['Mercado Livre'].insight = "Picos às 20h (40 pedidos), 12h (38) e 15h (37). Tarde 42.1% e noite 34.8% concentram o volume — 466 pedidos, ticket médio R$ 1.032.";
 
 
 // ══════════════════════════════════════════════
