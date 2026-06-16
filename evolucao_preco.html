@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Preços — Concorrência</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0a0e1a; --bg2:#0e1424; --panel:#121a2e; --panel2:#0f1626;
+    --line:#1e2a44; --txt:#e8edf7; --muted:#7d8aa8; --muted2:#566184;
+    --cyan:#22d3ee; --green:#34d399; --orange:#fb923c; --purple:#8b7cf6;
+    --red:#fb7185; --yellow:#fbbf24; --blue:#60a5fa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Archivo',system-ui,sans-serif;
+    background:radial-gradient(1200px 600px at 20% -5%,#13203d 0%,var(--bg) 55%) fixed;
+    color:var(--txt); padding:20px; min-height:100vh;
+  }
+  .wrap{max-width:1280px;margin:0 auto}
+
+  /* ===== Abas ===== */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .tab{
+    background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+    padding:11px 20px;border-radius:12px 12px 0 0;font-weight:700;font-size:14px;
+    cursor:pointer;display:flex;align-items:center;gap:8px;transition:.15s;
+  }
+  .tab:hover{color:var(--txt);border-color:#2c3a5c}
+  .tab.active{
+    color:var(--cyan);border-color:#1c4a63;
+    background:linear-gradient(180deg,rgba(34,211,238,.12),var(--panel2));
+    box-shadow:inset 0 2px 0 var(--cyan);
+  }
+
+  /* ===== Header ===== */
+  .header{
+    background:linear-gradient(135deg,var(--panel) 0%,var(--panel2) 100%);
+    border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin-bottom:18px;
+    display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+  }
+  .title{font-family:'Archivo Black',sans-serif;font-size:32px;line-height:1.05;letter-spacing:-.5px}
+  .title .accent{color:var(--cyan)}
+  .subtitle{color:var(--muted);font-size:13px;font-weight:600;margin-top:8px;letter-spacing:.4px;text-transform:uppercase}
+  .badges{display:flex;gap:10px;flex-wrap:wrap}
+  .badge{
+    padding:9px 16px;border-radius:999px;font-size:13px;font-weight:700;border:1px solid;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .badge.green{color:var(--green);border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
+  .badge.purple{color:var(--purple);border-color:rgba(139,124,246,.4);background:rgba(139,124,246,.08)}
+  .badge.orange{color:var(--orange);border-color:rgba(251,146,60,.4);background:rgba(251,146,60,.08)}
+
+  /* ===== Painel de controles ===== */
+  .controls{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    padding:20px 22px;margin-bottom:18px;
+  }
+  .filters{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:16px}
+  @media(max-width:820px){.filters{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.filters{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column;gap:7px}
+  label{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  label .req{color:var(--red)}
+  select,input{
+    padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;
+    background:var(--bg2);color:var(--txt);font-family:'Archivo',sans-serif;font-weight:600;
+  }
+  select:focus,input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+  input[type=date]{color-scheme:dark}
+  .hint{font-size:11.5px;color:var(--muted2);margin-top:12px;font-weight:500}
+
+  /* ===== Card do gráfico ===== */
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    padding:22px;margin-bottom:18px;position:relative;overflow:hidden;
+  }
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--cyan),var(--purple),var(--orange))}
+  .card-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+  .card-title{font-size:17px;font-weight:800}
+  .card-sub{font-size:12.5px;color:var(--muted);font-weight:600}
+  .chartbox{position:relative;height:440px}
+  .empty{text-align:center;color:var(--muted2);padding:70px 0;font-size:15px;font-weight:600}
+
+  /* ===== Seção de análises ===== */
+  .section-label{
+    font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.12em;margin:26px 4px 14px;display:flex;align-items:center;gap:10px;
+  }
+  .section-label::after{content:'';flex:1;height:1px;background:var(--line)}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
+  @media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:480px){.kpis{grid-template-columns:1fr}}
+  .kpi{
+    background:linear-gradient(160deg,var(--panel) 0%,var(--panel2) 100%);
+    border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;position:relative;overflow:hidden;
+  }
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+  .kpi.k-cyan::before{background:var(--cyan)} .kpi.k-green::before{background:var(--green)}
+  .kpi.k-orange::before{background:var(--orange)} .kpi.k-purple::before{background:var(--purple)}
+  .kpi.k-red::before{background:var(--red)} .kpi.k-blue::before{background:var(--blue)}
+  .kpi-label{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+  .kpi-value{font-family:'Archivo Black',sans-serif;font-size:30px;line-height:1;letter-spacing:-.5px}
+  .kpi.k-cyan .kpi-value{color:var(--cyan)} .kpi.k-green .kpi-value{color:var(--green)}
+  .kpi.k-orange .kpi-value{color:var(--orange)} .kpi.k-purple .kpi-value{color:var(--purple)}
+  .kpi.k-red .kpi-value{color:var(--red)} .kpi.k-blue .kpi-value{color:var(--blue)}
+  .kpi-foot{font-size:12px;color:var(--muted);margin-top:9px;font-weight:600}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:800;font-family:'JetBrains Mono',monospace}
+  .pill.up{color:var(--red);background:rgba(251,113,133,.12)}
+  .pill.down{color:var(--green);background:rgba(52,211,153,.12)}
+  .pill.flat{color:var(--muted);background:rgba(125,138,168,.12)}
+
+  /* ===== Cards de destaque (maior alta/baixa) ===== */
+  .highlights{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+  @media(max-width:760px){.highlights{grid-template-columns:1fr}}
+  .hl{border:1px solid var(--line);border-radius:14px;padding:20px;background:var(--panel)}
+  .hl.up{border-color:rgba(251,113,133,.35);background:linear-gradient(160deg,rgba(251,113,133,.07),var(--panel))}
+  .hl.down{border-color:rgba(52,211,153,.35);background:linear-gradient(160deg,rgba(52,211,153,.07),var(--panel))}
+  .hl-tag{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .hl.up .hl-tag{color:var(--red)} .hl.down .hl-tag{color:var(--green)}
+  .hl-prod{font-size:15px;font-weight:800;line-height:1.3;margin-bottom:14px;min-height:40px}
+  .hl-row{display:flex;justify-content:space-between;align-items:flex-end}
+  .hl-delta{font-family:'Archivo Black',sans-serif;font-size:34px;line-height:1}
+  .hl.up .hl-delta{color:var(--red)} .hl.down .hl-delta{color:var(--green)}
+  .hl-detail{font-size:12.5px;color:var(--muted);font-weight:600;text-align:right}
+  .hl-detail b{color:var(--txt)}
+
+  /* ===== Tabela ===== */
+  .tablecard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px}
+  th{text-align:left;font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:0 12px 12px;border-bottom:1px solid var(--line)}
+  th.num,td.num{text-align:right;font-family:'JetBrains Mono',monospace}
+  td{padding:13px 12px;border-bottom:1px solid rgba(30,42,68,.5);font-weight:600}
+  tr:last-child td{border-bottom:none}
+  .vend{display:inline-flex;align-items:center;gap:8px}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .deltacell.up{color:var(--red);font-weight:800} .deltacell.down{color:var(--green);font-weight:800}
+  .deltacell.flat{color:var(--muted)}
+  .empty-an{text-align:center;color:var(--muted2);padding:30px 0;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="header">
+    <div>
+      <div class="title">Painel de Preços <span class="accent">— Concorrência</span></div>
+      <div class="subtitle" id="hdrSub">Carregando…</div>
+    </div>
+    <div class="badges" id="hdrBadges"></div>
+  </div>
+
+  <div class="controls">
+    <div class="filters">
+      <div class="field">
+        <label>Produto <span class="req">*</span></label>
+        <select id="fProduto"></select>
+      </div>
+      <div class="field">
+        <label>CEP <span class="req">*</span></label>
+        <select id="fCep"></select>
+      </div>
+      <div class="field">
+        <label>Data inicial</label>
+        <input type="date" id="fIni">
+      </div>
+      <div class="field">
+        <label>Data final</label>
+        <input type="date" id="fFim">
+      </div>
+    </div>
+    <div class="hint">CEP e Produto são obrigatórios. O intervalo de datas é opcional — em branco, considera toda a série. Preço = Vlr. à vista + Vlr. frete.</div>
+  </div>
+
+  <!-- Gráfico principal: produto + cep selecionados -->
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <div class="card-title" id="chartTitle">Evolução de preço</div>
+        <div class="card-sub" id="chartSub"></div>
+      </div>
+    </div>
+    <div class="chartbox"><canvas id="chart"></canvas></div>
+    <div id="chartEmpty" class="empty" style="display:none">Sem dados para os filtros selecionados.</div>
+  </div>
+
+  <!-- ===== Análises do período + CEP (todos os produtos) ===== -->
+  <div class="section-label">Análises do período · CEP <span id="anCep"></span></div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="highlights" id="highlights"></div>
+
+  <div class="tablecard">
+    <div class="card-title" style="margin-bottom:16px">Variação de preço por produto (menor preço do CEP)</div>
+    <div id="tableWrap"></div>
+  </div>
+
+</div>
+
+<script>
+// ===== Dados =====
+const DATA_EMBUTIDO = [{"CEP": "05050000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 871.92, "VFRETE": 106.59}, {"CEP": "05050000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1231.92, "VFRETE": 162.38}, {"CEP": "05050000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1039.98, "VFRETE": 212.46}, {"CEP": "05050000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 639.91, "VFRETE": 89.29}, {"CEP": "05050000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 769.99, "VFRETE": 87.86}, {"CEP": "05050000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 594.99, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 742.92, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1439.2, "VFRETE": 164.01}, {"CEP": "05050000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "BOM PASTOR", "VVISTA": 1890.0, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 871.92, "VFRETE": 152.88}, {"CEP": "13010001", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1231.92, "VFRETE": 266.04}, {"CEP": "13010001", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1039.98, "VFRETE": 99.96}, {"CEP": "13010001", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 639.91, "VFRETE": 124.53}, {"CEP": "13010001", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 769.99, "VFRETE": 90.38}, {"CEP": "13010001", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 594.99, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 742.92, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1439.2, "VFRETE": 233.91}, {"CEP": "13010001", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "BOM PASTOR", "VVISTA": 1890.0, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 871.92, "VFRETE": 107.65}, {"CEP": "30130100", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1231.92, "VFRETE": 166.06}, {"CEP": "30130100", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1039.98, "VFRETE": 152.93}, {"CEP": "30130100", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 639.91, "VFRETE": 98.37}, {"CEP": "30130100", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 769.99, "VFRETE": 120.68}, {"CEP": "30130100", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 699.99, "VFRETE": 39.99}, {"CEP": "30130100", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 742.92, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 39.99}, {"CEP": "30130100", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 39.99}, {"CEP": "30130100", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1439.2, "VFRETE": 166.11}, {"CEP": "30130100", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "BOM PASTOR", "VVISTA": 1890.0, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 871.92, "VFRETE": 121.96}, {"CEP": "33500000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1231.92, "VFRETE": 166.06}, {"CEP": "33500000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1039.98, "VFRETE": 152.93}, {"CEP": "33500000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 639.91, "VFRETE": 98.37}, {"CEP": "33500000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 769.99, "VFRETE": 120.68}, {"CEP": "33500000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 594.99, "VFRETE": 39.99}, {"CEP": "33500000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 742.92, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 39.99}, {"CEP": "33500000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 39.99}, {"CEP": "33500000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1439.2, "VFRETE": 166.11}, {"CEP": "33500000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "BOM PASTOR", "VVISTA": 1890.0, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 871.92, "VFRETE": 107.65}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1231.92, "VFRETE": 130.16}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1039.98, "VFRETE": 329.35}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 639.91, "VFRETE": 87.44}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 769.99, "VFRETE": 299.43}, {"CEP": "36010000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 594.99, "VFRETE": 79.9}, {"CEP": "36010000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 742.92, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 79.9}, {"CEP": "36010000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 69.98}, {"CEP": "36010000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1439.2, "VFRETE": 130.22}, {"CEP": "36010000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "BOM PASTOR", "VVISTA": 1890.0, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 871.92, "VFRETE": 153.47}, {"CEP": "20271130", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1231.92, "VFRETE": 106.59}, {"CEP": "20271130", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1039.98, "VFRETE": 199.48}, {"CEP": "20271130", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 639.91, "VFRETE": 143.31}, {"CEP": "20271130", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 769.99, "VFRETE": 192.86}, {"CEP": "20271130", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 594.99, "VFRETE": 59.99}, {"CEP": "20271130", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 742.92, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 59.99}, {"CEP": "20271130", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 59.99}, {"CEP": "20271130", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1439.2, "VFRETE": 106.27}, {"CEP": "20271130", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "BOM PASTOR", "VVISTA": 1890.0, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 871.92, "VFRETE": 161.71}, {"CEP": "24421005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1231.92, "VFRETE": 106.59}, {"CEP": "24421005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1039.98, "VFRETE": 199.48}, {"CEP": "24421005", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 639.91, "VFRETE": 148.11}, {"CEP": "24421005", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 769.99, "VFRETE": 192.86}, {"CEP": "24421005", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 594.99, "VFRETE": 59.99}, {"CEP": "24421005", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 742.92, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 59.99}, {"CEP": "24421005", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 59.99}, {"CEP": "24421005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1439.2, "VFRETE": 106.56}, {"CEP": "24421005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "BOM PASTOR", "VVISTA": 1890.0, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 871.92, "VFRETE": 161.71}, {"CEP": "24020005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1231.92, "VFRETE": 106.59}, {"CEP": "24020005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1039.98, "VFRETE": 199.48}, {"CEP": "24020005", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 639.91, "VFRETE": 148.11}, {"CEP": "24020005", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-12", "vendedor": "MADEIRA MADEIRA", "VVISTA": 769.99, "VFRETE": 192.86}, {"CEP": "24020005", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 594.99, "VFRETE": 59.99}, {"CEP": "24020005", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 742.92, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-12", "vendedor": "COZY", "VVISTA": 594.91, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 901.99, "VFRETE": 59.99}, {"CEP": "24020005", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-12", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 59.99}, {"CEP": "24020005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "MODERNA MOBILIA", "VVISTA": 1529.15, "VFRETE": 106.56}, {"CEP": "24020005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-12", "vendedor": "BOM PASTOR", "VVISTA": 1890.0, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1035.4, "VFRETE": 106.59}, {"CEP": "05050000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1339.9, "VFRETE": 162.38}, {"CEP": "05050000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1064.99, "VFRETE": 99.72}, {"CEP": "05050000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 759.91, "VFRETE": 89.29}, {"CEP": "05050000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 759.99, "VFRETE": 87.86}, {"CEP": "05050000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 643.99, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 749.9, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 901.99, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "05050000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1799.0, "VFRETE": 174.01}, {"CEP": "05050000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "BOM PASTOR", "VVISTA": 1739.0, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1035.4, "VFRETE": 152.88}, {"CEP": "13010001", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1339.9, "VFRETE": 266.04}, {"CEP": "13010001", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1064.99, "VFRETE": 99.96}, {"CEP": "13010001", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 759.91, "VFRETE": 124.53}, {"CEP": "13010001", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 759.99, "VFRETE": 90.38}, {"CEP": "13010001", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 643.99, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 749.9, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 901.99, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "13010001", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1799.0, "VFRETE": 233.91}, {"CEP": "13010001", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "BOM PASTOR", "VVISTA": 1739.0, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1035.4, "VFRETE": 107.65}, {"CEP": "30130100", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1339.9, "VFRETE": 166.06}, {"CEP": "30130100", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1064.99, "VFRETE": 152.93}, {"CEP": "30130100", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 759.91, "VFRETE": 98.37}, {"CEP": "30130100", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 759.99, "VFRETE": 575.02}, {"CEP": "30130100", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 643.99, "VFRETE": 39.99}, {"CEP": "30130100", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 749.9, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 901.99, "VFRETE": 39.99}, {"CEP": "30130100", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 39.99}, {"CEP": "30130100", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "30130100", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1799.0, "VFRETE": 166.11}, {"CEP": "30130100", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "BOM PASTOR", "VVISTA": 1739.0, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1035.4, "VFRETE": 121.96}, {"CEP": "33500000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1339.9, "VFRETE": 166.06}, {"CEP": "33500000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1064.99, "VFRETE": 152.93}, {"CEP": "33500000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 759.91, "VFRETE": 98.37}, {"CEP": "33500000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 759.99, "VFRETE": 120.68}, {"CEP": "33500000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 643.99, "VFRETE": 39.99}, {"CEP": "33500000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 749.9, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 901.99, "VFRETE": 39.99}, {"CEP": "33500000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 39.99}, {"CEP": "33500000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "33500000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1799.0, "VFRETE": 166.11}, {"CEP": "33500000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "BOM PASTOR", "VVISTA": 1739.0, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1035.4, "VFRETE": 107.65}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1339.9, "VFRETE": 130.16}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1064.99, "VFRETE": 329.35}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 759.91, "VFRETE": 87.44}, {"CEP": "36010000", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 759.99, "VFRETE": 299.43}, {"CEP": "36010000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 643.99, "VFRETE": 79.9}, {"CEP": "36010000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 749.9, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 901.99, "VFRETE": 79.9}, {"CEP": "36010000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 69.98}, {"CEP": "36010000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "36010000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1799.0, "VFRETE": 130.22}, {"CEP": "36010000", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "BOM PASTOR", "VVISTA": 1739.0, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1035.4, "VFRETE": 153.47}, {"CEP": "20271130", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1339.9, "VFRETE": 115.93}, {"CEP": "20271130", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1064.99, "VFRETE": 199.48}, {"CEP": "20271130", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 759.91, "VFRETE": 143.31}, {"CEP": "20271130", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 759.99, "VFRETE": 192.86}, {"CEP": "20271130", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 643.99, "VFRETE": 59.99}, {"CEP": "20271130", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 749.9, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 901.99, "VFRETE": 59.99}, {"CEP": "20271130", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 59.99}, {"CEP": "20271130", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "20271130", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1799.0, "VFRETE": 106.27}, {"CEP": "20271130", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "BOM PASTOR", "VVISTA": 1739.0, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1035.4, "VFRETE": 161.71}, {"CEP": "24421005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1339.9, "VFRETE": 135.02}, {"CEP": "24421005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1064.99, "VFRETE": 323.0}, {"CEP": "24421005", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 759.91, "VFRETE": 148.11}, {"CEP": "24421005", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 759.99, "VFRETE": 768.28}, {"CEP": "24421005", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 643.99, "VFRETE": 59.99}, {"CEP": "24421005", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 749.9, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 901.99, "VFRETE": 59.99}, {"CEP": "24421005", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 59.99}, {"CEP": "24421005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "24421005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1799.0, "VFRETE": 123.97}, {"CEP": "24421005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "BOM PASTOR", "VVISTA": 1739.0, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1035.4, "VFRETE": 161.71}, {"CEP": "24020005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1339.9, "VFRETE": 135.02}, {"CEP": "24020005", "produto": "GUARDA-ROUPA EASY SLIM 8 PORTAS C/ ESPELHO — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 1064.99, "VFRETE": 199.48}, {"CEP": "24020005", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 759.91, "VFRETE": 148.11}, {"CEP": "24020005", "produto": "GUARDA-ROUPA EASY SLIM 6 PORTAS S/ ESPELHO S/PÉS — AMÊNDOA/OFF", "DATA": "2026-06-15", "vendedor": "MADEIRA MADEIRA", "VVISTA": 759.99, "VFRETE": 768.28}, {"CEP": "24020005", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 465.4, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "CONJUNTO SALA DE JANTAR COM 4 CADEIRAS GRUPO LOPAS EASY LINE COR AMÊNDOA", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 643.99, "VFRETE": 59.99}, {"CEP": "24020005", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 749.9, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "PENTEADEIRA CAMARIM ESPELHADA LÍVIA 7 GAVETAS — BRANCO", "DATA": "2026-06-15", "vendedor": "COZY", "VVISTA": 559.91, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1339.99, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "COZINHA COMPLETA PANELEIRO NINA 6 MODULOS AMÊNDO/BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 901.99, "VFRETE": 59.99}, {"CEP": "24020005", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 859.99, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "GUARDA ROUPA CASAL 3 PTS COM ESPELHO ATLAS BRANCO", "DATA": "2026-06-15", "vendedor": "MADESA", "VVISTA": 879.99, "VFRETE": 59.99}, {"CEP": "24020005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "LOPAS", "VVISTA": 1669.9, "VFRETE": 0.0}, {"CEP": "24020005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "MODERNA MOBILIA", "VVISTA": 1799.0, "VFRETE": 123.97}, {"CEP": "24020005", "produto": "CONJUNTO SALA DE JANTAR COM 6 CADEIRAS CONFORT LINHO RINZAI BEGE E MESA EASY TOWER DE 170X90 CM", "DATA": "2026-06-15", "vendedor": "BOM PASTOR", "VVISTA": 1739.0, "VFRETE": 0.0}];
+let DATA = DATA_EMBUTIDO.slice();
+
+const PAL = ['#fbbf24','#60a5fa','#8b7cf6','#fb7185','#7d8aa8','#22d3ee','#fb923c'];
+function colorFor(v,idx){
+  if(String(v).toUpperCase().includes('LOPAS')) return '#34d399';
+  return PAL[idx % PAL.length];
+}
+const brl = v => v.toLocaleString('pt-br',{style:'currency',currency:'BRL'});
+const pct = v => (v>0?'+':'')+v.toFixed(1).replace('.',',')+'%';
+
+const selProd=document.getElementById('fProduto'), selCep=document.getElementById('fCep');
+const inpIni=document.getElementById('fIni'), inpFim=document.getElementById('fFim');
+
+// ===== utilidades de data e formatação =====
+const fmtDM = iso => { const [y,m,d]=iso.split('-'); return d+'/'+m; };
+const fmtBR = iso => { const [y,m,d]=iso.split('-'); return d+'/'+m+'/'+y; };
+
+// período aplicado às linhas
+function noPeriodo(d){
+  const ini=inpIni.value, fim=inpFim.value;
+  if(ini && d.DATA < ini) return false;
+  if(fim && d.DATA > fim) return false;
+  return true;
+}
+
+// ===== popular filtros (preservando seleção e padrões) =====
+function popularFiltros(){
+  const prodAtual=selProd.value, cepAtual=selCep.value;
+  const produtos=[...new Set(DATA.map(d=>d.produto))];
+  const ceps=[...new Set(DATA.map(d=>d.CEP))].sort();
+  const datas=[...new Set(DATA.map(d=>d.DATA))].sort();
+
+  selProd.innerHTML=''; produtos.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;selProd.appendChild(o);});
+  selCep.innerHTML=''; ceps.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;selCep.appendChild(o);});
+
+  selCep.value = ceps.includes(cepAtual)?cepAtual:(ceps.includes('05050000')?'05050000':ceps[0]);
+  selProd.value = produtos.includes(prodAtual)?prodAtual:produtos[0];
+
+  // limites do seletor de data
+  if(datas.length){
+    inpIni.min=inpFim.min=datas[0]; inpIni.max=inpFim.max=datas[datas.length-1];
+  }
+}
+
+// ===== preço total mínimo de um produto numa data (melhor oferta) =====
+function minTotalNaData(rows, prod, data){
+  const cand = rows.filter(r=>r.produto===prod && r.DATA===data).map(r=>r.VVISTA+r.VFRETE);
+  return cand.length?Math.min(...cand):null;
+}
+
+let chart;
+function render(){
+  const cep=selCep.value, prod=selProd.value;
+  document.getElementById('anCep').textContent=cep;
+
+  // ---------- GRÁFICO (produto + cep + período) ----------
+  let rows = DATA.filter(d=>d.CEP===cep && d.produto===prod && noPeriodo(d));
+  const labels=[...new Set(rows.map(d=>d.DATA))].sort();
+  const vendedores=[...new Set(rows.map(d=>d.vendedor))];
+
+  document.getElementById('chartTitle').textContent=prod;
+  document.getElementById('chartSub').textContent =
+    'CEP '+cep+' · '+(labels.length?fmtBR(labels[0])+' a '+fmtBR(labels[labels.length-1]):'sem datas')+' · preço = à vista + frete';
+
+  const chartEmpty=document.getElementById('chartEmpty');
+  const canvas=document.getElementById('chart');
+  if(rows.length===0){
+    chartEmpty.style.display='block'; canvas.style.display='none';
+    if(chart){chart.destroy();chart=null;}
+  }else{
+    chartEmpty.style.display='none'; canvas.style.display='block';
+    const datasets=vendedores.map((v,i)=>{
+      const cor=colorFor(v,i);
+      const pts=labels.map(lb=>{const r=rows.find(x=>x.vendedor===v&&x.DATA===lb);
+        return r?{x:lb,y:r.VVISTA+r.VFRETE,vista:r.VVISTA,frete:r.VFRETE}:null;});
+      return {label:v,data:pts,borderColor:cor,backgroundColor:cor,
+        borderWidth:String(v).toUpperCase().includes('LOPAS')?3.5:2,
+        pointRadius:4,pointHoverRadius:6,tension:.25,spanGaps:true,
+        parsing:{xAxisKey:'x',yAxisKey:'y'}};
+    });
+    const cfg={type:'line',data:{labels:labels.map(fmtDM),datasets:datasets.map(ds=>({...ds,
+        data:ds.data.map((p,idx)=>p?{...p,x:fmtDM(labels[idx])}:null)}))},
+      options:{responsive:true,maintainAspectRatio:false,
+        interaction:{mode:'nearest',intersect:false},
+        plugins:{
+          legend:{position:'top',labels:{usePointStyle:true,boxWidth:8,color:'#e8edf7',font:{size:13,weight:600}}},
+          tooltip:{backgroundColor:'#0e1424',borderColor:'#1e2a44',borderWidth:1,titleColor:'#e8edf7',bodyColor:'#cdd6ec',padding:12,
+            callbacks:{title:it=>'Data: '+it[0].label,
+              label:ctx=>{const d=ctx.raw;return [ctx.dataset.label+' — Total: '+brl(d.y),'   À vista: '+brl(d.vista),'   Frete: '+brl(d.frete)];}}}
+        },
+        scales:{
+          x:{title:{display:true,text:'DATA',color:'#7d8aa8',font:{weight:700}},grid:{color:'rgba(30,42,68,.6)'},ticks:{color:'#7d8aa8'}},
+          y:{title:{display:true,text:'PREÇO (R$)',color:'#7d8aa8',font:{weight:700}},grid:{color:'rgba(30,42,68,.6)'},ticks:{color:'#7d8aa8',callback:v=>'R$ '+v.toLocaleString('pt-br')}}
+        }}};
+    if(chart){chart.data=cfg.data;chart.options=cfg.options;chart.update();}
+    else chart=new Chart(canvas,cfg);
+  }
+
+  renderAnalises(cep);
+}
+
+// ========== ANÁLISES: período + CEP, todos os produtos ==========
+function renderAnalises(cep){
+  // linhas do CEP no período
+  const base = DATA.filter(d=>d.CEP===cep && noPeriodo(d));
+  const datas=[...new Set(base.map(d=>d.DATA))].sort();
+  const produtos=[...new Set(base.map(d=>d.produto))];
+
+  // Para cada produto: menor preço total na 1ª e na última data do período
+  const linhas=[];
+  if(datas.length>=1){
+    const dIni=datas[0], dFim=datas[datas.length-1];
+    produtos.forEach(p=>{
+      const ini=minTotalNaData(base,p,dIni);
+      const fim=minTotalNaData(base,p,dFim);
+      if(ini==null||fim==null) return;
+      const delta=fim-ini;
+      const perc= ini!==0 ? (delta/ini*100) : 0;
+      linhas.push({produto:p, ini, fim, delta, perc});
+    });
+  }
+
+  // ---------- KPIs ----------
+  const kpis=document.getElementById('kpis');
+  const nProd=produtos.length;
+  const subiram=linhas.filter(l=>l.delta>0.005).length;
+  const cairam=linhas.filter(l=>l.delta<-0.005).length;
+  const variacaoMedia = linhas.length ? linhas.reduce((s,l)=>s+l.perc,0)/linhas.length : 0;
+  const periodoTxt = datas.length ? fmtBR(datas[0])+' → '+fmtBR(datas[datas.length-1]) : '—';
+
+  kpis.innerHTML = `
+    <div class="kpi k-cyan"><div class="kpi-label">Produtos monitorados</div>
+      <div class="kpi-value">${nProd}</div><div class="kpi-foot">no CEP ${cep}</div></div>
+    <div class="kpi k-purple"><div class="kpi-label">Datas no período</div>
+      <div class="kpi-value">${datas.length}</div><div class="kpi-foot">${periodoTxt}</div></div>
+    <div class="kpi k-red"><div class="kpi-label">Subiram de preço</div>
+      <div class="kpi-value">${subiram}</div><div class="kpi-foot">${cairam} caíram · ${nProd-subiram-cairam} estáveis</div></div>
+    <div class="kpi ${variacaoMedia>0?'k-red':'k-green'}"><div class="kpi-label">Variação média</div>
+      <div class="kpi-value">${pct(variacaoMedia)}</div><div class="kpi-foot">média entre produtos</div></div>`;
+
+  // ---------- Destaques: maior alta e maior baixa ----------
+  const hl=document.getElementById('highlights');
+  if(linhas.length===0 || datas.length<2){
+    hl.innerHTML = `<div class="hl" style="grid-column:1/-1"><div class="empty-an">
+      ${datas.length<2?'É necessário pelo menos duas datas no período para comparar a variação. Carregue mais coletas ou amplie o intervalo.':'Sem dados suficientes para o CEP/período selecionado.'}
+    </div></div>`;
+  }else{
+    const ordenado=[...linhas].sort((a,b)=>b.perc-a.perc);
+    const alta=ordenado[0], baixa=ordenado[ordenado.length-1];
+    const cardAlta = alta.delta>0 ? `
+      <div class="hl up">
+        <div class="hl-tag">▲ Maior aumento de preço</div>
+        <div class="hl-prod">${alta.produto}</div>
+        <div class="hl-row"><div class="hl-delta">${pct(alta.perc)}</div>
+        <div class="hl-detail"><b>${brl(alta.ini)}</b> → <b>${brl(alta.fim)}</b><br>${alta.delta>=0?'+':''}${brl(alta.delta)}</div></div>
+      </div>` : `
+      <div class="hl"><div class="hl-tag" style="color:var(--muted)">▲ Maior aumento de preço</div>
+        <div class="empty-an">Nenhum produto subiu de preço no período.</div></div>`;
+    const cardBaixa = baixa.delta<0 ? `
+      <div class="hl down">
+        <div class="hl-tag">▼ Maior redução de preço</div>
+        <div class="hl-prod">${baixa.produto}</div>
+        <div class="hl-row"><div class="hl-delta">${pct(baixa.perc)}</div>
+        <div class="hl-detail"><b>${brl(baixa.ini)}</b> → <b>${brl(baixa.fim)}</b><br>${brl(baixa.delta)}</div></div>
+      </div>` : `
+      <div class="hl"><div class="hl-tag" style="color:var(--muted)">▼ Maior redução de preço</div>
+        <div class="empty-an">Nenhum produto caiu de preço no período.</div></div>`;
+    hl.innerHTML = cardAlta + cardBaixa;
+  }
+
+  // ---------- Tabela completa ----------
+  const tw=document.getElementById('tableWrap');
+  if(linhas.length===0 || datas.length<2){
+    tw.innerHTML = `<div class="empty-an">Comparação por produto disponível com pelo menos duas datas no período.</div>`;
+  }else{
+    const ord=[...linhas].sort((a,b)=>b.perc-a.perc);
+    let body='';
+    ord.forEach(l=>{
+      const cls = l.delta>0.005?'up':(l.delta<-0.005?'down':'flat');
+      const arrow = l.delta>0.005?'▲':(l.delta<-0.005?'▼':'—');
+      body += `<tr>
+        <td>${l.produto}</td>
+        <td class="num">${brl(l.ini)}</td>
+        <td class="num">${brl(l.fim)}</td>
+        <td class="num deltacell ${cls}">${l.delta>=0?'+':''}${brl(l.delta)}</td>
+        <td class="num deltacell ${cls}">${arrow} ${pct(l.perc)}</td>
+      </tr>`;
+    });
+    tw.innerHTML = `<table>
+      <thead><tr>
+        <th>Produto</th>
+        <th class="num">Preço inicial</th>
+        <th class="num">Preço final</th>
+        <th class="num">Δ R$</th>
+        <th class="num">Δ %</th>
+      </tr></thead><tbody>${body}</tbody></table>`;
+  }
+}
+
+// ===== Abas: período (mês) + acumulado =====
+function buildTabs(){
+  const tabs=document.getElementById('tabs');
+  const datas=[...new Set(DATA.map(d=>d.DATA))].sort();
+  tabs.innerHTML=`<div class="tab active" data-ym="ALL">📊 Período completo</div>`;
+  tabs.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      tabs.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const ym=t.dataset.ym;
+      if(ym==='ALL'){ inpIni.value=''; inpFim.value=''; }
+      else{
+        const dd=datas.filter(d=>d.startsWith(ym));
+        inpIni.value=dd[0]; inpFim.value=dd[dd.length-1];
+      }
+      render();
+    });
+  });
+}
+
+// ===== Cabeçalho dinâmico =====
+function buildHeader(){
+  const datas=[...new Set(DATA.map(d=>d.DATA))].sort();
+  const ceps=[...new Set(DATA.map(d=>d.CEP))];
+  const prods=[...new Set(DATA.map(d=>d.produto))];
+  const vends=[...new Set(DATA.map(d=>d.vendedor))];
+  document.getElementById('hdrSub').textContent =
+    `Monitoramento de concorrência`;
+  document.getElementById('hdrBadges').innerHTML =
+    `<span class="badge green">${prods.length} produtos</span>
+     <span class="badge purple">${ceps.length} CEPs</span>
+     <span class="badge orange">${vends.length} vendedores</span>`;
+}
+
+[selProd,selCep,inpIni,inpFim].forEach(el=>el.addEventListener('change',()=>{
+  // ao mexer manualmente nas datas, sai do modo "aba" e marca período completo se ambos vazios
+  if((el===inpIni||el===inpFim)){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    if(!inpIni.value&&!inpFim.value){const a=document.querySelector('.tab[data-ym="ALL"]'); if(a)a.classList.add('active');}
+  }
+  render();
+}));
+
+// init
+buildHeader(); buildTabs(); popularFiltros(); render();
+</script>
+</body>
+</html>
