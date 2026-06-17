@@ -197,7 +197,7 @@ option{background:var(--bg2);color:var(--text);}
           </div>
         </div>
         <div class="period-card c" id="cardC">
-          <h4><span class="dotC"></span> Período C <button class="cToggle" id="cToggle">Ativar</button></h4>
+          <h4><span class="dotC"></span> Período C <button class="cToggle" id="cToggle">Incluir</button></h4>
           <div class="pc-row">
             <div class="field"><label>Mês</label><select id="cMonth"></select></div>
             <div class="field winFld"><label>Dia inicial</label><input type="number" id="cStart" min="1" max="31" value="1"></div>
@@ -292,11 +292,17 @@ DATA.cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textC
 DATA.months.forEach(([y,m])=>{[aMonth,bMonth,cMonth].forEach(sel=>{const o=document.createElement('option');o.value=mKey(y,m);o.textContent=mLabel(y,m);sel.appendChild(o);});});
 
 const mk=DATA.months.map(([y,m])=>mKey(y,m));
-// Defaults: A = mais antigo dos 3 últimos, B = penúltimo, C = atual
 const n=mk.length;
-aMonth.value = mk[Math.max(0,n-2)];
-bMonth.value = mk[n-1];
-cMonth.value = mk[Math.max(0,n-3)];
+// Defaults cronológicos: com 3+ meses, A/B/C = antepenúltimo, penúltimo, último (mais recente)
+if(n>=3){
+  aMonth.value = mk[n-3];
+  bMonth.value = mk[n-2];
+  cMonth.value = mk[n-1];
+} else {
+  aMonth.value = mk[Math.max(0,n-2)];
+  bMonth.value = mk[n-1];
+  cMonth.value = mk[n-1];
+}
 
 document.getElementById('badgeOrders').textContent=recs.length.toLocaleString('pt-BR')+' linhas de venda';
 document.getElementById('badgeMonths').textContent=DATA.months.length+' '+(DATA.months.length===1?'mês':'meses')+' carregados';
@@ -513,13 +519,28 @@ function render(){
 }
 
 // ── eventos ──
-[fMp,fCat,fAbc,aMonth,bMonth,cMonth].forEach(el=>el.addEventListener('change',render));
-['aStart','aEnd','bStart','bEnd','cStart','cEnd'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{if(mode==='window')render();}));
+[fMp,fCat,fAbc,aMonth,bMonth].forEach(el=>el.addEventListener('change',render));
+['aStart','aEnd','bStart','bEnd'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{if(mode==='window')render();}));
 
-document.getElementById('cToggle').addEventListener('click',()=>{
-  cOn=!cOn;
+// helper: ativa o Período C e sincroniza o botão/card
+function setCActive(on){
+  cOn=on;
   const btn=document.getElementById('cToggle'), card=document.getElementById('cardC');
-  btn.textContent=cOn?'Ativo':'Ativar'; btn.classList.toggle('on',cOn); card.classList.toggle('off',!cOn);
+  btn.textContent=cOn?'Incluído':'Incluir'; btn.classList.toggle('on',cOn); card.classList.toggle('off',!cOn);
+}
+
+// trocar o mês do Período C ativa-o automaticamente
+cMonth.addEventListener('change',()=>{ setCActive(true); render(); });
+// mexer nos dias do Período C (no modo faixa) também o ativa
+['cStart','cEnd'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{
+  if(!cOn) setCActive(true);
+  if(mode==='window'||true) render();
+}));
+
+// botão Ativar/Desativar continua funcionando como liga/desliga manual
+document.getElementById('cToggle').addEventListener('click',e=>{
+  e.stopPropagation();
+  setCActive(!cOn);
   render();
 });
 
@@ -596,7 +617,8 @@ document.addEventListener('click',e=>{if(!document.getElementById('itemCombo').c
 
 // iniciar
 document.querySelectorAll('.winFld').forEach(f=>f.style.display='none');
-document.getElementById('cardC').classList.add('off');
+// Com 3 ou mais meses, já inicia comparando os três (Período C ativo)
+if(n>=3){ setCActive(true); } else { setCActive(false); }
 render();
 </script>
 </body>
