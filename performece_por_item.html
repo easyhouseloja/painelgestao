@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Performance por Item — Análise Comparativa</title>
+<title>Performance por Item — Análise Comparativa (extração 21/06/2026)</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -46,16 +46,33 @@ select,input[type=number]{
 select:focus,input:focus{outline:none;border-color:var(--accent);}
 option{background:var(--bg2);color:var(--text);}
 
-/* ── COMBOBOX BUSCA ── */
+/* ── FILTRO DE ITEM (visual de select + busca/multi) ── */
 .combo{position:relative;}
-.combo input{padding-right:34px;}
-.combo-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--border);color:var(--muted);
+/* trigger fechado: idêntico ao <select> do Marketplace */
+.combo-trigger{
+  width:100%;padding:10px 12px;font-size:.85rem;font-family:'DM Sans',sans-serif;
+  background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;text-align:left;
+}
+.combo-trigger:focus{outline:none;border-color:var(--accent);}
+.combo.open .combo-trigger{border-color:var(--accent);}
+.combo-trigger-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.combo-trigger.placeholder .combo-trigger-label{color:var(--muted);}
+.combo-trigger-arrow{color:var(--muted);font-size:.7rem;flex-shrink:0;transition:transform .15s;}
+.combo.open .combo-trigger-arrow{transform:rotate(180deg);}
+/* popover */
+.combo-pop{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;display:none;
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;
+  box-shadow:0 12px 32px rgba(0,0,0,.5);}
+.combo.open .combo-pop{display:block;}
+.combo-search{position:relative;padding:8px;border-bottom:1px solid var(--border);}
+.combo-search input{width:100%;padding:9px 30px 9px 11px;font-size:.82rem;font-family:'DM Sans',sans-serif;
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);}
+.combo-search input:focus{outline:none;border-color:var(--accent);}
+.combo-clear{position:absolute;right:15px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--border);color:var(--muted);
   width:22px;height:22px;border-radius:6px;cursor:pointer;font-size:.7rem;line-height:1;display:flex;align-items:center;justify-content:center;}
 .combo-clear:hover{color:var(--text);border-color:var(--muted);}
-.combo-list{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;display:none;
-  background:var(--bg2);border:1px solid var(--border);border-radius:10px;max-height:280px;overflow-y:auto;
-  box-shadow:0 12px 32px rgba(0,0,0,.5);}
-.combo-list.open{display:block;}
+.combo-list{max-height:260px;overflow-y:auto;}
 .combo-list::-webkit-scrollbar{width:5px;}
 .combo-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 .combo-opt{padding:9px 12px;font-size:.82rem;cursor:pointer;border-bottom:1px solid rgba(31,45,69,.5);line-height:1.3;}
@@ -64,6 +81,17 @@ option{background:var(--bg2);color:var(--text);}
 .combo-opt.all{font-weight:600;color:var(--muted);}
 .combo-opt .hl{color:var(--accent);font-weight:700;}
 .combo-empty{padding:12px;font-size:.78rem;color:var(--muted);text-align:center;}
+.combo-opt.sel{background:rgba(56,189,248,.10);}
+.combo-opt .chk{display:inline-block;width:14px;margin-right:7px;color:var(--accent);font-weight:700;}
+.combo-opt.bulk{font-weight:600;color:var(--accent);border-bottom:1px solid var(--border);}
+.combo-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;}
+.combo-chips:empty{display:none;}
+.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.35);
+  color:var(--accent);border-radius:999px;padding:3px 8px 3px 10px;font-size:.72rem;max-width:260px;}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.chip button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:.85rem;line-height:1;padding:0 2px;}
+.chip button:hover{color:var(--text);}
+.chip.more{background:var(--bg2);border-color:var(--border);color:var(--muted);}
 
 .period-block{margin-top:18px;padding-top:18px;border-top:1px dashed var(--border);}
 .period-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
@@ -138,7 +166,7 @@ option{background:var(--bg2);color:var(--text);}
 <body>
 <div class="header">
   <div>
-    <h1>Performance por Item</h1>
+    <h1>Performance por Item <span style="font-size:.55em;font-weight:600;color:var(--muted);letter-spacing:.5px;">— dados extraídos em 21/06/2026</span></h1>
     <div class="header-sub">Análise comparativa de até 3 meses • por marketplace</div>
   </div>
   <div class="header-badges">
@@ -154,10 +182,19 @@ option{background:var(--bg2);color:var(--text);}
     <div class="filter-grid">
       <div class="field"><label>Item</label>
         <div class="combo" id="itemCombo">
-          <input type="text" id="itemInput" autocomplete="off" placeholder="Todos os itens (visão geral)" aria-label="Buscar item">
-          <button type="button" id="itemClear" class="combo-clear" title="Limpar" style="display:none;">✕</button>
-          <div class="combo-list" id="itemList"></div>
-        </div></div>
+          <button type="button" id="itemTrigger" class="combo-trigger" aria-haspopup="listbox" aria-expanded="false">
+            <span id="itemTriggerLabel" class="combo-trigger-label">Todos os itens</span>
+            <span class="combo-trigger-arrow">▾</span>
+          </button>
+          <div class="combo-pop" id="itemPop">
+            <div class="combo-search">
+              <input type="text" id="itemInput" autocomplete="off" placeholder="Buscar itens (ex.: armario)" aria-label="Buscar item">
+              <button type="button" id="itemClear" class="combo-clear" title="Limpar seleção" style="display:none;">✕</button>
+            </div>
+            <div class="combo-list" id="itemList"></div>
+          </div>
+        </div>
+        <div class="combo-chips" id="itemChips"></div></div>
       <div class="field"><label>Marketplace</label>
         <select id="fMp"><option value="__ALL__">Todos os marketplaces</option></select></div>
       <div class="field"><label>Categoria</label>
@@ -175,8 +212,8 @@ option{background:var(--bg2);color:var(--text);}
       <div class="mode-row">
         <span class="mode-label">Comparação:</span>
         <div class="seg" id="modeSeg">
-          <button data-mode="full" class="active">Mês inteiro</button>
-          <button data-mode="window">Mesmo período (faixa de dias)</button>
+          <button data-mode="full">Mês inteiro</button>
+          <button data-mode="window" class="active">Mesmo período (faixa de dias)</button>
         </div>
       </div>
       <div class="period-grid">
@@ -185,7 +222,7 @@ option{background:var(--bg2);color:var(--text);}
           <div class="pc-row">
             <div class="field"><label>Mês</label><select id="aMonth"></select></div>
             <div class="field winFld"><label>Dia inicial</label><input type="number" id="aStart" min="1" max="31" value="1"></div>
-            <div class="field winFld"><label>Dia final</label><input type="number" id="aEnd" min="1" max="31" value="7"></div>
+            <div class="field winFld"><label>Dia final</label><input type="number" id="aEnd" min="1" max="31" value="21"></div>
           </div>
         </div>
         <div class="period-card b" id="cardB">
@@ -193,7 +230,7 @@ option{background:var(--bg2);color:var(--text);}
           <div class="pc-row">
             <div class="field"><label>Mês</label><select id="bMonth"></select></div>
             <div class="field winFld"><label>Dia inicial</label><input type="number" id="bStart" min="1" max="31" value="1"></div>
-            <div class="field winFld"><label>Dia final</label><input type="number" id="bEnd" min="1" max="31" value="7"></div>
+            <div class="field winFld"><label>Dia final</label><input type="number" id="bEnd" min="1" max="31" value="21"></div>
           </div>
         </div>
         <div class="period-card c" id="cardC">
@@ -201,7 +238,7 @@ option{background:var(--bg2);color:var(--text);}
           <div class="pc-row">
             <div class="field"><label>Mês</label><select id="cMonth"></select></div>
             <div class="field winFld"><label>Dia inicial</label><input type="number" id="cStart" min="1" max="31" value="1"></div>
-            <div class="field winFld"><label>Dia final</label><input type="number" id="cEnd" min="1" max="31" value="7"></div>
+            <div class="field winFld"><label>Dia final</label><input type="number" id="cEnd" min="1" max="31" value="21"></div>
           </div>
         </div>
       </div>
@@ -272,8 +309,9 @@ const ABC_COL={A:'#22c55e',B:'#eab308',C:'#f97316'};
 
 const recs=DATA.records;
 const fMp=document.getElementById('fMp'),fCat=document.getElementById('fCat'),fAbc=document.getElementById('fAbc');
-const itemInput=document.getElementById('itemInput'),itemList=document.getElementById('itemList'),itemClear=document.getElementById('itemClear');
-let selectedItem='__ALL__'; // valor selecionado do filtro de item
+const itemInput=document.getElementById('itemInput'),itemList=document.getElementById('itemList'),itemClear=document.getElementById('itemClear'),itemChips=document.getElementById('itemChips');
+const itemCombo=document.getElementById('itemCombo'),itemTrigger=document.getElementById('itemTrigger'),itemTriggerLabel=document.getElementById('itemTriggerLabel');
+let selectedItems=new Set(); // itens selecionados (vazio = todos)
 const aMonth=document.getElementById('aMonth'),bMonth=document.getElementById('bMonth'),cMonth=document.getElementById('cMonth');
 let mode='full',mpMetric='q',sortKey='qB',sortDir=-1,cOn=false;
 
@@ -325,13 +363,14 @@ function pLabel(p){
 
 // particiona registros por período ativo → {A:[...],B:[...],C:[...]}
 function partition(){
-  const it=selectedItem,mp=fMp.value,cat=fCat.value,abc=fAbc.value;
+  const mp=fMp.value,cat=fCat.value,abc=fAbc.value;
+  const useItems=selectedItems.size>0;
   const ps=activePeriods();
   const out={}; ps.forEach(p=>out[p.id]=[]);
   const keys={}; ps.forEach(p=>keys[p.id]=+p.sel.value);
   const wins={}; ps.forEach(p=>wins[p.id]=getWin(p.id.toLowerCase()));
   for(const r of recs){
-    if(it!=='__ALL__'&&r.item!==it)continue;
+    if(useItems&&!selectedItems.has(r.item))continue;
     if(mp!=='__ALL__'&&r.mp!==mp)continue;
     if(cat!=='__ALL__'&&r.cat!==cat)continue;
     if(abc!=='__ALL__'&&r.abc!==abc)continue;
@@ -396,7 +435,7 @@ function render(){
   const items=Object.entries(byItem).map(([item,o])=>{
     const row={item,cat:o.cat,abc:o.abc}; ps.forEach(p=>{row['q'+p.id]=o['q'+p.id]||0;row['v'+p.id]=o['v'+p.id]||0;}); return row;
   });
-  const single=selectedItem!=='__ALL__';
+  const single=selectedItems.size===1;
   const short=s=>s.length>30?s.slice(0,30)+'…':s;
   const sumQ=r=>ps.reduce((a,p)=>a+(r['q'+p.id]||0),0);
   const sumV=r=>ps.reduce((a,p)=>a+(r['v'+p.id]||0),0);
@@ -558,65 +597,124 @@ document.querySelectorAll('#mpMetricSeg button').forEach(b=>b.addEventListener('
   b.classList.add('active'); mpMetric=b.dataset.metric; render();
 }));
 
-// ── COMBOBOX de busca de item ──
-const ALL_OPT={value:'__ALL__',label:'Todos os itens (visão geral)'};
-let comboActive=-1, comboResults=[];
+// ── FILTRO DE SELEÇÃO de itens (múltipla, sem acento/maiúsculas) ──
+let comboActive=-1, comboResults=[], lastMatches=[];
 const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+// normaliza: minúsculas e sem acentos (ex.: "Armário" -> "armario")
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+// índice de busca normalizado (calculado uma vez)
+const ITEM_NORM=DATA.items.map(i=>({item:i,n:norm(i)}));
 function highlight(text,q){
-  if(!q)return text;
-  const re=new RegExp('('+esc(q)+')','ig');
-  return text.replace(re,'<span class="hl">$1</span>');
+  const qn=norm(q.trim()); if(!qn)return text;
+  const tn=norm(text); const i=tn.indexOf(qn);
+  if(i<0)return text;
+  return text.slice(0,i)+'<span class="hl">'+text.slice(i,i+qn.length)+'</span>'+text.slice(i+qn.length);
+}
+function findMatches(q){
+  const qn=norm(q.trim());
+  return qn==='' ? DATA.items.slice() : ITEM_NORM.filter(o=>o.n.includes(qn)).map(o=>o.item);
 }
 function buildResults(q){
-  const ql=q.trim().toLowerCase();
-  let matches = ql==='' ? DATA.items.slice(0,50)
-    : DATA.items.filter(i=>i.toLowerCase().includes(ql)).slice(0,50);
-  comboResults=[ALL_OPT,...matches.map(i=>({value:i,label:i}))];
+  lastMatches=findMatches(q);
+  const shown=lastMatches.slice(0,50);
+  comboResults=shown.map(i=>({value:i,label:i}));
 }
 function renderCombo(q){
   buildResults(q);
-  if(comboResults.length<=1 && q.trim()!==''){
-    itemList.innerHTML=`<div class="combo-empty">Nenhum item encontrado para "${q}"</div>`;
-    comboResults=[]; return;
+  const qt=q.trim();
+  if(comboResults.length===0){
+    itemList.innerHTML=`<div class="combo-empty">Nenhum item encontrado para "${qt}"</div>`;
+    return;
   }
-  itemList.innerHTML=comboResults.map((o,idx)=>{
-    const cls2='combo-opt'+(o.value==='__ALL__'?' all':'')+(idx===comboActive?' active':'');
-    const lbl=o.value==='__ALL__'?o.label:highlight(o.label,q.trim());
-    return `<div class="${cls2}" data-idx="${idx}">${lbl}</div>`;
+  // ação em massa: selecionar/limpar todos os itens encontrados
+  const allSel=lastMatches.length>0 && lastMatches.every(i=>selectedItems.has(i));
+  const bulkLabel=allSel
+    ? `✕ Remover seleção dos ${lastMatches.length} itens encontrados`
+    : `✓ Selecionar todos os ${lastMatches.length} itens${qt?' ("'+qt+'")':''}`;
+  let html=`<div class="combo-opt bulk" data-bulk="1">${bulkLabel}</div>`;
+  html+=comboResults.map((o,idx)=>{
+    const on=selectedItems.has(o.value);
+    const cls2='combo-opt'+(on?' sel':'')+(idx===comboActive?' active':'');
+    return `<div class="${cls2}" data-idx="${idx}"><span class="chk">${on?'✓':''}</span>${highlight(o.label,qt)}</div>`;
   }).join('');
+  if(lastMatches.length>comboResults.length){
+    html+=`<div class="combo-empty">Mostrando ${comboResults.length} de ${lastMatches.length}. Refine a busca ou use "Selecionar todos".</div>`;
+  }
+  itemList.innerHTML=html;
   itemList.querySelectorAll('.combo-opt').forEach(el=>{
-    el.addEventListener('mousedown',e=>{e.preventDefault();pick(+el.dataset.idx);});
+    el.addEventListener('mousedown',e=>{
+      e.preventDefault();
+      if(el.dataset.bulk){bulkToggle();}
+      else{toggleItem(comboResults[+el.dataset.idx].value);}
+    });
   });
 }
-function openCombo(){itemList.classList.add('open');}
-function closeCombo(){itemList.classList.remove('open');comboActive=-1;}
-function pick(idx){
-  const o=comboResults[idx]; if(!o)return;
-  selectedItem=o.value;
-  itemInput.value = o.value==='__ALL__' ? '' : o.label;
-  itemClear.style.display = o.value==='__ALL__' ? 'none' : 'flex';
-  closeCombo(); render();
+function openCombo(){itemCombo.classList.add('open');itemTrigger.setAttribute('aria-expanded','true');renderCombo(itemInput.value);setTimeout(()=>itemInput.focus(),0);}
+function closeCombo(){itemCombo.classList.remove('open');itemTrigger.setAttribute('aria-expanded','false');comboActive=-1;}
+function updateTriggerLabel(){
+  const k=selectedItems.size;
+  if(k===0){itemTriggerLabel.textContent='Todos os itens';itemTrigger.classList.add('placeholder');}
+  else if(k===1){itemTriggerLabel.textContent=[...selectedItems][0];itemTrigger.classList.remove('placeholder');}
+  else{itemTriggerLabel.textContent=k+' itens selecionados';itemTrigger.classList.remove('placeholder');}
 }
-itemInput.addEventListener('focus',()=>{renderCombo(itemInput.value);openCombo();});
-itemInput.addEventListener('input',()=>{
-  comboActive=-1; renderCombo(itemInput.value); openCombo();
-  // se o usuário apagar tudo, volta a "todos"
-  if(itemInput.value.trim()===''){selectedItem='__ALL__';itemClear.style.display='none';render();}
+function toggleItem(item){
+  if(selectedItems.has(item))selectedItems.delete(item);
+  else selectedItems.add(item);
+  afterSelectionChange(true);
+}
+function bulkToggle(){
+  const allSel=lastMatches.length>0 && lastMatches.every(i=>selectedItems.has(i));
+  if(allSel) lastMatches.forEach(i=>selectedItems.delete(i));
+  else lastMatches.forEach(i=>selectedItems.add(i));
+  afterSelectionChange(true);
+}
+function afterSelectionChange(keepOpen){
+  renderChips();
+  updateTriggerLabel();
+  itemClear.style.display = selectedItems.size>0 ? 'flex' : 'none';
+  if(keepOpen) renderCombo(itemInput.value);
+  render();
+}
+function renderChips(){
+  const items=[...selectedItems];
+  if(items.length===0){itemChips.innerHTML='';return;}
+  const MAXCHIP=8;
+  let html=items.slice(0,MAXCHIP).map(it=>{
+    const safe=it.replace(/"/g,'&quot;');
+    const short=it.length>34?it.slice(0,34)+'…':it;
+    return `<span class="chip" title="${safe}"><span>${short}</span><button type="button" data-rm="${safe}" aria-label="Remover">✕</button></span>`;
+  }).join('');
+  if(items.length>MAXCHIP) html+=`<span class="chip more">+${items.length-MAXCHIP} itens</span>`;
+  itemChips.innerHTML=html;
+  itemChips.querySelectorAll('button[data-rm]').forEach(b=>{
+    b.addEventListener('click',()=>{selectedItems.delete(b.dataset.rm);afterSelectionChange(false);});
+  });
+}
+// abre/fecha o popover ao clicar no "select"
+itemTrigger.addEventListener('click',()=>{
+  if(itemCombo.classList.contains('open'))closeCombo();
+  else openCombo();
 });
+itemTrigger.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key==='Enter'||e.key===' '){e.preventDefault();openCombo();}
+});
+itemInput.addEventListener('input',()=>{comboActive=-1; renderCombo(itemInput.value);});
 itemInput.addEventListener('keydown',e=>{
-  if(!itemList.classList.contains('open'))return;
   const max=comboResults.length-1;
   if(e.key==='ArrowDown'){e.preventDefault();comboActive=Math.min(max,comboActive+1);renderCombo(itemInput.value);scrollActive();}
   else if(e.key==='ArrowUp'){e.preventDefault();comboActive=Math.max(0,comboActive-1);renderCombo(itemInput.value);scrollActive();}
-  else if(e.key==='Enter'){e.preventDefault();if(comboActive>=0)pick(comboActive);else if(comboResults.length)pick(comboResults.length>1?1:0);}
-  else if(e.key==='Escape'){closeCombo();itemInput.blur();}
+  else if(e.key==='Enter'){e.preventDefault();if(comboActive>=0&&comboResults[comboActive]){toggleItem(comboResults[comboActive].value);}else{bulkToggle();}}
+  else if(e.key==='Escape'){closeCombo();itemTrigger.focus();}
 });
 function scrollActive(){const el=itemList.querySelector('.combo-opt.active');if(el)el.scrollIntoView({block:'nearest'});}
-itemClear.addEventListener('click',()=>{selectedItem='__ALL__';itemInput.value='';itemClear.style.display='none';closeCombo();render();});
-document.addEventListener('click',e=>{if(!document.getElementById('itemCombo').contains(e.target))closeCombo();});
+itemClear.addEventListener('click',()=>{selectedItems.clear();itemInput.value='';itemChips.innerHTML='';itemClear.style.display='none';updateTriggerLabel();render();});
+document.addEventListener('click',e=>{if(!itemCombo.contains(e.target))closeCombo();});
 
 // iniciar
-document.querySelectorAll('.winFld').forEach(f=>f.style.display='none');
+mode='window';
+updateTriggerLabel();
+document.querySelectorAll('.winFld').forEach(f=>f.style.display='block');
+document.getElementById('modeNote').textContent='Comparando a mesma faixa de dias em cada mês ativo. Ex.: dias 1–21 de cada mês.';
 // Com 3 ou mais meses, já inicia comparando os três (Período C ativo)
 if(n>=3){ setCActive(true); } else { setCActive(false); }
 render();
