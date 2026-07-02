@@ -31,6 +31,9 @@ function showMonth(month, el) {
   if (month === 'jun' && typeof buildJunCharts === 'function' && !junChartsBuilt['visao']) {
     setTimeout(function(){ buildJunCharts('visao'); junChartsBuilt['visao'] = true; }, 50);
   }
+  if (month === 'jul' && typeof buildJulCharts === 'function' && !julChartsBuilt['visao']) {
+    setTimeout(function(){ buildJulCharts('visao'); julChartsBuilt['visao'] = true; }, 50);
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -397,6 +400,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="month-btn april"        onclick="showMonth('april', this)">📅 Abril 2026</div>
   <div class="month-btn may"          onclick="showMonth('may', this)">📅 Maio 2026</div>
   <div class="month-btn jun"          onclick="showMonth('jun', this)">📅 Junho 2026</div>
+  <div class="month-btn jul"          onclick="showMonth('jul', this)">📅 Julho 2026</div>
 </div>
 
 <!-- ═══════════════ MÊS: MARÇO 2026 ═══════════════ -->
@@ -3593,6 +3597,404 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 </div><!-- /month-jun -->
 
+<!-- ═══════════════ MÊS: JULHO 2026 ═══════════════ -->
+<div class="month-dashboard" id="month-jul">
+
+<div class="header">
+  <div>
+    <h1>📊 Dashboard Vendas</h1>
+    <div class="header-sub" id="jul-hdr-periodo">Julho 2026 · 🚀 EM ANDAMENTO (D+1 · 01/07 · Fat. + Categorias + Vendas Diárias)</div>
+  </div>
+  <div class="header-badges">
+    <span class="badge orange" style="color:var(--shopee)">🚀 D+1: R$ 285K · 1 de 31 dias</span>
+    <span class="badge orange" style="color:#a78bfa">Início do mês · A×A +87%</span>
+    <span class="badge" style="color:var(--muted)">ADS & Produtos: em breve</span>
+  </div>
+</div>
+
+<div class="tabs" id="jul-tabs">
+  <div class="tab active" onclick="showJulPage('visao',event)">Visão Geral</div>
+  <div class="tab" onclick="showJulPage('marketplaces',event)">Marketplaces</div>
+  <div class="tab" onclick="showJulPage('categorias',event)">Categorias</div>
+  <div class="tab" onclick="showJulPage('diario',event)">Vendas Diárias</div>
+  <div class="tab" onclick="showJulPage('produtos',event)">Análise de Produtos</div>
+  <div class="tab" onclick="showJulPage('ads',event)">📣 ADS & Afiliados</div>
+</div>
+
+<!-- ═══ JULHO: VISÃO GERAL ═══ -->
+<div class="page active" id="jul-page-visao">
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Faturamento (D+1 · 01/07)</div>
+      <div class="kpi-value">R$ 285K</div>
+      <div class="kpi-sub"><span class="kpi-pill">R$ 285.338,21</span> · 1º dia do mês</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--green)">
+      <div class="kpi-label">% Meta Mensal</div>
+      <div class="kpi-value" style="color:var(--yellow)">2,59%</div>
+      <div class="kpi-sub">Meta R$ 11,00M · realizado <span class="kpi-pill">R$ 285.338,21</span></div>
+    </div>
+    <div class="kpi-card" style="--c:var(--shopee)">
+      <div class="kpi-label">vs Orçado do dia</div>
+      <div class="kpi-value" style="color:var(--yellow)">80,4%</div>
+      <div class="kpi-sub">Orçado R$ 354.838,70/dia</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Crescimento A×A</div>
+      <div class="kpi-value" style="color:var(--green)">+87%</div>
+      <div class="kpi-sub">01/jul-25 R$ 152K → 01/jul-26 R$ 285K</div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(124,58,237,.04));border:1px solid rgba(56,189,248,.3);border-radius:12px;padding:14px 18px;margin:18px 0;">
+    <div style="font-size:.78rem;color:var(--accent);font-weight:700;margin-bottom:4px;">🚀 INÍCIO DO MÊS · D+1 (01/07): R$ 285.338,21 · A×A +87%</div>
+    <div style="font-size:.82rem;color:var(--text);line-height:1.6;">O primeiro dia de Julho registrou <strong>R$ 285.338,21</strong> de faturamento — <strong style="color:var(--green)">+87% vs 01/jul/2025 (R$ 152.272,76)</strong>. Contra o dia 1 de Junho (R$ 644.254,69) houve queda de -55,71%, esperada por sazonalidade de início de mês. A meta mensal é de R$ 11,00M (orçado R$ 354.838,70/dia). Dados de ADS & Afiliados e Análise de Produtos serão adicionados ao longo da semana.</div>
+  </div>
+
+  <div class="section-title">Performance por Categoria — D+1 (01/07)</div>
+  <div class="grid-3" style="grid-template-columns:repeat(4,1fr);">
+    <div class="chart-card" style="border-color:rgba(52,211,153,.45);background:linear-gradient(135deg,rgba(52,211,153,.05),transparent);">
+      <div class="chart-title">🛋️ Guarda-Roupa (GR)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gr);margin-bottom:4px;">R$ 172,5K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 5,94M · Realizado: <strong>R$ 172.467,40</strong></div>
+      <div class="prog-row">
+        <div class="prog-label">Realizado</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:2.9%;background:var(--gr);"></div></div>
+        <div class="prog-val" style="color:var(--muted)">2,90%</div>
+      </div>
+      <div style="margin-top:12px;"><span class="tag" style="background:rgba(56,189,248,.15);color:var(--accent);">📅 DIA 1 DE 31</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">60% do faturamento do dia</div>
+    </div>
+    <div class="chart-card" style="border-color:rgba(129,140,248,.45);background:linear-gradient(135deg,rgba(129,140,248,.05),transparent);">
+      <div class="chart-title">🪞 Complementos (COMP)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--comp);margin-bottom:4px;">R$ 43,5K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,65M · Realizado: <strong>R$ 43.485,01</strong></div>
+      <div class="prog-row">
+        <div class="prog-label">Realizado</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:2.64%;background:var(--comp);"></div></div>
+        <div class="prog-val" style="color:var(--muted)">2,64%</div>
+      </div>
+      <div style="margin-top:12px;"><span class="tag" style="background:rgba(56,189,248,.15);color:var(--accent);">📅 DIA 1 DE 31</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">15% do faturamento do dia</div>
+    </div>
+    <div class="chart-card" style="border-color:rgba(251,113,133,.45);background:linear-gradient(135deg,rgba(251,113,133,.05),transparent);">
+      <div class="chart-title">🪑 Sala de Jantar (SALA)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--sala);margin-bottom:4px;">R$ 69,4K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 2,42M · Realizado: <strong>R$ 69.385,80</strong></div>
+      <div class="prog-row">
+        <div class="prog-label">Realizado</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:2.87%;background:var(--sala);"></div></div>
+        <div class="prog-val" style="color:var(--muted)">2,87%</div>
+      </div>
+      <div style="margin-top:12px;"><span class="tag" style="background:rgba(56,189,248,.15);color:var(--accent);">📅 DIA 1 DE 31</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">24% do faturamento do dia</div>
+    </div>
+    <div class="chart-card" style="border-color:rgba(245,158,11,.35);">
+      <div class="chart-title" style="color:#f59e0b;">🍳 Cozinha</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#f59e0b;margin-bottom:4px;">R$ 0</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 1,10M · Realizado: <strong>R$ —</strong></div>
+      <div class="prog-row">
+        <div class="prog-label">Realizado</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:0%;background:#f59e0b;"></div></div>
+        <div class="prog-val" style="color:var(--muted)">0,00%</div>
+      </div>
+      <div style="margin-top:12px;"><span class="tag" style="background:rgba(245,158,11,.18);color:#f59e0b;">🌱 SEM VENDAS NO DIA 1</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">categoria ainda sem registro</div>
+    </div>
+  </div>
+
+  <div class="axo-grid">
+    <div class="axo-card" style="border-color:rgba(56,189,248,.3);">
+      <div class="axo-label">Dia Anterior (01/jun · base sheet)</div>
+      <div class="axo-val" style="color:var(--muted);">R$ 644K</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">R$ 644.254,69 (comparativo 1º dia)</div>
+    </div>
+    <div class="axo-card" style="border-color:rgba(239,68,68,.3);">
+      <div class="axo-label">Dia Atual vs Dia Anterior</div>
+      <div class="axo-val" style="color:var(--red);">▼ -55,71%</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">R$ 285K vs R$ 644K · sazonalidade início mês</div>
+    </div>
+    <div class="axo-card" style="border-color:rgba(34,197,94,.4);background:linear-gradient(135deg,rgba(34,197,94,.05),transparent);">
+      <div class="axo-label">Crescimento Ano x Ano</div>
+      <div class="axo-val" style="color:var(--green);">▲ +87%</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">01/jul/2025: R$ 152.272,76 (base sheet)</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">📈 Faturamento por Categoria · D+1</div>
+      <div class="chart-wrap"><canvas id="julCatChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🛒 Faturamento por Marketplace · D+1</div>
+      <div class="chart-wrap"><canvas id="julMktChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ JULHO: MARKETPLACES ═══ -->
+<div class="page" id="jul-page-marketplaces">
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Shopee · Líder D+1</div>
+      <div class="kpi-value" style="color:var(--shopee);">R$ 151K</div>
+      <div class="kpi-sub"><span class="kpi-pill">53% · M×M -60%</span> · A×A +155%</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--ml)">
+      <div class="kpi-label">Mercado Livre</div>
+      <div class="kpi-value" style="color:var(--ml);">R$ 57K</div>
+      <div class="kpi-sub"><span class="kpi-pill">20% · M×M -39% · A×A +55%</span></div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Magalu · D+1</div>
+      <div class="kpi-value" style="color:var(--magalu);">R$ 56K</div>
+      <div class="kpi-sub"><span class="kpi-pill">20% · M×M -62% · A×A +42%</span></div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Outros Canais</div>
+      <div class="kpi-value" style="color:var(--comp);">R$ 21K</div>
+      <div class="kpi-sub">Via + Madeira + Site · ~7%</div>
+    </div>
+  </div>
+
+  <div class="section-title">Participação D+1 (01/07)</div>
+  <div class="chart-card" style="margin-bottom:20px;">
+    <div class="chart-title">Distribuição do Faturamento — Realizado D+1</div>
+    <div style="margin-top:8px;">
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--shopee)">🟠 Shopee</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:52.96%;background:var(--shopee);"></div></div><div class="mkt-val">R$ 151.123,20</div><div class="mkt-var"><span class="tag tag-green">53%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--ml)">🟡 Merc.Livre</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:20.14%;background:var(--ml);"></div></div><div class="mkt-val">R$ 57.476,51</div><div class="mkt-var"><span class="tag tag-green">20%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--magalu)">🔵 Magalu</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:19.54%;background:var(--magalu);"></div></div><div class="mkt-val">R$ 55.743,72</div><div class="mkt-var"><span class="tag tag-green">20%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--via)">🟣 Via Varejo</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:3.94%;background:var(--via);"></div></div><div class="mkt-val">R$ 11.246,90</div><div class="mkt-var"><span class="tag">4%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--madeira)">🪵 Madeira</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:2.69%;background:var(--madeira);"></div></div><div class="mkt-val">R$ 7.674,33</div><div class="mkt-var"><span class="tag">3%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:#06b6d4">🏠 Site Lopas</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:.73%;background:#06b6d4;"></div></div><div class="mkt-val">R$ 2.073,55</div><div class="mkt-var"><span class="tag">0,7%</span></div></div>
+      <div class="mkt-row"><div class="mkt-name" style="color:var(--web)">⚪ Web Cont.</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:0%;background:var(--web);"></div></div><div class="mkt-val">R$ —</div><div class="mkt-var"><span class="tag">0%</span></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Tabela Completa — D+1 com Dia Anterior e A×A</div>
+  <div class="chart-card">
+    <table class="data-table">
+      <thead><tr><th>Canal</th><th>D+1 (01/07)</th><th>01/jun (base)</th><th>Var. M×M</th><th>01/jul-25 (base)</th><th>Var. A×A</th><th>Part. %</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--shopee);font-weight:700;">🟠 Shopee</td><td>R$ 151.123,20</td><td>R$ 380.407,66</td><td><span class="tag tag-red">-60%</span></td><td>R$ 59.305,91</td><td><span class="tag tag-green">+155%</span></td><td>53%</td></tr>
+        <tr><td style="color:var(--ml);font-weight:700;">🟡 Merc.Livre</td><td>R$ 57.476,51</td><td>R$ 94.333,99</td><td><span class="tag tag-red">-39%</span></td><td>R$ 37.035,76</td><td><span class="tag tag-green">+55%</span></td><td>20%</td></tr>
+        <tr><td style="color:var(--magalu);font-weight:700;">🔵 Magalu</td><td>R$ 55.743,72</td><td>R$ 146.341,13</td><td><span class="tag tag-red">-62%</span></td><td>R$ 39.253,96</td><td><span class="tag tag-green">+42%</span></td><td>20%</td></tr>
+        <tr><td style="color:var(--via);font-weight:700;">🟣 Via Varejo</td><td>R$ 11.246,90</td><td>R$ 8.399,22</td><td><span class="tag tag-green">+34%</span></td><td>R$ 3.490,25</td><td><span class="tag tag-green">+222%</span></td><td>4%</td></tr>
+        <tr><td style="color:var(--madeira);font-weight:700;">🪵 Madeira</td><td>R$ 7.674,33</td><td>R$ 10.741,24</td><td><span class="tag tag-red">-29%</span></td><td>R$ 8.541,45</td><td><span class="tag tag-red">-10%</span></td><td>3%</td></tr>
+        <tr><td style="color:#06b6d4;font-weight:700;">🏠 Site Lopas</td><td>R$ 2.073,55</td><td>R$ 2.077,15</td><td><span class="tag">-0%</span></td><td>R$ —</td><td><span class="tag tag-green">novo</span></td><td>0,7%</td></tr>
+        <tr><td style="color:var(--web);font-weight:700;">⚪ Web Cont.</td><td>R$ —</td><td>R$ 1.954,31</td><td><span class="tag tag-red">-100%</span></td><td>R$ 1.353,21</td><td><span class="tag tag-red">-100%</span></td><td>0%</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 285.338,21</td><td>R$ 644.254,70</td><td><span class="tag tag-red">-55,71%</span></td><td>R$ 148.980,54</td><td><span class="tag tag-green">+92%</span></td><td>100%</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:.72rem;color:var(--muted);margin-top:10px;line-height:1.5;">📌 Faturamento oficial do 1º dia do mês (01/07). Comparativos M×M usam o 1º dia de Junho e A×A o 1º dia de Julho/2025 (base da planilha).</div>
+  </div>
+</div>
+
+<!-- ═══ JULHO: CATEGORIAS ═══ -->
+<div class="page" id="jul-page-categorias">
+  <div class="section-title">Faturado × Meta por Categoria e Marketplace — D+1 (01/07)</div>
+  <div style="background:linear-gradient(135deg,rgba(56,189,248,.08),transparent);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:.78rem;color:var(--muted);line-height:1.5;">
+    📅 <strong style="color:var(--accent);">Início do mês:</strong> Detalhamento por categoria <em>dentro de cada marketplace</em> no 1º dia (01/07). Metas exibidas são as mensais. Totais por marketplace: Shopee R$ 151.123,20 · Mercado Livre R$ 57.476,51 · Magalu R$ 55.743,72 · Via R$ 11.246,90 · Madeira R$ 7.674,33 · Site R$ 2.073,55.
+  </div>
+  <div class="cat-grid-mp">
+
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--shopee);"><div class="cat-mp-name" style="color:var(--shopee);">🟠 Shopee</div><div class="cat-mp-total">D+1: R$ 151.123,20</div></div>
+      <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>% Meta</th></tr></thead><tbody>
+        <tr><td>COMP</td><td>R$ 33.632,25</td><td>R$ 980.000,00</td><td><span class="tag tag-yellow">3,43%</span></td></tr>
+        <tr><td>GR</td><td>R$ 67.674,39</td><td>R$ 3.780.000,00</td><td><span class="tag tag-yellow">1,79%</span></td></tr>
+        <tr><td>SALA</td><td>R$ 49.816,56</td><td>R$ 1.540.000,00</td><td><span class="tag tag-yellow">3,23%</span></td></tr>
+        <tr><td style="color:#f59e0b">🍳 COZINHA</td><td>R$ —</td><td>R$ 700.000,00</td><td><span class="tag tag-red">0,00%</span></td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 151.123,20</td><td>R$ 7.000.000,00</td><td><span class="tag tag-yellow">2,16%</span></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--ml);"><div class="cat-mp-name" style="color:var(--ml);">🟡 Mercado Livre</div><div class="cat-mp-total">D+1: R$ 57.476,51</div></div>
+      <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>% Meta</th></tr></thead><tbody>
+        <tr><td>COMP</td><td>R$ 5.529,49</td><td>R$ 350.000,00</td><td><span class="tag tag-yellow">1,58%</span></td></tr>
+        <tr><td>GR</td><td>R$ 42.311,19</td><td>R$ 1.600.000,00</td><td><span class="tag tag-yellow">2,64%</span></td></tr>
+        <tr><td>SALA</td><td>R$ 9.635,83</td><td>R$ 550.000,00</td><td><span class="tag tag-yellow">1,75%</span></td></tr>
+        <tr><td style="color:#f59e0b">🍳 COZINHA</td><td>R$ —</td><td>R$ 250.000,00</td><td><span class="tag tag-red">0,00%</span></td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 57.476,51</td><td>R$ 2.500.000,00</td><td><span class="tag tag-yellow">2,30%</span></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--magalu);"><div class="cat-mp-name" style="color:var(--magalu);">🔵 Magalu</div><div class="cat-mp-total">D+1: R$ 55.743,72</div></div>
+      <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>% Meta</th></tr></thead><tbody>
+        <tr><td>COMP</td><td>R$ 1.804,09</td><td>R$ 420.000,00</td><td><span class="tag tag-red">0,43%</span></td></tr>
+        <tr><td>GR</td><td>R$ 45.175,14</td><td>R$ 1.920.000,00</td><td><span class="tag tag-yellow">2,35%</span></td></tr>
+        <tr><td>SALA</td><td>R$ 8.764,49</td><td>R$ 660.000,00</td><td><span class="tag tag-yellow">1,33%</span></td></tr>
+        <tr><td style="color:#f59e0b">🍳 COZINHA</td><td>R$ —</td><td>R$ 300.000,00</td><td><span class="tag tag-red">0,00%</span></td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 55.743,72</td><td>R$ 3.000.000,00</td><td><span class="tag tag-yellow">1,86%</span></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--madeira);"><div class="cat-mp-name" style="color:var(--madeira);">🪵 Madeira</div><div class="cat-mp-total">D+1: R$ 7.674,33</div></div>
+      <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>% Meta</th></tr></thead><tbody>
+        <tr><td>COMP</td><td>R$ 1.822,62</td><td>R$ 21.000,00</td><td><span class="tag tag-yellow">8,68%</span></td></tr>
+        <tr><td>GR</td><td>R$ 4.682,81</td><td>R$ 96.000,00</td><td><span class="tag tag-yellow">4,88%</span></td></tr>
+        <tr><td>SALA</td><td>R$ 1.168,91</td><td>R$ 33.000,00</td><td><span class="tag tag-yellow">3,54%</span></td></tr>
+        <tr><td style="color:#f59e0b">🍳 COZINHA</td><td>R$ —</td><td>R$ 15.000,00</td><td><span class="tag tag-red">0,00%</span></td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 7.674,33</td><td>R$ 150.000,00</td><td><span class="tag tag-yellow">5,12%</span></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid var(--via);"><div class="cat-mp-name" style="color:var(--via);">🟣 Via Varejo</div><div class="cat-mp-total">D+1: R$ 11.246,90</div></div>
+      <table class="data-table"><thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>% Meta</th></tr></thead><tbody>
+        <tr><td>COMP</td><td>R$ —</td><td>R$ 42.000,00</td><td><span class="tag tag-red">0,00%</span></td></tr>
+        <tr><td>GR</td><td>R$ 11.246,90</td><td>R$ 192.000,00</td><td><span class="tag tag-yellow">5,86%</span></td></tr>
+        <tr><td>SALA</td><td>R$ —</td><td>R$ 66.000,00</td><td><span class="tag tag-red">0,00%</span></td></tr>
+        <tr><td style="color:#f59e0b">🍳 COZINHA</td><td>R$ —</td><td>R$ 30.000,00</td><td><span class="tag tag-red">0,00%</span></td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 11.246,90</td><td>R$ 300.000,00</td><td><span class="tag tag-yellow">3,75%</span></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="cat-mp-card">
+      <div class="cat-mp-header" style="border-left:3px solid #06b6d4;">
+        <div class="cat-mp-name" style="color:#06b6d4;">🏠 Site / Venda Direta</div>
+        <div class="cat-mp-total">D+1: R$ 2.073,55</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Cat.</th><th>Faturado</th><th>Meta</th><th>% Meta</th></tr></thead>
+        <tbody>
+          <tr><td>COMP</td><td>R$ 696,57</td><td>R$ 6.366,08</td><td><span class="tag tag-yellow">10,94%</span></td></tr>
+          <tr><td>GR</td><td>R$ 1.376,98</td><td>R$ 19.200,00</td><td><span class="tag tag-yellow">7,17%</span></td></tr>
+          <tr><td>SALA</td><td>R$ —</td><td>R$ 660,00</td><td><span class="tag tag-red">0,00%</span></td></tr>
+          <tr><td style="color:#f59e0b">🍳 COZINHA</td><td>R$ —</td><td>R$ 3.000,00</td><td><span class="tag tag-red">0,00%</span></td></tr>
+          <tr class="total-row"><td>TOTAL</td><td>R$ 2.073,55</td><td>R$ 30.000,00</td><td><span class="tag tag-yellow">6,91%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">📊 Fat. por Categoria — Todos Canais (D+1)</div>
+      <div class="chart-wrap"><canvas id="julCatDetailChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ JULHO: VENDAS DIÁRIAS ═══ -->
+<div class="page" id="jul-page-diario">
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Total D+1 (Geral)</div>
+      <div class="kpi-value">R$ 272K</div>
+      <div class="kpi-sub">01/07: R$ 271.534,04 · 1 dia</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--yellow)">
+      <div class="kpi-label">Média Diária (D+1)</div>
+      <div class="kpi-value" style="color:var(--yellow)">R$ 272K</div>
+      <div class="kpi-sub">R$ 271.534,04 / dia</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--shopee)">
+      <div class="kpi-label">Shopee · Líder do dia</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 165K</div>
+      <div class="kpi-sub">R$ 165.297,44 · 61% do dia</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Dias Restantes</div>
+      <div class="kpi-value" style="color:var(--comp)">30</div>
+      <div class="kpi-sub">de 31 dias do mês</div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,rgba(56,189,248,.06),transparent);border:1px solid rgba(56,189,248,.2);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.8rem;color:var(--muted);line-height:1.5;">
+    💡 <strong style="color:var(--text);">Nota:</strong> "Vendas Diárias" (R$ 271,5K) = total de vendas registradas no dia · "Faturamento" oficial (R$ 285,3K) = pedidos confirmados/despachados. As duas métricas convergem ao longo do mês conforme os pedidos são processados.
+  </div>
+
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">📅 Vendas Diárias Gerais — Realizado D+1 (01/07)</div>
+    <div style="position:relative;height:280px;"><canvas id="julDailyChart"></canvas></div>
+  </div>
+
+  <div class="section-title">Detalhe Diário por Marketplace · com Média e Projeção</div>
+  <div class="daily-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th style="color:var(--text)">Geral</th>
+          <th style="color:var(--shopee)">Shopee</th>
+          <th style="color:var(--ml)">Meili/ML</th>
+          <th style="color:var(--magalu)">Magalu</th>
+          <th style="color:var(--madeira)">Madeira</th>
+          <th style="color:var(--via)">Via</th>
+          <th style="color:var(--web)">Web</th>
+        </tr>
+      </thead>
+      <tbody id="julDailyTbody"></tbody>
+    </table>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      📊 <strong style="color:var(--accent);">MÉDIA</strong> = média diária por marketplace (dias com vendas) ·
+      🎯 <strong style="color:var(--green);">PROJEÇÃO</strong> = extrapolação linear para 31 dias do mês de Julho (conforme planilha).
+    </div>
+  </div>
+
+  <div class="section-title">💰 Orçado × Realizado por Dia — D+1 (01/07)</div>
+  <div class="chart-card">
+    <div class="kpi-strip" style="margin-bottom:16px;">
+      <div class="kpi-card" style="--c:var(--green)">
+        <div class="kpi-label">Realizado acumulado</div>
+        <div class="kpi-value" style="color:var(--green)">R$ 285K</div>
+        <div class="kpi-sub">R$ 285.338,21 · 1 dia</div>
+      </div>
+      <div class="kpi-card" style="--c:var(--yellow)">
+        <div class="kpi-label">Orçado diário</div>
+        <div class="kpi-value" style="color:var(--yellow)">R$ 355K</div>
+        <div class="kpi-sub">R$ 354.838,70/dia · meta R$ 11,00M/31d</div>
+      </div>
+      <div class="kpi-card" style="--c:var(--shopee)">
+        <div class="kpi-label">% da meta do dia</div>
+        <div class="kpi-value" style="color:var(--yellow)">80,4%</div>
+        <div class="kpi-sub">R$ 285K vs R$ 355K orçado (1d)</div>
+      </div>
+      <div class="kpi-card purple">
+        <div class="kpi-label">Projeção 31 dias</div>
+        <div class="kpi-value" style="color:var(--comp)">R$ 8,85M</div>
+        <div class="kpi-sub">R$ 8.845.484,36 · conforme planilha</div>
+      </div>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Dia</th><th>Orçado</th><th>Realizado</th><th>% da meta diária</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>01/07</strong></td><td>R$ 354.838,70</td><td>R$ 285.338,21</td><td><span class="tag tag-yellow">80,4%</span></td><td><span class="tag tag-yellow">▼ abaixo</span></td></tr>
+        <tr class="total-row"><td><strong>TOTAL 1d</strong></td><td><strong>R$ 354.838,70</strong></td><td><strong>R$ 285.338,21</strong></td><td><span class="tag tag-yellow">80,4%</span></td><td><span class="tag tag-yellow">0 dias acima</span></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      💡 <strong style="color:var(--text);">Orçado diário</strong> = meta mensal de R$ 11.000.000,00 ÷ 31 dias. O 1º dia realizou R$ 285.338,21 (80,4% do orçado do dia). A projeção linear da planilha para o mês é de R$ 8,85M.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ JULHO: ANÁLISE DE PRODUTOS — em breve ═══ -->
+<div class="page" id="jul-page-produtos">
+  <div class="section-title">📦 Análise de Produtos — Julho 2026</div>
+  <div style="background:linear-gradient(135deg,rgba(56,189,248,.06),transparent);border:1px solid rgba(56,189,248,.25);border-radius:12px;padding:40px;text-align:center;margin-top:12px;">
+    <div style="font-size:2.4rem;margin-bottom:10px;">🗓️</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:8px;">Dados em breve</div>
+    <div style="font-size:.85rem;color:var(--muted);line-height:1.6;max-width:520px;margin:0 auto;">A análise de produtos de Julho (top produtos, estados, mapa de calor e horários de pico) será adicionada ao longo da semana, assim que os dados forem enviados.</div>
+  </div>
+</div>
+
+<!-- ═══ JULHO: ADS & AFILIADOS — em breve ═══ -->
+<div class="page" id="jul-page-ads">
+  <div class="section-title">📣 ADS & Afiliados — Julho 2026</div>
+  <div style="background:linear-gradient(135deg,rgba(249,115,22,.06),transparent);border:1px solid rgba(249,115,22,.25);border-radius:12px;padding:40px;text-align:center;margin-top:12px;">
+    <div style="font-size:2.4rem;margin-bottom:10px;">🗓️</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:8px;">Dados em breve</div>
+    <div style="font-size:.85rem;color:var(--muted);line-height:1.6;max-width:520px;margin:0 auto;">Os dados de investimento em ADS (Shopee, Mercado Livre e Magalu) e de Afiliados de Julho serão adicionados ao longo da semana, assim que forem enviados.</div>
+  </div>
+</div>
+
+</div><!-- /month-jul -->
+
+
 
 <!-- ═══════════════ ACUMULADO 2026 (YTD) ═══════════════ -->
 <div class="month-dashboard active" id="month-ytd">
@@ -4547,6 +4949,9 @@ function showMonth(month, el) {
   if (month === 'jun' && typeof buildJunCharts === 'function' && !junChartsBuilt['visao']) {
     setTimeout(function(){ buildJunCharts('visao'); junChartsBuilt['visao'] = true; }, 50);
   }
+  if (month === 'jul' && typeof buildJulCharts === 'function' && !julChartsBuilt['visao']) {
+    setTimeout(function(){ buildJulCharts('visao'); julChartsBuilt['visao'] = true; }, 50);
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -5481,6 +5886,174 @@ function buildJunCharts(page) {
           backgroundColor: '#38bdf8',
           borderRadius: 6,
           barThickness: 40
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ' R$ ' + ctx.raw.toLocaleString('pt-BR', {minimumFractionDigits:2}) } }
+        },
+        scales: {
+          x: { grid: gridCfg, ticks: tickCfg },
+          y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } }
+        }
+      }
+    });
+  }
+}
+
+
+// ══════════════════════════════════════════════
+// JULHO 2026 — TABS, CHARTS, VENDAS DIÁRIAS
+// ══════════════════════════════════════════════
+const julChartsBuilt = {};
+
+function showJulPage(id, e) {
+  const jul = document.getElementById('month-jul');
+  jul.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  jul.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('jul-page-' + id).classList.add('active');
+  if (e && e.currentTarget) e.currentTarget.classList.add('active');
+  if (!julChartsBuilt[id]) { buildJulCharts(id); julChartsBuilt[id] = true; }
+}
+
+// Vendas Diárias Julho 2026 — D+1 (01/07 disponível)
+// Total Geral D+1: R$ 271.534,04
+const julDaily = [
+  {d:'01/07', g:271534.04, sh:165297.44, me:44313.45, ma:50036.41, mad:2234.12, via:9652.62, web:0, zema:0},
+];
+
+// Projeção mensal de vendas (linear · conforme planilha, 31 dias)
+const julProjecao = {
+  g: 8417555.24, sh: 5124220.64, me: 1373716.95,
+  ma: 1551128.71, mad: 69257.72, via: 299231.22, web: 0, zema: 0
+};
+
+function renderJulDaily() {
+  const tbody = document.getElementById('julDailyTbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  const keys = ['sh','me','ma','mad','via','web','zema'];
+
+  julDaily.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><strong>${row.d}</strong></td><td>R$ ${row.g.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>` +
+      keys.map(k => `<td>${row[k] ? 'R$ ' + row[k].toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</td>`).join('');
+    tbody.appendChild(tr);
+  });
+
+  const totalDays = julDaily.length;
+  const totals = keys.map(k => julDaily.reduce((a,r)=>a+r[k],0));
+  const totalG = julDaily.reduce((a,r)=>a+r.g,0);
+  const totalRow = document.createElement('tr');
+  totalRow.className = 'total-row';
+  totalRow.innerHTML = `<td><strong>TOTAL D+${totalDays}</strong></td><td><strong>R$ ${totalG.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></td>` +
+    totals.map(t => `<td><strong>${t ? 'R$ ' + t.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</strong></td>`).join('');
+  tbody.appendChild(totalRow);
+
+  const daysWithSales = {};
+  keys.forEach(k => daysWithSales[k] = julDaily.filter(r => r[k] > 0).length || 1);
+  const avgs = keys.map(k => totals[keys.indexOf(k)] / daysWithSales[k]);
+  const avgG = totalG / totalDays;
+  const mediaRow = document.createElement('tr');
+  mediaRow.style.background = 'rgba(56,189,248,.06)';
+  mediaRow.innerHTML = `<td><strong style="color:var(--accent)">MÉDIA</strong></td><td><strong style="color:var(--accent)">R$ ${avgG.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></td>` +
+    avgs.map(v => `<td style="color:var(--accent)"><strong>${v ? 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</strong></td>`).join('');
+  tbody.appendChild(mediaRow);
+
+  const projRow = document.createElement('tr');
+  projRow.style.background = 'rgba(34,197,94,.06)';
+  const projGeral = julProjecao.g;
+  projRow.innerHTML = `<td><strong style="color:var(--green)">PROJEÇÃO 31d</strong></td><td><strong style="color:var(--green)">R$ ${projGeral.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></td>` +
+    keys.map(k => {
+      const v = julProjecao[k];
+      return `<td style="color:var(--green)"><strong>${v ? 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</strong></td>`;
+    }).join('');
+  tbody.appendChild(projRow);
+}
+
+function buildJulCharts(page) {
+  if (page === 'visao') {
+    const ec = Chart.getChart(document.getElementById('julCatChart')); if(ec) ec.destroy();
+    const em = Chart.getChart(document.getElementById('julMktChart')); if(em) em.destroy();
+    // Categorias D+1 (01/07): GR R$ 172.467,40 · SALA R$ 69.385,80 · COMP R$ 43.485,01 · COZINHA R$ 0
+    new Chart(document.getElementById('julCatChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['GR', 'SALA', 'COMP', '🍳 Cozinha'],
+        datasets: [{
+          data: [172467.40, 69385.80, 43485.01, 0],
+          backgroundColor: ['#34d399', '#fb7185', '#818cf8', '#f59e0b'],
+          borderWidth: 2, borderColor: '#161d2e'
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: legendCfg,
+          tooltip: { callbacks: { label: ctx => ' R$ ' + (ctx.raw/1000).toFixed(1) + 'K' } }
+        }
+      }
+    });
+    // Marketplaces D+1 (01/07)
+    new Chart(document.getElementById('julMktChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Shopee', 'ML', 'Magalu', 'Via', 'Madeira', 'Site', 'Web'],
+        datasets: [{
+          data: [151123.20, 57476.51, 55743.72, 11246.90, 7674.33, 2073.55, 0],
+          backgroundColor: ['#f97316', '#ffe000', '#0086ff', '#c084fc', '#e07b54', '#06b6d4', '#64748b'],
+          borderRadius: 6, barThickness: 32
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: gridCfg, ticks: tickCfg },
+          y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } }
+        }
+      }
+    });
+  }
+  if (page === 'categorias') {
+    const ed = Chart.getChart(document.getElementById('julCatDetailChart')); if(ed) ed.destroy();
+    // Detalhe categoria × marketplace (D+1 · 01/07) — conforme planilha
+    new Chart(document.getElementById('julCatDetailChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Shopee', 'ML', 'Magalu', 'Madeira', 'Via', 'Site'],
+        datasets: [
+          { label: 'GR',          data: [67674.39, 42311.19, 45175.14, 4682.81, 11246.90, 1376.98], backgroundColor: '#34d399', borderRadius: 4 },
+          { label: 'SALA',        data: [49816.56, 9635.83,  8764.49,  1168.91, 0,        0],       backgroundColor: '#fb7185', borderRadius: 4 },
+          { label: 'COMP',        data: [33632.25, 5529.49,  1804.09,  1822.62, 0,        696.57],  backgroundColor: '#818cf8', borderRadius: 4 },
+          { label: '🍳 Cozinha',  data: [0,        0,        0,        0,       0,        0],        backgroundColor: '#f59e0b', borderRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: legendCfg },
+        scales: {
+          x: { grid: gridCfg, ticks: tickCfg },
+          y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } }
+        }
+      }
+    });
+  }
+  if (page === 'diario') {
+    renderJulDaily();
+    const ed = Chart.getChart(document.getElementById('julDailyChart')); if(ed) ed.destroy();
+    new Chart(document.getElementById('julDailyChart'), {
+      type: 'bar',
+      data: {
+        labels: julDaily.map(r => r.d),
+        datasets: [{
+          label: 'Vendas Diárias (Geral)',
+          data: julDaily.map(r => r.g),
+          backgroundColor: '#38bdf8',
+          borderRadius: 6,
+          barThickness: 60
         }]
       },
       options: {
