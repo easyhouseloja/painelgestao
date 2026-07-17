@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel de Indicadores de Metas · Easy House</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0f1a;--card:#161d2e;--border:#1f2d45;
+  --accent:#E8461E;--green:#27ae60;--red:#e74c3c;--yellow:#e6a817;
+  --text:#e8edf8;--muted:#8899bb;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px}
+
+nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0 20px}
+.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;padding:14px 20px 14px 0;border-right:1px solid var(--border);margin-right:16px;white-space:nowrap}
+.nav-brand span{color:var(--accent)}
+.nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
+.nav-tab{padding:14px 13px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color .2s}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.nav-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding:14px 0;white-space:nowrap}
+
+.page{padding:24px 28px;max-width:1400px;margin:0 auto}
+.ph{margin-bottom:24px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.ph h1{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:4px}
+.ph p{color:var(--muted);font-size:13px}
+
+.btn-refresh{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(232,70,30,.1);border:1px solid rgba(232,70,30,.35);
+  color:var(--accent);border-radius:8px;padding:8px 14px;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s
+}
+.btn-refresh:hover{background:rgba(232,70,30,.18);border-color:rgba(232,70,30,.55)}
+.btn-refresh:disabled{opacity:.5;cursor:default}
+.btn-refresh.loading svg{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.row{display:grid;gap:16px;margin-bottom:20px}
+.c4{grid-template-columns:repeat(4,1fr)}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.kpi-l{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.kpi-v{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;line-height:1}
+.kpi-s{font-size:11px;color:var(--muted);margin-top:6px}
+.kg{border-color:rgba(30,132,73,.35);background:rgba(30,132,73,.06)}
+.ka{border-color:rgba(232,70,30,.35);background:rgba(232,70,30,.06)}
+.kw{border-color:rgba(183,119,13,.35);background:rgba(183,119,13,.06)}
+.kt{border-color:rgba(26,82,118,.4);background:rgba(26,82,118,.1)}
+
+.sec{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.tw{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.ts{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{background:#0d1626;padding:11px 16px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:14px 16px;font-size:13px;border-bottom:1px solid rgba(31,45,69,.5);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(46,74,122,.1)}
+.mn{font-family:'DM Mono',monospace}
+
+.ind-nome{font-weight:600;font-size:13.5px}
+.ind-desc{font-size:11px;color:var(--muted);margin-top:3px}
+
+.val-big{font-family:'DM Mono',monospace;font-size:19px;font-weight:500}
+
+.bdg{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap}
+.bdg-ok{background:rgba(30,132,73,.15);color:#27ae60;border:1px solid rgba(30,132,73,.35)}
+.bdg-nok{background:rgba(192,57,43,.15);color:#e74c3c;border:1px solid rgba(192,57,43,.35)}
+.bdg-load{background:rgba(136,153,187,.1);color:var(--muted);border:1px solid rgba(136,153,187,.25)}
+
+.desvio-pos{color:#27ae60;font-weight:700;font-family:'DM Mono',monospace}
+.desvio-neg{color:#e74c3c;font-weight:700;font-family:'DM Mono',monospace}
+.desvio-nul{color:var(--muted);font-family:'DM Mono',monospace}
+
+.bar-row{display:flex;align-items:center;gap:10px;min-width:150px}
+.bar-w{background:rgba(255,255,255,.05);border-radius:4px;height:7px;flex:1;overflow:hidden;position:relative}
+.bar-f{height:100%;border-radius:4px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.bar-meta-mark{position:absolute;top:-2px;width:2px;height:11px;background:rgba(255,255,255,.5);border-radius:1px}
+.bar-pct{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);min-width:46px;text-align:right}
+
+.ibox{background:rgba(30,82,118,.1);border:1px solid rgba(30,82,118,.22);border-radius:8px;padding:10px 15px;font-size:11.5px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+
+.skeleton{display:inline-block;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:4px;color:transparent}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.err-note{font-size:11px;color:#e74c3c;margin-top:4px}
+
+@media(max-width:900px){
+  .row.c4{grid-template-columns:1fr 1fr}
+  .page{padding:16px 14px}
+  td,th{padding:10px 12px}
+}
+@media(max-width:560px){
+  .row.c4{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">EASY <span>HOUSE</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active">Indicadores de Metas</button>
+  </div>
+  <div class="nav-date" id="nav-date">—</div>
+</nav>
+
+<div class="page">
+
+  <div class="ph">
+    <div>
+      <h1>Painel de Indicadores de Metas</h1>
+      <p>Acompanhamento de metas por indicador · dados buscados na origem a cada carregamento</p>
+    </div>
+    <button class="btn-refresh" id="btn-refresh" onclick="carregarIndicadores()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/>
+      </svg>
+      <span id="btn-refresh-txt">Atualizar</span>
+    </button>
+  </div>
+
+  <div class="ibox">
+    <strong style="color:#5dade2">Origem dos dados:</strong> cada indicador é lido diretamente do seu dashboard de origem no momento em que esta página é carregada — não há valores fixos no código.
+    O status compara o <strong>resultado atual</strong> com a <strong>meta definida</strong>: abaixo da meta = <span style="color:#e74c3c;font-weight:700">Não atingiu</span>, igual ou acima = <span style="color:#27ae60;font-weight:700">Atingiu</span>.
+  </div>
+
+  <!-- RESUMO -->
+  <div class="row c4">
+    <div class="kpi kt">
+      <div class="kpi-l">Indicadores</div>
+      <div class="kpi-v mn" id="kpi-total">—</div>
+      <div class="kpi-s">metas monitoradas</div>
+    </div>
+    <div class="kpi kg">
+      <div class="kpi-l">Atingiram a Meta</div>
+      <div class="kpi-v mn" id="kpi-ok" style="color:var(--green)">—</div>
+      <div class="kpi-s">dentro ou acima do esperado</div>
+    </div>
+    <div class="kpi ka">
+      <div class="kpi-l">Não Atingiram</div>
+      <div class="kpi-v mn" id="kpi-nok" style="color:var(--red)">—</div>
+      <div class="kpi-s">abaixo do resultado esperado</div>
+    </div>
+    <div class="kpi kw">
+      <div class="kpi-l">Aderência Geral</div>
+      <div class="kpi-v mn" id="kpi-ader" style="color:var(--yellow)">—</div>
+      <div class="kpi-s">% de metas atingidas</div>
+    </div>
+  </div>
+
+  <!-- TABELA DE INDICADORES -->
+  <div class="sec">Indicadores · Meta vs Resultado</div>
+  <div class="tw ts">
+    <table>
+      <thead>
+        <tr>
+          <th style="min-width:190px">Indicador</th>
+          <th>Área</th>
+          <th style="text-align:right">Meta</th>
+          <th style="text-align:right">Resultado</th>
+          <th style="text-align:right">Desvio</th>
+          <th style="min-width:170px">Progresso</th>
+          <th style="min-width:130px">Status</th>
+          <th>Referência</th>
+        </tr>
+      </thead>
+      <tbody id="tb-metas"></tbody>
+    </table>
+  </div>
+
+  <div style="font-size:11px;color:var(--muted);text-align:center;padding:6px 0 24px">
+    Última atualização: <span class="mn" id="last-update">—</span> · recarga automática a cada 10 min
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CONFIGURAÇÃO DOS INDICADORES
+   Para adicionar uma nova meta, basta acrescentar um objeto aqui.
+   - meta:      valor alvo
+   - direcao:   'maior' = quanto maior melhor | 'menor' = quanto menor melhor
+   - fetcher:   função async que retorna { valor, referencia }
+   ═══════════════════════════════════════════════════════════════ */
+
+const SLA_URL = 'https://easyhouseloja.github.io/painelgestao/sla_transporte.html';
+
+/* Extrai número de textos tipo "97.26%" ou "95,04%" */
+function parseNum(txt){
+  if(!txt) return null;
+  const limpo = String(txt).replace(/\s/g,'').replace(/%/g,'');
+  const m = limpo.match(/-?\d+(?:[.,]\d+)?/);
+  return m ? parseFloat(m[0].replace(',','.')) : null;
+}
+
+/* ── Fetcher do SLA de Transporte ──
+   Lê o bloco .mega dentro de #pg-visao no sla_transporte.html.
+   Estrutura esperada:
+     <div class="mega-l">Índice de SLA Geral — 16/07/2026</div>
+     <div class="mega-v">97.26%</div>                             */
+async function fetchSlaTransporte(){
+  const res = await fetch(SLA_URL, { cache:'no-store' });
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  const html = await res.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  const pgVisao = doc.getElementById('pg-visao');
+  if(!pgVisao) throw new Error('Página de visão geral não encontrada');
+
+  const mega = pgVisao.querySelector('.mega');
+  if(!mega) throw new Error('Bloco de índice SLA não encontrado');
+
+  const valorTxt = mega.querySelector('.mega-v')?.textContent?.trim() || '';
+  const labelTxt = mega.querySelector('.mega-l')?.textContent?.trim() || '';
+
+  const valor = parseNum(valorTxt);
+  if(valor === null) throw new Error('Valor de SLA não encontrado');
+
+  const dataMatch = labelTxt.match(/(\d{2}\/\d{2}\/\d{4})/);
+
+  return { valor: valor, referencia: dataMatch ? dataMatch[1] : '—' };
+}
+
+const INDICADORES = [
+  {
+    id: 'sla-transporte',
+    nome: 'SLA de Transporte',
+    desc: 'Índice de entregas dentro do prazo',
+    area: 'Logística',
+    meta: 95,
+    unidade: '%',
+    direcao: 'maior',
+    url: SLA_URL,
+    fetcher: fetchSlaTransporte
+  }
+  // → Próximas metas entram aqui
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDERIZAÇÃO
+   ═══════════════════════════════════════════════════════════════ */
+
+function fmt(v, un){
+  if(v === null || v === undefined) return '—';
+  return v.toFixed(2).replace('.', ',') + (un || '');
+}
+
+function linhaSkeleton(ind){
+  return `
+    <tr id="row-${ind.id}">
+      <td>
+        <div class="ind-nome">${ind.nome}</div>
+        <div class="ind-desc">${ind.desc}</div>
+      </td>
+      <td style="color:var(--muted);font-size:12px">${ind.area}</td>
+      <td style="text-align:right" class="mn">${fmt(ind.meta, ind.unidade)}</td>
+      <td style="text-align:right"><span class="skeleton val-big">00,00%</span></td>
+      <td style="text-align:right"><span class="skeleton mn">+0,00</span></td>
+      <td><div class="bar-row"><div class="bar-w"></div><span class="bar-pct">—</span></div></td>
+      <td><span class="bdg bdg-load">carregando…</span></td>
+      <td class="mn" style="font-size:11px;color:var(--muted)">—</td>
+    </tr>`;
+}
+
+function renderLinha(ind, resultado){
+  const row = document.getElementById('row-' + ind.id);
+  if(!row) return;
+
+  /* ── Erro na busca ── */
+  if(resultado.erro){
+    row.innerHTML = `
+      <td>
+        <div class="ind-nome">${ind.nome}</div>
+        <div class="ind-desc">${ind.desc}</div>
+      </td>
+      <td style="color:var(--muted);font-size:12px">${ind.area}</td>
+      <td style="text-align:right" class="mn">${fmt(ind.meta, ind.unidade)}</td>
+      <td style="text-align:right" class="mn" style="color:var(--muted)">—
+        <div class="err-note">indisponível</div>
+      </td>
+      <td style="text-align:right" class="desvio-nul">—</td>
+      <td><div class="bar-row"><div class="bar-w"></div><span class="bar-pct">—</span></div></td>
+      <td><span class="bdg bdg-load">sem dados</span></td>
+      <td class="mn" style="font-size:11px;color:var(--muted)">—</td>`;
+    return;
+  }
+
+  const valor = resultado.valor;
+  const meta  = ind.meta;
+
+  /* ── Status: atingiu ou não a meta ── */
+  const atingiu = ind.direcao === 'menor' ? (valor <= meta) : (valor >= meta);
+
+  /* ── Desvio em pontos percentuais ── */
+  const desvio = valor - meta;
+  const desvioCls = desvio > 0 ? 'desvio-pos' : (desvio < 0 ? 'desvio-neg' : 'desvio-nul');
+  const desvioTxt = (desvio > 0 ? '+' : '') + desvio.toFixed(2).replace('.', ',') + ' pp';
+
+  /* ── Barra de progresso: escala 90% → 100% para dar leitura útil ── */
+  const escalaMin = Math.min(meta - 5, valor - 2);
+  const escalaMax = 100;
+  const pctBarra  = Math.max(0, Math.min(100, ((valor - escalaMin) / (escalaMax - escalaMin)) * 100));
+  const pctMeta   = Math.max(0, Math.min(100, ((meta  - escalaMin) / (escalaMax - escalaMin)) * 100));
+  const corBarra  = atingiu ? '#27ae60' : '#e74c3c';
+
+  /* ── % de cumprimento da meta ── */
+  const cumprimento = (valor / meta) * 100;
+
+  const corValor = atingiu ? '#66FF99' : '#e74c3c';
+
+  row.innerHTML = `
+    <td>
+      <div class="ind-nome">${ind.nome}</div>
+      <div class="ind-desc">${ind.desc}</div>
+    </td>
+    <td style="color:var(--muted);font-size:12px">${ind.area}</td>
+    <td style="text-align:right" class="mn">${fmt(meta, ind.unidade)}</td>
+    <td style="text-align:right">
+      <span class="val-big" style="color:${corValor}">${fmt(valor, ind.unidade)}</span>
+    </td>
+    <td style="text-align:right"><span class="${desvioCls}">${desvioTxt}</span></td>
+    <td>
+      <div class="bar-row">
+        <div class="bar-w">
+          <div class="bar-f" style="width:${pctBarra}%;background:${corBarra}"></div>
+          <div class="bar-meta-mark" style="left:${pctMeta}%" title="Meta: ${fmt(meta, ind.unidade)}"></div>
+        </div>
+        <span class="bar-pct">${cumprimento.toFixed(1).replace('.', ',')}%</span>
+      </div>
+    </td>
+    <td>
+      <span class="bdg ${atingiu ? 'bdg-ok' : 'bdg-nok'}">
+        ${atingiu ? '✅ Atingiu' : '⚠️ Não atingiu'}
+      </span>
+    </td>
+    <td class="mn" style="font-size:11px;color:var(--muted)">${resultado.referencia || '—'}</td>`;
+}
+
+function renderResumo(resultados){
+  const validos = resultados.filter(r => !r.erro);
+  const total   = resultados.length;
+  const ok      = validos.filter(r => r.atingiu).length;
+  const nok     = validos.filter(r => !r.atingiu).length;
+
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-ok').textContent    = ok;
+  document.getElementById('kpi-nok').textContent   = nok;
+
+  const ader = validos.length ? (ok / validos.length) * 100 : null;
+  const elAder = document.getElementById('kpi-ader');
+  elAder.textContent = ader === null ? '—' : ader.toFixed(0) + '%';
+  elAder.style.color = ader === null ? 'var(--muted)' : (ader >= 100 ? 'var(--green)' : (ader >= 50 ? 'var(--yellow)' : 'var(--red)'));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CARGA — roda sempre que a página é carregada
+   ═══════════════════════════════════════════════════════════════ */
+
+let carregando = false;
+
+async function carregarIndicadores(){
+  if(carregando) return;
+  carregando = true;
+
+  const btn    = document.getElementById('btn-refresh');
+  const btnTxt = document.getElementById('btn-refresh-txt');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  btnTxt.textContent = 'Buscando…';
+
+  /* Monta o esqueleto da tabela */
+  document.getElementById('tb-metas').innerHTML = INDICADORES.map(linhaSkeleton).join('');
+
+  /* Busca todos os indicadores em paralelo */
+  const resultados = await Promise.all(INDICADORES.map(async (ind) => {
+    try {
+      const r = await ind.fetcher();
+      const atingiu = ind.direcao === 'menor' ? (r.valor <= ind.meta) : (r.valor >= ind.meta);
+      const res = { valor: r.valor, referencia: r.referencia, atingiu: atingiu, erro: false };
+      renderLinha(ind, res);
+      return res;
+    } catch(err){
+      console.warn('[metas] Falha em ' + ind.id + ':', err);
+      const res = { erro: true, msg: err.message };
+      renderLinha(ind, res);
+      return res;
+    }
+  }));
+
+  renderResumo(resultados);
+
+  const agora = new Date();
+  document.getElementById('last-update').textContent =
+    agora.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  document.getElementById('nav-date').textContent =
+    agora.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
+
+  btn.classList.remove('loading');
+  btn.disabled = false;
+  btnTxt.textContent = 'Atualizar';
+  carregando = false;
+}
+
+/* Busca os dados sempre que a página carrega */
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', carregarIndicadores);
+} else {
+  carregarIndicadores();
+}
+
+/* Recarrega a cada 10 minutos */
+setInterval(carregarIndicadores, 10 * 60 * 1000);
+
+/* Rebusca ao voltar para a aba */
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState === 'visible') carregarIndicadores();
+});
+</script>
+
+</body>
+</html>

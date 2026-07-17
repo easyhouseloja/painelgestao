@@ -61,6 +61,8 @@
   --glow-pink: rgba(236,72,153,0.20);
   --accent-cyan:  #38bdf8;
   --glow-cyan: rgba(56,189,248,0.22);
+  --accent-metas: #f59e0b;
+  --glow-metas: rgba(245,158,11,0.20);
 }
 
 /* ── LIGHT MODE VARIABLES ── */
@@ -82,6 +84,7 @@ body.light-mode {
   --glow-teal: rgba(8,145,178,0.10);
   --glow-pink: rgba(236,72,153,0.12);
   --glow-cyan: rgba(56,189,248,0.12);
+  --glow-metas: rgba(245,158,11,0.12);
 }
 
 body.light-mode::before {
@@ -843,6 +846,8 @@ body::before {
 .card-estoque-mm:hover   { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-amber) inset; transform: translate3d(0, -2px, 0) !important; }
 .card-assistencia-1p::before { background: var(--accent-pink); box-shadow: 0 0 20px var(--glow-pink); }
 .card-assistencia-1p:hover   { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-pink) inset; transform: translate3d(0, -2px, 0) !important; }
+.card-metas::before  { background: var(--accent-metas); box-shadow: 0 0 20px var(--glow-metas); }
+.card-metas:hover    { box-shadow: 0 12px 36px rgba(0,0,0,0.35), 0 -3px 24px var(--glow-metas) inset; transform: translate3d(0, -2px, 0) !important; }
 
 /* ═══════════ HOVER DO CARD PÓS-VENDA (CONTAINER, NÃO CLICÁVEL) ═══════════
    O card Pós-venda usa <div class="card card-astec"> (não <a>), portanto não é
@@ -1487,6 +1492,7 @@ div.card.card-astec:hover .card-posvendasub-btn-orange {
 .card-portfolio  .icon-wrap { background: rgba(8,145,178,0.1);  border: 1px solid rgba(8,145,178,0.25); }
 .card-estoque-mm .icon-wrap { background: rgba(212,160,23,0.1); border: 1px solid rgba(212,160,23,0.25); }
 .card-assistencia-1p .icon-wrap { background: rgba(236,72,153,0.1); border: 1px solid rgba(236,72,153,0.25); }
+.card-metas .icon-wrap { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); }
 
 .card-estoque .icon-wrap i { color: var(--accent-amber); }
 .card-astec   .icon-wrap i { color: var(--accent-orange); }
@@ -1497,6 +1503,7 @@ div.card.card-astec:hover .card-posvendasub-btn-orange {
 .card-portfolio  .icon-wrap i { color: var(--accent-teal); }
 .card-estoque-mm .icon-wrap i { color: var(--accent-amber); }
 .card-assistencia-1p .icon-wrap i { color: var(--accent-pink); }
+.card-metas .icon-wrap i { color: var(--accent-metas); }
 
 .card-estoque:hover .icon-wrap   { background: rgba(212,160,23,0.18);  border-color: rgba(212,160,23,0.5);  box-shadow: 0 0 18px rgba(212,160,23,0.3); }
 .card-astec:hover   .icon-wrap   { background: rgba(217,94,16,0.18);   border-color: rgba(217,94,16,0.5);   box-shadow: 0 0 18px rgba(217,94,16,0.3); }
@@ -1507,6 +1514,7 @@ div.card.card-astec:hover .card-posvendasub-btn-orange {
 .card-portfolio:hover  .icon-wrap { background: rgba(8,145,178,0.18);  border-color: rgba(8,145,178,0.5);  box-shadow: 0 0 18px rgba(8,145,178,0.3); }
 .card-estoque-mm:hover .icon-wrap { background: rgba(212,160,23,0.2);   border-color: rgba(212,160,23,0.55); box-shadow: 0 0 18px rgba(212,160,23,0.38); }
 .card-assistencia-1p:hover .icon-wrap { background: rgba(236,72,153,0.2); border-color: rgba(236,72,153,0.55); box-shadow: 0 0 18px rgba(236,72,153,0.38); }
+.card-metas:hover .icon-wrap { background: rgba(245,158,11,0.18); border-color: rgba(245,158,11,0.5); box-shadow: 0 0 18px rgba(245,158,11,0.3); }
 
 /* ── CARD TEXT ── */
 .card-tag {
@@ -1522,6 +1530,7 @@ div.card.card-astec:hover .card-posvendasub-btn-orange {
 .card-sla     .card-tag { color: var(--accent-green); }
 .card-comercial .card-tag { color: var(--accent-blue); }
 .card-financeiro .card-tag { color: var(--accent-financeiro); }
+.card-metas   .card-tag { color: var(--accent-metas); }
 /* Aba Madeira 1P: tags neutras (cor fica só na barra superior + ícone + glow no hover) */
 .card-mm1p       .card-tag { color: var(--text-secondary); }
 .card-portfolio  .card-tag { color: var(--text-secondary); }
@@ -3994,6 +4003,50 @@ body.light-mode #iframe-page-title {
   }
 }
 
+/* ─── WIDGET: PAINEL DE METAS (chips de status dos indicadores) ─── */
+.metas-animated {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.metas-animated.metas-ready {
+  animation: meta-fade-in 0.7s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+.metas-animated.metas-ready .metas-chip {
+  animation: sla-verde-entrada 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s backwards;
+}
+.metas-animated.metas-ready .metas-chip:nth-of-type(2) {
+  animation-delay: 0.28s;
+}
+
+/* Barrinha de progresso do card de metas */
+.metas-mini-bar {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.metas-mini-bar-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  transition: width .7s cubic-bezier(.4,0,.2,1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metas-animated,
+  .metas-animated.metas-ready,
+  .metas-animated.metas-ready .metas-chip {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* ─── WIDGET: ESTOQUE MM (DIAS DE ATENDIMENTO) ─── */
 .estoque-mm-animated {
   transition: opacity 0.5s ease, transform 0.5s ease;
@@ -4231,6 +4284,38 @@ body.light-mode #iframe-page-title {
     <!-- PAINEL 3P: EASY HOUSE -->
     <div class="channel-panel panel-3p active" id="panel-3p">
       <div class="dashboard">
+
+        <!-- PAINEL DE METAS -->
+        <a class="card card-metas" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/metas.html" data-title="Painel de Indicadores de Metas" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)" style="position:relative;">
+          <div class="icon-wrap">
+            <i data-lucide="target" style="width:22px;height:22px"></i>
+          </div>
+          <div class="card-tag">Indicadores</div>
+          <h2>Metas</h2>
+          <p>Acompanhamento consolidado das metas por indicador — resultado atual, desvio e status de atingimento.</p>
+
+          <!-- RESUMO DE METAS — atualizado automaticamente pelo script no final do arquivo (busca metas.html) -->
+          <div id="metas-widget" class="metas-animated" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:12px;opacity:0;transform:translateY(-6px);width:100%;" title="Carregando dados das metas...">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span class="metas-chip" id="metas-chip-ok" style="font-size:11px;font-weight:700;color:#66FF99;background:rgba(31,189,114,0.12);border:1px solid rgba(31,189,114,0.22);padding:5px 11px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:5px;">
+                ✅ <span id="metas-ok-qtd">—</span> na meta
+              </span>
+              <span class="metas-chip" id="metas-chip-nok" style="font-size:11px;font-weight:700;color:#ff6b6b;background:rgba(204,40,40,0.12);border:1px solid rgba(204,40,40,0.22);padding:5px 11px;border-radius:10px;letter-spacing:0.2px;white-space:nowrap;line-height:1.3;display:inline-flex;align-items:center;gap:5px;">
+                ⚠️ <span id="metas-nok-qtd">—</span> fora
+              </span>
+            </div>
+            <div class="metas-mini-bar">
+              <div class="metas-mini-bar-fill" id="metas-barra"></div>
+            </div>
+            <span style="font-size:9.5px;font-weight:500;color:var(--text-secondary);opacity:0.65;letter-spacing:0.3px;">
+              aderência: <span id="metas-aderencia">—</span> · <span id="metas-total">—</span> indicador(es)
+            </span>
+          </div>
+
+          <div class="card-footer">
+            Acessar dashboard <i data-lucide="arrow-right"></i>
+          </div>
+        </a>
 
         <!-- ESTOQUE -->
         <div class="card card-estoque" data-iframe="https://easyhouseloja.github.io/painelgestao/estoque.html" data-title="Estoque" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)" style="cursor:pointer;">
@@ -9575,6 +9660,117 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════
+     ATUALIZAÇÃO AUTOMÁTICA DO CARD DE METAS
+     Busca os mesmos indicadores que o metas.html consome (hoje: SLA
+     de transporte, lido de sla_transporte.html) e resume no card.
+     A definição das metas fica no metas.html — aqui só espelhamos.
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  const SLA_URL_METAS = 'https://easyhouseloja.github.io/painelgestao/sla_transporte.html';
+
+  // Metas monitoradas — manter em sincronia com o INDICADORES do metas.html
+  const METAS = [
+    { id:'sla-transporte', meta:95, direcao:'maior', fetcher:fetchSlaParaMetas }
+  ];
+
+  function parseNumMetas(txt){
+    if(!txt) return null;
+    const limpo = String(txt).replace(/\s/g,'').replace(/%/g,'');
+    const m = limpo.match(/-?\d+(?:[.,]\d+)?/);
+    return m ? parseFloat(m[0].replace(',','.')) : null;
+  }
+
+  async function fetchSlaParaMetas(){
+    const res = await fetch(SLA_URL_METAS, { cache:'no-store' });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    const pgVisao = doc.getElementById('pg-visao');
+    if(!pgVisao) throw new Error('Visão geral não encontrada');
+    const mega = pgVisao.querySelector('.mega');
+    if(!mega) throw new Error('Bloco mega não encontrado');
+
+    const valor = parseNumMetas(mega.querySelector('.mega-v')?.textContent);
+    if(valor === null) throw new Error('Valor não encontrado');
+    return valor;
+  }
+
+  async function atualizarMetas(){
+    const widget = document.getElementById('metas-widget');
+    if(!widget) return;
+
+    try{
+      const resultados = await Promise.all(METAS.map(async function(m){
+        try{
+          const valor = await m.fetcher();
+          const atingiu = m.direcao === 'menor' ? (valor <= m.meta) : (valor >= m.meta);
+          return { ok:true, atingiu:atingiu };
+        } catch(e){
+          console.warn('[metas] falha em '+m.id+':', e);
+          return { ok:false };
+        }
+      }));
+
+      const validos = resultados.filter(function(r){ return r.ok; });
+      const ok  = validos.filter(function(r){ return r.atingiu; }).length;
+      const nok = validos.filter(function(r){ return !r.atingiu; }).length;
+
+      const elOk    = document.getElementById('metas-ok-qtd');
+      const elNok   = document.getElementById('metas-nok-qtd');
+      const elTotal = document.getElementById('metas-total');
+      const elAder  = document.getElementById('metas-aderencia');
+      const elBarra = document.getElementById('metas-barra');
+      const chipOk  = document.getElementById('metas-chip-ok');
+      const chipNok = document.getElementById('metas-chip-nok');
+
+      if(elOk)    elOk.textContent    = ok;
+      if(elNok)   elNok.textContent   = nok;
+      if(elTotal) elTotal.textContent = METAS.length;
+
+      // Esconde o chip vermelho quando está tudo na meta (e vice-versa)
+      if(chipNok) chipNok.style.display = nok > 0 ? 'inline-flex' : 'none';
+      if(chipOk)  chipOk.style.display  = ok  > 0 ? 'inline-flex' : 'none';
+
+      const ader = validos.length ? (ok / validos.length) * 100 : null;
+      if(elAder) elAder.textContent = ader === null ? 'indisponível' : ader.toFixed(0)+'%';
+
+      if(elBarra && ader !== null){
+        elBarra.style.width = ader + '%';
+        elBarra.style.background = ader >= 100
+          ? 'linear-gradient(90deg, #1fbd72, #66FF99)'
+          : (ader >= 50 ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
+                        : 'linear-gradient(90deg, #cc2828, #ff6b6b)');
+      }
+
+      widget.setAttribute('title',
+        ader === null
+          ? 'Não foi possível carregar os indicadores de meta'
+          : ok+' de '+validos.length+' meta(s) atingida(s) · aderência '+ader.toFixed(0)+'%'
+      );
+
+    } catch(err){
+      console.warn('[metas] Falha ao atualizar:', err);
+      const elAder = document.getElementById('metas-aderencia');
+      if(elAder && elAder.textContent === '—') elAder.textContent = 'indisponível';
+    }
+
+    if(!widget.classList.contains('metas-ready')){
+      requestAnimationFrame(function(){ widget.classList.add('metas-ready'); });
+    }
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', atualizarMetas);
+  } else {
+    atualizarMetas();
+  }
+  setInterval(atualizarMetas, 10 * 60 * 1000);
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
      ATUALIZAÇÃO AUTOMÁTICA DO WIDGET DE ESTOQUE MADEIRA MADEIRA
      Busca BUNDLE.stats em estoque_mm.html e preenche os 2 chips do card:
        - "Atende os próximos X dias"  (diasAtendeGlobalFc)
@@ -10501,7 +10697,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- ═══════════════════════════════════════════════════════════════
      ATALHOS DE TECLADO
      T = SLA Transporte · C = Comercial · F = Financeiro · E = Estoque
-     ESC = voltar do iframe · Ctrl+K = busca global
+     M = Metas · ESC = voltar do iframe · Ctrl+K = busca global
      ═══════════════════════════════════════════════════════════════ -->
 <script>
 (function(){
@@ -10512,7 +10708,8 @@ document.addEventListener('DOMContentLoaded', function() {
     'f': { url: 'https://easyhouseloja.github.io/painelgestao/financeiro.html',     titulo: 'Financeiro' },
     'e': { url: 'https://easyhouseloja.github.io/painelgestao/estoque.html',        titulo: 'Estoque' },
     'a': { url: 'https://easyhouseloja.github.io/painelgestao/assistencia.html',    titulo: 'Assistência Técnica' },
-    'd': { url: 'https://easyhouseloja.github.io/painelgestao/devolucao.html',      titulo: 'Devoluções' }
+    'd': { url: 'https://easyhouseloja.github.io/painelgestao/devolucao.html',      titulo: 'Devoluções' },
+    'm': { url: 'https://easyhouseloja.github.io/painelgestao/metas.html',          titulo: 'Painel de Indicadores de Metas' }
   };
 
   // Verifica se o usuário está digitando em algum input/textarea
@@ -10677,6 +10874,7 @@ body.light-mode #eh-busca-overlay { background: rgba(0,0,0,0.35); }
 (function(){
   // ── Lista de cards/dashboards (estática) ───────────────────────────────────
   var CARDS = [
+    { titulo:'Metas',            sub:'Indicadores · meta vs resultado e status',  url:'https://easyhouseloja.github.io/painelgestao/metas.html',          icon:'🎯', atalho:'M' },
     { titulo:'SLA Transporte',   sub:'Logística · prazos e transportadoras',     url:'https://easyhouseloja.github.io/painelgestao/sla_transporte.html', icon:'🚚', atalho:'T' },
     { titulo:'Comercial',        sub:'Vendas, faturamento e metas',              url:'https://easyhouseloja.github.io/painelgestao/comercial.html',      icon:'📈', atalho:'C' },
     { titulo:'Financeiro',       sub:'Gestão de cobranças e recebimentos',       url:'https://easyhouseloja.github.io/painelgestao/financeiro.html',     icon:'💰', atalho:'F' },
