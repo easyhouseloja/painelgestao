@@ -58,12 +58,24 @@ option{background:var(--bg2);color:var(--text);}
 .combo-list.open{display:block;}
 .combo-list::-webkit-scrollbar{width:5px;}
 .combo-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-.combo-opt{padding:9px 12px;font-size:.82rem;cursor:pointer;border-bottom:1px solid rgba(31,45,69,.5);line-height:1.3;}
+.combo-opt{display:flex;align-items:center;gap:9px;padding:9px 12px;font-size:.82rem;cursor:pointer;border-bottom:1px solid rgba(31,45,69,.5);line-height:1.3;}
 .combo-opt:last-child{border-bottom:none;}
-.combo-opt:hover,.combo-opt.active{background:rgba(56,189,248,.12);color:var(--accent);}
-.combo-opt.all{font-weight:600;color:var(--muted);}
+.combo-opt:hover,.combo-opt.active{background:rgba(56,189,248,.12);}
+.combo-opt.checked{background:rgba(56,189,248,.06);}
+.combo-opt input[type=checkbox]{width:16px;height:16px;flex:0 0 auto;accent-color:var(--accent);cursor:pointer;margin:0;}
+.combo-opt .combo-txt{flex:1;}
 .combo-opt .hl{color:var(--accent);font-weight:700;}
 .combo-empty{padding:12px;font-size:.78rem;color:var(--muted);text-align:center;}
+.combo-head{position:sticky;top:0;background:var(--bg2);display:flex;justify-content:space-between;align-items:center;gap:8px;
+  padding:8px 12px;border-bottom:1px solid var(--border);font-size:.72rem;color:var(--muted);z-index:2;}
+.combo-mini{background:var(--bg3);border:1px solid var(--border);color:var(--accent);border-radius:6px;
+  padding:3px 8px;font-size:.68rem;font-family:'DM Sans',sans-serif;cursor:pointer;margin-left:6px;}
+.combo-mini:hover{border-color:var(--accent);}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.35);
+  color:var(--accent);border-radius:8px;padding:3px 6px 3px 9px;font-size:.72rem;font-family:'DM Sans',sans-serif;max-width:100%;}
+.chip button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:.72rem;line-height:1;padding:0 2px;opacity:.7;}
+.chip button:hover{opacity:1;}
 
 .period-block{margin-top:18px;padding-top:18px;border-top:1px dashed var(--border);}
 .period-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
@@ -157,9 +169,10 @@ option{background:var(--bg2);color:var(--text);}
       <div class="field"><label>Item</label>
         <div class="combo" id="itemCombo">
           <input type="text" id="itemInput" autocomplete="off" placeholder="Todos os itens (visão geral)" aria-label="Buscar item">
-          <button type="button" id="itemClear" class="combo-clear" title="Limpar" style="display:none;">✕</button>
+          <button type="button" id="itemClear" class="combo-clear" title="Limpar seleção" style="display:none;">✕</button>
           <div class="combo-list" id="itemList"></div>
-        </div></div>
+        </div>
+        <div class="chips" id="itemChips" style="display:none;"></div></div>
       <div class="field"><label>Marketplace</label>
         <select id="fMp"><option value="__ALL__">Todos os marketplaces</option></select></div>
       <div class="field"><label>Categoria</label>
@@ -275,8 +288,8 @@ const ABC_COL={A:'#22c55e',B:'#eab308',C:'#f97316'};
 
 const recs=DATA.records;
 const fMp=document.getElementById('fMp'),fCat=document.getElementById('fCat'),fAbc=document.getElementById('fAbc');
-const itemInput=document.getElementById('itemInput'),itemList=document.getElementById('itemList'),itemClear=document.getElementById('itemClear');
-let selectedItem='__ALL__'; // valor selecionado do filtro de item
+const itemInput=document.getElementById('itemInput'),itemList=document.getElementById('itemList'),itemClear=document.getElementById('itemClear'),itemChips=document.getElementById('itemChips');
+let selectedItems=new Set(); // itens selecionados (vazio = todos)
 const aMonth=document.getElementById('aMonth'),bMonth=document.getElementById('bMonth'),cMonth=document.getElementById('cMonth');
 let mode='full',mpMetric='q',sortKey='qB',sortDir=-1,cOn=false;
 
@@ -338,13 +351,14 @@ function pLabel(p){
 
 // particiona registros por período ativo → {A:[...],B:[...],C:[...]}
 function partition(){
-  const it=selectedItem,mp=fMp.value,cat=fCat.value,abc=fAbc.value;
+  const mp=fMp.value,cat=fCat.value,abc=fAbc.value;
+  const itAll=selectedItems.size===0; // vazio = todos os itens
   const ps=activePeriods();
   const out={}; ps.forEach(p=>out[p.id]=[]);
   const keys={}; ps.forEach(p=>keys[p.id]=+p.sel.value);
   const wins={}; ps.forEach(p=>wins[p.id]=getWin(p.id.toLowerCase()));
   for(const r of recs){
-    if(it!=='__ALL__'&&r.item!==it)continue;
+    if(!itAll && !selectedItems.has(r.item))continue;
     if(mp!=='__ALL__'&&r.mp!==mp)continue;
     if(cat!=='__ALL__'&&r.cat!==cat)continue;
     if(abc!=='__ALL__'&&r.abc!==abc)continue;
@@ -421,7 +435,7 @@ function render(){
   const items=Object.entries(byItem).map(([item,o])=>{
     const row={item,cat:o.cat,abc:o.abc}; ps.forEach(p=>{row['q'+p.id]=o['q'+p.id]||0;row['v'+p.id]=o['v'+p.id]||0;}); return row;
   });
-  const single=selectedItem!=='__ALL__';
+  const single=selectedItems.size>0 && selectedItems.size<=12;
   const short=s=>s.length>30?s.slice(0,30)+'…':s;
   const sumQ=r=>ps.reduce((a,p)=>a+(r['q'+p.id]||0),0);
   const sumV=r=>ps.reduce((a,p)=>a+(r['v'+p.id]||0),0);
@@ -583,8 +597,7 @@ document.querySelectorAll('#mpMetricSeg button').forEach(b=>b.addEventListener('
   b.classList.add('active'); mpMetric=b.dataset.metric; render();
 }));
 
-// ── COMBOBOX de busca de item ──
-const ALL_OPT={value:'__ALL__',label:'Todos os itens (visão geral)'};
+// ── MULTISELECT de itens (busca + caixas de seleção) ──
 let comboActive=-1, comboResults=[];
 const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 function highlight(text,q){
@@ -594,56 +607,96 @@ function highlight(text,q){
 }
 function buildResults(q){
   const ql=q.trim().toLowerCase();
-  let matches = ql==='' ? DATA.items.slice(0,50)
-    : DATA.items.filter(i=>i.toLowerCase().includes(ql)).slice(0,50);
-  comboResults=[ALL_OPT,...matches.map(i=>({value:i,label:i}))];
+  comboResults = ql==='' ? DATA.items.slice(0,80)
+    : DATA.items.filter(i=>i.toLowerCase().includes(ql)).slice(0,80);
 }
 function renderCombo(q){
   buildResults(q);
-  if(comboResults.length<=1 && q.trim()!==''){
-    itemList.innerHTML=`<div class="combo-empty">Nenhum item encontrado para "${q}"</div>`;
-    comboResults=[]; return;
+  const selCount=selectedItems.size;
+  // cabeçalho da lista com ações rápidas
+  let headHtml=`<div class="combo-head">
+    <span>${selCount} selecionado${selCount===1?'':'s'}</span>
+    <span>
+      <button type="button" class="combo-mini" data-act="selall">Selecionar todos filtrados</button>
+      <button type="button" class="combo-mini" data-act="clear">Limpar</button>
+    </span></div>`;
+  if(comboResults.length===0 && q.trim()!==''){
+    itemList.innerHTML=headHtml+`<div class="combo-empty">Nenhum item encontrado para "${q}"</div>`;
+    bindComboHead();
+    return;
   }
-  itemList.innerHTML=comboResults.map((o,idx)=>{
-    const cls2='combo-opt'+(o.value==='__ALL__'?' all':'')+(idx===comboActive?' active':'');
-    const lbl=o.value==='__ALL__'?o.label:highlight(o.label,q.trim());
-    return `<div class="${cls2}" data-idx="${idx}">${lbl}</div>`;
+  const optsHtml=comboResults.map((it,idx)=>{
+    const checked=selectedItems.has(it);
+    const active=idx===comboActive?' active':'';
+    return `<label class="combo-opt${active}${checked?' checked':''}" data-idx="${idx}">
+      <input type="checkbox" ${checked?'checked':''} tabindex="-1">
+      <span class="combo-txt">${highlight(it,q.trim())}</span>
+    </label>`;
   }).join('');
+  itemList.innerHTML=headHtml+optsHtml;
+  bindComboHead();
   itemList.querySelectorAll('.combo-opt').forEach(el=>{
-    el.addEventListener('mousedown',e=>{e.preventDefault();pick(+el.dataset.idx);});
+    el.addEventListener('mousedown',e=>{e.preventDefault();toggleItem(comboResults[+el.dataset.idx]);});
   });
+}
+function bindComboHead(){
+  itemList.querySelectorAll('.combo-mini').forEach(b=>{
+    b.addEventListener('mousedown',e=>{
+      e.preventDefault();
+      if(b.dataset.act==='clear'){ selectedItems.clear(); }
+      else if(b.dataset.act==='selall'){ comboResults.forEach(it=>selectedItems.add(it)); }
+      syncItemUI(); renderCombo(itemInput.value); render();
+    });
+  });
+}
+function toggleItem(it){
+  if(!it)return;
+  if(selectedItems.has(it)) selectedItems.delete(it); else selectedItems.add(it);
+  syncItemUI(); renderCombo(itemInput.value); render();
 }
 function openCombo(){itemList.classList.add('open');}
 function closeCombo(){itemList.classList.remove('open');comboActive=-1;}
-function pick(idx){
-  const o=comboResults[idx]; if(!o)return;
-  selectedItem=o.value;
-  itemInput.value = o.value==='__ALL__' ? '' : o.label;
-  itemClear.style.display = o.value==='__ALL__' ? 'none' : 'flex';
-  closeCombo(); render();
+
+// Atualiza chips + placeholder + botão limpar
+function syncItemUI(){
+  const n=selectedItems.size;
+  itemClear.style.display = n>0 ? 'flex' : 'none';
+  if(n===0){
+    itemInput.placeholder='Todos os itens (visão geral)';
+    itemChips.innerHTML=''; itemChips.style.display='none';
+    return;
+  }
+  itemInput.placeholder = n===1 ? '1 item selecionado' : n+' itens selecionados';
+  itemChips.style.display='flex';
+  itemChips.innerHTML=[...selectedItems].map(it=>{
+    const short=it.length>34?it.slice(0,34)+'…':it;
+    return `<span class="chip" title="${it.replace(/"/g,'&quot;')}">${short}<button type="button" data-it="${it.replace(/"/g,'&quot;')}">✕</button></span>`;
+  }).join('');
+  itemChips.querySelectorAll('.chip button').forEach(b=>{
+    b.addEventListener('click',ev=>{ ev.stopPropagation(); selectedItems.delete(b.dataset.it); syncItemUI(); if(itemList.classList.contains('open'))renderCombo(itemInput.value); render(); });
+  });
 }
+
 itemInput.addEventListener('focus',()=>{renderCombo(itemInput.value);openCombo();});
-itemInput.addEventListener('input',()=>{
-  comboActive=-1; renderCombo(itemInput.value); openCombo();
-  // se o usuário apagar tudo, volta a "todos"
-  if(itemInput.value.trim()===''){selectedItem='__ALL__';itemClear.style.display='none';render();}
-});
+itemInput.addEventListener('input',()=>{ comboActive=-1; renderCombo(itemInput.value); openCombo(); });
 itemInput.addEventListener('keydown',e=>{
-  if(!itemList.classList.contains('open'))return;
+  if(!itemList.classList.contains('open')){ if(e.key==='ArrowDown'){renderCombo(itemInput.value);openCombo();} return; }
   const max=comboResults.length-1;
   if(e.key==='ArrowDown'){e.preventDefault();comboActive=Math.min(max,comboActive+1);renderCombo(itemInput.value);scrollActive();}
   else if(e.key==='ArrowUp'){e.preventDefault();comboActive=Math.max(0,comboActive-1);renderCombo(itemInput.value);scrollActive();}
-  else if(e.key==='Enter'){e.preventDefault();if(comboActive>=0)pick(comboActive);else if(comboResults.length)pick(comboResults.length>1?1:0);}
+  else if(e.key==='Enter'){e.preventDefault();if(comboActive>=0)toggleItem(comboResults[comboActive]);}
   else if(e.key==='Escape'){closeCombo();itemInput.blur();}
 });
 function scrollActive(){const el=itemList.querySelector('.combo-opt.active');if(el)el.scrollIntoView({block:'nearest'});}
-itemClear.addEventListener('click',()=>{selectedItem='__ALL__';itemInput.value='';itemClear.style.display='none';closeCombo();render();});
+itemClear.addEventListener('click',()=>{selectedItems.clear();itemInput.value='';syncItemUI();closeCombo();render();});
 document.addEventListener('click',e=>{if(!document.getElementById('itemCombo').contains(e.target))closeCombo();});
+
 
 // iniciar
 document.querySelectorAll('.winFld').forEach(f=>f.style.display='none');
 // Com 3 ou mais meses, já inicia comparando os três (Período C ativo)
 if(n>=3){ setCActive(true); } else { setCActive(false); }
+syncItemUI();
 render();
 </script>
 </body>
