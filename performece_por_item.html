@@ -122,6 +122,7 @@ option{background:var(--bg2);color:var(--text);}
 .chart-sub{font-size:.72rem;color:var(--muted);margin-bottom:16px;font-family:'DM Mono',monospace;}
 .chart-wrap{position:relative;height:300px;}
 .chart-wrap.tall{height:340px;}
+.chart-wrap.hbars{height:440px;}
 
 /* ── TABLE ── */
 .data-table{width:100%;border-collapse:collapse;}
@@ -231,12 +232,12 @@ option{background:var(--bg2);color:var(--text);}
     <div class="chart-card">
       <div class="chart-title">Quantidade vendida (unidades)</div>
       <div class="chart-sub" id="qtySub">—</div>
-      <div class="chart-wrap"><canvas id="qtyChart"></canvas></div>
+      <div class="chart-wrap hbars"><canvas id="qtyChart"></canvas></div>
     </div>
     <div class="chart-card">
       <div class="chart-title">Valor financeiro (R$)</div>
       <div class="chart-sub" id="valSub">—</div>
-      <div class="chart-wrap"><canvas id="valChart"></canvas></div>
+      <div class="chart-wrap hbars"><canvas id="valChart"></canvas></div>
     </div>
   </div>
 
@@ -373,19 +374,26 @@ function partition(){
 function totals(arr2){let q=0,v=0;arr2.forEach(r=>{q+=r.q;v+=r.v;});return{q,v};}
 
 let qtyChart,valChart,mpChart,abcChart;
-function multiBar(canvas,labels,datasets,money){
+function multiBar(canvas,labels,datasets,money,horizontal){
+  const valAxis = { grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'#7a8aab',font:{family:'DM Mono',size:10},
+    callback:v=>money?('R$ '+(v/1000).toFixed(0)+'k'):v.toLocaleString('pt-BR')} };
+  const catAxis = { grid:{display:false}, ticks:{color:'#7a8aab',font:{family:'DM Sans',size:horizontal?11:10},
+    autoSkip:false, maxRotation:horizontal?0:38, minRotation:0,
+    // no eixo de categorias horizontal, deixa o nome inteiro numa linha
+    callback:function(v){ const l=this.getLabelForValue(v); return l; } } };
   return new Chart(document.getElementById(canvas),{
     type:'bar',
     data:{labels,datasets},
     options:{responsive:true,maintainAspectRatio:false,
+      indexAxis: horizontal?'y':'x',
       plugins:{legend:{position:'top',labels:{color:'#e8eaf0',font:{family:'DM Sans',size:11},usePointStyle:true,pointStyleWidth:9,boxWidth:8}},
         tooltip:{backgroundColor:'#0f1f3d',borderColor:'#1f2d45',borderWidth:1,titleColor:'#e8eaf0',bodyColor:'#e8eaf0',
-          callbacks:{label:c=>' '+c.dataset.label+': '+(money?('R$ '+c.parsed.y.toLocaleString('pt-BR',{minimumFractionDigits:2})):c.parsed.y.toLocaleString('pt-BR')+' un')}}},
-      scales:{
-        y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#7a8aab',font:{family:'DM Mono',size:10},
-          callback:v=>money?('R$ '+(v/1000).toFixed(0)+'k'):v.toLocaleString('pt-BR')}},
-        x:{grid:{display:false},ticks:{color:'#7a8aab',font:{family:'DM Sans',size:10},maxRotation:38,minRotation:0}}
-      }}});
+          callbacks:{label:c=>{ const val=horizontal?c.parsed.x:c.parsed.y;
+            return ' '+c.dataset.label+': '+(money?('R$ '+val.toLocaleString('pt-BR',{minimumFractionDigits:2})):val.toLocaleString('pt-BR')+' un'); }}}},
+      scales: horizontal
+        ? { x:valAxis, y:catAxis }
+        : { y:valAxis, x:catAxis }
+    }});
 }
 
 function render(){
@@ -437,6 +445,25 @@ function render(){
   });
   const single=selectedItems.size>0 && selectedItems.size<=12;
   const short=s=>s.length>30?s.slice(0,30)+'…':s;
+  // Quebra nomes longos em até 2 linhas (Chart.js renderiza array como multilinha) — melhora leitura no eixo horizontal
+  function wrapLabel(s,max){
+    max=max||34;
+    if(s.length<=max) return s;
+    const words=s.split(' ');
+    let l1='', l2='', i=0;
+    // preenche a 1ª linha
+    for(; i<words.length; i++){
+      if((l1+' '+words[i]).trim().length<=max) l1=(l1+' '+words[i]).trim();
+      else break;
+    }
+    // preenche a 2ª linha com o restante
+    for(; i<words.length; i++){
+      if((l2+' '+words[i]).trim().length<=max) l2=(l2+' '+words[i]).trim();
+      else { l2=(l2+' '+words[i]).trim(); i++; break; }
+    }
+    if(i<words.length) l2+='…'; // ainda sobrou texto
+    return l2 ? [l1,l2] : l1;
+  }
   const sumQ=r=>ps.reduce((a,p)=>a+(r['q'+p.id]||0),0);
   const sumV=r=>ps.reduce((a,p)=>a+(r['v'+p.id]||0),0);
   const topQ=[...items].sort((a,b)=>sumQ(b)-sumQ(a)).slice(0,12);
@@ -446,10 +473,10 @@ function render(){
   document.getElementById('valSub').textContent=(single?'':'Top 12 itens • ')+lbl;
 
   if(qtyChart)qtyChart.destroy(); if(valChart)valChart.destroy();
-  qtyChart=multiBar('qtyChart',topQ.map(i=>short(i.item)),
-    ps.map(p=>({label:labels[p.id],data:topQ.map(i=>i['q'+p.id]||0),backgroundColor:p.col,borderRadius:5,maxBarThickness:40})),false);
-  valChart=multiBar('valChart',topV.map(i=>short(i.item)),
-    ps.map(p=>({label:labels[p.id],data:topV.map(i=>i['v'+p.id]||0),backgroundColor:p.col,borderRadius:5,maxBarThickness:40})),true);
+  qtyChart=multiBar('qtyChart',topQ.map(i=>wrapLabel(i.item)),
+    ps.map(p=>({label:labels[p.id],data:topQ.map(i=>i['q'+p.id]||0),backgroundColor:p.col,borderRadius:5,maxBarThickness:22})),false,true);
+  valChart=multiBar('valChart',topV.map(i=>wrapLabel(i.item)),
+    ps.map(p=>({label:labels[p.id],data:topV.map(i=>i['v'+p.id]||0),backgroundColor:p.col,borderRadius:5,maxBarThickness:22})),true,true);
 
   // ── marketplace ──
   const byMp={};
