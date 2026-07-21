@@ -189,6 +189,7 @@ tr:hover td{background:rgba(46,74,122,.1)}
    ═══════════════════════════════════════════════════════════════ */
 
 const SLA_URL = 'https://easyhouseloja.github.io/painelgestao/sla_transporte.html';
+const DEV_URL = 'https://easyhouseloja.github.io/painelgestao/devolucao.html';
 
 /* Extrai número de textos tipo "97.26%" ou "95,04%" */
 function parseNum(txt){
@@ -226,6 +227,62 @@ async function fetchSlaTransporte(){
   return { valor: valor, referencia: dataMatch ? dataMatch[1] : '—' };
 }
 
+/* ── Fetcher do Índice de Devolução ──
+   Sempre lê o MÊS ATUAL (pelo relógio do navegador).
+   Fonte primária: card do mês na página #page-geral do devolucao.html
+     <div class="month-card mc-jul">
+       <div class="month-name">Julho · Parcial</div>
+       <span class="month-pct ...">1,39% 👍</span>
+     </div>
+   Fallback: KPI "Valor Devolvido" da página do mês (#page-jul .kpi-fat).  */
+
+const MES_SLUG  = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const MES_NOME  = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                   'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+async function fetchDevolucao(){
+  const res = await fetch(DEV_URL, { cache:'no-store' });
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  const html = await res.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  const agora   = new Date();
+  const idxMes  = agora.getMonth();          // 0 = Janeiro
+  const slug    = MES_SLUG[idxMes];          // ex.: 'jul'
+  const nomeMes = MES_NOME[idxMes];          // ex.: 'Julho'
+
+  let valor = null;
+  let tag   = '';
+
+  /* 1) Card do mês na visão geral (.mc-jul, .mc-ago, …) */
+  const card = doc.querySelector('.month-card.mc-' + slug);
+  if(card){
+    valor = parseNum(card.querySelector('.month-pct')?.textContent || '');
+    tag   = card.querySelector('.month-tag')?.textContent?.trim() || '';
+  }
+
+  /* 2) Fallback: KPI de faturamento na página do mês (#page-jul) */
+  if(valor === null){
+    const pg = doc.getElementById('page-' + slug);
+    if(pg){
+      const fat = pg.querySelector('.kpi-fat');
+      if(fat) valor = parseNum(fat.textContent || '');
+    }
+  }
+
+  if(valor === null){
+    throw new Error('Índice de ' + nomeMes + ' ainda não publicado');
+  }
+
+  /* Referência: usa a data do card ("até 15/07") quando existir */
+  const dataMatch = tag.match(/(\d{2}\/\d{2})/);
+  const referencia = dataMatch
+    ? nomeMes + ' · até ' + dataMatch[1]
+    : nomeMes + '/' + agora.getFullYear();
+
+  return { valor: valor, referencia: referencia, mes: nomeMes };
+}
+
 const INDICADORES = [
   {
     id: 'sla-transporte',
@@ -237,6 +294,17 @@ const INDICADORES = [
     direcao: 'maior',
     url: SLA_URL,
     fetcher: fetchSlaTransporte
+  },
+  {
+    id: 'devolucao',
+    nome: 'Índice de Devolução',
+    desc: 'Devoluções sobre o faturamento · mês corrente',
+    area: 'Pós-venda',
+    meta: 3,
+    unidade: '%',
+    direcao: 'menor',        // menor ou igual a 3% = atingiu
+    url: DEV_URL,
+    fetcher: fetchDevolucao
   }
   // → Próximas metas entram aqui
 ];
@@ -298,18 +366,32 @@ function renderLinha(ind, resultado){
 
   /* ── Desvio em pontos percentuais ── */
   const desvio = valor - meta;
-  const desvioCls = desvio > 0 ? 'desvio-pos' : (desvio < 0 ? 'desvio-neg' : 'desvio-nul');
+  /* Verde = a favor da meta. Em 'menor', ficar abaixo do limite é bom. */
+  const favoravel = ind.direcao === 'menor' ? (desvio < 0) : (desvio > 0);
+  const desvioCls = desvio === 0 ? 'desvio-nul' : (favoravel ? 'desvio-pos' : 'desvio-neg');
   const desvioTxt = (desvio > 0 ? '+' : '') + desvio.toFixed(2).replace('.', ',') + ' pp';
 
-  /* ── Barra de progresso: escala 90% → 100% para dar leitura útil ── */
-  const escalaMin = Math.min(meta - 5, valor - 2);
-  const escalaMax = 100;
-  const pctBarra  = Math.max(0, Math.min(100, ((valor - escalaMin) / (escalaMax - escalaMin)) * 100));
-  const pctMeta   = Math.max(0, Math.min(100, ((meta  - escalaMin) / (escalaMax - escalaMin)) * 100));
-  const corBarra  = atingiu ? '#27ae60' : '#e74c3c';
+  /* ── Barra de progresso ──
+     'maior': escala aproximada meta-5 → 100 (ex.: SLA 90→100)
+     'menor': régua de 0 até o limite, com folga (ex.: devolução 0→3%+)   */
+  let escalaMin, escalaMax;
+  if(ind.direcao === 'menor'){
+    escalaMin = 0;
+    escalaMax = Math.max(meta * 1.4, valor * 1.1);   // limite fica ~71% da régua
+  } else {
+    escalaMin = Math.min(meta - 5, valor - 2);
+    escalaMax = 100;
+  }
+  const escala   = (v) => Math.max(0, Math.min(100, ((v - escalaMin) / (escalaMax - escalaMin)) * 100));
+  const pctBarra = escala(valor);
+  const pctMeta  = escala(meta);
+  const corBarra = atingiu ? '#27ae60' : '#e74c3c';
 
-  /* ── % de cumprimento da meta ── */
+  /* ── % de cumprimento da meta ──
+     'maior': quanto do alvo foi alcançado (valor/meta)
+     'menor': quanto do limite foi consumido (valor/meta) — abaixo de 100% é bom */
   const cumprimento = (valor / meta) * 100;
+  const cumpLabel   = ind.direcao === 'menor' ? 'do limite' : 'da meta';
 
   const corValor = atingiu ? '#66FF99' : '#e74c3c';
 
@@ -330,7 +412,7 @@ function renderLinha(ind, resultado){
           <div class="bar-f" style="width:${pctBarra}%;background:${corBarra}"></div>
           <div class="bar-meta-mark" style="left:${pctMeta}%" title="Meta: ${fmt(meta, ind.unidade)}"></div>
         </div>
-        <span class="bar-pct">${cumprimento.toFixed(1).replace('.', ',')}%</span>
+        <span class="bar-pct" title="${cumprimento.toFixed(1).replace('.', ',')}% ${cumpLabel}">${cumprimento.toFixed(1).replace('.', ',')}%</span>
       </div>
     </td>
     <td>
