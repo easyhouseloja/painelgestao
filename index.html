@@ -9691,10 +9691,12 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 (function(){
   const SLA_URL_METAS = 'https://easyhouseloja.github.io/painelgestao/sla_transporte.html';
+  const DEV_URL_METAS = 'https://easyhouseloja.github.io/painelgestao/devolucao.html';
 
   // Metas monitoradas — manter em sincronia com o INDICADORES do metas.html
   const METAS = [
-    { id:'sla-transporte', meta:95, direcao:'maior', fetcher:fetchSlaParaMetas }
+    { id:'sla-transporte', meta:95, direcao:'maior', fetcher:fetchSlaParaMetas },
+    { id:'devolucao',      meta:3,  direcao:'menor', fetcher:fetchDevParaMetas }
   ];
 
   function parseNumMetas(txt){
@@ -9717,6 +9719,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const valor = parseNumMetas(mega.querySelector('.mega-v')?.textContent);
     if(valor === null) throw new Error('Valor não encontrado');
+    return valor;
+  }
+
+  // Índice de devolução do MÊS ATUAL (card .mc-jan … .mc-dez em devolucao.html)
+  const MES_SLUG_METAS = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+  async function fetchDevParaMetas(){
+    const res = await fetch(DEV_URL_METAS, { cache:'no-store' });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    const slug = MES_SLUG_METAS[new Date().getMonth()];
+
+    // 1) Card do mês na visão geral
+    const card = doc.querySelector('.month-card.mc-' + slug);
+    let valor = card ? parseNumMetas(card.querySelector('.month-pct')?.textContent) : null;
+
+    // 2) Fallback: KPI de faturamento na página do mês
+    if(valor === null){
+      const pg = doc.getElementById('page-' + slug);
+      if(pg) valor = parseNumMetas(pg.querySelector('.kpi-fat')?.textContent);
+    }
+
+    if(valor === null) throw new Error('Índice do mês não publicado');
     return valor;
   }
 
