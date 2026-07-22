@@ -377,6 +377,8 @@ function irParaLote(lote){ setTab('lotes'); setTimeout(()=>{loteDateFilter='all'
 
 /* ===== RUPTURA (nível de variação) ===== */
 let rupState={filter:'all',sort:'cobertura',dir:1};
+// lote por produto (o array `ruptura` não carrega o objeto lote; buscamos em `produtos`)
+const loteByItem={}; (BUNDLE.produtos||[]).forEach(p=>{if(p.codItem)loteByItem[p.codItem]=p.lote;});
 // achata a lista de ruptura: 1 linha por variação (e não por produto agregado)
 const rupVars=BUNDLE.ruptura.flatMap(p=>(p.variacoes||[]).map(v=>({
   nivel:v.nivel,
@@ -390,7 +392,7 @@ const rupVars=BUNDLE.ruptura.flatMap(p=>(p.variacoes||[]).map(v=>({
   cobertura:v.cobertura,
   codItem:v.codItem||p.codItem,
   coditemFull:v.coditemFull||'',
-  lote:p.lote||null
+  lote:loteByItem[v.codItem||p.codItem]||p.lote||null
 })));
 const rupRiskCount=rupVars.filter(r=>r.nivel==='crit'||r.nivel==='warn').length;
 function sortRup(k){rupState.dir=rupState.sort===k?-rupState.dir:1;rupState.sort=k;renderRup();}
