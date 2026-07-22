@@ -207,7 +207,7 @@
 
   <!-- RUPTURA -->
   <div class="tab-pane active" data-pane="ruptura">
-    <div class="section-title">🚨 Aviso de ruptura <span class="hint">produtos cuja cobertura fica abaixo de <b id="hLimWarn"></b> dias — prioridade de reposição</span></div>
+    <div class="section-title">🚨 Aviso de ruptura <span class="hint">por variação · variações cuja cobertura fica abaixo de <b id="hLimWarn"></b> dias — prioridade de reposição</span></div>
     <div class="card">
       <div class="toolbar">
         <span class="chip active" data-rup="all" onclick="rupFilter('all')">Todos em risco</span>
@@ -375,22 +375,42 @@ function loteBadges(lst){
 }
 function irParaLote(lote){ setTab('lotes'); setTimeout(()=>{loteDateFilter='all';const inp=document.getElementById('loteSearch');inp.value=lote;renderLotes();const el=[...document.querySelectorAll('.lote-lotehead .lcode')].find(e=>e.textContent.includes(lote));if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},80); }
 
-/* ===== RUPTURA ===== */
+/* ===== RUPTURA (nível de variação) ===== */
 let rupState={filter:'all',sort:'cobertura',dir:1};
+// achata a lista de ruptura: 1 linha por variação (e não por produto agregado)
+const rupVars=BUNDLE.ruptura.flatMap(p=>(p.variacoes||[]).map(v=>({
+  nivel:v.nivel,
+  produto:p.produto,
+  mascara:v.mascara||'',
+  categoria:v.categoria||p.categoria,
+  curva:(v.curvaGer||v.curvaCat||p.curva||''),
+  reservado:v.reservado,
+  forecast:v.forecast,
+  medDia:v.medDia,
+  cobertura:v.cobertura,
+  codItem:v.codItem||p.codItem,
+  coditemFull:v.coditemFull||'',
+  lote:p.lote||null
+})));
+const rupRiskCount=rupVars.filter(r=>r.nivel==='crit'||r.nivel==='warn').length;
 function sortRup(k){rupState.dir=rupState.sort===k?-rupState.dir:1;rupState.sort=k;renderRup();}
 function rupFilter(f){rupState.filter=f;document.querySelectorAll('[data-rup]').forEach(c=>c.classList.toggle('active',c.dataset.rup===f));renderRup();}
 function renderRup(){
-  let rows=BUNDLE.ruptura.slice();
+  document.getElementById('tb-ruptura').textContent=rupRiskCount;
+  let rows=rupVars.slice();
   const f=rupState.filter;
-  if(f==='crit')rows=rows.filter(r=>r.nivel==='crit'); else if(f==='warn')rows=rows.filter(r=>r.nivel==='warn'); else if(f==='A')rows=rows.filter(r=>r.curva==='A');
+  if(f==='crit')rows=rows.filter(r=>r.nivel==='crit');
+  else if(f==='warn')rows=rows.filter(r=>r.nivel==='warn');
+  else if(f==='A')rows=rows.filter(r=>r.curva==='A'&&(r.nivel==='crit'||r.nivel==='warn'));
+  else rows=rows.filter(r=>r.nivel==='crit'||r.nivel==='warn'); // "todos em risco"
   const k=rupState.sort; rows.sort((a,b)=>{const x=a[k],y=b[k];return(x>y?1:x<y?-1:0)*rupState.dir;});
   const tb=document.getElementById('rupBody');
-  if(!rows.length){tb.innerHTML='<tr><td colspan="9" class="empty">Nenhum produto nesse filtro 🎉</td></tr>';return;}
+  if(!rows.length){tb.innerHTML='<tr><td colspan="9" class="empty">Nenhuma variação nesse filtro 🎉</td></tr>';return;}
   tb.innerHTML=rows.map(r=>{const ni=nivelInfo[r.nivel];return `<tr>
     <td><span class="pill ${ni.cls}">${ni.txt}</span></td>
-    <td><div class="prod-name">${r.produto}</div><div class="prod-var">${r.nVar} variações · cód ${r.codItem}</div></td>
+    <td><div class="prod-name">${r.produto}</div><div class="prod-var">${r.mascara?r.mascara+' · ':''}cód ${r.coditemFull||r.codItem}</div></td>
     <td><span class="pill pill-cat ${r.categoria}">${catNome[r.categoria]}</span></td>
-    <td><span class="pill pill-abc ${r.curva}">${r.curva}</span></td>
+    <td><span class="pill pill-abc ${r.curva}">${r.curva||'—'}</span></td>
     <td class="num">${fmt(r.reservado)}</td><td class="num muted">${fmt(r.forecast)}</td>
     <td class="num muted">${fmt1(r.medDia)}</td><td>${covBar(r.cobertura)}</td>
     <td>${loteBadges(r.lote?r.lote.lotes:[])}</td></tr>`;}).join('');
