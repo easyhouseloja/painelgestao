@@ -9696,11 +9696,16 @@ document.addEventListener('DOMContentLoaded', function() {
 (function(){
   const SLA_URL_METAS = 'https://easyhouseloja.github.io/painelgestao/sla_transporte.html';
   const DEV_URL_METAS = 'https://easyhouseloja.github.io/painelgestao/devolucao.html';
+  const COM_URL_METAS = 'https://easyhouseloja.github.io/painelgestao/comercial.html';
 
   // Metas monitoradas — manter em sincronia com o INDICADORES do metas.html
+  // Para as comerciais, o fetcher devolve o % de cumprimento (faturado÷meta×100),
+  // então basta comparar com 100 (maior = atingiu).
   const METAS = [
-    { id:'sla-transporte', meta:95, direcao:'maior', fetcher:fetchSlaParaMetas },
-    { id:'devolucao',      meta:3,  direcao:'menor', fetcher:fetchDevParaMetas }
+    { id:'sla-transporte',   meta:95,  direcao:'maior', fetcher:fetchSlaParaMetas },
+    { id:'devolucao',        meta:3,   direcao:'menor', fetcher:fetchDevParaMetas },
+    { id:'meta-marketplace', meta:100, direcao:'maior', fetcher:fetchMktParaMetas },
+    { id:'meta-categoria',   meta:100, direcao:'maior', fetcher:fetchCatParaMetas }
   ];
 
   function parseNumMetas(txt){
@@ -9751,9 +9756,89 @@ document.addEventListener('DOMContentLoaded', function() {
     return valor;
   }
 
+  // ── Metas comerciais (comercial.html) — último mês de análise ──
+  // Devolvem o % de cumprimento (faturado ÷ meta × 100) para comparar com 100.
+  const CAT_METAS = ['COMP','GR','SALA','COZINHA'];
+  let _comCacheMetas = null;
+
+  function parseMoneyMetas(txt){
+    if(txt === null || txt === undefined) return null;
+    let t = String(txt).replace('R$','').replace(/\u00a0/g,' ').trim();
+    if(t === '' || t === '—' || t === '-') return 0;
+    t = t.replace(/\./g,'').replace(',','.');
+    const m = t.match(/-?\d+(?:\.\d+)?/);
+    return m ? parseFloat(m[0]) : null;
+  }
+
+  async function carregarComercialMetas(){
+    if(_comCacheMetas) return _comCacheMetas;
+    const res = await fetch(COM_URL_METAS, { cache:'no-store' });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+
+    // Último mês de análise = último .month-btn (ignorando YTD)
+    const slugs = [];
+    doc.querySelectorAll('.month-btn').forEach(function(b){
+      const m = (b.getAttribute('onclick')||'').match(/showMonth\('([^']+)'/);
+      if(m && m[1] !== 'ytd') slugs.push(m[1]);
+    });
+    if(!slugs.length) throw new Error('Nenhum mês encontrado');
+    const dash = doc.getElementById('month-' + slugs[slugs.length-1]);
+    if(!dash) throw new Error('Dashboard do mês não encontrado');
+
+    let catPage = null;
+    dash.querySelectorAll('.page').forEach(function(pg){
+      if((pg.id||'').endsWith('page-categorias')) catPage = pg;
+    });
+    if(!catPage) throw new Error('Página de categorias não encontrada');
+
+    let mktFat=0, mktMeta=0;
+    const cat = {}; CAT_METAS.forEach(function(c){ cat[c]={fat:0,meta:0}; });
+
+    catPage.querySelectorAll('.cat-mp-card').forEach(function(card){
+      card.querySelectorAll('tbody tr').forEach(function(tr){
+        const tds = tr.querySelectorAll('td');
+        if(tds.length < 3) return;
+        const rot = tds[0].textContent.trim().toUpperCase();
+        const fat = parseMoneyMetas(tds[1].textContent);
+        const meta = parseMoneyMetas(tds[2].textContent);
+        if(rot.indexOf('TOTAL') !== -1){
+          mktFat += (fat||0); mktMeta += (meta||0);
+        } else {
+          for(let i=0;i<CAT_METAS.length;i++){
+            if(rot.indexOf(CAT_METAS[i]) !== -1){
+              cat[CAT_METAS[i]].fat += (fat||0);
+              cat[CAT_METAS[i]].meta += (meta||0);
+              break;
+            }
+          }
+        }
+      });
+    });
+
+    let catFat=0, catMeta=0;
+    CAT_METAS.forEach(function(c){ catFat+=cat[c].fat; catMeta+=cat[c].meta; });
+
+    _comCacheMetas = { mktFat, mktMeta, catFat, catMeta };
+    return _comCacheMetas;
+  }
+
+  async function fetchMktParaMetas(){
+    const d = await carregarComercialMetas();
+    if(!d.mktMeta) throw new Error('Meta de marketplace zerada');
+    return d.mktFat / d.mktMeta * 100;
+  }
+
+  async function fetchCatParaMetas(){
+    const d = await carregarComercialMetas();
+    if(!d.catMeta) throw new Error('Meta de categoria zerada');
+    return d.catFat / d.catMeta * 100;
+  }
+
   async function atualizarMetas(){
     const widget = document.getElementById('metas-widget');
     if(!widget) return;
+    _comCacheMetas = null;   // zera cache do comercial p/ buscar dados frescos
 
     try{
       const resultados = await Promise.all(METAS.map(async function(m){
