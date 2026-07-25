@@ -51,6 +51,12 @@ nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top
 .kt{border-color:rgba(26,82,118,.4);background:rgba(26,82,118,.1)}
 
 .sec{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-md{font-size:16px;color:var(--text);text-transform:none;letter-spacing:0;margin-top:30px;margin-bottom:4px}
+.md-sub{font-size:12px;color:var(--muted);margin-bottom:12px}
+.md-table td{padding:12px 14px}
+.md-table .md-nome{font-weight:600;font-size:13px}
+.md-table tr.md-total td{background:rgba(46,74,122,.15);font-weight:700;border-top:2px solid var(--border)}
+.md-table tr.md-total .md-nome{font-family:'Syne',sans-serif}
 .sec::after{content:'';flex:1;height:1px;background:var(--border)}
 
 .tw{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
@@ -170,6 +176,43 @@ tr:hover td{background:rgba(46,74,122,.1)}
         </tr>
       </thead>
       <tbody id="tb-metas"></tbody>
+    </table>
+  </div>
+
+  <!-- ═══ MASTER-DETAIL: METAS COMERCIAIS ═══ -->
+  <div class="sec sec-md">Meta por Marketplace</div>
+  <div class="md-sub" id="md-mkt-sub">Faturado × meta de cada canal · último mês de análise</div>
+  <div class="tw ts">
+    <table class="md-table">
+      <thead>
+        <tr>
+          <th style="min-width:150px">Canal</th>
+          <th style="text-align:right">Faturado</th>
+          <th style="text-align:right">Meta</th>
+          <th style="text-align:right">Desvio</th>
+          <th style="min-width:150px">Progresso</th>
+          <th style="min-width:120px">Status</th>
+        </tr>
+      </thead>
+      <tbody id="tb-mkt"></tbody>
+    </table>
+  </div>
+
+  <div class="sec sec-md">Meta por Categoria</div>
+  <div class="md-sub" id="md-cat-sub">Faturado × meta de cada categoria · último mês de análise</div>
+  <div class="tw ts">
+    <table class="md-table">
+      <thead>
+        <tr>
+          <th style="min-width:150px">Categoria</th>
+          <th style="text-align:right">Faturado</th>
+          <th style="text-align:right">Meta</th>
+          <th style="text-align:right">Desvio</th>
+          <th style="min-width:150px">Progresso</th>
+          <th style="min-width:120px">Status</th>
+        </tr>
+      </thead>
+      <tbody id="tb-cat"></tbody>
     </table>
   </div>
 
@@ -379,7 +422,8 @@ async function fetchMetaMarketplace(){
   return {
     valor: fat,
     metaReal: meta,
-    referencia: refMes + ' · ' + porMkt.length + ' canais'
+    referencia: refMes + ' · ' + porMkt.length + ' canais',
+    detalhes: porMkt.map(m => ({ nome: m.nome, fat: m.fat, meta: m.meta }))
   };
 }
 
@@ -387,11 +431,15 @@ async function fetchMetaMarketplace(){
 async function fetchMetaCategoria(){
   const { porCat, refMes } = await carregarComercial();
   let fat = 0, meta = 0;
-  CATEGORIAS_COM.forEach(c => { fat += porCat[c].fat; meta += porCat[c].meta; });
+  const detalhes = CATEGORIAS_COM.map(c => {
+    fat += porCat[c].fat; meta += porCat[c].meta;
+    return { nome: c, fat: porCat[c].fat, meta: porCat[c].meta };
+  });
   return {
     valor: fat,
     metaReal: meta,
-    referencia: refMes + ' · ' + CATEGORIAS_COM.length + ' categorias'
+    referencia: refMes + ' · ' + CATEGORIAS_COM.length + ' categorias',
+    detalhes: detalhes
   };
 }
 
@@ -417,30 +465,17 @@ const INDICADORES = [
     direcao: 'menor',        // menor ou igual a 3% = atingiu
     url: DEV_URL,
     fetcher: fetchDevolucao
-  },
-  {
-    id: 'meta-marketplace',
-    nome: 'Meta por Marketplace',
-    desc: 'Faturado × meta somando as categorias de cada canal',
-    area: 'Comercial',
-    meta: 0,                 // alvo dinâmico (metaReal vindo do comercial.html)
-    unidade: 'R$',
-    direcao: 'maior',        // faturado ≥ meta = atingiu
-    url: COM_URL,
-    fetcher: fetchMetaMarketplace
-  },
-  {
-    id: 'meta-categoria',
-    nome: 'Meta por Categoria',
-    desc: 'Faturado × meta somando COMP, GR, SALA e COZINHA',
-    area: 'Comercial',
-    meta: 0,                 // alvo dinâmico (metaReal vindo do comercial.html)
-    unidade: 'R$',
-    direcao: 'maior',        // faturado ≥ meta = atingiu
-    url: COM_URL,
-    fetcher: fetchMetaCategoria
   }
-  // → Próximas metas entram aqui
+  // → Próximas metas (de linha simples) entram aqui
+];
+
+/* Metas comerciais renderizadas como master-detail (tabelas próprias).
+   Cada uma vira uma tabela com uma linha por item + total do grupo. */
+const METAS_COMERCIAIS = [
+  { id:'mkt', titulo:'Meta por Marketplace', tbody:'tb-mkt', sub:'md-mkt-sub',
+    colNome:'Canal', fetcher:fetchMetaMarketplace },
+  { id:'cat', titulo:'Meta por Categoria', tbody:'tb-cat', sub:'md-cat-sub',
+    colNome:'Categoria', fetcher:fetchMetaCategoria }
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -580,6 +615,62 @@ function renderLinha(ind, resultado){
     <td class="mn" style="font-size:11px;color:var(--muted)">${resultado.referencia || '—'}</td>`;
 }
 
+/* ── Renderiza uma meta comercial como tabela master-detail ── */
+function miniBar(fat, meta){
+  const escalaMax = Math.max(meta, fat) || 1;
+  const pctBar  = Math.max(0, Math.min(100, (fat  / escalaMax) * 100));
+  const pctMeta = Math.max(0, Math.min(100, (meta / escalaMax) * 100));
+  const ok = fat >= meta;
+  const cor = ok ? '#27ae60' : '#e74c3c';
+  const cump = meta ? (fat / meta * 100) : 0;
+  return `
+    <div class="bar-row">
+      <div class="bar-w">
+        <div class="bar-f" style="width:${pctBar}%;background:${cor}"></div>
+        <div class="bar-meta-mark" style="left:${pctMeta}%" title="Meta"></div>
+      </div>
+      <span class="bar-pct">${cump.toFixed(1).replace('.', ',')}%</span>
+    </div>`;
+}
+
+function linhaDetalhe(nome, fat, meta, isTotal){
+  const ok     = fat >= meta;
+  const desvio = fat - meta;
+  const desvioTxt = (desvio > 0 ? '+' : (desvio < 0 ? '−' : '')) + fmtCompacto(Math.abs(desvio), 'R$');
+  const desvioCls = desvio === 0 ? 'desvio-nul' : (desvio > 0 ? 'desvio-pos' : 'desvio-neg');
+  const corFat = ok ? '#66FF99' : '#ff8b7a';
+  return `
+    <tr class="${isTotal ? 'md-total' : ''}">
+      <td class="md-nome">${nome}</td>
+      <td style="text-align:right" class="mn" style="color:${corFat}">${fmt(fat, 'R$')}</td>
+      <td style="text-align:right" class="mn" style="color:var(--muted)">${fmt(meta, 'R$')}</td>
+      <td style="text-align:right"><span class="${desvioCls}">${desvioTxt}</span></td>
+      <td>${miniBar(fat, meta)}</td>
+      <td><span class="bdg ${ok ? 'bdg-ok' : 'bdg-nok'}">${ok ? '✅ Atingiu' : '⚠️ Não atingiu'}</span></td>
+    </tr>`;
+}
+
+/* Renderiza a tabela e devolve o status do TOTAL (para o resumo) */
+function renderMasterDetail(cfg, r){
+  const tbody = document.getElementById(cfg.tbody);
+  const sub   = document.getElementById(cfg.sub);
+  if(!tbody) return null;
+
+  if(r.erro){
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">
+      Dados indisponíveis — ${r.msg || 'falha ao buscar comercial.html'}</td></tr>`;
+    if(sub) sub.textContent = 'Fonte indisponível no momento';
+    return { erro:true };
+  }
+
+  const linhas = (r.detalhes || []).map(d => linhaDetalhe(d.nome, d.fat, d.meta, false)).join('');
+  const totalLinha = linhaDetalhe('TOTAL', r.valor, r.metaReal, true);
+  tbody.innerHTML = linhas + totalLinha;
+
+  if(sub) sub.textContent = r.referencia || '';
+  return { atingiu: r.valor >= r.metaReal, erro:false };
+}
+
 function renderResumo(resultados){
   const validos = resultados.filter(r => !r.erro);
   const total   = resultados.length;
@@ -613,17 +704,23 @@ async function carregarIndicadores(){
   btn.disabled = true;
   btnTxt.textContent = 'Buscando…';
 
-  /* Monta o esqueleto da tabela */
+  /* Monta o esqueleto da tabela principal */
   document.getElementById('tb-metas').innerHTML = INDICADORES.map(linhaSkeleton).join('');
 
-  /* Busca todos os indicadores em paralelo */
+  /* Esqueleto de carregamento das tabelas comerciais */
+  METAS_COMERCIAIS.forEach(cfg => {
+    const tb = document.getElementById(cfg.tbody);
+    if(tb) tb.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:18px">Buscando…</td></tr>`;
+  });
+
+  /* Busca todos os indicadores simples em paralelo */
   const resultados = await Promise.all(INDICADORES.map(async (ind) => {
     try {
       const r = await ind.fetcher();
       /* Metas comerciais trazem o alvo do próprio arquivo (metaReal). */
       const metaEfetiva = (r.metaReal !== undefined && r.metaReal !== null) ? r.metaReal : ind.meta;
       const atingiu = ind.direcao === 'menor' ? (r.valor <= metaEfetiva) : (r.valor >= metaEfetiva);
-      const res = { valor: r.valor, meta: metaEfetiva, referencia: r.referencia, atingiu: atingiu, erro: false };
+      const res = { valor: r.valor, meta: metaEfetiva, referencia: r.referencia, detalhes: r.detalhes, atingiu: atingiu, erro: false };
       renderLinha(ind, res);
       return res;
     } catch(err){
@@ -634,7 +731,19 @@ async function carregarIndicadores(){
     }
   }));
 
-  renderResumo(resultados);
+  /* Busca e renderiza as metas comerciais (master-detail) */
+  const resComerciais = await Promise.all(METAS_COMERCIAIS.map(async (cfg) => {
+    try {
+      const r = await cfg.fetcher();
+      return renderMasterDetail(cfg, { ...r, erro:false });
+    } catch(err){
+      console.warn('[metas] Falha em ' + cfg.id + ':', err);
+      return renderMasterDetail(cfg, { erro:true, msg:err.message });
+    }
+  }));
+
+  /* Resumo considera as metas simples + as comerciais (pelo total de cada) */
+  renderResumo([...resultados, ...resComerciais.filter(Boolean)]);
 
   const agora = new Date();
   document.getElementById('last-update').textContent =
