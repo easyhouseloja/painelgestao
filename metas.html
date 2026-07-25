@@ -190,6 +190,7 @@ tr:hover td{background:rgba(46,74,122,.1)}
 
 const SLA_URL = 'https://easyhouseloja.github.io/painelgestao/sla_transporte.html';
 const DEV_URL = 'https://easyhouseloja.github.io/painelgestao/devolucao.html';
+const COM_URL = 'https://easyhouseloja.github.io/painelgestao/comercial.html';
 
 /* Extrai número de textos tipo "97.26%" ou "95,04%" */
 function parseNum(txt){
@@ -283,6 +284,117 @@ async function fetchDevolucao(){
   return { valor: valor, referencia: referencia, mes: nomeMes };
 }
 
+/* ── Fetchers das metas comerciais (comercial.html) ──
+   Ambas leem SEMPRE o último mês de análise (último botão de mês, exceto YTD).
+   A página de categorias do mês traz um card .cat-mp-card por marketplace,
+   cada um com uma tabela cujas linhas são categorias + uma linha TOTAL:
+     <tr><td>COMP</td><td>R$ ...faturado</td><td>R$ ...meta</td>...</tr>
+     <tr class="total-row"><td>TOTAL</td><td>faturado</td><td>meta</td>...</tr>
+
+   • Meta por Marketplace → soma os TOTAIS de cada canal (faturado vs meta).
+   • Meta por Categoria   → soma cada categoria (COMP/GR/SALA/COZINHA) em todos
+                            os canais (faturado vs meta).
+   Cache do documento para não baixar o comercial.html duas vezes por refresh. */
+
+const CATEGORIAS_COM = ['COMP', 'GR', 'SALA', 'COZINHA'];
+let _comCache = null;
+
+function parseMoney(txt){
+  if(txt === null || txt === undefined) return null;
+  let t = String(txt).replace('R$', '').replace(/\u00a0/g, ' ').trim();
+  if(t === '' || t === '—' || t === '-') return 0;
+  t = t.replace(/\./g, '').replace(',', '.');       // pt-BR → float
+  const m = t.match(/-?\d+(?:\.\d+)?/);
+  return m ? parseFloat(m[0]) : null;
+}
+
+async function carregarComercial(){
+  if(_comCache) return _comCache;
+  const res = await fetch(COM_URL, { cache:'no-store' });
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  const html = await res.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  /* Último mês de análise = último .month-btn (ignorando o YTD) */
+  const slugs = [];
+  doc.querySelectorAll('.month-btn').forEach(b => {
+    const m = (b.getAttribute('onclick') || '').match(/showMonth\('([^']+)'/);
+    if(m && m[1] !== 'ytd') slugs.push(m[1]);
+  });
+  if(!slugs.length) throw new Error('Nenhum mês encontrado no comercial');
+  const slug = slugs[slugs.length - 1];
+
+  const dash = doc.getElementById('month-' + slug);
+  if(!dash) throw new Error('Dashboard do mês não encontrado');
+
+  /* Página de categorias dentro do mês (id termina em "page-categorias") */
+  let catPage = null;
+  dash.querySelectorAll('.page').forEach(pg => {
+    if((pg.id || '').endsWith('page-categorias')) catPage = pg;
+  });
+  if(!catPage) throw new Error('Página de categorias não encontrada');
+
+  /* Nome legível do mês */
+  const btnTxt = [...doc.querySelectorAll('.month-btn')]
+    .find(b => (b.getAttribute('onclick')||'').includes("'" + slug + "'"))?.textContent || slug;
+  const refMes = btnTxt.replace(/[^\wÀ-ÿ\s]/g, '').trim();
+
+  const porMkt = [];                                   // {nome, fat, meta}
+  const porCat = {}; CATEGORIAS_COM.forEach(c => porCat[c] = { fat:0, meta:0 });
+
+  catPage.querySelectorAll('.cat-mp-card').forEach(card => {
+    const nome = (card.querySelector('.cat-mp-name')?.textContent || '?')
+                   .replace(/[^\wÀ-ÿ\s/./-]/g, '').trim();
+    let totFat = null, totMeta = null;
+
+    card.querySelectorAll('tbody tr').forEach(tr => {
+      const tds = tr.querySelectorAll('td');
+      if(tds.length < 3) return;
+      const rot  = tds[0].textContent.trim().toUpperCase();
+      const fat  = parseMoney(tds[1].textContent);
+      const meta = parseMoney(tds[2].textContent);
+      if(rot.includes('TOTAL')){
+        totFat = fat; totMeta = meta;
+      } else {
+        const cat = CATEGORIAS_COM.find(c => rot.includes(c));
+        if(cat){
+          porCat[cat].fat  += (fat  || 0);
+          porCat[cat].meta += (meta || 0);
+        }
+      }
+    });
+
+    if(totFat !== null) porMkt.push({ nome, fat: totFat, meta: totMeta });
+  });
+
+  _comCache = { porMkt, porCat, refMes };
+  return _comCache;
+}
+
+/* Meta por Marketplace: soma dos totais de todos os canais */
+async function fetchMetaMarketplace(){
+  const { porMkt, refMes } = await carregarComercial();
+  const fat  = porMkt.reduce((s, m) => s + (m.fat  || 0), 0);
+  const meta = porMkt.reduce((s, m) => s + (m.meta || 0), 0);
+  return {
+    valor: fat,
+    metaReal: meta,
+    referencia: refMes + ' · ' + porMkt.length + ' canais'
+  };
+}
+
+/* Meta por Categoria: soma de COMP+GR+SALA+COZINHA em todos os canais */
+async function fetchMetaCategoria(){
+  const { porCat, refMes } = await carregarComercial();
+  let fat = 0, meta = 0;
+  CATEGORIAS_COM.forEach(c => { fat += porCat[c].fat; meta += porCat[c].meta; });
+  return {
+    valor: fat,
+    metaReal: meta,
+    referencia: refMes + ' · ' + CATEGORIAS_COM.length + ' categorias'
+  };
+}
+
 const INDICADORES = [
   {
     id: 'sla-transporte',
@@ -305,6 +417,28 @@ const INDICADORES = [
     direcao: 'menor',        // menor ou igual a 3% = atingiu
     url: DEV_URL,
     fetcher: fetchDevolucao
+  },
+  {
+    id: 'meta-marketplace',
+    nome: 'Meta por Marketplace',
+    desc: 'Faturado × meta somando as categorias de cada canal',
+    area: 'Comercial',
+    meta: 0,                 // alvo dinâmico (metaReal vindo do comercial.html)
+    unidade: 'R$',
+    direcao: 'maior',        // faturado ≥ meta = atingiu
+    url: COM_URL,
+    fetcher: fetchMetaMarketplace
+  },
+  {
+    id: 'meta-categoria',
+    nome: 'Meta por Categoria',
+    desc: 'Faturado × meta somando COMP, GR, SALA e COZINHA',
+    area: 'Comercial',
+    meta: 0,                 // alvo dinâmico (metaReal vindo do comercial.html)
+    unidade: 'R$',
+    direcao: 'maior',        // faturado ≥ meta = atingiu
+    url: COM_URL,
+    fetcher: fetchMetaCategoria
   }
   // → Próximas metas entram aqui
 ];
@@ -315,7 +449,21 @@ const INDICADORES = [
 
 function fmt(v, un){
   if(v === null || v === undefined) return '—';
+  if(un === 'R$'){
+    return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
   return v.toFixed(2).replace('.', ',') + (un || '');
+}
+
+/* Formato compacto para valores grandes em R$ (ex.: R$ 6,71M) */
+function fmtCompacto(v, un){
+  if(v === null || v === undefined) return '—';
+  if(un === 'R$'){
+    if(Math.abs(v) >= 1e6) return 'R$ ' + (v/1e6).toFixed(2).replace('.', ',') + 'M';
+    if(Math.abs(v) >= 1e3) return 'R$ ' + (v/1e3).toFixed(1).replace('.', ',') + 'K';
+    return fmt(v, un);
+  }
+  return fmt(v, un);
 }
 
 function linhaSkeleton(ind){
@@ -326,7 +474,7 @@ function linhaSkeleton(ind){
         <div class="ind-desc">${ind.desc}</div>
       </td>
       <td style="color:var(--muted);font-size:12px">${ind.area}</td>
-      <td style="text-align:right" class="mn">${fmt(ind.meta, ind.unidade)}</td>
+      <td style="text-align:right" class="mn">${(ind.meta ? fmt(ind.meta, ind.unidade) : '<span style="color:var(--muted)">a apurar</span>')}</td>
       <td style="text-align:right"><span class="skeleton val-big">00,00%</span></td>
       <td style="text-align:right"><span class="skeleton mn">+0,00</span></td>
       <td><div class="bar-row"><div class="bar-w"></div><span class="bar-pct">—</span></div></td>
@@ -347,7 +495,7 @@ function renderLinha(ind, resultado){
         <div class="ind-desc">${ind.desc}</div>
       </td>
       <td style="color:var(--muted);font-size:12px">${ind.area}</td>
-      <td style="text-align:right" class="mn">${fmt(ind.meta, ind.unidade)}</td>
+      <td style="text-align:right" class="mn">${(ind.meta ? fmt(ind.meta, ind.unidade) : '—')}</td>
       <td style="text-align:right" class="mn" style="color:var(--muted)">—
         <div class="err-note">indisponível</div>
       </td>
@@ -359,23 +507,32 @@ function renderLinha(ind, resultado){
   }
 
   const valor = resultado.valor;
-  const meta  = ind.meta;
+  const meta  = (resultado.meta !== undefined && resultado.meta !== null) ? resultado.meta : ind.meta;
 
   /* ── Status: atingiu ou não a meta ── */
   const atingiu = ind.direcao === 'menor' ? (valor <= meta) : (valor >= meta);
 
-  /* ── Desvio em pontos percentuais ── */
+  /* ── Desvio (pp para %, R$ para moeda) ── */
   const desvio = valor - meta;
   /* Verde = a favor da meta. Em 'menor', ficar abaixo do limite é bom. */
   const favoravel = ind.direcao === 'menor' ? (desvio < 0) : (desvio > 0);
   const desvioCls = desvio === 0 ? 'desvio-nul' : (favoravel ? 'desvio-pos' : 'desvio-neg');
-  const desvioTxt = (desvio > 0 ? '+' : '') + desvio.toFixed(2).replace('.', ',') + ' pp';
+  let desvioTxt;
+  if(ind.unidade === 'R$'){
+    desvioTxt = (desvio > 0 ? '+' : (desvio < 0 ? '−' : '')) + fmtCompacto(Math.abs(desvio), 'R$');
+  } else {
+    desvioTxt = (desvio > 0 ? '+' : '') + desvio.toFixed(2).replace('.', ',') + ' pp';
+  }
 
   /* ── Barra de progresso ──
-     'maior': escala aproximada meta-5 → 100 (ex.: SLA 90→100)
-     'menor': régua de 0 até o limite, com folga (ex.: devolução 0→3%+)   */
+     'R$' (maior): régua 0 → meta, faturado preenche proporcionalmente
+     '%'  maior:   escala aproximada meta-5 → 100 (ex.: SLA 90→100)
+     '%'  menor:   régua de 0 até o limite, com folga (ex.: devolução 0→3%+) */
   let escalaMin, escalaMax;
-  if(ind.direcao === 'menor'){
+  if(ind.unidade === 'R$'){
+    escalaMin = 0;
+    escalaMax = Math.max(meta, valor);              // meta fica em 100% quando faturado < meta
+  } else if(ind.direcao === 'menor'){
     escalaMin = 0;
     escalaMax = Math.max(meta * 1.4, valor * 1.1);   // limite fica ~71% da régua
   } else {
@@ -448,6 +605,7 @@ let carregando = false;
 async function carregarIndicadores(){
   if(carregando) return;
   carregando = true;
+  _comCache = null;   // zera cache do comercial para buscar dados frescos
 
   const btn    = document.getElementById('btn-refresh');
   const btnTxt = document.getElementById('btn-refresh-txt');
@@ -462,8 +620,10 @@ async function carregarIndicadores(){
   const resultados = await Promise.all(INDICADORES.map(async (ind) => {
     try {
       const r = await ind.fetcher();
-      const atingiu = ind.direcao === 'menor' ? (r.valor <= ind.meta) : (r.valor >= ind.meta);
-      const res = { valor: r.valor, referencia: r.referencia, atingiu: atingiu, erro: false };
+      /* Metas comerciais trazem o alvo do próprio arquivo (metaReal). */
+      const metaEfetiva = (r.metaReal !== undefined && r.metaReal !== null) ? r.metaReal : ind.meta;
+      const atingiu = ind.direcao === 'menor' ? (r.valor <= metaEfetiva) : (r.valor >= metaEfetiva);
+      const res = { valor: r.valor, meta: metaEfetiva, referencia: r.referencia, atingiu: atingiu, erro: false };
       renderLinha(ind, res);
       return res;
     } catch(err){
