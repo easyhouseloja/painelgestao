@@ -9705,7 +9705,8 @@ document.addEventListener('DOMContentLoaded', function() {
     { id:'sla-transporte',   meta:95,  direcao:'maior', fetcher:fetchSlaParaMetas },
     { id:'devolucao',        meta:3,   direcao:'menor', fetcher:fetchDevParaMetas },
     { id:'meta-marketplace', meta:100, direcao:'maior', fetcher:fetchMktParaMetas },
-    { id:'meta-categoria',   meta:100, direcao:'maior', fetcher:fetchCatParaMetas }
+    { id:'meta-categoria',   meta:100, direcao:'maior', fetcher:fetchCatParaMetas },
+    { id:'reputacao',        meta:1,   direcao:'maior', fetcher:fetchRepParaMetas }
   ];
 
   function parseNumMetas(txt){
@@ -9833,6 +9834,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const d = await carregarComercialMetas();
     if(!d.catMeta) throw new Error('Meta de categoria zerada');
     return d.catFat / d.catMeta * 100;
+  }
+
+  // Reputação: usa o Firebase já inicializado no index (db global).
+  // Retorna 1 se TODOS os canais estão verdes (meta atingida), senão 0.
+  async function fetchRepParaMetas(){
+    if(typeof db === 'undefined' || !db) throw new Error('Firebase indisponível');
+    const snap = await db.ref('reputacao').once('value');
+    const d = snap.val();
+    if(!d || !d.canais) throw new Error('Sem dados de reputação');
+    const canais = Object.values(d.canais);
+    const todosVerdes = canais.every(function(c){
+      return (c.status || '').toLowerCase() === 'verde';
+    });
+    return todosVerdes ? 1 : 0;
   }
 
   async function atualizarMetas(){

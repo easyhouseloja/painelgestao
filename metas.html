@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Painel de Indicadores de Metas · Easy House</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Firebase (mesma base do reputacao.html) para ler a reputação ao vivo -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
 :root{
   --bg:#0b0f1a;--card:#161d2e;--border:#1f2d45;
@@ -52,6 +55,7 @@ nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top
 
 .sec{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .sec-md{font-size:16px;color:var(--text);text-transform:none;letter-spacing:0;margin-top:30px;margin-bottom:4px}
+.rep-dot{display:inline-block;width:12px;height:12px;border-radius:50%;box-shadow:0 0 6px rgba(0,0,0,.4)}
 .md-sub{font-size:12px;color:var(--muted);margin-bottom:12px}
 .md-table td{padding:12px 14px}
 .md-table .md-nome{font-weight:600;font-size:13px}
@@ -216,6 +220,23 @@ tr:hover td{background:rgba(46,74,122,.1)}
     </table>
   </div>
 
+  <!-- ═══ MASTER-DETAIL: REPUTAÇÃO POR MARKETPLACE ═══ -->
+  <div class="sec sec-md">Reputação por Marketplace</div>
+  <div class="md-sub" id="md-rep-sub">Status de reputação de cada canal · verde = meta atingida</div>
+  <div class="tw ts">
+    <table class="md-table">
+      <thead>
+        <tr>
+          <th style="min-width:150px">Canal</th>
+          <th style="text-align:right">Nota</th>
+          <th style="text-align:center">Cor</th>
+          <th style="min-width:120px">Status</th>
+        </tr>
+      </thead>
+      <tbody id="tb-rep"></tbody>
+    </table>
+  </div>
+
   <div style="font-size:11px;color:var(--muted);text-align:center;padding:6px 0 24px">
     Última atualização: <span class="mn" id="last-update">—</span> · recarga automática a cada 10 min
   </div>
@@ -234,6 +255,56 @@ tr:hover td{background:rgba(46,74,122,.1)}
 const SLA_URL = 'https://easyhouseloja.github.io/painelgestao/sla_transporte.html';
 const DEV_URL = 'https://easyhouseloja.github.io/painelgestao/devolucao.html';
 const COM_URL = 'https://easyhouseloja.github.io/painelgestao/comercial.html';
+
+/* ── Reputação: lê do mesmo Firebase Realtime DB usado pelo reputacao.html ── */
+const FIREBASE_CONFIG_REP = {
+  apiKey: "AIzaSyC4krP9uAnApsZl0GgBkHdEwcEZg8e2QTQ",
+  authDomain: "easyhouse-logs.firebaseapp.com",
+  databaseURL: "https://easyhouse-logs-default-rtdb.firebaseio.com",
+  projectId: "easyhouse-logs",
+  storageBucket: "easyhouse-logs.firebasestorage.app",
+  messagingSenderId: "205222626958",
+  appId: "1:205222626958:web:949d7438096201b62eebdf"
+};
+const FIREBASE_PATH_REP = "reputacao";
+/* Nomes amigáveis dos canais de reputação */
+const REP_NOMES = {
+  magalu:'Magalu', mercadolivre:'Mercado Livre', madeira:'Madeira',
+  shopee:'Shopee', viavarejo:'Via Varejo'
+};
+
+let _fbAppRep = null;
+function initFirebaseRep(){
+  if(_fbAppRep) return _fbAppRep;
+  if(typeof firebase === 'undefined') throw new Error('SDK do Firebase indisponível');
+  _fbAppRep = firebase.apps && firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG_REP);
+  return _fbAppRep;
+}
+
+/* Busca a reputação ao vivo. Retorna { canais:[{id,nome,nota,status,verde}], todosVerdes } */
+function fetchReputacao(){
+  return new Promise((resolve, reject) => {
+    let app;
+    try { app = initFirebaseRep(); } catch(e){ return reject(e); }
+    const db = firebase.database(app);
+    const to = setTimeout(() => reject(new Error('Tempo esgotado ao ler o Firebase')), 8000);
+    db.ref(FIREBASE_PATH_REP).once('value')
+      .then(snap => {
+        clearTimeout(to);
+        const d = snap.val();
+        if(!d || !d.canais) return reject(new Error('Sem dados de reputação'));
+        const canais = Object.entries(d.canais).map(([id, c]) => ({
+          id,
+          nome: REP_NOMES[id] || id,
+          nota: (typeof c.nota === 'number') ? c.nota : parseFloat(String(c.nota).replace(',','.')),
+          status: (c.status || '').toLowerCase(),
+          verde: (c.status || '').toLowerCase() === 'verde'
+        }));
+        resolve({ canais, todosVerdes: canais.every(c => c.verde) });
+      })
+      .catch(err => { clearTimeout(to); reject(err); });
+  });
+}
 
 /* Extrai número de textos tipo "97.26%" ou "95,04%" */
 function parseNum(txt){
@@ -706,6 +777,60 @@ function renderMasterDetail(cfg, r){
   return { atingiu: r.valor >= r.metaReal, erro:false };
 }
 
+/* Renderiza a tabela de reputação e devolve o status do TOTAL (para o resumo).
+   Regra: verde = atingiu; qualquer outra cor = não atingiu.
+   Total: todos verdes = atingiu, senão não. */
+const REP_CORES = {
+  verde:    { hex:'#27ae60', rotulo:'Verde'    },
+  amarelo:  { hex:'#e6a817', rotulo:'Amarelo'  },
+  laranja:  { hex:'#F97316', rotulo:'Laranja'  },
+  vermelho: { hex:'#e74c3c', rotulo:'Vermelho' }
+};
+
+function linhaReputacao(nome, nota, status, verde, isTotal){
+  const c = REP_CORES[status] || REP_CORES.laranja;
+  const notaTxt = (nota === null || isNaN(nota)) ? '—'
+                : nota.toFixed(1).replace('.', ',') + ' / 5,0';
+  const corCell = isTotal
+    ? '<span style="color:var(--muted);font-size:11px">—</span>'
+    : `<span class="rep-dot" style="background:${c.hex}" title="${c.rotulo}"></span>`;
+  const statusCell = `<span class="bdg ${verde ? 'bdg-ok' : 'bdg-nok'}">${verde ? '✅ Atingiu' : '⚠️ Não atingiu'}</span>`;
+  return `
+    <tr class="${isTotal ? 'md-total' : ''}">
+      <td class="md-nome">${nome}</td>
+      <td style="text-align:right;color:${isTotal ? 'var(--muted)' : c.hex}" class="mn">${isTotal ? '—' : notaTxt}</td>
+      <td style="text-align:center">${corCell}</td>
+      <td>${statusCell}</td>
+    </tr>`;
+}
+
+function renderReputacao(r){
+  const tbody = document.getElementById('tb-rep');
+  const sub   = document.getElementById('md-rep-sub');
+  if(!tbody) return null;
+
+  if(r.erro){
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">
+      Dados indisponíveis — ${r.msg || 'falha ao ler a reputação'}</td></tr>`;
+    if(sub) sub.textContent = 'Fonte indisponível no momento';
+    return { erro:true };
+  }
+
+  const linhas = r.canais.map(c =>
+    linhaReputacao(c.nome, c.nota, c.status, c.verde, false)).join('');
+  const verdes = r.canais.filter(c => c.verde).length;
+  const totalLinha = linhaReputacao(
+    'TOTAL (' + verdes + '/' + r.canais.length + ' verdes)',
+    null, r.todosVerdes ? 'verde' : 'laranja', r.todosVerdes, true);
+  tbody.innerHTML = linhas + totalLinha;
+
+  if(sub) sub.textContent = r.todosVerdes
+    ? 'Todos os canais em verde · meta geral atingida'
+    : (r.canais.length - verdes) + ' canal(is) fora do verde · meta geral não atingida';
+
+  return { atingiu: r.todosVerdes, erro:false };
+}
+
 function renderResumo(resultados){
   const validos = resultados.filter(r => !r.erro);
   const total   = resultados.length;
@@ -747,6 +872,8 @@ async function carregarIndicadores(){
     const tb = document.getElementById(cfg.tbody);
     if(tb) tb.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:18px">Buscando…</td></tr>`;
   });
+  const tbRep = document.getElementById('tb-rep');
+  if(tbRep) tbRep.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:18px">Buscando reputação…</td></tr>`;
 
   /* Busca todos os indicadores simples em paralelo */
   const resultados = await Promise.all(INDICADORES.map(async (ind) => {
@@ -777,8 +904,18 @@ async function carregarIndicadores(){
     }
   }));
 
-  /* Resumo considera as metas simples + as comerciais (pelo total de cada) */
-  renderResumo([...resultados, ...resComerciais.filter(Boolean)]);
+  /* Busca e renderiza a reputação (master-detail via Firebase) */
+  let resRep = null;
+  try {
+    const rep = await fetchReputacao();
+    resRep = renderReputacao({ ...rep, erro:false });
+  } catch(err){
+    console.warn('[metas] Falha na reputação:', err);
+    resRep = renderReputacao({ erro:true, msg:err.message });
+  }
+
+  /* Resumo considera as metas simples + as comerciais + a reputação */
+  renderResumo([...resultados, ...resComerciais.filter(Boolean), ...(resRep ? [resRep] : [])]);
 
   const agora = new Date();
   document.getElementById('last-update').textContent =
