@@ -428,20 +428,23 @@ async function carregarComercial(){
 
 /* Meta por Marketplace:
    - Detalhe: todos os canais, como está.
-   - Total (geral): soma apenas Shopee + Magalu + Mercado Livre.
-     A meta do total exclui a meta de cozinha desses canais. */
+   - Total (geral):
+       · Faturado = soma do faturado de todas as categorias em todos os canais
+                    (mesmo número da tabela de Categoria).
+       · Meta     = soma apenas Shopee + Magalu + Mercado Livre, sem cozinha. */
 async function fetchMetaMarketplace(){
-  const { porMkt, metaCatPrinc, refMes } = await carregarComercial();
+  const { porMkt, porCat, metaCatPrinc, refMes } = await carregarComercial();
   const principais = porMkt.filter(m => m.principal);
 
-  const fat = principais.reduce((s, m) => s + (m.fat || 0), 0);
+  /* Faturado: soma por categoria (todos os canais) — igual ao total de Categoria */
+  const fat = CATEGORIAS_COM.reduce((s, c) => s + (porCat[c].fat || 0), 0);
   /* Meta dos 3 principais sem cozinha = soma(COMP+GR+SALA) dos principais */
   const meta = ['COMP', 'GR', 'SALA'].reduce((s, c) => s + (metaCatPrinc[c] || 0), 0);
 
   return {
     valor: fat,
     metaReal: meta,
-    referencia: refMes + ' · ' + principais.length + ' canais principais',
+    referencia: refMes + ' · meta sobre ' + principais.length + ' canais principais',
     detalhes: porMkt.map(m => ({ nome: m.nome, fat: m.fat, meta: m.meta }))
   };
 }
