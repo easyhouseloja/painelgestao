@@ -340,7 +340,15 @@ async function fetchDevolucao(){
    Cache do documento para não baixar o comercial.html duas vezes por refresh. */
 
 const CATEGORIAS_COM = ['COMP', 'GR', 'SALA', 'COZINHA'];
+/* Canais principais considerados no somatório da META (total).
+   O detalhe continua mostrando todos os canais. */
+const CANAIS_PRINCIPAIS = ['SHOPEE', 'MAGALU', 'MERCADO LIVRE', 'MERCADO'];
 let _comCache = null;
+
+function ehCanalPrincipal(nome){
+  const n = (nome || '').toUpperCase();
+  return CANAIS_PRINCIPAIS.some(p => n.includes(p));
+}
 
 function parseMoney(txt){
   if(txt === null || txt === undefined) return null;
@@ -382,12 +390,15 @@ async function carregarComercial(){
     .find(b => (b.getAttribute('onclick')||'').includes("'" + slug + "'"))?.textContent || slug;
   const refMes = btnTxt.replace(/[^\wÀ-ÿ\s]/g, '').trim();
 
-  const porMkt = [];                                   // {nome, fat, meta}
+  const porMkt = [];                                   // {nome, fat, meta, principal}
   const porCat = {}; CATEGORIAS_COM.forEach(c => porCat[c] = { fat:0, meta:0 });
+  /* Meta por categoria SOMENTE dos canais principais (para o total ajustado) */
+  const metaCatPrinc = {}; CATEGORIAS_COM.forEach(c => metaCatPrinc[c] = 0);
 
   catPage.querySelectorAll('.cat-mp-card').forEach(card => {
     const nome = (card.querySelector('.cat-mp-name')?.textContent || '?')
                    .replace(/[^\wÀ-ÿ\s/./-]/g, '').trim();
+    const principal = ehCanalPrincipal(nome);
     let totFat = null, totMeta = null;
 
     card.querySelectorAll('tbody tr').forEach(tr => {
@@ -401,39 +412,52 @@ async function carregarComercial(){
       } else {
         const cat = CATEGORIAS_COM.find(c => rot.includes(c));
         if(cat){
-          porCat[cat].fat  += (fat  || 0);
-          porCat[cat].meta += (meta || 0);
+          porCat[cat].fat  += (fat  || 0);   // faturado: todos os canais (mantém)
+          porCat[cat].meta += (meta || 0);   // meta bruta (todos) — referência
+          if(principal) metaCatPrinc[cat] += (meta || 0);  // meta só dos 3 principais
         }
       }
     });
 
-    if(totFat !== null) porMkt.push({ nome, fat: totFat, meta: totMeta });
+    if(totFat !== null) porMkt.push({ nome, fat: totFat, meta: totMeta, principal });
   });
 
-  _comCache = { porMkt, porCat, refMes };
+  _comCache = { porMkt, porCat, metaCatPrinc, refMes };
   return _comCache;
 }
 
-/* Meta por Marketplace: soma dos totais de todos os canais */
+/* Meta por Marketplace:
+   - Detalhe: todos os canais, como está.
+   - Total (geral): soma apenas Shopee + Magalu + Mercado Livre.
+     A meta do total exclui a meta de cozinha desses canais. */
 async function fetchMetaMarketplace(){
-  const { porMkt, refMes } = await carregarComercial();
-  const fat  = porMkt.reduce((s, m) => s + (m.fat  || 0), 0);
-  const meta = porMkt.reduce((s, m) => s + (m.meta || 0), 0);
+  const { porMkt, metaCatPrinc, refMes } = await carregarComercial();
+  const principais = porMkt.filter(m => m.principal);
+
+  const fat = principais.reduce((s, m) => s + (m.fat || 0), 0);
+  /* Meta dos 3 principais sem cozinha = soma(COMP+GR+SALA) dos principais */
+  const meta = ['COMP', 'GR', 'SALA'].reduce((s, c) => s + (metaCatPrinc[c] || 0), 0);
+
   return {
     valor: fat,
     metaReal: meta,
-    referencia: refMes + ' · ' + porMkt.length + ' canais',
+    referencia: refMes + ' · ' + principais.length + ' canais principais',
     detalhes: porMkt.map(m => ({ nome: m.nome, fat: m.fat, meta: m.meta }))
   };
 }
 
-/* Meta por Categoria: soma de COMP+GR+SALA+COZINHA em todos os canais */
+/* Meta por Categoria:
+   - Faturado de cada categoria: todos os canais (mantém).
+   - Meta de cada categoria: soma apenas Shopee + Magalu + Mercado Livre.
+   - Cozinha: meta zerada (—). */
 async function fetchMetaCategoria(){
-  const { porCat, refMes } = await carregarComercial();
+  const { porCat, metaCatPrinc, refMes } = await carregarComercial();
   let fat = 0, meta = 0;
   const detalhes = CATEGORIAS_COM.map(c => {
-    fat += porCat[c].fat; meta += porCat[c].meta;
-    return { nome: c, fat: porCat[c].fat, meta: porCat[c].meta };
+    const catFat  = porCat[c].fat;                        // todos os canais
+    const catMeta = (c === 'COZINHA') ? 0 : (metaCatPrinc[c] || 0); // 3 principais, cozinha zerada
+    fat += catFat; meta += catMeta;
+    return { nome: c, fat: catFat, meta: catMeta };
   });
   return {
     valor: fat,
@@ -634,19 +658,27 @@ function miniBar(fat, meta){
 }
 
 function linhaDetalhe(nome, fat, meta, isTotal){
+  /* Categoria sem meta definida (ex.: cozinha zerada) → mostra "—" e status neutro */
+  const semMeta = !isTotal && (!meta || meta <= 0);
   const ok     = fat >= meta;
   const desvio = fat - meta;
-  const desvioTxt = (desvio > 0 ? '+' : (desvio < 0 ? '−' : '')) + fmtCompacto(Math.abs(desvio), 'R$');
-  const desvioCls = desvio === 0 ? 'desvio-nul' : (desvio > 0 ? 'desvio-pos' : 'desvio-neg');
-  const corFat = ok ? '#66FF99' : '#ff8b7a';
+  const desvioTxt = semMeta ? '—'
+    : (desvio > 0 ? '+' : (desvio < 0 ? '−' : '')) + fmtCompacto(Math.abs(desvio), 'R$');
+  const desvioCls = semMeta ? 'desvio-nul' : (desvio === 0 ? 'desvio-nul' : (desvio > 0 ? 'desvio-pos' : 'desvio-neg'));
+  const corFat = semMeta ? 'var(--text)' : (ok ? '#66FF99' : '#ff8b7a');
+  const metaCell   = semMeta ? '<span style="color:var(--muted)">—</span>' : fmt(meta, 'R$');
+  const progCell   = semMeta ? '<span style="color:var(--muted);font-size:11px">sem meta</span>' : miniBar(fat, meta);
+  const statusCell = semMeta
+    ? '<span class="bdg" style="background:rgba(136,136,136,.15);color:var(--muted)">— sem meta</span>'
+    : `<span class="bdg ${ok ? 'bdg-ok' : 'bdg-nok'}">${ok ? '✅ Atingiu' : '⚠️ Não atingiu'}</span>`;
   return `
     <tr class="${isTotal ? 'md-total' : ''}">
       <td class="md-nome">${nome}</td>
-      <td style="text-align:right" class="mn" style="color:${corFat}">${fmt(fat, 'R$')}</td>
-      <td style="text-align:right" class="mn" style="color:var(--muted)">${fmt(meta, 'R$')}</td>
+      <td style="text-align:right;color:${corFat}" class="mn">${fmt(fat, 'R$')}</td>
+      <td style="text-align:right;color:var(--muted)" class="mn">${metaCell}</td>
       <td style="text-align:right"><span class="${desvioCls}">${desvioTxt}</span></td>
-      <td>${miniBar(fat, meta)}</td>
-      <td><span class="bdg ${ok ? 'bdg-ok' : 'bdg-nok'}">${ok ? '✅ Atingiu' : '⚠️ Não atingiu'}</span></td>
+      <td>${progCell}</td>
+      <td>${statusCell}</td>
     </tr>`;
 }
 
