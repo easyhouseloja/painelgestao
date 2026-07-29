@@ -1184,7 +1184,7 @@ function renderAlerts(){
       <div><div class="col-label">Solicitado</div><div class="col-val">${a.solicitado}</div></div>
       <div><div class="col-label">Reservado</div><div class="col-val danger">${a.reservado}</div></div>
       <div><div class="col-label">Pendente</div><div class="col-val amber">${a.pendente}</div></div>
-      <div><div class="col-label">Média/dia</div><div class="col-val giro" title="Vendas em julho dividido pelos dias da base (25)">${fmtMedia(getMediaDia(a.cod_item, a.categoria, a.variacao, a.cod_masc))}</div></div>
+      <div><div class="col-label">Média/dia</div><div class="col-val giro" title="Vendas em julho dividido pelos dias da base (28)">${fmtMedia(getMediaDia(a.cod_item, a.categoria, a.variacao, a.cod_masc))}</div></div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
         <span class="pct-badge danger">${a.pct}%</span>
         <span style="font-size:10px;font-weight:700;color:${critColor};letter-spacing:0.05em;">${crit}</span>
@@ -1325,8 +1325,9 @@ function buildTable(rows,prefix){
 function toggleVars(id,row){const el=document.getElementById(id);if(!el)return;el.classList.toggle('open');const btn=row.querySelector('.expand-btn');if(btn)btn.textContent=el.classList.contains('open')?'▴ Fechar':'▾ Detalhar';}
 
 function sortBy(key){if(sortKey===key)sortDir*=-1;else{sortKey=key;sortDir=1;}renderTable();}
+// Base de vendas: vendas_julho_28_07.xlsx (01/07 a 28/07/2026, 12.785 un)
 // VENDAS_VAR_AGG: vendas por (cod_item#cod_masc) — inclui já decompostas as mesas+cadeiras dos CONJ
-const VENDAS_VAR_AGG = {"73177#23848":39,"73177#23849":10,"73177#23850":62,"73275#23851":183,"73275#23852":35,"73275#23853":114,"73284#23857":58,"73284#23858":293,"73284#23859":139,"73284#23860":3,"73367#50256":576,"73384#50465":323,"73386#50483":166,"74549#33428":15,"74549#33429":6,"81714#23864":1065,"85026#51165":26,"85026#51168":14,"85123#46250":3,"85123#46251":57,"85123#46252":3,"85282#46336":3,"85282#46337":35,"85282#46338":252,"85282#46339":12,"85282#46340":113,"85282#46341":128,"85342#46353":1,"85431#46320":3,"85431#46321":1,"85460#46199":19,"85460#46200":18,"85460#46201":99,"85460#46202":245,"85460#46203":84,"85460#46204":195,"85639#67976":1,"86248#68895":161,"86256#32963":1,"86256#68901":449,"86256#68902":218,"86256#79663":127,"86389#74049":15,"86389#74050":27,"86389#74051":69,"86389#74052":3,"86391#74067":48,"86816#88564":86,"86816#88565":26,"87096#90666":174,"87096#90667":99,"87141#90816":272,"87162#90909":40,"87162#90910":49,"87162#94609":6,"97649#102414":11};
+const VENDAS_VAR_AGG = {"73177#23848":39,"73177#23849":10,"73177#23850":62,"73275#23851":183,"73275#23852":35,"73275#23853":114,"73284#23857":58,"73284#23858":293,"73284#23859":139,"73284#23860":3,"73367#50256":576,"73384#50465":323,"73386#50483":166,"74549#33428":15,"74549#33429":6,"81714#23864":1065,"85026#51165":26,"85026#51168":14,"85123#46250":3,"85123#46251":57,"85123#46252":3,"85282#46336":2,"85282#46337":34,"85282#46338":252,"85282#46339":12,"85282#46340":113,"85282#46341":128,"85342#46353":1,"85431#46320":3,"85431#46321":1,"85460#46199":5,"85460#46200":10,"85460#46201":81,"85460#46202":242,"85460#46203":83,"85460#46204":191,"85639#67976":1,"86248#68895":161,"86256#68901":450,"86256#68902":218,"86256#79663":127,"86389#74049":15,"86389#74050":27,"86389#74051":69,"86389#74052":3,"86391#74067":48,"86816#88563":86,"86816#88565":26,"87096#90666":175,"87096#90667":99,"87141#90816":272,"87162#90909":40,"87162#90910":49,"87162#94609":6,"97649#102414":11};
 // VENDAS_GR_COR: GRs agregados por cor (TODAS as variações de espelho/pés somadas)
 const VENDAS_GR_COR = {"2169|AMENDOA CLEAN":16,"2169|AMENDOA CLEAN/OFF WH":18,"2169|BRANCO":8,"2405|AMENDOA CL/OFF WHI/A":2,"2405|BRANCO":351,"72593|AMENDOA CLEAN":1008,"72593|AMENDOA CLEAN/OFF WH":2841,"72593|BRANCO":678,"84487|AMENDOA CLEAN/OFF WH":2646,"87138|AM CL/BRANCO/AM CL":24,"87138|BRANCO":25,"95045|AMENDOA CLEAN":18,"95045|AMENDOA CLEAN/OFF WH":34,"95045|BRANCO":26};
 // Helper: média/dia consistente com a aba Análises (GR por cor, demais por variação)
@@ -2304,18 +2305,18 @@ if(document.readyState==='loading'){
       const dados = snap.val();
       if(!dados || !dados.produtos || !Array.isArray(dados.produtos)) return;
 
-      // Só aceita o que vem do Firebase se for mais recente que a carga
-      // embutida neste arquivo. Sem isso, uma base antiga sobrescreve a nova.
+      // Só aceita o que vem do Firebase se for MAIS NOVO que a carga embutida
+      // neste arquivo. O critério é o carimbo de gravação (ts), não a data
+      // comercial da carga: uma importação salva com data anterior — extração
+      // do dia anterior, por exemplo — é legítima e não pode ser descartada.
       const dataFirebase = dados.data || '';
       const hoje = _hojeISO();
-
-      // Empate no dia fica com quem tem timestamp mais novo: uma importação
-      // feita pelo painel hoje carimba ts e por isso ganha do arquivo.
       const tsFirebase = Number(dados.ts || 0);
-      if(dataFirebase === DATA_CARGA && tsFirebase > CARGA_TS){
-        // segue o fluxo abaixo e aplica os dados do Firebase
-      } else if(!dataFirebase || dataFirebase <= DATA_CARGA){
-        console.log(`Firebase tem carga de ${dataFirebase||'data desconhecida'}; o arquivo tem ${DATA_CARGA}. Mantendo a do arquivo.`);
+
+      const maisNovoQueOArquivo = tsFirebase > CARGA_TS
+                               || (dataFirebase && dataFirebase > DATA_CARGA);
+      if(!maisNovoQueOArquivo){
+        console.log(`Firebase tem carga de ${dataFirebase||'data desconhecida'} (ts ${tsFirebase||'ausente'}); o arquivo é de ${DATA_CARGA}. Mantendo a do arquivo.`);
         return;
       }
       console.log(`Firebase: dados de ${dataFirebase} | hoje: ${hoje}`);
@@ -2329,12 +2330,14 @@ if(document.readyState==='loading'){
       if(sub) sub.textContent = `DOC ${DOC_PEDIDO} · Reserva de Estoque · ${dataFirebase.split('-').reverse().join('/')}`;
 
       // Re-renderizar tudo
+      try { window._rebuildProdutosUnicos && window._rebuildProdutosUnicos(); } catch(e){ console.warn('produtosUnicos', e); }
       atualizarKPIs(dados);
       renderAlerts();
       renderTable();
       renderGraficoHistorico && renderGraficoHistorico();
       // A troca de `data` precisa chegar nos gráficos e nas análises também
       typeof renderVisaoGeral === 'function' && renderVisaoGeral();
+      typeof renderCobertura === 'function' && document.getElementById('covDias') && renderCobertura();
       typeof renderGraficos === 'function' && renderGraficos();
       typeof renderLoteVsFuro === 'function' && renderLoteVsFuro();
       typeof renderFuroCalendar === 'function' && renderFuroCalendar();
@@ -2634,7 +2637,7 @@ window.filtrarListaLotes = function(q){
 
 // Helper: cobertura unificada por produto (mesma lógica da aba Análises)
 function _prodCobertura(p){
-  const dias = Math.max(1, parseInt((document.getElementById('covDias')||{}).value)||25);
+  const dias = Math.max(1, parseInt((document.getElementById('covDias')||{}).value)||28);
   let vendas=0, reservado=0;
   if(p.categoria === 'GUARDA ROUPAS'){
     const cores = new Set();
@@ -4358,7 +4361,7 @@ renderTodasAnalises();
 
     h += '<div class="imp-rodape">'
       + '<span class="imp-dica">Data da carga:</span>'
-      + '<input type="date" class="xls-input" id="xls-data" value="' + (new Date().toISOString().slice(0,10)) + '">'
+      + '<input type="date" class="xls-input" id="xls-data" value="' + (typeof _hojeISO === 'function' ? _hojeISO() : new Date().toISOString().slice(0,10)) + '">'
       + '<span class="imp-dica">DOC:</span>'
       + '<input type="text" class="xls-input" id="xls-doc" style="width:110px;" value="' + esc(typeof DOC_PEDIDO !== 'undefined' ? DOC_PEDIDO : '') + '">'
       + '<button class="xls-btn ok" id="xls-btn-aplicar" onclick="xlsAplicar()">✓ Aplicar e salvar</button>'
@@ -4435,7 +4438,7 @@ renderTodasAnalises();
     if (btn){ btn.disabled = true; btn.textContent = 'aplicando…'; }
 
     var manterFora = !(document.getElementById('xls-remover') || {}).checked;
-    var dataCarga = (document.getElementById('xls-data') || {}).value || new Date().toISOString().slice(0,10);
+    var dataCarga = (document.getElementById('xls-data') || {}).value || (typeof _hojeISO === 'function' ? _hojeISO() : new Date().toISOString().slice(0,10));
     var doc = ((document.getElementById('xls-doc') || {}).value || '').trim();
 
     // Monta a lista final, limpa dos campos auxiliares do diff
