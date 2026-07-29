@@ -360,6 +360,59 @@
   .imp-rodape{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap;}
   @media print{.imp-card{display:none!important;}}
 
+  /* ── IMPORTADOR DE ESTOQUE (.XLSX) ── */
+  .xls-drop{margin-top:14px;border:1.5px dashed var(--border);border-radius:10px;padding:26px 18px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;}
+  .xls-drop:hover,.xls-drop.dragging{border-color:rgba(34,211,238,0.6);background:rgba(34,211,238,0.05);}
+  .xls-drop-icon{font-size:26px;margin-bottom:8px;opacity:.75;}
+  .xls-drop-titulo{font-size:13px;color:var(--text);font-weight:600;}
+  .xls-link{color:#22d3ee;text-decoration:underline;}
+  .xls-drop-sub{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.6;}
+  .xls-arquivo{display:flex;align-items:center;gap:10px;margin-top:14px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;font-size:12px;color:var(--text);flex-wrap:wrap;}
+  .xls-arquivo-nome{font-weight:600;}
+  .xls-arquivo-meta{color:var(--muted);font-size:11px;}
+  .xls-bloco{margin-top:16px;}
+  .xls-bloco-titulo{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px;}
+  .xls-mapa{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media(max-width:900px){.xls-mapa{grid-template-columns:1fr 1fr;}}
+  @media(max-width:620px){.xls-mapa{grid-template-columns:1fr;}}
+  .xls-campo-label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;}
+  .xls-campo-label b{color:var(--text);font-weight:600;}
+  .xls-campo-label .req{color:#f87171;margin-left:2px;}
+  .xls-campo-ok{color:#22c98a;font-size:10px;margin-left:5px;}
+  .xls-inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;}
+  .xls-input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 9px;color:var(--text);font-family:inherit;font-size:11.5px;outline:none;}
+  .xls-input:focus{border-color:rgba(34,211,238,0.5);}
+  .xls-btn{background:rgba(34,211,238,0.10);border:1px solid rgba(34,211,238,0.40);color:#22d3ee;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;font-family:inherit;transition:all .15s;}
+  .xls-btn:hover{background:rgba(34,211,238,0.18);}
+  .xls-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .xls-btn.ok{background:rgba(34,201,138,0.12);border-color:rgba(34,201,138,0.45);color:#22c98a;}
+  .xls-btn.ok:hover{background:rgba(34,201,138,0.2);}
+  .xls-btn.ghost{background:transparent;border-color:var(--border);color:var(--muted);}
+  .xls-btn.ghost:hover{background:var(--surface2);color:var(--text);}
+  .xls-ok-banner{display:flex;align-items:center;gap:10px;margin-top:12px;background:rgba(34,201,138,0.08);border:1px solid rgba(34,201,138,0.35);color:#22c98a;border-radius:8px;padding:10px 13px;font-size:12px;line-height:1.6;flex-wrap:wrap;}
+  .xls-ok-banner b{color:#22c98a;}
+  .xls-erro{margin-top:12px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.35);color:#f87171;border-radius:8px;padding:10px 13px;font-size:12px;line-height:1.6;}
+  .xls-aviso{margin-top:12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.32);color:#fbbf24;border-radius:8px;padding:10px 13px;font-size:12px;line-height:1.6;}
+  .xls-resumo{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;}
+  @media(max-width:780px){.xls-resumo{grid-template-columns:1fr 1fr;}}
+  .xls-resumo-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:11px 13px;}
+  .xls-resumo-label{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+  .xls-resumo-valor{font-family:'Syne',sans-serif;font-weight:800;font-size:19px;color:var(--text);margin-top:3px;}
+  .xls-resumo-sub{font-size:10.5px;color:var(--muted);margin-top:2px;}
+  .xls-delta{font-size:11px;font-weight:700;}
+  .xls-delta.up{color:#22c98a;}.xls-delta.down{color:#f87171;}.xls-delta.flat{color:var(--muted);}
+  .xls-tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:10px;border:1px solid;white-space:nowrap;}
+  .xls-tag.novo{background:rgba(34,201,138,0.12);border-color:rgba(34,201,138,0.4);color:#22c98a;}
+  .xls-tag.alterado{background:rgba(34,211,238,0.10);border-color:rgba(34,211,238,0.35);color:#22d3ee;}
+  .xls-tag.removido{background:rgba(239,68,68,0.10);border-color:rgba(239,68,68,0.35);color:#f87171;}
+  .xls-tag.igual{background:rgba(255,255,255,0.04);border-color:var(--border);color:var(--muted);}
+  .xls-tag.inferido{background:rgba(245,158,11,0.10);border-color:rgba(245,158,11,0.35);color:#fbbf24;}
+  .xls-filtros{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;}
+  .xls-filtro{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:5px 11px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all .15s;}
+  .xls-filtro:hover{color:var(--text);}
+  .xls-filtro.active{background:rgba(34,211,238,0.12);border-color:rgba(34,211,238,0.4);color:#22d3ee;}
+  @media print{.xls-card{display:none!important;}}
+
   /* ── Histórico de lotes ── */
   .lote-hist-item{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);}
   .lote-hist-nome{color:var(--text);font-weight:500;}
@@ -831,6 +884,35 @@
     <span class="abc-badge C" title="Classe C — 90–100% do faturamento">C</span><span style="font-size:11px;color:var(--muted)">Baixo giro</span>
   </div>
 </div>
+
+  <!-- ══ IMPORTADOR DE ESTOQUE VIA PLANILHA .XLSX ══ -->
+  <div class="imp-card xls-card no-print" id="xls-card">
+    <div class="imp-topo" onclick="alternarImportadorEstoque()">
+      <span style="font-size:15px;">📥</span>
+      <div>
+        <div class="imp-topo-titulo">Atualizar estoque por planilha (.xlsx)</div>
+        <div class="imp-topo-sub">suba o relatório de reserva e a base inteira é recalculada</div>
+      </div>
+      <span class="imp-seta" id="xls-seta">▸</span>
+    </div>
+    <div class="imp-corpo" id="xls-corpo" style="display:none;">
+
+      <div class="xls-drop" id="xls-drop">
+        <input type="file" id="xls-file" accept=".xlsx,.xlsm,.xls,.csv" style="display:none;">
+        <div class="xls-drop-icon">📄</div>
+        <div class="xls-drop-titulo">Arraste a planilha aqui ou <span class="xls-link">escolha um arquivo</span></div>
+        <div class="xls-drop-sub">.xlsx, .xlsm, .xls ou .csv — uma linha por variação (máscara).<br>As colunas são reconhecidas sozinhas; se errar, dá pra corrigir na mão.</div>
+      </div>
+
+      <div class="xls-inline">
+        <button class="xls-btn ghost" onclick="baixarModeloEstoque()">⬇ Baixar planilha modelo</button>
+        <span class="imp-dica">O modelo já vem com a carga atual — dá pra editar as colunas <b>Reservado</b> e <b>Solicitado</b> e subir de volta.</span>
+      </div>
+
+      <div id="xls-etapas"></div>
+    </div>
+  </div>
+
   <div class="filter-bar no-print" style="flex-direction:column;align-items:flex-start;gap:12px;">
     <div style="display:flex;align-items:center;justify-content:space-between;width:100%;flex-wrap:wrap;gap:10px;">
       <div class="filter-row">
@@ -893,7 +975,7 @@
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Base:</label>
-          <input type="number" id="covDias" value="27" min="1" max="365"
+          <input type="number" id="covDias" value="28" min="1" max="365"
                  style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;width:60px;text-align:center;outline:none;"
                  onchange="renderCobertura()" oninput="renderCobertura()">
           <span style="font-size:11px;color:var(--muted);">dias = total vendido em julho</span>
@@ -983,6 +1065,13 @@
 const data = [{"cod_item": 2169, "produto": "GUARDA ROUPA IMPERATORE 6 PTS 2023", "categoria": "GUARDA ROUPAS", "abc": "C", "variacoes": [{"cod_item": 2169, "cod_masc": 50951, "variacao": "BRANCO#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 20, "reservado": 4, "pendente": 16, "pct": 20.0}, {"cod_item": 2169, "cod_masc": 51013, "variacao": "AMENDOA CLEAN#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 30, "reservado": 0, "pendente": 30, "pct": 0.0}, {"cod_item": 2169, "cod_masc": 51001, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES#S/KIT GAV#S/KIT SAPAT", "solicitado": 35, "reservado": 18, "pendente": 17, "pct": 51.4}], "solicitado": 85, "reservado": 22, "pendente": 63, "pct": 25.9, "alerta": true, "concluido": false}, {"cod_item": 2405, "produto": "GUARDA ROUPA TORONTO 2 PTS PLUS", "categoria": "GUARDA ROUPAS", "abc": "A", "variacoes": [{"cod_item": 2405, "cod_masc": 13689, "variacao": "BRANCO#C/ESP#S/PES", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"cod_item": 2405, "cod_masc": 13690, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 200, "reservado": 8, "pendente": 192, "pct": 4.0}], "solicitado": 250, "reservado": 58, "pendente": 192, "pct": 23.2, "alerta": true, "concluido": false}, {"cod_item": 72593, "produto": "GUARDA ROUPA EASY SLIM 8 PTS", "categoria": "GUARDA ROUPAS", "abc": "A", "variacoes": [{"cod_item": 72593, "cod_masc": 13569, "variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 400, "reservado": 274, "pendente": 126, "pct": 68.5}, {"cod_item": 72593, "cod_masc": 13572, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 1000, "reservado": 240, "pendente": 760, "pct": 24.0}, {"cod_item": 72593, "cod_masc": 13577, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 400, "reservado": 0, "pendente": 400, "pct": 0.0}], "solicitado": 1800, "reservado": 514, "pendente": 1286, "pct": 28.6, "alerta": true, "concluido": false}, {"cod_item": 73177, "produto": "SAPATEIRA ESTHELA 2024", "categoria": "COMPLEMENTOS", "abc": "B", "variacoes": [{"cod_item": 73177, "cod_masc": 23850, "variacao": "AMENDOA CLEAN", "solicitado": 40, "reservado": 39, "pendente": 1, "pct": 97.5}, {"cod_item": 73177, "cod_masc": 23848, "variacao": "BRANCO", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}], "solicitado": 80, "reservado": 79, "pendente": 1, "pct": 98.8, "alerta": false, "concluido": false}, {"cod_item": 73275, "produto": "COMODA HORIZONTAL MAGGIORE NEW 6GAV", "categoria": "COMPLEMENTOS", "abc": "B", "variacoes": [{"cod_item": 73275, "cod_masc": 23852, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0}, {"cod_item": 73275, "cod_masc": 23851, "variacao": "AMENDOA CLEAN", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"cod_item": 73275, "cod_masc": 23853, "variacao": "BRANCO", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0}], "solicitado": 260, "reservado": 260, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 73284, "produto": "COMODA VEDRA 7GAV 2 PTS", "categoria": "COMPLEMENTOS", "abc": "A", "variacoes": [{"cod_item": 73284, "cod_masc": 23857, "variacao": "AMENDOA CLEAN", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"cod_item": 73284, "cod_masc": 23858, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 120, "reservado": 120, "pendente": 0, "pct": 100.0}, {"cod_item": 73284, "cod_masc": 23859, "variacao": "BRANCO", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}], "solicitado": 260, "reservado": 260, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 73367, "produto": "MESA 1,70 APOGEU 2023", "categoria": "SALA DE JANTAR", "abc": "A", "variacoes": [{"cod_item": 73367, "cod_masc": 50256, "variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1700X900X4 S", "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0}], "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 73384, "produto": "MESA 0,90 CELEBRARE 2023", "categoria": "SALA DE JANTAR", "abc": "A", "variacoes": [{"cod_item": 73384, "cod_masc": 50465, "variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 900X900X4 SE", "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0}], "solicitado": 200, "reservado": 200, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 73386, "produto": "MESA 1,20 CELEBRARE 2023", "categoria": "SALA DE JANTAR", "abc": "A", "variacoes": [{"cod_item": 73386, "cod_masc": 50483, "variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0}], "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 74549, "produto": "BELICHE 0,90 OLGA", "categoria": "COMPLEMENTOS", "abc": "C", "variacoes": [{"cod_item": 74549, "cod_masc": 33428, "variacao": "AMENDOA CLEAN#C/LED", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"cod_item": 74549, "cod_masc": 33429, "variacao": "BRANCO#C/LED", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}], "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 81714, "produto": "MESA  EASY LINE C/4 CAD EASY LINE", "categoria": "COMPLEMENTOS", "abc": "A", "variacoes": [{"cod_item": 81714, "cod_masc": 23864, "variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 400, "reservado": 0, "pendente": 400, "pct": 0.0}], "solicitado": 400, "reservado": 0, "pendente": 400, "pct": 0.0, "alerta": true, "concluido": false}, {"cod_item": 84487, "produto": "GUARDA ROUPA 06 PTS EASY SLIM 2025", "categoria": "GUARDA ROUPAS", "abc": "A", "variacoes": [{"cod_item": 84487, "cod_masc": 25974, "variacao": "AMENDOA CLEAN/OFF WH#S/ESP#S/PES", "solicitado": 800, "reservado": 112, "pendente": 688, "pct": 14.0}, {"cod_item": 84487, "cod_masc": 115757, "variacao": "AMENDOA CLEAN#S/ESP#S/PES", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}], "solicitado": 850, "reservado": 162, "pendente": 688, "pct": 19.1, "alerta": true, "concluido": false}, {"cod_item": 85026, "produto": "MESA 1,70 SINTONIA", "categoria": "SALA DE JANTAR", "abc": "C", "variacoes": [{"cod_item": 85026, "cod_masc": 51166, "variacao": "AMENDOA CLEAN/OFF WH#MAXI TAMPO 1,70", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}, {"cod_item": 85026, "cod_masc": 51168, "variacao": "AMENDOA CL/OFF WHI/A#NO GLASS TAMPO 1,70", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}, {"cod_item": 85026, "cod_masc": 51165, "variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1700X900X4 S", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}], "solicitado": 170, "reservado": 170, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 85123, "produto": "MESA 1,20 SINTONIA", "categoria": "SALA DE JANTAR", "abc": "C", "variacoes": [{"cod_item": 85123, "cod_masc": 46250, "variacao": "AMENDOA CL/OFF WHI/A#NO GLASS TAMPO 1,20", "solicitado": 45, "reservado": 45, "pendente": 0, "pct": 100.0}, {"cod_item": 85123, "cod_masc": 46252, "variacao": "AMENDOA CLEAN/OFF WH#MAXI TAMPO 1,20", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"cod_item": 85123, "cod_masc": 46251, "variacao": "AMENDOA CLEAN/OFF WH#C/VIDRO 1200X800X4 S", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}], "solicitado": 165, "reservado": 165, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 85282, "produto": "CADEIRA APOGEU 2025 C/4", "categoria": "SALA DE JANTAR", "abc": "A", "variacoes": [{"cod_item": 85282, "cod_masc": 46340, "variacao": "AMENDOA CLEAN#VELUDO LISO CAPUCCINO", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"cod_item": 85282, "cod_masc": 46336, "variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"cod_item": 85282, "cod_masc": 46338, "variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"cod_item": 85282, "cod_masc": 46341, "variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0}, {"cod_item": 85282, "cod_masc": 46339, "variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"cod_item": 85282, "cod_masc": 46337, "variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}], "solicitado": 390, "reservado": 390, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 85342, "produto": "CADEIRA LUAR 2025 C/4", "categoria": "SALA DE JANTAR", "abc": "C", "variacoes": [{"cod_item": 85342, "cod_masc": 46357, "variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"cod_item": 85342, "cod_masc": 46355, "variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"cod_item": 85342, "cod_masc": 46353, "variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}, {"cod_item": 85342, "cod_masc": 46354, "variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 25, "reservado": 25, "pendente": 0, "pct": 100.0}, {"cod_item": 85342, "cod_masc": 46352, "variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}], "solicitado": 95, "reservado": 95, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 85431, "produto": "CADEIRA LUAR 2025 C/6", "categoria": "SALA DE JANTAR", "abc": "C", "variacoes": [{"cod_item": 85431, "cod_masc": 46324, "variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 25, "reservado": 23, "pendente": 2, "pct": 92.0}, {"cod_item": 85431, "cod_masc": 46320, "variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"cod_item": 85431, "cod_masc": 46319, "variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"cod_item": 85431, "cod_masc": 46322, "variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"cod_item": 85431, "cod_masc": 46321, "variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}], "solicitado": 85, "reservado": 83, "pendente": 2, "pct": 97.6, "alerta": false, "concluido": false}, {"cod_item": 85460, "produto": "CADEIRA APOGEU 2025 C/6", "categoria": "SALA DE JANTAR", "abc": "A", "variacoes": [{"cod_item": 85460, "cod_masc": 46201, "variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"cod_item": 85460, "cod_masc": 46204, "variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"cod_item": 85460, "cod_masc": 46200, "variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"cod_item": 85460, "cod_masc": 46203, "variacao": "AMENDOA CLEAN#VELUDO LISO CAPUCCINO", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"cod_item": 85460, "cod_masc": 46202, "variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 60, "reservado": 60, "pendente": 0, "pct": 100.0}, {"cod_item": 85460, "cod_masc": 46199, "variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}], "solicitado": 330, "reservado": 330, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 85591, "produto": "CADEIRA BONNA C/2", "categoria": "SALA DE JANTAR", "abc": "C", "variacoes": [{"cod_item": 85591, "cod_masc": 49075, "variacao": "AMENDOA CLEAN#SUEDE ANIMALE BEGE", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}, {"cod_item": 85591, "cod_masc": 67925, "variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 40, "reservado": 40, "pendente": 0, "pct": 100.0}, {"cod_item": 85591, "cod_masc": 49076, "variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 35, "reservado": 35, "pendente": 0, "pct": 100.0}], "solicitado": 110, "reservado": 110, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 85639, "produto": "CADEIRA TESSERA C/4", "categoria": "SALA DE JANTAR", "abc": "C", "variacoes": [{"cod_item": 85639, "cod_masc": 67976, "variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0}], "solicitado": 20, "reservado": 20, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 85643, "produto": "CADEIRA TESSERA C/6", "categoria": "SALA DE JANTAR", "abc": "C", "variacoes": [{"cod_item": 85643, "cod_masc": 67986, "variacao": "AMENDOA CLEAN#LINHO MOSAICO", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"cod_item": 85643, "cod_masc": 67987, "variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 20, "reservado": 12, "pendente": 8, "pct": 60.0}, {"cod_item": 85643, "cod_masc": 48878, "variacao": "AMENDOA CLEAN#VELUDO NATURALE CREME", "solicitado": 15, "reservado": 15, "pendente": 0, "pct": 100.0}, {"cod_item": 85643, "cod_masc": 67988, "variacao": "AMENDOA CLEAN#VELUDO LISO CAPUCCINO", "solicitado": 15, "reservado": 11, "pendente": 4, "pct": 73.3}, {"cod_item": 85643, "cod_masc": 67985, "variacao": "AMENDOA CLEAN#COURO MORANO AVELA", "solicitado": 15, "reservado": 13, "pendente": 2, "pct": 86.7}], "solicitado": 80, "reservado": 66, "pendente": 14, "pct": 82.5, "alerta": false, "concluido": false}, {"cod_item": 86248, "produto": "CAMA CASAL 1,40 EASY LIKE", "categoria": "COMPLEMENTOS", "abc": "B", "variacoes": [{"cod_item": 86248, "cod_masc": 68895, "variacao": "AMENDOA CLEAN#CORANO BEGE", "solicitado": 120, "reservado": 98, "pendente": 22, "pct": 81.7}], "solicitado": 120, "reservado": 98, "pendente": 22, "pct": 81.7, "alerta": false, "concluido": false}, {"cod_item": 86256, "produto": "COMODA LOPAS EASY LIKE", "categoria": "COMPLEMENTOS", "abc": "A", "variacoes": [{"cod_item": 86256, "cod_masc": 68901, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 180, "reservado": 167, "pendente": 13, "pct": 92.8}, {"cod_item": 86256, "cod_masc": 79663, "variacao": "AMENDOA CLEAN", "solicitado": 60, "reservado": 11, "pendente": 49, "pct": 18.3}, {"cod_item": 86256, "cod_masc": 68902, "variacao": "BRANCO", "solicitado": 100, "reservado": 11, "pendente": 89, "pct": 11.0}], "solicitado": 340, "reservado": 189, "pendente": 151, "pct": 55.6, "alerta": false, "concluido": false}, {"cod_item": 86389, "produto": "MESA DE CABECEIRA EASY LIKE", "categoria": "COMPLEMENTOS", "abc": "C", "variacoes": [{"cod_item": 86389, "cod_masc": 74051, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 70, "reservado": 70, "pendente": 0, "pct": 100.0}, {"cod_item": 86389, "cod_masc": 74049, "variacao": "BRANCO", "solicitado": 30, "reservado": 30, "pendente": 0, "pct": 100.0}, {"cod_item": 86389, "cod_masc": 74050, "variacao": "AMENDOA CLEAN", "solicitado": 50, "reservado": 34, "pendente": 16, "pct": 68.0}], "solicitado": 150, "reservado": 134, "pendente": 16, "pct": 89.3, "alerta": false, "concluido": false}, {"cod_item": 86391, "produto": "MESA 1,70 EASY TOWER", "categoria": "SALA DE JANTAR", "abc": "C", "variacoes": [{"cod_item": 86391, "cod_masc": 74067, "variacao": "AMENDOA CLEAN/OFF WH#MAXI TAMPO 1,70", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0}], "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 86816, "produto": "CAMA LOPAS SOLT 0,90 EASY LIKE", "categoria": "COMPLEMENTOS", "abc": "B", "variacoes": [{"cod_item": 86816, "cod_masc": 88563, "variacao": "AMENDOA CLEAN#CORANO BEGE#S/CAMA AUXILIAR", "solicitado": 60, "reservado": 53, "pendente": 7, "pct": 88.3}, {"cod_item": 86816, "cod_masc": 88564, "variacao": "AMENDOA CLEAN#CORANO BEGE#C/CAMA AUXILIAR", "solicitado": 100, "reservado": 82, "pendente": 18, "pct": 82.0}, {"cod_item": 86816, "cod_masc": 88565, "variacao": "BRANCO#KORINO BRANCO#C/CAMA AUXILIAR", "solicitado": 100, "reservado": 78, "pendente": 22, "pct": 78.0}], "solicitado": 260, "reservado": 213, "pendente": 47, "pct": 81.9, "alerta": false, "concluido": false}, {"cod_item": 87096, "produto": "COZINHA NINA", "categoria": "SALA DE JANTAR", "abc": "C", "variacoes": [{"cod_item": 87096, "cod_masc": 90666, "variacao": "AMENDOA CLEAN/BRANCO", "solicitado": 100, "reservado": 33, "pendente": 67, "pct": 33.0}, {"cod_item": 87096, "cod_masc": 90667, "variacao": "BRANCO", "solicitado": 300, "reservado": 0, "pendente": 300, "pct": 0.0}], "solicitado": 400, "reservado": 33, "pendente": 367, "pct": 8.2, "alerta": true, "concluido": false}, {"cod_item": 87138, "produto": "GUARDA ROUPA LOPAS 03 PTS ATLAS", "categoria": "GUARDA ROUPAS", "abc": "C", "variacoes": [{"cod_item": 87138, "cod_masc": 90805, "variacao": "BRANCO#S/ESP#S/PES", "solicitado": 100, "reservado": 78, "pendente": 22, "pct": 78.0}, {"cod_item": 87138, "cod_masc": 102465, "variacao": "AM CL/BRANCO/AM CL#S/ESP#S/PES", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}], "solicitado": 150, "reservado": 128, "pendente": 22, "pct": 85.3, "alerta": false, "concluido": false}, {"cod_item": 87141, "produto": "PENTEADEIRA LIVIA", "categoria": "COMPLEMENTOS", "abc": "B", "variacoes": [{"cod_item": 87141, "cod_masc": 90816, "variacao": "BRANCO", "solicitado": 500, "reservado": 268, "pendente": 232, "pct": 53.6}], "solicitado": 500, "reservado": 268, "pendente": 232, "pct": 53.6, "alerta": false, "concluido": false}, {"cod_item": 87162, "produto": "MULTIFUNCIONAL 2PTS DAVI", "categoria": "COMPLEMENTOS", "abc": "C", "variacoes": [{"cod_item": 87162, "cod_masc": 94609, "variacao": "BRANCO", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"cod_item": 87162, "cod_masc": 90910, "variacao": "AMENDOA CLEAN/BRANCO", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}, {"cod_item": 87162, "cod_masc": 90909, "variacao": "AMENDOA CLEAN", "solicitado": 80, "reservado": 80, "pendente": 0, "pct": 100.0}], "solicitado": 240, "reservado": 240, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 95045, "produto": "GUARDA ROUPA 4PTS EASY LIKE", "categoria": "GUARDA ROUPAS", "abc": "B", "variacoes": [{"cod_item": 95045, "cod_masc": 99328, "variacao": "BRANCO#S/PES", "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0}, {"cod_item": 95045, "cod_masc": 99325, "variacao": "AMENDOA CLEAN/OFF WH#S/PES", "solicitado": 150, "reservado": 137, "pendente": 13, "pct": 91.3}, {"cod_item": 95045, "cod_masc": 99324, "variacao": "AMENDOA CLEAN#S/PES", "solicitado": 100, "reservado": 91, "pendente": 9, "pct": 91.0}], "solicitado": 350, "reservado": 328, "pendente": 22, "pct": 93.7, "alerta": false, "concluido": false}, {"cod_item": 97328, "produto": "COMODA ESSENZA", "categoria": "COMPLEMENTOS", "abc": "C", "variacoes": [{"cod_item": 97328, "cod_masc": 100738, "variacao": "AMENDOA CLEAN/OFF WH", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}, {"cod_item": 97328, "cod_masc": 100737, "variacao": "AMENDOA CLEAN", "solicitado": 50, "reservado": 50, "pendente": 0, "pct": 100.0}], "solicitado": 100, "reservado": 100, "pendente": 0, "pct": 100.0, "alerta": false, "concluido": true}, {"cod_item": 97649, "produto": "MESA EASY LINE C/6 CAD EASY LINE", "categoria": "COMPLEMENTOS", "abc": "C", "variacoes": [{"cod_item": 97649, "cod_masc": 102414, "variacao": "AMENDOA CLEAN#LINHO RINZAI BEGE", "solicitado": 100, "reservado": 0, "pendente": 100, "pct": 0.0}], "solicitado": 100, "reservado": 0, "pendente": 100, "pct": 0.0, "alerta": true, "concluido": false}];
 const DOC_PEDIDO = '2580291';   // número do pedido da carga mãe
 const DATA_CARGA = '2026-07-29';   // data da carga embutida neste arquivo
+// Caminho no Firebase onde a carga de estoque fica salva (usado pelo importador
+// de planilha e pela sincronização automática). Estava faltando: sem ele,
+// carregarDadosFirebase() estourava ReferenceError e nunca sincronizava.
+const DADOS_PATH = 'estoque_eh/carga_atual';
+// Momento da carga embutida. Serve de critério de desempate contra o Firebase:
+// uma importação feita hoje pelo painel tem ts maior e por isso vence o arquivo.
+const CARGA_TS = Date.parse(DATA_CARGA + 'T00:00:00');
 const loteProdutos={};
 const catMeta={
   'GUARDA ROUPAS':{icon:'🚪',cls:'gr',label:'Guarda Roupas'},
@@ -1237,12 +1326,12 @@ function toggleVars(id,row){const el=document.getElementById(id);if(!el)return;e
 
 function sortBy(key){if(sortKey===key)sortDir*=-1;else{sortKey=key;sortDir=1;}renderTable();}
 // VENDAS_VAR_AGG: vendas por (cod_item#cod_masc) — inclui já decompostas as mesas+cadeiras dos CONJ
-const VENDAS_VAR_AGG = {"73177#23848":37,"73177#23849":9,"73177#23850":57,"73275#23851":172,"73275#23852":33,"73275#23853":107,"73284#23857":57,"73284#23858":286,"73284#23859":135,"73284#23860":3,"73367#50256":553,"73384#50465":308,"73386#50483":161,"74549#33428":15,"74549#33429":5,"81714#23864":1029,"85026#51165":26,"85026#51168":14,"85123#46250":3,"85123#46251":51,"85123#46252":3,"85282#46336":2,"85282#46337":31,"85282#46338":237,"85282#46339":12,"85282#46340":108,"85282#46341":127,"85342#46353":1,"85431#46320":3,"85431#46321":1,"85460#46199":19,"85460#46200":17,"85460#46201":92,"85460#46202":240,"85460#46203":75,"85460#46204":191,"85639#67976":1,"86248#68895":154,"86256#32963":1,"86256#68901":432,"86256#68902":203,"86256#79663":115,"86389#74049":13,"86389#74050":27,"86389#74051":66,"86389#74052":2,"86391#74067":45,"86816#88564":84,"86816#88565":26,"87096#90666":17,"87096#90667":1,"87141#90816":267,"87162#90909":38,"87162#90910":47,"87162#94609":6,"97649#102414":9};
+const VENDAS_VAR_AGG = {"73177#23848":39,"73177#23849":10,"73177#23850":62,"73275#23851":183,"73275#23852":35,"73275#23853":114,"73284#23857":58,"73284#23858":293,"73284#23859":139,"73284#23860":3,"73367#50256":576,"73384#50465":323,"73386#50483":166,"74549#33428":15,"74549#33429":6,"81714#23864":1065,"85026#51165":26,"85026#51168":14,"85123#46250":3,"85123#46251":57,"85123#46252":3,"85282#46336":3,"85282#46337":35,"85282#46338":252,"85282#46339":12,"85282#46340":113,"85282#46341":128,"85342#46353":1,"85431#46320":3,"85431#46321":1,"85460#46199":19,"85460#46200":18,"85460#46201":99,"85460#46202":245,"85460#46203":84,"85460#46204":195,"85639#67976":1,"86248#68895":161,"86256#32963":1,"86256#68901":449,"86256#68902":218,"86256#79663":127,"86389#74049":15,"86389#74050":27,"86389#74051":69,"86389#74052":3,"86391#74067":48,"86816#88564":86,"86816#88565":26,"87096#90666":174,"87096#90667":99,"87141#90816":272,"87162#90909":40,"87162#90910":49,"87162#94609":6,"97649#102414":11};
 // VENDAS_GR_COR: GRs agregados por cor (TODAS as variações de espelho/pés somadas)
-const VENDAS_GR_COR = {"2169|AMENDOA CLEAN":14,"2169|AMENDOA CLEAN/OFF WH":18,"2169|BRANCO":7,"2405|AMENDOA CL/OFF WHI/A":2,"2405|BRANCO":328,"72593|AMENDOA CLEAN":961,"72593|AMENDOA CLEAN/OFF WH":2706,"72593|BRANCO":580,"84487|AMENDOA CLEAN/OFF WH":2550,"87138|AM CL/BRANCO/AM CL":22,"87138|BRANCO":23,"95045|AMENDOA CLEAN":18,"95045|AMENDOA CLEAN/OFF WH":32,"95045|BRANCO":24,"97782|AMENDOA CL/OFF WHI/A":1};
+const VENDAS_GR_COR = {"2169|AMENDOA CLEAN":16,"2169|AMENDOA CLEAN/OFF WH":18,"2169|BRANCO":8,"2405|AMENDOA CL/OFF WHI/A":2,"2405|BRANCO":351,"72593|AMENDOA CLEAN":1008,"72593|AMENDOA CLEAN/OFF WH":2841,"72593|BRANCO":678,"84487|AMENDOA CLEAN/OFF WH":2646,"87138|AM CL/BRANCO/AM CL":24,"87138|BRANCO":25,"95045|AMENDOA CLEAN":18,"95045|AMENDOA CLEAN/OFF WH":34,"95045|BRANCO":26};
 // Helper: média/dia consistente com a aba Análises (GR por cor, demais por variação)
 function getMediaDia(cod_item, categoria, variacao, cod_masc){
-  const dias = Math.max(1, parseInt((document.getElementById('covDias')||{}).value) || 27);
+  const dias = Math.max(1, parseInt((document.getElementById('covDias')||{}).value) || 28);
   let vendas = 0;
   if(categoria === 'GUARDA ROUPAS'){
     const cor = (variacao||'').split('#')[0].trim();
@@ -1388,7 +1477,7 @@ async function renderGraficoHistorico(){
 
 // Soma vendas/dia ao nível PRODUTO (somando todas as variações ou todas as cores)
 function getProductMedia(r){
-  const dias = Math.max(1, parseInt((document.getElementById('covDias')||{}).value) || 27);
+  const dias = Math.max(1, parseInt((document.getElementById('covDias')||{}).value) || 28);
   let vendas = 0;
   if(r.categoria === 'GUARDA ROUPAS'){
     const cores = new Set();
@@ -1462,7 +1551,7 @@ renderAlerts = function(){
    • Pega vendas por cod_item#cod_masc do mês de julho
    • Para GRs: agrupa cores e soma vendas + reservas de todas as variações
    • Para demais: análise por variação individual
-   • daily_avg = vendas_total / N dias (configurável, default 27)
+   • daily_avg = vendas_total / N dias (configurável, default 28)
    • dias_cobertura = reservado / daily_avg
    ════════════════════════════════════════════════════════════════════ */
 
@@ -1554,7 +1643,7 @@ function setCovSort(s, el){
 
 function renderCobertura(){
   window._covUnits = buildCovUnits();
-  const dias = Math.max(1, parseInt(document.getElementById('covDias').value) || 27);
+  const dias = Math.max(1, parseInt(document.getElementById('covDias').value) || 28);
 
   // Calcula média/dia e dias de cobertura
   window._covUnits.forEach(u => {
@@ -1703,7 +1792,7 @@ function renderCovList(){
 
 function exportarCoberturaCSV(){
   if(!window._covUnits){ renderCobertura(); }
-  const dias = parseInt(document.getElementById('covDias').value) || 27;
+  const dias = parseInt(document.getElementById('covDias').value) || 28;
   const u = window._covUnits || [];
   const head = ['Curva','Categoria','Produto','Cód Item','Descritor','Tipo','Vendas Julho','Média/Dia','Reservado','Dias Cobertura','Status'];
   const lines = [head.join(';')];
@@ -2220,8 +2309,12 @@ if(document.readyState==='loading'){
       const dataFirebase = dados.data || '';
       const hoje = _hojeISO();
 
-      // Empate fica com o arquivo: ele é a carga que acabou de ser importada.
-      if(!dataFirebase || dataFirebase <= DATA_CARGA){
+      // Empate no dia fica com quem tem timestamp mais novo: uma importação
+      // feita pelo painel hoje carimba ts e por isso ganha do arquivo.
+      const tsFirebase = Number(dados.ts || 0);
+      if(dataFirebase === DATA_CARGA && tsFirebase > CARGA_TS){
+        // segue o fluxo abaixo e aplica os dados do Firebase
+      } else if(!dataFirebase || dataFirebase <= DATA_CARGA){
         console.log(`Firebase tem carga de ${dataFirebase||'data desconhecida'}; o arquivo tem ${DATA_CARGA}. Mantendo a do arquivo.`);
         return;
       }
@@ -2319,6 +2412,25 @@ if(document.readyState==='loading'){
       if(pctEl) pctEl.textContent = pct;
     });
   }
+
+  // Expostos pro importador de planilha: ele precisa recalcular os KPIs e
+  // refazer a lista de produtos do autocomplete de lotes depois de trocar a base.
+  window._atualizarKPIs = atualizarKPIs;
+  window._rebuildProdutosUnicos = function(){
+    _produtosUnicos.length = 0;
+    const vistos = new Set();
+    data.forEach(p => {
+      const key = _normalizar(p.produto);
+      if (vistos.has(key)) return;
+      vistos.add(key);
+      const nVars = (p.variacoes || []).length;
+      _produtosUnicos.push({
+        nomeKey: key, produto: p.produto, categoria: p.categoria,
+        nVars: nVars > 0 ? nVars : 1, codItem: p.cod_item || null
+      });
+    });
+    _produtosUnicos.sort((a, b) => a.produto.localeCompare(b.produto, 'pt-BR'));
+  };
 
   // Carregar ao inicializar Firebase
   carregarDadosFirebase();
@@ -3698,6 +3810,750 @@ renderTodasAnalises();
     c.style.display = aberto ? 'none' : 'block';
     s.textContent = aberto ? '▸' : '▾';
   };
+})();
+
+</script>
+
+<script>
+
+/* ══════════════════════════════════════════════════════════════════
+   IMPORTADOR DE ESTOQUE VIA PLANILHA .XLSX
+   Lê o relatório de reserva, reconhece as colunas sozinho, mostra o
+   que vai mudar e só então grava por cima da carga atual.
+   ══════════════════════════════════════════════════════════════════ */
+(function(){
+
+  // ── Estado ──────────────────────────────────────────────────────
+  var _wb = null;          // workbook do SheetJS
+  var _aba = null;         // nome da aba escolhida
+  var _linhas = [];        // matriz bruta da aba
+  var _cabecalho = -1;     // índice da linha de cabeçalho
+  var _colunas = [];       // rótulos das colunas
+  var _mapa = {};          // campo -> índice da coluna (ou -1)
+  var _nomeArquivo = '';
+  var _carga = null;       // resultado do processamento
+  var _filtro = 'todos';
+  var _perfilPadrao = false; // true quando a planilha veio no formato de sempre
+
+  // ── Formato padrão do relatório de reserva ──────────────────────
+  // Cabeçalhos exatos (já normalizados) do arquivo que a gente sobe toda vez.
+  // Campo do painel -> nome da coluna na planilha.
+  var PERFIL_PADRAO = {
+    cod_item:   'cod item',
+    produto:    'item',
+    cod_masc:   'cod masc',
+    variacao:   'mascara',
+    solicitado: 'qtd pendente',
+    reservado:  'qtd reservado'
+  };
+
+  // ── Campos que o painel precisa ─────────────────────────────────
+  var CAMPOS = [
+    {k:'cod_item',   rot:'Código do item',      req:true,
+     alt:['codigo do item','codigo item','cod item','cod do item','codigo produto','cod produto','item','codigo','sku','referencia']},
+    {k:'produto',    rot:'Descrição do item',   req:true,
+     alt:['descricao do item','descricao item','descricao do produto','descricao','produto','desc item','nome do produto','nome']},
+    {k:'cod_masc',   rot:'Código da máscara',   req:false,
+     alt:['codigo da mascara','codigo mascara','cod mascara','cod masc','mascara','codigo da grade','cod grade','grade','codigo variacao']},
+    {k:'variacao',   rot:'Variação / máscara',  req:false,
+     alt:['variacao','descricao da mascara','descricao mascara','caracteristicas','caracteristica','acabamento','cor','descricao da variacao','composicao']},
+    {k:'solicitado', rot:'Solicitado',          req:true,
+     alt:['solicitado','qtd solicitada','quantidade solicitada','qtde solicitada','qt solicitada','pedido','qtd pedido','quantidade pedido','demanda','programado']},
+    {k:'reservado',  rot:'Reservado',           req:true,
+     alt:['reservado','qtd reservada','quantidade reservada','qtde reservada','qt reservada','reserva','atendido','qtd atendida','separado','em estoque','estoque']},
+    {k:'pendente',   rot:'Pendente',            req:false,
+     alt:['pendente','qtd pendente','quantidade pendente','saldo','saldo a reservar','falta','faltante','a produzir','diferenca']},
+    {k:'categoria',  rot:'Categoria',           req:false,
+     alt:['categoria','linha','familia','grupo','segmento','setor']},
+    {k:'abc',        rot:'Curva ABC',           req:false,
+     alt:['abc','curva','curva abc','classe','classificacao']}
+  ];
+
+  // ── Helpers ─────────────────────────────────────────────────────
+  function norm(s){
+    return String(s == null ? '' : s)
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+  }
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function nBR(n){ return Number(n||0).toLocaleString('pt-BR'); }
+  function pct1(n){ return (Math.round(Number(n||0)*10)/10).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}); }
+
+  // Converte texto de planilha em número, aguentando "1.234", "1.234,00" e "1 234"
+  function num(v){
+    if (v == null || v === '') return 0;
+    if (typeof v === 'number') return isFinite(v) ? Math.round(v) : 0;
+    var s = String(v).trim().replace(/\s/g,'');
+    if (!s) return 0;
+    if (s.indexOf(',') > -1 && s.indexOf('.') > -1) s = s.replace(/\./g,'').replace(',','.');
+    else if (s.indexOf(',') > -1) s = s.replace(',','.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g,'');
+    var n = parseFloat(s.replace(/[^0-9.\-]/g,''));
+    return isNaN(n) ? 0 : Math.round(n);
+  }
+
+  // Quando a planilha não traz categoria, chuta pelo nome e marca como inferida
+  function inferirCategoria(nome){
+    var n = String(nome||'').toUpperCase();
+    if (/GUARDA\s*ROUPA|ROUPEIRO|GR\s/.test(n)) return 'GUARDA ROUPAS';
+    if (/CABECEIRA|CAMA|COMODA|C[ÔO]MODA|SAPATEIRA|PENTEADEIRA|BELICHE|MULTIFUNCIONAL|CRIADO/.test(n)) return 'COMPLEMENTOS';
+    if (/MESA|CADEIRA|COZINHA|BUFFET|BALC[ÃA]O|APARADOR|BANQUETA|JANTAR/.test(n)) return 'SALA DE JANTAR';
+    return 'COMPLEMENTOS';
+  }
+
+  function statusEl(){ return document.getElementById('xls-etapas'); }
+  function pintar(html){ var el = statusEl(); if (el) el.innerHTML = html; }
+  function erro(msg){
+    pintar('<div class="xls-erro">⚠ ' + esc(msg) + '</div>');
+  }
+
+  // ── Abrir/fechar o card ─────────────────────────────────────────
+  window.alternarImportadorEstoque = function(){
+    var c = document.getElementById('xls-corpo');
+    var s = document.getElementById('xls-seta');
+    if (!c) return;
+    var aberto = c.style.display !== 'none';
+    c.style.display = aberto ? 'none' : 'block';
+    if (s) s.textContent = aberto ? '▸' : '▾';
+  };
+
+  // ── Planilha modelo, já preenchida com a carga atual ────────────
+  window.baixarModeloEstoque = function(){
+    if (typeof XLSX === 'undefined') { alert('SheetJS não carregado.'); return; }
+    var linhas = [];
+    (typeof data !== 'undefined' ? data : []).forEach(function(p){
+      (p.variacoes||[]).forEach(function(v){
+        linhas.push({
+          'Código do Item': p.cod_item,
+          'Descrição do Item': p.produto,
+          'Código da Máscara': v.cod_masc,
+          'Variação': v.variacao,
+          'Solicitado': v.solicitado,
+          'Reservado': v.reservado,
+          'Categoria': p.categoria,
+          'Curva ABC': p.abc
+        });
+      });
+    });
+    if (!linhas.length) linhas.push({'Código do Item':'','Descrição do Item':'','Código da Máscara':'','Variação':'','Solicitado':'','Reservado':'','Categoria':'','Curva ABC':''});
+    var ws = XLSX.utils.json_to_sheet(linhas, {header:['Código do Item','Descrição do Item','Código da Máscara','Variação','Solicitado','Reservado','Categoria','Curva ABC']});
+    ws['!cols'] = [{wch:14},{wch:42},{wch:18},{wch:44},{wch:12},{wch:12},{wch:18},{wch:10}];
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Estoque');
+    var d = new Date();
+    var st = String(d.getDate()).padStart(2,'0') + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + d.getFullYear();
+    XLSX.writeFile(wb, 'modelo_estoque_' + st + '.xlsx');
+  };
+
+  // ── Leitura do arquivo ──────────────────────────────────────────
+  function lerArquivo(file){
+    if (!file) return;
+    if (typeof XLSX === 'undefined') { erro('SheetJS não carregou. Confira a conexão e recarregue a página.'); return; }
+    _nomeArquivo = file.name;
+    pintar('<div class="xls-arquivo"><span>⏳</span><span class="xls-arquivo-nome">' + esc(file.name) + '</span><span class="xls-arquivo-meta">lendo…</span></div>');
+    var fr = new FileReader();
+    fr.onerror = function(){ erro('Não deu pra ler o arquivo.'); };
+    fr.onload = function(e){
+      try {
+        _wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:false});
+        if (!_wb.SheetNames || !_wb.SheetNames.length) { erro('A planilha não tem nenhuma aba.'); return; }
+        _aba = _wb.SheetNames[0];
+        carregarAba(_aba);
+      } catch(err){
+        erro('Arquivo inválido ou corrompido: ' + err.message);
+      }
+    };
+    fr.readAsArrayBuffer(file);
+  }
+
+  function carregarAba(nome){
+    _aba = nome;
+    var ws = _wb.Sheets[nome];
+    _linhas = XLSX.utils.sheet_to_json(ws, {header:1, raw:true, defval:'', blankrows:false});
+    if (!_linhas.length) { erro('A aba "' + nome + '" está vazia.'); return; }
+    _cabecalho = detectarCabecalho(_linhas);
+    _colunas = (_linhas[_cabecalho] || []).map(function(c,i){
+      var t = String(c == null ? '' : c).trim();
+      return t || ('Coluna ' + XLSX.utils.encode_col(i));
+    });
+    _mapa = autoMapear(_colunas);
+    _carga = null;
+    desenharMapeamento();
+  }
+
+  // Acha a linha de cabeçalho: a que mais bate com os nomes conhecidos
+  function detectarCabecalho(linhas){
+    var melhor = 0, melhorNota = -1;
+    var lim = Math.min(linhas.length, 30);
+    for (var i = 0; i < lim; i++){
+      var linha = linhas[i] || [];
+      var preenchidas = linha.filter(function(c){ return String(c==null?'':c).trim() !== ''; }).length;
+      if (preenchidas < 2) continue;
+      var nota = 0;
+      linha.forEach(function(c){
+        var n = norm(c);
+        if (!n) return;
+        CAMPOS.forEach(function(f){
+          f.alt.forEach(function(a){
+            if (n === a) nota += 3;
+            else if (n.indexOf(a) === 0 || a.indexOf(n) === 0) nota += 2;
+            else if (n.indexOf(a) > -1) nota += 1;
+          });
+        });
+      });
+      if (nota > melhorNota) { melhorNota = nota; melhor = i; }
+    }
+    return melhorNota >= 3 ? melhor : 0;
+  }
+
+  // Casa cada campo com a coluna mais parecida, sem repetir coluna
+  function autoMapear(cols){
+    var m = {}, usadas = {};
+    CAMPOS.forEach(function(f){ m[f.k] = -1; });
+    var normCols = cols.map(norm);
+
+    // ── Formato de sempre: o relatório de reserva sai com estes cabeçalhos.
+    // Bate exato e tem prioridade sobre qualquer palpite. Repare que a coluna
+    // QTD PENDENTE é o que o painel chama de "Solicitado" — é de propósito.
+    var perfilOk = true, mPerfil = {};
+    CAMPOS.forEach(function(f){ mPerfil[f.k] = -1; });
+    Object.keys(PERFIL_PADRAO).forEach(function(campo){
+      if (!perfilOk) return;
+      var alvo = PERFIL_PADRAO[campo], achou = -1;
+      for (var i = 0; i < normCols.length; i++){
+        if (usadas[i]) continue;
+        if (normCols[i] === alvo) { achou = i; break; }
+      }
+      if (achou < 0) { perfilOk = false; return; }
+      mPerfil[campo] = achou; usadas[achou] = true;
+    });
+    if (perfilOk){ _perfilPadrao = true; return mPerfil; }
+    _perfilPadrao = false;
+    usadas = {};
+
+    [[3, function(n,a){ return n === a; }],
+     [2, function(n,a){ return n.indexOf(a) === 0 || a.indexOf(n) === 0; }],
+     [1, function(n,a){ return n.indexOf(a) > -1; }]
+    ].forEach(function(passo){
+      var testa = passo[1];
+      CAMPOS.forEach(function(f){
+        if (m[f.k] > -1) return;
+        for (var i = 0; i < normCols.length; i++){
+          if (usadas[i] || !normCols[i]) continue;
+          for (var j = 0; j < f.alt.length; j++){
+            if (testa(normCols[i], f.alt[j])) { m[f.k] = i; usadas[i] = true; return; }
+          }
+        }
+      });
+    });
+    return m;
+  }
+
+  // ── Etapa 2: conferir o de-para das colunas ─────────────────────
+  function desenharMapeamento(){
+    var totalLinhas = Math.max(0, _linhas.length - _cabecalho - 1);
+    var abas = _wb.SheetNames;
+
+    var h = '<div class="xls-arquivo">'
+      + '<span>📄</span>'
+      + '<span class="xls-arquivo-nome">' + esc(_nomeArquivo) + '</span>'
+      + '<span class="xls-arquivo-meta">' + nBR(totalLinhas) + ' linha' + (totalLinhas===1?'':'s') + ' · cabeçalho na linha ' + (_cabecalho+1) + '</span>';
+    if (abas.length > 1){
+      h += '<span class="xls-arquivo-meta">Aba:</span><select class="xls-input" onchange="xlsTrocarAba(this.value)">'
+         + abas.map(function(a){ return '<option value="'+esc(a)+'"'+(a===_aba?' selected':'')+'>'+esc(a)+'</option>'; }).join('')
+         + '</select>';
+    }
+    h += '<button class="xls-btn ghost" style="margin-left:auto;" onclick="xlsReiniciar()">trocar arquivo</button></div>';
+
+    // Formato de sempre: avisa e já esconde o de-para, que não precisa de conferência
+    if (_perfilPadrao){
+      h += '<div class="xls-ok-banner">'
+        + '<span>✓</span>'
+        + '<div><b>Planilha no formato de sempre.</b> Colunas casadas sozinhas: '
+        + 'COD ITEM, ITEM, COD MASC, MASCARA, QTD PENDENTE (= solicitado) e QTD RESERVADO.</div>'
+        + '<button class="xls-btn ghost" style="margin-left:auto;" onclick="xlsVerColunas()" id="xls-toggle-colunas">ver colunas</button>'
+        + '</div>';
+    }
+
+    h += '<div id="xls-mapa-bloco"' + (_perfilPadrao ? ' style="display:none;"' : '') + '>';
+    h += '<div class="xls-bloco"><div class="xls-bloco-titulo">De-para das colunas</div><div class="xls-mapa">';
+    CAMPOS.forEach(function(f){
+      var achou = _mapa[f.k] > -1;
+      h += '<div>'
+        + '<label class="xls-campo-label"><b>' + esc(f.rot) + '</b>'
+        + (f.req ? '<span class="req">*</span>' : ' <span style="opacity:.6">(opcional)</span>')
+        + '<span class="xls-campo-ok" id="xls-ok-' + f.k + '"' + (achou ? '' : ' style="display:none;"') + '>✓</span>'
+        + '</label>'
+        + '<select class="imp-select" data-campo="' + f.k + '" onchange="xlsSetCol(\'' + f.k + '\', this.value)">'
+        + '<option value="-1">— não usar —</option>'
+        + _colunas.map(function(c,i){
+            return '<option value="'+i+'"'+(_mapa[f.k]===i?' selected':'')+'>'+esc(XLSX.utils.encode_col(i)+' · '+c)+'</option>';
+          }).join('')
+        + '</select></div>';
+    });
+    h += '</div>';
+
+    var faltando = CAMPOS.filter(function(f){ return f.req && _mapa[f.k] < 0; });
+    if (faltando.length){
+      h += '<div class="xls-aviso">Faltou apontar: <b>' + faltando.map(function(f){ return esc(f.rot); }).join(', ')
+         + '</b>. Escolha a coluna certa acima pra seguir.</div>';
+    }
+    if (_mapa.cod_masc < 0 && _mapa.variacao < 0){
+      h += '<div class="xls-aviso">Sem coluna de máscara/variação: cada linha vira um produto com uma variação só.</div>';
+    }
+    h += '</div>';
+
+    // Amostra das 5 primeiras linhas
+    var amostra = _linhas.slice(_cabecalho+1, _cabecalho+6);
+    if (amostra.length){
+      h += '<div class="xls-bloco"><div class="xls-bloco-titulo">Prévia das primeiras linhas</div>'
+        + '<div class="imp-tabela-wrap" style="max-height:220px;"><table class="imp-tabela"><thead><tr>'
+        + _colunas.map(function(c){ return '<th>'+esc(c)+'</th>'; }).join('')
+        + '</tr></thead><tbody>'
+        + amostra.map(function(r){
+            return '<tr>' + _colunas.map(function(_,i){
+              return '<td style="white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis;">' + esc(r && r[i] != null ? r[i] : '') + '</td>';
+            }).join('') + '</tr>';
+          }).join('')
+        + '</tbody></table></div></div>';
+    }
+
+    h += '</div>'; // /xls-mapa-bloco
+
+    h += '<div class="imp-rodape">'
+      + '<button class="xls-btn" id="xls-btn-processar" onclick="xlsProcessar()"' + (faltando.length ? ' disabled' : '') + '>Conferir mudanças</button>'
+      + '<span class="imp-dica">Nada é gravado agora — o próximo passo mostra exatamente o que muda.</span>'
+      + '</div>';
+
+    h += '<div id="xls-resultado"></div>';
+    pintar(h);
+
+    // Formato conhecido e nada faltando: já mostra o que muda, sem clique extra
+    if (_perfilPadrao && !faltando.length) window.xlsProcessar();
+  }
+
+  window.xlsVerColunas = function(){
+    var b = document.getElementById('xls-mapa-bloco');
+    var t = document.getElementById('xls-toggle-colunas');
+    if (!b) return;
+    var oculto = b.style.display === 'none';
+    b.style.display = oculto ? 'block' : 'none';
+    if (t) t.textContent = oculto ? 'ocultar colunas' : 'ver colunas';
+  };
+
+  window.xlsTrocarAba = function(nome){ carregarAba(nome); };
+  window.xlsReiniciar = function(){ _wb=null; _carga=null; _linhas=[]; _perfilPadrao=false; pintar(''); var f=document.getElementById('xls-file'); if(f) f.value=''; };
+  window.xlsSetCol = function(campo, val){
+    _mapa[campo] = parseInt(val, 10);
+    var ok = document.getElementById('xls-ok-' + campo);
+    if (ok) ok.style.display = _mapa[campo] > -1 ? '' : 'none';
+    var faltando = CAMPOS.filter(function(f){ return f.req && _mapa[f.k] < 0; });
+    var btn = document.getElementById('xls-btn-processar');
+    if (btn) btn.disabled = faltando.length > 0;
+  };
+
+  // ── Etapa 3: montar a carga e comparar com a atual ──────────────
+  function cel(linha, campo){
+    var i = _mapa[campo];
+    if (i == null || i < 0 || !linha) return '';
+    var v = linha[i];
+    return v == null ? '' : v;
+  }
+
+  window.xlsProcessar = function(){
+    try { _carga = montarCarga(); } catch(err){ erro('Erro ao ler a planilha: ' + err.message); return; }
+    if (!_carga.produtos.length){ erro('Nenhuma linha válida encontrada. Confira o de-para das colunas.'); return; }
+    _filtro = 'todos';
+    desenharResultado();
+    var el = document.getElementById('xls-resultado');
+    if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+  };
+
+  function montarCarga(){
+    var base = (typeof data !== 'undefined' ? data : []);
+    var porCodAntigo = {}, porNomeAntigo = {};
+    base.forEach(function(p){
+      porCodAntigo[String(p.cod_item)] = p;
+      porNomeAntigo[norm(p.produto)] = p;
+    });
+
+    var mapa = {}, ordem = [], ignoradas = 0;
+
+    for (var li = _cabecalho + 1; li < _linhas.length; li++){
+      var r = _linhas[li];
+      if (!r) continue;
+      var codRaw  = String(cel(r,'cod_item')).trim();
+      var nomeRaw = String(cel(r,'produto')).trim();
+      if (!codRaw && !nomeRaw) continue;
+
+      // Linha de total/rodapé
+      if (/^(total|totais|soma|subtotal)/i.test(nomeRaw)) { ignoradas++; continue; }
+
+      var sol = num(cel(r,'solicitado'));
+      var res = num(cel(r,'reservado'));
+
+      var codNum = num(codRaw);
+      var cod = (codRaw && /^\d+$/.test(codRaw.replace(/\D/g,'')) && codNum) ? codNum : (codRaw || nomeRaw);
+      var chave = String(cod);
+
+      if (!mapa[chave]){
+        var antigo = porCodAntigo[chave] || porNomeAntigo[norm(nomeRaw)] || null;
+        var catPlan = String(cel(r,'categoria')).trim().toUpperCase();
+        var abcPlan = String(cel(r,'abc')).trim().toUpperCase().slice(0,1);
+        var catInferida = false, cat;
+        if (catPlan) cat = catPlan;
+        else if (antigo) cat = antigo.categoria;
+        else { cat = inferirCategoria(nomeRaw); catInferida = true; }
+        var abc = (/^[ABC]$/.test(abcPlan) ? abcPlan : (antigo ? antigo.abc : 'C'));
+
+        mapa[chave] = {
+          cod_item: cod,
+          produto: nomeRaw || (antigo ? antigo.produto : String(cod)),
+          categoria: cat,
+          abc: abc,
+          variacoes: [],
+          _vmap: {},
+          _catInferida: catInferida,
+          _novo: !antigo
+        };
+        ordem.push(chave);
+      }
+      var prod = mapa[chave];
+      if (nomeRaw && !prod.produto) prod.produto = nomeRaw;
+
+      var mascRaw = String(cel(r,'cod_masc')).trim();
+      var varRaw  = String(cel(r,'variacao')).trim();
+      var mascNum = num(mascRaw);
+      var masc = mascRaw ? (mascNum || mascRaw) : (varRaw || '—');
+      var vChave = String(masc) + '|' + varRaw;
+
+      if (!prod._vmap[vChave]){
+        prod._vmap[vChave] = {
+          cod_item: cod,
+          cod_masc: masc,
+          variacao: varRaw || (mascRaw ? String(masc) : '—'),
+          solicitado: 0, reservado: 0, pendente: 0, pct: 0
+        };
+        prod.variacoes.push(prod._vmap[vChave]);
+      }
+      var v = prod._vmap[vChave];
+      v.solicitado += sol;
+      v.reservado  += res;
+      if (_mapa.pendente > -1) v.pendente += num(cel(r,'pendente'));
+    }
+
+    // Fecha os números de cada produto
+    var produtos = ordem.map(function(k){
+      var p = mapa[k];
+      delete p._vmap;
+      var sol = 0, res = 0, pen = 0;
+      p.variacoes.forEach(function(v){
+        v.pendente = (_mapa.pendente > -1) ? v.pendente : Math.max(0, v.solicitado - v.reservado);
+        v.pct = v.solicitado > 0 ? Math.round(v.reservado / v.solicitado * 1000)/10 : 0;
+        sol += v.solicitado; res += v.reservado; pen += v.pendente;
+      });
+      p.solicitado = sol; p.reservado = res; p.pendente = pen;
+      p.pct = sol > 0 ? Math.round(res / sol * 1000)/10 : 0;
+      p.alerta = p.pct < 30;
+      p.concluido = p.pct >= 100;
+      return p;
+    }).filter(function(p){ return p.variacoes.length > 0; });
+
+    // Ordena igual à base: por código
+    produtos.sort(function(a,b){
+      var na = Number(a.cod_item), nb = Number(b.cod_item);
+      if (!isNaN(na) && !isNaN(nb)) return na - nb;
+      return String(a.cod_item).localeCompare(String(b.cod_item), 'pt-BR');
+    });
+
+    // Diff contra a base atual
+    var novosPorCod = {};
+    produtos.forEach(function(p){ novosPorCod[String(p.cod_item)] = p; });
+    var removidos = base.filter(function(p){ return !novosPorCod[String(p.cod_item)]; });
+
+    produtos.forEach(function(p){
+      var ant = porCodAntigo[String(p.cod_item)];
+      if (!ant){ p._status = 'novo'; p._deltaRes = p.reservado; p._deltaSol = p.solicitado; return; }
+      p._deltaRes = p.reservado - ant.reservado;
+      p._deltaSol = p.solicitado - ant.solicitado;
+      p._antRes = ant.reservado; p._antSol = ant.solicitado; p._antPct = ant.pct;
+      p._status = (p._deltaRes !== 0 || p._deltaSol !== 0 || (p.variacoes.length !== (ant.variacoes||[]).length)) ? 'alterado' : 'igual';
+    });
+
+    var tSol = produtos.reduce(function(s,p){ return s+p.solicitado; }, 0);
+    var tRes = produtos.reduce(function(s,p){ return s+p.reservado; }, 0);
+    var tVar = produtos.reduce(function(s,p){ return s+p.variacoes.length; }, 0);
+    var bSol = base.reduce(function(s,p){ return s+p.solicitado; }, 0);
+    var bRes = base.reduce(function(s,p){ return s+p.reservado; }, 0);
+
+    return {
+      produtos: produtos,
+      removidos: removidos,
+      ignoradas: ignoradas,
+      totais: {
+        sol: tSol, res: tRes, pen: tSol - tRes, vars: tVar,
+        pct: tSol > 0 ? Math.round(tRes/tSol*1000)/10 : 0,
+        alertasVar: produtos.reduce(function(s,p){ return s + p.variacoes.filter(function(v){ return v.pct < 30; }).length; }, 0)
+      },
+      antes: {
+        sol: bSol, res: bRes, prods: base.length,
+        pct: bSol > 0 ? Math.round(bRes/bSol*1000)/10 : 0
+      },
+      contagem: {
+        novos:     produtos.filter(function(p){ return p._status === 'novo'; }).length,
+        alterados: produtos.filter(function(p){ return p._status === 'alterado'; }).length,
+        iguais:    produtos.filter(function(p){ return p._status === 'igual'; }).length,
+        inferidos: produtos.filter(function(p){ return p._catInferida; }).length
+      }
+    };
+  }
+
+  // ── Etapa 3 (tela): resumo + tabela do diff ─────────────────────
+  function desenharResultado(){
+    var c = _carga, t = c.totais, a = c.antes, n = c.contagem;
+    var cobre = a.prods > 0 ? (c.produtos.length - n.novos) / a.prods : 1;
+    var removerPadrao = cobre >= 0.7;
+
+    function delta(v, suf){
+      if (!v) return '<span class="xls-delta flat">sem mudança</span>';
+      var cls = v > 0 ? 'up' : 'down';
+      return '<span class="xls-delta ' + cls + '">' + (v>0?'▲ +':'▼ ') + nBR(v) + (suf||'') + '</span>';
+    }
+
+    var h = '<div class="xls-bloco"><div class="xls-bloco-titulo">O que a planilha traz</div>'
+      + '<div class="xls-resumo">'
+      + '<div class="xls-resumo-card"><div class="xls-resumo-label">Produtos</div><div class="xls-resumo-valor">' + nBR(c.produtos.length) + '</div><div class="xls-resumo-sub">' + nBR(t.vars) + ' variações · antes ' + nBR(a.prods) + '</div></div>'
+      + '<div class="xls-resumo-card"><div class="xls-resumo-label">Solicitado</div><div class="xls-resumo-valor">' + nBR(t.sol) + '</div><div class="xls-resumo-sub">' + delta(t.sol - a.sol) + '</div></div>'
+      + '<div class="xls-resumo-card"><div class="xls-resumo-label">Reservado</div><div class="xls-resumo-valor">' + nBR(t.res) + '</div><div class="xls-resumo-sub">' + delta(t.res - a.res) + '</div></div>'
+      + '<div class="xls-resumo-card"><div class="xls-resumo-label">Cobertura</div><div class="xls-resumo-valor">' + pct1(t.pct) + '%</div><div class="xls-resumo-sub">antes ' + pct1(a.pct) + '% · ' + t.alertasVar + ' variações &lt; 30%</div></div>'
+      + '</div>';
+
+    if (c.ignoradas) h += '<div class="imp-dica" style="margin-top:10px;display:block;">' + nBR(c.ignoradas) + ' linha(s) de total/rodapé foram ignoradas.</div>';
+    if (n.inferidos) h += '<div class="xls-aviso">' + n.inferidos + ' produto(s) novo(s) ficaram com a categoria chutada pelo nome (marcados com <span class="xls-tag inferido">categoria chutada</span>). Vale conferir na tabela.</div>';
+    if (c.removidos.length){
+      h += '<div class="xls-aviso" style="display:flex;align-items:flex-start;gap:9px;">'
+        + '<input type="checkbox" id="xls-remover" ' + (removerPadrao ? 'checked' : '') + ' style="margin-top:2px;">'
+        + '<label for="xls-remover" style="cursor:pointer;">Tirar da base os <b>' + c.removidos.length + ' produto(s)</b> que não vieram na planilha'
+        + (removerPadrao ? '' : ' — a planilha cobre só ' + Math.round(cobre*100) + '% da base atual, então parece um relatório parcial; deixe desmarcado se for o caso')
+        + '.</label></div>';
+    }
+    h += '</div>';
+
+    // Filtros + tabela
+    var f = [
+      ['todos','Todos ('+c.produtos.length+')'],
+      ['novo','Novos ('+n.novos+')'],
+      ['alterado','Alterados ('+n.alterados+')'],
+      ['igual','Sem mudança ('+n.iguais+')']
+    ];
+    if (c.removidos.length) f.push(['removido','Fora da planilha ('+c.removidos.length+')']);
+
+    h += '<div class="xls-bloco"><div class="xls-bloco-titulo">Produto a produto</div><div class="xls-filtros">'
+      + f.map(function(x){ return '<button class="xls-filtro'+(_filtro===x[0]?' active':'')+'" onclick="xlsFiltrar(\''+x[0]+'\')">'+esc(x[1])+'</button>'; }).join('')
+      + '</div><div id="xls-tabela"></div></div>';
+
+    h += '<div class="imp-rodape">'
+      + '<span class="imp-dica">Data da carga:</span>'
+      + '<input type="date" class="xls-input" id="xls-data" value="' + (new Date().toISOString().slice(0,10)) + '">'
+      + '<span class="imp-dica">DOC:</span>'
+      + '<input type="text" class="xls-input" id="xls-doc" style="width:110px;" value="' + esc(typeof DOC_PEDIDO !== 'undefined' ? DOC_PEDIDO : '') + '">'
+      + '<button class="xls-btn ok" id="xls-btn-aplicar" onclick="xlsAplicar()">✓ Aplicar e salvar</button>'
+      + '<button class="xls-btn ghost" onclick="xlsReiniciar()">cancelar</button>'
+      + '</div>'
+      + '<div id="xls-final"></div>';
+
+    var el = document.getElementById('xls-resultado');
+    if (el) el.innerHTML = h;
+    desenharTabela();
+  }
+
+  function desenharTabela(){
+    var c = _carga;
+    var linhas = [];
+    if (_filtro === 'removido'){
+      linhas = c.removidos.map(function(p){ return {p:p, st:'removido'}; });
+    } else {
+      linhas = c.produtos
+        .filter(function(p){ return _filtro === 'todos' || p._status === _filtro; })
+        .map(function(p){ return {p:p, st:p._status}; });
+      if (_filtro === 'todos'){
+        linhas = linhas.concat(c.removidos.map(function(p){ return {p:p, st:'removido'}; }));
+      }
+    }
+
+    var h = '<div class="imp-tabela-wrap" style="max-height:420px;margin-top:12px;"><table class="imp-tabela"><thead><tr>'
+      + '<th>Status</th><th>Cód.</th><th>Produto</th><th>Categoria</th><th style="text-align:right;">Var.</th>'
+      + '<th style="text-align:right;">Solicitado</th><th style="text-align:right;">Reservado</th><th style="text-align:right;">%</th><th style="text-align:right;">Δ reservado</th>'
+      + '</tr></thead><tbody>';
+
+    if (!linhas.length){
+      h += '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:18px;">Nada aqui.</td></tr>';
+    }
+
+    linhas.forEach(function(x){
+      var p = x.p, st = x.st;
+      var rot = st === 'novo' ? 'novo' : st === 'alterado' ? 'alterado' : st === 'removido' ? 'saiu' : 'igual';
+      var cls = st === 'igual' ? 'igual' : st;
+      var d = (st === 'removido') ? -p.reservado : (p._deltaRes || 0);
+      var dTxt = st === 'removido' ? '—'
+        : (d === 0 ? '<span style="color:var(--muted)">0</span>'
+          : '<span class="xls-delta ' + (d>0?'up':'down') + '">' + (d>0?'+':'') + nBR(d) + '</span>');
+      var corPct = p.pct < 30 ? '#f87171' : p.pct < 100 ? '#f59e0b' : '#22c98a';
+      h += '<tr' + (st === 'removido' ? ' style="opacity:.6"' : '') + '>'
+        + '<td><span class="xls-tag ' + cls + '">' + rot + '</span></td>'
+        + '<td style="font-family:monospace;font-size:11px;white-space:nowrap;">' + esc(p.cod_item) + '</td>'
+        + '<td style="max-width:280px;">' + esc(p.produto) + (p._catInferida ? ' <span class="xls-tag inferido">categoria chutada</span>' : '') + '</td>'
+        + '<td style="white-space:nowrap;font-size:11px;color:var(--muted);">' + esc(p.categoria) + ' · ' + esc(p.abc) + '</td>'
+        + '<td style="text-align:right;">' + (p.variacoes||[]).length + '</td>'
+        + '<td style="text-align:right;">' + nBR(p.solicitado) + (st==='alterado' && p._deltaSol ? '<div style="font-size:10px;color:var(--muted)">era ' + nBR(p._antSol) + '</div>' : '') + '</td>'
+        + '<td style="text-align:right;">' + nBR(p.reservado) + (st==='alterado' && p._deltaRes ? '<div style="font-size:10px;color:var(--muted)">era ' + nBR(p._antRes) + '</div>' : '') + '</td>'
+        + '<td style="text-align:right;color:' + corPct + ';font-weight:700;">' + pct1(p.pct) + '%</td>'
+        + '<td style="text-align:right;">' + dTxt + '</td>'
+        + '</tr>';
+    });
+    h += '</tbody></table></div>';
+    var el = document.getElementById('xls-tabela');
+    if (el) el.innerHTML = h;
+  }
+
+  window.xlsFiltrar = function(f){
+    _filtro = f;
+    document.querySelectorAll('#xls-resultado .xls-filtro').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('onclick').indexOf("'"+f+"'") > -1);
+    });
+    desenharTabela();
+  };
+
+  // ── Etapa 4: aplicar ────────────────────────────────────────────
+  window.xlsAplicar = async function(){
+    if (!_carga) return;
+    var btn = document.getElementById('xls-btn-aplicar');
+    if (btn){ btn.disabled = true; btn.textContent = 'aplicando…'; }
+
+    var manterFora = !(document.getElementById('xls-remover') || {}).checked;
+    var dataCarga = (document.getElementById('xls-data') || {}).value || new Date().toISOString().slice(0,10);
+    var doc = ((document.getElementById('xls-doc') || {}).value || '').trim();
+
+    // Monta a lista final, limpa dos campos auxiliares do diff
+    var finais = _carga.produtos.map(limpar);
+    if (manterFora && _carga.removidos.length){
+      finais = finais.concat(_carga.removidos.map(limpar));
+      finais.sort(function(a,b){
+        var na = Number(a.cod_item), nb = Number(b.cod_item);
+        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+        return String(a.cod_item).localeCompare(String(b.cod_item), 'pt-BR');
+      });
+    }
+
+    // Troca a base em memória
+    data.length = 0;
+    finais.forEach(function(p){ data.push(p); });
+
+    // Redesenha o painel inteiro
+    reRenderizarTudo(dataCarga, doc);
+
+    // Grava no Firebase pra todo mundo enxergar
+    var msg = '', cls = 'xls-aviso';
+    if (window._ehDB){
+      try {
+        await window._ehDB.ref(DADOS_PATH).set({
+          data: dataCarga,
+          doc: doc || (typeof DOC_PEDIDO !== 'undefined' ? DOC_PEDIDO : ''),
+          ts: Date.now(),
+          origem: _nomeArquivo || 'planilha',
+          produtos: finais
+        });
+        msg = '✅ Carga aplicada e salva no Firebase — o time inteiro já vê os números de ' + dataCarga.split('-').reverse().join('/') + '.';
+        cls = 'xls-erro" style="background:rgba(34,201,138,0.08);border-color:rgba(34,201,138,0.35);color:#22c98a;';
+      } catch(e){
+        msg = '⚠ Os números já estão na tela, mas não deu pra salvar no Firebase: ' + e.message + '. Ao recarregar a página, volta a carga anterior.';
+      }
+    } else {
+      msg = '⚠ Firebase indisponível. Os números valem só nesta aba — ao recarregar, volta a carga anterior.';
+    }
+
+    var el = document.getElementById('xls-final');
+    if (el) el.innerHTML = '<div class="' + cls + '">' + msg + '</div>';
+    if (btn){ btn.textContent = '✓ Aplicado'; }
+  };
+
+  function limpar(p){
+    return {
+      cod_item: p.cod_item,
+      produto: p.produto,
+      categoria: p.categoria,
+      abc: p.abc || 'C',
+      variacoes: (p.variacoes||[]).map(function(v){
+        return {
+          cod_item: v.cod_item != null ? v.cod_item : p.cod_item,
+          cod_masc: v.cod_masc != null ? v.cod_masc : '',
+          variacao: v.variacao || '—',
+          solicitado: Number(v.solicitado)||0,
+          reservado: Number(v.reservado)||0,
+          pendente: Number(v.pendente)||0,
+          pct: Number(v.pct)||0
+        };
+      }),
+      solicitado: Number(p.solicitado)||0,
+      reservado: Number(p.reservado)||0,
+      pendente: Number(p.pendente)||0,
+      pct: Number(p.pct)||0,
+      alerta: !!p.alerta,
+      concluido: !!p.concluido
+    };
+  }
+
+  function reRenderizarTudo(dataCarga, doc){
+    var br = dataCarga.split('-').reverse().join('/');
+
+    // Cabeçalho
+    var sub = document.querySelector('.header-sub');
+    if (sub) sub.textContent = 'DOC ' + (doc || (typeof DOC_PEDIDO !== 'undefined' ? DOC_PEDIDO : '')) + ' · Reserva de Estoque · ' + br;
+    var badge = document.querySelector('.badge-date');
+    if (badge) badge.innerHTML = '📅 ' + br + ' <span style="font-size:9px;background:rgba(34,201,138,0.2);color:#22c98a;padding:1px 5px;border-radius:6px;margin-left:4px;">● AO VIVO</span>';
+    var bp = document.getElementById('badgeProdutos');
+    if (bp) bp.textContent = data.length;
+
+    try { window._rebuildProdutosUnicos && window._rebuildProdutosUnicos(); } catch(e){ console.warn('produtosUnicos', e); }
+    try { window._atualizarKPIs && window._atualizarKPIs({produtos: data}); } catch(e){ console.warn('kpis', e); }
+    try { typeof renderAlerts === 'function' && renderAlerts(); } catch(e){ console.warn('alerts', e); }
+    try { typeof renderTable === 'function' && renderTable(); } catch(e){ console.warn('table', e); }
+    try { typeof renderCobertura === 'function' && document.getElementById('covDias') && renderCobertura(); } catch(e){ console.warn('cobertura', e); }
+    try { typeof renderGraficos === 'function' && renderGraficos(); } catch(e){ console.warn('graficos', e); }
+    try { typeof renderTodasAnalises === 'function' && renderTodasAnalises(); } catch(e){ console.warn('analises', e); }
+    try { typeof renderGraficoHistorico === 'function' && renderGraficoHistorico(); } catch(e){ console.warn('historico', e); }
+  }
+
+  // ── Ligações da UI ──────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', ligar);
+  if (document.readyState !== 'loading') ligar();
+  var _ligado = false;
+  function ligar(){
+    if (_ligado) return;
+    var drop = document.getElementById('xls-drop');
+    var input = document.getElementById('xls-file');
+    if (!drop || !input) return;
+    _ligado = true;
+
+    drop.addEventListener('click', function(){ input.click(); });
+    input.addEventListener('change', function(e){ if (e.target.files && e.target.files[0]) lerArquivo(e.target.files[0]); });
+
+    ['dragenter','dragover'].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.add('dragging'); });
+    });
+    ['dragleave','drop'].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.remove('dragging'); });
+    });
+    drop.addEventListener('drop', function(e){
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) lerArquivo(f);
+    });
+  }
+
 })();
 
 </script>
