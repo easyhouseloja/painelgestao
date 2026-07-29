@@ -966,7 +966,7 @@
             <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;">🚦 Lote × Furo · Vai chegar a tempo?</div>
             <div style="font-size:11px;color:var(--muted);margin-top:4px;max-width:800px;line-height:1.5;">
               Compara a data prevista de furo de cada item com o próximo lote programado.
-              <span style="color:#22c98a">🟢 OK</span> · <span style="color:#f59e0b">🟡 Apertado</span> · <span style="color:#f87171">🔴 Atrasado</span> · <span style="color:#fb923c">🟠 Volume curto</span> · <span style="color:#9ca3af">⚫ Sem lote à frente</span>
+              <span style="color:#22c98a">🟢 OK</span> · <span style="color:#f59e0b">🟡 Apertado</span> · <span style="color:#f87171">🔴 Furo antes do lote</span> · <span style="color:#fb923c">🟠 Volume curto</span> · <span style="color:#9ca3af">⚫ Sem lote à frente</span>
               <br>Volume curto = o lote chega antes do furo, mas o total programado dura menos de 30 dias no giro atual.
             </div>
           </div>
@@ -2517,7 +2517,7 @@ window.filtrarListaLotes = function(q){
 
 
 // ═══════════════════════════════════════════════════════════════════════════
-//  5 NOVAS ANÁLISES
+//  5 NOVAS ANÁLISES (Janaína · maio/26)
 // ═══════════════════════════════════════════════════════════════════════════
 
 // Helper: cobertura unificada por produto (mesma lógica da aba Análises)
@@ -2696,7 +2696,7 @@ function renderLoteVsFuro(){
     } else if(!proxLote){
       status='sem'; label='⚫ Sem lote'; color='#9ca3af';
     } else if(diffDias > 0){
-      status='atras'; label='🔴 Lote atrasado'; color='#f87171';
+      status='atras'; label='🔴 Furo antes do lote'; color='#f87171';
     } else if(diffDias === 0 || diffDias === -1){
       status='aper'; label='🟡 Apertado'; color='#f59e0b';
     } else if(qtdTotal > 0 && runway !== null && runway < 30){
@@ -2728,7 +2728,7 @@ function renderLoteVsFuro(){
   items.forEach(it => counts[it.status]++);
   let html = `<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;">
     <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px 14px;">
-      <div style="font-size:10px;color:#f87171;text-transform:uppercase;letter-spacing:.06em;font-weight:700">🔴 Lote atrasado</div>
+      <div style="font-size:10px;color:#f87171;text-transform:uppercase;letter-spacing:.06em;font-weight:700">🔴 Furo antes do lote</div>
       <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#f87171">${counts.atras}</div>
     </div>
     <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:10px 14px;">
@@ -2768,6 +2768,7 @@ function renderLoteVsFuro(){
       const partes = [];
       if(it.nLotes > 1) partes.push(it.qtdTotal.toLocaleString('pt-BR') + ' pçs em ' + it.nLotes + ' lotes');
       if(it.compart) partes.push('qtd compartilhada');
+      if(it.ultimoPassado) partes.push('último lote em ' + _fmtDataBR(new Date(it.ultimoPassado+'T00:00:00')));
       volLabel = partes.join(' · ');
     } else if(it.proxLote){
       volLabel = 'quantidade não informada';
