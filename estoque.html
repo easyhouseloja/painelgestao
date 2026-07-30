@@ -16,8 +16,25 @@
   .header-owner{font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:0.3px;opacity:0.85;}
   .header-owner b{color:var(--text);font-weight:700;}
   .header-sub{font-size:12px;color:var(--muted);margin-top:2px;}
-  .header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .badge-date{background:rgba(79,124,255,0.12);border:1px solid rgba(79,124,255,0.3);color:#7b9fff;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;}
+  .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:9px;}
+  .header-right-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+
+  /* ── Faixa "atualizado em": estoque · lotes · vendas ── */
+  .sync-strip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+  .sync-chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);
+    border:1px solid var(--border);border-radius:16px;padding:3px 10px;font-size:10.5px;
+    color:var(--muted);white-space:nowrap;transition:border-color .15s,background .15s;}
+  .sync-chip.clickable{cursor:pointer;}
+  .sync-chip.clickable:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.16);}
+  .sync-chip b{color:var(--text);font-weight:700;}
+  .sync-chip .sync-lbl{text-transform:uppercase;letter-spacing:.05em;font-size:9px;font-weight:700;opacity:.75;}
+  .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex:none;}
+  .sync-chip.fresh .sync-dot{background:#22c98a;box-shadow:0 0 6px rgba(34,201,138,.65);}
+  .sync-chip.warn  .sync-dot{background:#f59e0b;}
+  .sync-chip.old   .sync-dot{background:#f87171;}
+  .sync-chip.vazio{opacity:.5;}
+  @media(max-width:900px){.header-right{align-items:flex-start;}.sync-strip{justify-content:flex-start;}}
+  @media print{.sync-strip{display:none!important;}}
   .badge-alert{background:var(--danger-soft);border:1px solid rgba(239,68,68,0.3);color:#f87171;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;animation:pulse 2s infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
   .dot{width:7px;height:7px;border-radius:50%;background:#ef4444;}
@@ -591,13 +608,15 @@
     </div>
   </div>
   <div class="header-right">
-    <div class="header-btns">
-      <button id="btn-lote-hoje" onclick="switchTab('lotes', this)" style="display:none;background:rgba(251,146,60,0.15);border:1.5px solid rgba(251,146,60,0.5);color:#fb923c;font-size:12px;font-weight:700;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;animation:pulse 2s infinite;white-space:nowrap;">⚡ LOTE HOJE</button>
-      <button class="print-btn no-print" onclick="window.print()" title="Imprimir dashboard">🖨️ Imprimir</button>
-      <button class="export-btn no-print" onclick="exportarAlertas()" title="Exportar alertas em CSV">📥 Exportar Alertas</button>
+    <div class="header-right-top">
+      <div class="header-btns">
+        <button class="print-btn no-print" onclick="window.print()" title="Imprimir dashboard">🖨️ Imprimir</button>
+        <button class="export-btn no-print" onclick="exportarAlertas()" title="Exportar alertas em CSV">📥 Exportar Alertas</button>
+      </div>
+      <div class="badge-alert"><div class="dot"></div>13 ALERTAS ATIVOS</div>
     </div>
-    <div class="badge-date">📅 29/07/2026</div>
-    <div class="badge-alert"><div class="dot"></div>13 ALERTAS ATIVOS</div>
+    <!-- Última atualização de cada base — preenchido pelo JS -->
+    <div class="sync-strip no-print" id="syncStrip"></div>
   </div>
 </header>
 <main style="padding:0;">
@@ -1102,6 +1121,96 @@ const DADOS_PATH = 'estoque_eh/carga_atual';
 // uma importação feita hoje pelo painel tem ts maior e por isso vence o arquivo.
 const CARGA_TS = Date.parse(DATA_CARGA + 'T00:00:00');
 const loteProdutos={};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FAIXA "ATUALIZADO EM" · estoque · lotes · vendas
+   Cada base grava um carimbo (ts) no Firebase quando é trocada. Aqui a gente
+   junta os três num só lugar do cabeçalho, com a bolinha indicando se o dado
+   é de hoje (verde), de poucos dias (âmbar) ou velho (vermelho).
+   ══════════════════════════════════════════════════════════════════════════ */
+window._syncInfo = {
+  estoque: {ts:0, extra:'', icone:'📦', rot:'Estoque', aba:'produtos'},
+  lotes:   {ts:0, extra:'', icone:'🚚', rot:'Lotes',   aba:'lotes'},
+  vendas:  {ts:0, extra:'', icone:'🧾', rot:'Vendas',  aba:'analises'}
+};
+
+// Registra a atualização de uma das bases. ts em ms; extra é a dica do tooltip.
+window.registrarSync = function(qual, ts, extra){
+  const info = window._syncInfo[qual];
+  if(!info) return;
+  ts = Number(ts) || 0;
+  // Nunca deixa um carimbo mais velho sobrescrever um mais novo (o polling do
+  // Firebase roda em paralelo com a importação e pode chegar fora de ordem).
+  if(ts && ts < info.ts) return;
+  if(ts) info.ts = ts;
+  if(extra != null) info.extra = extra;
+  window.renderSyncStrip();
+};
+
+function _syncQuandoBR(ts){
+  if(!ts) return {curto:'—', longo:'sem registro'};
+  const d = new Date(ts);
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mi = String(d.getMinutes()).padStart(2,'0');
+  const meiaNoite = (d.getHours()===0 && d.getMinutes()===0);
+  return {
+    curto: dd+'/'+mm + (meiaNoite ? '' : ' ' + hh+':'+mi),
+    longo: dd+'/'+mm+'/'+d.getFullYear() + (meiaNoite ? '' : ' às ' + hh+':'+mi)
+  };
+}
+
+// Quantos dias separam o carimbo de hoje (0 = hoje)
+function _syncIdade(ts){
+  if(!ts) return null;
+  const a = new Date(ts); a.setHours(0,0,0,0);
+  const b = new Date();   b.setHours(0,0,0,0);
+  return Math.round((b - a) / 86400000);
+}
+
+window.renderSyncStrip = function(){
+  const el = document.getElementById('syncStrip');
+  if(!el) return;
+  const ordem = ['estoque','lotes','vendas'];
+  el.innerHTML = ordem.map(k => {
+    const i = window._syncInfo[k];
+    const q = _syncQuandoBR(i.ts);
+    const idade = _syncIdade(i.ts);
+    let cls = 'vazio', estado = 'sem registro';
+    if(idade !== null){
+      if(idade <= 0){ cls = 'fresh'; estado = 'atualizado hoje'; }
+      else if(idade <= 3){ cls = 'warn'; estado = 'há ' + idade + (idade===1?' dia':' dias'); }
+      else { cls = 'old'; estado = 'há ' + idade + ' dias'; }
+    }
+    const dica = i.rot + ' — atualizado em ' + q.longo + ' (' + estado + ')'
+               + (i.extra ? '\n' + i.extra : '')
+               + '\nClique para abrir a aba.';
+    return '<div class="sync-chip ' + cls + ' clickable" title="' + _syncEsc(dica) + '"'
+         + ' onclick="irParaAba(\'' + i.aba + '\')">'
+         + '<span class="sync-dot"></span>'
+         + '<span>' + i.icone + '</span>'
+         + '<span class="sync-lbl">' + i.rot + '</span>'
+         + '<b>' + q.curto + '</b>'
+         + '</div>';
+  }).join('');
+};
+
+function _syncEsc(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Abre uma aba marcando o botão certo na navegação
+window.irParaAba = function(id){
+  const tab = Array.from(document.querySelectorAll('.nav-tab'))
+    .find(t => (t.getAttribute('onclick')||'').indexOf("'"+id+"'") > -1);
+  if(typeof switchTab === 'function') switchTab(id, tab || null);
+};
+
+// Carimbo de partida: o que veio embutido no arquivo. Firebase e importações
+// sobrescrevem depois, cada um no seu momento.
+registrarSync('estoque', CARGA_TS, 'base embutida no arquivo · DOC ' + DOC_PEDIDO);
 const catMeta={
   'GUARDA ROUPAS':{icon:'🚪',cls:'gr',label:'Guarda Roupas'},
   'COMPLEMENTOS':{icon:'🛏',cls:'comp',label:'Complementos'},
@@ -2201,9 +2310,14 @@ if(document.readyState==='loading'){
           const alvo = new Date(e.dataKey+'T00:00:00');
           const dias = Math.round((alvo-hoje)/86400000);
           const fmt  = e.dataKey ? e.dataKey.split('-').reverse().join('/') : '';
-          lotes.push({nomeKey, produto:e.produto||nomeProd, cat, nVars, codItem:e.codItem||'', codLote:e.codLote||'', dataKey:e.dataKey, dataFmt:fmt, diasAte:dias, loteId:e.id, qtd:e.qtd||null, itemProg:e.itemProg||'', compart:!!e.compart});
+          lotes.push({nomeKey, produto:e.produto||nomeProd, cat, nVars, codItem:e.codItem||'', codLote:e.codLote||'', dataKey:e.dataKey, dataFmt:fmt, diasAte:dias, loteId:e.id, qtd:e.qtd||null, itemProg:e.itemProg||'', compart:!!e.compart, ts:e.ts||0});
         }
       }
+
+      // Última gravação de lote = carimbo mais novo entre todas as entradas
+      const _ultimoLoteTs = lotes.reduce((m,l) => Math.max(m, l.ts||0), 0);
+      window.registrarSync && window.registrarSync('lotes', _ultimoLoteTs,
+        lotes.length + ' lote(s) na base' + (_ultimoLoteTs ? '' : ' · sem carimbo de gravação'));
 
       // Atualizar cache
       window._lotesCache = {};
@@ -2220,11 +2334,6 @@ if(document.readyState==='loading'){
       // continua mostrando o cenário anterior à importação.
       if (typeof renderLoteVsFuro === 'function') { try { renderLoteVsFuro(); } catch(e){ console.warn('loteVsFuro', e); } }
       if (typeof renderFuroCalendar === 'function') { try { renderFuroCalendar(); } catch(e){} }
-
-      // Atualizar banner de hoje
-      const _hoje = _hojeISO();
-      const _lotesHoje = lotes.filter(l => l.dataKey === _hoje);
-      window._atualizarBannerHoje && window._atualizarBannerHoje(_lotesHoje);
 
       const futuros  = lotes.filter(l => l.diasAte >= 0).sort((a,b) => a.dataKey.localeCompare(b.dataKey));
       const passados = lotes.filter(l => l.diasAte < 0).sort((a,b) => b.dataKey.localeCompare(a.dataKey));
@@ -2395,6 +2504,10 @@ if(document.readyState==='loading'){
       // Atualizar header com a data
       const sub = document.querySelector('.header-sub');
       if(sub) sub.textContent = `DOC ${DOC_PEDIDO} · Reserva de Estoque · ${dataFirebase.split('-').reverse().join('/')}`;
+      window.registrarSync && window.registrarSync('estoque',
+        tsFirebase || Date.parse(dataFirebase + 'T00:00:00'),
+        'carga de ' + (dataFirebase ? dataFirebase.split('-').reverse().join('/') : '—')
+          + (dados.origem ? ' · origem: ' + dados.origem : '') + ' · via Firebase');
 
       // Re-renderizar tudo
       try { window._rebuildProdutosUnicos && window._rebuildProdutosUnicos(); } catch(e){ console.warn('produtosUnicos', e); }
@@ -2410,11 +2523,8 @@ if(document.readyState==='loading'){
       typeof renderFuroCalendar === 'function' && renderFuroCalendar();
       typeof renderMixGR === 'function' && renderMixGR();
 
-      // Mostrar indicador de dados ao vivo
-      const badge = document.querySelector('.badge-date');
-      if(badge){
-        badge.innerHTML = `📅 ${dataFirebase.split('-').reverse().join('/')} <span style="font-size:9px;background:rgba(34,201,138,0.2);color:#22c98a;padding:1px 5px;border-radius:6px;margin-left:4px;">● AO VIVO</span>`;
-      }
+      // O badge de data saiu do cabeçalho: a data da carga fica no .header-sub e
+      // o carimbo de atualização, na faixa de sincronização.
       console.log('✅ Dados atualizados do Firebase');
     } catch(e){
       console.warn('Dados Firebase:', e);
@@ -2669,18 +2779,6 @@ window.filtrarListaLotes = function(q){
     setTimeout(function(){ clearInterval(_loteInitInterval); }, 5000);
   }
 
-
-  // ── Botão LOTE HOJE ──
-  window._atualizarBannerHoje = function(lotesHoje){
-    const btn = document.getElementById('btn-lote-hoje');
-    if(!btn) return;
-    if(lotesHoje && lotesHoje.length > 0){
-      btn.style.display = 'flex';
-      btn.title = lotesHoje.map(l => l.produto).join(' · ');
-    } else {
-      btn.style.display = 'none';
-    }
-  };
 
 })();
 
@@ -4579,12 +4677,12 @@ renderTodasAnalises();
 
   function reRenderizarTudo(dataCarga, doc){
     var br = dataCarga.split('-').reverse().join('/');
+    window.registrarSync && window.registrarSync('estoque', Date.now(),
+      'carga de ' + br + ' · planilha: ' + (_nomeArquivo || 'importada'));
 
     // Cabeçalho
     var sub = document.querySelector('.header-sub');
     if (sub) sub.textContent = 'DOC ' + (doc || (typeof DOC_PEDIDO !== 'undefined' ? DOC_PEDIDO : '')) + ' · Reserva de Estoque · ' + br;
-    var badge = document.querySelector('.badge-date');
-    if (badge) badge.innerHTML = '📅 ' + br + ' <span style="font-size:9px;background:rgba(34,201,138,0.2);color:#22c98a;padding:1px 5px;border-radius:6px;margin-left:4px;">● AO VIVO</span>';
     var bp = document.getElementById('badgeProdutos');
     if (bp) bp.textContent = data.length;
 
@@ -5490,6 +5588,14 @@ renderTodasAnalises();
     if (lbl) lbl.textContent = (typeof vendasPeriodoLabel === 'function') ? vendasPeriodoLabel() : '';
     var inp = document.getElementById('covDias');
     if (inp && m.dias) inp.value = m.dias;
+
+    // Carimbo da faixa do cabeçalho. A base embutida não tem ts próprio, então
+    // usa a data da carga do arquivo — é de quando o arquivo foi montado.
+    window.registrarSync && window.registrarSync('vendas',
+      m.ts || (typeof CARGA_TS !== 'undefined' ? CARGA_TS : 0),
+      'período ' + (m.ini ? dBR(m.ini) + ' a ' + dBR(m.fim) : '—')
+        + ' · ' + m.dias + ' dias · ' + nBR(Math.round(m.vendidas || m.unidades || 0)) + ' un'
+        + ' · origem: ' + (m.origem || '—'));
   }
 
   function reRenderizar(){
