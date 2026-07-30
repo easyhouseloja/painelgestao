@@ -961,6 +961,35 @@
   <div class="tab-panel" id="panel-analises">
     <div style="padding:28px 32px;max-width:1400px;margin:0 auto;">
 
+      <!-- ══ IMPORTADOR DE VENDAS VIA PLANILHA .XLSX ══ -->
+      <div class="imp-card xls-card no-print" id="vnd-card">
+        <div class="imp-topo" onclick="alternarImportadorVendas()">
+          <span style="font-size:15px;">🧾</span>
+          <div>
+            <div class="imp-topo-titulo">Atualizar vendas por planilha (.xlsx)</div>
+            <div class="imp-topo-sub" id="vnd-topo-sub">base em uso: 01/07–28/07/2026 · 28 dias · 12.785 un vendidas · giro 13.926 · base embutida no arquivo</div>
+          </div>
+          <span class="imp-seta" id="vnd-seta">▸</span>
+        </div>
+        <div class="imp-corpo" id="vnd-corpo" style="display:none;">
+
+          <div class="xls-drop" id="vnd-drop">
+            <input type="file" id="vnd-file" accept=".xlsx,.xlsm,.xls,.csv" style="display:none;">
+            <div class="xls-drop-icon">🧾</div>
+            <div class="xls-drop-titulo">Arraste a planilha de vendas aqui ou <span class="xls-link">escolha um arquivo</span></div>
+            <div class="xls-drop-sub">Uma linha por venda, com as colunas <b>DT ENTREGA ITEM</b>, <b>ITEM</b> (código<b>#</b>máscara), <b>DESCRICAO ITEM</b>, <b>QTDE</b> e <b>VLR LIQ PEDIDO</b>.<br>As colunas são reconhecidas sozinhas; se errar, dá pra corrigir na mão.</div>
+          </div>
+
+          <div class="xls-inline">
+            <button class="xls-btn ghost" onclick="vndVerRegras()" id="vnd-btn-regras">⚙ Ver regras de composição</button>
+            <span class="imp-dica">Conjuntos (mesa + cadeiras) e itens de família parecida são desmembrados/somados nos produtos da carga. Nada é gravado antes de você conferir.</span>
+          </div>
+          <div id="vnd-regras" style="display:none;"></div>
+
+          <div id="vnd-etapas"></div>
+        </div>
+      </div>
+
       <!-- Cabeçalho -->
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:8px;">
         <div>
@@ -968,7 +997,7 @@
             📅 Cobertura em Dias · Reserva ÷ Giro Diário
           </div>
           <div style="font-size:12px;color:var(--muted);margin-top:4px;max-width:820px;line-height:1.55;">
-            Cruza a <b style="color:#a8b0d0">venda de julho</b> (média diária por SKU) com a <b style="color:#a8b0d0">reserva da carga mãe</b> para mostrar
+            Cruza a <b style="color:#a8b0d0">venda do período <span id="vndLabelPeriodo">01/07–28/07</span></b> (média diária por SKU) com a <b style="color:#a8b0d0">reserva da carga mãe</b> para mostrar
             <b style="color:#a8b0d0">por quantos dias cada reserva atende</b> ao ritmo de saída atual.
             <b style="color:#a8b0d0">Guarda Roupas</b> são agregados por cor — venda e reserva somam todas as variações de espelho/pés.
           </div>
@@ -978,7 +1007,7 @@
           <input type="number" id="covDias" value="28" min="1" max="365"
                  style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;width:60px;text-align:center;outline:none;"
                  onchange="renderCobertura()" oninput="renderCobertura()">
-          <span style="font-size:11px;color:var(--muted);">dias = total vendido em julho</span>
+          <span style="font-size:11px;color:var(--muted);">dias da base de vendas</span>
           <button class="export-btn no-print" onclick="exportarCoberturaCSV()" style="font-size:11px;padding:6px 12px;">📥 Exportar CSV</button>
         </div>
       </div>
@@ -1184,7 +1213,7 @@ function renderAlerts(){
       <div><div class="col-label">Solicitado</div><div class="col-val">${a.solicitado}</div></div>
       <div><div class="col-label">Reservado</div><div class="col-val danger">${a.reservado}</div></div>
       <div><div class="col-label">Pendente</div><div class="col-val amber">${a.pendente}</div></div>
-      <div><div class="col-label">Média/dia</div><div class="col-val giro" title="Vendas em julho dividido pelos dias da base (28)">${fmtMedia(getMediaDia(a.cod_item, a.categoria, a.variacao, a.cod_masc))}</div></div>
+      <div><div class="col-label">Média/dia</div><div class="col-val giro" title="Vendas do período dividido pelos dias da base">${fmtMedia(getMediaDia(a.cod_item, a.categoria, a.variacao, a.cod_masc))}</div></div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
         <span class="pct-badge danger">${a.pct}%</span>
         <span style="font-size:10px;font-weight:700;color:${critColor};letter-spacing:0.05em;">${crit}</span>
@@ -1325,11 +1354,49 @@ function buildTable(rows,prefix){
 function toggleVars(id,row){const el=document.getElementById(id);if(!el)return;el.classList.toggle('open');const btn=row.querySelector('.expand-btn');if(btn)btn.textContent=el.classList.contains('open')?'▴ Fechar':'▾ Detalhar';}
 
 function sortBy(key){if(sortKey===key)sortDir*=-1;else{sortKey=key;sortDir=1;}renderTable();}
-// Base de vendas: vendas_julho_28_07.xlsx (01/07 a 28/07/2026, 12.785 un)
+// ═══════════════════════════════════════════════════════════════════════════
+// BASE DE VENDAS
+// Embutida: vendas_julho_28_07.xlsx (01/07 a 28/07/2026, 12.785 un).
+// Pode ser trocada em tempo de execução pelo importador de planilha de vendas
+// (aba Análises) — os dois mapas abaixo são mutados no lugar, por isso seguem
+// como const: quem já leu a referência continua vendo os números novos.
+// ═══════════════════════════════════════════════════════════════════════════
 // VENDAS_VAR_AGG: vendas por (cod_item#cod_masc) — inclui já decompostas as mesas+cadeiras dos CONJ
 const VENDAS_VAR_AGG = {"73177#23848":39,"73177#23849":10,"73177#23850":62,"73275#23851":183,"73275#23852":35,"73275#23853":114,"73284#23857":58,"73284#23858":293,"73284#23859":139,"73284#23860":3,"73367#50256":576,"73384#50465":323,"73386#50483":166,"74549#33428":15,"74549#33429":6,"81714#23864":1065,"85026#51165":26,"85026#51168":14,"85123#46250":3,"85123#46251":57,"85123#46252":3,"85282#46336":2,"85282#46337":34,"85282#46338":252,"85282#46339":12,"85282#46340":113,"85282#46341":128,"85342#46353":1,"85431#46320":3,"85431#46321":1,"85460#46199":5,"85460#46200":10,"85460#46201":81,"85460#46202":242,"85460#46203":83,"85460#46204":191,"85639#67976":1,"86248#68895":161,"86256#68901":450,"86256#68902":218,"86256#79663":127,"86389#74049":15,"86389#74050":27,"86389#74051":69,"86389#74052":3,"86391#74067":48,"86816#88563":86,"86816#88565":26,"87096#90666":175,"87096#90667":99,"87141#90816":272,"87162#90909":40,"87162#90910":49,"87162#94609":6,"97649#102414":11};
 // VENDAS_GR_COR: GRs agregados por cor (TODAS as variações de espelho/pés somadas)
 const VENDAS_GR_COR = {"2169|AMENDOA CLEAN":16,"2169|AMENDOA CLEAN/OFF WH":18,"2169|BRANCO":8,"2405|AMENDOA CL/OFF WHI/A":2,"2405|BRANCO":351,"72593|AMENDOA CLEAN":1008,"72593|AMENDOA CLEAN/OFF WH":2841,"72593|BRANCO":678,"84487|AMENDOA CLEAN/OFF WH":2646,"87138|AM CL/BRANCO/AM CL":24,"87138|BRANCO":25,"95045|AMENDOA CLEAN":18,"95045|AMENDOA CLEAN/OFF WH":34,"95045|BRANCO":26};
+
+// Valor líquido vendido por (cod_item#cod_masc) — só é preenchido quando a
+// planilha importada traz a coluna VLR LIQ PEDIDO. A base embutida não tem.
+const VENDAS_VALOR = {};
+// De onde vem a base de vendas em uso e qual período ela cobre. O importador
+// reescreve isso; os rótulos da tela leem daqui em vez de dizer "julho" na mão.
+const VENDAS_META = {
+  ini: '2026-07-01', fim: '2026-07-28', dias: 28,
+  vendidas: 12785,   // unidades na planilha de origem
+  unidades: 13926,   // giro somado na carga (conjunto vira mesa + cadeiras)
+  valor: 0, linhas: 0,
+  origem: 'base embutida no arquivo', ts: 0
+};
+window.VENDAS_VAR_AGG = VENDAS_VAR_AGG;
+window.VENDAS_GR_COR  = VENDAS_GR_COR;
+window.VENDAS_VALOR   = VENDAS_VALOR;
+window.VENDAS_META    = VENDAS_META;
+
+// dd/mm — usado nos rótulos ("Vendas 01/07–29/07")
+function _vndDataBR(iso){
+  if(!iso) return '';
+  const p = String(iso).split('-');
+  return p.length === 3 ? p[2] + '/' + p[1] : String(iso);
+}
+// Rótulo curto do período da base de vendas em uso
+function vendasPeriodoLabel(){
+  const m = VENDAS_META;
+  if(!m.ini || !m.fim) return 'no período';
+  if(m.ini === m.fim) return _vndDataBR(m.ini);
+  return _vndDataBR(m.ini) + '–' + _vndDataBR(m.fim);
+}
+window.vendasPeriodoLabel = vendasPeriodoLabel;
 // Helper: média/dia consistente com a aba Análises (GR por cor, demais por variação)
 function getMediaDia(cod_item, categoria, variacao, cod_masc){
   const dias = Math.max(1, parseInt((document.getElementById('covDias')||{}).value) || 28);
@@ -1687,7 +1754,7 @@ function renderCobertura(){
       <div class="cov-kpi-sub">cobertura confortável</div>
     </div>
     <div class="cov-kpi" style="--cov-c:#6b7494">
-      <div class="cov-kpi-lbl">Sem giro em julho</div>
+      <div class="cov-kpi-lbl">Sem giro no período</div>
       <div class="cov-kpi-val">${semGiro}</div>
       <div class="cov-kpi-sub">0 vendas no período</div>
     </div>
@@ -1746,7 +1813,7 @@ function renderCovList(){
       <th>Produto</th>
       <th>Descritor</th>
       <th>Cat</th>
-      <th class="num">Vendas julho</th>
+      <th class="num">Vendas ${vendasPeriodoLabel()}</th>
       <th class="num">Média/dia</th>
       <th class="num">Reservado</th>
       <th>Cobertura</th>
@@ -1795,7 +1862,7 @@ function exportarCoberturaCSV(){
   if(!window._covUnits){ renderCobertura(); }
   const dias = parseInt(document.getElementById('covDias').value) || 28;
   const u = window._covUnits || [];
-  const head = ['Curva','Categoria','Produto','Cód Item','Descritor','Tipo','Vendas Julho','Média/Dia','Reservado','Dias Cobertura','Status'];
+  const head = ['Curva','Categoria','Produto','Cód Item','Descritor','Tipo','Vendas '+vendasPeriodoLabel(),'Média/Dia','Reservado','Dias Cobertura','Status'];
   const lines = [head.join(';')];
   const stLbl = {crit:'Crítico (<7d)', warn:'Atenção (7-30d)', ok:'Tranquilo (>30d)', zero:'Sem giro'};
   // Ordena por dias asc, sem giro no fim
@@ -4560,4 +4627,1025 @@ renderTodasAnalises();
 })();
 
 </script>
+<script>
+
+/* ══════════════════════════════════════════════════════════════════
+   IMPORTADOR DE VENDAS VIA PLANILHA .XLSX
+   Lê o relatório de vendas (uma linha por venda), reconhece as colunas
+   sozinho, desmembra conjuntos (mesa + cadeiras), soma nos produtos da
+   carga mãe, mostra o que muda e só então troca a base de giro.
+
+   Layout esperado (o de sempre):
+     DT ENTREGA ITEM · ITEM · DESCRICAO ITEM · QTDE · VLR LIQ PEDIDO
+   A coluna ITEM vem como  codigo#mascara  (ex.: 73275#23853).
+   ══════════════════════════════════════════════════════════════════ */
+(function(){
+
+  /* Onde a base de vendas é gravada.
+     ATENÇÃO: as regras de segurança do Realtime Database liberam o nó
+     'estoque_eh' (é onde o importador de estoque grava, e funciona). Um nó
+     irmão novo — 'vendas_eh' — cai fora das regras e volta PERMISSION_DENIED.
+     Por isso a base de vendas mora DENTRO de 'estoque_eh'. O segundo caminho
+     fica só como alternativa, para o caso de alguém já ter liberado o outro nó. */
+  var VENDAS_PATHS = ['estoque_eh/vendas_atual', 'vendas_eh/base_atual'];
+  var _pathOk = null;   // caminho que aceitou a gravação / trouxe dados
+
+  function ehPermissao(e){
+    return /permission|denied/i.test((e && (e.message || e.code)) || '');
+  }
+
+  // Grava tentando os caminhos em ordem; para de insistir se o erro não é de regra
+  async function gravarVendas(payload){
+    var tentar = _pathOk ? [_pathOk] : VENDAS_PATHS;
+    var ultimo = null;
+    for (var i = 0; i < tentar.length; i++){
+      try {
+        await window._ehDB.ref(tentar[i]).set(payload);
+        _pathOk = tentar[i];
+        return {ok:true, path:tentar[i]};
+      } catch(e){
+        ultimo = e;
+        if (!ehPermissao(e)) break;
+      }
+    }
+    return {ok:false, erro:ultimo, permissao:ehPermissao(ultimo)};
+  }
+
+  // Lê de todos os caminhos e fica com o mais recente que existir
+  async function lerVendas(){
+    var melhor = null;
+    for (var i = 0; i < VENDAS_PATHS.length; i++){
+      try {
+        var snap = await window._ehDB.ref(VENDAS_PATHS[i]).once('value');
+        var d = snap.val();
+        if (d && (d.itens || d.gr)){
+          if (!melhor || Number(d.ts||0) > Number(melhor.d.ts||0)) melhor = {d:d, path:VENDAS_PATHS[i]};
+        }
+      } catch(e){ /* sem permissão de leitura nesse nó — tenta o próximo */ }
+    }
+    if (melhor) _pathOk = melhor.path;
+    return melhor;
+  }
+
+  // Texto de erro que diz o que fazer, em vez de só repetir o código do Firebase
+  function msgErroGravacao(res){
+    if (res.permissao){
+      return '⚠ Os números já estão na tela, mas o Firebase recusou a gravação (sem permissão em '
+        + VENDAS_PATHS.join(' nem em ') + '). Peça pra liberar escrita em <b>estoque_eh/vendas_atual</b> '
+        + 'nas Regras do Realtime Database — é o mesmo nó onde o importador de estoque já grava. '
+        + 'Até lá a base nova vale só nesta aba: ao recarregar, volta a anterior.';
+    }
+    return '⚠ Os números já estão na tela, mas não deu pra salvar no Firebase: '
+      + esc((res.erro && res.erro.message) || 'erro desconhecido')
+      + '. Ao recarregar a página, volta a base anterior.';
+  }
+
+  // ── Estado ──────────────────────────────────────────────────────
+  var _wb = null, _aba = null, _linhas = [], _cab = -1, _cols = [];
+  var _mapa = {}, _nomeArquivo = '', _res = null, _filtro = 'giro';
+  var _perfilPadrao = false;
+
+  // Cópia da base embutida, pra dar caminho de volta depois de importar
+  var _EMB = null;
+
+  // ── Cabeçalhos do relatório de sempre (já normalizados) ─────────
+  var PERFIL_PADRAO = {
+    dataItem:  'dt entrega item',
+    item:      'item',
+    descricao: 'descricao item',
+    qtde:      'qtde',
+    valor:     'vlr liq pedido'
+  };
+
+  var CAMPOS = [
+    {k:'item',      rot:'ITEM (código#máscara)', req:true,
+     alt:['item','codigo item','cod item','codigo do item','cod masc','sku','produto codigo']},
+    {k:'descricao', rot:'Descrição do item',     req:true,
+     alt:['descricao item','descricao do item','descricao','desc item','produto','nome do produto']},
+    {k:'qtde',      rot:'Quantidade vendida',    req:true,
+     alt:['qtde','qtd','quantidade','qtd vendida','qtde vendida','quantidade vendida','un','unidades']},
+    {k:'valor',     rot:'Valor líquido',         req:false,
+     alt:['vlr liq pedido','valor liquido pedido','vlr liquido','valor liquido','valor','vlr total','faturamento','vlr']},
+    {k:'dataItem',  rot:'Data da venda',         req:false,
+     alt:['dt entrega item','data entrega item','dt entrega','data entrega','data da venda','dt venda','data','emissao','dt faturamento']}
+  ];
+
+  /* ── Regras de composição ──────────────────────────────────────────
+     KITS: itens vendidos como conjunto. Cada parte cai num produto da
+     carga. Quando a parte não traz máscara fixa, a variação é escolhida
+     pelo tecido/cor que aparece na própria descrição da venda.
+     1 conjunto = 1 unidade da mesa + 1 unidade do jogo de cadeiras
+     (os produtos de cadeira da carga já são jogos: C/4, C/6).           */
+  var VND_KITS = {
+    '83021': {rot:'CONJ MESA 1,70 APOGEU · C/6 CAD APOGEU',
+              partes:[{cod:'73367',masc:'50256',papel:'mesa'},{cod:'85460',papel:'cadeiras'}]},
+    '83022': {rot:'CONJ MESA 1,20 CELEBRARE · C/4 CAD APOGEU',
+              partes:[{cod:'73386',masc:'50483',papel:'mesa'},{cod:'85282',papel:'cadeiras'}]},
+    '83027': {rot:'CONJ MESA 0,90 CELEBRARE · C/4 CAD APOGEU',
+              partes:[{cod:'73384',masc:'50465',papel:'mesa'},{cod:'85282',papel:'cadeiras'}]},
+    '85107': {rot:'MESA 1,20 MAXI TAMPO EASY POP · C/4 CAD CONFORT',
+              partes:[{cod:'85123',masc:'46252',papel:'mesa'},{cod:'85282',papel:'cadeiras'}]},
+    '85109': {rot:'MESA 1,20 NO GLASS EASY POP · C/4 CAD CONFORT',
+              partes:[{cod:'85123',masc:'46250',papel:'mesa'},{cod:'85282',papel:'cadeiras'}]},
+    '85111': {rot:'MESA 1,20 C/VIDRO EASY POP · C/4 CAD CONFORT',
+              partes:[{cod:'85123',masc:'46251',papel:'mesa'},{cod:'85282',papel:'cadeiras'}]},
+    '85112': {rot:'MESA 1,20 C/VIDRO EASY POP · C/4 CAD SEAT (sem cadeira na carga)',
+              partes:[{cod:'85123',masc:'46251',papel:'mesa'}]},
+    '85117': {rot:'MESA 1,70 NO GLASS EASY POP · C/6 CAD CONFORT',
+              partes:[{cod:'85026',masc:'51168',papel:'mesa'},{cod:'85460',papel:'cadeiras'}]},
+    '85119': {rot:'MESA 1,70 C/VIDRO EASY POP · C/6 CAD CONFORT',
+              partes:[{cod:'85026',masc:'51165',papel:'mesa'},{cod:'85460',papel:'cadeiras'}]},
+    '85120': {rot:'MESA 1,70 C/VIDRO EASY POP · C/6 CAD SEAT (sem cadeira na carga)',
+              partes:[{cod:'85026',masc:'51165',papel:'mesa'}]},
+    '86390': {rot:'MESA MAXI 1,70 EASY TOWER · C/6 CAD CONFORT',
+              partes:[{cod:'86391',masc:'74067',papel:'mesa'},{cod:'85460',papel:'cadeiras'}]},
+    '94884': {rot:'MESA 1,20 EASY POP · avulsa',
+              partes:[{cod:'85123',masc:'46251',papel:'mesa'}]}
+  };
+
+  /* EQUIVALÊNCIAS: item que não está na carga, mas cuja venda pertence
+     de fato a um produto da carga (mesma família / mesmo nº de portas).
+     A cor/variação continua sendo casada pela descrição.               */
+  var VND_ALIAS = {
+    '97502':'87096', '97503':'87096', '97505':'87096',
+    '97509':'87096', '97510':'87096', '97973':'87096',
+    '97643':'87162', '87817':'87162',
+    '81929':'86256', '83249':'86389',
+    '85814':'2169',  '85813':'2405',
+    '84794':'84487', '87118':'95045'
+  };
+
+  window.VND_KITS = VND_KITS;
+  window.VND_ALIAS = VND_ALIAS;
+
+  // ── Helpers ─────────────────────────────────────────────────────
+  function norm(s){
+    return String(s == null ? '' : s)
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+  }
+  function up(s){
+    return String(s == null ? '' : s)
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()
+      .replace(/\s+/g,' ').trim();
+  }
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function nBR(n){ return Number(n||0).toLocaleString('pt-BR'); }
+  function rBR(n){ return Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function med(n){ return !n ? '—' : (n>=10 ? n.toFixed(1) : n.toFixed(2)).replace('.',','); }
+
+  // Número de planilha: aguenta "1.234", "1.234,56", "1 234"
+  function numF(v){
+    if (v == null || v === '') return 0;
+    if (typeof v === 'number') return isFinite(v) ? v : 0;
+    var s = String(v).trim().replace(/\s/g,'');
+    if (!s) return 0;
+    if (s.indexOf(',') > -1 && s.indexOf('.') > -1) s = s.replace(/\./g,'').replace(',','.');
+    else if (s.indexOf(',') > -1) s = s.replace(',','.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g,'');
+    var n = parseFloat(s.replace(/[^0-9.\-]/g,''));
+    return isNaN(n) ? 0 : n;
+  }
+
+  function iso(d){
+    if (!d) return '';
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  // Data de célula: Date (cellDates), serial do Excel ou texto dd/mm/aaaa
+  function paraData(v){
+    if (v == null || v === '') return null;
+    if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
+    if (typeof v === 'number'){
+      if (v < 1 || v > 80000) return null;
+      var ms = Math.round((v - 25569) * 86400000);
+      var d = new Date(ms);
+      return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+    }
+    var s = String(v).trim();
+    var m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+    if (m){
+      var ano = +m[3]; if (ano < 100) ano += 2000;
+      return new Date(ano, +m[2]-1, +m[1]);
+    }
+    m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return new Date(+m[1], +m[2]-1, +m[3]);
+    var t = Date.parse(s);
+    return isNaN(t) ? null : new Date(t);
+  }
+  function dBR(isoStr){
+    if(!isoStr) return '—';
+    var p = String(isoStr).split('-');
+    return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : String(isoStr);
+  }
+
+  function painel(){ return document.getElementById('vnd-etapas'); }
+  function pintar(h){ var el = painel(); if (el) el.innerHTML = h; }
+  function erro(msg){ pintar('<div class="xls-erro">⚠ ' + esc(msg) + '</div>'); }
+
+  // ── Índice da carga: produtos, cores e variações ─────────────────
+  function indexar(){
+    var base = (typeof data !== 'undefined' ? data : []);
+    var porCod = {}, vocabCor = [];
+    base.forEach(function(p){
+      porCod[String(p.cod_item)] = p;
+      (p.variacoes||[]).forEach(function(v){
+        var segs = String(v.variacao||'').split('#').map(function(x){ return up(x); }).filter(Boolean);
+        v._segs = segs;
+        if (segs[0] && vocabCor.indexOf(segs[0]) < 0) vocabCor.push(segs[0]);
+      });
+    });
+    // Casar sempre a cor mais específica primeiro (AMENDOA CLEAN/OFF WH antes de AMENDOA CLEAN)
+    vocabCor.sort(function(a,b){ return b.length - a.length; });
+    return {base:base, porCod:porCod, vocabCor:vocabCor};
+  }
+
+  // Cor da carga que aparece na descrição da venda
+  function acharCor(descUp, cores){
+    for (var i = 0; i < cores.length; i++){
+      if (descUp.indexOf(cores[i]) > -1) return cores[i];
+    }
+    return '';
+  }
+
+  // Variação do produto que melhor casa com a descrição da venda
+  function acharVariacao(p, mascRaw, descUp){
+    var vars = p.variacoes || [];
+    var i, j;
+    if (mascRaw){
+      for (i = 0; i < vars.length; i++){
+        if (String(vars[i].cod_masc) === String(mascRaw)) return {v:vars[i], como:'masc'};
+      }
+    }
+    var melhor = null, nota = 0;
+    for (i = 0; i < vars.length; i++){
+      var n = 0;
+      var segs = vars[i]._segs || [];
+      for (j = 0; j < segs.length; j++){
+        if (segs[j].length >= 4 && descUp.indexOf(segs[j]) > -1) n += segs[j].length;
+      }
+      if (n > nota){ nota = n; melhor = vars[i]; }
+    }
+    if (melhor) return {v:melhor, como:'texto'};
+    if (vars.length === 1) return {v:vars[0], como:'unica'};
+    return null;
+  }
+
+  // ── Abrir/fechar ────────────────────────────────────────────────
+  window.alternarImportadorVendas = function(){
+    var c = document.getElementById('vnd-corpo'), s = document.getElementById('vnd-seta');
+    if (!c) return;
+    var aberto = c.style.display !== 'none';
+    c.style.display = aberto ? 'none' : 'block';
+    if (s) s.textContent = aberto ? '▸' : '▾';
+  };
+
+  window.vndVerRegras = function(){
+    var el = document.getElementById('vnd-regras');
+    var btn = document.getElementById('vnd-btn-regras');
+    if (!el) return;
+    var oculto = el.style.display === 'none';
+    if (!oculto){ el.style.display = 'none'; if (btn) btn.textContent = '⚙ Ver regras de composição'; return; }
+
+    var ix = indexar();
+    function nomeDe(cod){ var p = ix.porCod[String(cod)]; return p ? p.produto : '(fora da carga)'; }
+    var h = '<div class="xls-bloco"><div class="xls-bloco-titulo">Conjuntos desmembrados ('
+      + Object.keys(VND_KITS).length + ')</div>'
+      + '<div class="imp-tabela-wrap" style="max-height:260px;"><table class="imp-tabela"><thead><tr>'
+      + '<th>Cód. vendido</th><th>Conjunto</th><th>Vira</th></tr></thead><tbody>';
+    Object.keys(VND_KITS).forEach(function(cod){
+      var k = VND_KITS[cod];
+      h += '<tr><td style="font-family:monospace;font-size:11px;">' + esc(cod) + '</td>'
+         + '<td>' + esc(k.rot) + '</td><td style="font-size:11px;">'
+         + k.partes.map(function(pt){
+             return '<div>' + esc(pt.papel) + ' → <b>' + esc(pt.cod) + '</b> ' + esc(nomeDe(pt.cod))
+                  + (pt.masc ? ' <span style="color:var(--muted)">(másc. ' + esc(pt.masc) + ')</span>' : ' <span style="color:var(--muted)">(variação pelo tecido)</span>')
+                  + '</div>';
+           }).join('')
+         + '</td></tr>';
+    });
+    h += '</tbody></table></div></div>';
+
+    h += '<div class="xls-bloco"><div class="xls-bloco-titulo">Equivalências de item ('
+      + Object.keys(VND_ALIAS).length + ')</div>'
+      + '<div class="imp-tabela-wrap" style="max-height:240px;"><table class="imp-tabela"><thead><tr>'
+      + '<th>Cód. vendido</th><th>Soma em</th><th>Produto da carga</th></tr></thead><tbody>';
+    Object.keys(VND_ALIAS).forEach(function(cod){
+      h += '<tr><td style="font-family:monospace;font-size:11px;">' + esc(cod) + '</td>'
+         + '<td style="font-family:monospace;font-size:11px;">' + esc(VND_ALIAS[cod]) + '</td>'
+         + '<td>' + esc(nomeDe(VND_ALIAS[cod])) + '</td></tr>';
+    });
+    h += '</tbody></table></div>'
+      + '<div class="imp-dica" style="display:block;margin-top:10px;">Itens que não estão na carga e não têm regra aqui aparecem separados como <b>não aproveitados</b> no resumo da importação — nada é somado no escuro.</div>'
+      + '</div>';
+
+    el.innerHTML = h;
+    el.style.display = 'block';
+    if (btn) btn.textContent = '⚙ Ocultar regras';
+  };
+
+  // ── Leitura do arquivo ──────────────────────────────────────────
+  function lerArquivo(file){
+    if (!file) return;
+    if (typeof XLSX === 'undefined'){ erro('SheetJS não carregou. Confira a conexão e recarregue a página.'); return; }
+    _nomeArquivo = file.name;
+    pintar('<div class="xls-arquivo"><span>⏳</span><span class="xls-arquivo-nome">' + esc(file.name) + '</span><span class="xls-arquivo-meta">lendo…</span></div>');
+    var fr = new FileReader();
+    fr.onerror = function(){ erro('Não deu pra ler o arquivo.'); };
+    fr.onload = function(e){
+      try {
+        _wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:true});
+        if (!_wb.SheetNames || !_wb.SheetNames.length){ erro('A planilha não tem nenhuma aba.'); return; }
+        carregarAba(_wb.SheetNames[0]);
+      } catch(err){
+        erro('Arquivo inválido ou corrompido: ' + err.message);
+      }
+    };
+    fr.readAsArrayBuffer(file);
+  }
+
+  function carregarAba(nome){
+    _aba = nome;
+    _linhas = XLSX.utils.sheet_to_json(_wb.Sheets[nome], {header:1, raw:true, defval:'', blankrows:false});
+    if (!_linhas.length){ erro('A aba "' + nome + '" está vazia.'); return; }
+    _cab = detectarCabecalho(_linhas);
+    _cols = (_linhas[_cab] || []).map(function(c,i){
+      var t = String(c == null ? '' : c).trim();
+      return t || ('Coluna ' + XLSX.utils.encode_col(i));
+    });
+    _mapa = autoMapear(_cols);
+    _res = null;
+    desenharMapeamento();
+  }
+
+  function detectarCabecalho(linhas){
+    var melhor = 0, melhorNota = -1, lim = Math.min(linhas.length, 30);
+    for (var i = 0; i < lim; i++){
+      var linha = linhas[i] || [];
+      if (linha.filter(function(c){ return String(c==null?'':c).trim() !== ''; }).length < 2) continue;
+      var nota = 0;
+      linha.forEach(function(c){
+        var n = norm(c);
+        if (!n) return;
+        CAMPOS.forEach(function(f){
+          f.alt.forEach(function(a){
+            if (n === a) nota += 3;
+            else if (n.indexOf(a) === 0 || a.indexOf(n) === 0) nota += 2;
+            else if (n.indexOf(a) > -1) nota += 1;
+          });
+        });
+      });
+      if (nota > melhorNota){ melhorNota = nota; melhor = i; }
+    }
+    return melhorNota >= 3 ? melhor : 0;
+  }
+
+  function autoMapear(cols){
+    var m = {}, usadas = {}, normCols = cols.map(norm);
+    CAMPOS.forEach(function(f){ m[f.k] = -1; });
+
+    // Formato de sempre: bate exato e tem prioridade sobre qualquer palpite
+    var perfilOk = true, mP = {};
+    CAMPOS.forEach(function(f){ mP[f.k] = -1; });
+    Object.keys(PERFIL_PADRAO).forEach(function(campo){
+      if (!perfilOk) return;
+      var alvo = PERFIL_PADRAO[campo], achou = -1;
+      for (var i = 0; i < normCols.length; i++){
+        if (usadas[i]) continue;
+        if (normCols[i] === alvo){ achou = i; break; }
+      }
+      if (achou < 0){ perfilOk = false; return; }
+      mP[campo] = achou; usadas[achou] = true;
+    });
+    if (perfilOk){ _perfilPadrao = true; return mP; }
+    _perfilPadrao = false;
+    usadas = {};
+
+    [[3, function(n,a){ return n === a; }],
+     [2, function(n,a){ return n.indexOf(a) === 0 || a.indexOf(n) === 0; }],
+     [1, function(n,a){ return n.indexOf(a) > -1; }]
+    ].forEach(function(passo){
+      var testa = passo[1];
+      CAMPOS.forEach(function(f){
+        if (m[f.k] > -1) return;
+        for (var i = 0; i < normCols.length; i++){
+          if (usadas[i] || !normCols[i]) continue;
+          for (var j = 0; j < f.alt.length; j++){
+            if (testa(normCols[i], f.alt[j])){ m[f.k] = i; usadas[i] = true; return; }
+          }
+        }
+      });
+    });
+    return m;
+  }
+
+  // ── Etapa 2: de-para das colunas ────────────────────────────────
+  function desenharMapeamento(){
+    var totalLinhas = Math.max(0, _linhas.length - _cab - 1);
+    var abas = _wb.SheetNames;
+
+    var h = '<div class="xls-arquivo"><span>🧾</span>'
+      + '<span class="xls-arquivo-nome">' + esc(_nomeArquivo) + '</span>'
+      + '<span class="xls-arquivo-meta">' + nBR(totalLinhas) + ' linha' + (totalLinhas===1?'':'s') + ' · cabeçalho na linha ' + (_cab+1) + '</span>';
+    if (abas.length > 1){
+      h += '<span class="xls-arquivo-meta">Aba:</span><select class="xls-input" onchange="vndTrocarAba(this.value)">'
+         + abas.map(function(a){ return '<option value="'+esc(a)+'"'+(a===_aba?' selected':'')+'>'+esc(a)+'</option>'; }).join('')
+         + '</select>';
+    }
+    h += '<button class="xls-btn ghost" style="margin-left:auto;" onclick="vndReiniciar()">trocar arquivo</button></div>';
+
+    if (_perfilPadrao){
+      h += '<div class="xls-ok-banner"><span>✓</span>'
+        + '<div><b>Planilha no formato de sempre.</b> Colunas casadas sozinhas: '
+        + 'DT ENTREGA ITEM, ITEM, DESCRICAO ITEM, QTDE e VLR LIQ PEDIDO.</div>'
+        + '<button class="xls-btn ghost" style="margin-left:auto;" onclick="vndVerColunas()" id="vnd-toggle-colunas">ver colunas</button>'
+        + '</div>';
+    }
+
+    h += '<div id="vnd-mapa-bloco"' + (_perfilPadrao ? ' style="display:none;"' : '') + '>';
+    h += '<div class="xls-bloco"><div class="xls-bloco-titulo">De-para das colunas</div><div class="xls-mapa">';
+    CAMPOS.forEach(function(f){
+      var achou = _mapa[f.k] > -1;
+      h += '<div><label class="xls-campo-label"><b>' + esc(f.rot) + '</b>'
+        + (f.req ? '<span class="req">*</span>' : ' <span style="opacity:.6">(opcional)</span>')
+        + '<span class="xls-campo-ok" id="vnd-ok-' + f.k + '"' + (achou ? '' : ' style="display:none;"') + '>✓</span></label>'
+        + '<select class="imp-select" onchange="vndSetCol(\'' + f.k + '\', this.value)">'
+        + '<option value="-1">— não usar —</option>'
+        + _cols.map(function(c,i){
+            return '<option value="'+i+'"'+(_mapa[f.k]===i?' selected':'')+'>'+esc(XLSX.utils.encode_col(i)+' · '+c)+'</option>';
+          }).join('')
+        + '</select></div>';
+    });
+    h += '</div>';
+
+    var faltando = CAMPOS.filter(function(f){ return f.req && _mapa[f.k] < 0; });
+    if (faltando.length){
+      h += '<div class="xls-aviso">Faltou apontar: <b>' + faltando.map(function(f){ return esc(f.rot); }).join(', ')
+         + '</b>. Escolha a coluna certa acima pra seguir.</div>';
+    }
+    if (_mapa.dataItem < 0){
+      h += '<div class="xls-aviso">Sem coluna de data: o período não é detectado e a base de dias fica no valor que estiver na tela.</div>';
+    }
+    h += '</div>';   // fecha o bloco "De-para das colunas"
+
+    var amostra = _linhas.slice(_cab+1, _cab+6);
+    if (amostra.length){
+      h += '<div class="xls-bloco"><div class="xls-bloco-titulo">Prévia das primeiras linhas</div>'
+        + '<div class="imp-tabela-wrap" style="max-height:200px;"><table class="imp-tabela"><thead><tr>'
+        + _cols.map(function(c){ return '<th>'+esc(c)+'</th>'; }).join('')
+        + '</tr></thead><tbody>'
+        + amostra.map(function(r){
+            return '<tr>' + _cols.map(function(_,i){
+              var val = (r && r[i] != null) ? r[i] : '';
+              if (val instanceof Date) val = dBR(iso(val));
+              return '<td style="white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis;">' + esc(val) + '</td>';
+            }).join('') + '</tr>';
+          }).join('')
+        + '</tbody></table></div></div>';
+    }
+    h += '</div>';   // fecha #vnd-mapa-bloco — o que vem daqui pra baixo tem
+                     // que ficar FORA dele, senão desaparece junto quando o
+                     // de-para está recolhido (formato de sempre).
+
+    h += '<div class="imp-rodape">'
+      + '<button class="xls-btn" id="vnd-btn-processar" onclick="vndProcessar()"' + (faltando.length ? ' disabled' : '') + '>Conferir mudanças</button>'
+      + '<span class="imp-dica">Nada é gravado agora — o próximo passo mostra produto por produto o que muda no giro.</span>'
+      + '</div><div id="vnd-resultado"></div>';
+
+    pintar(h);
+    if (_perfilPadrao && !faltando.length) window.vndProcessar();
+  }
+
+  window.vndVerColunas = function(){
+    var b = document.getElementById('vnd-mapa-bloco'), t = document.getElementById('vnd-toggle-colunas');
+    if (!b) return;
+    var oculto = b.style.display === 'none';
+    b.style.display = oculto ? 'block' : 'none';
+    if (t) t.textContent = oculto ? 'ocultar colunas' : 'ver colunas';
+  };
+  window.vndTrocarAba = function(n){ carregarAba(n); };
+  window.vndReiniciar = function(){
+    _wb=null; _res=null; _linhas=[]; _perfilPadrao=false; pintar('');
+    var f=document.getElementById('vnd-file'); if(f) f.value='';
+  };
+  window.vndSetCol = function(campo, val){
+    _mapa[campo] = parseInt(val, 10);
+    var ok = document.getElementById('vnd-ok-' + campo);
+    if (ok) ok.style.display = _mapa[campo] > -1 ? '' : 'none';
+    var faltando = CAMPOS.filter(function(f){ return f.req && _mapa[f.k] < 0; });
+    var btn = document.getElementById('vnd-btn-processar');
+    if (btn) btn.disabled = faltando.length > 0;
+  };
+
+  // ── Etapa 3: processar a planilha ───────────────────────────────
+  function cel(linha, campo){
+    var i = _mapa[campo];
+    if (i == null || i < 0 || !linha) return '';
+    var v = linha[i];
+    return v == null ? '' : v;
+  }
+
+  window.vndProcessar = function(){
+    try { _res = processar(); } catch(err){ erro('Erro ao ler a planilha: ' + err.message); console.error(err); return; }
+    if (!_res.linhasLidas){ erro('Nenhuma linha de venda encontrada. Confira o de-para das colunas.'); return; }
+    _filtro = 'giro';
+    desenharResultado();
+    var el = document.getElementById('vnd-resultado');
+    if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+  };
+
+  function processar(){
+    var ix = indexar();
+    var varAgg = {}, grCor = {}, valores = {};
+    var porProduto = {};       // cod da carga -> {qtd, valor}
+    var naoAproveitadas = {};  // cod vendido -> {qtd, valor, desc, motivo}
+    var kitsUsados = {};       // cod vendido -> qtd
+    var mascNovas = [], mascVistas = {};  // variações vendidas que não existem na carga
+    var linhasLidas = 0, totalQtd = 0, totalValor = 0, ignoradas = 0;
+    var dMin = null, dMax = null, diasSet = {};
+
+    function somaProduto(cod, q, v){
+      if (!porProduto[cod]) porProduto[cod] = {qtd:0, valor:0};
+      porProduto[cod].qtd += q;
+      porProduto[cod].valor += v;
+    }
+    function descarta(cod, desc, q, v, motivo){
+      var k = String(cod);
+      if (!naoAproveitadas[k]) naoAproveitadas[k] = {cod:k, desc:desc, qtd:0, valor:0, motivo:motivo};
+      naoAproveitadas[k].qtd += q;
+      naoAproveitadas[k].valor += v;
+    }
+
+    // Joga uma parte (ou o próprio item) dentro de um produto da carga
+    function alocar(codAlvo, mascAlvo, descUp, q, v, keyValor){
+      var p = ix.porCod[String(codAlvo)];
+      if (!p) return false;
+      if (p.categoria === 'GUARDA ROUPAS'){
+        var cores = (p.variacoes||[]).map(function(x){ return (x._segs||[])[0]; }).filter(Boolean);
+        cores.sort(function(a,b){ return b.length - a.length; });
+        var cor = acharCor(descUp, cores) || acharCor(descUp, ix.vocabCor);
+        if (!cor){
+          var m = acharVariacao(p, mascAlvo, descUp);
+          cor = m ? ((m.v._segs||[])[0] || '—') : '—';
+        }
+        var gk = p.cod_item + '|' + cor;
+        grCor[gk] = (grCor[gk] || 0) + q;
+      } else {
+        var achado = acharVariacao(p, mascAlvo, descUp);
+        var masc = achado ? achado.v.cod_masc : (mascAlvo || '—');
+        if (!achado && !mascVistas[p.cod_item + '#' + masc]){
+          mascVistas[p.cod_item + '#' + masc] = 1;
+          mascNovas.push({cod:p.cod_item, produto:p.produto, masc:masc, desc:descUp});
+        }
+        var vk = p.cod_item + '#' + masc;
+        varAgg[vk] = (varAgg[vk] || 0) + q;
+        if (keyValor) valores[vk] = (valores[vk] || 0) + v;
+      }
+      somaProduto(String(p.cod_item), q, v);
+      return true;
+    }
+
+    for (var li = _cab + 1; li < _linhas.length; li++){
+      var r = _linhas[li];
+      if (!r) continue;
+      var itemRaw = String(cel(r,'item')).trim();
+      var descRaw = String(cel(r,'descricao')).trim();
+      if (!itemRaw && !descRaw) continue;
+      if (/^(total|totais|soma|subtotal)/i.test(descRaw) || /^(total|totais|soma|subtotal)/i.test(itemRaw)){ ignoradas++; continue; }
+
+      var q = numF(cel(r,'qtde'));
+      var v = _mapa.valor > -1 ? numF(cel(r,'valor')) : 0;
+      if (!q && !v) { continue; }
+
+      linhasLidas++;
+      totalQtd += q;
+      totalValor += v;
+
+      var d = _mapa.dataItem > -1 ? paraData(cel(r,'dataItem')) : null;
+      if (d){
+        var isoD = iso(d);
+        diasSet[isoD] = 1;
+        if (!dMin || isoD < dMin) dMin = isoD;
+        if (!dMax || isoD > dMax) dMax = isoD;
+      }
+
+      var partes = itemRaw.split('#');
+      var cod = (partes[0] || '').trim();
+      var masc = (partes[1] || '').trim();
+      var descUp = up(descRaw);
+
+      // 1) conjunto conhecido → desmembra
+      var kit = VND_KITS[cod];
+      if (kit){
+        kitsUsados[cod] = (kitsUsados[cod] || 0) + q;
+        var nP = kit.partes.length;
+        kit.partes.forEach(function(pt, idx){
+          // valor rateado entre as partes só pra não inflar o faturamento
+          alocar(pt.cod, pt.masc || '', descUp, q, v / nP, true);
+        });
+        continue;
+      }
+
+      // 2) item direto da carga
+      if (ix.porCod[cod]){
+        alocar(cod, masc, descUp, q, v, true);
+        continue;
+      }
+
+      // 3) equivalência
+      if (VND_ALIAS[cod] && ix.porCod[VND_ALIAS[cod]]){
+        alocar(VND_ALIAS[cod], '', descUp, q, v, true);
+        continue;
+      }
+
+      // 4) sobra
+      var motivo = /CONJ|C\/\s*0?\d+\s*CAD/.test(descUp) ? 'conjunto sem regra' : 'fora da carga mãe';
+      descarta(cod, descRaw, q, v, motivo);
+    }
+
+    // Dias do período: intervalo fechado entre a primeira e a última venda
+    var dias = 0;
+    if (dMin && dMax){
+      var a = new Date(dMin + 'T00:00:00'), b = new Date(dMax + 'T00:00:00');
+      dias = Math.round((b - a) / 86400000) + 1;
+    }
+    var diasDistintos = Object.keys(diasSet).length;
+
+    // ── Antes / depois por produto ──
+    var antesPorCod = {};
+    Object.keys(VENDAS_VAR_AGG).forEach(function(k){
+      var c = k.split('#')[0];
+      antesPorCod[c] = (antesPorCod[c] || 0) + VENDAS_VAR_AGG[k];
+    });
+    Object.keys(VENDAS_GR_COR).forEach(function(k){
+      var c = k.split('|')[0];
+      antesPorCod[c] = (antesPorCod[c] || 0) + VENDAS_GR_COR[k];
+    });
+
+    var linhasProd = [];
+    var vistos = {};
+    ix.base.forEach(function(p){
+      var c = String(p.cod_item);
+      vistos[c] = 1;
+      var dep = porProduto[c] ? porProduto[c].qtd : 0;
+      linhasProd.push({
+        cod:c, produto:p.produto, categoria:p.categoria, abc:p.abc,
+        antes: antesPorCod[c] || 0, depois: dep,
+        valor: porProduto[c] ? porProduto[c].valor : 0,
+        reservado: p.reservado || 0
+      });
+    });
+    linhasProd.sort(function(a,b){ return b.depois - a.depois || b.antes - a.antes; });
+
+    var sobras = Object.keys(naoAproveitadas).map(function(k){ return naoAproveitadas[k]; });
+    sobras.sort(function(a,b){ return b.qtd - a.qtd; });
+
+    var aproveitado = linhasProd.reduce(function(s,x){ return s + x.depois; }, 0);
+    var descartado = sobras.reduce(function(s,x){ return s + x.qtd; }, 0);
+
+    return {
+      varAgg:varAgg, grCor:grCor, valores:valores,
+      linhasProd:linhasProd, sobras:sobras, kitsUsados:kitsUsados, mascNovas:mascNovas,
+      linhasLidas:linhasLidas, ignoradas:ignoradas,
+      totalQtd:totalQtd, totalValor:totalValor,
+      aproveitado:aproveitado, descartado:descartado,
+      ini:dMin, fim:dMax, dias:dias || 0, diasDistintos:diasDistintos,
+      temValor: _mapa.valor > -1,
+      antesTotal: Object.keys(antesPorCod).reduce(function(s,k){ return s + antesPorCod[k]; }, 0)
+    };
+  }
+
+  // ── Etapa 3 (tela) ──────────────────────────────────────────────
+  function desenharResultado(){
+    var c = _res;
+    var diasSug = c.dias || (VENDAS_META.dias || 28);
+    // Casado = unidade da planilha que achou um produto da carga. O giro gerado
+    // pode ser MAIOR que isso: um conjunto virou mesa + jogo de cadeiras.
+    var casadas = c.totalQtd - c.descartado;
+    var pctAprov = c.totalQtd > 0 ? (casadas / c.totalQtd * 100) : 0;
+
+    function delta(v){
+      if (!v) return '<span class="xls-delta flat">sem mudança</span>';
+      return '<span class="xls-delta ' + (v>0?'up':'down') + '">' + (v>0?'▲ +':'▼ ') + nBR(Math.round(v)) + '</span>';
+    }
+
+    var h = '<div class="xls-bloco"><div class="xls-bloco-titulo">O que a planilha traz</div>'
+      + '<div class="xls-resumo">'
+      + '<div class="xls-resumo-card"><div class="xls-resumo-label">Período</div><div class="xls-resumo-valor" style="font-size:15px;">'
+        + (c.ini ? dBR(c.ini) + ' → ' + dBR(c.fim) : 'sem data')
+        + '</div><div class="xls-resumo-sub">' + (c.dias ? c.dias + ' dias corridos · ' + c.diasDistintos + ' com venda' : 'coluna de data não usada') + '</div></div>'
+      + '<div class="xls-resumo-card"><div class="xls-resumo-label">Unidades vendidas</div><div class="xls-resumo-valor">' + nBR(Math.round(c.totalQtd)) + '</div>'
+        + '<div class="xls-resumo-sub">' + nBR(c.linhasLidas) + ' linhas' + (c.temValor ? ' · ticket médio R$ ' + rBR(c.totalQtd ? c.totalValor/c.totalQtd : 0) : '') + '</div></div>'
+      + '<div class="xls-resumo-card"><div class="xls-resumo-label">Giro na carga</div><div class="xls-resumo-valor">' + nBR(Math.round(c.aproveitado)) + '</div>'
+        + '<div class="xls-resumo-sub">' + delta(c.aproveitado - c.antesTotal) + ' vs base atual</div></div>'
+      + '<div class="xls-resumo-card"><div class="xls-resumo-label">' + (c.temValor ? 'Valor líquido' : 'Casado na carga') + '</div><div class="xls-resumo-valor" style="font-size:' + (c.temValor ? '16px' : '19px') + ';">'
+        + (c.temValor ? 'R$ ' + rBR(c.totalValor) : pctAprov.toFixed(1).replace('.',',') + '%') + '</div>'
+        + '<div class="xls-resumo-sub">' + (c.temValor ? pctAprov.toFixed(1).replace('.',',') + '% das unidades casaram na carga' : nBR(Math.round(c.descartado)) + ' un fora da carga') + '</div></div>'
+      + '</div>';
+
+    var nKits = Object.keys(c.kitsUsados).length;
+    if (nKits){
+      var totKit = Object.keys(c.kitsUsados).reduce(function(s,k){ return s + c.kitsUsados[k]; }, 0);
+      h += '<div class="xls-ok-banner"><span>🔩</span><div><b>' + nBR(Math.round(totKit)) + ' conjuntos</b> em '
+         + nKits + ' código(s) viraram mesa <b>+</b> jogo de cadeiras. Por isso o giro na carga ('
+         + nBR(Math.round(c.aproveitado)) + ' un) é maior que as unidades da planilha ('
+         + nBR(Math.round(c.totalQtd)) + ' un): cada conjunto alimenta dois produtos.</div></div>';
+    }
+    if (c.ignoradas) h += '<div class="imp-dica" style="margin-top:10px;display:block;">' + nBR(c.ignoradas) + ' linha(s) de total/rodapé foram ignoradas.</div>';
+    if (c.mascNovas.length){
+      h += '<div class="xls-aviso">' + c.mascNovas.length + ' variação(ões) vendida(s) não existem na carga e entraram como máscara nova — aparecem no giro do produto, mas sem reserva casada. Ex.: '
+         + esc(c.mascNovas.slice(0,4).map(function(x){ return x.produto + ' (másc. ' + x.masc + ')'; }).join(' · ')) + '.</div>';
+    }
+    if (c.descartado > 0){
+      h += '<div class="xls-aviso">' + nBR(Math.round(c.descartado)) + ' unidade(s) em ' + c.sobras.length
+         + ' código(s) não pertencem a nenhum produto da carga mãe e ficaram de fora do giro. Veja em <b>Não aproveitados</b> — se algum deveria entrar, é caso de criar uma equivalência.</div>';
+    }
+    h += '</div>';
+
+    var comGiro = c.linhasProd.filter(function(x){ return x.depois > 0; }).length;
+    var semGiro = c.linhasProd.length - comGiro;
+    var f = [
+      ['giro','Com giro (' + comGiro + ')'],
+      ['zero','Sem giro (' + semGiro + ')'],
+      ['todos','Todos (' + c.linhasProd.length + ')']
+    ];
+    if (c.sobras.length) f.push(['sobra','Não aproveitados (' + c.sobras.length + ')']);
+
+    h += '<div class="xls-bloco"><div class="xls-bloco-titulo">Produto a produto</div><div class="xls-filtros">'
+      + f.map(function(x){ return '<button class="xls-filtro'+(_filtro===x[0]?' active':'')+'" onclick="vndFiltrar(\''+x[0]+'\')">'+esc(x[1])+'</button>'; }).join('')
+      + '</div><div id="vnd-tabela"></div></div>';
+
+    h += '<div class="imp-rodape">'
+      + '<span class="imp-dica">Base de dias:</span>'
+      + '<input type="number" class="xls-input" id="vnd-dias" style="width:70px;text-align:center;" min="1" max="365" value="' + diasSug + '">'
+      + '<span class="imp-dica">usada pra calcular a média/dia e a cobertura</span>'
+      + '<button class="xls-btn ok" id="vnd-btn-aplicar" onclick="vndAplicar()">✓ Aplicar e salvar</button>'
+      + '<button class="xls-btn ghost" onclick="vndReiniciar()">cancelar</button>'
+      + '</div><div id="vnd-final"></div>';
+
+    var el = document.getElementById('vnd-resultado');
+    if (el) el.innerHTML = h;
+    desenharTabela();
+  }
+
+  function desenharTabela(){
+    var c = _res;
+    var dias = Math.max(1, parseInt((document.getElementById('vnd-dias')||{}).value) || c.dias || 28);
+    var h = '';
+
+    if (_filtro === 'sobra'){
+      h = '<div class="imp-tabela-wrap" style="max-height:420px;margin-top:12px;"><table class="imp-tabela"><thead><tr>'
+        + '<th>Cód.</th><th>Descrição vendida</th><th>Motivo</th><th style="text-align:right;">Unidades</th><th style="text-align:right;">Valor</th>'
+        + '</tr></thead><tbody>';
+      if (!c.sobras.length) h += '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:18px;">Nada de fora — toda a planilha casou na carga.</td></tr>';
+      c.sobras.forEach(function(s){
+        h += '<tr><td style="font-family:monospace;font-size:11px;">' + esc(s.cod) + '</td>'
+          + '<td style="max-width:340px;">' + esc(s.desc) + '</td>'
+          + '<td><span class="xls-tag ' + (s.motivo === 'conjunto sem regra' ? 'inferido' : 'igual') + '">' + esc(s.motivo) + '</span></td>'
+          + '<td style="text-align:right;">' + nBR(Math.round(s.qtd)) + '</td>'
+          + '<td style="text-align:right;color:var(--muted);">' + (c.temValor ? 'R$ ' + rBR(s.valor) : '—') + '</td></tr>';
+      });
+      h += '</tbody></table></div>';
+      var el0 = document.getElementById('vnd-tabela');
+      if (el0) el0.innerHTML = h;
+      return;
+    }
+
+    var rows = c.linhasProd.filter(function(x){
+      if (_filtro === 'giro') return x.depois > 0;
+      if (_filtro === 'zero') return x.depois === 0;
+      return true;
+    });
+
+    h = '<div class="imp-tabela-wrap" style="max-height:420px;margin-top:12px;"><table class="imp-tabela"><thead><tr>'
+      + '<th>Cód.</th><th>Produto</th><th>Categoria</th>'
+      + '<th style="text-align:right;">Vendas antes</th><th style="text-align:right;">Vendas agora</th>'
+      + '<th style="text-align:right;">Δ</th><th style="text-align:right;">Média/dia</th>'
+      + '<th style="text-align:right;">Reservado</th><th style="text-align:right;">Cobertura</th>'
+      + (c.temValor ? '<th style="text-align:right;">Valor</th>' : '')
+      + '</tr></thead><tbody>';
+
+    if (!rows.length) h += '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:18px;">Nada aqui.</td></tr>';
+
+    rows.forEach(function(x){
+      var d = x.depois - x.antes;
+      var media = x.depois / dias;
+      var cob = media > 0 ? x.reservado / media : null;
+      var corCob = cob === null ? 'var(--muted)' : cob < 7 ? '#f87171' : cob < 30 ? '#f59e0b' : '#22c98a';
+      h += '<tr>'
+        + '<td style="font-family:monospace;font-size:11px;">' + esc(x.cod) + '</td>'
+        + '<td style="max-width:260px;">' + esc(x.produto) + '</td>'
+        + '<td style="font-size:11px;color:var(--muted);white-space:nowrap;">' + esc(x.categoria) + ' · ' + esc(x.abc||'—') + '</td>'
+        + '<td style="text-align:right;color:var(--muted);">' + nBR(Math.round(x.antes)) + '</td>'
+        + '<td style="text-align:right;font-weight:700;">' + nBR(Math.round(x.depois)) + '</td>'
+        + '<td style="text-align:right;">' + (d === 0 ? '<span style="color:var(--muted)">0</span>'
+            : '<span class="xls-delta ' + (d>0?'up':'down') + '">' + (d>0?'+':'') + nBR(Math.round(d)) + '</span>') + '</td>'
+        + '<td style="text-align:right;">' + med(media) + '</td>'
+        + '<td style="text-align:right;color:var(--muted);">' + nBR(x.reservado) + '</td>'
+        + '<td style="text-align:right;color:' + corCob + ';font-weight:700;">' + (cob === null ? 'sem giro' : (cob > 999 ? '999+' : cob.toFixed(cob<10?1:0)) + ' d') + '</td>'
+        + (c.temValor ? '<td style="text-align:right;">R$ ' + rBR(x.valor) + '</td>' : '')
+        + '</tr>';
+    });
+    h += '</tbody></table></div>';
+    var el = document.getElementById('vnd-tabela');
+    if (el) el.innerHTML = h;
+  }
+
+  window.vndFiltrar = function(f){
+    _filtro = f;
+    document.querySelectorAll('#vnd-resultado .xls-filtro').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('onclick').indexOf("'"+f+"'") > -1);
+    });
+    desenharTabela();
+  };
+
+  // ── Etapa 4: aplicar ────────────────────────────────────────────
+  function trocarBase(varAgg, grCor, valores, meta){
+    Object.keys(VENDAS_VAR_AGG).forEach(function(k){ delete VENDAS_VAR_AGG[k]; });
+    Object.keys(VENDAS_GR_COR).forEach(function(k){ delete VENDAS_GR_COR[k]; });
+    Object.keys(VENDAS_VALOR).forEach(function(k){ delete VENDAS_VALOR[k]; });
+    Object.keys(varAgg).forEach(function(k){ VENDAS_VAR_AGG[k] = Math.round(varAgg[k]); });
+    Object.keys(grCor).forEach(function(k){ VENDAS_GR_COR[k] = Math.round(grCor[k]); });
+    Object.keys(valores || {}).forEach(function(k){ VENDAS_VALOR[k] = valores[k]; });
+    Object.keys(meta).forEach(function(k){ VENDAS_META[k] = meta[k]; });
+    pintarBase();
+    reRenderizar();
+  }
+
+  function pintarBase(){
+    var m = VENDAS_META;
+    var sub = document.getElementById('vnd-topo-sub');
+    if (sub){
+      var vend = m.vendidas || m.unidades || 0;
+      sub.textContent = 'base em uso: ' + (m.ini ? dBR(m.ini) + '–' + dBR(m.fim) : 'sem período')
+        + ' · ' + m.dias + ' dias · ' + nBR(Math.round(vend)) + ' un vendidas'
+        + (m.unidades && Math.round(m.unidades) !== Math.round(vend) ? ' · giro ' + nBR(Math.round(m.unidades)) : '')
+        + (m.valor ? ' · R$ ' + rBR(m.valor) : '')
+        + ' · ' + m.origem;
+    }
+    var lbl = document.getElementById('vndLabelPeriodo');
+    if (lbl) lbl.textContent = (typeof vendasPeriodoLabel === 'function') ? vendasPeriodoLabel() : '';
+    var inp = document.getElementById('covDias');
+    if (inp && m.dias) inp.value = m.dias;
+  }
+
+  function reRenderizar(){
+    try { typeof renderCobertura === 'function' && document.getElementById('covDias') && renderCobertura(); } catch(e){ console.warn('cobertura', e); }
+    try { typeof renderTable === 'function' && renderTable(); } catch(e){ console.warn('table', e); }
+    try { typeof renderMixGR === 'function' && renderMixGR(); } catch(e){ console.warn('mixgr', e); }
+    try { typeof renderGraficos === 'function' && renderGraficos(); } catch(e){ console.warn('graficos', e); }
+    try { typeof renderTodasAnalises === 'function' && renderTodasAnalises(); } catch(e){ console.warn('analises', e); }
+  }
+
+  window.vndAplicar = async function(){
+    if (!_res) return;
+    var btn = document.getElementById('vnd-btn-aplicar');
+    if (btn){ btn.disabled = true; btn.textContent = 'aplicando…'; }
+
+    var dias = Math.max(1, parseInt((document.getElementById('vnd-dias')||{}).value) || _res.dias || 28);
+    var meta = {
+      ini: _res.ini || '', fim: _res.fim || '', dias: dias,
+      vendidas: Math.round(_res.totalQtd),
+      unidades: Math.round(_res.aproveitado),
+      valor: _res.totalValor,
+      linhas: _res.linhasLidas,
+      origem: _nomeArquivo || 'planilha de vendas',
+      ts: Date.now()
+    };
+
+    trocarBase(_res.varAgg, _res.grCor, _res.valores, meta);
+
+    var msg, cls = 'xls-aviso';
+    if (window._ehDB){
+      // '#' e '/' aparecem nas chaves dos mapas e não valem como chave de nó
+      // no Firebase — por isso vão como lista de {k, q, v}.
+      var res = await gravarVendas({
+        ini: meta.ini, fim: meta.fim, dias: meta.dias,
+        vendidas: meta.vendidas, unidades: meta.unidades,
+        valor: meta.valor, linhas: meta.linhas,
+        origem: meta.origem, ts: meta.ts,
+        itens: Object.keys(_res.varAgg).map(function(k){
+          return {k:k, q:Math.round(_res.varAgg[k]), v:Math.round((_res.valores[k]||0)*100)/100};
+        }),
+        gr: Object.keys(_res.grCor).map(function(k){
+          return {k:k, q:Math.round(_res.grCor[k])};
+        })
+      });
+      if (res.ok){
+        msg = '✅ Base de vendas trocada e salva no Firebase — o time inteiro passa a ver o giro de '
+            + (meta.ini ? dBR(meta.ini) + ' a ' + dBR(meta.fim) : 'do arquivo') + ' (' + meta.dias + ' dias).'
+            + ' <span style="opacity:.75">nó: ' + esc(res.path) + '</span>';
+        cls = 'xls-erro" style="background:rgba(34,201,138,0.08);border-color:rgba(34,201,138,0.35);color:#22c98a;';
+      } else {
+        msg = msgErroGravacao(res);
+      }
+    } else {
+      msg = '⚠ Firebase indisponível. A base nova vale só nesta aba — ao recarregar, volta a anterior.';
+    }
+
+    var el = document.getElementById('vnd-final');
+    if (el){
+      el.innerHTML = '<div class="' + cls + '">' + msg + '</div>'
+        + '<div class="imp-rodape"><button class="xls-btn ghost" onclick="vndRestaurarEmbutida()">↩ voltar para a base embutida (01/07–28/07)</button></div>';
+    }
+    if (btn) btn.textContent = '✓ Aplicado';
+  };
+
+  // ── Voltar para a base que veio no arquivo ──────────────────────
+  window.vndRestaurarEmbutida = async function(){
+    if (!_EMB) return;
+    var meta = {
+      ini:_EMB.meta.ini, fim:_EMB.meta.fim, dias:_EMB.meta.dias,
+      vendidas:_EMB.meta.vendidas, unidades:_EMB.meta.unidades,
+      valor:0, linhas:0,
+      origem:'base embutida no arquivo', ts:Date.now()
+    };
+    trocarBase(_EMB.varAgg, _EMB.grCor, {}, meta);
+    var res = {ok:false};
+    if (window._ehDB){
+      res = await gravarVendas({
+        ini:meta.ini, fim:meta.fim, dias:meta.dias,
+        vendidas:meta.vendidas, unidades:meta.unidades,
+        valor:0, linhas:0, origem:meta.origem, ts:meta.ts,
+        itens: Object.keys(_EMB.varAgg).map(function(k){ return {k:k, q:_EMB.varAgg[k]}; }),
+        gr: Object.keys(_EMB.grCor).map(function(k){ return {k:k, q:_EMB.grCor[k]}; })
+      });
+    }
+    var el = document.getElementById('vnd-final');
+    if (el){
+      el.innerHTML = res.ok
+        ? '<div class="xls-ok-banner"><span>↩</span><div>Base embutida restaurada (01/07 a 28/07/2026 · 28 dias) e gravada pra todo mundo.</div></div>'
+        : '<div class="xls-aviso">↩ Base embutida restaurada nesta aba. ' + (window._ehDB ? 'Não deu pra gravar no Firebase, então ao recarregar volta a última base salva.' : 'Firebase indisponível.') + '</div>';
+    }
+  };
+
+  // ── Ler do Firebase no boot (e a cada 5 min) ────────────────────
+  async function carregarVendasFirebase(){
+    if (!window._ehDB) return;
+    try {
+      var achado = await lerVendas();
+      if (!achado) return;
+      var d = achado.d;
+      if (Number(d.ts || 0) <= Number(VENDAS_META.ts || 0)) return;
+
+      var varAgg = {}, grCor = {}, valores = {};
+      (d.itens || []).forEach(function(x){ if (x && x.k){ varAgg[x.k] = Number(x.q)||0; if (x.v) valores[x.k] = Number(x.v)||0; } });
+      (d.gr || []).forEach(function(x){ if (x && x.k) grCor[x.k] = Number(x.q)||0; });
+
+      trocarBase(varAgg, grCor, valores, {
+        ini:d.ini||'', fim:d.fim||'', dias:Number(d.dias)||28,
+        vendidas:Number(d.vendidas)||0, unidades:Number(d.unidades)||0,
+        valor:Number(d.valor)||0,
+        linhas:Number(d.linhas)||0, origem:d.origem||'Firebase', ts:Number(d.ts)||0
+      });
+      console.log('[vendas] base aplicada de', achado.path + ':', d.ini, '→', d.fim, '(' + d.dias + ' dias)');
+    } catch(e){
+      console.warn('[vendas] não deu pra ler do Firebase:', e);
+    }
+  }
+
+  // ── Ligações da UI ──────────────────────────────────────────────
+  var _ligado = false;
+  function ligar(){
+    if (_ligado) return;
+    var drop = document.getElementById('vnd-drop'), input = document.getElementById('vnd-file');
+    if (!drop || !input) return;
+    _ligado = true;
+
+    // Guarda a base embutida antes de qualquer troca
+    if (!_EMB){
+      _EMB = {
+        varAgg: JSON.parse(JSON.stringify(VENDAS_VAR_AGG)),
+        grCor:  JSON.parse(JSON.stringify(VENDAS_GR_COR)),
+        meta:   JSON.parse(JSON.stringify(VENDAS_META))
+      };
+    }
+    pintarBase();
+
+    drop.addEventListener('click', function(){ input.click(); });
+    input.addEventListener('change', function(e){ if (e.target.files && e.target.files[0]) lerArquivo(e.target.files[0]); });
+    ['dragenter','dragover'].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.add('dragging'); });
+    });
+    ['dragleave','drop'].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); drop.classList.remove('dragging'); });
+    });
+    drop.addEventListener('drop', function(e){
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) lerArquivo(f);
+    });
+
+    carregarVendasFirebase();
+    setInterval(carregarVendasFirebase, 5 * 60 * 1000);
+  }
+  document.addEventListener('DOMContentLoaded', ligar);
+  if (document.readyState !== 'loading') ligar();
+
+})();
+
+</script>
+
 </body></html>
