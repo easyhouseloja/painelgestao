@@ -61,6 +61,9 @@ nav{background:#0d1320;border-bottom:1px solid var(--border);position:sticky;top
 .md-table .md-nome{font-weight:600;font-size:13px}
 .md-table tr.md-total td{background:rgba(46,74,122,.15);font-weight:700;border-top:2px solid var(--border)}
 .md-table tr.md-total .md-nome{font-family:'Syne',sans-serif}
+.flag{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:.04em;vertical-align:middle;margin-left:6px}
+.flag-in{background:rgba(30,132,73,.16);color:#66FF99;border:1px solid rgba(30,132,73,.4)}
+.flag-out{background:rgba(136,136,136,.12);color:var(--muted);border:1px solid rgba(136,136,136,.3)}
 .sec::after{content:'';flex:1;height:1px;background:var(--border)}
 
 .tw{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
@@ -343,13 +346,12 @@ async function fetchSlaTransporte(){
 }
 
 /* ── Fetcher do Índice de Devolução ──
-   Sempre lê o MÊS ATUAL (pelo relógio do navegador).
-   Fonte primária: card do mês na página #page-geral do devolucao.html
-     <div class="month-card mc-jul">
-       <div class="month-name">Julho · Parcial</div>
-       <span class="month-pct ...">1,39% 👍</span>
-     </div>
-   Fallback: KPI "Valor Devolvido" da página do mês (#page-jul .kpi-fat).  */
+   Lê SEMPRE o último mês disponível no devolucao.html (o card .month-card mais
+   recente que existir), não o mês do relógio. Assim funciona mesmo quando o
+   calendário já virou o mês mas o dado mais novo ainda é do mês anterior
+   (ex.: em agosto, o último fechamento publicado é "Julho · Parcial").
+   Fonte: cards .month-card.mc-jan … .mc-dez na visão geral.
+   Fallback: KPI de faturamento (.kpi-fat) na página do mês.  */
 
 const MES_SLUG  = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 const MES_NOME  = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
@@ -361,24 +363,22 @@ async function fetchDevolucao(){
   const html = await res.text();
   const doc = new DOMParser().parseFromString(html, 'text/html');
 
-  const agora   = new Date();
-  const idxMes  = agora.getMonth();          // 0 = Janeiro
-  const slug    = MES_SLUG[idxMes];          // ex.: 'jul'
-  const nomeMes = MES_NOME[idxMes];          // ex.: 'Julho'
-
-  let valor = null;
-  let tag   = '';
-
-  /* 1) Card do mês na visão geral (.mc-jul, .mc-ago, …) */
-  const card = doc.querySelector('.month-card.mc-' + slug);
-  if(card){
-    valor = parseNum(card.querySelector('.month-pct')?.textContent || '');
-    tag   = card.querySelector('.month-tag')?.textContent?.trim() || '';
+  /* Descobre o último mês publicado: percorre jan→dez e guarda o card mais
+     recente que tiver um valor de % válido. */
+  let idxMes = -1, card = null, valor = null;
+  for(let i = 0; i < MES_SLUG.length; i++){
+    const c = doc.querySelector('.month-card.mc-' + MES_SLUG[i]);
+    if(!c) continue;
+    const v = parseNum(c.querySelector('.month-pct')?.textContent || '');
+    if(v !== null){ idxMes = i; card = c; valor = v; }
   }
 
-  /* 2) Fallback: KPI de faturamento na página do mês (#page-jul) */
+  let tag = card ? (card.querySelector('.month-tag')?.textContent?.trim() || '') : '';
+
+  /* Fallback: se nenhum card tinha %, tenta o KPI da página do mês do relógio */
   if(valor === null){
-    const pg = doc.getElementById('page-' + slug);
+    idxMes = new Date().getMonth();
+    const pg = doc.getElementById('page-' + MES_SLUG[idxMes]);
     if(pg){
       const fat = pg.querySelector('.kpi-fat');
       if(fat) valor = parseNum(fat.textContent || '');
@@ -386,14 +386,15 @@ async function fetchDevolucao(){
   }
 
   if(valor === null){
-    throw new Error('Índice de ' + nomeMes + ' ainda não publicado');
+    throw new Error('Índice de devolução ainda não publicado');
   }
 
-  /* Referência: usa a data do card ("até 15/07") quando existir */
+  const nomeMes = MES_NOME[idxMes] || '';
+  /* Referência: usa a data do card ("até 26/07") quando existir */
   const dataMatch = tag.match(/(\d{2}\/\d{2})/);
   const referencia = dataMatch
     ? nomeMes + ' · até ' + dataMatch[1]
-    : nomeMes + '/' + agora.getFullYear();
+    : nomeMes + '/' + new Date().getFullYear();
 
   return { valor: valor, referencia: referencia, mes: nomeMes };
 }
@@ -515,8 +516,8 @@ async function fetchMetaMarketplace(){
   return {
     valor: fat,
     metaReal: meta,
-    referencia: refMes + ' · meta sobre ' + principais.length + ' canais principais',
-    detalhes: porMkt.map(m => ({ nome: m.nome, fat: m.fat, meta: m.meta }))
+    referencia: refMes + ' · meta = Shopee + Magalu + Mercado Livre (marcados "na meta")',
+    detalhes: porMkt.map(m => ({ nome: m.nome, fat: m.fat, meta: m.meta, principal: m.principal }))
   };
 }
 
@@ -731,7 +732,7 @@ function miniBar(fat, meta){
     </div>`;
 }
 
-function linhaDetalhe(nome, fat, meta, isTotal){
+function linhaDetalhe(nome, fat, meta, isTotal, principal){
   /* Categoria sem meta definida (ex.: cozinha zerada) → mostra "—" e status neutro */
   const semMeta = !isTotal && (!meta || meta <= 0);
   const ok     = fat >= meta;
@@ -745,9 +746,15 @@ function linhaDetalhe(nome, fat, meta, isTotal){
   const statusCell = semMeta
     ? '<span class="bdg" style="background:rgba(136,136,136,.15);color:var(--muted)">— sem meta</span>'
     : `<span class="bdg ${ok ? 'bdg-ok' : 'bdg-nok'}">${ok ? '✅ Atingiu' : '⚠️ Não atingiu'}</span>`;
+  /* Flag "conta na meta" — só aparece quando o campo principal é booleano (tabela de marketplace) */
+  const flag = (typeof principal === 'boolean' && !isTotal)
+    ? (principal
+        ? ' <span class="flag flag-in" title="Entra no somatório da meta">na meta</span>'
+        : ' <span class="flag flag-out" title="Fora do somatório da meta">fora</span>')
+    : '';
   return `
     <tr class="${isTotal ? 'md-total' : ''}">
-      <td class="md-nome">${nome}</td>
+      <td class="md-nome">${nome}${flag}</td>
       <td style="text-align:right;color:${corFat}" class="mn">${fmt(fat, 'R$')}</td>
       <td style="text-align:right;color:var(--muted)" class="mn">${metaCell}</td>
       <td style="text-align:right"><span class="${desvioCls}">${desvioTxt}</span></td>
@@ -769,7 +776,7 @@ function renderMasterDetail(cfg, r){
     return { erro:true };
   }
 
-  const linhas = (r.detalhes || []).map(d => linhaDetalhe(d.nome, d.fat, d.meta, false)).join('');
+  const linhas = (r.detalhes || []).map(d => linhaDetalhe(d.nome, d.fat, d.meta, false, d.principal)).join('');
   const totalLinha = linhaDetalhe('TOTAL', r.valor, r.metaReal, true);
   tbody.innerHTML = linhas + totalLinha;
 
