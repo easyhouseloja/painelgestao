@@ -9732,7 +9732,9 @@ document.addEventListener('DOMContentLoaded', function() {
     return valor;
   }
 
-  // Índice de devolução do MÊS ATUAL (card .mc-jan … .mc-dez em devolucao.html)
+  // Índice de devolução: último mês publicado (card .month-card mais recente),
+  // não o mês do relógio — assim funciona mesmo quando o calendário já virou
+  // mas o último dado ainda é do mês anterior (ex.: agosto mostrando julho).
   const MES_SLUG_METAS = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
   async function fetchDevParaMetas(){
@@ -9741,15 +9743,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const html = await res.text();
     const doc = new DOMParser().parseFromString(html, 'text/html');
 
-    const slug = MES_SLUG_METAS[new Date().getMonth()];
+    // Percorre jan→dez e guarda o último card com % válido
+    let valor = null;
+    for(let i = 0; i < MES_SLUG_METAS.length; i++){
+      const c = doc.querySelector('.month-card.mc-' + MES_SLUG_METAS[i]);
+      if(!c) continue;
+      const v = parseNumMetas(c.querySelector('.month-pct')?.textContent);
+      if(v !== null) valor = v;
+    }
 
-    // 1) Card do mês na visão geral
-    const card = doc.querySelector('.month-card.mc-' + slug);
-    let valor = card ? parseNumMetas(card.querySelector('.month-pct')?.textContent) : null;
-
-    // 2) Fallback: KPI de faturamento na página do mês
+    // Fallback: KPI de faturamento na página do mês do relógio
     if(valor === null){
-      const pg = doc.getElementById('page-' + slug);
+      const pg = doc.getElementById('page-' + MES_SLUG_METAS[new Date().getMonth()]);
       if(pg) valor = parseNumMetas(pg.querySelector('.kpi-fat')?.textContent);
     }
 
