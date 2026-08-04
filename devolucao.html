@@ -35,6 +35,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .tab-va.active{color:#39d353!important;border-bottom-color:var(--teal)!important;}
 .tab-va.active .tab-dot{background:var(--teal);box-shadow:0 0 8px rgba(57,211,83,.6);}
 .tab-jul .tab-dot{background:#58a6ff;animation:pulse 2s infinite;}
+.tab-ago .tab-dot{background:#f0883e;animation:pulse 2s infinite;}
+.tab-ago:hover{color:#f0883e!important;background:rgba(240,136,62,.04)!important;}
+.tab-ago.active{color:#f0883e!important;border-bottom-color:var(--accent)!important;}
+.tab-ago.active .tab-dot{background:#f0883e;box-shadow:0 0 8px rgba(240,136,62,.6);}
 .tab-jul:hover{color:#58a6ff!important;background:rgba(56,139,253,.04)!important;}
 .tab-jul.active{color:#58a6ff!important;border-bottom-color:#388bfd!important;}
 .tab-jul.active .tab-dot{background:#58a6ff;box-shadow:0 0 8px rgba(56,139,253,.6);}
@@ -148,6 +152,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .mc-mai::after{background:linear-gradient(90deg,#238636,var(--green));}
 .mc-jun::after{background:linear-gradient(90deg,#1b6b3a,var(--teal));}
 .mc-jul::after{background:linear-gradient(90deg,#1f6feb,#58a6ff);}
+.mc-ago::after{background:linear-gradient(90deg,var(--accent),var(--accent2));}
 .month-name{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
 .month-notas{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:700;line-height:1;}
 .mc-jan .month-notas{color:var(--blue);}.mc-fev .month-notas{color:var(--purple);}.mc-mar .month-notas{color:var(--accent2);}.mc-abr .month-notas{color:var(--yellow);}.mc-mai .month-notas{color:var(--green);}.mc-jun .month-notas{color:var(--teal);}.mc-jul .month-notas{color:#58a6ff;}
@@ -200,9 +205,9 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
   <div class="header-icon">📦</div>
   <div><h1>DASHBOARD DE DEVOLUÇÕES</h1><div class="header-sub">Relatório consolidado · Comercial + Suprimentos</div></div>
   <div class="header-right">
-    <div class="header-live"><div class="dot-live"></div>Visão Atual 31/07</div>
-    <div class="header-period">📅 01/01 a 31/07/2026</div>
-    <div class="header-badge">1155 REGISTROS</div>
+    <div class="header-live"><div class="dot-live"></div>Visão Atual 03/08</div>
+    <div class="header-period">📅 01/01 a 03/08/2026</div>
+    <div class="header-badge">1178 REGISTROS</div>
   </div>
 </div>
 <div class="obs-banner">
@@ -210,40 +215,41 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
   <span><strong>Jan–Jun 2026: Meta ≤ 5%</strong> (régua 0–5%) &nbsp;·&nbsp; <strong>Jul 2026 em diante: Meta ≤ 3%</strong> (régua 0–3%) &nbsp;·&nbsp; Quanto menor, melhor.</span>
 </div>
 <div class="tabs-bar">
-  <div class="tab tab-va active" onclick="showTab('atual')"><div class="tab-dot"></div>Visão Atual<span class="tab-new-badge">31/07</span></div>
-  <div class="tab-divider"></div>
-  <div class="tab" onclick="showTab('geral')"><div class="tab-dot"></div>Visão Geral</div>
+  <div class="tab active" onclick="showTab('geral')"><div class="tab-dot"></div>Visão Geral</div>
   <div class="tab" onclick="showTab('jan')"><div class="tab-dot"></div>Janeiro</div>
   <div class="tab" onclick="showTab('fev')"><div class="tab-dot"></div>Fevereiro</div>
   <div class="tab" onclick="showTab('mar')"><div class="tab-dot"></div>Março</div>
   <div class="tab" onclick="showTab('abr')"><div class="tab-dot"></div>Abril</div>
   <div class="tab" onclick="showTab('mai')"><div class="tab-dot"></div>Maio</div>
   <div class="tab" onclick="showTab('jun')"><div class="tab-dot"></div>Junho</div>
-  <div class="tab tab-jul" onclick="showTab('jul')"><div class="tab-dot"></div>Julho<span class="tab-new-badge blue">31/07 ✅</span></div>
+  <div class="tab tab-jul" onclick="showTab('jul')"><div class="tab-dot"></div>Julho<span class="tab-new-badge" style="background:rgba(63,185,80,.2);color:var(--teal)">✅ Fechado</span></div>
+  <div class="tab tab-ago" onclick="showTab('ago')"><div class="tab-dot" style="background:#f0883e;animation:pulse 2s infinite"></div>Agosto<span class="tab-new-badge" style="background:rgba(240,136,62,.2);color:var(--accent2)">03/08</span></div>
+  <div class="tab-divider"></div>
+  <div class="tab tab-va" onclick="showTab('atual')"><div class="tab-dot"></div>Visão Atual<span class="tab-new-badge">03/08</span></div>
 </div>
 
 <!-- VISÃO ATUAL -->
-<div class="page active" id="page-atual">
+<div class="page" id="page-atual">
   <div class="va-date-bar">
     <div class="va-date-label"><div class="dot-live"></div>Posição Atual das Notas de Devolução</div>
-    <div class="va-date-value">📅 Atualizado em 31/07/2026 &nbsp;·&nbsp; 1061 notas · 1155 notas · Julho Fechado ✅</div>
+    <div class="va-date-value">📅 Atualizado em 03/08/2026 &nbsp;·&nbsp; 1061 notas · 1178 notas · Ago em andamento</div>
   </div>
   <div class="va-almox-grid">
     <div class="va-almox-card va-almox-103">
-      <div class="va-almox-icon">🏭</div><div class="va-almox-num">802</div>
+      <div class="va-almox-icon">🏭</div><div class="va-almox-num">814</div>
       <div class="va-almox-code">ALM 103</div><div class="va-almox-name">Notas na Empresa</div>
       <div class="va-almox-desc">Devoluções confirmadas e recebidas</div>
-      <div class="va-almox-pct">69,4% do total</div>
-      <div class="va-almox-val-big">R$ 825.882,72</div><div class="va-almox-val-label">valor total das notas</div>
-      <div class="va-ratio-bar"><div class="va-ratio-track"><div class="va-ratio-fill" style="width:69.4%"></div></div></div>
+      <div class="va-almox-pct">69,1% do total</div>
+      <div class="va-almox-val-big">R$ 835.939,24</div><div class="va-almox-val-label">valor total das notas</div>
+      <div class="va-ratio-bar"><div class="va-ratio-track"><div class="va-ratio-fill" style="width:69.1%"></div></div></div>
     </div>
     <div class="va-almox-card va-almox-105">
-      <div class="va-almox-icon">🚚</div><div class="va-almox-num">247</div>
+      <div class="va-almox-icon">🚚</div><div class="va-almox-num">258</div>
       <div class="va-almox-code">ALM 105</div><div class="va-almox-name">Em Processo de Coleta</div>
       <div class="va-almox-desc">Notas em trânsito / aguardando coleta</div>
-      <div class="va-almox-pct">21,4% do total</div>
-      <div class="va-almox-val-big">R$ 254.355,40</div><div class="va-almox-val-label">valor total das notas</div>
-      <div class="va-ratio-bar"><div class="va-ratio-track"><div class="va-ratio-fill" style="width:21.4%"></div></div></div>
+      <div class="va-almox-pct">21,9% do total</div>
+      <div class="va-almox-val-big">R$ 264.953,71</div><div class="va-almox-val-label">valor total das notas</div>
+      <div class="va-ratio-bar"><div class="va-ratio-track"><div class="va-ratio-fill" style="width:21.9%"></div></div></div>
     </div>
     <div class="va-almox-card va-almox-107">
       <div class="va-almox-icon">✅</div><div class="va-almox-num">13</div>
@@ -257,27 +263,27 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
       <div class="va-almox-icon">🔄</div><div class="va-almox-num">93</div>
       <div class="va-almox-code">ALM 101</div><div class="va-almox-name">Repasse</div>
       <div class="va-almox-desc">Notas em processo de repasse</div>
-      <div class="va-almox-pct">8,1% do total</div>
+      <div class="va-almox-pct">7,9% do total</div>
       <div class="va-almox-val-big">R$ 99.444,52</div><div class="va-almox-val-label">valor total das notas</div>
-      <div class="va-ratio-bar"><div class="va-ratio-track"><div class="va-ratio-fill" style="width:8.1%"></div></div></div>
+      <div class="va-ratio-bar"><div class="va-ratio-track"><div class="va-ratio-fill" style="width:7.9%"></div></div></div>
     </div>
   </div>
-  <div class="section-divider" style="border-color:rgba(57,211,83,.2)"><div class="section-divider-title" style="color:rgba(57,211,83,.6)">Análise das 802 Notas na Empresa (ALM 103)</div><div class="section-divider-line" style="background:rgba(57,211,83,.2)"></div></div>
+  <div class="section-divider" style="border-color:rgba(57,211,83,.2)"><div class="section-divider-title" style="color:rgba(57,211,83,.6)">Análise das 814 Notas na Empresa (ALM 103)</div><div class="section-divider-line" style="background:rgba(57,211,83,.2)"></div></div>
   <div class="va-charts-grid">
-    <div class="va-chart-card"><div class="va-chart-header"><span>🚚</span>Transportadoras<span class="va-badge">802 notas · ALM 103</span></div><div class="va-chart-body"><div class="va-bar-list" id="va-transp"></div></div></div>
-    <div class="va-chart-card"><div class="va-chart-header"><span>🛒</span>Marketplace<span class="va-badge">802 notas · ALM 103</span></div><div class="va-chart-body"><div class="va-pie-container"><svg id="va-pie-mkt" width="140" height="140" viewBox="0 0 140 140" style="flex-shrink:0"></svg><div class="va-legend" id="va-legend-mkt"></div></div></div></div>
+    <div class="va-chart-card"><div class="va-chart-header"><span>🚚</span>Transportadoras<span class="va-badge">814 notas · ALM 103</span></div><div class="va-chart-body"><div class="va-bar-list" id="va-transp"></div></div></div>
+    <div class="va-chart-card"><div class="va-chart-header"><span>🛒</span>Marketplace<span class="va-badge">814 notas · ALM 103</span></div><div class="va-chart-body"><div class="va-pie-container"><svg id="va-pie-mkt" width="140" height="140" viewBox="0 0 140 140" style="flex-shrink:0"></svg><div class="va-legend" id="va-legend-mkt"></div></div></div></div>
   </div>
 </div>
 
 <!-- VISÃO GERAL -->
-<div class="page" id="page-geral">
+<div class="page active" id="page-geral">
   <div class="kpis">
-    <div class="kpi orange"><div class="kpi-label">Total Devolvido</div><div class="kpi-value">R$ 1,19M</div><div class="kpi-sub">01/01 a 31/07/2026</div><div class="kpi-fat warn">👍 1,69% do faturamento</div><div class="kpi-icon">💰</div></div>
-    <div class="kpi blue"><div class="kpi-label">Total de Notas</div><div class="kpi-value">1155</div><div class="kpi-sub">Comercial + Suprimentos</div><div class="kpi-icon">📄</div></div>
-    <div class="kpi green"><div class="kpi-label">Ticket Médio</div><div class="kpi-value">R$ 1.032</div><div class="kpi-sub">Por devolução</div><div class="kpi-icon">📊</div></div>
-    <div class="kpi purple"><div class="kpi-label">Principal Motivo</div><div class="kpi-value">35,7%</div><div class="kpi-sub">Desistência · 412 notas</div><div class="kpi-icon">🔍</div></div>
-    <div class="kpi yellow"><div class="kpi-label">Top Transportadora</div><div class="kpi-value">306 notas</div><div class="kpi-sub">Nova Era Express</div><div class="kpi-icon">🚚</div></div>
-    <div class="kpi skyblue"><div class="kpi-label">Julho (parcial)</div><div class="kpi-value">210 notas</div><div class="kpi-sub">R$ 209.611,55 · ✅ Fechado 1,55%</div><div class="kpi-fat">✅ 1,55% faturamento</div><div class="kpi-icon">📅</div></div>
+    <div class="kpi orange"><div class="kpi-label">Total Devolvido</div><div class="kpi-value">R$ 1,19M</div><div class="kpi-sub">01/01 a 03/08/2026</div><div class="kpi-fat warn">👍 1,69% do faturamento</div><div class="kpi-icon">💰</div></div>
+    <div class="kpi blue"><div class="kpi-label">Total de Notas</div><div class="kpi-value">1178</div><div class="kpi-sub">Comercial + Suprimentos</div><div class="kpi-icon">📄</div></div>
+    <div class="kpi green"><div class="kpi-label">Ticket Médio</div><div class="kpi-value">R$ 1.029</div><div class="kpi-sub">Por devolução</div><div class="kpi-icon">📊</div></div>
+    <div class="kpi purple"><div class="kpi-label">Principal Motivo</div><div class="kpi-value">35,5%</div><div class="kpi-sub">Desistência · 418 notas</div><div class="kpi-icon">🔍</div></div>
+    <div class="kpi yellow"><div class="kpi-label">Top Transportadora</div><div class="kpi-value">319 notas</div><div class="kpi-sub">Nova Era Express</div><div class="kpi-icon">🚚</div></div>
+    <div class="kpi skyblue"><div class="kpi-label">Agosto (parcial)</div><div class="kpi-value">23 notas</div><div class="kpi-sub">R$ 20.654,83 · Meta ≤ 3%</div><div class="kpi-fat" style="background:rgba(248,81,73,.12);border-color:rgba(248,81,73,.25);color:var(--red)">⚠️ 3,07% faturamento</div><div class="kpi-icon">📅</div></div>
   </div>
   <div class="section-divider"><div class="section-divider-title">Resumo por Mês</div><div class="section-divider-line"></div></div>
   <div class="monthly-summary">
@@ -288,6 +294,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
     <div class="month-card mc-mai"><div class="month-name">Maio · Fechado</div><div class="month-notas">210</div><div class="month-val">R$ 213.541,16</div><span class="month-pct pct-caution">1,85% 👍</span><div class="month-tag">Fechamento</div></div>
     <div class="month-card mc-jun"><div class="month-name">Junho · Fechado</div><div class="month-notas">134</div><div class="month-val">R$ 128.149,10</div><span class="month-pct pct-excellent" style="background:rgba(57,211,83,.15);color:var(--teal)">1,04% ✅</span><div class="month-tag">Melhor mês do ano</div></div>
     <div class="month-card mc-jul"><div class="month-name">Julho · Fechado ✅</div><div class="month-notas">210</div><div class="month-val">R$ 209.611,55</div><span class="month-pct" style="background:rgba(57,211,83,.15);color:var(--teal)">1,55% ✅</span><div class="month-tag">Fechamento ✅ · Meta 3%</div></div>
+    <div class="month-card mc-ago"><div class="month-name">Agosto · Parcial</div><div class="month-notas" style="color:var(--accent2)">23</div><div class="month-val">R$ 20.654,83</div><span class="month-pct pct-warning">3,07% ⚠️</span><div class="month-tag">até 03/08 · Acima da meta</div></div>
   </div>
   <div class="section-divider"><div class="section-divider-title">Devolução vs. Faturamento — Régua 0% a 3% (Meta)</div><div class="section-divider-line"></div></div>
   <div class="perf-meter">
@@ -309,13 +316,15 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
     <!-- Mai 1.85% → 61.7% -->
     <div class="perf-row"><div class="perf-row-header"><span class="perf-row-label">Maio <span style="font-size:10px;color:var(--green);font-weight:700;background:rgba(63,185,80,.12);padding:1px 6px;border-radius:4px;margin-left:4px">✅ Fechado</span> <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:4px">R$ 213.541,16 / R$ 11.538.021,11</span></span><div class="perf-row-right"><span class="perf-pct-badge caution">1,85%</span><span class="perf-status">👍 Bom</span></div></div><div style="position:relative"><div class="perf-bar-track"><div class="perf-bar-fill" style="width:37.0%;background:linear-gradient(90deg,#9e6a03,var(--perf-caution))"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">5%</div></div></div>
     <!-- Jun 1.04% → 34.7% -->
-    <div class="perf-row"><div class="perf-row-header"><span class="perf-row-label">Junho <span style="font-size:10px;color:var(--green);font-weight:700;background:rgba(63,185,80,.12);padding:1px 6px;border-radius:4px;margin-left:4px">✅ Fechado</span> <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:4px">R$ 128.149,10 / R$ 12.356.211,30</span></span><div class="perf-row-right"><span class="perf-pct-badge excellent">1,04%</span><span class="perf-status">✅ Excelente</span></div></div><div style="position:relative"><div class="perf-bar-track"><div class="perf-bar-fill" style="width:21.4%;background:linear-gradient(90deg,#238636,var(--perf-excellent))"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">5%</div></div></div>
+    <div class="perf-row"><div class="perf-row-header"><span class="perf-row-label">Junho <span style="font-size:10px;color:var(--green);font-weight:700;background:rgba(63,185,80,.12);padding:1px 6px;border-radius:4px;margin-left:4px">✅ Fechado</span> <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:4px">R$ 128.149,10 / R$ 12.356.211,30</span></span><div class="perf-row-right"><span class="perf-pct-badge excellent">1,04%</span><span class="perf-status">✅ Excelente</span></div></div><div style="position:relative"><div class="perf-bar-track"><div class="perf-bar-fill" style="width:21.9%;background:linear-gradient(90deg,#238636,var(--perf-excellent))"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">5%</div></div></div>
     <!-- Jul 0.52% → 17.3% -->
-    <div class="perf-row"><div class="perf-row-header"><span class="perf-row-label">Julho <span style="font-size:10px;color:#58a6ff;font-weight:700;background:rgba(56,139,253,.12);padding:1px 6px;border-radius:4px;margin-left:4px">🌿 Parcial</span> <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:4px">R$ 209.611,55 / R$ 13.497.754,19</span></span><div class="perf-row-right"><span class="perf-pct-badge excellent">1,55%</span><span class="perf-status">✅ Fechado</span></div></div><div style="position:relative"><div class="perf-bar-track"><div class="perf-bar-fill" style="width:51.8%;background:linear-gradient(90deg,#238636,var(--perf-excellent))"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">3%</div></div></div>
+    <div class="perf-row"><div class="perf-row-header"><span class="perf-row-label">Julho <span style="font-size:10px;color:var(--teal);font-weight:700;background:rgba(57,211,83,.12);padding:1px 6px;border-radius:4px;margin-left:4px">✅ Fechado</span> <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:4px">R$ 209.611,55 / R$ 13.497.754,19</span></span><div class="perf-row-right"><span class="perf-pct-badge excellent">1,55%</span><span class="perf-status">✅ Fechado</span></div></div><div style="position:relative"><div class="perf-bar-track"><div class="perf-bar-fill" style="width:51.8%;background:linear-gradient(90deg,#238636,var(--perf-excellent))"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">3%</div></div></div>
     <!-- Total 1.62% → 54.0% -->
+    <!-- Ago 3.07% → bar 100% EXCEEDED -->
+    <div class="perf-row"><div class="perf-row-header"><span class="perf-row-label">Agosto <span style="font-size:10px;color:#f0883e;font-weight:700;background:rgba(240,136,62,.12);padding:1px 6px;border-radius:4px;margin-left:4px">🌿 Parcial</span> <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:4px">R$ 20.654,83 / R$ 672.556,15</span></span><div class="perf-row-right"><span class="perf-pct-badge warning">3,07%</span><span class="perf-status">⚠️ +0,07pp acima da meta</span></div></div><div style="position:relative"><div class="perf-bar-track"><div class="perf-bar-fill" style="width:100%;background:linear-gradient(90deg,#b91c1c,var(--red))"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">3%</div></div></div>
     <div class="perf-row" style="padding-top:12px;border-top:1px solid var(--border);margin-top:4px">
-      <div class="perf-row-header"><span class="perf-row-label" style="font-size:14px"><strong>Total do Período</strong> <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:6px">R$ 1.192.365,36 / R$ 70.473.007,38</span></span><div class="perf-row-right"><span class="perf-pct-badge caution" style="font-size:14px;padding:3px 12px">1,69%</span><span class="perf-status" style="font-size:12px">👍 Bom · dentro da meta</span></div></div>
-      <div style="position:relative"><div style="height:16px;background:var(--bg3);border-radius:8px;overflow:hidden"><div style="width:56.4%;height:100%;background:linear-gradient(90deg,#9e6a03,var(--perf-caution));border-radius:8px"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">limite 3%</div></div>
+      <div class="perf-row-header"><span class="perf-row-label" style="font-size:14px"><strong>Total do Período</strong> <span style="font-size:11px;color:var(--text3);font-weight:400;margin-left:6px">R$ 1.213.020,19 / R$ 71.145.563,53</span></span><div class="perf-row-right"><span class="perf-pct-badge caution" style="font-size:14px;padding:3px 12px">1,70%</span><span class="perf-status" style="font-size:12px">👍 Bom · dentro da meta</span></div></div>
+      <div style="position:relative"><div style="height:16px;background:var(--bg3);border-radius:8px;overflow:hidden"><div style="width:56.7%;height:100%;background:linear-gradient(90deg,#9e6a03,var(--perf-caution));border-radius:8px"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">limite 3%</div></div>
       <div class="axis-3"><span>0%</span><span>0,5%</span><span>1%</span><span>1,5%</span><span>2%</span><span>2,5%</span><span>3% ← limite</span></div>
     </div>
     <div class="fat-obs">⚠️ Haverá pequena divergência nos percentuais pois o valor de devolução considera o <strong>valor total da NF</strong> e o faturamento utiliza o <strong>valor líquido</strong>. Jan–Jun: barra de 0–5% (meta 5%). Jul em diante e <strong>Total do Período</strong>: barra de 0–3% (meta 3%). Abril (3,26%) estava dentro da meta de 5%.</div>
@@ -391,7 +400,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 <!-- JUNHO -->
 <div class="page" id="page-jun">
   <div class="kpis"><div class="kpi blue"><div class="kpi-label">Total de Notas</div><div class="kpi-value">134</div><div class="kpi-sub">Junho 2026 · Fechamento</div><div class="kpi-icon">📄</div></div><div class="kpi orange"><div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 128,1K</div><div class="kpi-fat">✅ 1,04% — Melhor mês do ano</div><div class="kpi-icon">💰</div></div><div class="kpi green"><div class="kpi-label">Faturamento</div><div class="kpi-value">R$ 12,36M</div><div class="kpi-sub">Fechamento</div><div class="kpi-icon">🏦</div></div><div class="kpi purple"><div class="kpi-label">Principal Motivo</div><div class="kpi-value">Desistência</div><div class="kpi-sub">50 notas · 37,3%</div><div class="kpi-icon">🔍</div></div></div>
-  <div class="card" style="margin-bottom:16px"><div class="perf-card-header"><div class="card-title"><span>🎯</span>Performance — Junho <span style="font-size:11px;color:var(--green);font-weight:600;text-transform:none;margin-left:4px">✅ Fechado · Melhor mês do ano</span></div><span class="perf-pct-badge excellent" style="font-size:13px;padding:3px 14px">1,04% ✅ Excelente</span></div><div class="card-body"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);flex-wrap:wrap;gap:4px;margin-bottom:10px"><span>Dev: <strong style="color:var(--text)">R$ 128.149,10</strong></span><span>Fat: <strong style="color:var(--text)">R$ 12.356.211,30</strong></span><span>Meta ≤ <strong style="color:var(--red)">5%</strong></span></div><div style="position:relative"><div style="height:16px;background:var(--bg3);border-radius:8px;overflow:hidden"><div style="width:21.4%;height:100%;background:linear-gradient(90deg,#238636,var(--perf-excellent));border-radius:8px"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">5%</div></div><div class="axis-3"><span>0%</span><span>1%</span><span>2%</span><span>3%</span><span>4%</span><span>5% ← limite</span></div></div></div>
+  <div class="card" style="margin-bottom:16px"><div class="perf-card-header"><div class="card-title"><span>🎯</span>Performance — Junho <span style="font-size:11px;color:var(--green);font-weight:600;text-transform:none;margin-left:4px">✅ Fechado · Melhor mês do ano</span></div><span class="perf-pct-badge excellent" style="font-size:13px;padding:3px 14px">1,04% ✅ Excelente</span></div><div class="card-body"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);flex-wrap:wrap;gap:4px;margin-bottom:10px"><span>Dev: <strong style="color:var(--text)">R$ 128.149,10</strong></span><span>Fat: <strong style="color:var(--text)">R$ 12.356.211,30</strong></span><span>Meta ≤ <strong style="color:var(--red)">5%</strong></span></div><div style="position:relative"><div style="height:16px;background:var(--bg3);border-radius:8px;overflow:hidden"><div style="width:21.9%;height:100%;background:linear-gradient(90deg,#238636,var(--perf-excellent));border-radius:8px"></div></div><div class="limit-line" style="left:100%"></div><div class="limit-label" style="left:100%">5%</div></div><div class="axis-3"><span>0%</span><span>1%</span><span>2%</span><span>3%</span><span>4%</span><span>5% ← limite</span></div></div></div>
   <div class="section-divider"><div class="section-divider-title">Almoxarifado — Junho</div><div class="section-divider-line"></div></div>
   <div class="almox-grid almox-2" style="max-width:600px"><div class="almox-card almox-103"><div class="almox-num">69</div><div class="almox-label">ALM 103</div><div class="almox-desc">Retorno à empresa</div><div class="almox-val">R$ 55.833,21</div></div><div class="almox-card almox-105"><div class="almox-num">65</div><div class="almox-label">ALM 105</div><div class="almox-desc">Em coleta</div><div class="almox-val">R$ 72.315,89</div></div></div>
   <div class="grid-2"><div class="card"><div class="card-header"><div class="card-title"><span>🚚</span>Transportadoras — Jun</div></div><div class="card-body"><div class="bar-list" id="transp-jun"></div></div></div><div class="card"><div class="card-header"><div class="card-title"><span>🔎</span>Motivos — Jun</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-motivos-jun" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-motivos-jun"></div></div></div></div></div>
@@ -441,16 +450,62 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
   <div class="grid-2"><div class="card"><div class="card-header"><div class="card-title"><span>🚚</span>Transportadoras — Jul</div></div><div class="card-body"><div class="bar-list" id="transp-jul"></div></div></div><div class="card"><div class="card-header"><div class="card-title"><span>🔎</span>Motivos — Jul</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-motivos-jul" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-motivos-jul"></div></div></div></div></div>
   <div class="grid-2" style="margin-top:16px"><div class="card"><div class="card-header"><div class="card-title"><span>🛒</span>Marketplace — Jul</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-mkt-jul" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-mkt-jul"></div></div></div></div><div class="card"><div class="card-header"><div class="card-title"><span>📦</span>Produtos — Jul</div></div><div class="card-body"><div class="bar-list" id="prod-jul"></div></div></div></div>
 </div>
+<!-- AGOSTO -->
+<div class="page" id="page-ago">
+  <div class="jul-banner" style="border-color:rgba(240,136,62,.3);background:rgba(50,20,5,.7);">
+    <span style="font-size:22px">⚠️</span>
+    <div><div style="font-size:13px;font-weight:700;color:var(--accent2);">Agosto 2026 — Em Andamento · Meta ≤ 3% · Resultado parcial: 3,07% ⚠️</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:2px;">Início de mês acima da meta. Fat. parcial R$ 672.556,15 · Dev. R$ 20.654,83 · 23 notas · até 03/08</div></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi blue"><div class="kpi-label">Total de Notas</div><div class="kpi-value">23</div><div class="kpi-sub">Agosto · até 03/08/2026</div><div class="kpi-icon">📄</div></div>
+    <div class="kpi orange"><div class="kpi-label">Valor Devolvido</div><div class="kpi-value">R$ 20,7K</div><div class="kpi-sub">Agosto · parcial</div><div class="kpi-fat" style="background:rgba(248,81,73,.12);border-color:rgba(248,81,73,.25);color:var(--red)">⚠️ 3,07% faturamento</div><div class="kpi-icon">💰</div></div>
+    <div class="kpi green"><div class="kpi-label">Faturamento</div><div class="kpi-value">R$ 672,6K</div><div class="kpi-sub">Parcial até 03/08</div><div class="kpi-icon">🏦</div></div>
+    <div class="kpi" style="background:var(--bg2);border:1px solid rgba(248,81,73,.35);"><div style="position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0;background:linear-gradient(90deg,#b91c1c,var(--red))"></div><div class="kpi-label">Meta do Mês</div><div class="kpi-value" style="color:var(--red)">≤ 3,00%</div><div class="kpi-sub">3,07% · +0,07pp acima da meta</div><div class="kpi-icon">🎯</div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="perf-card-header">
+      <div class="card-title"><span>🎯</span>Performance — Agosto &nbsp;<span style="font-size:11px;color:var(--accent2);font-weight:600;text-transform:none;letter-spacing:0">🌿 Parcial · Régua 0–3%</span></div>
+      <span class="perf-pct-badge warning" style="font-size:13px;padding:3px 14px">3,07% ⚠️ Acima da Meta</span>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);flex-wrap:wrap;gap:4px;margin-bottom:10px">
+        <span>Dev: <strong style="color:var(--text)">R$ 20.654,83</strong></span>
+        <span>Fat: <strong style="color:var(--text)">R$ 672.556,15</strong></span>
+        <span>Meta ≤ <strong style="color:var(--red)">3%</strong> · <strong style="color:var(--red)">3,07%</strong> <span style="color:var(--text3)">(+0,07pp acima — faturamento ainda baixo)</span></span>
+      </div>
+      <div style="position:relative">
+        <div style="height:16px;background:var(--bg3);border-radius:8px;overflow:hidden">
+          <div style="width:100%;height:100%;background:linear-gradient(90deg,#b91c1c,var(--red));border-radius:8px"></div>
+        </div>
+        <div class="limit-line" style="left:100%"></div>
+        <div class="limit-label" style="left:100%">3%</div>
+      </div>
+      <div class="axis-3"><span>0%</span><span>0,5%</span><span>1%</span><span>1,5%</span><span>2%</span><span>2,5%</span><span>3% ← limite</span></div>
+      <div style="margin-top:12px;padding:10px 14px;background:rgba(248,81,73,.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;font-size:12px;color:#f4a8a5;line-height:1.6;">
+        ⚠️ O faturamento parcial de agosto ainda é muito baixo (R$ 672K). Qualquer devolução nesse início de mês eleva muito o percentual. Acompanhe a evolução conforme o faturamento cresce.
+      </div>
+    </div>
+  </div>
+  <div class="section-divider"><div class="section-divider-title">Almoxarifado — Agosto</div><div class="section-divider-line"></div></div>
+  <div class="almox-grid almox-2" style="max-width:600px">
+    <div class="almox-card almox-103"><div class="almox-num">12</div><div class="almox-label">ALM 103 — Retorno</div><div class="almox-desc">Notas retornaram para a empresa</div><div class="almox-val">R$ 10.140,35</div></div>
+    <div class="almox-card almox-105"><div class="almox-num">11</div><div class="almox-label">ALM 105 — Em Coleta</div><div class="almox-desc">Notas em processo de coleta</div><div class="almox-val">R$ 10.514,48</div></div>
+  </div>
+  <div class="grid-2"><div class="card"><div class="card-header"><div class="card-title"><span>🚚</span>Transportadoras — Ago</div></div><div class="card-body"><div class="bar-list" id="transp-ago"></div></div></div><div class="card"><div class="card-header"><div class="card-title"><span>🔎</span>Motivos — Ago</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-motivos-ago" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-motivos-ago"></div></div></div></div></div>
+  <div class="grid-2" style="margin-top:16px"><div class="card"><div class="card-header"><div class="card-title"><span>🛒</span>Marketplace — Ago</div></div><div class="card-body"><div class="pie-container"><svg class="pie-svg" id="pie-mkt-ago" width="150" height="150" viewBox="0 0 150 150"></svg><div class="pie-legend" id="legend-mkt-ago"></div></div></div></div><div class="card"><div class="card-header"><div class="card-title"><span>📦</span>Produtos — Ago</div></div><div class="card-body"><div class="bar-list" id="prod-ago"></div></div></div></div>
+</div>
+
 <script>
 const VA_TRANSP=[
-  {name:'Nova Era Express',count:181},{name:'Tempo Justo',count:81},
-  {name:'Getlar',count:76},{name:'Transbarbosa',count:68},
+  {name:'Nova Era Express',count:189},{name:'Tempo Justo',count:81},
+  {name:'Getlar',count:76},{name:'Transbarbosa',count:70},
   {name:'Trans Sua Log',count:80},{name:'TS RJ / STL',count:59},
-  {name:'MTC Logistica',count:36},{name:'Trans Express',count:26},
+  {name:'MTC Logistica',count:37},{name:'Trans Express',count:26},
 ];
 const VA_MKT=[
-  {name:'Shopee',count:255},{name:'Mercado Livre',count:193},
-  {name:'Magazine Luiza',count:164},{name:'Via Varejo',count:23},
+  {name:'Shopee',count:262},{name:'Mercado Livre',count:195},
+  {name:'Magazine Luiza',count:166},{name:'Via Varejo',count:23},
   {name:'Madeira Madeira',count:20},{name:'Asteca',count:17},
   {name:'Web Continental',count:6},{name:'Zema',count:5},
 ];
@@ -458,10 +513,10 @@ const VA_CM=['#e05a2b','#388bfd','#bc8cff','#f0883e','#3fb950','#e3b341','#79c0f
 
 const DATA={
   geral:{
-    transp:[{name:'Nova Era Express Transportes Ltda',count:306},{name:'Transbarbosa Soluções Logistica Ltda',count:189},{name:'Trans Sua Log Transporte e Logistica Ltda',count:144},{name:'Tempo Justo Transportes Logistica',count:92},{name:'Getlar Transp e Serv de Armazenagem',count:129},{name:'RGE Soluções Ltda',count:106},{name:'TS RJ / STL Transportes',count:85},{name:'MTC Logistica Company Ltda',count:42}],
-    motivos:[{name:'Desistência',count:412},{name:'Avaria',count:246},{name:'Atraso na Entrega',count:289},{name:'Entrega Incorreta',count:72},{name:'Refaturamento de Notas',count:73},{name:'Sinistro / Extravio',count:13},{name:'Prod. Etiquetado Errado',count:2}],
-    mkt:[{name:'N/A (Suprimentos)',count:315},{name:'Shopee',count:362},{name:'Magazine Luiza',count:202},{name:'Mercado Livre',count:191},{name:'Asteca',count:24},{name:'Madeira Madeira',count:14},{name:'CNova',count:15},{name:'Zema',count:1},{name:'Amazon',count:1}],
-    prod:[{name:'Guarda Roupa Easy Slim 8 Pts',count:521},{name:'Guarda Roupa 06 Pts Easy Slim 2025',count:117},{name:'Mesa Easy Line c/4 Cad Easy Line',count:68},{name:'Conj Mesa 1,70 Apogeu c/06 Cad.',count:54},{name:'Guarda Roupa Toronto 2 Pts Plus',count:49},{name:'Comoda Lopas Easy Like',count:44},{name:'Conj Mesa 0,90 Celebrare c/04 Cad.',count:24},{name:'Comoda Vedra 7GAV 2 Pts',count:16}]
+    transp:[{name:'Nova Era Express Transportes Ltda',count:319},{name:'Transbarbosa Soluções Logistica Ltda',count:193},{name:'Trans Sua Log Transporte e Logistica Ltda',count:145},{name:'Tempo Justo Transportes Logistica',count:92},{name:'Getlar Transp e Serv de Armazenagem',count:129},{name:'RGE Soluções Ltda',count:108},{name:'TS RJ / STL Transportes',count:85},{name:'MTC Logistica Company Ltda',count:43}],
+    motivos:[{name:'Desistência',count:418},{name:'Avaria',count:252},{name:'Atraso na Entrega',count:298},{name:'Entrega Incorreta',count:72},{name:'Refaturamento de Notas',count:73},{name:'Sinistro / Extravio',count:13},{name:'Prod. Etiquetado Errado',count:2}],
+    mkt:[{name:'N/A (Suprimentos)',count:315},{name:'Shopee',count:376},{name:'Magazine Luiza',count:206},{name:'Mercado Livre',count:195},{name:'Asteca',count:24},{name:'Madeira Madeira',count:14},{name:'CNova',count:15},{name:'Zema',count:1},{name:'Amazon',count:1}],
+    prod:[{name:'Guarda Roupa Easy Slim 8 Pts',count:530},{name:'Guarda Roupa 06 Pts Easy Slim 2025',count:121},{name:'Mesa Easy Line c/4 Cad Easy Line',count:68},{name:'Conj Mesa 1,70 Apogeu c/06 Cad.',count:56},{name:'Guarda Roupa Toronto 2 Pts Plus',count:49},{name:'Comoda Lopas Easy Like',count:44},{name:'Conj Mesa 0,90 Celebrare c/04 Cad.',count:24},{name:'Comoda Vedra 7GAV 2 Pts',count:16}]
   },
   jan:{
     transp:[{name:'Nova Era Express Transportes Ltda',count:27},{name:'Trans Sua Log Transporte e Logistica Ltda',count:19},{name:'RGE Transportadora Ltda',count:8},{name:'TS RJ / STL Transportes',count:6},{name:'Getlar Transp e Serv de Armazenagem',count:5},{name:'Transbarbosa Soluções Logistica Ltda',count:4}],
@@ -504,6 +559,12 @@ const DATA={
     motivos:[{name:'Atraso na Entrega',count:83},{name:'Desistência',count:51},{name:'Avaria',count:37},{name:'Refaturamento de Notas',count:14},{name:'Entrega Incorreta',count:10},{name:'Prod. Etiquetado Errado',count:1}],
     mkt:[{name:'Shopee',count:93},{name:'Mercado Livre',count:52},{name:'Magazine Luiza',count:46},{name:'CNova',count:2},{name:'Zema',count:1},{name:'Amazon',count:1}],
     prod:[{name:'Guarda Roupa Easy Slim 8 Pts',count:81},{name:'Guarda Roupa 06 Pts Easy Slim 2025',count:24},{name:'Mesa Easy Line c/4 Cad Easy Line',count:14},{name:'Conj Mesa 1,70 Apogeu c/06 Cad.',count:11},{name:'Comoda Lopas Easy Like',count:10},{name:'Guarda Roupa Toronto 2 Pts Plus',count:8},{name:'Comoda Horizontal Maggiore New 6GAV',count:4},{name:'Sapateira Esthela 2024',count:3}]
+  },
+  ago:{
+    transp:[{name:'Nova Era Express Transportes Ltda',count:13},{name:'Transbarbosa Soluções Logistica Ltda',count:4},{name:'F2L Express Ltda',count:2},{name:'RGE Soluções Ltda',count:2},{name:'MTC Logistica Company Ltda',count:1},{name:'Trans Sua Log Transporte e Logistica Ltda',count:1}],
+    motivos:[{name:'Atraso na Entrega',count:9},{name:'Desistência',count:6},{name:'Avaria',count:6},{name:'Falta de Volume',count:2}],
+    mkt:[{name:'Shopee',count:14},{name:'Magazine Luiza',count:4},{name:'Mercado Livre',count:4}],
+    prod:[{name:'Guarda Roupa Easy Slim 8 Pts',count:9},{name:'Guarda Roupa 06 Pts Easy Slim 2025',count:4},{name:'Conj Mesa 1,70 Apogeu c/06 Cad.',count:2},{name:'Sapateira Esthela 2024',count:2},{name:'Mesa Easy Line c/4 Cad Easy Line',count:2},{name:'Cabeceira Box 1,60 Easy Glow',count:1}]
   }
 };
 
@@ -561,14 +622,14 @@ function renderPie(svgId,legendId,items,colors){
 }
 function initAll(){
   renderVaBars(); renderVaPie();
-  ['geral','jan','fev','mar','abr','mai','jun','jul'].forEach(k=>{
+  ['geral','jan','fev','mar','abr','mai','jun','jul','ago'].forEach(k=>{
     renderBars(`transp-${k}`,DATA[k].transp,C_T);
     renderBars(`prod-${k}`,DATA[k].prod,C_P);
     renderPie(`pie-motivos-${k}`,`legend-motivos-${k}`,DATA[k].motivos,C_M);
     renderPie(`pie-mkt-${k}`,`legend-mkt-${k}`,DATA[k].mkt,C_K);
   });
 }
-const TAB_IDS=['atual','geral','jan','fev','mar','abr','mai','jun','jul'];
+const TAB_IDS=['geral','jan','fev','mar','abr','mai','jun','jul','ago','atual'];
 function showTab(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
