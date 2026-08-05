@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title id="fbTitulo">Dashboard Assistência Técnica Easy House — 20/07/2026</title>
+<title>Dashboard Assistência Técnica Easy House</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root{--bg:#0b0e1a;--surface:#111629;--surface2:#1a2040;--border:#252d4a;--text:#e2e8f0;--muted:#64748b;--blue:#3b82f6;--ok:#22c55e;--warn:#eab308;--danger:#ef4444;--accent:#f97316;--font:'Syne',system-ui,sans-serif;--mono:'DM Mono',monospace}
@@ -156,20 +156,18 @@
 <header>
   <div>
     <div class="logo">🛠 Assistência Técnica · Asteca</div>
-    <div class="subtitle" id="fbSubtitulo">Fonte: Relatório Easy House · 20/07/2026 · Meta: 15 dias para envio · DxD vs 15/07 (v2)</div>
+    <div class="subtitle" id="fbSubtitulo">Fonte: Relatório Easy House · Meta: 15 dias para envio · dados via Firebase</div>
   </div>
   <div class="fb-toolbar">
     <span id="fbBadge" class="fb-badge warn">🔌 Verificando Firebase…</span>
     <input type="file" id="fbFileInput" accept=".xlsx,.xls" style="display:none">
     <button id="fbImportBtn" class="fb-btn" onclick="fbAbrirImport()" title="Importar novo relatório xlsx">📥 Importar relatório</button>
     <button id="fbVerBtn" class="fb-btn secondary" onclick="fbMostrarUltimo()" title="Ver último import salvo no Firebase">🗂 Último import</button>
-    <div class="date-badge">Atualizado em <span id="fbDataRef" style="color:var(--text);font-weight:600">20/07/2026</span></div>
+    <div class="date-badge">Atualizado em <span id="fbDataRef" style="color:var(--text);font-weight:600">—</span></div>
   </div>
 </header>
 
-<div class="alert-banner" id="fbBanner">
-  🟡 &nbsp;<strong>76 itens / 49 pedidos</strong> pendentes (-12 / -12 vs 15/07 v2) · <strong>5 itens em atraso</strong> (6,6%) +1 · Atraso médio: <strong>5,1d</strong> ⬆ · ✅ <strong>ZERO Críticos!</strong> (10ª) · ⚠ <strong>1 Moderado</strong> (quebrou 4ª ZERO Mod) · Maior atraso 27d (+5d)
-</div>
+<div class="alert-banner" id="fbBanner" style="display:none"></div>
 
 <div class="nav-tabs">
   <button class="nav-tab active" onclick="showTab('resumo',this)">📊 Resumo</button>
@@ -182,351 +180,34 @@
 </div>
 
 <main>
-
-<!-- ═══ RESUMO ═══ -->
-<div id="tab-resumo" class="tab-pane active">
-  <div class="kpi-grid" id="fbKpisResumo">
-    <div class="kpi-card w"><div class="kpi-label">Total de Itens</div><div class="kpi-value w">76 <span class="delta dn">-12</span></div><div class="kpi-sub">49 pedidos únicos · operação enviou 93 em 5d</div><div class="kpi-icon">📦</div></div>
-    <div class="kpi-card ok"><div class="kpi-label">Pendentes de Envio</div><div class="kpi-value ok">76</div><div class="kpi-sub">100% — sem NF emitida</div><div class="kpi-icon">🚨</div></div>
-    <div class="kpi-card w"><div class="kpi-label">Em Atraso (&gt;15 dias)</div><div class="kpi-value w">5 <span class="delta up">+1</span></div><div class="kpi-sub">6,6% do total · 3 pedidos ⚠ · 1 Mod ⚠</div><div class="kpi-icon">⏰</div></div>
-    <div class="kpi-card w"><div class="kpi-label">Atraso Médio</div><div class="kpi-value w">5,1d <span class="delta up">+1,3d</span></div><div class="kpi-sub">SP (5 atr, 1 Mod) · MG e RJ zerados ✅✅</div><div class="kpi-icon">📅</div></div>
-    <div class="kpi-card d"><div class="kpi-label">Maior Atraso</div><div class="kpi-value d">27d <span class="delta up">+5d</span></div><div class="kpi-sub">#2128015 Juliana (SP) — 🟠 Moderado · Carmem ENTREGUE ✅</div><div class="kpi-icon">📌</div></div>
+  <div id="tab-resumo" class="tab-pane active">
+    <div id="fbResumoContent" class="fb-empty-state">⏳ Aguardando dados do Firebase…</div>
   </div>
-  <div class="kpi-grid-3" id="fbKpisValor">
-    <div class="kpi-card ok"><div class="kpi-label">Valor Total Pendente</div><div class="kpi-value ok" style="font-size:22px">R$ 3.313,68 <span class="delta dn">-35%</span></div><div class="kpi-sub">vs R$5.067 em 15/07 v2 — R$1.753 enviados</div></div>
-    <div class="kpi-card ok"><div class="kpi-label">Valor em Atraso</div><div class="kpi-value ok" style="font-size:22px">R$ 34,55 <span class="delta dn">-57%</span></div><div class="kpi-sub">vs R$80 em 15/07 v2 — Carmem R$78 ✅ entregue</div></div>
-    <div class="kpi-card d"><div class="kpi-label">Pedido Mais Antigo</div><div class="kpi-value d" style="font-size:22px">27 dias</div><div class="kpi-sub">#2128015 Juliana (SP) — 🟠 Moderado · resolver!</div></div>
+  <div id="tab-motivos" class="tab-pane">
+    <div id="fbMotivosContent" class="fb-empty-state">⏳ Aguardando dados do Firebase…</div>
   </div>
-
-  <div class="chart-grid-3">
-    <div class="chart-card">
-      <div class="chart-title">Distribuição por Faixa</div>
-      <div class="chart-desc">itens pendentes por severidade</div>
-      <div class="chart-wrap" style="height:200px"><canvas id="cDonut"></canvas>
-        <div class="donut-center"><div id="fbDonutTotal" style="font-size:26px;font-weight:800">76</div><div class="donut-label">itens</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px">
-        <div style="display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono)"><span style="width:10px;height:10px;border-radius:50%;background:#22c55e;flex-shrink:0"></span>No Prazo 71</div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono)"><span style="width:10px;height:10px;border-radius:50%;background:#eab308;flex-shrink:0"></span>Leve 4</div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono)"><span style="width:10px;height:10px;border-radius:50%;background:#f97316;flex-shrink:0"></span>Moderado 0 ✅</div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono)"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;flex-shrink:0"></span>Crítico 0 ✅</div>
-      </div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Pendentes por Região</div>
-      <div class="chart-desc">volume e atraso por região</div>
-      <div class="chart-wrap" style="height:200px"><canvas id="cRegiao"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Volume por Data do Pedido</div>
-      <div class="chart-desc">itens pendentes por data de abertura</div>
-      <div class="chart-wrap" style="height:200px"><canvas id="cTimeline"></canvas></div>
-    </div>
+  <div id="tab-regioes" class="tab-pane">
+    <div id="fbRegioesContent" class="fb-empty-state">⏳ Aguardando dados do Firebase…</div>
   </div>
-
-  <div class="chart-grid-2">
-    <div class="chart-card">
-      <div class="section-title">Distribuição por Faixa de Atraso</div>
-      <div id="fbMeter"><div class="meter-row"><div class="meter-label">✅ No prazo (0–15 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:93.4%;background:var(--ok)"></div></div><div class="meter-count">71</div></div>
-      <div class="meter-row"><div class="meter-label">🟡 Leve (16–30 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:5.3%;background:var(--warn)"></div></div><div class="meter-count">4</div></div>
-      <div class="meter-row"><div class="meter-label">🟠 Moderado (31–45 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:0%;background:var(--accent)"></div></div><div class="meter-count" style="color:var(--accent)">0</div></div>
-      <div class="meter-row"><div class="meter-label">🟢 Crítico (&gt;45 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:0%;background:var(--ok)"></div></div><div class="meter-count" style="color:var(--ok)">0</div></div>
-      <div style="margin-top:14px;padding:12px;background:rgba(249,115,22,.07);border-radius:8px;border:1px solid rgba(249,115,22,.25)">
-        <div style="font-size:11px;font-family:var(--mono);color:#fb923c;line-height:1.7">
-          🟡 <strong>5 dias: 93 itens enviados · Carmem entregue ✅ · ⚠ Juliana virou Moderado · 10ª captura ZERO Críticos · quebrou 4ª ZERO Mod</strong>.<br>
-          ✅ Julho avançou muito: 245→338 enviados (+93) · 80→71 pendentes · valor pendente -35% (R$5.067→R$3.314).<br>
-          🟠 <strong>1 Moderado + 2 Leves (todos SP)</strong>: #2128015 Juliana (27d Mod, R$1,85) + #2252767 Maxwel (20d×2, R$19,24) + #2254910 Amanda (20d×2, R$13,46).
-        </div>
-      </div>
-      <div style="margin-top:10px"><canvas id="cFaixa" style="max-height:80px"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="section-title">Pendentes por UF</div>
-      <div id="fbUFCards"><div><div class="uf-header"><span style="font-weight:700">🔵 SP — São Paulo</span><span style="color:var(--muted);font-family:var(--mono);font-size:10px">46 itens · 5,8d · <span style="color:var(--warn)">5 atrasados (4 Leves + 1 Mod) ⚠</span></span></div><div class="uf-bar-bg"><div class="uf-bar" style="width:100%;background:linear-gradient(90deg,var(--blue),var(--warn))"></div></div></div>
-      <div><div class="uf-header"><span style="font-weight:700">🟠 MG — Minas Gerais</span><span style="color:var(--muted);font-family:var(--mono);font-size:10px">17 itens · 4,4d · <span style="color:var(--ok)">0 atrasados ✅ ⬇⬇</span></span></div><div class="uf-bar-bg"><div class="uf-bar" style="width:37.0%;background:linear-gradient(90deg,var(--blue),var(--ok))"></div></div></div>
-      <div><div class="uf-header"><span style="font-weight:700">🔴 RJ — Rio de Janeiro</span><span style="color:var(--muted);font-family:var(--mono);font-size:10px">13 itens · 3,5d · <span style="color:var(--ok)">0 atrasados ✅ (7ª) ⬇</span></span></div><div class="uf-bar-bg"><div class="uf-bar" style="width:28.3%;background:linear-gradient(90deg,var(--blue),var(--ok))"></div></div></div></div>
-      <div style="margin-top:14px;padding:10px;background:rgba(249,115,22,.07);border-radius:8px;border:1px solid rgba(249,115,22,.2)">
-        <div style="font-size:10px;font-family:var(--mono);color:#fb923c">🟡 SP concentra 100% dos atrasos: 4 Leves + 1 Moderado (Juliana 27d, Maxwel 20d×2, Amanda 20d×2) · ⬇⬇ MG melhorou (25→17) sem atrasos ✅ · ✅ RJ mantém 0 atrasos (7ª captura consecutiva, 17→13 ⬇) · % global: 6,6% ⬆</div>
-      </div>
-    </div>
+  <div id="tab-pecas" class="tab-pane">
+    <div id="fbPecasContent" class="fb-empty-state">⏳ Aguardando dados do Firebase…</div>
   </div>
-</div>
-
-<!-- ═══ MOTIVOS ═══ -->
-<div id="tab-motivos" class="tab-pane">
-  <div class="kpi-grid-3" id="fbKpisMotivos">
-    <div class="kpi-card d"><div class="kpi-label">Principal Causa</div><div class="kpi-value d" style="font-size:18px">Peça Quebrada no Volume</div><div class="kpi-sub">35 ocorrências — 46,1% ⬆</div><div class="kpi-icon">📦</div></div>
-    <div class="kpi-card w"><div class="kpi-label">2ª Causa</div><div class="kpi-value w" style="font-size:18px">Faltou Peça no Volume</div><div class="kpi-sub">13 ocorrências — 17,1% ⬇</div><div class="kpi-icon">📦</div></div>
-    <div class="kpi-card w"><div class="kpi-label">3ª Causa</div><div class="kpi-value w" style="font-size:18px">Quina Batida</div><div class="kpi-sub">6 ocorrências — 7,9% ⬆⬆</div><div class="kpi-icon">📐</div></div>
+  <div id="tab-criticos" class="tab-pane">
+    <div id="fbAtrasosContent" class="fb-empty-state">⏳ Aguardando dados do Firebase…</div>
   </div>
-  <div class="chart-grid-2">
-    <div class="chart-card">
-      <div class="chart-title">Ranking de Motivos</div>
-      <div class="chart-desc">frequência absoluta de cada causa</div>
-      <div id="fbMotivosRanking"><div class="motivo-row"><div class="motivo-name">🔴 Peça Quebrada no Volume ⬇</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:100%;background:var(--danger)"></div></div><div class="motivo-count" style="color:var(--danger)">35</div></div>
-      <div class="motivo-row"><div class="motivo-name">🟡 Faltou Peça no Volume ⬇</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:37%;background:var(--warn)"></div></div><div class="motivo-count" style="color:var(--warn)">13</div></div>
-      <div class="motivo-row"><div class="motivo-name">🟡 Quina Batida ⬆⬆</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:17%;background:var(--warn)"></div></div><div class="motivo-count" style="color:var(--warn)">6</div></div>
-      <div class="motivo-row"><div class="motivo-name">🔵 Etiquetagem Incorreta CD ⬇</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:11%;background:var(--blue)"></div></div><div class="motivo-count" style="color:var(--blue)">4</div></div>
-      <div class="motivo-row"><div class="motivo-name">🔵 Peça Quebrada ⬆</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:11%;background:var(--blue)"></div></div><div class="motivo-count" style="color:var(--blue)">4</div></div>
-      <div class="motivo-row"><div class="motivo-name">🔵 Faltou Kit Ferragem ⬇⬇</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:11%;background:var(--blue)"></div></div><div class="motivo-count" style="color:var(--blue)">4</div></div>
-      <div class="motivo-row"><div class="motivo-name">🔵 Espelho Quebrado ⬇</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:11%;background:var(--blue)"></div></div><div class="motivo-count" style="color:var(--blue)">4</div></div>
-      <div class="motivo-row"><div class="motivo-name">⚪ Outros (5 causas) 🆕</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:17%;background:var(--border)"></div></div><div class="motivo-count" style="color:var(--muted)">6</div></div></div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div class="chart-card">
-        <div class="chart-title">Distribuição por Categoria</div>
-        <div class="chart-desc">agrupamento por origem do problema</div>
-        <div class="chart-wrap" style="height:170px"><canvas id="cMotivos"></canvas></div>
-      </div>
-      <div class="chart-card" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
-        <div id="fbCatBoxes"><div><div style="font-size:22px;font-weight:800;color:var(--warn)">1</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Logística — Transporte (1,3%) 🆕</div></div>
-        <div><div style="font-size:22px;font-weight:800;color:var(--danger)">49</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Qualidade — Produto (64,5%) ⬆</div></div>
-        <div><div style="font-size:22px;font-weight:800;color:var(--accent)">22</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Processos — Operac. (28,9%) ⬇⬇</div></div></div>
-      </div>
-    </div>
+  <div id="tab-comparativo" class="tab-pane">
+    <div id="fbCompContent" class="fb-empty-state">⏳ Aguardando dados do Firebase…</div>
   </div>
-</div>
-
-<!-- ═══ REGIÕES ═══ -->
-<div id="tab-regioes" class="tab-pane">
-  <div class="chart-grid-2">
-    <div class="chart-card"><div class="chart-title">Itens Pendentes por UF</div><div class="chart-desc">total pendente e em atraso por estado</div><div class="chart-wrap tall"><canvas id="cUFBars"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">Composição Regional</div><div class="chart-desc">distribuição proporcional por UF</div><div class="chart-wrap" style="height:200px"><canvas id="cUFDonut"></canvas></div></div>
+  <div id="tab-pedidos" class="tab-pane">
+    <div id="fbPedidosContent" class="fb-empty-state">⏳ Aguardando dados do Firebase…</div>
   </div>
-  <div class="chart-grid-2">
-    <div class="table-card" style="margin-bottom:0">
-      <div class="section-title">Detalhamento por UF</div>
-      <table><thead><tr><th>UF</th><th>Pendentes</th><th>Em Atraso</th><th>No Prazo</th><th>% Atraso</th><th>Média dias</th><th>Status</th></tr></thead>
-      <tbody id="fbRegioesUF">
-        <tr><td><strong>SP</strong></td><td style="font-weight:700;color:var(--blue)">46</td><td style="font-weight:700;color:var(--warn)">5</td><td style="color:var(--ok)">41</td><td>10,9%</td><td style="font-family:var(--mono)">5,8d</td><td><span class="badge b-d">4 Leves + 1 Mod ⚠</span></td></tr>
-        <tr><td><strong>MG</strong></td><td style="font-weight:700;color:var(--blue)">17</td><td style="font-weight:700;color:var(--ok)">0</td><td style="color:var(--ok)">17</td><td>0,0%</td><td style="font-family:var(--mono)">4,4d</td><td><span class="badge b-ok">✅ Zerado ⬇⬇</span></td></tr>
-        <tr><td><strong>RJ</strong></td><td style="font-weight:700;color:var(--blue)">13</td><td style="font-weight:700;color:var(--ok)">0</td><td style="color:var(--ok)">13</td><td>0,0%</td><td style="font-family:var(--mono)">3,5d</td><td><span class="badge b-ok">✅ Zerado (7ª) ⬇</span></td></tr>
-      </tbody></table>
-    </div>
-    <div class="table-card" style="margin-bottom:0">
-      <div class="section-title">Detalhamento por Região</div>
-      <table><thead><tr><th>Região</th><th>Pendentes</th><th>Em Atraso</th><th>% Atraso</th><th>Média</th></tr></thead>
-      <tbody id="fbRegioesReg">
-        <tr><td>SP/SUL</td><td style="font-weight:700;color:var(--blue)">46</td><td style="color:var(--warn);font-weight:700">5</td><td style="font-family:var(--mono)">10,9%</td><td style="font-family:var(--mono)">5,8d</td></tr>
-        <tr><td>MG/RJ/ES</td><td style="font-weight:700;color:var(--blue)">30</td><td style="color:var(--ok);font-weight:700">0 ✅</td><td style="font-family:var(--mono)">0,0%</td><td style="font-family:var(--mono)">4,0d</td></tr>
-      </tbody></table>
-      <div id="fbRegioesResumoBox" style="margin-top:14px;padding:12px;background:rgba(34,197,94,.08);border-radius:8px;border:1px solid rgba(34,197,94,.2)">
-        <div id="fbRegioesResumo" style="font-size:10px;font-family:var(--mono);color:#86efac;line-height:1.6">🟡 SP: 5 atrasos (4 Leves + 1 Mod) — Juliana 27d Mod (R$1,85) + Maxwel 20d×2 (R$19) + Amanda 20d×2 (R$13) · MG melhorou (25→17) sem atrasos ✅ · RJ zerado pela 7ª captura consecutiva.<br>⚠ Quebrou 4ª ZERO Mod · ✅ Mantém ZERO Críticos 10ª captura.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ PEÇAS ═══ -->
-<div id="tab-pecas" class="tab-pane">
-  <div class="chart-grid-2">
-    <div class="chart-card"><div class="chart-title">Top 10 Peças com Mais Pendências</div><div class="chart-desc">por quantidade de unidades em aberto (cor = urgência)</div><div class="chart-wrap tall"><canvas id="cPecas"></canvas></div></div>
-    <div class="table-card" style="margin-bottom:0">
-      <div class="section-title">Detalhamento Top 10</div>
-      <table><thead><tr><th>#</th><th>Descrição</th><th>Qtd</th><th>Pedidos</th><th>Máx. Dias</th></tr></thead>
-      <tbody id="pecasTableBody"></tbody></table>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ ATRASOS ═══ -->
-<div id="tab-criticos" class="tab-pane">
-  <div style="background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.25);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:11px;font-family:var(--mono);color:#93c5fd">
-    📏 <strong>Classificação de atraso desta aba:</strong> 🔴 Crítico (&gt; 15 dias) · 🟠 Moderado (10 a 15 dias) · 🟡 Leve (até 10 dias)
-  </div>
-  <div class="kpi-grid-3" id="fbKpisAtrasos">
-    <div class="kpi-card d"><div class="kpi-label">🔴 Itens com Atraso Crítico (&gt; 15 dias)</div><div class="kpi-value d">5</div><div class="kpi-sub">3 pedidos · SP 100% · R$ 34,55 · máx 27d</div><div class="kpi-icon">🚨</div></div>
-    <div class="kpi-card w"><div class="kpi-label">🟠 Itens com Atraso Moderado (10 a 15 dias)</div><div class="kpi-value w">7</div><div class="kpi-sub">3 pedidos · MG (2) + SP (1) · R$ 269,49</div><div class="kpi-icon">⚠</div></div>
-    <div class="kpi-card ok"><div class="kpi-label">🟡 Itens com Atraso Leve (até 10 dias)</div><div class="kpi-value ok">64</div><div class="kpi-sub">43 pedidos · SP 21 + MG 13 + RJ 9 · R$ 3.009,64</div><div class="kpi-icon">🟢</div></div>
-  </div>
-  <div class="table-card">
-    <div class="section-title" id="fbAtrCritTitle">🔴 Itens com Atraso Crítico (&gt; 15 dias) — 3 pedidos · 5 itens · SP 100%</div>
-    <div class="crit-row hdr"><span>Nº Pedido</span><span>Cliente</span><span>Cidade/UF</span><span>Data Pedido</span><span>Dias</span></div>
-    <div id="critBody"></div>
-  </div>
-  <div class="table-card" style="margin-top:16px">
-    <div class="section-title" id="fbAtrModTitle">🟠 Itens com Atraso Moderado (10 a 15 dias) — 3 pedidos · 7 itens</div>
-    <div class="crit-row hdr"><span>Nº Pedido</span><span>Cliente</span><span>Cidade/UF</span><span>Data Pedido</span><span>Dias</span></div>
-    <div id="modBody"></div>
-  </div>
-  <div class="table-card" style="margin-top:16px">
-    <div class="section-title" id="fbAtrLeveTitle">🟡 Itens com Atraso Leve (até 10 dias) — 43 pedidos · 64 itens</div>
-    <div class="crit-row hdr"><span>Nº Pedido</span><span>Cliente</span><span>Cidade/UF</span><span>Data Pedido</span><span>Dias</span></div>
-    <div id="leveBody"></div>
-  </div>
-  <div style="margin-top:16px;padding:16px;background:rgba(239,68,68,.08);border-radius:13px;border:1px solid rgba(239,68,68,.25)">
-    <div style="font-size:12px;font-family:var(--mono);color:#fca5a5;line-height:1.8">
-      🔴 <strong>3 pedidos Críticos (&gt; 15d) — todos SP</strong>: #2128015 Juliana Araujo (27d × 1 item, R$1,85) · #2252767 Maxwel Duarte (20d × 2, R$19,24) · #2254910 Amanda Soares (20d × 2, R$13,46).<br>
-      🟠 <strong>3 pedidos Moderados (10-15d)</strong>: #2428097 Nayara Feitoza (MG, 11d, R$179,63) · #2450773 Thais Rodrigues (SP, 10d, R$39,41) · #2451274 Andreia Dias (MG, 10d, R$50,45).<br>
-      🟡 <strong>43 pedidos Leves (≤10d)</strong>: pipeline normal — 64 itens · R$3.009,64 · maior parte com ≤3 dias de idade.<br>
-      📌 <strong>Ação prioritária:</strong> os 3 pedidos Críticos SP concentram todo o risco de atraso severo · monitorar os 3 Moderados MG/SP para não avançarem para Crítico.
-    </div>
-  </div>
-</div>
-
-<!-- ═══ COMPARATIVO ═══ -->
-<div id="tab-comparativo" class="tab-pane">
-  <div id="fbCompContent">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:32px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px">
-      ⏳ Aguardando dados do Firebase para renderizar o comparativo.
-    </div>
-  </div>
-</div>
-
-<!-- ═══ PEDIDOS ═══ -->
-<div id="tab-pedidos" class="tab-pane">
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-    <div style="font-size:11px;font-family:var(--mono);color:var(--muted)">FILTROS:</div>
-    <input id="searchInput" type="text" placeholder="Buscar cliente, nº pedido, cidade…" oninput="renderPedidos()" style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 12px;color:var(--text);font-family:var(--mono);font-size:11px;width:260px;outline:none">
-    <div style="display:flex;gap:6px;flex-wrap:wrap">
-      <button class="filter-btn active" id="fbFltAll" onclick="setFilter('todos',this)">Todos (49)</button>
-      <button class="filter-btn" id="fbFltCrit" onclick="setFilter('Cr\u00edtico',this)">🔴 Críticos (0)</button>
-      <button class="filter-btn" id="fbFltMod" onclick="setFilter('Moderado',this)">🟠 Moderado (1)</button>
-      <button class="filter-btn" id="fbFltLev" onclick="setFilter('Leve',this)">🟡 Leve (2)</button>
-      <button class="filter-btn" id="fbFltNP" onclick="setFilter('No Prazo',this)">✅ No Prazo (46)</button>
-    </div>
-    <div style="margin-left:auto;font-size:11px;font-family:var(--mono);color:var(--muted)">💡 clique na linha p/ ver os itens do pedido · Exibindo: <span id="countLabel" style="color:var(--text);font-weight:700">49</span> pedidos</div>
-  </div>
-  <div class="table-card" style="padding:0;overflow:hidden">
-    <div style="overflow-x:auto">
-      <table style="min-width:900px">
-        <thead><tr>
-          <th style="padding:12px 14px;cursor:pointer" onclick="sortTable('NUM PED')">Nº Pedido ⇅</th>
-          <th style="padding:12px 14px;cursor:pointer" onclick="sortTable('cliente')">Cliente ⇅</th>
-          <th style="padding:12px 14px">Cidade / UF</th>
-          <th style="padding:12px 14px;cursor:pointer" onclick="sortTable('dt_pedido')">Data Pedido ⇅</th>
-          <th style="padding:12px 14px;cursor:pointer;text-align:center" onclick="sortTable('dias')">Dias ⇅</th>
-          <th style="padding:12px 14px;text-align:center">Qtd Itens</th>
-          <th style="padding:12px 14px">Motivo</th>
-          <th style="padding:12px 14px;text-align:right">Valor (R$)</th>
-          <th style="padding:12px 14px;text-align:center">Status</th>
-        </tr></thead>
-        <tbody id="pedidosBody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
 </main>
-<footer id="fbFooter">Dashboard Assistência Técnica · Easy House · Referência 20/07/2026 · 10ª Captura · Meta envio: 15 dias · Gerado automaticamente</footer>
 
-<script>
-function showTab(id,btn){
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
-  if(id==='pedidos'&&!pedidosRendered){renderPedidos();pedidosRendered=true;}
-}
-Chart.defaults.color='#64748b';
-Chart.defaults.font.family="'DM Mono',monospace";
-Chart.defaults.font.size=10;
-window.CH=window.CH||{};
-const C={ok:'#22c55e',warn:'#eab308',accent:'#f97316',danger:'#ef4444',blue:'#3b82f6',muted:'#64748b'};
-const GRID={color:'rgba(37,45,74,.8)',drawBorder:false};
-const TICKS={color:'#64748b'};
+<footer id="fbFooter">Dashboard Assistência Técnica · Easy House · Meta envio: 15 dias · Sincronizado via Firebase</footer>
 
-// Donut
-window.CH.cDonut=new Chart(document.getElementById('cDonut'),{type:'doughnut',data:{labels:['No Prazo','Leve','Moderado','Crítico'],datasets:[{data:[71,4,1,0],backgroundColor:[C.ok,C.warn,C.accent,'#33415500'],borderWidth:2,borderColor:'#111629',hoverOffset:6}]},options:{cutout:'72%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw+' itens'}}}}});
-
-// Faixa bar
-window.CH.cFaixa=new Chart(document.getElementById('cFaixa'),{type:'bar',data:{labels:['No Prazo','Leve','Mod.','Crítico'],datasets:[{data:[71,4,1,0],backgroundColor:[C.ok,C.warn,C.accent,C.muted+'22'],borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:{display:false},ticks:TICKS}},maintainAspectRatio:false}});
-
-// Região
-window.CH.cRegiao=new Chart(document.getElementById('cRegiao'),{type:'bar',data:{labels:['SP/SUL','MG/RJ/ES'],datasets:[{label:'Pendentes',data:[46,30],backgroundColor:C.blue+'99',borderRadius:4},{label:'Em Atraso',data:[5,0],backgroundColor:C.accent+'99',borderRadius:4}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
-
-// Timeline
-let TL_L=['23/06','30/06','09/07','10/07','13/07','15/07','16/07','17/07','18/07','20/07'];
-let TL_V=[1,4,1,6,5,6,9,32,6,6];
-window.CH.cTimeline=new Chart(document.getElementById('cTimeline'),{type:'bar',data:{labels:TL_L,datasets:[{label:'Itens',data:TL_V,backgroundColor:TL_V.map(v=>v>=8?C.accent:v>=4?C.warn:C.blue+'88'),borderRadius:3}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{...TICKS,maxRotation:45,font:{size:9}}},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
-
-// Motivos donut
-window.CH.cMotivos=new Chart(document.getElementById('cMotivos'),{type:'doughnut',data:{labels:['Peça Queb. Vol.','Peça Quebrada','Etiquet. CD','Faltou/Danif.','Outros'],datasets:[{data:[35,4,4,18,15],backgroundColor:[C.danger,C.accent,C.warn,C.blue,C.muted],borderWidth:2,borderColor:'#111629'}]},options:{cutout:'60%',plugins:{legend:{position:'right',labels:{color:'#94a3b8',boxWidth:8,font:{size:9}}},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw}}}}});
-
-// UF bars
-window.CH.cUFBars=new Chart(document.getElementById('cUFBars'),{type:'bar',data:{labels:['SP','MG','RJ'],datasets:[{label:'Total',data:[46,17,13],backgroundColor:C.blue+'88',borderRadius:4},{label:'Em Atraso',data:[5,0,0],backgroundColor:C.accent+'88',borderRadius:4}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
-
-// UF donut
-window.CH.cUFDonut=new Chart(document.getElementById('cUFDonut'),{type:'doughnut',data:{labels:['SP','MG','RJ'],datasets:[{data:[46,17,13],backgroundColor:[C.blue,C.accent,C.danger],borderWidth:2,borderColor:'#111629',hoverOffset:6}]},options:{cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',boxWidth:10}}}}});
-
-// Top Peças
-let TOP_PECAS=[{"peca": "KIT FERRAGEM COMODA 07GAV 02PTS VEDRA ", "qtd": 3, "pedidos": 3, "dias_max": 5}, {"peca": "VOL CX ESP PENTEADEIRA LIVIA - VOL 2 1,165X0,719X0,045 ", "qtd": 2, "pedidos": 2, "dias_max": 3}, {"peca": "DISTANCIADOR FRONT GR TOR PLUS/URB/SUBL/SIR/EASY LEB 580X38X25 MDF BRANCO", "qtd": 2, "pedidos": 2, "dias_max": 20}, {"peca": "TAMPO SUPERIOR COMODA LOOP V2.0 1400X480X15 MDF AMENDOA CLEAN", "qtd": 2, "pedidos": 2, "dias_max": 7}, {"peca": "VOL CX ESPELHO C/4 ESP 900X235X3 C/8 SUP CROMADO 0,960X0,295X0,046 ", "qtd": 2, "pedidos": 2, "dias_max": 3}, {"peca": "TAMPO SUPERIOR GR 8 PTS EASY SLIM/ANDARA SOFT 2336X450X12 MDP AMENDOA CLEAN", "qtd": 2, "pedidos": 2, "dias_max": 10}, {"peca": "TAMPO PENTEADEIRA LIVIA 1180X395X15 MDP BRANCO", "qtd": 2, "pedidos": 2, "dias_max": 5}, {"peca": "APLIQUE GR 6 PTS LOOP 2024 2324X60X4 MDF AMENDOA CLEAN", "qtd": 1, "pedidos": 1, "dias_max": 4}, {"peca": "COSTAS  GR 3PTS ATLAS 1606X470X2,7 HDF BRANCO", "qtd": 1, "pedidos": 1, "dias_max": 2}, {"peca": "COSTAS GR EASY SLIM/ANDARA SOFT 1900X588X2,7 HDF AMENDOA CLEAN", "qtd": 1, "pedidos": 1, "dias_max": 3}];
-window.CH.cPecas=new Chart(document.getElementById('cPecas'),{type:'bar',data:{labels:TOP_PECAS.map(p=>p.peca.length>28?p.peca.substring(0,28)+'…':p.peca),datasets:[{label:'Qtd pendente',data:TOP_PECAS.map(p=>p.qtd),backgroundColor:TOP_PECAS.map(p=>p.dias_max>45?C.danger:p.dias_max>30?C.accent:p.dias_max>15?C.warn:C.blue),borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:{display:false},ticks:{...TICKS,font:{size:9}}}},maintainAspectRatio:false}});
-const pecasTbody=document.getElementById('pecasTableBody');
-TOP_PECAS.forEach((p,i)=>{const mc=p.dias_max>45?'color:var(--danger)':p.dias_max>30?'color:var(--accent)':p.dias_max>15?'color:var(--warn)':'color:var(--ok)';pecasTbody.innerHTML+=`<tr><td style="font-family:var(--mono);color:var(--muted)">${i+1}</td><td style="font-size:11px">${p.peca}</td><td style="font-family:var(--mono);font-weight:700;color:var(--blue)">${p.qtd}</td><td style="font-family:var(--mono);color:var(--muted)">${p.pedidos}</td><td style="font-family:var(--mono);font-weight:700;${mc}">${p.dias_max}d</td></tr>`;});
-
-
-
-
-
-
-
-
-
-
-
-// Pedidos data
-let PEDIDOS_ALL=[{"NUM PED": 2128015, "cliente": "JULIANA ARAUJO RODRIGUES DE ALMEIDA", "cidade": "ATIBAIA", "uf": "SP", "dt_pedido": "23/06/2026", "dias": 27, "total_itens": 1, "motivos": "FALTOU PECA DENTRO DO VOLUME", "valor": 1.85, "faixa": "Moderado", "itens": [{"desc": "VISTA FRONTAL GAV  GR  6 PTS LOOP 510X38X25 MDF BRANCO", "qtd": 1, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 1.85}]}, {"NUM PED": 2252767, "cliente": "MAXWEL DUARTE BARBOSA", "cidade": "MONTE ALTO", "uf": "SP", "dt_pedido": "30/06/2026", "dias": 20, "total_itens": 2, "motivos": "FALTOU PECA DENTRO DO VOLUME", "valor": 19.24, "faixa": "Leve", "itens": [{"desc": "DISTANCIADOR FRONT GR TOR PLUS/URB/SUBL/SIR/EASY LEB 580X38X25 MDF BRANCO", "qtd": 4, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 11.08}, {"desc": "DISTANCIADOR TRAS GR TOR PLUS/URB/SUBL/SIRIUS/EASY LEBL 580X38X25 MDF ", "qtd": 4, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 8.16}]}, {"NUM PED": 2254910, "cliente": "AMANDA SOARES MOURA DOS SANTOS", "cidade": "GUARULHOS", "uf": "SP", "dt_pedido": "30/06/2026", "dias": 20, "total_itens": 2, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 13.46, "faixa": "Leve", "itens": [{"desc": "TRAVESSA MAIOR MESA EASY LINE 1270X100X15 MDP AMENDOA CLEAN", "qtd": 2, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 8.96}, {"desc": "TRAVESSA MENOR MESA EASY LINE 580X100X15 MDP AMENDOA CLEAN", "qtd": 2, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 4.5}]}, {"NUM PED": 2428097, "cliente": "NAYARA CRISTINA FEITOZA", "cidade": "CONCEICAO DE IPANEMA", "uf": "MG", "dt_pedido": "09/07/2026", "dias": 11, "total_itens": 1, "motivos": "ETIQUETAGEM INCORRETA CD", "valor": 179.63, "faixa": "No Prazo", "itens": [{"desc": "VOL CX COMODA LOOP II TAMPO/DIV 1,590X0,492X0,100 BRANCO", "qtd": 1, "motivo": "ETIQUETAGEM INCORRETA CD", "valor": 179.63}]}, {"NUM PED": 2450773, "cliente": "THAIS RODRIGUES LOPES DE OLIVEIRA", "cidade": "SANTANA DE PARNAIBA", "uf": "SP", "dt_pedido": "10/07/2026", "dias": 10, "total_itens": 4, "motivos": "FALTOU PECA DENTRO DO VOLUME", "valor": 39.41, "faixa": "No Prazo", "itens": [{"desc": "LATERAL GAVETA DIREITA GR JA/ZE/ANN/BAR/SAI/EA/AND SO 350X120X12 MDP AMENDOA CLEAN", "qtd": 4, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 5.44}, {"desc": "LATERAL GAVETA ESQUERDA GR JA/ZE/ANN/BAR/SAI/EA/AND 350X120X12 MDP AMENDOA CLEAN", "qtd": 4, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 5.44}, {"desc": "TAMPO SUPERIOR GR 8 PTS EASY SLIM/ANDARA SOFT 2336X450X12 MDP AMENDOA CLEAN", "qtd": 1, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 23.45}, {"desc": "TRASEIRO GAVETA GR EASY SLIM/ANDARA SOFT 476X80X12 MDP AMENDOA CLEAN", "qtd": 4, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 5.08}]}, {"NUM PED": 2451274, "cliente": "ANDREIA APARECIDA DE PAULA DIAS", "cidade": "RODEIRO", "uf": "MG", "dt_pedido": "10/07/2026", "dias": 10, "total_itens": 2, "motivos": "PECA QUEBRADA", "valor": 50.45, "faixa": "No Prazo", "itens": [{"desc": "KIT LED LOPAS CAMARIM 10 LAMPADAS 3 CORES USB ", "qtd": 1, "motivo": "PECA QUEBRADA", "valor": 44.91}, {"desc": "TRAVESSA LATERAL PENTEADEIRA LIVIA 654X70X15 MDP BRANCO", "qtd": 2, "motivo": "PECA QUEBRADA", "valor": 5.54}]}, {"NUM PED": 2502354, "cliente": "PRISCILLA ALVES SILVA", "cidade": "BARRA MANSA", "uf": "RJ", "dt_pedido": "13/07/2026", "dias": 7, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 30.84, "faixa": "No Prazo", "itens": [{"desc": "FRENTE GAV GR 2PTS TORONTO V2.0 705X160X12 MDF BRANCO", "qtd": 3, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 30.84}]}, {"NUM PED": 2504028, "cliente": "MARCIA FERNANDES MENEZES TEIXEIRA", "cidade": "PARACAMBI", "uf": "RJ", "dt_pedido": "13/07/2026", "dias": 7, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 36.8, "faixa": "No Prazo", "itens": [{"desc": "COSTAS GR 6 PTS LOOP 2260X915X2,7 HDF AMENDOA CLEAN", "qtd": 2, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 36.8}]}, {"NUM PED": 2504998, "cliente": "JULIANA ARAUJO RODRIGUES DE ALMEIDA", "cidade": "ATIBAIA", "uf": "SP", "dt_pedido": "13/07/2026", "dias": 7, "total_itens": 1, "motivos": "FALTOU PECA DENTRO DO VOLUME", "valor": 4.18, "faixa": "No Prazo", "itens": [{"desc": "VISTA FRONTAL GAV MAIOR  GR  6 PTS LOOP 510X75X25 MDF BRANCO", "qtd": 1, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 4.18}]}, {"NUM PED": 2505212, "cliente": "DANIEL MASCARENHAS", "cidade": "SAO PAULO", "uf": "SP", "dt_pedido": "13/07/2026", "dias": 7, "total_itens": 2, "motivos": "ETIQUETAGEM INCORRETA CD", "valor": 46.6, "faixa": "No Prazo", "itens": [{"desc": "TAMPO INFERIOR COMODA LOOP 1400X480X15 MDF AMENDOA CLEAN", "qtd": 1, "motivo": "ETIQUETAGEM INCORRETA CD", "valor": 22.16}, {"desc": "TAMPO SUPERIOR COMODA LOOP V2.0 1400X480X15 MDF AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 24.44}]}, {"NUM PED": 2540014, "cliente": "LAIS SOUZA", "cidade": "SAO PAULO", "uf": "SP", "dt_pedido": "15/07/2026", "dias": 5, "total_itens": 2, "motivos": "FALTOU PECA DENTRO DO VOLUME", "valor": 53.74, "faixa": "No Prazo", "itens": [{"desc": "PERFIL PUXADOR 2135MM BRONZE GR TORONTO RX1034 ", "qtd": 2, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 38.94}, {"desc": "PERFIL JUNCAO  PLASTICO BRONZE 1272X15MM- TORONTO ", "qtd": 4, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 14.8}]}, {"NUM PED": 2542801, "cliente": "JACKELINE APARECIDA DE ARAUJO LUIZ", "cidade": "SAO PAULO", "uf": "SP", "dt_pedido": "15/07/2026", "dias": 5, "total_itens": 2, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 26.09, "faixa": "No Prazo", "itens": [{"desc": "TAMPO PENTEADEIRA LIVIA 1180X395X15 MDP BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 21.46}, {"desc": "PAIN TRAS PENTEADEIRA LIVIA 604X260X15 MDP BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 4.63}]}, {"NUM PED": 2544710, "cliente": "RAYLANDER RODRIGUES", "cidade": "RIBEIRAO DAS NEVES", "uf": "MG", "dt_pedido": "15/07/2026", "dias": 5, "total_itens": 1, "motivos": "FALTOU PECA DENTRO DO VOLUME", "valor": 11.08, "faixa": "No Prazo", "itens": [{"desc": "DISTANCIADOR FRONT GR TOR PLUS/URB/SUBL/SIR/EASY LEB 580X38X25 MDF BRANCO", "qtd": 4, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 11.08}]}, {"NUM PED": 2545956, "cliente": "ALINE  DUARTE", "cidade": "BELO HORIZONTE", "uf": "MG", "dt_pedido": "15/07/2026", "dias": 5, "total_itens": 1, "motivos": "FALTOU PECA DENTRO DO VOLUME", "valor": 23.46, "faixa": "No Prazo", "itens": [{"desc": "KIT FERRAGEM COMODA 07GAV 02PTS VEDRA ", "qtd": 1, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 23.46}]}, {"NUM PED": 2557882, "cliente": "ROBINSON MARQUES", "cidade": "SAO PAULO", "uf": "SP", "dt_pedido": "16/07/2026", "dias": 4, "total_itens": 6, "motivos": "QUINA BATIDA", "valor": 81.37, "faixa": "No Prazo", "itens": [{"desc": "LATERAL PANELEIRO/BALCAO 2/3 PTS COZINHA NINA 670X485X15 MDP BRANCO", "qtd": 1, "motivo": "QUINA BATIDA", "valor": 10.87}, {"desc": "PORTA COZINHA NINA 642X390X12 MDP BRANCO", "qtd": 2, "motivo": "QUINA BATIDA", "valor": 15.64}, {"desc": "LATERAL DIR BALCAO 3PTS COZINHA NINA 670X485X15 MDP BRANCO", "qtd": 1, "motivo": "QUINA BATIDA", "valor": 10.32}, {"desc": "TAMPO INF BALCÃO 3 PTS COZINHA NINA 1190X500X15 MDP BRANCO", "qtd": 1, "motivo": "QUINA BATIDA", "valor": 17.34}, {"desc": "TAMPO SUPERIOR BALCAO 3 PORTAS COZINHA NINA 1190X500X15 MDP BRANCO", "qtd": 1, "motivo": "QUINA BATIDA", "valor": 17.22}, {"desc": "DIVISAO BALCAO 3 PTS COZINHA NINA 670X485X15 MDP BRANCO", "qtd": 1, "motivo": "QUINA BATIDA", "valor": 9.98}]}, {"NUM PED": 2558553, "cliente": "PRISCILLA LOURENCO SILVA BASTOS", "cidade": "MESQUITA", "uf": "RJ", "dt_pedido": "16/07/2026", "dias": 4, "total_itens": 1, "motivos": "FALTOU KIT FERRA", "valor": 23.46, "faixa": "No Prazo", "itens": [{"desc": "KIT FERRAGEM COMODA 07GAV 02PTS VEDRA ", "qtd": 1, "motivo": "FALTOU KIT FERRA", "valor": 23.46}]}, {"NUM PED": 2559516, "cliente": "DIOGO AUGUSTO CARDOSO", "cidade": "CRUZEIRO DA FORTALEZA", "uf": "MG", "dt_pedido": "16/07/2026", "dias": 4, "total_itens": 1, "motivos": "PECA QUEBRADA", "valor": 41.22, "faixa": "No Prazo", "itens": [{"desc": "APLIQUE GR 6 PTS LOOP 2024 2324X60X4 MDF AMENDOA CLEAN", "qtd": 6, "motivo": "PECA QUEBRADA", "valor": 41.22}]}, {"NUM PED": 2561880, "cliente": "FLAVIO DE AZEVEDO SANGY", "cidade": "NOVA FRIBURGO", "uf": "RJ", "dt_pedido": "16/07/2026", "dias": 4, "total_itens": 1, "motivos": "FALTOU KIT FERRA", "valor": 15.8, "faixa": "No Prazo", "itens": [{"desc": "PERFIL PUXADOR 390MM RX1143 BRANCO C/ACAB COZ NINA ", "qtd": 5, "motivo": "FALTOU KIT FERRA", "valor": 15.8}]}, {"NUM PED": 2576484, "cliente": "LIVIA PEREIRA VILAS BOAS", "cidade": "GUARULHOS", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 24.44, "faixa": "No Prazo", "itens": [{"desc": "TAMPO SUPERIOR COMODA LOOP V2.0 1400X480X15 MDF AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 24.44}]}, {"NUM PED": 2576524, "cliente": "JAMIM LIMA DA COSTA", "cidade": "RIBEIRAO PRETO", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "ESPELHO QUEBRADO", "valor": 50.89, "faixa": "No Prazo", "itens": [{"desc": "VOL CX ESP PENTEADEIRA LIVIA - VOL 2 1,165X0,719X0,045 ", "qtd": 1, "motivo": "ESPELHO QUEBRADO", "valor": 50.89}]}, {"NUM PED": 2577578, "cliente": "NATALIA NAGAMATSU", "cidade": "SAO PAULO", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 2, "motivos": "FURACAO ERRADA", "valor": 11.36, "faixa": "No Prazo", "itens": [{"desc": "TRAVESSA FRONT CADEIRA EASY LINE 315X70X18 MDF AMENDOA CLEAN", "qtd": 4, "motivo": "FURACAO ERRADA", "valor": 5.0}, {"desc": "TRAVESSA TRAS CADEIRA EASY LINE 315X70X18 MDF AMENDOA CLEAN", "qtd": 4, "motivo": "FURACAO ERRADA", "valor": 6.36}]}, {"NUM PED": 2578029, "cliente": "LEONARDO TONINI", "cidade": "SANTA RITA DO SAPUCAI", "uf": "MG", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 1.13, "faixa": "No Prazo", "itens": [{"desc": "FUNDO GAVETA COFRE COMODA 02 PTS 07 GAV VEDRA 350X348X2,7 HDF BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 1.13}]}, {"NUM PED": 2578030, "cliente": "SAMUEL RESENDE", "cidade": "BELFORD ROXO", "uf": "RJ", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 2, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 82.84, "faixa": "No Prazo", "itens": [{"desc": "FRENTE GAVETA COMODA 02 PTS 07 GAV VEDRA 815X145X15 MDP OFF WHITE", "qtd": 6, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 46.08}, {"desc": "PORTA COMODA  02 PTS 07 GAV VEDRA 1087X430X15 MDP OFF WHITE", "qtd": 2, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 36.76}]}, {"NUM PED": 2578109, "cliente": "SAMUEL RESENDE", "cidade": "BELFORD ROXO", "uf": "RJ", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "FALTOU KIT FERRA", "valor": 23.46, "faixa": "No Prazo", "itens": [{"desc": "KIT FERRAGEM COMODA 07GAV 02PTS VEDRA ", "qtd": 1, "motivo": "FALTOU KIT FERRA", "valor": 23.46}]}, {"NUM PED": 2578391, "cliente": "PALOMANOVAIS17 PALOMANOVAIS17", "cidade": "RESENDE", "uf": "RJ", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "PECA QUEBRADA", "valor": 32.01, "faixa": "No Prazo", "itens": [{"desc": "TAMPO MESA EASY LINE 1360X720X15 MDP AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA", "valor": 32.01}]}, {"NUM PED": 2578539, "cliente": "LETICIA VAZ", "cidade": "PARACATU", "uf": "MG", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 13.48, "faixa": "No Prazo", "itens": [{"desc": "FUNDO GR 4/6/8 PTS ZEUS/VIRGO/EASY/ANDARA SOFT 575X450X4 HDF AMENDOA CLEAN", "qtd": 4, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 13.48}]}, {"NUM PED": 2578595, "cliente": "THAMARA SOUTO VIERA", "cidade": "BELO HORIZONTE", "uf": "MG", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 240.71, "faixa": "No Prazo", "itens": [{"desc": "VOL CX PORTAS/MOLD GR 04 PTS LOOP 2,405X0,420X0,100 AMENDOA CLEAN/OFF WH", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 240.71}]}, {"NUM PED": 2578760, "cliente": "LAISA DE OLIVEIRA CUNHA MACEDO", "cidade": "OURO BRANCO", "uf": "MG", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 9.67, "faixa": "No Prazo", "itens": [{"desc": "TAMPO APOIO MESA 1,20 CELEBRARE 800X500X15 MDP ", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 9.67}]}, {"NUM PED": 2578800, "cliente": "ADRIANA SARDELA", "cidade": "ITAPETININGA", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "AVARIA DURANTE O TRANSPORTE", "valor": 365.38, "faixa": "No Prazo", "itens": [{"desc": "VOL CX GR 2 PTS TORONTO PLUS T/F 2,655X0,580X0,108 BRANCO", "qtd": 1, "motivo": "AVARIA DURANTE O TRANSPORTE", "valor": 365.38}]}, {"NUM PED": 2578841, "cliente": "PATRICIA GOMES DA SILVA", "cidade": "PRESIDENTE PRUDENTE", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 247.5, "faixa": "No Prazo", "itens": [{"desc": "VOL CX TAMPO MESA 1,70 CANTO COPO - C/VIDRO SERIG. 1,795X0,995X0,075 OFF WHITE", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 247.5}]}, {"NUM PED": 2580990, "cliente": "MARGEN WINDER BRASIL WINDER", "cidade": "GOVERNADOR VALADARES", "uf": "MG", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 35.68, "faixa": "No Prazo", "itens": [{"desc": "TAMPO COMODA 02 PTS 07 GAV VEDRA 1710X455X25 MDP AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 35.68}]}, {"NUM PED": 2581197, "cliente": "VILLYANE AVERSA", "cidade": "NOVA IGUACU", "uf": "RJ", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 316.62, "faixa": "No Prazo", "itens": [{"desc": "VOL CX GR 8 PTS EASY SLIM/ANDARA TAMPO/LATERAL 2,430X0,460X0,128 AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 316.62}]}, {"NUM PED": 2581243, "cliente": "LETICIA LIMA CALHEIROS", "cidade": "SAO GONCALO", "uf": "RJ", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "FALTOU PECA DENTRO DO VOLUME", "valor": 43.32, "faixa": "No Prazo", "itens": [{"desc": "COSTAS GR EASY SLIM/ANDARA SOFT 1900X588X2,7 HDF AMENDOA CLEAN", "qtd": 4, "motivo": "FALTOU PECA DENTRO DO VOLUME", "valor": 43.32}]}, {"NUM PED": 2581544, "cliente": "RAFAEL LANDIM BATISTA", "cidade": "BOM JARDIM DE MINAS", "uf": "MG", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "ESPELHO QUEBRADO", "valor": 50.89, "faixa": "No Prazo", "itens": [{"desc": "VOL CX ESP PENTEADEIRA LIVIA - VOL 2 1,165X0,719X0,045 ", "qtd": 1, "motivo": "ESPELHO QUEBRADO", "valor": 50.89}]}, {"NUM PED": 2581593, "cliente": "EDUARDO CHIARINI", "cidade": "BAURU", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "ENCOSTO AFUNDANDO PARTE SUP", "valor": 32.19, "faixa": "No Prazo", "itens": [{"desc": "ENCOSTO MONTADO ESTOFADO CADEIRA APOGEU 580X425X110 SUEDE ANIMALE BEGE", "qtd": 1, "motivo": "ENCOSTO AFUNDANDO PARTE SUP", "valor": 32.19}]}, {"NUM PED": 2581633, "cliente": "TAMIRES RODRIGUES ROMAO", "cidade": "VALINHOS", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 2, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 29.94, "faixa": "No Prazo", "itens": [{"desc": "LATERAL DIREITA COMODA LOOP 2024 825X480X15 MDF BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 14.97}, {"desc": "LATERAL ESQUERDA COMODA LOOP 2024 825X480X15 MDF BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 14.97}]}, {"NUM PED": 2581729, "cliente": "NILDA PEREIRA DA SILVA  MEDEIROS", "cidade": "VOTORANTIM", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 3, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 73.33, "faixa": "No Prazo", "itens": [{"desc": "LATERAL DIREITA GR 8 PTS EASY SLIM/ANDARA SOFT 2050X450X12 MDP AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 24.94}, {"desc": "LATERAL ESQUERDA GR 8 PTS EASY SLIM/ANDARA SOFT 2050X450X12 MDP AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 24.94}, {"desc": "TAMPO SUPERIOR GR 8 PTS EASY SLIM/ANDARA SOFT 2336X450X12 MDP AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 23.45}]}, {"NUM PED": 2581882, "cliente": "BRUNA SILVA", "cidade": "SAO JOSE DOS CAMPOS", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "ESPELHO QUEBRADO", "valor": 55.31, "faixa": "No Prazo", "itens": [{"desc": "VOL CX ESPELHO C/4 ESP 900X235X3 C/8 SUP CROMADO 0,960X0,295X0,046 ", "qtd": 1, "motivo": "ESPELHO QUEBRADO", "valor": 55.31}]}, {"NUM PED": 2582045, "cliente": "JAQUELINE", "cidade": "SANTO ANTONIO DO MONTE", "uf": "MG", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "FALTOU KIT FERRA", "valor": 11.0, "faixa": "No Prazo", "itens": [{"desc": "TRILHO TELESCOPICO H32 300MM 3 ESTAGIOS - SUP 6KG ", "qtd": 4, "motivo": "FALTOU KIT FERRA", "valor": 11.0}]}, {"NUM PED": 2582085, "cliente": "DANIELA ROSSI BACHEROLO", "cidade": "INDAIATUBA", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 22.27, "faixa": "No Prazo", "itens": [{"desc": "TAMPO CENTRAL SUP  GR  2 PTS TORONTO PLUS 1575X449X15 MDF BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 22.27}]}, {"NUM PED": 2582741, "cliente": "CARLOS EDUARDO SCARAMBONI", "cidade": "PIRAJU", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 2, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 49.0, "faixa": "No Prazo", "itens": [{"desc": "LATERAL DIR GR 6PTS EASY SLIM 2025 2050X450X12 MDP AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 24.5}, {"desc": "LATERAL ESQ GR 6PTS EASY SLIM 2025 2050X450X12 MDP AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 24.5}]}, {"NUM PED": 2583343, "cliente": "YARA DA SILVA CIARDULO", "cidade": "SAO PAULO", "uf": "SP", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 1, "motivos": "ETIQUETAGEM INCORRETA CD", "valor": 209.96, "faixa": "No Prazo", "itens": [{"desc": "VOL CX ASSENTO/ENCOSTO CAD APOGEU C/2  0,585X0,370X0,430 VELUDO LISO CAPUCCINO", "qtd": 2, "motivo": "ETIQUETAGEM INCORRETA CD", "valor": 209.96}]}, {"NUM PED": 2583816, "cliente": "ELIEL DOS SANTOS FERNANDES", "cidade": "LAMBARI", "uf": "MG", "dt_pedido": "17/07/2026", "dias": 3, "total_itens": 2, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 46.26, "faixa": "No Prazo", "itens": [{"desc": "PORTA GRANDE GR 4/6/8 PTS ZEUS/VIRGO/EASY SLIM 1877X290X15 MDP AMENDOA CLEAN", "qtd": 2, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 37.46}, {"desc": "MOLDURA GR  8 PTS EASY SLIM/ANDARA SOFT 2355X80X15 MDP AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 8.8}]}, {"NUM PED": 2596719, "cliente": "ROSILENE JUDITE DA SILVA", "cidade": "OSASCO", "uf": "SP", "dt_pedido": "18/07/2026", "dias": 2, "total_itens": 2, "motivos": "FALTOU NO ATO DA ENTREGA", "valor": 249.87, "faixa": "No Prazo", "itens": [{"desc": "VOL KIT PES C/10 PES LOPAS PVC 0,420X0,160X0,140 AMENDOA CLEAN", "qtd": 1, "motivo": "FALTOU NO ATO DA ENTREGA", "valor": 10.22}, {"desc": "VOL CX GR 8 PTS EASY SLIM/ANDARA SOFT PORTAS/COSTAS 1,950X0,600X0,096 AMENDOA CLEAN/OFF WH", "qtd": 1, "motivo": "ETIQUETAGEM INCORRETA CD", "valor": 239.65}]}, {"NUM PED": 2596783, "cliente": "MARIA CLARA GOMES DOS SANTOS PINTO", "cidade": "CARAPEBUS", "uf": "RJ", "dt_pedido": "18/07/2026", "dias": 2, "total_itens": 3, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 58.26, "faixa": "No Prazo", "itens": [{"desc": "LATERAL DIR GR 03PTS ATLAS 2042X500X12 MDP BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 26.6}, {"desc": "RODAPE FRONT GR 3PTS ATLAS 1586X100X12 MDP BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 4.06}, {"desc": "COSTAS  GR 3PTS ATLAS 1606X470X2,7 HDF BRANCO", "qtd": 4, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 27.6}]}, {"NUM PED": 2597356, "cliente": "NAILA MORAIS", "cidade": "EXTREMA", "uf": "MG", "dt_pedido": "18/07/2026", "dias": 2, "total_itens": 1, "motivos": "ESPELHO QUEBRADO", "valor": 55.31, "faixa": "No Prazo", "itens": [{"desc": "VOL CX ESPELHO C/4 ESP 900X235X3 C/8 SUP CROMADO 0,960X0,295X0,046 ", "qtd": 1, "motivo": "ESPELHO QUEBRADO", "valor": 55.31}]}, {"NUM PED": 2631552, "cliente": "MARIELI RODRIGUES LANZONI", "cidade": "ITAJOBI", "uf": "SP", "dt_pedido": "20/07/2026", "dias": 0, "total_itens": 4, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 42.98, "faixa": "No Prazo", "itens": [{"desc": "FRENTE GAV PENTEADEIRA LIVIA 284X222X15 MDP BRANCO", "qtd": 2, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 8.64}, {"desc": "LATERAL DIR EXT PENTEADEIRA LIVIA 740X375X15 MDP BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 9.07}, {"desc": "TAMPO PENTEADEIRA LIVIA 1180X395X15 MDP BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 21.46}, {"desc": "TRAVESSA SUP PENTEADEIRA LIVIA 1177X70X15 MDP BRANCO", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 3.81}]}, {"NUM PED": 2631654, "cliente": "LUDIMILA FERNANDA SOUZA", "cidade": "BOM DESPACHO", "uf": "MG", "dt_pedido": "20/07/2026", "dias": 0, "total_itens": 1, "motivos": "PECA QUEBRADA NO VOLUME", "valor": 123.85, "faixa": "No Prazo", "itens": [{"desc": "TAMPO MESA 1,70 2023 CANTO COPO 1700X900X25 MDF AMENDOA CLEAN", "qtd": 1, "motivo": "PECA QUEBRADA NO VOLUME", "valor": 123.85}]}, {"NUM PED": 2631850, "cliente": "ROSANE LIMA", "cidade": "GUARULHOS", "uf": "SP", "dt_pedido": "20/07/2026", "dias": 0, "total_itens": 1, "motivos": "PECA COM MEDIDA ERRADA", "valor": 6.09, "faixa": "No Prazo", "itens": [{"desc": "TRILHO PVC DUAS VIAS 1570MM SUPERIOR GR TRIUMPHI ", "qtd": 1, "motivo": "PECA COM MEDIDA ERRADA", "valor": 6.09}]}];
-
-// Atrasos list — nova classificação: Crítico >15d · Moderado 10-15d · Leve ≤10d
-function _newFaixa(d){if(d>15)return'C';if(d>=10)return'M';return'L';}
-function _pill(d){
-  const nf=_newFaixa(d);
-  const color=nf==='C'?'background:rgba(239,68,68,.25);color:#fca5a5':nf==='M'?'background:rgba(249,115,22,.25);color:#fb923c':'background:rgba(234,179,8,.2);color:#fde047';
-  return`<span class="dias-pill" style="${color}">${d}d</span>`;
-}
-function _row(p,bg){
-  return`<div class="crit-row" style="background:${bg}"><span style="font-family:var(--mono);font-weight:700;color:var(--blue)">#${p['NUM PED']}</span><span style="font-size:11px">${p.cliente}</span><span style="font-size:11px;color:var(--muted)">${p.cidade}/${p.uf}</span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">${p.dt_pedido}</span>${_pill(p.dias)}</div>`;
-}
-const critBody=document.getElementById('critBody');
-PEDIDOS_ALL.filter(p=>p.dias>15).sort((a,b)=>b.dias-a.dias).forEach(p=>{critBody.innerHTML+=_row(p,'rgba(239,68,68,.08)');});
-const modBody=document.getElementById('modBody');
-PEDIDOS_ALL.filter(p=>p.dias>=10&&p.dias<=15).sort((a,b)=>b.dias-a.dias).forEach(p=>{modBody.innerHTML+=_row(p,'rgba(249,115,22,.08)');});
-const leveBody=document.getElementById('leveBody');
-PEDIDOS_ALL.filter(p=>p.dias<10).sort((a,b)=>b.dias-a.dias).forEach(p=>{leveBody.innerHTML+=_row(p,'rgba(234,179,8,.05)');});
-
-let currentFilter='todos',sortKey='dias',sortAsc=false,pedidosRendered=false,vgRendered=false;
-function faixaBadge(f){const m={'Cr\u00edtico':'b-c','Moderado':'b-d','Leve':'b-w','No Prazo':'b-ok'};const e={'Cr\u00edtico':'🔴','Moderado':'🟠','Leve':'🟡','No Prazo':'✅'};return`<span class="badge ${m[f]||'b-blue'}">${e[f]||''}${f}</span>`;}
-function diasPill(d){if(d>45)return`<span style="background:rgba(220,38,38,.25);color:#fca5a5;font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">${d}d</span>`;if(d>30)return`<span style="background:rgba(249,115,22,.25);color:#fb923c;font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">${d}d</span>`;if(d>15)return`<span style="background:rgba(234,179,8,.2);color:#fde047;font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">${d}d</span>`;return`<span style="background:rgba(34,197,94,.15);color:#86efac;font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px">${d}d</span>`;}
-function renderPedidos(){
-  const s=(document.getElementById('searchInput').value||'').toLowerCase();
-  let d=PEDIDOS_ALL.filter(p=>{const mf=currentFilter==='todos'||p.faixa===currentFilter;const ms=!s||p.cliente.toLowerCase().includes(s)||String(p['NUM PED']).includes(s)||p.cidade.toLowerCase().includes(s)||p.uf.toLowerCase().includes(s)||(p.motivos||'').toLowerCase().includes(s);return mf&&ms;});
-  d.sort((a,b)=>{let va=a[sortKey],vb=b[sortKey];if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}return sortAsc?(va<vb?-1:va>vb?1:0):(va>vb?-1:va<vb?1:0);});
-  document.getElementById('countLabel').textContent=d.length;
-  document.getElementById('pedidosBody').innerHTML=d.map((p,i)=>{
-    const bg=i%2===0?'var(--surface2)':'var(--surface)';
-    const hasItens=Array.isArray(p.itens)&&p.itens.length>0;
-    const rid='itens-'+p['NUM PED'];
-    const caret=hasItens?`<span class="caret" id="caret-${p['NUM PED']}" style="display:inline-block;width:12px;color:var(--muted);transition:transform .15s">▸</span>`:'<span style="display:inline-block;width:12px"></span>';
-    const mainRow=`<tr class="ped-row" style="background:${bg};cursor:${hasItens?'pointer':'default'}" ${hasItens?`onclick="toggleItens('${rid}','${p['NUM PED']}')"`:''}><td style="font-family:var(--mono);font-weight:700;color:var(--blue)">${caret} #${p['NUM PED']}</td><td style="font-weight:600;font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p.cliente}">${p.cliente}</td><td style="font-size:11px;color:var(--muted)">${p.cidade} <span style="background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px">${p.uf}</span></td><td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${p.dt_pedido}</td><td style="text-align:center">${diasPill(p.dias)}</td><td style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted)">${p.total_itens}</td><td style="font-size:10px;color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p.motivos||''}">${p.motivos||'—'}</td><td style="text-align:right;font-family:var(--mono);font-size:11px">R$ ${p.valor.toFixed(2).replace('.',',')}</td><td style="text-align:center">${faixaBadge(p.faixa)}</td></tr>`;
-    let detailRow='';
-    if(hasItens){
-      const itensHtml=p.itens.map(it=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px 8px 5px 28px;font-size:10px;color:var(--text)">${it.desc}</td><td style="padding:5px 8px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--muted)">${it.qtd}</td><td style="padding:5px 8px;font-size:10px;color:var(--muted)">${it.motivo}</td><td style="padding:5px 8px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--muted)">R$ ${it.valor.toFixed(2).replace('.',',')}</td></tr>`).join('');
-      detailRow=`<tr id="${rid}" style="display:none"><td colspan="9" style="padding:0;background:var(--bg)"><div style="padding:8px 12px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;font-weight:700">📦 Itens pendentes deste pedido (${p.itens.length})</div><table style="width:100%;border-collapse:collapse"><thead><tr style="border-bottom:1px solid var(--border)"><th style="padding:4px 8px 4px 28px;text-align:left;font-size:9px;text-transform:uppercase;color:var(--muted)">Descrição do Item</th><th style="padding:4px 8px;text-align:center;font-size:9px;text-transform:uppercase;color:var(--muted)">Qtd</th><th style="padding:4px 8px;text-align:left;font-size:9px;text-transform:uppercase;color:var(--muted)">Motivo Asteca</th><th style="padding:4px 8px;text-align:right;font-size:9px;text-transform:uppercase;color:var(--muted)">Valor</th></tr></thead><tbody>${itensHtml}</tbody></table></div></td></tr>`;
-    }
-    return mainRow+detailRow;
-  }).join('');
-}
-function toggleItens(rid,num){
-  const row=document.getElementById(rid);
-  const caret=document.getElementById('caret-'+num);
-  if(!row)return;
-  const open=row.style.display!=='none';
-  row.style.display=open?'none':'table-row';
-  if(caret){caret.textContent=open?'▸':'▾';}
-}
-function filterPedidos(){renderPedidos();}
-function setFilter(f,el){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderPedidos();}
-function sortTable(k){if(sortKey===k)sortAsc=!sortAsc;else{sortKey=k;sortAsc=false;}renderPedidos();}
-try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=PEDIDOS_ALL.filter(p=>p.faixa==='Cr\u00edtico').length;}catch(e){}
-
-
-</script>
-
-<script>
-// ─── VISÃO GERAL CHARTS ────────────────────────────────────────────────────
-
-</script>
+<style>
+  .fb-empty-state{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:48px 32px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:13px}
+</style>
 
 <!-- Modal Firebase Import -->
 <div id="fbOverlay" class="fb-overlay">
@@ -545,10 +226,10 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
   </div>
 </div>
 
-<!-- ═══════════════════ FIREBASE + IMPORT XLSX ═══════════════════ -->
+<!-- ═══════════════════ FIREBASE + IMPORT XLSX + RENDER ═══════════════════ -->
 <script>
 (function(){
-  // ── Config Firebase (mesma do painel principal easyhouse-logs) ──
+  // ── Config Firebase ──
   const firebaseConfig = {
     apiKey: "AIzaSyC4krP9uAnApsZl0GgBkHdEwcEZg8e2QTQ",
     authDomain: "easyhouse-logs.firebaseapp.com",
@@ -558,35 +239,33 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
     messagingSenderId: "205222626958",
     appId: "1:205222626958:web:949d7438096201b62eebdf"
   };
-  // Se já foi inicializado (via iframe do painel principal), reaproveita
   try {
     if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  } catch(e) {
-    firebase.initializeApp(firebaseConfig);
-  }
+  } catch(e) { firebase.initializeApp(firebaseConfig); }
   window._fbDB = firebase.database();
+  window.CH = window.CH || {};
 
-  // ── Utilitários ──
+  // ═══════════════════ UTILITÁRIOS ═══════════════════
   function pt2num(v){ if(v==null||v==='')return 0; if(typeof v==='number')return v; return parseFloat(String(v).replace(/\./g,'').replace(',','.'))||0; }
-  function fmtBR(n){ return n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-  function fmtInt(n){ return n.toLocaleString('pt-BR'); }
-  function pad2(n){ return String(n).padStart(2,'0'); }
-  function fmtData(d){ return `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`; }
-  function fmtDataHora(d){ return `${fmtData(d)} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`; }
+  function fmtBR(n){return (n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function fmtInt(n){return (n||0).toLocaleString('pt-BR');}
+  function fmtD(n){return String(n||0).replace('.',',');}
+  function pad2(n){return String(n).padStart(2,'0');}
+  function fmtData(d){return `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;}
+  function fmtDataHora(d){return `${fmtData(d)} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;}
+  function el(id){return document.getElementById(id);}
+  function esc(s){return String(s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);}
+
   function parseCellDate(v){
     if(!v) return null;
     if(v instanceof Date) return v;
-    if(typeof v==='number'){ // serial Excel
-      const d = new Date(Date.UTC(1899,11,30) + v*86400000);
-      return isNaN(d)?null:d;
-    }
+    if(typeof v==='number'){ const d = new Date(Date.UTC(1899,11,30) + v*86400000); return isNaN(d)?null:d; }
     const s = String(v).trim();
     let m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
     if(m) return new Date(+m[3], +m[2]-1, +m[1]);
     m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
     if(m) return new Date(+m[1], +m[2]-1, +m[3]);
-    const d = new Date(s);
-    return isNaN(d)?null:d;
+    const d = new Date(s); return isNaN(d)?null:d;
   }
   function shortTransp(name){
     if(!name) return 'Outras';
@@ -611,37 +290,39 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
     return 'Outros';
   }
   function faixaClass(dias){
-    if(dias<=15) return 'no_prazo';
-    if(dias<=25) return 'leve';
-    if(dias<=44) return 'moderado';
-    return 'critico';
+    if(dias<=15) return 'No Prazo';
+    if(dias<=25) return 'Leve';
+    if(dias<=44) return 'Moderado';
+    return 'Crítico';
   }
-  function faixaNova(dias){ // aba Atrasos: Crít >15 · Mod 10-15 · Leve ≤10
+  function faixaNova(dias){
     if(dias>15) return 'critico';
     if(dias>=10) return 'moderado';
     return 'leve';
   }
+  const MESES_LONG = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const UF_ORDER = ['SP','MG','RJ','ES','PR','RS','SC','BA','GO','DF'];
+  const UF_COLORS = {SP:'🔵',MG:'🟠',RJ:'🔴',ES:'🟢',PR:'🟣',RS:'⚪'};
+  const UF_NAMES = {SP:'São Paulo',MG:'Minas Gerais',RJ:'Rio de Janeiro',ES:'Espírito Santo',PR:'Paraná',RS:'Rio Grande do Sul',SC:'Santa Catarina',BA:'Bahia',GO:'Goiás',DF:'Distrito Federal'};
 
-  // ── Processamento do XLSX ──
+  // ═══════════════════ PROCESSAMENTO XLSX ═══════════════════
   window.fbProcessarXLSX = async function(file){
     const buf = await file.arrayBuffer();
     const wb = XLSX.read(buf, {type:'array', cellDates:true});
     const sheetName = wb.SheetNames.find(n=>/ASTECA|EASY/i.test(n)) || wb.SheetNames[0];
     const sheet = wb.Sheets[sheetName];
     const rows = XLSX.utils.sheet_to_json(sheet, {defval:''});
-    if(!rows.length) throw new Error('Planilha vazia ou sem dados reconhecíveis.');
+    if(!rows.length) throw new Error('Planilha vazia.');
 
-    // Detecta data de referência (máx DT PEDIDO)
     let maxDate = null;
     rows.forEach(r=>{ const d=parseCellDate(r['DT PEDIDO']); if(d && (!maxDate||d>maxDate)) maxDate=d; });
     if(!maxDate) maxDate = new Date();
     const REF = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
 
-    // Enriquece
     rows.forEach(r=>{
       const d = parseCellDate(r['DT PEDIDO']);
-      r._data = d;
-      r._mes = d ? d.getMonth()+1 : null;
+      r._data = d; r._mes = d ? d.getMonth()+1 : null;
       r._dias = d ? Math.floor((REF - d)/86400000) : 0;
       r._transp_ped = shortTransp(r['TRANSP PED']);
       r._transp_carga = shortTransp(r['TRANSP CARGA']);
@@ -655,7 +336,7 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
     const pendItens = pendRows.length;
     const pedidosUnicos = new Set(rows.map(r=>r['NUM PED'])).size;
 
-    // Pedidos pendentes (agrupamento por NUM PED)
+    // Pedidos pendentes
     const pedMap = new Map();
     pendRows.forEach(r=>{
       const k = r['NUM PED'];
@@ -693,15 +374,22 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
 
     // Faixas
     const fxItens = {no_prazo:0, leve:0, moderado:0, critico:0};
-    pendRows.forEach(r=>{ fxItens[faixaClass(r._dias)]++; });
+    pendRows.forEach(r=>{
+      const f = faixaClass(r._dias);
+      if(f==='No Prazo') fxItens.no_prazo++;
+      else if(f==='Leve') fxItens.leve++;
+      else if(f==='Moderado') fxItens.moderado++;
+      else fxItens.critico++;
+    });
     const fxPed = {no_prazo:0, leve:0, moderado:0, critico:0};
-    pedidosPend.forEach(p=>{ fxPed[faixaClass(p.dias)]++; });
-    const atrNova = {critico:0, moderado:0, leve:0};
-    pedidosPend.forEach(p=>{ atrNova[faixaNova(p.dias)]++; });
-    const atrNovaItens = {critico:0, moderado:0, leve:0};
-    pendRows.forEach(r=>{ atrNovaItens[faixaNova(r._dias)]++; });
+    pedidosPend.forEach(p=>{
+      const f = p.faixa;
+      if(f==='No Prazo') fxPed.no_prazo++;
+      else if(f==='Leve') fxPed.leve++;
+      else if(f==='Moderado') fxPed.moderado++;
+      else fxPed.critico++;
+    });
 
-    // Atraso
     const atrRows = pendRows.filter(r=>r._dias>15);
     const emAtrasoItens = atrRows.length;
     const emAtrasoPed = new Set(atrRows.map(r=>r['NUM PED'])).size;
@@ -712,11 +400,11 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
     const valorTotal = rows.reduce((a,r)=>a+pt2num(r['VLR LIQ PEDIDO']),0);
     const valorEnviado = rows.reduce((a,r)=>a+pt2num(r['VLR LIQ FATURADO']),0);
 
-    // UF pendentes
+    // UF pend
     const ufPend = {};
-    ['SP','MG','RJ','ES','PR','RS','SC'].forEach(u=>{ ufPend[u]={itens:0,pedidos:new Set(),atrasos:0,soma_dias:0,valor:0}; });
     pendRows.forEach(r=>{
-      const u = r['UF']; if(!u||!ufPend[u]) return;
+      const u = r['UF']; if(!u) return;
+      if(!ufPend[u]) ufPend[u] = {itens:0, pedidos:new Set(), atrasos:0, soma_dias:0, valor:0};
       ufPend[u].itens++;
       ufPend[u].pedidos.add(r['NUM PED']);
       if(r._dias>15) ufPend[u].atrasos++;
@@ -726,7 +414,6 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
     const ufPendOut = {};
     Object.keys(ufPend).forEach(u=>{
       const d = ufPend[u];
-      if(d.itens===0) return;
       ufPendOut[u] = {
         itens: d.itens,
         pedidos: d.pedidos.size,
@@ -746,7 +433,7 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
       .map(([motivo,qtd])=>({motivo, qtd, pct:Math.round(qtd/pendItens*1000)/10}))
       .sort((a,b)=>b.qtd-a.qtd);
 
-    // Categorias pendentes
+    // Categorias
     const catPend = {'Logística':0,'Qualidade':0,'Processos':0,'Outros':0};
     pendRows.forEach(r=>{ catPend[r._categ]++; });
 
@@ -760,42 +447,10 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
       transpCargaMap[t].valor += pt2num(r['VLR LIQ PEDIDO']);
     });
     const transpCarga = Object.entries(transpCargaMap)
-      .map(([transp,d])=>({
-        transp,
-        itens: d.itens,
-        enviados: d.enviados,
-        pendentes: d.pendentes,
-        valor: Math.round(d.valor*100)/100,
-        pct_env: d.itens ? Math.round(d.enviados/d.itens*1000)/10 : 0
-      }))
+      .map(([transp,d])=>({transp, itens:d.itens, enviados:d.enviados, pendentes:d.pendentes, valor:Math.round(d.valor*100)/100, pct_env: d.itens ? Math.round(d.enviados/d.itens*1000)/10 : 0}))
       .sort((a,b)=>b.itens-a.itens);
 
-    // TRANSP PED por mês
-    const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    const transpPedMap = {};
-    rows.forEach(r=>{
-      const t = r._transp_ped;
-      if(!transpPedMap[t]) transpPedMap[t] = {porMes:{}, total:0, pend:0};
-      if(r._mes){
-        transpPedMap[t].porMes[r._mes] = (transpPedMap[t].porMes[r._mes]||0)+1;
-      }
-      transpPedMap[t].total++;
-      if(r._pend) transpPedMap[t].pend++;
-    });
-    const transpPedMes = {};
-    Object.keys(transpPedMap).forEach(t=>{
-      const d = transpPedMap[t];
-      const porMes = {};
-      for(let m=1;m<=12;m++) porMes[meses[m-1]] = d.porMes[m]||0;
-      transpPedMes[t] = {
-        por_mes: porMes,
-        total: d.total,
-        pend: d.pend,
-        pct_env: d.total ? Math.round((d.total-d.pend)/d.total*1000)/10 : 0
-      };
-    });
-
-    // UF histórico
+    // UF hist
     const ufHistMap = {};
     rows.forEach(r=>{
       const u = r['UF']; if(!u) return;
@@ -806,11 +461,7 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
     });
     const ufHist = {};
     Object.entries(ufHistMap).forEach(([u,d])=>{
-      ufHist[u] = {
-        itens:d.itens, enviados:d.enviados, pendentes:d.pendentes,
-        valor: Math.round(d.valor*100)/100,
-        pct_env: d.itens ? Math.round(d.enviados/d.itens*1000)/10 : 0
-      };
+      ufHist[u] = {itens:d.itens, enviados:d.enviados, pendentes:d.pendentes, valor:Math.round(d.valor*100)/100, pct_env: d.itens ? Math.round(d.enviados/d.itens*1000)/10 : 0};
     });
 
     // Motivos histórico
@@ -834,18 +485,17 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
       const pend = subset.filter(r=>r._pend).length;
       const vt = subset.reduce((a,r)=>a+pt2num(r['VLR LIQ PEDIDO']),0);
       const vf = subset.reduce((a,r)=>a+pt2num(r['VLR LIQ FATURADO']),0);
-      mensal[meses[m-1]] = {
+      mensal[MESES[m-1]] = {
         itens: subset.length,
         pedidos: new Set(subset.map(r=>r['NUM PED'])).size,
-        enviados: env,
-        pendentes: pend,
+        enviados: env, pendentes: pend,
         valor_total: Math.round(vt*100)/100,
         valor_enviado: Math.round(vf*100)/100,
         pct_env: subset.length ? Math.round(env/subset.length*1000)/10 : 0
       };
     }
 
-    // Timeline (por data de pedido dos pendentes)
+    // Timeline
     const tlMap = {};
     pendRows.forEach(r=>{
       if(!r._data) return;
@@ -859,7 +509,7 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
     });
     const timeline = {labels: tlKeys.map(k=>k.substring(0,5)), values: tlKeys.map(k=>tlMap[k])};
 
-    // Top peças (pendentes)
+    // Top peças
     const pecMap = {};
     pendRows.forEach(r=>{
       const p = String(r['DESCRICAO ITEM']||'—');
@@ -870,8 +520,7 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
     });
     const topPecas = Object.entries(pecMap)
       .map(([peca,d])=>({peca, qtd:d.qtd, pedidos:d.pedidos.size, dias_max:d.dias_max}))
-      .sort((a,b)=>b.qtd-a.qtd)
-      .slice(0,10);
+      .sort((a,b)=>b.qtd-a.qtd).slice(0,10);
 
     return {
       meta: {
@@ -896,14 +545,12 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
         valor_enviado: Math.round(valorEnviado*100)/100,
         pct_enviado: total ? Math.round(atendidos/total*1000)/10 : 0,
         faixas_itens: fxItens,
-        faixas_pedidos: fxPed,
-        atrasos_nova_classificacao: {itens: atrNovaItens, pedidos: atrNova}
+        faixas_pedidos: fxPed
       },
       uf_pend: ufPendOut,
       motivos_pend: motivosPend,
       cat_pend: catPend,
       transp_carga: transpCarga,
-      transp_ped_mes: transpPedMes,
       uf_hist: ufHist,
       motivos_hist: motivosHist,
       mensal: mensal,
@@ -913,33 +560,572 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
     };
   };
 
-  // ── UI: badge/status ──
+  // ═══════════════════ RENDER: HEADER/BANNER ═══════════════════
+  function renderCabecalho(dados){
+    const dataBR = dados.meta?.data_referencia_br || '—';
+    document.title = 'Dashboard Assistência Técnica Easy House — '+dataBR;
+    if(el('fbSubtitulo')) el('fbSubtitulo').innerHTML = 'Fonte: Relatório Easy House · <strong>Ref '+dataBR+'</strong> · Meta: 15 dias · dados via Firebase';
+    if(el('fbDataRef')) el('fbDataRef').textContent = dataBR;
+    if(el('fbFooter')) el('fbFooter').textContent = 'Dashboard Assistência Técnica · Easy House · Referência '+dataBR+' · Meta envio: 15 dias · Sincronizado via Firebase';
+  }
+  function renderBanner(dados){
+    const r = dados.resumo||{}, fx = r.faixas_itens||{};
+    const banner = el('fbBanner'); if(!banner) return;
+    banner.style.display = '';
+    const critIcon = (fx.critico||0)===0 ? '✅ <strong>ZERO Críticos</strong>' : '🔴 <strong>'+fx.critico+' Críticos</strong>';
+    const modIcon = (fx.moderado||0)===0 ? '✅ <strong>ZERO Moderados</strong>' : '⚠ <strong>'+fx.moderado+' Moderado(s)</strong>';
+    const cor = (fx.critico>0 ? 'danger' : fx.moderado>0 ? 'warn' : 'ok');
+    const emoji = cor==='ok'?'🟢':cor==='warn'?'🟡':'🔴';
+    if(cor==='ok'){ banner.style.background='linear-gradient(90deg,rgba(34,197,94,.14),rgba(34,197,94,.03))'; banner.style.borderBottom='2px solid rgba(34,197,94,.35)'; banner.style.color='#86efac'; }
+    else if(cor==='danger'){ banner.style.background='linear-gradient(90deg,rgba(239,68,68,.14),rgba(239,68,68,.03))'; banner.style.borderBottom='2px solid rgba(239,68,68,.35)'; banner.style.color='#fca5a5'; }
+    else { banner.style.background='linear-gradient(90deg,rgba(234,179,8,.14),rgba(234,179,8,.03))'; banner.style.borderBottom='2px solid rgba(234,179,8,.35)'; banner.style.color='#fde047'; }
+    const pctAtr = r.pendentes ? (r.em_atraso_itens/r.pendentes*100).toFixed(1).replace('.',',') : '0,0';
+    banner.innerHTML = emoji+' &nbsp;<strong>'+r.pendentes+' itens / '+r.pedidos_pend+' pedidos</strong> pendentes · <strong>'+r.em_atraso_itens+' itens em atraso</strong> ('+pctAtr+'%) · Atraso médio: <strong>'+fmtD(r.atraso_medio)+'d</strong> · '+critIcon+' · '+modIcon+' · Maior atraso <strong>'+r.maior_atraso+'d</strong>';
+  }
+
+  // ═══════════════════ RENDER: RESUMO ═══════════════════
+  function renderResumo(dados){
+    const cont = el('fbResumoContent'); if(!cont) return;
+    const r = dados.resumo||{}, fx = r.faixas_itens||{};
+    const ufs = dados.uf_pend||{};
+    const cls = (r.em_atraso_itens===0?'ok':r.em_atraso_itens<=3?'w':'d');
+    const clsMaior = (r.maior_atraso>45?'d':r.maior_atraso>30?'d':r.maior_atraso>15?'w':'ok');
+    const t = r.pendentes||1;
+    const p1 = ((fx.no_prazo||0)/t*100).toFixed(1);
+    const p2 = ((fx.leve||0)/t*100).toFixed(1);
+    const p3 = ((fx.moderado||0)/t*100).toFixed(1);
+    const p4 = ((fx.critico||0)/t*100).toFixed(1);
+    const maxUF = Math.max(1, ...Object.values(ufs).map(u=>u.itens));
+    const ufCards = UF_ORDER.filter(u=>ufs[u]&&ufs[u].itens>0).map(u=>{
+      const d = ufs[u];
+      const emoji = UF_COLORS[u]||'⚪';
+      const nome = UF_NAMES[u]||u;
+      const pct = (d.itens/maxUF*100).toFixed(1);
+      const atrCor = d.atrasos>0?'var(--warn)':'var(--ok)';
+      const atrTxt = d.atrasos>0 ? d.atrasos+' atrasados ⚠' : '0 atrasados ✅';
+      const grad = d.atrasos>0 ? 'linear-gradient(90deg,var(--blue),var(--warn))' : 'linear-gradient(90deg,var(--blue),var(--ok))';
+      return `<div><div class="uf-header"><span style="font-weight:700">${emoji} ${u} — ${nome}</span><span style="color:var(--muted);font-family:var(--mono);font-size:10px">${d.itens} itens · ${fmtD(d.atraso_medio)}d · <span style="color:${atrCor}">${atrTxt}</span></span></div><div class="uf-bar-bg"><div class="uf-bar" style="width:${pct}%;background:${grad}"></div></div></div>`;
+    }).join('');
+
+    cont.innerHTML = `
+      <div class="kpi-grid">
+        <div class="kpi-card ok"><div class="kpi-label">Total Pendentes</div><div class="kpi-value ok">${r.pendentes||0}</div><div class="kpi-sub">${r.pedidos_pend||0} pedidos únicos · ${fmtInt(r.atendidos||0)} enviados</div><div class="kpi-icon">📦</div></div>
+        <div class="kpi-card ok"><div class="kpi-label">Pedidos Pendentes</div><div class="kpi-value ok">${r.pedidos_pend||0}</div><div class="kpi-sub">itens/pedido: ${r.pedidos_pend?(r.pendentes/r.pedidos_pend).toFixed(2).replace('.',','):'—'}</div><div class="kpi-icon">📋</div></div>
+        <div class="kpi-card ${cls}"><div class="kpi-label">Em Atraso (&gt;15 dias)</div><div class="kpi-value ${cls}">${r.em_atraso_itens||0}</div><div class="kpi-sub">${((r.em_atraso_itens/(r.pendentes||1))*100).toFixed(1).replace('.',',')}% · ${r.em_atraso_pedidos||0} pedidos</div><div class="kpi-icon">⏰</div></div>
+        <div class="kpi-card ${cls}"><div class="kpi-label">Atraso Médio</div><div class="kpi-value ${cls}">${fmtD(r.atraso_medio||0)}d</div><div class="kpi-sub">média entre pendentes</div><div class="kpi-icon">📅</div></div>
+        <div class="kpi-card ${clsMaior}"><div class="kpi-label">Maior Atraso</div><div class="kpi-value ${clsMaior}">${r.maior_atraso||0}d</div><div class="kpi-sub">pedido mais antigo</div><div class="kpi-icon">📌</div></div>
+      </div>
+      <div class="kpi-grid-3">
+        <div class="kpi-card ok"><div class="kpi-label">Valor Total Pendente</div><div class="kpi-value ok" style="font-size:22px">R$ ${fmtBR(r.valor_pendente||0)}</div><div class="kpi-sub">itens sem NF emitida</div></div>
+        <div class="kpi-card ${cls}"><div class="kpi-label">Valor em Atraso</div><div class="kpi-value ${cls}" style="font-size:22px">R$ ${fmtBR(r.valor_atraso||0)}</div><div class="kpi-sub">itens &gt;15 dias</div></div>
+        <div class="kpi-card ok"><div class="kpi-label">Valor Total (histórico)</div><div class="kpi-value ok" style="font-size:22px">R$ ${fmtInt(Math.round(r.valor_total||0))}</div><div class="kpi-sub">${fmtInt(Math.round(r.valor_enviado||0))} enviados (${fmtD(((r.valor_enviado||0)/(r.valor_total||1)*100).toFixed(1))}%)</div></div>
+      </div>
+
+      <div class="chart-grid-2">
+        <div class="chart-card">
+          <div class="chart-title">Distribuição por Faixa</div>
+          <div class="chart-desc">itens pendentes classificados por dias de atraso</div>
+          <div class="chart-wrap" style="height:220px"><canvas id="cDonut"></canvas></div>
+          <div class="donut-center" style="pointer-events:none;position:relative;margin-top:-160px;height:0;text-align:center">
+            <div style="font-size:26px;font-weight:800">${r.pendentes||0}</div>
+            <div class="donut-label">itens</div>
+          </div>
+          <div style="margin-top:80px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;font-size:11px;font-family:var(--mono)">
+            <div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#22c55e"></span>No Prazo ${fx.no_prazo||0}</div>
+            <div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#eab308"></span>Leve ${fx.leve||0}</div>
+            <div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#f97316"></span>Mod ${fx.moderado||0}</div>
+            <div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444"></span>Crít ${fx.critico||0}</div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="section-title">Distribuição por Faixa de Atraso</div>
+          <div class="meter-row"><div class="meter-label">✅ No prazo (0–15 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:${p1}%;background:var(--ok)"></div></div><div class="meter-count">${fx.no_prazo||0}</div></div>
+          <div class="meter-row"><div class="meter-label">🟡 Leve (16–25 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:${p2}%;background:var(--warn)"></div></div><div class="meter-count" style="color:${(fx.leve||0)>0?'var(--warn)':'var(--muted)'}">${fx.leve||0}</div></div>
+          <div class="meter-row"><div class="meter-label">🟠 Moderado (26–44 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:${p3}%;background:var(--accent)"></div></div><div class="meter-count" style="color:${(fx.moderado||0)>0?'var(--accent)':'var(--muted)'}">${fx.moderado||0}</div></div>
+          <div class="meter-row"><div class="meter-label">🔴 Crítico (&gt;45 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:${p4}%;background:var(--danger)"></div></div><div class="meter-count" style="color:${(fx.critico||0)>0?'var(--danger)':'var(--ok)'}">${fx.critico||0}</div></div>
+
+          <div class="section-title" style="margin-top:20px">Pendentes por UF</div>
+          ${ufCards}
+        </div>
+      </div>
+
+      <div class="chart-grid-2">
+        <div class="chart-card">
+          <div class="chart-title">Timeline de Entradas</div>
+          <div class="chart-desc">itens que entraram como pendentes por dia</div>
+          <div class="chart-wrap"><canvas id="cTimeline"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Composição Regional</div>
+          <div class="chart-desc">distribuição de itens pendentes por UF</div>
+          <div class="chart-wrap"><canvas id="cUFDonut"></canvas></div>
+        </div>
+      </div>`;
+
+    // Charts do Resumo
+    const C = {ok:'#22c55e',warn:'#eab308',danger:'#ef4444',accent:'#f97316',blue:'#3b82f6',muted:'#64748b'};
+    const GRID = {color:'rgba(148,163,184,.1)'};
+    const TICKS = {color:'#94a3b8',font:{size:10}};
+    if(CH.cDonut) CH.cDonut.destroy();
+    CH.cDonut = new Chart(el('cDonut'),{type:'doughnut',data:{labels:['No Prazo','Leve','Moderado','Crítico'],datasets:[{data:[fx.no_prazo||0,fx.leve||0,fx.moderado||0,fx.critico||0],backgroundColor:[C.ok,C.warn,C.accent,C.danger],borderWidth:2,borderColor:'#111629'}]},options:{cutout:'72%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw+' itens'}}}}});
+    const tl = dados.timeline||{labels:[],values:[]};
+    if(CH.cTimeline) CH.cTimeline.destroy();
+    CH.cTimeline = new Chart(el('cTimeline'),{type:'bar',data:{labels:tl.labels,datasets:[{label:'Itens',data:tl.values,backgroundColor:tl.values.map(v=>v>=8?C.accent:v>=4?C.warn:C.blue+'88'),borderRadius:3}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{...TICKS,maxRotation:45,font:{size:9}}},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
+    const ufList = UF_ORDER.filter(u=>ufs[u]&&ufs[u].itens>0);
+    if(CH.cUFDonut) CH.cUFDonut.destroy();
+    CH.cUFDonut = new Chart(el('cUFDonut'),{type:'doughnut',data:{labels:ufList,datasets:[{data:ufList.map(u=>ufs[u].itens),backgroundColor:[C.blue,C.accent,C.danger,C.ok,C.warn,C.muted],borderWidth:2,borderColor:'#111629'}]},options:{cutout:'65%',plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',boxWidth:10}}},maintainAspectRatio:false}});
+  }
+
+  // ═══════════════════ RENDER: MOTIVOS ═══════════════════
+  function renderMotivos(dados){
+    const cont = el('fbMotivosContent'); if(!cont) return;
+    const mot = dados.motivos_pend||[];
+    const c = dados.cat_pend||{};
+    const tot = dados.resumo?.pendentes||1;
+    function nomeCurto(m){
+      const u=(m.motivo||'').toUpperCase();
+      if(/PECA QUEBRADA NO VOL/.test(u)) return 'Peça Quebrada no Volume';
+      if(/FALTOU PECA DENTRO/.test(u)) return 'Faltou Peça no Volume';
+      if(/QUINA BATIDA/.test(u)) return 'Quina Batida';
+      if(/ESPELHO/.test(u)) return 'Espelho Quebrado';
+      if(/ETIQUET/.test(u)) return 'Etiquetagem Incorreta';
+      if(/PECA QUEBRADA$/.test(u)) return 'Peça Quebrada';
+      if(/FALTOU KIT/.test(u)) return 'Faltou Kit Ferragem';
+      if(/FALTOU NO ATO/.test(u)) return 'Faltou no Ato Entrega';
+      if(/AVARIA/.test(u)) return 'Avaria no Transporte';
+      if(/FURACAO/.test(u)) return 'Furação Errada';
+      if(/ENCOSTO/.test(u)) return 'Encosto Afundando';
+      if(/MEDIDA/.test(u)) return 'Peça com Medida Errada';
+      return (m.motivo||'').split(' ').slice(0,3).join(' ');
+    }
+    const l = c['Logística']||0, q = c['Qualidade']||0, p = c['Processos']||0, o = c['Outros']||0;
+    const cardsTop = ['d','w','w'].map((cls,i)=>{
+      const m = mot[i]||{motivo:'—',qtd:0};
+      const ord = ['Principal','2ª','3ª'][i];
+      return `<div class="kpi-card ${cls}"><div class="kpi-label">${ord} Causa</div><div class="kpi-value ${cls}" style="font-size:18px">${esc(nomeCurto(m))}</div><div class="kpi-sub">${m.qtd} ocorrências — ${((m.qtd/tot)*100).toFixed(1).replace('.',',')}%</div><div class="kpi-icon">📦</div></div>`;
+    }).join('');
+
+    // Ranking
+    const maxq = Math.max(1, ...mot.slice(0,10).map(m=>m.qtd));
+    const rankingRows = mot.slice(0,10).map((m,i)=>{
+      const w = (m.qtd/maxq*100).toFixed(0);
+      const cor = i===0?'var(--danger)':i<=2?'var(--warn)':'var(--blue)';
+      const emoji = i===0?'🔴':i<=2?'🟡':'🔵';
+      const nome = m.motivo.length>44?m.motivo.substring(0,44)+'…':m.motivo;
+      return `<div class="motivo-row"><div class="motivo-name">${emoji} ${esc(nome)}</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:${w}%;background:${cor}"></div></div><div class="motivo-count" style="color:${cor}">${m.qtd}</div></div>`;
+    }).join('');
+
+    // Motivos histórico top 10
+    const motHist = dados.motivos_hist||[];
+    const histRows = motHist.slice(0,10).map(m=>`<tr><td>${esc(m.motivo)}</td><td>${fmtInt(m.qtd)}</td><td style="font-family:var(--mono)">${fmtD(m.pct)}%</td><td style="font-family:var(--mono)">R$${fmtInt(Math.round(m.valor))}</td></tr>`).join('');
+    const outros = motHist.slice(10);
+    const outrosRow = outros.length ? `<tr style="font-size:10px;color:var(--muted)"><td>Outros (${outros.length} causas)</td><td>${fmtInt(outros.reduce((a,b)=>a+b.qtd,0))}</td><td>—</td><td style="font-family:var(--mono)">R$${fmtInt(Math.round(outros.reduce((a,b)=>a+b.valor,0)))}</td></tr>` : '';
+
+    cont.innerHTML = `
+      <div class="kpi-grid-3">${cardsTop}</div>
+
+      <div class="chart-grid-2">
+        <div class="chart-card">
+          <div class="section-title">Motivos Pendentes — Ranking (top 10)</div>
+          ${rankingRows || '<div style="color:var(--muted);font-family:var(--mono);font-size:11px;padding:12px">Sem motivos.</div>'}
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Distribuição por Motivo</div>
+          <div class="chart-desc">itens pendentes agrupados</div>
+          <div class="chart-wrap"><canvas id="cMotivos"></canvas></div>
+          <div class="section-title" style="margin-top:20px">Categorias</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;text-align:center;padding:12px;background:var(--surface2);border-radius:8px">
+            <div><div style="font-size:22px;font-weight:800;color:var(--warn)">${l}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Logística<br>${(l/tot*100).toFixed(1).replace('.',',')}%</div></div>
+            <div><div style="font-size:22px;font-weight:800;color:var(--danger)">${q}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Qualidade<br>${(q/tot*100).toFixed(1).replace('.',',')}%</div></div>
+            <div><div style="font-size:22px;font-weight:800;color:var(--accent)">${p}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Processos<br>${(p/tot*100).toFixed(1).replace('.',',')}%</div></div>
+            <div><div style="font-size:22px;font-weight:800;color:var(--muted)">${o}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Outros<br>${(o/tot*100).toFixed(1).replace('.',',')}%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="section-title">Motivos Histórico — Todos os Registros</div>
+        <table>
+          <thead><tr><th>Motivo</th><th>Ocorrências</th><th>%</th><th>Valor Total</th></tr></thead>
+          <tbody>${histRows}${outrosRow}</tbody>
+        </table>
+      </div>`;
+
+    // Chart Motivos donut (5 grupos)
+    let pqv=0, pq=0, et=0, ft=0, ot=0;
+    mot.forEach(m=>{
+      const u = (m.motivo||'').toUpperCase();
+      if(/PECA QUEBRADA NO VOL/.test(u)) pqv += m.qtd;
+      else if(/PECA QUEBRADA/.test(u)) pq += m.qtd;
+      else if(/ETIQUET/.test(u)) et += m.qtd;
+      else if(/FALTOU/.test(u)) ft += m.qtd;
+      else ot += m.qtd;
+    });
+    const C = {ok:'#22c55e',warn:'#eab308',danger:'#ef4444',accent:'#f97316',blue:'#3b82f6',muted:'#64748b'};
+    if(CH.cMotivos) CH.cMotivos.destroy();
+    CH.cMotivos = new Chart(el('cMotivos'),{type:'doughnut',data:{labels:['Peça Queb. Vol.','Peça Quebrada','Etiquet. CD','Faltou/Danif.','Outros'],datasets:[{data:[pqv,pq,et,ft,ot],backgroundColor:[C.danger,C.accent,C.warn,C.blue,C.muted],borderWidth:2,borderColor:'#111629'}]},options:{cutout:'60%',plugins:{legend:{position:'right',labels:{color:'#94a3b8',boxWidth:8,font:{size:9}}}},maintainAspectRatio:false}});
+  }
+
+  // ═══════════════════ RENDER: REGIÕES ═══════════════════
+  function renderRegioes(dados){
+    const cont = el('fbRegioesContent'); if(!cont) return;
+    const ufs = dados.uf_pend||{};
+    const list = UF_ORDER.filter(u=>ufs[u]&&ufs[u].itens>0);
+    const ufHist = dados.uf_hist||{};
+
+    const ufRows = list.map(u=>{
+      const d = ufs[u];
+      const noPrazo = d.itens - d.atrasos;
+      const pct = d.itens ? (d.atrasos/d.itens*100).toFixed(1).replace('.',',') : '0,0';
+      const status = d.atrasos===0 ? '<span class="badge b-ok">✅ Zerado</span>' : d.atrasos<=2 ? '<span class="badge b-w">'+d.atrasos+' Leve(s)</span>' : '<span class="badge b-d">'+d.atrasos+' atrasados ⚠</span>';
+      return `<tr><td><strong>${u}</strong></td><td style="font-weight:700;color:var(--blue)">${d.itens}</td><td style="font-weight:700;color:${d.atrasos>0?'var(--warn)':'var(--ok)'}">${d.atrasos}</td><td style="color:var(--ok)">${noPrazo}</td><td>${pct}%</td><td style="font-family:var(--mono)">${fmtD(d.atraso_medio)}d</td><td>${status}</td></tr>`;
+    }).join('');
+
+    const spSul = ['SP','PR','RS','SC'].reduce((a,u)=>a+(ufs[u]?.itens||0),0);
+    const spSulAtr = ['SP','PR','RS','SC'].reduce((a,u)=>a+(ufs[u]?.atrasos||0),0);
+    const spSulDias = ['SP','PR','RS','SC'].reduce((a,u)=>a+((ufs[u]?.atraso_medio||0)*(ufs[u]?.itens||0)),0);
+    const spSulMed = spSul ? (spSulDias/spSul).toFixed(1).replace('.',',') : '0,0';
+    const mgRj = ['MG','RJ','ES'].reduce((a,u)=>a+(ufs[u]?.itens||0),0);
+    const mgRjAtr = ['MG','RJ','ES'].reduce((a,u)=>a+(ufs[u]?.atrasos||0),0);
+    const mgRjDias = ['MG','RJ','ES'].reduce((a,u)=>a+((ufs[u]?.atraso_medio||0)*(ufs[u]?.itens||0)),0);
+    const mgRjMed = mgRj ? (mgRjDias/mgRj).toFixed(1).replace('.',',') : '0,0';
+
+    // UF histórico
+    const ufHistRows = Object.entries(ufHist).sort((a,b)=>b[1].itens-a[1].itens).map(([u,d])=>`
+      <tr><td><strong>${u}</strong></td><td>${fmtInt(d.itens)}</td><td>${fmtInt(d.enviados)}</td><td style="color:${d.pendentes>0?'var(--warn)':'var(--muted)'}">${d.pendentes}</td><td style="font-family:var(--mono)">R$${fmtInt(Math.round(d.valor))}</td><td><div class="pct-bar"><div class="pct-fill" style="width:${d.pct_env}%"></div></div><span style="font-family:var(--mono);font-size:10px">${fmtD(d.pct_env)}%</span></td></tr>`).join('');
+
+    cont.innerHTML = `
+      <div class="chart-grid-2">
+        <div class="chart-card">
+          <div class="chart-title">Itens Pendentes por UF</div>
+          <div class="chart-desc">total pendente e em atraso por estado</div>
+          <div class="chart-wrap tall"><canvas id="cUFBars"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Distribuição Regional</div>
+          <div class="chart-desc">SP/SUL vs MG/RJ/ES</div>
+          <div class="chart-wrap"><canvas id="cRegiao"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-grid-2">
+        <div class="table-card" style="margin-bottom:0">
+          <div class="section-title">Detalhamento por UF (Pendentes)</div>
+          <table><thead><tr><th>UF</th><th>Pendentes</th><th>Em Atraso</th><th>No Prazo</th><th>% Atraso</th><th>Média dias</th><th>Status</th></tr></thead>
+          <tbody>${ufRows||'<tr><td colspan="7" style="padding:14px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">Sem pendentes</td></tr>'}</tbody></table>
+        </div>
+        <div class="table-card" style="margin-bottom:0">
+          <div class="section-title">Detalhamento por Região</div>
+          <table><thead><tr><th>Região</th><th>Pendentes</th><th>Em Atraso</th><th>% Atraso</th><th>Média</th></tr></thead>
+          <tbody>
+            <tr><td>SP/SUL</td><td style="font-weight:700;color:var(--blue)">${spSul}</td><td style="color:${spSulAtr>0?'var(--warn)':'var(--ok)'};font-weight:700">${spSulAtr}${spSulAtr===0?' ✅':''}</td><td style="font-family:var(--mono)">${spSul?(spSulAtr/spSul*100).toFixed(1).replace('.',','):'0,0'}%</td><td style="font-family:var(--mono)">${spSulMed}d</td></tr>
+            <tr><td>MG/RJ/ES</td><td style="font-weight:700;color:var(--blue)">${mgRj}</td><td style="color:${mgRjAtr>0?'var(--warn)':'var(--ok)'};font-weight:700">${mgRjAtr}${mgRjAtr===0?' ✅':''}</td><td style="font-family:var(--mono)">${mgRj?(mgRjAtr/mgRj*100).toFixed(1).replace('.',','):'0,0'}%</td><td style="font-family:var(--mono)">${mgRjMed}d</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="section-title">UF Histórico (todos os registros)</div>
+        <table><thead><tr><th>UF</th><th>Total</th><th>Enviados</th><th>Pendentes</th><th>Valor Total</th><th>% Enviado</th></tr></thead>
+        <tbody>${ufHistRows}</tbody></table>
+      </div>`;
+
+    const C = {ok:'#22c55e',warn:'#eab308',danger:'#ef4444',accent:'#f97316',blue:'#3b82f6'};
+    const GRID = {color:'rgba(148,163,184,.1)'};
+    const TICKS = {color:'#94a3b8',font:{size:10}};
+    if(CH.cUFBars) CH.cUFBars.destroy();
+    CH.cUFBars = new Chart(el('cUFBars'),{type:'bar',data:{labels:list,datasets:[{label:'Total',data:list.map(u=>ufs[u].itens),backgroundColor:C.blue+'88',borderRadius:4},{label:'Em Atraso',data:list.map(u=>ufs[u].atrasos),backgroundColor:C.accent+'88',borderRadius:4}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
+    if(CH.cRegiao) CH.cRegiao.destroy();
+    CH.cRegiao = new Chart(el('cRegiao'),{type:'bar',data:{labels:['SP/SUL','MG/RJ/ES'],datasets:[{label:'Pendentes',data:[spSul,mgRj],backgroundColor:C.blue+'99',borderRadius:4},{label:'Em Atraso',data:[spSulAtr,mgRjAtr],backgroundColor:C.accent+'99',borderRadius:4}]},options:{plugins:{legend:{labels:{color:'#94a3b8',boxWidth:10}}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:GRID,ticks:TICKS}},maintainAspectRatio:false}});
+  }
+
+  // ═══════════════════ RENDER: PEÇAS ═══════════════════
+  function renderPecas(dados){
+    const cont = el('fbPecasContent'); if(!cont) return;
+    const tp = dados.top_pecas||[];
+    const rows = tp.map((p,i)=>{
+      const mc = p.dias_max>45?'color:var(--danger)':p.dias_max>30?'color:var(--accent)':p.dias_max>15?'color:var(--warn)':'color:var(--ok)';
+      return `<tr><td style="font-family:var(--mono);color:var(--muted)">${i+1}</td><td style="font-size:11px">${esc(p.peca)}</td><td style="font-family:var(--mono);font-weight:700;color:var(--blue)">${p.qtd}</td><td style="font-family:var(--mono);color:var(--muted)">${p.pedidos}</td><td style="font-family:var(--mono);font-weight:700;${mc}">${p.dias_max}d</td></tr>`;
+    }).join('');
+    cont.innerHTML = `
+      <div class="chart-grid-2">
+        <div class="chart-card">
+          <div class="chart-title">Top 10 Peças com Mais Pendências</div>
+          <div class="chart-desc">por quantidade em aberto (cor = urgência)</div>
+          <div class="chart-wrap tall"><canvas id="cPecas"></canvas></div>
+        </div>
+        <div class="table-card" style="margin-bottom:0">
+          <div class="section-title">Detalhamento Top 10</div>
+          <table><thead><tr><th>#</th><th>Descrição</th><th>Qtd</th><th>Pedidos</th><th>Máx. Dias</th></tr></thead>
+          <tbody>${rows||'<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">Sem peças pendentes</td></tr>'}</tbody></table>
+        </div>
+      </div>`;
+    const C = {ok:'#22c55e',warn:'#eab308',danger:'#ef4444',accent:'#f97316',blue:'#3b82f6'};
+    const GRID = {color:'rgba(148,163,184,.1)'};
+    const TICKS = {color:'#94a3b8',font:{size:10}};
+    if(CH.cPecas) CH.cPecas.destroy();
+    CH.cPecas = new Chart(el('cPecas'),{type:'bar',data:{labels:tp.map(p=>p.peca.length>28?p.peca.substring(0,28)+'…':p.peca),datasets:[{label:'Qtd pendente',data:tp.map(p=>p.qtd),backgroundColor:tp.map(p=>p.dias_max>45?C.danger:p.dias_max>30?C.accent:p.dias_max>15?C.warn:C.blue),borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:GRID,ticks:TICKS},y:{grid:{display:false},ticks:{...TICKS,font:{size:9}}}},maintainAspectRatio:false}});
+  }
+
+  // ═══════════════════ RENDER: ATRASOS ═══════════════════
+  function renderAtrasos(dados){
+    const cont = el('fbAtrasosContent'); if(!cont) return;
+    const peds = dados.pedidos_pend||[];
+    const critPeds = peds.filter(p=>p.dias>15).sort((a,b)=>b.dias-a.dias);
+    const modPeds = peds.filter(p=>p.dias>=10&&p.dias<=15).sort((a,b)=>b.dias-a.dias);
+    const levePeds = peds.filter(p=>p.dias<10).sort((a,b)=>b.dias-a.dias);
+    const critIt = critPeds.reduce((a,p)=>a+p.total_itens,0);
+    const modIt = modPeds.reduce((a,p)=>a+p.total_itens,0);
+    const leveIt = levePeds.reduce((a,p)=>a+p.total_itens,0);
+    const critV = critPeds.reduce((a,p)=>a+p.valor,0);
+    const modV = modPeds.reduce((a,p)=>a+p.valor,0);
+    const leveV = levePeds.reduce((a,p)=>a+p.valor,0);
+    const critUFs = [...new Set(critPeds.map(p=>p.uf))].join(' + ')||'—';
+    const modUFs = [...new Set(modPeds.map(p=>p.uf))].join(' + ')||'—';
+    const maxDias = critPeds.length ? Math.max(...critPeds.map(p=>p.dias)) : 0;
+    function rowPed(p, bg){
+      const cor = p.dias>15?'background:rgba(239,68,68,.25);color:#fca5a5':p.dias>=10?'background:rgba(249,115,22,.25);color:#fb923c':'background:rgba(234,179,8,.2);color:#fde047';
+      return `<div class="crit-row" style="background:${bg}"><span style="font-family:var(--mono);font-weight:700;color:var(--blue)">#${p.num_ped}</span><span style="font-size:11px">${esc(p.cliente)}</span><span style="font-size:11px;color:var(--muted)">${esc(p.cidade)}/${esc(p.uf)}</span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">${p.dt_pedido}</span><span class="dias-pill" style="padding:3px 8px;border-radius:6px;font-family:var(--mono);font-size:10px;font-weight:700;${cor}">${p.dias}d</span></div>`;
+    }
+    cont.innerHTML = `
+      <div style="background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.25);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:11px;font-family:var(--mono);color:#93c5fd">
+        📏 <strong>Classificação:</strong> 🔴 Crítico (&gt; 15d) · 🟠 Moderado (10 a 15d) · 🟡 Leve (até 10d)
+      </div>
+      <div class="kpi-grid-3">
+        <div class="kpi-card ${critIt>0?'d':'ok'}"><div class="kpi-label">🔴 Itens Crítico (&gt; 15 dias)</div><div class="kpi-value ${critIt>0?'d':'ok'}">${critIt}</div><div class="kpi-sub">${critPeds.length} pedidos · ${critUFs} · R$ ${fmtBR(critV)}${maxDias?' · máx '+maxDias+'d':''}</div><div class="kpi-icon">🚨</div></div>
+        <div class="kpi-card ${modIt>0?'w':'ok'}"><div class="kpi-label">🟠 Itens Moderado (10 a 15 dias)</div><div class="kpi-value ${modIt>0?'w':'ok'}">${modIt}</div><div class="kpi-sub">${modPeds.length} pedidos · ${modUFs} · R$ ${fmtBR(modV)}</div><div class="kpi-icon">⚠</div></div>
+        <div class="kpi-card ok"><div class="kpi-label">🟡 Itens Leve (até 10 dias)</div><div class="kpi-value ok">${leveIt}</div><div class="kpi-sub">${levePeds.length} pedidos · R$ ${fmtBR(leveV)}</div><div class="kpi-icon">🟢</div></div>
+      </div>
+      <div class="table-card">
+        <div class="section-title">🔴 Itens com Atraso Crítico — ${critPeds.length} pedidos · ${critIt} itens</div>
+        <div class="crit-row hdr"><span>Nº Pedido</span><span>Cliente</span><span>Cidade/UF</span><span>Data</span><span>Dias</span></div>
+        ${critPeds.map(p=>rowPed(p,'rgba(239,68,68,.08)')).join('') || '<div style="padding:14px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">✅ Nenhum item crítico</div>'}
+      </div>
+      <div class="table-card">
+        <div class="section-title">🟠 Itens com Atraso Moderado — ${modPeds.length} pedidos · ${modIt} itens</div>
+        <div class="crit-row hdr"><span>Nº Pedido</span><span>Cliente</span><span>Cidade/UF</span><span>Data</span><span>Dias</span></div>
+        ${modPeds.map(p=>rowPed(p,'rgba(249,115,22,.08)')).join('') || '<div style="padding:14px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">✅ Nenhum item moderado</div>'}
+      </div>
+      <div class="table-card">
+        <div class="section-title">🟡 Itens com Atraso Leve — ${levePeds.length} pedidos · ${leveIt} itens</div>
+        <div class="crit-row hdr"><span>Nº Pedido</span><span>Cliente</span><span>Cidade/UF</span><span>Data</span><span>Dias</span></div>
+        ${levePeds.map(p=>rowPed(p,'rgba(234,179,8,.05)')).join('') || '<div style="padding:14px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">Nenhum item</div>'}
+      </div>`;
+  }
+
+  // ═══════════════════ RENDER: COMPARATIVO ═══════════════════
+  function renderComparativo(dados, penult){
+    const cont = el('fbCompContent'); if(!cont) return;
+    const curM = dados.meta||{};
+    const dataAtual = curM.data_referencia_br || '—';
+    if(!penult || !penult.resumo){
+      cont.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:32px;text-align:center">
+        <div style="font-size:14px;font-family:var(--mono);color:var(--muted);margin-bottom:16px">📊 Referência atual: <strong style="color:var(--text)">${dataAtual}</strong></div>
+        <div style="font-size:12px;font-family:var(--mono);color:var(--muted);line-height:1.8">
+          ⏳ <strong>Aguardando um segundo import</strong> para gerar comparativo automático.<br>
+          A partir do próximo relatório importado, esta aba mostrará a variação DxD.<br><br>
+          <span style="color:#86efac">Snapshot atual salvo · próxima importação irá comparar com este</span>
+        </div>
+      </div>`;
+      return;
+    }
+    const cur = dados.resumo||{}, curFx = cur.faixas_itens||{};
+    const prev = penult.resumo||{}, prevM = penult.meta||{}, prevFx = prev.faixas_itens||{};
+    const dataAnt = prevM.data_referencia_br || '—';
+    function row(label, prevV, curV, fmt, isPct){
+      const diff = (curV||0) - (prevV||0);
+      let deltaCls = 'neu', arrow = '=', txt = '=';
+      if(diff > 0){ deltaCls = 'up'; arrow = '⬆'; txt = '+'+(isPct?diff.toFixed(1).replace('.',',')+'pp':fmt(diff)); }
+      else if(diff < 0){ deltaCls = 'dn'; arrow = '⬇'; txt = (isPct?diff.toFixed(1).replace('.',',')+'pp':fmt(diff)); }
+      const good = /pendent|atras|maior|valor/i.test(label);
+      const arrCol = diff===0?'var(--muted)':(good ? (diff<0?'var(--ok)':'var(--warn)') : (diff>0?'var(--ok)':'var(--warn)'));
+      return `<div class="comp-row"><span class="comp-label">${label}</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">${fmt(prevV)}</span><span class="comp-arrow" style="color:${arrCol}">${arrow}</span><span class="comp-new" style="color:${arrCol}">${fmt(curV)} <span class="delta ${deltaCls}">${txt}</span></span></div></div>`;
+    }
+    const pctAtrPrev = (prev.em_atraso_itens/(prev.pendentes||1)*100), pctAtrCur = (cur.em_atraso_itens/(cur.pendentes||1)*100);
+    cont.innerHTML = `<div class="chart-grid-2">
+      <div class="chart-card">
+        <div class="comp-title">📊 Indicadores DxD <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">${dataAnt} → ${dataAtual}</span></div>
+        ${row('Total de itens pendentes', prev.pendentes, cur.pendentes, v=>fmtInt(v))}
+        ${row('Pedidos únicos pendentes', prev.pedidos_pend, cur.pedidos_pend, v=>fmtInt(v))}
+        ${row('Itens em atraso (>15d)', prev.em_atraso_itens, cur.em_atraso_itens, v=>fmtInt(v))}
+        ${row('% em atraso', pctAtrPrev, pctAtrCur, v=>v.toFixed(1).replace('.',',')+'%', true)}
+        ${row('Atraso médio', prev.atraso_medio, cur.atraso_medio, v=>fmtD(v)+'d')}
+        ${row('Maior atraso', prev.maior_atraso, cur.maior_atraso, v=>v+'d')}
+        ${row('Valor pendente', prev.valor_pendente, cur.valor_pendente, v=>'R$ '+fmtBR(v))}
+        ${row('Valor em atraso', prev.valor_atraso, cur.valor_atraso, v=>'R$ '+fmtBR(v))}
+        ${row('Críticos (>45d)', prevFx.critico, curFx.critico, v=>fmtInt(v))}
+        ${row('Moderados (26-44d)', prevFx.moderado, curFx.moderado, v=>fmtInt(v))}
+        ${row('Leves (16-25d)', prevFx.leve, curFx.leve, v=>fmtInt(v))}
+      </div>
+      <div class="chart-card" style="padding:20px">
+        <div class="comp-title" style="font-size:13px">📊 Faixas — Comparação Direta</div>
+        <table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:12px">
+          <thead><tr>
+            <th style="text-align:left;font-size:9px;color:var(--muted);font-family:var(--mono);padding:6px 8px;border-bottom:1px solid var(--border)">Faixa</th>
+            <th style="text-align:center;font-size:9px;color:var(--muted);font-family:var(--mono);padding:6px 4px;border-bottom:1px solid var(--border)">${dataAnt}</th>
+            <th style="text-align:center;font-size:9px;color:var(--muted);font-family:var(--mono);padding:6px 4px;border-bottom:1px solid var(--border)">${dataAtual}</th>
+            <th style="text-align:center;font-size:9px;color:var(--muted);font-family:var(--mono);padding:6px 4px;border-bottom:1px solid var(--border)">Δ</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:7px 8px"><span class="badge b-ok">✅ No Prazo</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">${prevFx.no_prazo||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--ok)">${curFx.no_prazo||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta ${(curFx.no_prazo||0)>=(prevFx.no_prazo||0)?'up':'dn'}">${((curFx.no_prazo||0)-(prevFx.no_prazo||0))>=0?'+':''}${(curFx.no_prazo||0)-(prevFx.no_prazo||0)}</span></td></tr>
+            <tr><td style="padding:7px 8px"><span class="badge b-w">🟡 Leve</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">${prevFx.leve||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--warn)">${curFx.leve||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta ${(curFx.leve||0)>(prevFx.leve||0)?'up':(curFx.leve||0)<(prevFx.leve||0)?'dn':'neu'}">${((curFx.leve||0)-(prevFx.leve||0))>=0?'+':''}${(curFx.leve||0)-(prevFx.leve||0)}</span></td></tr>
+            <tr><td style="padding:7px 8px"><span class="badge b-d">🟠 Moderado</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">${prevFx.moderado||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--accent)">${curFx.moderado||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta ${(curFx.moderado||0)>(prevFx.moderado||0)?'up':(curFx.moderado||0)<(prevFx.moderado||0)?'dn':'neu'}">${((curFx.moderado||0)-(prevFx.moderado||0))>=0?'+':''}${(curFx.moderado||0)-(prevFx.moderado||0)}</span></td></tr>
+            <tr><td style="padding:7px 8px"><span class="badge b-c">🔴 Crítico</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">${prevFx.critico||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:${(curFx.critico||0)>0?'var(--danger)':'var(--ok)'}">${curFx.critico||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta ${(curFx.critico||0)>(prevFx.critico||0)?'up':(curFx.critico||0)<(prevFx.critico||0)?'dn':'neu'}">${((curFx.critico||0)-(prevFx.critico||0))>=0?'+':''}${(curFx.critico||0)-(prevFx.critico||0)}</span></td></tr>
+            <tr style="border-top:2px solid var(--border)"><td style="padding:7px 8px;font-weight:700">TOTAL</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted);font-weight:700">${prev.pendentes||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700">${cur.pendentes||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta ${(cur.pendentes||0)>(prev.pendentes||0)?'up':(cur.pendentes||0)<(prev.pendentes||0)?'dn':'neu'}">${((cur.pendentes||0)-(prev.pendentes||0))>=0?'+':''}${(cur.pendentes||0)-(prev.pendentes||0)}</span></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:14px;padding:10px;background:var(--surface2);border-radius:8px;font-size:10px;font-family:var(--mono);color:var(--muted);line-height:1.6">
+          📆 <strong>Anterior:</strong> ${dataAnt} · ${prev.pendentes} itens / ${prev.pedidos_pend} pedidos<br>
+          📆 <strong>Atual:</strong> ${dataAtual} · ${cur.pendentes} itens / ${cur.pedidos_pend} pedidos
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ═══════════════════ RENDER: ASSISTÊNCIA PENDENTES ═══════════════════
+  function renderPedidosPend(dados){
+    const cont = el('fbPedidosContent'); if(!cont) return;
+    const peds = (dados.pedidos_pend||[]).map(p=>({
+      'NUM PED': p.num_ped, cliente: p.cliente, cidade: p.cidade, uf: p.uf,
+      dt_pedido: p.dt_pedido, dias: p.dias, total_itens: p.total_itens,
+      motivos: p.motivos, valor: p.valor, faixa: p.faixa, itens: p.itens
+    }));
+    window.PEDIDOS_ALL = peds;
+    const cnts = {todos: peds.length, 'No Prazo':0, 'Leve':0, 'Moderado':0, 'Crítico':0};
+    peds.forEach(p=>{ if(cnts[p.faixa]!=null) cnts[p.faixa]++; });
+    cont.innerHTML = `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--muted)">FILTROS:</div>
+        <input id="searchInput" type="text" placeholder="Buscar cliente, nº pedido, cidade…" oninput="renderPedidosTabela()" style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 12px;color:var(--text);font-family:var(--mono);font-size:11px;width:260px;outline:none">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="filter-btn active" onclick="setFilter('todos',this)">Todos (${cnts.todos})</button>
+          <button class="filter-btn" onclick="setFilter('Crítico',this)">🔴 Críticos (${cnts['Crítico']})</button>
+          <button class="filter-btn" onclick="setFilter('Moderado',this)">🟠 Moderado (${cnts['Moderado']})</button>
+          <button class="filter-btn" onclick="setFilter('Leve',this)">🟡 Leve (${cnts['Leve']})</button>
+          <button class="filter-btn" onclick="setFilter('No Prazo',this)">✅ No Prazo (${cnts['No Prazo']})</button>
+        </div>
+        <div style="margin-left:auto;font-size:11px;font-family:var(--mono);color:var(--muted)">💡 clique na linha p/ ver os itens do pedido · Exibindo: <span id="countLabel" style="color:var(--text);font-weight:700">${peds.length}</span> pedidos</div>
+      </div>
+      <div class="table-card" style="padding:0;overflow:hidden">
+        <div style="overflow-x:auto">
+          <table style="min-width:900px">
+            <thead><tr>
+              <th style="padding:12px 14px;cursor:pointer" onclick="sortTable('NUM PED')">Nº Pedido ⇅</th>
+              <th style="padding:12px 14px;cursor:pointer" onclick="sortTable('cliente')">Cliente ⇅</th>
+              <th style="padding:12px 14px">Cidade / UF</th>
+              <th style="padding:12px 14px;cursor:pointer" onclick="sortTable('dt_pedido')">Data ⇅</th>
+              <th style="padding:12px 14px;cursor:pointer;text-align:center" onclick="sortTable('dias')">Dias ⇅</th>
+              <th style="padding:12px 14px;text-align:center">Itens</th>
+              <th style="padding:12px 14px">Motivo</th>
+              <th style="padding:12px 14px;text-align:right">Valor</th>
+              <th style="padding:12px 14px;text-align:center">Status</th>
+            </tr></thead>
+            <tbody id="pedidosBody"></tbody>
+          </table>
+        </div>
+      </div>`;
+    renderPedidosTabela();
+  }
+
+  // ═══════════════════ TABELA DE PEDIDOS + FILTROS ═══════════════════
+  let currentFilter = 'todos', sortKey = 'dias', sortAsc = false;
+  window.setFilter = function(f, btnEl){
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    if(btnEl) btnEl.classList.add('active');
+    renderPedidosTabela();
+  };
+  window.sortTable = function(k){
+    if(sortKey === k) sortAsc = !sortAsc; else { sortKey = k; sortAsc = false; }
+    renderPedidosTabela();
+  };
+  window.toggleItens = function(numPed){
+    const row = document.getElementById('itens-' + numPed);
+    if(row) row.style.display = row.style.display === 'none' ? '' : 'none';
+  };
+  window.renderPedidosTabela = function(){
+    const body = document.getElementById('pedidosBody');
+    if(!body) return;
+    const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+    let list = (window.PEDIDOS_ALL||[]).filter(p => {
+      if(currentFilter !== 'todos' && p.faixa !== currentFilter) return false;
+      if(q){
+        const hay = (p.cliente+' '+p['NUM PED']+' '+p.cidade+' '+p.uf).toLowerCase();
+        if(!hay.includes(q)) return false;
+      }
+      return true;
+    });
+    list.sort((a,b) => {
+      const va = a[sortKey], vb = b[sortKey];
+      if(va === vb) return 0;
+      return (va > vb ? 1 : -1) * (sortAsc ? 1 : -1);
+    });
+    body.innerHTML = list.map(p => {
+      const badgeCls = p.faixa === 'Crítico' ? 'b-c' : p.faixa === 'Moderado' ? 'b-d' : p.faixa === 'Leve' ? 'b-w' : 'b-ok';
+      const daysCol = p.dias > 45 ? 'var(--danger)' : p.dias > 25 ? 'var(--accent)' : p.dias > 15 ? 'var(--warn)' : 'var(--muted)';
+      const itensHtml = (p.itens || []).map(it => `<tr><td colspan="9" style="padding:6px 20px;font-size:10px;color:var(--muted);background:rgba(255,255,255,.02)"><strong>${it.qtd}x</strong> ${esc(it.desc)} · <em>${esc(it.motivo)}</em> · R$ ${(it.valor||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>`).join('');
+      return `<tr onclick="toggleItens(${p['NUM PED']})" style="cursor:pointer">
+        <td style="padding:10px 14px;font-family:var(--mono);color:var(--blue);font-weight:700">#${p['NUM PED']}</td>
+        <td style="padding:10px 14px;font-size:12px">${esc(p.cliente)}</td>
+        <td style="padding:10px 14px;font-size:11px;color:var(--muted)">${esc(p.cidade)}/${esc(p.uf)}</td>
+        <td style="padding:10px 14px;font-family:var(--mono);font-size:11px;color:var(--muted)">${p.dt_pedido}</td>
+        <td style="padding:10px 14px;text-align:center;font-family:var(--mono);font-weight:700;color:${daysCol}">${p.dias}d</td>
+        <td style="padding:10px 14px;text-align:center;font-family:var(--mono)">${p.total_itens}</td>
+        <td style="padding:10px 14px;font-size:11px;color:var(--muted)">${esc((p.motivos||'').substring(0,40))}${(p.motivos||'').length>40?'…':''}</td>
+        <td style="padding:10px 14px;text-align:right;font-family:var(--mono);font-size:11px">R$ ${(p.valor||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+        <td style="padding:10px 14px;text-align:center"><span class="badge ${badgeCls}">${p.faixa}</span></td>
+      </tr><tr id="itens-${p['NUM PED']}" style="display:none">${itensHtml}</tr>`;
+    }).join('');
+    const cl = document.getElementById('countLabel');
+    if(cl) cl.textContent = list.length;
+  };
+
+  // ═══════════════════ NAVEGAÇÃO ENTRE ABAS ═══════════════════
+  window.showTab = function(id, btn){
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+    const target = document.getElementById('tab-' + id);
+    if(target) target.classList.add('active');
+    if(btn) btn.classList.add('active');
+  };
+
+  // ═══════════════════ FUNÇÃO PRINCIPAL ═══════════════════
+  window.fbAplicarDashboard = function(dados, penult){
+    if(!dados) return;
+    try { renderCabecalho(dados); } catch(e){ console.error('cabec',e); }
+    try { renderBanner(dados); } catch(e){ console.error('banner',e); }
+    try { renderResumo(dados); } catch(e){ console.error('resumo',e); }
+    try { renderMotivos(dados); } catch(e){ console.error('motivos',e); }
+    try { renderRegioes(dados); } catch(e){ console.error('regioes',e); }
+    try { renderPecas(dados); } catch(e){ console.error('pecas',e); }
+    try { renderAtrasos(dados); } catch(e){ console.error('atrasos',e); }
+    try { renderComparativo(dados, penult||window._fbPenult); } catch(e){ console.error('comp',e); }
+    try { renderPedidosPend(dados); } catch(e){ console.error('ped',e); }
+    console.log('[FB] Dashboard atualizado · ref '+(dados.meta?.data_referencia_br||'—'));
+  };
+
+  // ═══════════════════ UI: IMPORT MODAL ═══════════════════
   function setBadge(txt, cls){
-    const b = document.getElementById('fbBadge');
-    if(!b) return;
+    const b = el('fbBadge'); if(!b) return;
     b.textContent = txt;
     b.className = 'fb-badge' + (cls?' '+cls:'');
   }
   function setStep(id, cls, txt){
-    const el = document.getElementById('fbStep-'+id);
-    if(!el) return;
-    el.className = 'fb-step '+cls;
-    if(txt) el.innerHTML = txt;
+    const e = el('fbStep-'+id); if(!e) return;
+    e.className = 'fb-step '+cls;
+    if(txt) e.innerHTML = txt;
   }
-  window.fbAbrirImport = function(){
-    document.getElementById('fbFileInput').click();
-  };
-  window.fbFecharModal = function(){
-    document.getElementById('fbOverlay').classList.remove('show');
-  };
+  window.fbAbrirImport = function(){ el('fbFileInput').click(); };
+  window.fbFecharModal = function(){ el('fbOverlay').classList.remove('show'); };
   function showModal(){
-    document.getElementById('fbOverlay').classList.add('show');
-    document.getElementById('fbCloseBtn').style.display='none';
-    document.getElementById('fbSummary').innerHTML='';
-    document.getElementById('fbModalTitle').textContent='📥 Importando relatório…';
+    el('fbOverlay').classList.add('show');
+    el('fbCloseBtn').style.display='none';
+    el('fbSummary').innerHTML='';
+    el('fbModalTitle').textContent='📥 Importando relatório…';
+    ['parse','aggr','save','hist'].forEach(id=>{ const e=el('fbStep-'+id); if(e) e.style.display=''; });
     setStep('parse','doing','<span class="spin"></span> Lendo o arquivo XLSX…');
-    setStep('aggr','', '⏳ Agregando dados (pendentes, atrasos, motivos, transp, UF…)');
-    setStep('save','', '⏳ Salvando no Firebase Realtime Database…');
+    setStep('aggr','', '⏳ Agregando dados…');
+    setStep('save','', '⏳ Salvando no Firebase…');
     setStep('hist','', '⏳ Registrando no histórico…');
   }
   function showToast(msg, err){
@@ -950,52 +1136,44 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
     setTimeout(()=>{ t.style.transition='opacity .4s'; t.style.opacity=0; setTimeout(()=>t.remove(),400); }, 5500);
   }
 
-  // ── Handler do input file ──
   document.addEventListener('DOMContentLoaded', function(){
-    const inp = document.getElementById('fbFileInput');
+    const inp = el('fbFileInput');
     if(inp) inp.addEventListener('change', fbHandleFile);
   });
 
   async function fbHandleFile(e){
     const file = e.target.files[0];
     if(!file) return;
-    e.target.value = ''; // reset p/ permitir re-selecionar mesmo arquivo
-    document.getElementById('fbImportBtn').disabled = true;
+    e.target.value = '';
+    el('fbImportBtn').disabled = true;
     showModal();
     try {
-      // 1) Parse
       const dados = await fbProcessarXLSX(file);
-      setStep('parse','done', '✓ XLSX lido: <strong>'+fmtInt(dados.meta.total_registros)+'</strong> registros · ref '+dados.meta.data_referencia_br);
+      setStep('parse','done','✓ XLSX lido: <strong>'+fmtInt(dados.meta.total_registros)+'</strong> registros · ref '+dados.meta.data_referencia_br);
+      setStep('aggr','done','✓ Dados agregados: <strong>'+dados.resumo.pendentes+'</strong> pendentes / <strong>'+dados.resumo.em_atraso_itens+'</strong> em atraso');
 
-      // 2) Agregação (já foi feita no parse)
-      setStep('aggr','done', '✓ Dados agregados: <strong>'+dados.resumo.pendentes+'</strong> pendentes / <strong>'+dados.resumo.em_atraso_itens+'</strong> em atraso');
-
-      // 3) Salva no Firebase
       setStep('save','doing','<span class="spin"></span> Salvando em easyhouse/ultimo_relatorio …');
       const timestamp = firebase.database.ServerValue.TIMESTAMP;
-      const usuario = (function(){
-        try { return sessionStorage.getItem('email') || localStorage.getItem('email') || window.parent?.sessionStorage?.getItem('email') || 'anônimo'; }
-        catch(e){ return 'anônimo'; }
-      })();
-      const payload = Object.assign({}, dados, {
-        meta: Object.assign({}, dados.meta, {
-          timestamp_upload: timestamp,
-          usuario: usuario
-        })
-      });
-      // Copia o atual para penúltimo antes de sobrescrever (para comparativo)
+      let usuario = 'anônimo';
+      try { usuario = sessionStorage.getItem('email') || localStorage.getItem('email') || 'anônimo'; } catch(e){}
+
+      // Backup penúltimo
+      let penultAtual = null;
       try {
         const atual = await _fbDB.ref('easyhouse/ultimo_relatorio').once('value');
-        const atualVal = atual.val();
-        if(atualVal) await _fbDB.ref('easyhouse/penultimo_relatorio').set(atualVal);
-        window._fbPenult = atualVal;
-      } catch(e){ console.warn('[FB] penultimo:', e); }
-      await _fbDB.ref('easyhouse/ultimo_relatorio').set(payload);
-      setStep('save','done', '✓ Salvo em <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">easyhouse/ultimo_relatorio</code>');
+        penultAtual = atual.val();
+        if(penultAtual) await _fbDB.ref('easyhouse/penultimo_relatorio').set(penultAtual);
+      } catch(e){ console.warn('penultimo:', e); }
 
-      // 4) Histórico
-      setStep('hist','doing','<span class="spin"></span> Registrando entrada no histórico…');
-      const histEntry = {
+      const payload = Object.assign({}, dados, {
+        meta: Object.assign({}, dados.meta, { timestamp_upload: timestamp, usuario: usuario })
+      });
+      await _fbDB.ref('easyhouse/ultimo_relatorio').set(payload);
+      window._fbPenult = penultAtual;
+      setStep('save','done','✓ Salvo em <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">easyhouse/ultimo_relatorio</code>');
+
+      setStep('hist','doing','<span class="spin"></span> Registrando no histórico…');
+      await _fbDB.ref('easyhouse/historico').push({
         timestamp_upload: timestamp,
         data_referencia: dados.meta.data_referencia,
         data_referencia_br: dados.meta.data_referencia_br,
@@ -1011,630 +1189,111 @@ try{const _e=document.getElementById('kpi-criticos-count');if(_e)_e.textContent=
         maior_atraso: dados.resumo.maior_atraso,
         valor_pendente: dados.resumo.valor_pendente,
         valor_atraso: dados.resumo.valor_atraso
-      };
-      await _fbDB.ref('easyhouse/historico').push(histEntry);
+      });
       setStep('hist','done','✓ Registro adicionado em <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">easyhouse/historico</code>');
 
-      // Resumo
       const r = dados.resumo;
-      const sum = `
-        <div class="fb-summary">
-          <div><strong>📅 Referência:</strong> ${dados.meta.data_referencia_br}</div>
-          <div><strong>📦 Total:</strong> ${fmtInt(r.total)} itens · ${fmtInt(dados.meta.total_pedidos_unicos)} pedidos únicos</div>
-          <div><strong>✅ Enviados:</strong> ${fmtInt(r.atendidos)} (${r.pct_enviado}%)</div>
-          <div><strong>⏰ Pendentes:</strong> ${r.pendentes} itens / ${r.pedidos_pend} pedidos · R$ ${fmtBR(r.valor_pendente)}</div>
-          <div><strong>🚨 Em atraso (>15d):</strong> ${r.em_atraso_itens} itens / ${r.em_atraso_pedidos} pedidos · R$ ${fmtBR(r.valor_atraso)}</div>
-          <div><strong>📊 Faixas (itens):</strong> ${r.faixas_itens.no_prazo} NP · ${r.faixas_itens.leve} Leve · ${r.faixas_itens.moderado} Mod · ${r.faixas_itens.critico} Crít</div>
-          <div><strong>📈 Maior atraso:</strong> ${r.maior_atraso}d · <strong>Médio:</strong> ${String(r.atraso_medio).replace('.',',')}d</div>
-        </div>`;
-      document.getElementById('fbSummary').innerHTML = sum;
-      document.getElementById('fbModalTitle').textContent = '✓ Importação concluída';
-      document.getElementById('fbCloseBtn').style.display = '';
-      showToast('✓ Relatório <strong>'+file.name+'</strong> importado e salvo no Firebase');
+      el('fbSummary').innerHTML = `<div class="fb-summary">
+        <div><strong>📅 Referência:</strong> ${dados.meta.data_referencia_br}</div>
+        <div><strong>📦 Total:</strong> ${fmtInt(r.total)} itens · ${fmtInt(dados.meta.total_pedidos_unicos)} pedidos únicos</div>
+        <div><strong>✅ Enviados:</strong> ${fmtInt(r.atendidos)} (${r.pct_enviado}%)</div>
+        <div><strong>⏰ Pendentes:</strong> ${r.pendentes} itens / ${r.pedidos_pend} pedidos · R$ ${fmtBR(r.valor_pendente)}</div>
+        <div><strong>🚨 Em atraso:</strong> ${r.em_atraso_itens} itens / ${r.em_atraso_pedidos} pedidos</div>
+        <div><strong>📊 Faixas:</strong> ${r.faixas_itens.no_prazo} NP · ${r.faixas_itens.leve} Leve · ${r.faixas_itens.moderado} Mod · ${r.faixas_itens.critico} Crít</div>
+        <div><strong>📈 Maior atraso:</strong> ${r.maior_atraso}d · <strong>Médio:</strong> ${fmtD(r.atraso_medio)}d</div>
+      </div>`;
+      el('fbModalTitle').textContent = '✓ Importação concluída';
+      el('fbCloseBtn').style.display = '';
+      showToast('✓ Relatório <strong>'+file.name+'</strong> importado');
+
+      // Aplica no dashboard
+      fbAplicarDashboard(payload, penultAtual);
       atualizarBadgeUltimo();
-      // Aplica os novos dados no dashboard imediatamente
-      if(typeof fbAplicarDashboard === 'function') fbAplicarDashboard(payload);
     } catch(err){
       console.error(err);
-      const stepIds = ['parse','aggr','save','hist'];
-      stepIds.forEach(id=>{
-        const el = document.getElementById('fbStep-'+id);
-        if(el && el.classList.contains('doing')) setStep(id,'err','✗ Erro: '+err.message);
+      ['parse','aggr','save','hist'].forEach(id=>{
+        const e = el('fbStep-'+id);
+        if(e && e.classList.contains('doing')) setStep(id,'err','✗ Erro: '+err.message);
       });
-      document.getElementById('fbSummary').innerHTML = '<div class="fb-summary" style="color:#fca5a5">⚠ '+err.message+'<br><small>Verifique as regras do Realtime Database (write) e sua conexão.</small></div>';
-      document.getElementById('fbModalTitle').textContent = '✗ Falha na importação';
-      document.getElementById('fbCloseBtn').style.display = '';
+      el('fbSummary').innerHTML = '<div class="fb-summary" style="color:#fca5a5">⚠ '+err.message+'</div>';
+      el('fbModalTitle').textContent = '✗ Falha';
+      el('fbCloseBtn').style.display = '';
       showToast('✗ Falha: '+err.message, true);
     } finally {
-      document.getElementById('fbImportBtn').disabled = false;
+      el('fbImportBtn').disabled = false;
     }
   }
 
-  // ── Mostrar último import salvo ──
+  // ═══════════════════ VER ÚLTIMO IMPORT ═══════════════════
   window.fbMostrarUltimo = async function(){
     showModal();
-    document.getElementById('fbModalTitle').textContent = '🗂 Último relatório salvo';
-    ['parse','aggr','save','hist'].forEach(id=>{ const el=document.getElementById('fbStep-'+id); if(el) el.style.display='none'; });
+    el('fbModalTitle').textContent = '🗂 Último relatório salvo';
+    ['parse','aggr','save','hist'].forEach(id=>{ const e=el('fbStep-'+id); if(e) e.style.display='none'; });
     try {
       const snap = await _fbDB.ref('easyhouse/ultimo_relatorio').once('value');
       const d = snap.val();
       if(!d){
-        document.getElementById('fbSummary').innerHTML = '<div class="fb-summary">Nenhum relatório salvo ainda no Firebase.<br>Clique em <strong>📥 Importar relatório</strong> para começar.</div>';
+        el('fbSummary').innerHTML = '<div class="fb-summary">Nenhum relatório salvo ainda.<br>Clique em <strong>📥 Importar relatório</strong> para começar.</div>';
       } else {
-        const r = d.resumo || {};
-        const m = d.meta || {};
+        const r = d.resumo||{}, m = d.meta||{};
         const dtUp = m.timestamp_upload ? fmtDataHora(new Date(m.timestamp_upload)) : '—';
-        document.getElementById('fbSummary').innerHTML = `
-          <div class="fb-summary">
-            <div><strong>📅 Referência:</strong> ${m.data_referencia_br||'—'}</div>
-            <div><strong>📥 Importado em:</strong> ${dtUp}</div>
-            <div><strong>👤 Usuário:</strong> ${m.usuario||'—'}</div>
-            <div><strong>📄 Arquivo:</strong> ${m.arquivo_nome||'—'} (${m.arquivo_size?Math.round(m.arquivo_size/1024)+' KB':'—'})</div>
-            <div><strong>📦 Total:</strong> ${fmtInt(r.total||0)} itens · ${fmtInt(m.total_pedidos_unicos||0)} pedidos</div>
-            <div><strong>✅ Enviados:</strong> ${fmtInt(r.atendidos||0)} (${r.pct_enviado||0}%)</div>
-            <div><strong>⏰ Pendentes:</strong> ${r.pendentes||0} itens / ${r.pedidos_pend||0} pedidos · R$ ${fmtBR(r.valor_pendente||0)}</div>
-            <div><strong>🚨 Em atraso:</strong> ${r.em_atraso_itens||0} itens · máx ${r.maior_atraso||0}d · médio ${String(r.atraso_medio||0).replace('.',',')}d</div>
-          </div>`;
+        el('fbSummary').innerHTML = `<div class="fb-summary">
+          <div><strong>📅 Referência:</strong> ${m.data_referencia_br||'—'}</div>
+          <div><strong>📥 Importado em:</strong> ${dtUp}</div>
+          <div><strong>👤 Usuário:</strong> ${m.usuario||'—'}</div>
+          <div><strong>📄 Arquivo:</strong> ${m.arquivo_nome||'—'}</div>
+          <div><strong>📦 Total:</strong> ${fmtInt(r.total||0)} · ${fmtInt(m.total_pedidos_unicos||0)} pedidos</div>
+          <div><strong>✅ Enviados:</strong> ${fmtInt(r.atendidos||0)}</div>
+          <div><strong>⏰ Pendentes:</strong> ${r.pendentes||0} itens / ${r.pedidos_pend||0} pedidos</div>
+          <div><strong>🚨 Em atraso:</strong> ${r.em_atraso_itens||0} · máx ${r.maior_atraso||0}d</div>
+        </div>`;
       }
     } catch(err){
-      document.getElementById('fbSummary').innerHTML = '<div class="fb-summary" style="color:#fca5a5">✗ Erro: '+err.message+'</div>';
+      el('fbSummary').innerHTML = '<div class="fb-summary" style="color:#fca5a5">✗ '+err.message+'</div>';
     }
-    ['parse','aggr','save','hist'].forEach(id=>{ const el=document.getElementById('fbStep-'+id); if(el) el.style.display='none'; });
-    document.getElementById('fbCloseBtn').style.display = '';
+    el('fbCloseBtn').style.display = '';
   };
 
-  // ── Badge de status Firebase ──
   async function atualizarBadgeUltimo(){
     try {
       const snap = await _fbDB.ref('easyhouse/ultimo_relatorio/meta').once('value');
       const m = snap.val();
       if(m && m.timestamp_upload){
-        const dt = new Date(m.timestamp_upload);
-        setBadge('📡 Firebase · último upload '+fmtDataHora(dt), '');
+        setBadge('📡 Firebase · último upload '+fmtDataHora(new Date(m.timestamp_upload)), '');
       } else {
         setBadge('📡 Firebase conectado · nenhum upload ainda', 'warn');
       }
-    } catch(err){
-      setBadge('✗ Firebase offline: '+err.message, 'err');
-    }
+    } catch(err){ setBadge('✗ Firebase offline', 'err'); }
   }
 
-  // Inicializa ao carregar
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded', atualizarBadgeUltimo);
-  } else {
-    atualizarBadgeUltimo();
-  }
-})();
-</script>
-
-<!-- ═══════════════════ RENDER DINÂMICO FIREBASE ═══════════════════ -->
-<script>
-(function(){
-  const MESES_LONG = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  const UF_ORDER = ['SP','MG','RJ','ES','PR','RS','SC','BA','GO','DF'];
-  const UF_COLORS = {SP:'🔵',MG:'🟠',RJ:'🔴',ES:'🟢',PR:'🟣',RS:'⚪'};
-  const UF_NAMES = {SP:'São Paulo',MG:'Minas Gerais',RJ:'Rio de Janeiro',ES:'Espírito Santo',PR:'Paraná',RS:'Rio Grande do Sul',SC:'Santa Catarina',BA:'Bahia',GO:'Goiás',DF:'Distrito Federal'};
-
-  function fmtBR(n){return (n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
-  function fmtInt(n){return (n||0).toLocaleString('pt-BR');}
-  function fmtD(d){return String(d||0).replace('.',',');}
-  function el(id){return document.getElementById(id);}
-
-  // ── Mapeia motivos para donut do resumo (5 grupos: PQV / PQ / Etiquet / Faltou / Outros) ──
-  function motivosGrupo(motivos){
-    let pqv=0, pq=0, et=0, ft=0, ot=0;
-    (motivos||[]).forEach(m=>{
-      const u = (m.motivo||'').toUpperCase();
-      if(/PECA QUEBRADA NO VOL/.test(u)) pqv += m.qtd;
-      else if(/PECA QUEBRADA$|^PECA QUEBRADA[^N]/.test(u)) pq += m.qtd;
-      else if(/ETIQUET/.test(u)) et += m.qtd;
-      else if(/FALTOU/.test(u)) ft += m.qtd;
-      else ot += m.qtd;
-    });
-    return [pqv,pq,et,ft,ot];
-  }
-
-  // ── Renderiza os cabeçalhos, títulos e datas ──
-  function renderCabecalho(dados){
-    const dataBR = dados.meta?.data_referencia_br || '—';
-    if(el('fbTitulo')) el('fbTitulo').textContent = 'Dashboard Assistência Técnica Easy House — '+dataBR;
-    if(el('fbSubtitulo')) el('fbSubtitulo').innerHTML = 'Fonte: Relatório Easy House · '+dataBR+' · Meta: 15 dias para envio · Dados via Firebase';
-    if(el('fbDataRef')) el('fbDataRef').textContent = dataBR;
-    if(el('fbFooter')) el('fbFooter').textContent = 'Dashboard Assistência Técnica · Easy House · Referência '+dataBR+' · Meta envio: 15 dias · Sincronizado via Firebase';
-  }
-
-  // ── Banner ──
-  function renderBanner(dados){
-    const r = dados.resumo||{};
-    const fx = r.faixas_itens||{};
-    const critIcon = (fx.critico||0)===0 ? '✅ <strong>ZERO Críticos</strong>' : '🔴 <strong>'+fx.critico+' Críticos</strong>';
-    const modIcon = (fx.moderado||0)===0 ? '✅ <strong>ZERO Moderados</strong>' : '⚠ <strong>'+fx.moderado+' Moderado(s)</strong>';
-    const cor = (fx.critico>0 ? 'danger' : fx.moderado>0 ? 'warn' : 'ok');
-    const emoji = cor==='ok'?'🟢':cor==='warn'?'🟡':'🔴';
-    const banner = el('fbBanner');
-    if(!banner) return;
-    // ajusta cor do banner
-    if(cor==='ok'){
-      banner.style.background='linear-gradient(90deg,rgba(34,197,94,.14),rgba(34,197,94,.03))';
-      banner.style.borderBottom='2px solid rgba(34,197,94,.35)';
-      banner.style.color='#86efac';
-    } else if(cor==='danger'){
-      banner.style.background='linear-gradient(90deg,rgba(239,68,68,.14),rgba(239,68,68,.03))';
-      banner.style.borderBottom='2px solid rgba(239,68,68,.35)';
-      banner.style.color='#fca5a5';
-    } else {
-      banner.style.background='linear-gradient(90deg,rgba(234,179,8,.14),rgba(234,179,8,.03))';
-      banner.style.borderBottom='2px solid rgba(234,179,8,.35)';
-      banner.style.color='#fde047';
-    }
-    const pctAtr = r.pendentes ? (r.em_atraso_itens/r.pendentes*100).toFixed(1).replace('.',',') : '0,0';
-    banner.innerHTML = emoji+' &nbsp;<strong>'+r.pendentes+' itens / '+r.pedidos_pend+' pedidos</strong> pendentes · <strong>'+r.em_atraso_itens+' itens em atraso</strong> ('+pctAtr+'%) · Atraso médio: <strong>'+fmtD(r.atraso_medio)+'d</strong> · '+critIcon+' · '+modIcon+' · Maior atraso <strong>'+r.maior_atraso+'d</strong>';
-  }
-
-  // ── Grid KPIs Resumo (5) ──
-  function renderKpisResumo(dados){
-    const r = dados.resumo||{};
-    const grid = el('fbKpisResumo'); if(!grid) return;
-    const cls = (r.em_atraso_itens===0?'ok':r.em_atraso_itens<=3?'w':'d');
-    const clsMaior = (r.maior_atraso>45?'d':r.maior_atraso>30?'d':r.maior_atraso>15?'w':'ok');
-    grid.innerHTML = `
-      <div class="kpi-card ok"><div class="kpi-label">Total de Itens</div><div class="kpi-value ok">${r.pendentes||0}</div><div class="kpi-sub">${r.pedidos_pend||0} pedidos únicos · ${fmtInt(r.atendidos||0)} enviados no total</div><div class="kpi-icon">📦</div></div>
-      <div class="kpi-card ok"><div class="kpi-label">Pendentes de Envio</div><div class="kpi-value ok">${r.pendentes||0}</div><div class="kpi-sub">100% — sem NF emitida</div><div class="kpi-icon">🚨</div></div>
-      <div class="kpi-card ${cls}"><div class="kpi-label">Em Atraso (&gt;15 dias)</div><div class="kpi-value ${cls}">${r.em_atraso_itens||0}</div><div class="kpi-sub">${((r.em_atraso_itens/(r.pendentes||1))*100).toFixed(1).replace('.',',')}% do total · ${r.em_atraso_pedidos||0} pedidos</div><div class="kpi-icon">⏰</div></div>
-      <div class="kpi-card ${cls}"><div class="kpi-label">Atraso Médio</div><div class="kpi-value ${cls}">${fmtD(r.atraso_medio||0)}d</div><div class="kpi-sub">média entre os ${r.pendentes||0} pendentes</div><div class="kpi-icon">📅</div></div>
-      <div class="kpi-card ${clsMaior}"><div class="kpi-label">Maior Atraso</div><div class="kpi-value ${clsMaior}">${r.maior_atraso||0}d</div><div class="kpi-sub">pedido mais antigo pendente</div><div class="kpi-icon">📌</div></div>`;
-    // Grid valor (3)
-    const grid2 = el('fbKpisValor'); if(!grid2) return;
-    grid2.innerHTML = `
-      <div class="kpi-card ok"><div class="kpi-label">Valor Total Pendente</div><div class="kpi-value ok" style="font-size:22px">R$ ${fmtBR(r.valor_pendente||0)}</div><div class="kpi-sub">valor sem NF emitida</div></div>
-      <div class="kpi-card ${cls}"><div class="kpi-label">Valor em Atraso</div><div class="kpi-value ${cls}" style="font-size:22px">R$ ${fmtBR(r.valor_atraso||0)}</div><div class="kpi-sub">itens com &gt;15d pendentes</div></div>
-      <div class="kpi-card ${clsMaior}"><div class="kpi-label">Pedido Mais Antigo</div><div class="kpi-value ${clsMaior}" style="font-size:22px">${r.maior_atraso||0} dias</div><div class="kpi-sub">${r.em_atraso_pedidos||0} pedidos em atraso</div></div>`;
-  }
-
-  // ── Donut central + Meter ──
-  function renderDonutMeter(dados){
-    const r = dados.resumo||{}, fx = r.faixas_itens||{};
-    if(el('fbDonutTotal')) el('fbDonutTotal').textContent = r.pendentes||0;
-    const t = r.pendentes||1;
-    const p1 = ((fx.no_prazo||0)/t*100).toFixed(1);
-    const p2 = ((fx.leve||0)/t*100).toFixed(1);
-    const p3 = ((fx.moderado||0)/t*100).toFixed(1);
-    const p4 = ((fx.critico||0)/t*100).toFixed(1);
-    const m = el('fbMeter'); if(!m) return;
-    m.innerHTML = `
-      <div class="meter-row"><div class="meter-label">✅ No prazo (0–15 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:${p1}%;background:var(--ok)"></div></div><div class="meter-count">${fx.no_prazo||0}</div></div>
-      <div class="meter-row"><div class="meter-label">🟡 Leve (16–25 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:${p2}%;background:var(--warn)"></div></div><div class="meter-count" style="color:${(fx.leve||0)>0?'var(--warn)':'var(--muted)'}">${fx.leve||0}</div></div>
-      <div class="meter-row"><div class="meter-label">🟠 Moderado (26–44 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:${p3}%;background:var(--accent)"></div></div><div class="meter-count" style="color:${(fx.moderado||0)>0?'var(--accent)':'var(--muted)'}">${fx.moderado||0}</div></div>
-      <div class="meter-row"><div class="meter-label">🔴 Crítico (&gt;45 dias)</div><div class="meter-bg"><div class="meter-fill" style="width:${p4}%;background:var(--danger)"></div></div><div class="meter-count" style="color:${(fx.critico||0)>0?'var(--danger)':'var(--ok)'}">${fx.critico||0}</div></div>`;
-  }
-
-  // ── UF cards ──
-  function renderUFCards(dados){
-    const ufs = dados.uf_pend||{};
-    const c = el('fbUFCards'); if(!c) return;
-    const maxItens = Math.max(1, ...Object.values(ufs).map(u=>u.itens));
-    c.innerHTML = UF_ORDER.filter(u=>ufs[u]&&ufs[u].itens>0).map(u=>{
-      const d = ufs[u];
-      const emoji = UF_COLORS[u]||'⚪';
-      const nome = UF_NAMES[u]||u;
-      const pct = (d.itens/maxItens*100).toFixed(1);
-      const atrCor = d.atrasos>0?'var(--warn)':'var(--ok)';
-      const atrTxt = d.atrasos>0 ? d.atrasos+' atrasados ⚠' : '0 atrasados ✅';
-      const grad = d.atrasos>0 ? 'linear-gradient(90deg,var(--blue),var(--warn))' : 'linear-gradient(90deg,var(--blue),var(--ok))';
-      return `<div><div class="uf-header"><span style="font-weight:700">${emoji} ${u} — ${nome}</span><span style="color:var(--muted);font-family:var(--mono);font-size:10px">${d.itens} itens · ${fmtD(d.atraso_medio)}d · <span style="color:${atrCor}">${atrTxt}</span></span></div><div class="uf-bar-bg"><div class="uf-bar" style="width:${pct}%;background:${grad}"></div></div></div>`;
-    }).join('');
-  }
-
-  // ── KPIs Motivos ──
-  function renderKpisMotivos(dados){
-    const mot = dados.motivos_pend||[];
-    const tot = dados.resumo?.pendentes||1;
-    const g = el('fbKpisMotivos'); if(!g) return;
-    function nome(m){
-      const u=(m.motivo||'').toUpperCase();
-      if(/PECA QUEBRADA NO VOL/.test(u)) return 'Peça Quebrada no Volume';
-      if(/FALTOU PECA DENTRO/.test(u)) return 'Faltou Peça no Volume';
-      if(/QUINA BATIDA/.test(u)) return 'Quina Batida';
-      if(/ESPELHO/.test(u)) return 'Espelho Quebrado';
-      if(/ETIQUET/.test(u)) return 'Etiquetagem Incorreta';
-      if(/PECA QUEBRADA$/.test(u)) return 'Peça Quebrada';
-      if(/FALTOU KIT/.test(u)) return 'Faltou Kit Ferragem';
-      if(/FALTOU NO ATO/.test(u)) return 'Faltou no Ato';
-      if(/AVARIA/.test(u)) return 'Avaria no Transporte';
-      return (m.motivo||'').split(' ').slice(0,3).join(' ');
-    }
-    const cards = ['d','w','w'].map((cls,i)=>{
-      const m = mot[i]||{motivo:'—',qtd:0};
-      return `<div class="kpi-card ${cls}"><div class="kpi-label">${i===0?'Principal':i===1?'2ª':'3ª'} Causa</div><div class="kpi-value ${cls}" style="font-size:18px">${nome(m)}</div><div class="kpi-sub">${m.qtd} ocorrências — ${((m.qtd/tot)*100).toFixed(1).replace('.',',')}%</div><div class="kpi-icon">📦</div></div>`;
-    });
-    g.innerHTML = cards.join('');
-  }
-
-  // ── Ranking Motivos (top 7 + Outros) ──
-  function renderRankingMotivos(dados){
-    const mot = dados.motivos_pend||[];
-    const tot = dados.resumo?.pendentes||1;
-    const r = el('fbMotivosRanking'); if(!r) return;
-    const maxq = Math.max(1, ...mot.slice(0,7).map(m=>m.qtd));
-    const emoji = ['🔴','🟡','🟡','🔵','🔵','🔵','🔵'];
-    const cor = ['var(--danger)','var(--warn)','var(--warn)','var(--blue)','var(--blue)','var(--blue)','var(--blue)'];
-    let html = mot.slice(0,7).map((m,i)=>{
-      const w = (m.qtd/maxq*100).toFixed(0);
-      const nome = m.motivo.length>40?m.motivo.substring(0,40)+'…':m.motivo;
-      return `<div class="motivo-row"><div class="motivo-name">${emoji[i]} ${nome}</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:${w}%;background:${cor[i]}"></div></div><div class="motivo-count" style="color:${cor[i]}">${m.qtd}</div></div>`;
-    }).join('');
-    if(mot.length>7){
-      const rest = mot.slice(7);
-      const qRest = rest.reduce((a,b)=>a+b.qtd,0);
-      const w = (qRest/maxq*100).toFixed(0);
-      html += `<div class="motivo-row"><div class="motivo-name">⚪ Outros (${rest.length} causas)</div><div class="motivo-bar-bg"><div class="motivo-fill" style="width:${w}%;background:var(--border)"></div></div><div class="motivo-count" style="color:var(--muted)">${qRest}</div></div>`;
-    }
-    r.innerHTML = html;
-  }
-
-  // ── Categorias ──
-  function renderCategorias(dados){
-    const c = dados.cat_pend||{};
-    const tot = dados.resumo?.pendentes||1;
-    const box = el('fbCatBoxes'); if(!box) return;
-    const l = c['Logística']||0, q = c['Qualidade']||0, p = c['Processos']||0;
-    box.innerHTML = `
-      <div><div style="font-size:22px;font-weight:800;color:var(--warn)">${l}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Logística — Transporte (${(l/tot*100).toFixed(1).replace('.',',')}%)</div></div>
-      <div><div style="font-size:22px;font-weight:800;color:var(--danger)">${q}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Qualidade — Produto (${(q/tot*100).toFixed(1).replace('.',',')}%)</div></div>
-      <div><div style="font-size:22px;font-weight:800;color:var(--accent)">${p}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Processos — Operac. (${(p/tot*100).toFixed(1).replace('.',',')}%)</div></div>`;
-  }
-
-  // ── Aba Atrasos: 3 KPIs + 3 tabelas ──
-  function renderAtrasos(dados){
-    const pedidos = dados.pedidos_pend||[];
-    const critPeds = pedidos.filter(p=>p.dias>15).sort((a,b)=>b.dias-a.dias);
-    const modPeds = pedidos.filter(p=>p.dias>=10 && p.dias<=15).sort((a,b)=>b.dias-a.dias);
-    const levePeds = pedidos.filter(p=>p.dias<10).sort((a,b)=>b.dias-a.dias);
-    const critIt = critPeds.reduce((a,p)=>a+p.total_itens,0);
-    const modIt = modPeds.reduce((a,p)=>a+p.total_itens,0);
-    const leveIt = levePeds.reduce((a,p)=>a+p.total_itens,0);
-    const critV = critPeds.reduce((a,p)=>a+p.valor,0);
-    const modV = modPeds.reduce((a,p)=>a+p.valor,0);
-    const leveV = levePeds.reduce((a,p)=>a+p.valor,0);
-    const critUFs = [...new Set(critPeds.map(p=>p.uf))].join(' + ') || '—';
-    const modUFs = [...new Set(modPeds.map(p=>p.uf))].join(' + ') || '—';
-    const leveUFs = [...new Set(levePeds.map(p=>p.uf))].join(' + ') || '—';
-    const g = el('fbKpisAtrasos'); if(!g) return;
-    const maxDias = critPeds.length ? Math.max(...critPeds.map(p=>p.dias)) : 0;
-    g.innerHTML = `
-      <div class="kpi-card ${critIt>0?'d':'ok'}"><div class="kpi-label">🔴 Itens com Atraso Crítico (&gt; 15 dias)</div><div class="kpi-value ${critIt>0?'d':'ok'}">${critIt}</div><div class="kpi-sub">${critPeds.length} pedidos · ${critUFs} · R$ ${fmtBR(critV)}${maxDias?' · máx '+maxDias+'d':''}</div><div class="kpi-icon">🚨</div></div>
-      <div class="kpi-card ${modIt>0?'w':'ok'}"><div class="kpi-label">🟠 Itens com Atraso Moderado (10 a 15 dias)</div><div class="kpi-value ${modIt>0?'w':'ok'}">${modIt}</div><div class="kpi-sub">${modPeds.length} pedidos · ${modUFs} · R$ ${fmtBR(modV)}</div><div class="kpi-icon">⚠</div></div>
-      <div class="kpi-card ok"><div class="kpi-label">🟡 Itens com Atraso Leve (até 10 dias)</div><div class="kpi-value ok">${leveIt}</div><div class="kpi-sub">${levePeds.length} pedidos · R$ ${fmtBR(leveV)}</div><div class="kpi-icon">🟢</div></div>`;
-    // Section titles
-    if(el('fbAtrCritTitle')) el('fbAtrCritTitle').innerHTML = `🔴 Itens com Atraso Crítico (&gt; 15 dias) — ${critPeds.length} pedidos · ${critIt} itens${critUFs!=='—'?' · '+critUFs:''}`;
-    if(el('fbAtrModTitle')) el('fbAtrModTitle').innerHTML = `🟠 Itens com Atraso Moderado (10 a 15 dias) — ${modPeds.length} pedidos · ${modIt} itens`;
-    if(el('fbAtrLeveTitle')) el('fbAtrLeveTitle').innerHTML = `🟡 Itens com Atraso Leve (até 10 dias) — ${levePeds.length} pedidos · ${leveIt} itens`;
-    // Tabelas
-    function row(p,bg){
-      const cor = p.dias>15?'background:rgba(239,68,68,.25);color:#fca5a5':p.dias>=10?'background:rgba(249,115,22,.25);color:#fb923c':'background:rgba(234,179,8,.2);color:#fde047';
-      return `<div class="crit-row" style="background:${bg}"><span style="font-family:var(--mono);font-weight:700;color:var(--blue)">#${p.num_ped||p['NUM PED']||'—'}</span><span style="font-size:11px">${p.cliente}</span><span style="font-size:11px;color:var(--muted)">${p.cidade}/${p.uf}</span><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">${p.dt_pedido}</span><span class="dias-pill" style="${cor}">${p.dias}d</span></div>`;
-    }
-    if(el('critBody')) el('critBody').innerHTML = critPeds.map(p=>row(p,'rgba(239,68,68,.08)')).join('') || '<div style="padding:14px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">✅ Nenhum item com atraso crítico</div>';
-    if(el('modBody')) el('modBody').innerHTML = modPeds.map(p=>row(p,'rgba(249,115,22,.08)')).join('') || '<div style="padding:14px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">✅ Nenhum item com atraso moderado</div>';
-    if(el('leveBody')) el('leveBody').innerHTML = levePeds.map(p=>row(p,'rgba(234,179,8,.05)')).join('') || '<div style="padding:14px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">Nenhum item</div>';
-  }
-
-  // ── Aba Assistência Pendentes ──
-  function renderPedidosPend(dados){
-    const peds = dados.pedidos_pend||[];
-    window.PEDIDOS_ALL = peds.map(p=>({
-      'NUM PED': p.num_ped||p['NUM PED'],
-      cliente: p.cliente, cidade: p.cidade, uf: p.uf,
-      dt_pedido: p.dt_pedido, dias: p.dias, total_itens: p.total_itens,
-      motivos: p.motivos, valor: p.valor, faixa: p.faixa, itens: p.itens
-    }));
-    // Contadores dos filtros
-    const cnts = {todos: peds.length, 'No Prazo':0, 'Leve':0, 'Moderado':0, 'Crítico':0};
-    peds.forEach(p=>{
-      const f = p.faixa==='no_prazo'?'No Prazo':p.faixa==='leve'?'Leve':p.faixa==='moderado'?'Moderado':p.faixa==='critico'?'Crítico':p.faixa;
-      if(cnts[f]!=null) cnts[f]++;
-    });
-    if(el('fbFltAll')) el('fbFltAll').textContent = `Todos (${cnts.todos})`;
-    if(el('fbFltCrit')) el('fbFltCrit').innerHTML = `🔴 Críticos (${cnts['Crítico']||0})`;
-    if(el('fbFltMod')) el('fbFltMod').innerHTML = `🟠 Moderado (${cnts['Moderado']||0})`;
-    if(el('fbFltLev')) el('fbFltLev').innerHTML = `🟡 Leve (${cnts['Leve']||0})`;
-    if(el('fbFltNP')) el('fbFltNP').innerHTML = `✅ No Prazo (${cnts['No Prazo']||0})`;
-    // Re-render se já foi aberta
-    if(window.pedidosRendered && typeof window.renderPedidos==='function'){
-      try { window.renderPedidos(); } catch(e){}
-    }
-  }
-
-  // ── Aba Visão Geral ──
-  function renderVisaoGeral(dados){
-    const r = dados.resumo||{}, m = dados.meta||{}, mensal = dados.mensal||{};
-    const g = el('fbVGKpis'); if(!g) return;
-    const dataBR = m.data_referencia_br||'—';
-    g.innerHTML = `
-      <div class="vg-kpi d"><div class="lbl">Total de Registros</div><div class="val">${fmtInt(r.total||0)}</div><div class="sub">Jan → ${dataBR}</div></div>
-      <div class="vg-kpi d"><div class="lbl">Pedidos Únicos</div><div class="val">${fmtInt(m.total_pedidos_unicos||0)}</div><div class="sub">clientes atendidos</div></div>
-      <div class="vg-kpi ok"><div class="lbl">Itens Enviados</div><div class="val">${fmtInt(r.atendidos||0)}</div><div class="sub">${fmtD(r.pct_enviado||0)}% do total</div></div>
-      <div class="vg-kpi w"><div class="lbl">Itens Pendentes</div><div class="val">${r.pendentes||0}</div><div class="sub">${((r.pendentes/(r.total||1))*100).toFixed(1).replace('.',',')}% aguardando</div></div>
-      <div class="vg-kpi d"><div class="lbl">Valor Total Histórico</div><div class="val" style="font-size:16px">R$ ${fmtInt(Math.round(r.valor_total||0))}</div><div class="sub">jan → ${dataBR}</div></div>
-      <div class="vg-kpi ok"><div class="lbl">Valor Enviado</div><div class="val" style="font-size:16px">R$ ${fmtInt(Math.round(r.valor_enviado||0))}</div><div class="sub">${((r.valor_enviado/(r.valor_total||1))*100).toFixed(1).replace('.',',')}% do valor total</div></div>
-      <div class="vg-kpi ok"><div class="lbl">Valor Pendente</div><div class="val" style="font-size:16px">R$ ${fmtInt(Math.round(r.valor_pendente||0))}</div><div class="sub">${((r.valor_pendente/(r.valor_total||1))*100).toFixed(1).replace('.',',')}% pendente</div></div>`;
-
-    // Tabela mensal
-    const tbody = el('fbTabMensalRows'); if(tbody){
-      const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-      const rows = MESES.map((mes,i)=>{
-        const md = mensal[mes]; if(!md) return '';
-        const pct = md.pct_env||0;
-        const clsPct = pct===100?'ok':pct>=95?'ok':pct>=80?'w':'d';
-        const badge = pct===100?'✅ 100% enviado':pct>=95?fmtD(pct)+'% enviado ⬆':pct>=80?fmtD(pct)+'% enviado · em curso':fmtD(pct)+'% enviado ⚠';
-        return `<tr><td><strong>${MESES_LONG[i]}/26</strong></td><td>${fmtInt(md.itens)}</td><td>${fmtInt(md.pedidos)}</td><td style="color:var(--ok)">${fmtInt(md.enviados)}</td><td style="color:${md.pendentes>0?'var(--warn)':'var(--muted)'}">${md.pendentes}</td><td style="font-family:var(--mono)">R$${fmtInt(Math.round(md.valor_total))}</td><td style="font-family:var(--mono)">R$${fmtInt(Math.round(md.valor_enviado))}</td><td><span class="vg-badge ${clsPct}">${badge}</span></td></tr>`;
-      }).join('');
-      const totVT = Object.values(mensal).reduce((a,b)=>a+b.valor_total,0);
-      const totVF = Object.values(mensal).reduce((a,b)=>a+b.valor_enviado,0);
-      const totIt = Object.values(mensal).reduce((a,b)=>a+b.itens,0);
-      const totPed = m.total_pedidos_unicos||0;
-      const totEnv = Object.values(mensal).reduce((a,b)=>a+b.enviados,0);
-      const totPen = Object.values(mensal).reduce((a,b)=>a+b.pendentes,0);
-      tbody.innerHTML = rows + `<tr style="background:rgba(255,255,255,.04);font-weight:700"><td>TOTAL</td><td>${fmtInt(totIt)}</td><td>${fmtInt(totPed)}</td><td style="color:var(--ok)">${fmtInt(totEnv)}</td><td style="color:var(--warn)">${totPen}</td><td style="font-family:var(--mono)">R$${fmtInt(Math.round(totVT))}</td><td style="font-family:var(--mono)">R$${fmtInt(Math.round(totVF))}</td><td></td></tr>`;
-    }
-    // Status atual header
-    if(el('fbStatusHeader')) el('fbStatusHeader').textContent = '📦 Status Atual dos Pedidos Pendentes ('+dataBR+')';
-    // Status atual mini-KPIs
-    const s = el('fbStatusKpis'); if(s){
-      const fx = r.faixas_itens||{};
-      const t = r.pendentes||1;
-      s.innerHTML = `
-        <div class="vg-kpi ok"><div class="lbl">No Prazo (0–15d)</div><div class="val">${fx.no_prazo||0}</div><div class="sub">${((fx.no_prazo/t)*100).toFixed(1).replace('.',',')}% dos pendentes</div></div>
-        <div class="vg-kpi ${(fx.leve||0)>0?'w':'ok'}"><div class="lbl">Leve (16–25d)</div><div class="val">${fx.leve||0}</div><div class="sub">${((fx.leve/t)*100).toFixed(1).replace('.',',')}%</div></div>
-        <div class="vg-kpi ${(fx.moderado||0)>0?'d':'ok'}"><div class="lbl">${(fx.moderado||0)>0?'⚠ ':'✅ '}Moderado (26–44d)</div><div class="val">${fx.moderado||0}</div><div class="sub">${(fx.moderado||0)>0?'atenção':'ZERO Mod'}</div></div>
-        <div class="vg-kpi" style="border-color:${(fx.critico||0)>0?'var(--danger)':'var(--ok)'};background:rgba(${(fx.critico||0)>0?'239,68,68':'34,197,94'},.08)"><div class="lbl" style="color:${(fx.critico||0)>0?'#fca5a5':'#86efac'}">${(fx.critico||0)>0?'🔴 ':'✅ '}Crítico (&gt;45d)</div><div class="val" style="color:${(fx.critico||0)>0?'var(--danger)':'var(--ok)'}">${fx.critico||0}</div><div class="sub" style="color:${(fx.critico||0)>0?'#fca5a5':'#86efac'}">${(fx.critico||0)>0?'urgente':'ZERO mantido'}</div></div>`;
-    }
-    // chartMensal
-    if(window.CH && CH.chartMensal){
-      const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-      const labels=[], env=[], pend=[];
-      MESES.forEach((mes,i)=>{ if(mensal[mes]){ labels.push(MESES_LONG[i]); env.push(mensal[mes].enviados); pend.push(mensal[mes].pendentes);} });
-      CH.chartMensal.data.labels = labels;
-      CH.chartMensal.data.datasets[0].data = env;
-      CH.chartMensal.data.datasets[1].data = pend;
-      CH.chartMensal.update();
-    }
-  }
-
-  // ── Atualizar Charts principais ──
-  function renderCharts(dados){
-    if(!window.CH) return;
-    const r = dados.resumo||{}, fx = r.faixas_itens||{};
-    // cDonut
-    if(CH.cDonut){
-      CH.cDonut.data.datasets[0].data = [fx.no_prazo||0, fx.leve||0, fx.moderado||0, fx.critico||0];
-      CH.cDonut.update();
-    }
-    // cFaixa
-    if(CH.cFaixa){
-      CH.cFaixa.data.datasets[0].data = [fx.no_prazo||0, fx.leve||0, fx.moderado||0, fx.critico||0];
-      CH.cFaixa.update();
-    }
-    // cRegiao (SP/SUL vs MG/RJ/ES)
-    if(CH.cRegiao){
-      const ufs = dados.uf_pend||{};
-      const spSul = (ufs.SP?.itens||0) + (ufs.PR?.itens||0) + (ufs.RS?.itens||0) + (ufs.SC?.itens||0);
-      const mgRjEs = (ufs.MG?.itens||0) + (ufs.RJ?.itens||0) + (ufs.ES?.itens||0);
-      const atrSp = (ufs.SP?.atrasos||0) + (ufs.PR?.atrasos||0) + (ufs.RS?.atrasos||0) + (ufs.SC?.atrasos||0);
-      const atrMg = (ufs.MG?.atrasos||0) + (ufs.RJ?.atrasos||0) + (ufs.ES?.atrasos||0);
-      CH.cRegiao.data.datasets[0].data = [spSul, mgRjEs];
-      CH.cRegiao.data.datasets[1].data = [atrSp, atrMg];
-      CH.cRegiao.update();
-    }
-    // cMotivos donut (5 grupos)
-    if(CH.cMotivos){
-      CH.cMotivos.data.datasets[0].data = motivosGrupo(dados.motivos_pend);
-      CH.cMotivos.update();
-    }
-    // cUFBars + cUFDonut
-    if(CH.cUFBars){
-      const ufs = dados.uf_pend||{};
-      const list = UF_ORDER.filter(u=>ufs[u]&&ufs[u].itens>0);
-      CH.cUFBars.data.labels = list;
-      CH.cUFBars.data.datasets[0].data = list.map(u=>ufs[u].itens);
-      CH.cUFBars.data.datasets[1].data = list.map(u=>ufs[u].atrasos);
-      CH.cUFBars.update();
-    }
-    if(CH.cUFDonut){
-      const ufs = dados.uf_pend||{};
-      const list = UF_ORDER.filter(u=>ufs[u]&&ufs[u].itens>0);
-      CH.cUFDonut.data.labels = list;
-      CH.cUFDonut.data.datasets[0].data = list.map(u=>ufs[u].itens);
-      CH.cUFDonut.update();
-    }
-    // cTimeline
-    if(CH.cTimeline){
-      const tl = dados.timeline||{labels:[],values:[]};
-      const C = {ok:'#22c55e',warn:'#eab308',danger:'#ef4444',accent:'#f97316',blue:'#3b82f6'};
-      CH.cTimeline.data.labels = tl.labels;
-      CH.cTimeline.data.datasets[0].data = tl.values;
-      CH.cTimeline.data.datasets[0].backgroundColor = tl.values.map(v=>v>=8?C.accent:v>=4?C.warn:C.blue+'88');
-      CH.cTimeline.update();
-    }
-    // cPecas
-    if(CH.cPecas){
-      const tp = dados.top_pecas||[];
-      const C = {ok:'#22c55e',warn:'#eab308',danger:'#ef4444',accent:'#f97316',blue:'#3b82f6'};
-      CH.cPecas.data.labels = tp.map(p=>p.peca.length>28?p.peca.substring(0,28)+'…':p.peca);
-      CH.cPecas.data.datasets[0].data = tp.map(p=>p.qtd);
-      CH.cPecas.data.datasets[0].backgroundColor = tp.map(p=>p.dias_max>45?C.danger:p.dias_max>30?C.accent:p.dias_max>15?C.warn:C.blue);
-      CH.cPecas.update();
-    }
-  }
-
-
-  // ── Aba Regiões ──
-  function renderRegioes(dados){
-    const ufs = dados.uf_pend||{};
-    const t1 = el('fbRegioesUF'); if(t1){
-      const list = UF_ORDER.filter(u=>ufs[u]&&ufs[u].itens>0);
-      t1.innerHTML = list.map(u=>{
-        const d = ufs[u];
-        const noPrazo = d.itens - d.atrasos;
-        const pct = d.itens ? (d.atrasos/d.itens*100).toFixed(1).replace('.',',') : '0,0';
-        const status = d.atrasos===0 ? '<span class="badge b-ok">✅ Zerado</span>' :
-                       d.atrasos<=2 ? '<span class="badge b-w">'+d.atrasos+' atrasado(s)</span>' :
-                       '<span class="badge b-d">'+d.atrasos+' atrasados ⚠</span>';
-        return `<tr><td><strong>${u}</strong></td><td style="font-weight:700;color:var(--blue)">${d.itens}</td><td style="font-weight:700;color:${d.atrasos>0?'var(--warn)':'var(--ok)'}">${d.atrasos}</td><td style="color:var(--ok)">${noPrazo}</td><td>${pct}%</td><td style="font-family:var(--mono)">${fmtD(d.atraso_medio)}d</td><td>${status}</td></tr>`;
-      }).join('');
-    }
-    const t2 = el('fbRegioesReg'); if(t2){
-      const spSul = ['SP','PR','RS','SC'].reduce((a,u)=>a+(ufs[u]?.itens||0),0);
-      const spSulAtr = ['SP','PR','RS','SC'].reduce((a,u)=>a+(ufs[u]?.atrasos||0),0);
-      const spSulDias = ['SP','PR','RS','SC'].reduce((a,u)=>a+((ufs[u]?.atraso_medio||0)*(ufs[u]?.itens||0)),0);
-      const spSulMed = spSul ? (spSulDias/spSul).toFixed(1).replace('.',',') : '0,0';
-      const mgRj = ['MG','RJ','ES'].reduce((a,u)=>a+(ufs[u]?.itens||0),0);
-      const mgRjAtr = ['MG','RJ','ES'].reduce((a,u)=>a+(ufs[u]?.atrasos||0),0);
-      const mgRjDias = ['MG','RJ','ES'].reduce((a,u)=>a+((ufs[u]?.atraso_medio||0)*(ufs[u]?.itens||0)),0);
-      const mgRjMed = mgRj ? (mgRjDias/mgRj).toFixed(1).replace('.',',') : '0,0';
-      t2.innerHTML = `
-        <tr><td>SP/SUL</td><td style="font-weight:700;color:var(--blue)">${spSul}</td><td style="color:${spSulAtr>0?'var(--warn)':'var(--ok)'};font-weight:700">${spSulAtr}${spSulAtr===0?' ✅':''}</td><td style="font-family:var(--mono)">${spSul?(spSulAtr/spSul*100).toFixed(1).replace('.',','):'0,0'}%</td><td style="font-family:var(--mono)">${spSulMed}d</td></tr>
-        <tr><td>MG/RJ/ES</td><td style="font-weight:700;color:var(--blue)">${mgRj}</td><td style="color:${mgRjAtr>0?'var(--warn)':'var(--ok)'};font-weight:700">${mgRjAtr}${mgRjAtr===0?' ✅':''}</td><td style="font-family:var(--mono)">${mgRj?(mgRjAtr/mgRj*100).toFixed(1).replace('.',','):'0,0'}%</td><td style="font-family:var(--mono)">${mgRjMed}d</td></tr>`;
-    }
-    const box = el('fbRegioesResumo'); if(box){
-      const partes = [];
-      UF_ORDER.forEach(u=>{
-        const d = ufs[u]; if(!d||d.itens===0) return;
-        if(d.atrasos>0) partes.push(`${u}: ${d.itens} itens · ${d.atrasos} em atraso (${(d.atrasos/d.itens*100).toFixed(1).replace('.',',')}%) · médio ${fmtD(d.atraso_medio)}d`);
-        else partes.push(`${u}: ${d.itens} itens · <span style="color:#86efac">0 atrasados ✅</span> · médio ${fmtD(d.atraso_medio)}d`);
-      });
-      box.innerHTML = '🗺 ' + partes.join(' · ');
-    }
-  }
-
-  // ── Aba Peças ──
-  function renderPecas(dados){
-    const tp = dados.top_pecas||[];
-    window.TOP_PECAS = tp;
-    const tb = el('pecasTableBody'); if(tb){
-      tb.innerHTML = tp.map((p,i)=>{
-        const mc = p.dias_max>45?'color:var(--danger)':p.dias_max>30?'color:var(--accent)':p.dias_max>15?'color:var(--warn)':'color:var(--ok)';
-        return `<tr><td style="font-family:var(--mono);color:var(--muted)">${i+1}</td><td style="font-size:11px">${p.peca}</td><td style="font-family:var(--mono);font-weight:700;color:var(--blue)">${p.qtd}</td><td style="font-family:var(--mono);color:var(--muted)">${p.pedidos}</td><td style="font-family:var(--mono);font-weight:700;${mc}">${p.dias_max}d</td></tr>`;
-      }).join('') || '<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px">Sem peças pendentes</td></tr>';
-    }
-  }
-
-  // ── Aba Comparativo (compara ultimo × penultimo) ──
-  function renderComparativo(dados, penult){
-    const cont = el('fbCompContent'); if(!cont) return;
-    const cur = dados.resumo||{}, curM = dados.meta||{}, curFx = cur.faixas_itens||{};
-    const dataAtual = curM.data_referencia_br || '—';
-    if(!penult || !penult.resumo){
-      cont.innerHTML = `
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:32px;text-align:center">
-          <div style="font-size:14px;font-family:var(--mono);color:var(--muted);margin-bottom:16px">📊 Referência atual: <strong style="color:var(--text)">${dataAtual}</strong></div>
-          <div style="font-size:12px;font-family:var(--mono);color:var(--muted);line-height:1.8">
-            ⏳ <strong>Aguardando um segundo import</strong> para gerar comparativo automático.<br>
-            A partir do próximo relatório importado, esta aba mostrará a variação DxD (dia-a-dia).<br>
-            <br>
-            <span style="color:#86efac">Snapshot atual salvo · próxima importação irá comparar com este</span>
-          </div>
-        </div>`;
-      return;
-    }
-    const prev = penult.resumo||{}, prevM = penult.meta||{}, prevFx = prev.faixas_itens||{};
-    const dataAnt = prevM.data_referencia_br || '—';
-    function row(label, prevV, curV, fmt, isPct){
-      const diff = (curV||0) - (prevV||0);
-      let deltaCls = 'neu', arrow = '=', txt = '=';
-      if(diff > 0){ deltaCls = 'up'; arrow = '⬆'; txt = '+'+(isPct?diff.toFixed(1).replace('.',',')+'pp':fmt(diff)); }
-      else if(diff < 0){ deltaCls = 'dn'; arrow = '⬇'; txt = (isPct?diff.toFixed(1).replace('.',',')+'pp':fmt(diff)); }
-      // Cor semântica: menos pendente/atraso é bom
-      const good = /pendent|atras|maior|valor/i.test(label);
-      const arrCol = diff===0?'var(--muted)':(good ? (diff<0?'var(--ok)':'var(--warn)') : (diff>0?'var(--ok)':'var(--warn)'));
-      const newCol = diff===0?'var(--muted)':(good ? (diff<0?'var(--ok)':'var(--warn)') : (diff>0?'var(--ok)':'var(--warn)'));
-      return `<div class="comp-row"><span class="comp-label">${label}</span><div style="display:flex;align-items:center;gap:12px"><span class="comp-old">${fmt(prevV)}</span><span class="comp-arrow" style="color:${arrCol}">${arrow}</span><span class="comp-new" style="color:${newCol}">${fmt(curV)} <span class="delta ${deltaCls}">${txt}</span></span></div></div>`;
-    }
-    const totPrev = prev.pendentes||1, totCur = cur.pendentes||1;
-    const pctAtrPrev = (prev.em_atraso_itens/totPrev*100), pctAtrCur = (cur.em_atraso_itens/totCur*100);
-    cont.innerHTML = `
-      <div class="chart-grid-2">
-        <div class="chart-card">
-          <div class="comp-title">📊 Indicadores DxD <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">${dataAnt} → ${dataAtual}</span></div>
-          ${row('Total de itens pendentes', prev.pendentes, cur.pendentes, v=>fmtInt(v))}
-          ${row('Pedidos únicos pendentes', prev.pedidos_pend, cur.pedidos_pend, v=>fmtInt(v))}
-          ${row('Itens em atraso (>15d)', prev.em_atraso_itens, cur.em_atraso_itens, v=>fmtInt(v))}
-          ${row('% em atraso (itens)', pctAtrPrev, pctAtrCur, v=>v.toFixed(1).replace('.',',')+'%', true)}
-          ${row('Atraso médio', prev.atraso_medio, cur.atraso_medio, v=>fmtD(v)+'d')}
-          ${row('Maior atraso', prev.maior_atraso, cur.maior_atraso, v=>v+'d')}
-          ${row('Valor pendente', prev.valor_pendente, cur.valor_pendente, v=>'R$ '+fmtBR(v))}
-          ${row('Valor em atraso', prev.valor_atraso, cur.valor_atraso, v=>'R$ '+fmtBR(v))}
-          ${row('Críticos (>45d)', prevFx.critico, curFx.critico, v=>fmtInt(v))}
-          ${row('Moderados (26-44d)', prevFx.moderado, curFx.moderado, v=>fmtInt(v))}
-          ${row('Leves (16-25d)', prevFx.leve, curFx.leve, v=>fmtInt(v))}
-        </div>
-        <div class="chart-card" style="padding:20px">
-          <div class="comp-title" style="font-size:13px">📊 Faixas — Comparação Direta</div>
-          <table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:12px">
-            <thead>
-              <tr>
-                <th style="text-align:left;font-size:9px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:6px 8px;border-bottom:1px solid var(--border)">Faixa</th>
-                <th style="text-align:center;font-size:9px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:6px 4px;border-bottom:1px solid var(--border)">${dataAnt}</th>
-                <th style="text-align:center;font-size:9px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:6px 4px;border-bottom:1px solid var(--border)">${dataAtual}</th>
-                <th style="text-align:center;font-size:9px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);padding:6px 4px;border-bottom:1px solid var(--border)">Δ</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td style="padding:7px 8px"><span class="badge b-ok">✅ No Prazo</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">${prevFx.no_prazo||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--ok)">${curFx.no_prazo||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta ${(curFx.no_prazo||0)>=(prevFx.no_prazo||0)?'up':'dn'}">${((curFx.no_prazo||0)-(prevFx.no_prazo||0))>=0?'+':''}${(curFx.no_prazo||0)-(prevFx.no_prazo||0)}</span></td></tr>
-              <tr><td style="padding:7px 8px"><span class="badge b-w">🟡 Leve</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">${prevFx.leve||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--warn)">${curFx.leve||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta ${(curFx.leve||0)>(prevFx.leve||0)?'up':(curFx.leve||0)<(prevFx.leve||0)?'dn':'neu'}">${((curFx.leve||0)-(prevFx.leve||0))>=0?'+':''}${(curFx.leve||0)-(prevFx.leve||0)}</span></td></tr>
-              <tr><td style="padding:7px 8px"><span class="badge b-d">🟠 Moderado</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">${prevFx.moderado||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:var(--accent)">${curFx.moderado||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta ${(curFx.moderado||0)>(prevFx.moderado||0)?'up':(curFx.moderado||0)<(prevFx.moderado||0)?'dn':'neu'}">${((curFx.moderado||0)-(prevFx.moderado||0))>=0?'+':''}${(curFx.moderado||0)-(prevFx.moderado||0)}</span></td></tr>
-              <tr><td style="padding:7px 8px"><span class="badge b-c">🔴 Crítico</span></td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted)">${prevFx.critico||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700;color:${(curFx.critico||0)>0?'var(--danger)':'var(--ok)'}">${curFx.critico||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta ${(curFx.critico||0)>(prevFx.critico||0)?'up':(curFx.critico||0)<(prevFx.critico||0)?'dn':'neu'}">${((curFx.critico||0)-(prevFx.critico||0))>=0?'+':''}${(curFx.critico||0)-(prevFx.critico||0)}</span></td></tr>
-              <tr style="border-top:2px solid var(--border)"><td style="padding:7px 8px;font-weight:700">TOTAL</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;color:var(--muted);font-weight:700">${prev.pendentes||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px;font-weight:700">${cur.pendentes||0}</td><td style="text-align:center;font-family:var(--mono);padding:7px 4px"><span class="delta ${(cur.pendentes||0)>(prev.pendentes||0)?'up':(cur.pendentes||0)<(prev.pendentes||0)?'dn':'neu'}">${((cur.pendentes||0)-(prev.pendentes||0))>=0?'+':''}${(cur.pendentes||0)-(prev.pendentes||0)}</span></td></tr>
-            </tbody>
-          </table>
-          <div style="margin-top:14px;padding:10px;background:var(--surface2);border-radius:8px">
-            <div style="font-size:10px;font-family:var(--mono);color:var(--muted);line-height:1.6">
-              📆 <strong>Anterior:</strong> ${dataAnt} · ${prev.pendentes} itens / ${prev.pedidos_pend} pedidos<br>
-              📆 <strong>Atual:</strong> ${dataAtual} · ${cur.pendentes} itens / ${cur.pedidos_pend} pedidos
-            </div>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  // ── Função principal ──
-  window.fbAplicarDashboard = function(dados){
-    if(!dados) return;
-    try { renderCabecalho(dados); } catch(e){ console.error('cabec',e); }
-    try { renderBanner(dados); } catch(e){ console.error('banner',e); }
-    try { renderKpisResumo(dados); } catch(e){ console.error('kpis',e); }
-    try { renderDonutMeter(dados); } catch(e){ console.error('meter',e); }
-    try { renderUFCards(dados); } catch(e){ console.error('uf',e); }
-    try { renderKpisMotivos(dados); } catch(e){ console.error('kmot',e); }
-    try { renderRankingMotivos(dados); } catch(e){ console.error('rmot',e); }
-    try { renderCategorias(dados); } catch(e){ console.error('cat',e); }
-    try { renderAtrasos(dados); } catch(e){ console.error('atr',e); }
-    try { renderPedidosPend(dados); } catch(e){ console.error('ped',e); }
-    try { renderRegioes(dados); } catch(e){ console.error('reg',e); }
-    try { renderPecas(dados); } catch(e){ console.error('pec',e); }
-    try { renderComparativo(dados, window._fbPenult); } catch(e){ console.error('cmp',e); }
-    try { renderCharts(dados); } catch(e){ console.error('charts',e); }
-    console.log('[FB] Dashboard atualizado a partir do Firebase · ref '+(dados.meta?.data_referencia_br||'—'));
-  };
-
-  // ── Auto-carregar ao abrir ──
+  // ═══════════════════ AUTO-LOAD AO ABRIR ═══════════════════
   async function fbAutoCarregar(){
     try {
-      if(typeof _fbDB==='undefined') return;
       const [snap, snapP] = await Promise.all([
         _fbDB.ref('easyhouse/ultimo_relatorio').once('value'),
         _fbDB.ref('easyhouse/penultimo_relatorio').once('value')
       ]);
       window._fbPenult = snapP.val();
       const d = snap.val();
-      if(d) window.fbAplicarDashboard(d);
-    } catch(e){ console.error('[FB] auto-load falhou:', e); }
+      if(d){
+        fbAplicarDashboard(d, window._fbPenult);
+      } else {
+        // Sem dados no Firebase — mostrar mensagem em cada aba
+        document.querySelectorAll('.fb-empty-state').forEach(elem=>{
+          elem.innerHTML = 'ℹ️ Nenhum relatório importado ainda.<br><br>Clique em <strong>📥 Importar relatório</strong> no topo para começar.';
+        });
+      }
+    } catch(e){
+      console.error('[FB] auto-load falhou:', e);
+      document.querySelectorAll('.fb-empty-state').forEach(elem=>{
+        elem.innerHTML = '❌ Erro ao conectar com Firebase.<br><br>'+e.message;
+      });
+    }
+    atualizarBadgeUltimo();
   }
-  // Espera charts criarem, depois aplica
-  setTimeout(fbAutoCarregar, 800);
+  setTimeout(fbAutoCarregar, 300);
 })();
 </script>
-
 </body>
+
 </html>
