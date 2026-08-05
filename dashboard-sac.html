@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard de Atendimento SAC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0B; --bar:#000; --card:#141518; --card2:#17181C; --line:#26282E; --line2:#33363E;
+  --tx:#FFFFFF; --mid:#B7BBC4; --mut:#7C818C;
+  --orange:#FF6B35; --blue:#3B82F6; --green:#22C55E; --purple:#A855F7;
+  --yellow:#EAB308; --cyan:#06B6D4; --red:#EF4444; --pink:#EC4899;
+  --shopee:#FF6B35; --meli:#EAB308; --magalu:#3B82F6; --madeira:#22C55E;
+  --f:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--f);font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.wrap{max-width:1330px;margin:0 auto;padding:0 20px 80px}
+
+/* topbar */
+.topbar{background:var(--bar);border-bottom:1px solid var(--line);padding:12px 0;margin-bottom:18px}
+.topbar .in{max-width:1330px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:14px}
+.chipbtn{border:1px solid var(--line2);background:#131417;border-radius:8px;padding:6px 13px;font-size:13px;
+  color:var(--mid);font-weight:500}
+.topbar .t{font-size:13.5px;color:var(--mid)}
+
+/* hero */
+.hero{position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  background:linear-gradient(100deg,rgba(255,107,53,.16) 0%, rgba(255,107,53,.03) 32%, rgba(20,21,24,1) 62%),var(--card);
+  padding:20px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hero .ico{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;font-size:24px;
+  background:linear-gradient(140deg,#FF8A3D,#F0522B);flex:none;box-shadow:0 6px 18px rgba(255,107,53,.28)}
+.hero h1{font-size:23px;font-weight:800;letter-spacing:.4px;margin:0;text-transform:uppercase}
+.hero p{margin:3px 0 0;color:var(--mut);font-size:13px}
+.hero .pills{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid;border-radius:999px;padding:6px 13px;
+  font-size:12px;font-weight:600;background:rgba(0,0,0,.35)}
+.pill.g{border-color:rgba(34,197,94,.5);color:#4ADE80}
+.pill.b{border-color:rgba(59,130,246,.5);color:#60A5FA}
+.pill.o{border-color:rgba(255,107,53,.5);color:#FF8A5B}
+.pill i{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+
+/* strip metas */
+.strip{background:rgba(30,64,140,.30);border:1px solid rgba(59,130,246,.22);border-top:0;
+  border-radius:0 0 12px 12px;margin:-6px 12px 0;padding:11px 18px;font-size:12.5px;color:#AFC6EA;
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.strip b{color:#DCE9FF;font-weight:600}
+.strip .sep{color:#3E5C93}
+
+/* tabs */
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin:22px 0 0;
+  scrollbar-width:thin}
+.tab{display:inline-flex;align-items:center;gap:8px;padding:13px 16px;font-size:13.5px;color:var(--mut);
+  font-weight:500;border:0;background:none;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;
+  font-family:var(--f)}
+.tab i{width:7px;height:7px;border-radius:50%;background:#3A3D45;display:inline-block;flex:none}
+.tab:hover{color:var(--mid)}
+.tab.on{color:var(--orange);border-bottom-color:var(--orange)}
+.tab.on i{background:var(--orange);box-shadow:0 0 0 3px rgba(255,107,53,.18)}
+.tab.done i{background:var(--green)}
+.tab .bdg{font-size:10px;font-weight:700;letter-spacing:.4px;padding:2px 7px;border-radius:5px;text-transform:uppercase}
+.bdg.gr{background:rgba(34,197,94,.16);color:#4ADE80}
+.bdg.or{background:rgba(255,107,53,.16);color:#FF8A5B}
+.bdg.gy{background:#202329;color:var(--mut)}
+.tab:focus-visible{outline:2px solid var(--orange);outline-offset:-4px;border-radius:6px}
+
+/* section label */
+.slab{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);
+  margin:34px 0 13px;display:flex;align-items:center;gap:12px}
+.slab::after{content:"";flex:1;height:1px;background:var(--line)}
+.slab .hint{font-size:11px;font-weight:500;letter-spacing:.2px;text-transform:none;color:#5E636D}
+
+/* kpi cards */
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px}
+.kc{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:19px 18px 17px;
+  overflow:hidden}
+.kc::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--g)}
+.kc .lab{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--mut)}
+.kc .val{font-size:31px;font-weight:800;letter-spacing:-.8px;margin:11px 0 0;line-height:1.05;color:var(--c)}
+.kc .sub{font-size:12px;color:var(--mut);margin-top:6px}
+.kc .gh{position:absolute;right:14px;bottom:14px;font-size:30px;opacity:.09;pointer-events:none}
+.kc .bdg2{display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-size:11px;font-weight:600;
+  padding:4px 9px;border-radius:6px}
+.b-ok{background:rgba(34,197,94,.13);color:#4ADE80}
+.b-wr{background:rgba(234,179,8,.13);color:#FACC15}
+.b-al{background:rgba(239,68,68,.14);color:#F87171}
+.b-nt{background:rgba(59,130,246,.13);color:#60A5FA}
+
+/* mês cards */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.mc{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:16px 14px;text-align:center}
+.mc .mn{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--mut)}
+.mc .mv{font-size:29px;font-weight:800;letter-spacing:-.7px;margin:9px 0 3px;color:var(--c)}
+.mc .ms{font-size:12px;color:var(--mid);font-weight:600}
+.mc .mf{font-size:10.5px;color:#5E636D;margin-top:9px}
+.mc.empty{border-style:dashed;opacity:.55}
+.mc.empty .mv{color:#3A3D45}
+
+/* panels */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:19px}
+.pt{font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--mut);margin:0 0 15px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pt small{font-weight:500;letter-spacing:.2px;text-transform:none;color:#5E636D;font-size:11.5px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:11.5px;color:var(--mid);margin-top:13px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.dot{width:9px;height:9px;border-radius:3px;display:inline-block;flex:none}
+.note{margin-top:15px;padding:12px 14px;background:#101114;border:1px solid var(--line);border-left:3px solid var(--orange);
+  border-radius:8px;color:var(--mid);font-size:12.5px;line-height:1.65}
+.note b{color:#fff;font-weight:600}
+.note.blue{border-left-color:var(--blue)}
+.note.green{border-left-color:var(--green)}
+
+/* tabela */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:10.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--mut);
+  text-align:right;padding:0 0 11px;border-bottom:1px solid var(--line2)}
+th:first-child,td:first-child{text-align:left}
+td{padding:12px 0;border-bottom:1px solid var(--line);text-align:right;color:var(--mid);font-weight:500}
+td:first-child{color:var(--tx);font-weight:600}
+tbody tr:last-child td{border-bottom:0}
+tr.tot td{color:#fff;font-weight:700}
+
+/* canal cards */
+.chc{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;overflow:hidden}
+.chc::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--c)}
+.chc h3{font-size:16px;font-weight:700;margin:0}
+.chc .big{font-size:28px;font-weight:800;letter-spacing:-.7px;margin:10px 0 14px;color:var(--c)}
+.chc .big small{font-size:11.5px;font-weight:500;color:var(--mut);letter-spacing:0}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px;color:var(--mut)}
+.kv b{color:var(--tx);font-weight:600}
+
+/* atendente */
+.at{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.at .top{display:flex;align-items:center;gap:12px}
+.av{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:14px;color:#0A0A0B;flex:none}
+.at h3{font-size:16px;font-weight:700;margin:0}
+.at .role{font-size:11.5px;color:var(--mut)}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:9px;overflow:hidden;margin-top:14px}
+.mini div{background:var(--card2);padding:11px}
+.mini .l{font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--mut)}
+.mini .v{font-size:19px;font-weight:800;margin-top:3px;letter-spacing:-.5px}
+
+/* listas */
+ul.ls{margin:0;padding-left:17px;color:var(--mid);font-size:12.5px;line-height:1.7}
+ul.ls li{margin-bottom:8px}
+ul.ls b{color:#fff;font-weight:600}
+
+/* empty state */
+.empty-state{background:var(--card);border:1px dashed var(--line2);border-radius:12px;padding:56px 28px;text-align:center}
+.empty-state .ei{font-size:38px;opacity:.35}
+.empty-state h3{font-size:18px;font-weight:700;margin:14px 0 6px}
+.empty-state p{color:var(--mut);font-size:13px;margin:0 auto;max-width:52ch;line-height:1.65}
+.empty-state code{background:#0C0D10;border:1px solid var(--line);border-radius:5px;padding:2px 6px;font-size:12px;color:#FF8A5B}
+
+footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);color:#5E636D;font-size:11.5px;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+@media (max-width:900px){
+  .g2,.g3{grid-template-columns:1fr}
+  .hero .pills{margin-left:0;width:100%}
+  .kc .val{font-size:26px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .fade{animation:fi .35s ease both}
+  @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="in">
+  <span class="chipbtn">Predize</span>
+  <span class="t">Atendimento · SAC</span>
+</div></div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="ico">💬</div>
+    <div>
+      <h1>Dashboard de Atendimento</h1>
+      <p>Relatório consolidado · Pré-venda, pós-venda, chat e tráfego de mensagens</p>
+    </div>
+    <div class="pills" id="heroPills"></div>
+  </div>
+  <div class="strip" id="strip"></div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div id="view"></div>
+
+  <footer>
+    <span>Fonte: exportações Predize · atualização mensal</span>
+    <span id="ger"></span>
+  </footer>
+</div>
+
+<script>
+/* =========================================================================
+   COMO ADICIONAR UM NOVO MÊS (ex.: agosto/2026)
+   1. Gere o bloco de dados do mês no mesmo formato do bloco de julho.
+   2. Dentro de DATA.meses, troque "dados": null pelo bloco novo
+      e ajuste "status" para "fechado" (ou "parcial", se o mês ainda corre).
+   3. Nada mais precisa mudar: abas, totais e o resumo por mês se atualizam sozinhos.
+   ========================================================================= */
+const DATA = {"meses": [{"key": "2026-07", "nome": "Julho", "ano": 2026, "status": "fechado", "dados": {"periodo": {"ini": "01/07/2026", "fim": "31/07/2026"}, "kpi": {"msgs": 58313, "recebidas": 32439, "enviadas": 25874, "conversas": 7470, "auto_pct": 60.7, "manual": 5304, "ia": 6742, "pos": 3610, "reclam": 767, "pre": 274, "med_resp": "4m 31s", "med_resp_s": 271.5, "p1h": 63.1, "p24h": 84.2, "fechados": 1042, "abertos": 814, "aguard_atend": 52, "med_ciclo": "6d 20h"}, "canais": [{"id": "shopee", "nome": "Shopee", "msgs": 27221, "rec": 18327, "env": 8894, "conversas": 2470, "auto_pct": 43.3, "med": "2m 23s", "med_s": 143.0, "p1h": 63.1, "pos": 0, "reclam": 0, "fech_pct": 0, "pre": 0, "msg_conv": 11.0}, {"id": "mercadolivre", "nome": "Mercado Livre", "msgs": 19577, "rec": 6926, "env": 12651, "conversas": 3773, "auto_pct": 76.9, "med": "5m 10s", "med_s": 310.0, "p1h": 63.1, "pos": 2788, "reclam": 481, "fech_pct": 15.6, "pre": 262, "msg_conv": 5.2}, {"id": "magalu", "nome": "Magalu", "msgs": 11500, "rec": 7180, "env": 4320, "conversas": 1223, "auto_pct": 49.3, "med": "9m 11s", "med_s": 551.0, "p1h": 63.0, "pos": 818, "reclam": 282, "fech_pct": 74.1, "pre": 12, "msg_conv": 9.4}, {"id": "madeira", "nome": "Madeira Madeira", "msgs": 15, "rec": 6, "env": 9, "conversas": 4, "auto_pct": 0.0, "med": "1h 58m", "med_s": 7113.0, "p1h": 0.0, "pos": 4, "reclam": 4, "fech_pct": 25.0, "pre": 0, "msg_conv": 3.8}], "atendentes": [{"nome": "Yasmin Fernandes", "primeiro": "02/07", "dias_ativos": 24, "dias_corridos": 31, "inicio": "01/07", "msgs": 2165, "msg_dia": 90.2, "canal": "Mercado Livre", "canal_pct": 84.4, "mix": {"Mercado Livre": 1828, "Magalu": 334, "Shopee": 3}, "med": "5h 44m", "med_s": 20663.0, "p1h": 15.2, "respostas": 1343, "pos": 590, "pos_reclam": 293, "fech_pct": 47.6, "msgs_ticket": 12.0, "ciclo": "7d 19h", "pre": 123, "pre_sla": 1.6, "pre_med": "3d 13h", "tickets_dia": 24.6}, {"nome": "Fabricio Barros", "primeiro": "06/07", "dias_ativos": 17, "dias_corridos": 31, "inicio": "01/07", "msgs": 1792, "msg_dia": 105.4, "canal": "Shopee", "canal_pct": 93.4, "mix": {"Shopee": 1673, "Magalu": 67, "Mercado Livre": 52}, "med": "23h 13m", "med_s": 83617.0, "p1h": 1.9, "respostas": 1470, "pos": 0, "pos_reclam": 0, "fech_pct": 0, "msgs_ticket": 0, "ciclo": "—", "pre": 51, "pre_sla": 7.8, "pre_med": "2d 1h", "tickets_dia": 0.0}, {"nome": "Sara Juste", "primeiro": "13/07", "dias_ativos": 15, "dias_corridos": 19, "inicio": "13/07", "msgs": 1348, "msg_dia": 89.9, "canal": "Magalu", "canal_pct": 100.0, "mix": {"Magalu": 1348}, "med": "2h 01m", "med_s": 7267.5, "p1h": 38.5, "respostas": 1042, "pos": 451, "pos_reclam": 152, "fech_pct": 62.7, "msgs_ticket": 12.0, "ciclo": "8d 11h", "pre": 6, "pre_sla": 0.0, "pre_med": "1d 21h", "tickets_dia": 30.1}], "sem_atendente": {"pos": 2569, "pre": 94}, "serie": [{"d": 1, "dow": 2, "mercadolivre": 499, "magalu": 480, "shopee": 717, "madeira": 0, "total": 1696}, {"d": 2, "dow": 3, "mercadolivre": 566, "magalu": 399, "shopee": 1014, "madeira": 0, "total": 1979}, {"d": 3, "dow": 4, "mercadolivre": 509, "magalu": 518, "shopee": 1106, "madeira": 0, "total": 2133}, {"d": 4, "dow": 5, "mercadolivre": 232, "magalu": 211, "shopee": 459, "madeira": 0, "total": 902}, {"d": 5, "dow": 6, "mercadolivre": 181, "magalu": 58, "shopee": 185, "madeira": 0, "total": 424}, {"d": 6, "dow": 0, "mercadolivre": 635, "magalu": 480, "shopee": 1127, "madeira": 0, "total": 2242}, {"d": 7, "dow": 1, "mercadolivre": 935, "magalu": 397, "shopee": 1076, "madeira": 0, "total": 2408}, {"d": 8, "dow": 2, "mercadolivre": 801, "magalu": 404, "shopee": 998, "madeira": 0, "total": 2203}, {"d": 9, "dow": 3, "mercadolivre": 981, "magalu": 434, "shopee": 986, "madeira": 0, "total": 2401}, {"d": 10, "dow": 4, "mercadolivre": 634, "magalu": 379, "shopee": 908, "madeira": 0, "total": 1921}, {"d": 11, "dow": 5, "mercadolivre": 262, "magalu": 117, "shopee": 417, "madeira": 0, "total": 796}, {"d": 12, "dow": 6, "mercadolivre": 172, "magalu": 84, "shopee": 348, "madeira": 0, "total": 604}, {"d": 13, "dow": 0, "mercadolivre": 933, "magalu": 520, "shopee": 1221, "madeira": 0, "total": 2674}, {"d": 14, "dow": 1, "mercadolivre": 658, "magalu": 424, "shopee": 1162, "madeira": 0, "total": 2244}, {"d": 15, "dow": 2, "mercadolivre": 744, "magalu": 422, "shopee": 1131, "madeira": 0, "total": 2297}, {"d": 16, "dow": 3, "mercadolivre": 774, "magalu": 401, "shopee": 975, "madeira": 0, "total": 2150}, {"d": 17, "dow": 4, "mercadolivre": 819, "magalu": 408, "shopee": 896, "madeira": 0, "total": 2123}, {"d": 18, "dow": 5, "mercadolivre": 361, "magalu": 155, "shopee": 388, "madeira": 0, "total": 904}, {"d": 19, "dow": 6, "mercadolivre": 305, "magalu": 103, "shopee": 295, "madeira": 0, "total": 703}, {"d": 20, "dow": 0, "mercadolivre": 766, "magalu": 368, "shopee": 1140, "madeira": 1, "total": 2275}, {"d": 21, "dow": 1, "mercadolivre": 650, "magalu": 399, "shopee": 1183, "madeira": 0, "total": 2232}, {"d": 22, "dow": 2, "mercadolivre": 855, "magalu": 465, "shopee": 1098, "madeira": 0, "total": 2418}, {"d": 23, "dow": 3, "mercadolivre": 806, "magalu": 504, "shopee": 1229, "madeira": 0, "total": 2539}, {"d": 24, "dow": 4, "mercadolivre": 811, "magalu": 501, "shopee": 977, "madeira": 0, "total": 2289}, {"d": 25, "dow": 5, "mercadolivre": 344, "magalu": 155, "shopee": 535, "madeira": 0, "total": 1034}, {"d": 26, "dow": 6, "mercadolivre": 165, "magalu": 56, "shopee": 267, "madeira": 0, "total": 488}, {"d": 27, "dow": 0, "mercadolivre": 1090, "magalu": 584, "shopee": 1359, "madeira": 0, "total": 3033}, {"d": 28, "dow": 1, "mercadolivre": 715, "magalu": 573, "shopee": 1254, "madeira": 3, "total": 2545}, {"d": 29, "dow": 2, "mercadolivre": 843, "magalu": 396, "shopee": 879, "madeira": 0, "total": 2118}, {"d": 30, "dow": 3, "mercadolivre": 798, "magalu": 520, "shopee": 980, "madeira": 0, "total": 2298}, {"d": 31, "dow": 4, "mercadolivre": 733, "magalu": 585, "shopee": 911, "madeira": 11, "total": 2240}], "horas": [{"h": 0, "rec": 195, "man": 0, "bot": 599}, {"h": 1, "rec": 96, "man": 0, "bot": 52}, {"h": 2, "rec": 72, "man": 0, "bot": 35}, {"h": 3, "rec": 54, "man": 0, "bot": 37}, {"h": 4, "rec": 38, "man": 0, "bot": 35}, {"h": 5, "rec": 83, "man": 0, "bot": 54}, {"h": 6, "rec": 363, "man": 4, "bot": 174}, {"h": 7, "rec": 996, "man": 276, "bot": 442}, {"h": 8, "rec": 2062, "man": 452, "bot": 972}, {"h": 9, "rec": 2674, "man": 613, "bot": 1170}, {"h": 10, "rec": 3119, "man": 722, "bot": 1279}, {"h": 11, "rec": 2740, "man": 54, "bot": 1146}, {"h": 12, "rec": 2666, "man": 379, "bot": 1169}, {"h": 13, "rec": 2669, "man": 612, "bot": 1008}, {"h": 14, "rec": 2606, "man": 678, "bot": 1044}, {"h": 15, "rec": 2488, "man": 590, "bot": 934}, {"h": 16, "rec": 2487, "man": 880, "bot": 1372}, {"h": 17, "rec": 1788, "man": 43, "bot": 1010}, {"h": 18, "rec": 1332, "man": 0, "bot": 787}, {"h": 19, "rec": 1227, "man": 0, "bot": 740}, {"h": 20, "rec": 935, "man": 0, "bot": 539}, {"h": 21, "rec": 728, "man": 1, "bot": 453}, {"h": 22, "rec": 644, "man": 0, "bot": 391}, {"h": 23, "rec": 377, "man": 0, "bot": 262}], "motivos": [{"m": "A data de entrega combinada não foi cumprida", "n": 105, "pct": 13.7}, {"m": "Indisponivel", "n": 83, "pct": 10.8}, {"m": "Chegou bem", "n": 80, "pct": 10.4}, {"m": "Mudança de ideia", "n": 71, "pct": 9.3}, {"m": "Me arrependi da compra", "n": 58, "pct": 7.6}, {"m": "Outro", "n": 56, "pct": 7.3}, {"m": "Outro motivo", "n": 42, "pct": 5.5}, {"m": "Reclamação do cliente em relação à um ticket anterior", "n": 40, "pct": 5.2}, {"m": "Peças danificadas", "n": 39, "pct": 5.1}, {"m": "Não recebi o pacote", "n": 28, "pct": 3.7}], "status": [{"s": "MENSAGERIA AUTOMATICA", "n": 1550}, {"s": "FECHADO", "n": 1042}, {"s": "AGUARDANDO CLIENTE OU MARKETPLACE", "n": 762}, {"s": "BLOQUEADO", "n": 204}, {"s": "AGUARDANDO ATENDENTE", "n": 52}], "tipo_atend": [{"t": "CHAT", "n": 28342}, {"t": "MENSAGERIA", "n": 20350}, {"t": "RECLAMACAO", "n": 9095}, {"t": "PRE-VENDA", "n": 526}], "origem": [{"o": "POR FORA AUTOMATICA", "n": 7809, "pct": 30.2, "med": "17h 09m"}, {"o": "MIA2", "n": 6742, "pct": 26.1, "med": "1m 20s"}, {"o": "MANUAL", "n": 5304, "pct": 20.5, "med": "16h 46m"}, {"o": "POR FORA", "n": 4866, "pct": 18.8, "med": "7h 44m"}, {"o": "AUSENCIA", "n": 1153, "pct": 4.5, "med": "5m 11s"}], "pre": {"total": 274, "sem_resposta": 22, "sla": 28.5, "venda": 3.3, "tipos": [{"t": "Agente Humano", "n": 202, "sla": 3.0, "venda": 1.0, "med": "2d 20h"}, {"t": "Agente Virtual", "n": 72, "sla": 100.0, "venda": 9.7, "med": "32s"}]}, "semana": [{"d": "Seg", "n": 10224}, {"d": "Ter", "n": 9429}, {"d": "Qua", "n": 10732}, {"d": "Qui", "n": 11367}, {"d": "Sex", "n": 10706}, {"d": "Sáb", "n": 3636}, {"d": "Dom", "n": 2219}], "janela": [{"nome": "Yasmin Fernandes", "msgs": 1879, "dias": 18, "msg_dia": 104.4, "pos": 365, "fech_pct": 42.7}, {"nome": "Fabricio Barros", "msgs": 1519, "dias": 14, "msg_dia": 108.5, "pos": 0, "fech_pct": 0}, {"nome": "Sara Juste", "msgs": 1348, "dias": 15, "msg_dia": 89.9, "pos": 393, "fech_pct": 59.3}], "sara_herdados": 58, "chat": {"total": 2205, "sla_h": 12, "t1_med": "1m 11s", "t1h_med": "1d 11h", "sla_any": 86.5, "sla_hum": 13.1, "com_humano": 1322, "sem_humano": 883, "sem_humano_pct": 40.0, "sem_1a": 239, "fechados": 26, "aguard_agente": 159, "aguard_cliente": 2020, "buckets": [{"b": "Até 12h (dentro do SLA)", "n": 289, "pct": 13.1}, {"b": "12h a 24h", "n": 213, "pct": 9.7}, {"b": "1 a 3 dias", "n": 471, "pct": 21.4}, {"b": "Mais de 3 dias", "n": 349, "pct": 15.8}, {"b": "Sem atendente humano", "n": 883, "pct": 40.0}], "canais": [{"nome": "Shopee", "id": "shopee", "n": 2053, "t1": "1m 11s", "t1h": "1d 11h", "sla": 12.7, "hum": 58.9}, {"nome": "Magalu", "id": "magalu", "n": 152, "t1": "1m 38s", "t1h": "1d 18h", "sla": 18.4, "hum": 73.7}], "contexto": [{"c": "Pós-Venda", "n": 953, "t1h": "1d 13h", "sla": 16.7, "hum": 72.9}, {"c": "Pré-Venda", "n": 944, "t1h": "1d 8h", "sla": 12.3, "hum": 57.7}, {"c": "Não Identificado", "n": 308, "t1h": "1d 17h", "sla": 4.5, "hum": 26.6}], "atendentes": [{"nome": "Sem atendente", "n": 1335, "t1h": "1d 4h", "sla": 8.2, "pre": 609, "pos": 441}, {"nome": "Fabricio Barros", "n": 801, "t1h": "1d 16h", "sla": 19.2, "pre": 275, "pos": 507}, {"nome": "Sara Juste", "n": 65, "t1h": "16h 46m", "sla": 38.5, "pre": 59, "pos": 2}, {"nome": "Yasmin Fernandes", "n": 4, "t1h": "1d 0h", "sla": 25.0, "pre": 1, "pos": 3}], "dia": [{"d": 1, "n": 52}, {"d": 2, "n": 66}, {"d": 3, "n": 70}, {"d": 4, "n": 51}, {"d": 5, "n": 22}, {"d": 6, "n": 95}, {"d": 7, "n": 111}, {"d": 8, "n": 84}, {"d": 9, "n": 101}, {"d": 10, "n": 73}, {"d": 11, "n": 50}, {"d": 12, "n": 52}, {"d": 13, "n": 97}, {"d": 14, "n": 91}, {"d": 15, "n": 104}, {"d": 16, "n": 73}, {"d": 17, "n": 61}, {"d": 18, "n": 54}, {"d": 19, "n": 37}, {"d": 20, "n": 82}, {"d": 21, "n": 92}, {"d": 22, "n": 90}, {"d": 23, "n": 107}, {"d": 24, "n": 58}, {"d": 25, "n": 60}, {"d": 26, "n": 37}, {"d": 27, "n": 73}, {"d": 28, "n": 72}, {"d": 29, "n": 69}, {"d": 30, "n": 63}, {"d": 31, "n": 58}]}, "leitura": {"bom": ["<b>Tempo de resposta mediano de 4m 31s</b> e 63.1% das mensagens respondidas em até uma hora, sustentados pela automação (60.7% das respostas).", "<b>A automação segura a abertura do chat</b>: 86.5% dos 2.205 protocolos recebem a primeira resposta dentro das 12h contratadas, em 1m 11s.", "<b>Magalu tem a melhor resolução</b>: 74.1% dos tickets de pós-venda fechados, contra 15.6% no Mercado Livre.", "<b>A especialização por canal funcionou</b>: cada atendente concentra de 84% a 100% do trabalho em um marketplace, o que reduz troca de contexto.", "<b>Sara entregou desde a primeira semana</b>: 1.348 mensagens em 15 dias ativos e a melhor mediana de resposta da equipe (2h 01m)."], "ruim": ["<b>Apenas 13.1% dos protocolos de chat tiveram atendente humano dentro do SLA de 12h</b>, e 40.0% (883 conversas) nunca chegaram a um atendente.", "<b>Pré-venda é o maior vazamento</b>: 2d 20h de mediana no atendimento humano e só 3.0% dentro do SLA — e o chat tem outras 944 conversas de pré-venda na mesma situação.", "<b>Um único atendente sustenta a Shopee</b>: 801 dos 2.205 protocolos de chat estão com Fabricio, sem retaguarda em férias, folga ou pico.", "<b>814 tickets de pós-venda seguiam abertos</b> no fechamento do mês, 52 deles parados aguardando a equipe.", "<b>Ciclo de resolução longo</b>: mediana de 6d 20h entre abrir e fechar um ticket de pós-venda.", "<b>Turno noturno descoberto</b>: praticamente nenhuma resposta manual entre 18h e 07h, período que ainda concentra parte relevante da demanda.", "<b>Entrega e avaria dominam as reclamações</b>: a data de entrega combinada não foi cumprida responde por 13.7% dos casos — problema logístico, não de atendimento."]}, "metodo": ["<b>Sara Juste iniciou em 13/07/2026.</b> Todos os indicadores dela cobrem 19 dias corridos (15 com atividade registrada), contra 31 dias dos demais. A tabela de comparação usa a janela de 13 a 31/07 para avaliar os três em igualdade de condições.", "<b>58 tickets atribuídos a Sara foram abertos antes de 13/07</b> — casos herdados da fila, não atendimentos originados por ela.", "<b>Tempo de resposta</b> é medido da entrada da mensagem do cliente até o envio da resposta seguinte, por conversa. Usamos a mediana no lugar da média porque casos extremos (dias de espera) distorcem a média.", "<b>Respostas automáticas</b> reúnem IA (MIA2), mensagens automáticas do marketplace e avisos de ausência. Manuais são as digitadas por um atendente dentro da plataforma.", "<b>Mensagens sem atendente identificado</b> (20.570 envios) são automáticas ou enviadas fora da plataforma, e por isso não entram no comparativo individual.", "<b>Tickets sem responsável</b> (2.569 de pós-venda) são majoritariamente mensageria automática do Mercado Livre.", "<b>SLA de protocolo de chat</b> é de 12h a partir da abertura, conforme o próprio relatório. Conta como cumprido quando a primeira mensagem de um atendente humano ocorre dentro da janela; a coluna \"1ª resposta\" considera qualquer resposta, inclusive automática.", "<b>Protocolos encerrados</b> (26 de 2.205) refletem o registro de baixa na plataforma, não o volume de casos resolvidos.", "<b>Metas indicadas no topo são referências</b> para leitura do painel; ajuste-as ao acordo formal do setor quando houver."]}}, {"key": "2026-08", "nome": "Agosto", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-09", "nome": "Setembro", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-10", "nome": "Outubro", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-11", "nome": "Novembro", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-12", "nome": "Dezembro", "ano": 2026, "status": "aguardando", "dados": null}]};
+
+const CC={shopee:'#FF6B35',mercadolivre:'#EAB308',magalu:'#3B82F6',madeira:'#22C55E'};
+const AVC={'Yasmin Fernandes':'#EAB308','Fabricio Barros':'#FF6B35','Sara Juste':'#3B82F6'};
+const MC=['#FF6B35','#3B82F6','#22C55E','#A855F7','#EAB308','#06B6D4','#EC4899','#F87171','#4ADE80','#60A5FA','#FBBF24','#A78BFA'];
+const NB=n=>n.toLocaleString('pt-BR');
+const el=id=>document.getElementById(id);
+const SVGNS='http://www.w3.org/2000/svg';
+const svg=(w,h)=>{const s=document.createElementNS(SVGNS,'svg');s.setAttribute('viewBox',`0 0 ${w} ${h}`);return s};
+const mk=(t,a)=>{const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const tx=(x,y,s,o={})=>{const t=mk('text',{x,y,fill:o.fill||'#7C818C','font-size':o.size||10,
+  'font-family':'Inter,sans-serif','text-anchor':o.anchor||'middle','font-weight':o.weight||500});t.textContent=s;return t};
+
+const comDados = DATA.meses.filter(m=>m.dados);
+let atual = 'geral';
+
+/* ---------- cabeçalho ---------- */
+function pintaTopo(){
+  const m = atual==='geral' ? null : DATA.meses.find(m=>m.key===atual);
+  const ult = comDados[comDados.length-1];
+  const per = m ? (m.dados? m.dados.periodo : {ini:'—',fim:'—'}) : {ini:comDados[0].dados.periodo.ini, fim:ult.dados.periodo.fim};
+  const regs = m ? (m.dados? m.dados.kpi.msgs : 0) : comDados.reduce((a,b)=>a+b.dados.kpi.msgs,0);
+  el('heroPills').innerHTML =
+    `<span class="pill g"><i></i>${m? m.nome+' '+m.ano : 'Visão geral'}</span>`+
+    `<span class="pill b">📅 ${per.ini} a ${per.fim}</span>`+
+    `<span class="pill o">${NB(regs)} MENSAGENS</span>`;
+  el('ger').textContent = comDados.length+' mês(es) carregado(s) · último: '+ult.nome+'/'+ult.ano;
+}
+el('strip').innerHTML =
+  `🎯 <b>Metas de referência:</b> 1ª resposta em até 1h <span class="sep">·</span> `+
+  `<b>Protocolo de chat:</b> 1º contato humano em até 12h <span class="sep">·</span> `+
+  `<b>Pré-venda:</b> resposta no mesmo dia <span class="sep">·</span> Quanto menor o tempo de resposta, melhor.`;
+
+/* ---------- abas ---------- */
+function pintaTabs(){
+  const t=[`<button class="tab ${atual==='geral'?'on':''}" data-k="geral"><i></i>Visão Geral</button>`];
+  DATA.meses.forEach(m=>{
+    const b = m.status==='fechado' ? '<span class="bdg gr">Fechado</span>'
+            : m.status==='parcial' ? '<span class="bdg or">Parcial</span>'
+            : '<span class="bdg gy">Aguardando</span>';
+    t.push(`<button class="tab ${atual===m.key?'on':''} ${m.status==='fechado'&&atual!==m.key?'done':''}" data-k="${m.key}"><i></i>${m.nome} ${m.ano} ${b}</button>`);
+  });
+  el('tabs').innerHTML=t.join('');
+  el('tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{atual=b.dataset.k;pintaTabs();pintaTopo();render();window.scrollTo({top:0,behavior:'smooth'})});
+}
+
+/* ================= VISÃO GERAL ================= */
+function viewGeral(){
+  const tot = comDados.reduce((a,m)=>{const k=m.dados.kpi;return{
+    msgs:a.msgs+k.msgs, conv:a.conv+k.conversas, pos:a.pos+k.pos, rec:a.rec+k.reclam,
+    pre:a.pre+k.pre, chat:a.chat+m.dados.chat.total, ab:a.ab+k.abertos, man:a.man+k.manual};},
+    {msgs:0,conv:0,pos:0,rec:0,pre:0,chat:0,ab:0,man:0});
+  const ult=comDados[comDados.length-1].dados;
+  const kc=[
+    {l:'Total de mensagens',v:NB(tot.msgs),g:'linear-gradient(90deg,#FF6B35,#F59E0B)',c:'#fff',s:'Todos os canais',gh:'💬',b:['b-nt',NB(tot.conv)+' conversas']},
+    {l:'Protocolos de chat',v:NB(tot.chat),g:'linear-gradient(90deg,#3B82F6,#06B6D4)',c:'#fff',s:'Shopee e Magalu',gh:'🎧',b:['b-al',ult.chat.sla_hum+'% no SLA de 12h']},
+    {l:'Resposta mediana',v:ult.kpi.med_resp,g:'linear-gradient(90deg,#22C55E,#4ADE80)',c:'#4ADE80',s:'Do recebimento ao envio',gh:'⏱',b:['b-ok',ult.kpi.p1h+'% em até 1h']},
+    {l:'Tickets de pós-venda',v:NB(tot.pos),g:'linear-gradient(90deg,#A855F7,#EC4899)',c:'#fff',s:NB(tot.rec)+' reclamações formais',gh:'📦',b:['b-wr',NB(tot.ab)+' ainda em aberto']},
+    {l:'Perguntas de pré-venda',v:NB(tot.pre),g:'linear-gradient(90deg,#EAB308,#FF6B35)',c:'#fff',s:'Em página de anúncio',gh:'🛒',b:['b-al',ult.pre.tipos.find(t=>t.t==='Agente Humano').sla+'% no SLA (humano)']},
+    {l:'Respostas manuais',v:NB(tot.man),g:'linear-gradient(90deg,#06B6D4,#3B82F6)',c:'#fff',s:'Digitadas por atendente',gh:'✍️',b:['b-nt',ult.kpi.auto_pct+'% do total é automático']}
+  ];
+  let h = `<div class="slab">Indicadores acumulados <span class="hint">${comDados.length} mês(es) carregado(s)</span></div>`
+        + `<div class="kgrid">${kc.map(cardKPI).join('')}</div>`;
+
+  h += `<div class="slab">Resumo por mês</div><div class="mgrid">`;
+  DATA.meses.forEach((m,i)=>{
+    if(!m.dados){h+=`<div class="mc empty"><div class="mn">${m.nome}</div><div class="mv">—</div>
+      <div class="ms" style="color:#5E636D">Aguardando dados</div><div class="mf">Ainda não carregado</div></div>`;return;}
+    const d=m.dados, c=MC[i%MC.length];
+    const badge = d.chat.sla_hum>=50?'<span class="bdg2 b-ok">✅ '+d.chat.sla_hum+'% SLA chat</span>'
+                 :'<span class="bdg2 b-al">⚠ '+d.chat.sla_hum+'% SLA chat</span>';
+    h+=`<div class="mc" style="--c:${c}"><div class="mn">${m.nome} · ${m.status==='fechado'?'Fechado':'Parcial'}</div>
+      <div class="mv">${NB(d.kpi.msgs)}</div><div class="ms">${NB(d.kpi.conversas)} conversas</div>
+      ${badge}<div class="mf">Resposta mediana ${d.kpi.med_resp}</div></div>`;
+  });
+  h+=`</div>`;
+
+  h += `<div class="slab">Comparativo mensal</div><div class="panel"><table>
+    <thead><tr><th>Mês</th><th>Mensagens</th><th>Conversas</th><th>Resposta mediana</th><th>% em até 1h</th><th>Protocolos de chat</th><th>SLA chat 12h</th><th>Tickets pós-venda</th><th>Em aberto</th></tr></thead><tbody>`;
+  comDados.forEach(m=>{const d=m.dados;
+    h+=`<tr><td>${m.nome} ${m.ano}</td><td>${NB(d.kpi.msgs)}</td><td>${NB(d.kpi.conversas)}</td>
+    <td>${d.kpi.med_resp}</td><td>${d.kpi.p1h}%</td><td>${NB(d.chat.total)}</td><td>${d.chat.sla_hum}%</td>
+    <td>${NB(d.kpi.pos)}</td><td>${NB(d.kpi.abertos)}</td></tr>`;});
+  h+=`</tbody></table>${comDados.length===1?'<div class="note blue">Com um único mês carregado não há série histórica para comparar. Assim que agosto entrar, esta tabela mostra a variação mês a mês automaticamente.</div>':''}</div>`;
+
+  h += `<div class="slab">Destaques do período</div><div class="g2">
+    <div class="panel"><p class="pt">✅ O que está funcionando</p><ul class="ls">${ult.leitura.bom.map(x=>'<li>'+x+'</li>').join('')}</ul></div>
+    <div class="panel"><p class="pt">⚠️ O que exige ação</p><ul class="ls">${ult.leitura.ruim.map(x=>'<li>'+x+'</li>').join('')}</ul></div></div>`;
+  return h;
+}
+function cardKPI(k){
+  return `<div class="kc" style="--g:${k.g};--c:${k.c||'#fff'}">
+    <div class="lab">${k.l}</div><div class="val">${k.v}</div><div class="sub">${k.s}</div>
+    ${k.b?`<span class="bdg2 ${k.b[0]}">${k.b[1]}</span>`:''}<div class="gh">${k.gh||''}</div></div>`;
+}
+
+/* ================= MÊS ================= */
+function viewMes(m){
+  if(!m.dados) return `<div class="empty-state fade"><div class="ei">📭</div>
+    <h3>${m.nome} de ${m.ano} ainda não foi carregado</h3>
+    <p>Assim que a exportação do Predize referente a ${m.nome.toLowerCase()} estiver pronta, substitua
+    <code>"dados": null</code> pelo bloco do mês dentro de <code>DATA.meses</code>, no início do script deste arquivo.
+    As abas, os totais e o resumo por mês se ajustam sozinhos.</p></div>`;
+  const D=m.dados, K=D.kpi, C=D.chat;
+  const kc=[
+    {l:'Mensagens no mês',v:NB(K.msgs),g:'linear-gradient(90deg,#FF6B35,#F59E0B)',s:`${NB(K.recebidas)} recebidas · ${NB(K.enviadas)} enviadas`,gh:'💬',b:['b-nt',NB(K.conversas)+' conversas']},
+    {l:'Resposta mediana',v:K.med_resp,g:'linear-gradient(90deg,#22C55E,#4ADE80)',c:'#4ADE80',s:'Da mensagem do cliente à resposta',gh:'⏱',b:['b-ok',K.p1h+'% em até 1h']},
+    {l:'Protocolos de chat',v:NB(C.total),g:'linear-gradient(90deg,#3B82F6,#06B6D4)',s:'SLA de 12h para o 1º contato',gh:'🎧',b:['b-al',C.sla_hum+'% no SLA']},
+    {l:'Tickets de pós-venda',v:NB(K.pos),g:'linear-gradient(90deg,#A855F7,#EC4899)',s:`${NB(K.reclam)} reclamações formais`,gh:'📦',b:['b-wr',NB(K.abertos)+' em aberto']},
+    {l:'Perguntas de pré-venda',v:NB(K.pre),g:'linear-gradient(90deg,#EAB308,#FF6B35)',s:'Na página do anúncio',gh:'🛒',b:['b-al',D.pre.tipos.find(t=>t.t==='Agente Humano').sla+'% no SLA (humano)']},
+    {l:'Automação das respostas',v:K.auto_pct+'%',g:'linear-gradient(90deg,#06B6D4,#3B82F6)',s:`${NB(K.manual)} respostas manuais`,gh:'🤖',b:['b-nt',NB(K.ia)+' respostas da IA']}
+  ];
+  let h = `<div class="slab">Visão do mês <span class="hint">${D.periodo.ini} a ${D.periodo.fim}</span></div>
+           <div class="kgrid">${kc.map(cardKPI).join('')}</div>`;
+
+  h += `<div class="slab">Canais</div><div class="kgrid">`+
+    D.canais.map(c=>`<div class="chc" style="--c:${CC[c.id]}"><h3>${c.nome}</h3>
+      <div class="big">${NB(c.msgs)} <small>mensagens</small></div>
+      <div class="kv"><span>Conversas</span><b>${NB(c.conversas)}</b></div>
+      <div class="kv"><span>Resposta mediana</span><b>${c.med}</b></div>
+      <div class="kv"><span>Automação</span><b>${c.auto_pct}%</b></div>
+      <div class="kv"><span>Tickets pós-venda</span><b>${NB(c.pos)}</b></div>
+      <div class="kv"><span>Reclamações</span><b>${NB(c.reclam)}</b></div></div>`).join('')+`</div>`;
+
+  h += `<div class="slab">Ritmo do mês</div>
+    <div class="panel"><p class="pt">Volume diário por canal <small>barras claras = fim de semana</small></p>
+      <div id="c-dia"></div><div class="legend" id="l-dia"></div></div>
+    <div class="panel" style="margin-top:14px"><p class="pt">Cobertura por hora <small>quem responde, e quando</small></p>
+      <div id="c-hora"></div>
+      <div class="legend">
+        <span><i class="dot" style="background:#2E3138"></i> Recebidas do cliente</span>
+        <span><i class="dot" style="background:#FF6B35"></i> Resposta manual</span>
+        <span><i class="dot" style="background:#06B6D4"></i> Resposta automática / IA</span></div>
+      <div class="note" id="n-hora"></div></div>`;
+
+  h += `<div class="slab">Equipe <span class="hint">Sara Juste iniciou em ${D.atendentes[2].inicio} — indicadores dela cobrem ${D.atendentes[2].dias_corridos} dias</span></div>
+    <div class="g3">`+D.atendentes.map(a=>`
+      <div class="at"><div class="top"><div class="av" style="background:${AVC[a.nome]}">${a.nome.split(' ').map(x=>x[0]).join('')}</div>
+      <div><h3>${a.nome}</h3><div class="role">${a.canal} · ${a.canal_pct}% do trabalho</div></div></div>
+      <span class="bdg2 ${a.inicio==='13/07'?'b-wr':'b-nt'}">${a.inicio==='13/07'?'Entrou em 13/07 · '+a.dias_corridos+' dias':'Mês completo · '+a.dias_corridos+' dias'}</span>
+      <div class="mini">
+        <div><div class="l">Mensagens</div><div class="v">${NB(a.msgs)}</div></div>
+        <div><div class="l">Média/dia ativo</div><div class="v">${a.msg_dia}</div></div>
+        <div><div class="l">Resposta mediana</div><div class="v" style="font-size:16px">${a.med}</div></div>
+        <div><div class="l">Dias ativos</div><div class="v">${a.dias_ativos}</div></div></div>
+      <div style="margin-top:13px">
+        <div class="kv"><span>Tickets pós-venda</span><b>${a.pos?NB(a.pos):'—'}</b></div>
+        <div class="kv"><span>Tickets fechados</span><b>${a.pos?a.fech_pct+'%':'—'}</b></div>
+        <div class="kv"><span>Protocolos de chat</span><b>${NB((C.atendentes.find(x=>x.nome===a.nome)||{n:0}).n)}</b></div>
+        <div class="kv"><span>Perguntas pré-venda</span><b>${a.pre}</b></div>
+        <div class="kv"><span>Respostas em até 1h</span><b>${a.p1h}%</b></div></div></div>`).join('')+`</div>`;
+
+  h += `<div class="panel" style="margin-top:14px"><p class="pt">Comparação em igualdade de condições <small>janela de 13 a 31/07, período em que os três atuaram juntos</small></p>
+    <table><thead><tr><th>Atendente</th><th>Mensagens</th><th>Dias ativos</th><th>Média/dia</th><th>Tickets abertos</th><th>% fechados</th></tr></thead><tbody>`+
+    D.janela.map(j=>`<tr><td><span class="dot" style="background:${AVC[j.nome]};margin-right:8px"></span>${j.nome}</td>
+      <td>${NB(j.msgs)}</td><td>${j.dias}</td><td>${j.msg_dia}</td><td>${j.pos?NB(j.pos):'—'}</td><td>${j.pos?j.fech_pct+'%':'—'}</td></tr>`).join('')+
+    `</tbody></table><div class="note">Na janela em que os três trabalharam juntos o ritmo diário é equivalente (89 a 109 mensagens/dia ativo). A diferença está no <b>tipo de fila</b>: Fabricio absorve o chat da Shopee, conversa curta e volumosa; Sara e Yasmin carregam tickets de pós-venda, que se arrastam por dias. Mesmo entrando em 13/07, Sara abriu mais tickets (${NB(D.janela[2].pos)}) e fechou proporção maior (${D.janela[2].fech_pct}% contra ${D.janela[0].fech_pct}%), além de herdar ${D.sara_herdados} tickets abertos antes da sua entrada.</div></div>`;
+
+  h += `<div class="slab">Protocolos de chat <span class="hint">SLA de 12h para o primeiro contato</span></div>
+    <div class="kgrid">`+[
+      {l:'Protocolos abertos',v:NB(C.total),g:'linear-gradient(90deg,#3B82F6,#06B6D4)',s:'Shopee e Magalu',gh:'🎧'},
+      {l:'1ª resposta automática',v:C.t1_med,g:'linear-gradient(90deg,#22C55E,#4ADE80)',c:'#4ADE80',s:'Mediana de abertura',gh:'🤖',b:['b-ok',C.sla_any+'% dentro do SLA']},
+      {l:'1ª resposta humana',v:C.t1h_med,g:'linear-gradient(90deg,#EAB308,#FF6B35)',c:'#FACC15',s:`entre os ${NB(C.com_humano)} com atendente`,gh:'🙋',b:['b-al',C.sla_hum+'% dentro do SLA']},
+      {l:'Sem toque humano',v:C.sem_humano_pct+'%',g:'linear-gradient(90deg,#EF4444,#EC4899)',c:'#F87171',s:`${NB(C.sem_humano)} conversas só com automação`,gh:'⚠️'}
+    ].map(cardKPI).join('')+`</div>
+    <div class="panel" style="margin-top:14px"><p class="pt">Do protocolo aberto ao encerramento <small>onde a fila trava</small></p>
+      <div id="c-funil"></div><div class="note" id="n-funil"></div></div>
+    <div class="g2" style="margin-top:14px">
+      <div class="panel"><p class="pt">Tempo até a primeira mensagem de um atendente</p><div id="c-bucket"></div></div>
+      <div class="panel"><p class="pt">Por contexto e por canal</p>
+        <table><thead><tr><th>Contexto</th><th>Protocolos</th><th>Com atendente</th><th>Mediana</th><th>No SLA</th></tr></thead>
+        <tbody>${C.contexto.map(c=>`<tr><td>${c.c}</td><td>${NB(c.n)}</td><td>${c.hum}%</td><td>${c.t1h}</td><td>${c.sla}%</td></tr>`).join('')}</tbody></table>
+        <table style="margin-top:18px"><thead><tr><th>Canal</th><th>Protocolos</th><th>1ª resposta</th><th>Mediana humana</th><th>No SLA</th></tr></thead>
+        <tbody>${C.canais.map(c=>`<tr><td><span class="dot" style="background:${CC[c.id]};margin-right:8px"></span>${c.nome}</td><td>${NB(c.n)}</td><td>${c.t1}</td><td>${c.t1h}</td><td>${c.sla}%</td></tr>`).join('')}</tbody></table>
+      </div></div>
+    <div class="panel" style="margin-top:14px"><p class="pt">Protocolos por responsável</p>
+      <table><thead><tr><th>Responsável</th><th>Protocolos</th><th>Pré-venda</th><th>Pós-venda</th><th>Mediana até o humano</th><th>No SLA de 12h</th></tr></thead>
+      <tbody>${C.atendentes.map(a=>`<tr><td>${AVC[a.nome]?`<span class="dot" style="background:${AVC[a.nome]};margin-right:8px"></span>`:''}${a.nome}</td>
+        <td>${NB(a.n)}</td><td>${NB(a.pre)}</td><td>${NB(a.pos)}</td><td>${a.t1h}</td><td>${a.sla}%</td></tr>`).join('')}</tbody></table>
+      <div class="note">O chat é uma fila praticamente individual: <b>Fabricio responde por ${NB(C.atendentes.find(a=>a.nome==='Fabricio Barros').n)} dos ${NB(C.total)} protocolos</b>, sozinho na Shopee. Sara cobre os ${NB(C.atendentes.find(a=>a.nome==='Sara Juste').n)} do Magalu com o melhor índice de SLA da equipe. Os ${NB(C.atendentes.find(a=>a.nome==='Sem atendente').n)} sem responsável são o volume que a operação não absorveu — ${NB(C.atendentes.find(a=>a.nome==='Sem atendente').pre)} deles de pré-venda, cliente com intenção de compra esperando resposta.</div></div>`;
+
+  h += `<div class="slab">Pós-venda</div><div class="g2">
+    <div class="panel"><p class="pt">Situação dos tickets no fechamento do mês</p><div id="c-status"></div><div class="legend" id="l-status"></div></div>
+    <div class="panel"><p class="pt">Motivos das reclamações <small>top 8</small></p><div id="c-motivo"></div></div></div>`;
+
+  h += `<div class="slab">Pré-venda</div><div class="g2">
+    <div class="panel"><p class="pt">Agente virtual × agente humano</p>
+      <table><thead><tr><th>Tipo</th><th>Perguntas</th><th>Resposta mediana</th><th>No SLA</th><th>Gerou venda</th></tr></thead>
+      <tbody>${D.pre.tipos.map(t=>`<tr><td>${t.t}</td><td>${t.n}</td><td>${t.med}</td><td>${t.sla}%</td><td>${t.venda}%</td></tr>`).join('')}
+      <tr class="tot"><td>Total</td><td>${D.pre.total}</td><td>—</td><td>${D.pre.sla}%</td><td>${D.pre.venda}%</td></tr></tbody></table>
+      <div class="note green">O agente virtual responde em <b>${D.pre.tipos.find(t=>t.t==='Agente Virtual').med}</b> e converte <b>${D.pre.tipos.find(t=>t.t==='Agente Virtual').venda}%</b> das perguntas em venda; o humano responde em <b>${D.pre.tipos.find(t=>t.t==='Agente Humano').med}</b> e converte ${D.pre.tipos.find(t=>t.t==='Agente Humano').venda}%. ${D.pre.sem_resposta} perguntas ficaram sem qualquer resposta no mês.</div></div>
+    <div class="panel"><p class="pt">Pré-venda por atendente</p>
+      <table><thead><tr><th>Atendente</th><th>Perguntas</th><th>Resposta mediana</th><th>No SLA</th></tr></thead>
+      <tbody>${D.atendentes.map(a=>`<tr><td><span class="dot" style="background:${AVC[a.nome]};margin-right:8px"></span>${a.nome}</td><td>${a.pre}</td><td>${a.pre_med}</td><td>${a.pre_sla}%</td></tr>`).join('')}
+      <tr><td>Virtual / sem atendente</td><td>${D.sem_atendente.pre}</td><td>—</td><td>—</td></tr></tbody></table>
+      <div class="note">Além destas ${D.pre.total} perguntas de anúncio, o chat trouxe outras <b>${NB(C.contexto.find(c=>c.c==='Pré-Venda').n)} conversas de pré-venda</b>, das quais ${C.contexto.find(c=>c.c==='Pré-Venda').hum}% chegaram a um atendente.</div></div></div>`;
+
+  h += `<div class="slab">Leitura do mês</div><div class="g2">
+    <div class="panel"><p class="pt">✅ O que está funcionando</p><ul class="ls">${D.leitura.bom.map(x=>'<li>'+x+'</li>').join('')}</ul></div>
+    <div class="panel"><p class="pt">⚠️ O que exige ação</p><ul class="ls">${D.leitura.ruim.map(x=>'<li>'+x+'</li>').join('')}</ul></div></div>`;
+
+  h += `<div class="slab">Como ler estes números</div><div class="panel"><ul class="ls">${D.metodo.map(x=>'<li>'+x+'</li>').join('')}</ul></div>`;
+  return h;
+}
+
+/* ---------- gráficos ---------- */
+function graficos(D){
+  const C=D.chat, K=D.kpi;
+  /* dia */
+  (function(){
+    const S=D.serie,W=1000,H=270,p={l:40,r:10,t:12,b:30};
+    const iw=W-p.l-p.r, ih=H-p.t-p.b, bw=iw/S.length, max=Math.max(...S.map(d=>d.total));
+    const y=v=>p.t+ih-(v/max)*ih, s=svg(W,H);
+    for(let i=0;i<=4;i++){const v=max*i/4;
+      s.appendChild(mk('line',{x1:p.l,x2:W-p.r,y1:y(v),y2:y(v),stroke:'#212329'}));
+      s.appendChild(tx(p.l-8,y(v)+3.5,NB(Math.round(v)),{anchor:'end',size:9.5}));}
+    const ord=['shopee','mercadolivre','magalu','madeira'];
+    S.forEach((d,i)=>{const x=p.l+i*bw+bw*.16,w=bw*.68;let acc=0;const wk=d.dow>=5;
+      ord.forEach(k=>{const v=d[k]||0;if(!v)return;const hh=(v/max)*ih;
+        s.appendChild(mk('rect',{x,y:p.t+ih-acc-hh,width:w,height:hh,fill:CC[k],opacity:wk?.32:.95}));acc+=hh;});
+      if(d.d%2===1)s.appendChild(tx(x+w/2,H-p.b+17,String(d.d).padStart(2,'0'),{size:9.5,fill:wk?'#4A4E57':'#7C818C'}));});
+    el('c-dia').appendChild(s);
+    el('l-dia').innerHTML=ord.map(k=>{const c=D.canais.find(c=>c.id===k);return `<span><i class="dot" style="background:${CC[k]}"></i>${c.nome} · ${NB(c.msgs)}</span>`}).join('');
+  })();
+  /* hora */
+  (function(){
+    const S=D.horas,W=1000,H=280,p={l:38,r:10,t:14,b:30};
+    const iw=W-p.l-p.r,ih=H-p.t-p.b,bw=iw/24,max=Math.max(...S.map(d=>Math.max(d.rec,d.man+d.bot)));
+    const y=v=>p.t+ih-(v/max)*ih,s=svg(W,H);
+    s.appendChild(mk('rect',{x:p.l+7*bw,y:p.t-6,width:11*bw,height:ih+6,fill:'rgba(255,107,53,.06)',rx:6}));
+    s.appendChild(tx(p.l+12.5*bw,p.t+7,'JANELA COM ATENDENTE HUMANO · 07h–17h',{fill:'rgba(255,138,91,.8)',size:9,weight:700}));
+    for(let i=0;i<=4;i++){const v=max*i/4;
+      s.appendChild(mk('line',{x1:p.l,x2:W-p.r,y1:y(v),y2:y(v),stroke:'#212329'}));
+      s.appendChild(tx(p.l-8,y(v)+3.5,NB(Math.round(v)),{anchor:'end',size:9.5}));}
+    S.forEach(d=>{const x=p.l+d.h*bw,g=bw*.40,w=bw*.30;
+      s.appendChild(mk('rect',{x:x+bw*.14,y:y(d.rec),width:w,height:Math.max(1,ih-(y(d.rec)-p.t)),fill:'#2E3138',rx:2}));
+      const hb=ih-(y(d.bot)-p.t),hh=ih-(y(d.man)-p.t);
+      s.appendChild(mk('rect',{x:x+bw*.14+g,y:y(d.bot),width:w,height:Math.max(1,hb),fill:'#06B6D4',rx:2,opacity:.9}));
+      s.appendChild(mk('rect',{x:x+bw*.14+g,y:y(d.bot)-hh,width:w,height:Math.max(0,hh),fill:'#FF6B35',rx:2}));
+      if(d.h%2===0)s.appendChild(tx(x+bw/2,H-p.b+17,String(d.h).padStart(2,'0')+'h',{size:9.5}));});
+    el('c-hora').appendChild(s);
+    const nt=S.filter(d=>d.h<7||d.h>=18),rn=nt.reduce((a,b)=>a+b.rec,0),mn=nt.reduce((a,b)=>a+b.man,0);
+    el('n-hora').innerHTML=`<b>${((rn/K.recebidas)*100).toFixed(0)}% das mensagens chegam fora da janela de atendimento</b> (${NB(rn)} entre 18h e 07h) e apenas ${NB(mn)} respostas manuais acontecem nesse intervalo. À noite quem segura o tempo de resposta é a automação; o pico de demanda humana está entre 09h e 11h.`;
+  })();
+  /* funil */
+  (function(){
+    const st=[{l:'Protocolos abertos no mês',n:C.total,c:'#3B82F6'},
+      {l:'Receberam a 1ª resposta (automática)',n:C.total-C.sem_1a,c:'#06B6D4'},
+      {l:'Tiveram um atendente humano',n:C.com_humano,c:'#FF6B35'},
+      {l:'Atendidos dentro do SLA de 12h',n:C.buckets[0].n,c:'#EF4444'},
+      {l:'Encerrados formalmente',n:C.fechados,c:'#7C818C'}];
+    const W=1000,rh=54,H=st.length*rh+8,bx=330,iw=W-bx-120,s=svg(W,H);
+    st.forEach((d,i)=>{const y=i*rh+8,w=(d.n/C.total)*iw;
+      s.appendChild(tx(0,y+19,d.l,{anchor:'start',size:12.5,fill:'#FFF',weight:600}));
+      s.appendChild(tx(0,y+35,((d.n/C.total)*100).toFixed(1)+'% do total',{anchor:'start',size:10.5}));
+      s.appendChild(mk('rect',{x:bx,y:y+5,width:Math.max(3,w),height:29,fill:d.c,rx:5,opacity:.9}));
+      s.appendChild(tx(bx+Math.max(3,w)+12,y+24,NB(d.n),{anchor:'start',size:14,fill:'#FFF',weight:700}));
+      if(i<st.length-1)s.appendChild(tx(bx+4,y+49,'↓ '+NB(d.n-st[i+1].n)+' não avançam',{anchor:'start',size:10}));});
+    el('c-funil').appendChild(s);
+    el('n-funil').innerHTML=`A automação cobre a abertura: <b>${C.sla_any}% dos protocolos recebem a primeira resposta dentro das 12h</b>, em ${C.t1_med} na mediana. O gargalo é o passo seguinte — ${NB(C.sem_humano)} conversas (${C.sem_humano_pct}%) nunca chegaram a um atendente, e entre as que chegaram a mediana foi de ${C.t1h_med}. Só <b>${C.sla_hum}% tiveram atendimento humano no prazo</b>. Os ${NB(C.fechados)} encerramentos formais mostram que a baixa não vem sendo registrada na plataforma — não leia esse número como taxa de resolução.`;
+  })();
+  /* buckets */
+  (function(){
+    const B=C.buckets,W=1000,rh=44,H=B.length*rh+8,cols=['#22C55E','#EAB308','#FF6B35','#EF4444','#2E3138'];
+    const mx=Math.max(...B.map(b=>b.n)),bx=240,s=svg(W,H);
+    B.forEach((b,i)=>{const y=i*rh+8,w=(b.n/mx)*(W-bx-130);
+      s.appendChild(tx(0,y+18,b.b,{anchor:'start',size:12.5,fill:'#B7BBC4'}));
+      s.appendChild(mk('rect',{x:bx,y:y+4,width:Math.max(2,w),height:20,fill:cols[i],rx:4,opacity:.88}));
+      s.appendChild(tx(bx+w+12,y+19,NB(b.n)+'  ·  '+b.pct+'%',{anchor:'start',size:11.5}));});
+    el('c-bucket').appendChild(s);
+  })();
+  /* status */
+  (function(){
+    const S=D.status,tot=S.reduce((a,b)=>a+b.n,0);
+    const cols={'MENSAGERIA AUTOMATICA':'#2E3138','FECHADO':'#22C55E','AGUARDANDO CLIENTE OU MARKETPLACE':'#EAB308','BLOQUEADO':'#7C818C','AGUARDANDO ATENDENTE':'#EF4444'};
+    const lbl={'MENSAGERIA AUTOMATICA':'Mensageria automática','FECHADO':'Fechado','AGUARDANDO CLIENTE OU MARKETPLACE':'Aguardando cliente/marketplace','BLOQUEADO':'Bloqueado','AGUARDANDO ATENDENTE':'Aguardando atendente'};
+    const W=1000,H=205,s=svg(W,H);let x=8;const iw=W-16;
+    S.forEach(d=>{const w=(d.n/tot)*iw;
+      s.appendChild(mk('rect',{x,y:8,width:Math.max(1,w-3),height:42,fill:cols[d.s],rx:5}));
+      if(w>70)s.appendChild(tx(x+w/2,34,((d.n/tot)*100).toFixed(0)+'%',{fill:'#0A0A0B',size:13,weight:700}));
+      x+=w;});
+    let y0=94;
+    s.appendChild(tx(8,y0-14,'TICKETS POR RESPONSÁVEL',{anchor:'start',size:10,weight:700}));
+    const rows=[...D.atendentes.filter(a=>a.pos>0).map(a=>({n:a.nome,t:a.pos,p:a.fech_pct,c:AVC[a.nome]})),
+      {n:'Sem atendente atribuído',t:D.sem_atendente.pos,p:null,c:'#2E3138'}];
+    const mx=Math.max(...rows.map(r=>r.t));
+    rows.forEach((r,i)=>{const y=y0+i*27,w=(r.t/mx)*(iw-330);
+      s.appendChild(tx(8,y+11,r.n,{anchor:'start',size:11.5,fill:'#B7BBC4'}));
+      s.appendChild(mk('rect',{x:205,y,width:Math.max(2,w),height:15,fill:r.c,rx:4,opacity:.88}));
+      s.appendChild(tx(211+w,y+11.5,NB(r.t)+(r.p!==null?'  ·  '+r.p+'% fechados':'  ·  mensageria automática'),{anchor:'start',size:10.5}));});
+    el('c-status').appendChild(s);
+    el('l-status').innerHTML=S.map(d=>`<span><i class="dot" style="background:${cols[d.s]}"></i>${lbl[d.s]} · ${NB(d.n)}</span>`).join('');
+  })();
+  /* motivos */
+  (function(){
+    const M=D.motivos.slice(0,8),W=1000,rh=34,H=M.length*rh+12,mx=Math.max(...M.map(m=>m.n)),bx=420,s=svg(W,H);
+    M.forEach((m,i)=>{const y=i*rh+8,w=(m.n/mx)*(W-bx-95);
+      s.appendChild(tx(0,y+15,m.m.length>52?m.m.slice(0,50)+'…':m.m,{anchor:'start',size:12,fill:'#B7BBC4'}));
+      s.appendChild(mk('rect',{x:bx,y:y+3,width:Math.max(2,w),height:17,fill:i===0?'#EF4444':'#3B82F6',rx:4,opacity:i===0?.9:.6}));
+      s.appendChild(tx(bx+w+10,y+16,NB(m.n)+'  ('+m.pct+'%)',{anchor:'start',size:11}));});
+    el('c-motivo').appendChild(s);
+  })();
+}
+
+/* ---------- render ---------- */
+function render(){
+  const v=el('view');
+  if(atual==='geral'){v.innerHTML=`<div class="fade">${viewGeral()}</div>`;return;}
+  const m=DATA.meses.find(x=>x.key===atual);
+  v.innerHTML=`<div class="fade">${viewMes(m)}</div>`;
+  if(m.dados) graficos(m.dados);
+}
+pintaTabs();pintaTopo();render();
+</script>
+</body>
+</html>
