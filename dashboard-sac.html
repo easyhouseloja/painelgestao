@@ -71,20 +71,20 @@ body{background:var(--bg);color:var(--tx);font-family:var(--f);font-size:14px;li
 
 /* section label */
 .slab{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);
-  margin:34px 0 13px;display:flex;align-items:center;gap:12px}
+  margin:26px 0 11px;display:flex;align-items:center;gap:12px}
 .slab::after{content:"";flex:1;height:1px;background:var(--line)}
 .slab .hint{font-size:11px;font-weight:500;letter-spacing:.2px;text-transform:none;color:#5E636D}
 
 /* kpi cards */
-.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px}
-.kc{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:19px 18px 17px;
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:11px}
+.kc{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 15px 14px;
   overflow:hidden}
 .kc::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--g)}
 .kc .lab{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--mut)}
-.kc .val{font-size:31px;font-weight:800;letter-spacing:-.8px;margin:11px 0 0;line-height:1.05;color:var(--c)}
+.kc .val{font-size:26px;font-weight:800;letter-spacing:-.7px;margin:8px 0 0;line-height:1.05;color:var(--c)}
 .kc .sub{font-size:12px;color:var(--mut);margin-top:6px}
 .kc .gh{position:absolute;right:14px;bottom:14px;font-size:30px;opacity:.09;pointer-events:none}
-.kc .bdg2{display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-size:11px;font-weight:600;
+.kc .bdg2{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:11px;font-weight:600;
   padding:4px 9px;border-radius:6px}
 .b-ok{background:rgba(34,197,94,.13);color:#4ADE80}
 .b-wr{background:rgba(234,179,8,.13);color:#FACC15}
@@ -102,8 +102,8 @@ body{background:var(--bg);color:var(--tx);font-family:var(--f);font-size:14px;li
 .mc.empty .mv{color:#3A3D45}
 
 /* panels */
-.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:19px}
-.pt{font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--mut);margin:0 0 15px;
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.pt{font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--mut);margin:0 0 12px;
   display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .pt small{font-weight:500;letter-spacing:.2px;text-transform:none;color:#5E636D;font-size:11.5px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -112,18 +112,62 @@ svg{display:block;width:100%;height:auto;overflow:visible}
 .legend{display:flex;gap:15px;flex-wrap:wrap;font-size:11.5px;color:var(--mid);margin-top:13px}
 .legend span{display:inline-flex;align-items:center;gap:7px}
 .dot{width:9px;height:9px;border-radius:3px;display:inline-block;flex:none}
-.note{margin-top:15px;padding:12px 14px;background:#101114;border:1px solid var(--line);border-left:3px solid var(--orange);
+.note{margin-top:12px;padding:10px 12px;background:#101114;border:1px solid var(--line);border-left:3px solid var(--orange);
   border-radius:8px;color:var(--mid);font-size:12.5px;line-height:1.65}
 .note b{color:#fff;font-weight:600}
+details.met{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+details.met summary{cursor:pointer;font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--mut);list-style:none}
+details.met summary::-webkit-details-marker{display:none}
+details.met summary::before{content:'▸ ';color:var(--orange)}
+details.met[open] summary::before{content:'▾ '}
+details.met ul{margin-top:12px}
 .note.blue{border-left-color:var(--blue)}
 .note.green{border-left-color:var(--green)}
+
+/* barra-resumo de reputação */
+.repbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:10px 13px;margin-top:14px}
+.repbar .tt{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mut)}
+.repchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#101114;
+  border-radius:999px;padding:5px 11px;font-size:12px;color:var(--mid);cursor:pointer;font-family:var(--f)}
+.repchip:hover{border-color:var(--line2)}
+.repchip b{color:#fff;font-weight:700}
+.repchip .sd{width:8px;height:8px;border-radius:50%;flex:none}
+.repbar .lk{margin-left:auto;font-size:11.5px;color:var(--orange);cursor:pointer;background:none;border:0;
+  font-family:var(--f);font-weight:600}
+
+/* reputação */
+.repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:11px}
+.rc{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;overflow:hidden}
+.rc::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--c)}
+.rc-h{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.rc-h h4{font-size:14px;font-weight:700;margin:0}
+.rc-h .src{font-size:10.5px;color:#5E636D;margin-left:auto}
+.rc-v{display:flex;align-items:baseline;gap:7px;margin:9px 0 2px}
+.rc-v b{font-size:25px;font-weight:800;letter-spacing:-.8px;line-height:1}
+.rc-v span{font-size:11.5px;color:var(--mut)}
+.regua{display:flex;gap:3px;margin:13px 0 4px}
+.regua i{height:7px;flex:1;border-radius:3px;opacity:.32}
+.regua i.on{opacity:1}
+.marca{position:relative;height:14px;font-size:9.5px;color:var(--mut)}
+.marca span{position:absolute;transform:translateX(-50%);white-space:nowrap;top:-1px}
+.rc-p{font-size:11px;color:var(--mut);border-top:1px solid var(--line);margin-top:9px;padding-top:8px;
+  display:flex;gap:12px;flex-wrap:wrap}
+.rc-p b{color:var(--tx);font-weight:600}
+.ri{display:flex;align-items:center;gap:8px;padding:5.5px 0;border-top:1px solid var(--line);font-size:12px}
+.ri .n{color:var(--mid);flex:1}
+.ri .v{font-weight:700;font-size:13px}
+.ri .lm{font-size:10.5px;color:#5E636D;min-width:74px;text-align:right}
+.ri .sd{width:8px;height:8px;border-radius:50%;flex:none}
+.alertbox{background:rgba(234,179,8,.09);border:1px solid rgba(234,179,8,.28);border-radius:8px;padding:7px 10px;
+  font-size:11px;color:#FACC15;margin-top:12px;display:flex;gap:8px;align-items:flex-start}
 
 /* tabela */
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{font-size:10.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--mut);
   text-align:right;padding:0 0 11px;border-bottom:1px solid var(--line2)}
 th:first-child,td:first-child{text-align:left}
-td{padding:12px 0;border-bottom:1px solid var(--line);text-align:right;color:var(--mid);font-weight:500}
+td{padding:9px 0;border-bottom:1px solid var(--line);text-align:right;color:var(--mid);font-weight:500}
 td:first-child{color:var(--tx);font-weight:600}
 tbody tr:last-child td{border-bottom:0}
 tr.tot td{color:#fff;font-weight:700}
@@ -194,6 +238,8 @@ footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);color:#
   </div>
   <div class="strip" id="strip"></div>
 
+  <div id="repBar"></div>
+
   <div class="tabs" id="tabs"></div>
 
   <div id="view"></div>
@@ -212,7 +258,7 @@ footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);color:#
       e ajuste "status" para "fechado" (ou "parcial", se o mês ainda corre).
    3. Nada mais precisa mudar: abas, totais e o resumo por mês se atualizam sozinhos.
    ========================================================================= */
-const DATA = {"meses": [{"key": "2026-07", "nome": "Julho", "ano": 2026, "status": "fechado", "dados": {"periodo": {"ini": "01/07/2026", "fim": "31/07/2026"}, "kpi": {"msgs": 58313, "recebidas": 32439, "enviadas": 25874, "conversas": 7470, "auto_pct": 60.7, "manual": 5304, "ia": 6742, "pos": 3610, "reclam": 767, "pre": 274, "med_resp": "4m 31s", "med_resp_s": 271.5, "p1h": 63.1, "p24h": 84.2, "fechados": 1042, "abertos": 814, "aguard_atend": 52, "med_ciclo": "6d 20h"}, "canais": [{"id": "shopee", "nome": "Shopee", "msgs": 27221, "rec": 18327, "env": 8894, "conversas": 2470, "auto_pct": 43.3, "med": "2m 23s", "med_s": 143.0, "p1h": 63.1, "pos": 0, "reclam": 0, "fech_pct": 0, "pre": 0, "msg_conv": 11.0}, {"id": "mercadolivre", "nome": "Mercado Livre", "msgs": 19577, "rec": 6926, "env": 12651, "conversas": 3773, "auto_pct": 76.9, "med": "5m 10s", "med_s": 310.0, "p1h": 63.1, "pos": 2788, "reclam": 481, "fech_pct": 15.6, "pre": 262, "msg_conv": 5.2}, {"id": "magalu", "nome": "Magalu", "msgs": 11500, "rec": 7180, "env": 4320, "conversas": 1223, "auto_pct": 49.3, "med": "9m 11s", "med_s": 551.0, "p1h": 63.0, "pos": 818, "reclam": 282, "fech_pct": 74.1, "pre": 12, "msg_conv": 9.4}, {"id": "madeira", "nome": "Madeira Madeira", "msgs": 15, "rec": 6, "env": 9, "conversas": 4, "auto_pct": 0.0, "med": "1h 58m", "med_s": 7113.0, "p1h": 0.0, "pos": 4, "reclam": 4, "fech_pct": 25.0, "pre": 0, "msg_conv": 3.8}], "atendentes": [{"nome": "Yasmin Fernandes", "primeiro": "02/07", "dias_ativos": 24, "dias_corridos": 31, "inicio": "01/07", "msgs": 2165, "msg_dia": 90.2, "canal": "Mercado Livre", "canal_pct": 84.4, "mix": {"Mercado Livre": 1828, "Magalu": 334, "Shopee": 3}, "med": "5h 44m", "med_s": 20663.0, "p1h": 15.2, "respostas": 1343, "pos": 590, "pos_reclam": 293, "fech_pct": 47.6, "msgs_ticket": 12.0, "ciclo": "7d 19h", "pre": 123, "pre_sla": 1.6, "pre_med": "3d 13h", "tickets_dia": 24.6}, {"nome": "Fabricio Barros", "primeiro": "06/07", "dias_ativos": 17, "dias_corridos": 31, "inicio": "01/07", "msgs": 1792, "msg_dia": 105.4, "canal": "Shopee", "canal_pct": 93.4, "mix": {"Shopee": 1673, "Magalu": 67, "Mercado Livre": 52}, "med": "23h 13m", "med_s": 83617.0, "p1h": 1.9, "respostas": 1470, "pos": 0, "pos_reclam": 0, "fech_pct": 0, "msgs_ticket": 0, "ciclo": "—", "pre": 51, "pre_sla": 7.8, "pre_med": "2d 1h", "tickets_dia": 0.0}, {"nome": "Sara Juste", "primeiro": "13/07", "dias_ativos": 15, "dias_corridos": 19, "inicio": "13/07", "msgs": 1348, "msg_dia": 89.9, "canal": "Magalu", "canal_pct": 100.0, "mix": {"Magalu": 1348}, "med": "2h 01m", "med_s": 7267.5, "p1h": 38.5, "respostas": 1042, "pos": 451, "pos_reclam": 152, "fech_pct": 62.7, "msgs_ticket": 12.0, "ciclo": "8d 11h", "pre": 6, "pre_sla": 0.0, "pre_med": "1d 21h", "tickets_dia": 30.1}], "sem_atendente": {"pos": 2569, "pre": 94}, "serie": [{"d": 1, "dow": 2, "mercadolivre": 499, "magalu": 480, "shopee": 717, "madeira": 0, "total": 1696}, {"d": 2, "dow": 3, "mercadolivre": 566, "magalu": 399, "shopee": 1014, "madeira": 0, "total": 1979}, {"d": 3, "dow": 4, "mercadolivre": 509, "magalu": 518, "shopee": 1106, "madeira": 0, "total": 2133}, {"d": 4, "dow": 5, "mercadolivre": 232, "magalu": 211, "shopee": 459, "madeira": 0, "total": 902}, {"d": 5, "dow": 6, "mercadolivre": 181, "magalu": 58, "shopee": 185, "madeira": 0, "total": 424}, {"d": 6, "dow": 0, "mercadolivre": 635, "magalu": 480, "shopee": 1127, "madeira": 0, "total": 2242}, {"d": 7, "dow": 1, "mercadolivre": 935, "magalu": 397, "shopee": 1076, "madeira": 0, "total": 2408}, {"d": 8, "dow": 2, "mercadolivre": 801, "magalu": 404, "shopee": 998, "madeira": 0, "total": 2203}, {"d": 9, "dow": 3, "mercadolivre": 981, "magalu": 434, "shopee": 986, "madeira": 0, "total": 2401}, {"d": 10, "dow": 4, "mercadolivre": 634, "magalu": 379, "shopee": 908, "madeira": 0, "total": 1921}, {"d": 11, "dow": 5, "mercadolivre": 262, "magalu": 117, "shopee": 417, "madeira": 0, "total": 796}, {"d": 12, "dow": 6, "mercadolivre": 172, "magalu": 84, "shopee": 348, "madeira": 0, "total": 604}, {"d": 13, "dow": 0, "mercadolivre": 933, "magalu": 520, "shopee": 1221, "madeira": 0, "total": 2674}, {"d": 14, "dow": 1, "mercadolivre": 658, "magalu": 424, "shopee": 1162, "madeira": 0, "total": 2244}, {"d": 15, "dow": 2, "mercadolivre": 744, "magalu": 422, "shopee": 1131, "madeira": 0, "total": 2297}, {"d": 16, "dow": 3, "mercadolivre": 774, "magalu": 401, "shopee": 975, "madeira": 0, "total": 2150}, {"d": 17, "dow": 4, "mercadolivre": 819, "magalu": 408, "shopee": 896, "madeira": 0, "total": 2123}, {"d": 18, "dow": 5, "mercadolivre": 361, "magalu": 155, "shopee": 388, "madeira": 0, "total": 904}, {"d": 19, "dow": 6, "mercadolivre": 305, "magalu": 103, "shopee": 295, "madeira": 0, "total": 703}, {"d": 20, "dow": 0, "mercadolivre": 766, "magalu": 368, "shopee": 1140, "madeira": 1, "total": 2275}, {"d": 21, "dow": 1, "mercadolivre": 650, "magalu": 399, "shopee": 1183, "madeira": 0, "total": 2232}, {"d": 22, "dow": 2, "mercadolivre": 855, "magalu": 465, "shopee": 1098, "madeira": 0, "total": 2418}, {"d": 23, "dow": 3, "mercadolivre": 806, "magalu": 504, "shopee": 1229, "madeira": 0, "total": 2539}, {"d": 24, "dow": 4, "mercadolivre": 811, "magalu": 501, "shopee": 977, "madeira": 0, "total": 2289}, {"d": 25, "dow": 5, "mercadolivre": 344, "magalu": 155, "shopee": 535, "madeira": 0, "total": 1034}, {"d": 26, "dow": 6, "mercadolivre": 165, "magalu": 56, "shopee": 267, "madeira": 0, "total": 488}, {"d": 27, "dow": 0, "mercadolivre": 1090, "magalu": 584, "shopee": 1359, "madeira": 0, "total": 3033}, {"d": 28, "dow": 1, "mercadolivre": 715, "magalu": 573, "shopee": 1254, "madeira": 3, "total": 2545}, {"d": 29, "dow": 2, "mercadolivre": 843, "magalu": 396, "shopee": 879, "madeira": 0, "total": 2118}, {"d": 30, "dow": 3, "mercadolivre": 798, "magalu": 520, "shopee": 980, "madeira": 0, "total": 2298}, {"d": 31, "dow": 4, "mercadolivre": 733, "magalu": 585, "shopee": 911, "madeira": 11, "total": 2240}], "horas": [{"h": 0, "rec": 195, "man": 0, "bot": 599}, {"h": 1, "rec": 96, "man": 0, "bot": 52}, {"h": 2, "rec": 72, "man": 0, "bot": 35}, {"h": 3, "rec": 54, "man": 0, "bot": 37}, {"h": 4, "rec": 38, "man": 0, "bot": 35}, {"h": 5, "rec": 83, "man": 0, "bot": 54}, {"h": 6, "rec": 363, "man": 4, "bot": 174}, {"h": 7, "rec": 996, "man": 276, "bot": 442}, {"h": 8, "rec": 2062, "man": 452, "bot": 972}, {"h": 9, "rec": 2674, "man": 613, "bot": 1170}, {"h": 10, "rec": 3119, "man": 722, "bot": 1279}, {"h": 11, "rec": 2740, "man": 54, "bot": 1146}, {"h": 12, "rec": 2666, "man": 379, "bot": 1169}, {"h": 13, "rec": 2669, "man": 612, "bot": 1008}, {"h": 14, "rec": 2606, "man": 678, "bot": 1044}, {"h": 15, "rec": 2488, "man": 590, "bot": 934}, {"h": 16, "rec": 2487, "man": 880, "bot": 1372}, {"h": 17, "rec": 1788, "man": 43, "bot": 1010}, {"h": 18, "rec": 1332, "man": 0, "bot": 787}, {"h": 19, "rec": 1227, "man": 0, "bot": 740}, {"h": 20, "rec": 935, "man": 0, "bot": 539}, {"h": 21, "rec": 728, "man": 1, "bot": 453}, {"h": 22, "rec": 644, "man": 0, "bot": 391}, {"h": 23, "rec": 377, "man": 0, "bot": 262}], "motivos": [{"m": "A data de entrega combinada não foi cumprida", "n": 105, "pct": 13.7}, {"m": "Indisponivel", "n": 83, "pct": 10.8}, {"m": "Chegou bem", "n": 80, "pct": 10.4}, {"m": "Mudança de ideia", "n": 71, "pct": 9.3}, {"m": "Me arrependi da compra", "n": 58, "pct": 7.6}, {"m": "Outro", "n": 56, "pct": 7.3}, {"m": "Outro motivo", "n": 42, "pct": 5.5}, {"m": "Reclamação do cliente em relação à um ticket anterior", "n": 40, "pct": 5.2}, {"m": "Peças danificadas", "n": 39, "pct": 5.1}, {"m": "Não recebi o pacote", "n": 28, "pct": 3.7}], "status": [{"s": "MENSAGERIA AUTOMATICA", "n": 1550}, {"s": "FECHADO", "n": 1042}, {"s": "AGUARDANDO CLIENTE OU MARKETPLACE", "n": 762}, {"s": "BLOQUEADO", "n": 204}, {"s": "AGUARDANDO ATENDENTE", "n": 52}], "tipo_atend": [{"t": "CHAT", "n": 28342}, {"t": "MENSAGERIA", "n": 20350}, {"t": "RECLAMACAO", "n": 9095}, {"t": "PRE-VENDA", "n": 526}], "origem": [{"o": "POR FORA AUTOMATICA", "n": 7809, "pct": 30.2, "med": "17h 09m"}, {"o": "MIA2", "n": 6742, "pct": 26.1, "med": "1m 20s"}, {"o": "MANUAL", "n": 5304, "pct": 20.5, "med": "16h 46m"}, {"o": "POR FORA", "n": 4866, "pct": 18.8, "med": "7h 44m"}, {"o": "AUSENCIA", "n": 1153, "pct": 4.5, "med": "5m 11s"}], "pre": {"total": 274, "sem_resposta": 22, "sla": 28.5, "venda": 3.3, "tipos": [{"t": "Agente Humano", "n": 202, "sla": 3.0, "venda": 1.0, "med": "2d 20h"}, {"t": "Agente Virtual", "n": 72, "sla": 100.0, "venda": 9.7, "med": "32s"}]}, "semana": [{"d": "Seg", "n": 10224}, {"d": "Ter", "n": 9429}, {"d": "Qua", "n": 10732}, {"d": "Qui", "n": 11367}, {"d": "Sex", "n": 10706}, {"d": "Sáb", "n": 3636}, {"d": "Dom", "n": 2219}], "janela": [{"nome": "Yasmin Fernandes", "msgs": 1879, "dias": 18, "msg_dia": 104.4, "pos": 365, "fech_pct": 42.7}, {"nome": "Fabricio Barros", "msgs": 1519, "dias": 14, "msg_dia": 108.5, "pos": 0, "fech_pct": 0}, {"nome": "Sara Juste", "msgs": 1348, "dias": 15, "msg_dia": 89.9, "pos": 393, "fech_pct": 59.3}], "sara_herdados": 58, "chat": {"total": 2205, "sla_h": 12, "t1_med": "1m 11s", "t1h_med": "1d 11h", "sla_any": 86.5, "sla_hum": 13.1, "com_humano": 1322, "sem_humano": 883, "sem_humano_pct": 40.0, "sem_1a": 239, "fechados": 26, "aguard_agente": 159, "aguard_cliente": 2020, "buckets": [{"b": "Até 12h (dentro do SLA)", "n": 289, "pct": 13.1}, {"b": "12h a 24h", "n": 213, "pct": 9.7}, {"b": "1 a 3 dias", "n": 471, "pct": 21.4}, {"b": "Mais de 3 dias", "n": 349, "pct": 15.8}, {"b": "Sem atendente humano", "n": 883, "pct": 40.0}], "canais": [{"nome": "Shopee", "id": "shopee", "n": 2053, "t1": "1m 11s", "t1h": "1d 11h", "sla": 12.7, "hum": 58.9}, {"nome": "Magalu", "id": "magalu", "n": 152, "t1": "1m 38s", "t1h": "1d 18h", "sla": 18.4, "hum": 73.7}], "contexto": [{"c": "Pós-Venda", "n": 953, "t1h": "1d 13h", "sla": 16.7, "hum": 72.9}, {"c": "Pré-Venda", "n": 944, "t1h": "1d 8h", "sla": 12.3, "hum": 57.7}, {"c": "Não Identificado", "n": 308, "t1h": "1d 17h", "sla": 4.5, "hum": 26.6}], "atendentes": [{"nome": "Sem atendente", "n": 1335, "t1h": "1d 4h", "sla": 8.2, "pre": 609, "pos": 441}, {"nome": "Fabricio Barros", "n": 801, "t1h": "1d 16h", "sla": 19.2, "pre": 275, "pos": 507}, {"nome": "Sara Juste", "n": 65, "t1h": "16h 46m", "sla": 38.5, "pre": 59, "pos": 2}, {"nome": "Yasmin Fernandes", "n": 4, "t1h": "1d 0h", "sla": 25.0, "pre": 1, "pos": 3}], "dia": [{"d": 1, "n": 52}, {"d": 2, "n": 66}, {"d": 3, "n": 70}, {"d": 4, "n": 51}, {"d": 5, "n": 22}, {"d": 6, "n": 95}, {"d": 7, "n": 111}, {"d": 8, "n": 84}, {"d": 9, "n": 101}, {"d": 10, "n": 73}, {"d": 11, "n": 50}, {"d": 12, "n": 52}, {"d": 13, "n": 97}, {"d": 14, "n": 91}, {"d": 15, "n": 104}, {"d": 16, "n": 73}, {"d": 17, "n": 61}, {"d": 18, "n": 54}, {"d": 19, "n": 37}, {"d": 20, "n": 82}, {"d": 21, "n": 92}, {"d": 22, "n": 90}, {"d": 23, "n": 107}, {"d": 24, "n": 58}, {"d": 25, "n": 60}, {"d": 26, "n": 37}, {"d": 27, "n": 73}, {"d": 28, "n": 72}, {"d": 29, "n": 69}, {"d": 30, "n": 63}, {"d": 31, "n": 58}]}, "leitura": {"bom": ["<b>Tempo de resposta mediano de 4m 31s</b> e 63.1% das mensagens respondidas em até uma hora, sustentados pela automação (60.7% das respostas).", "<b>A automação segura a abertura do chat</b>: 86.5% dos 2.205 protocolos recebem a primeira resposta dentro das 12h contratadas, em 1m 11s.", "<b>Magalu tem a melhor resolução</b>: 74.1% dos tickets de pós-venda fechados, contra 15.6% no Mercado Livre.", "<b>A especialização por canal funcionou</b>: cada atendente concentra de 84% a 100% do trabalho em um marketplace, o que reduz troca de contexto.", "<b>Sara entregou desde a primeira semana</b>: 1.348 mensagens em 15 dias ativos e a melhor mediana de resposta da equipe (2h 01m)."], "ruim": ["<b>Apenas 13.1% dos protocolos de chat tiveram atendente humano dentro do SLA de 12h</b>, e 40.0% (883 conversas) nunca chegaram a um atendente.", "<b>Pré-venda é o maior vazamento</b>: 2d 20h de mediana no atendimento humano e só 3.0% dentro do SLA — e o chat tem outras 944 conversas de pré-venda na mesma situação.", "<b>Um único atendente sustenta a Shopee</b>: 801 dos 2.205 protocolos de chat estão com Fabricio, sem retaguarda em férias, folga ou pico.", "<b>814 tickets de pós-venda seguiam abertos</b> no fechamento do mês, 52 deles parados aguardando a equipe.", "<b>Ciclo de resolução longo</b>: mediana de 6d 20h entre abrir e fechar um ticket de pós-venda.", "<b>Turno noturno descoberto</b>: praticamente nenhuma resposta manual entre 18h e 07h, período que ainda concentra parte relevante da demanda.", "<b>Entrega e avaria dominam as reclamações</b>: a data de entrega combinada não foi cumprida responde por 13.7% dos casos — problema logístico, não de atendimento."]}, "metodo": ["<b>Sara Juste iniciou em 13/07/2026.</b> Todos os indicadores dela cobrem 19 dias corridos (15 com atividade registrada), contra 31 dias dos demais. A tabela de comparação usa a janela de 13 a 31/07 para avaliar os três em igualdade de condições.", "<b>58 tickets atribuídos a Sara foram abertos antes de 13/07</b> — casos herdados da fila, não atendimentos originados por ela.", "<b>Tempo de resposta</b> é medido da entrada da mensagem do cliente até o envio da resposta seguinte, por conversa. Usamos a mediana no lugar da média porque casos extremos (dias de espera) distorcem a média.", "<b>Respostas automáticas</b> reúnem IA (MIA2), mensagens automáticas do marketplace e avisos de ausência. Manuais são as digitadas por um atendente dentro da plataforma.", "<b>Mensagens sem atendente identificado</b> (20.570 envios) são automáticas ou enviadas fora da plataforma, e por isso não entram no comparativo individual.", "<b>Tickets sem responsável</b> (2.569 de pós-venda) são majoritariamente mensageria automática do Mercado Livre.", "<b>SLA de protocolo de chat</b> é de 12h a partir da abertura, conforme o próprio relatório. Conta como cumprido quando a primeira mensagem de um atendente humano ocorre dentro da janela; a coluna \"1ª resposta\" considera qualquer resposta, inclusive automática.", "<b>Protocolos encerrados</b> (26 de 2.205) refletem o registro de baixa na plataforma, não o volume de casos resolvidos.", "<b>Metas indicadas no topo são referências</b> para leitura do painel; ajuste-as ao acordo formal do setor quando houver."]}}, {"key": "2026-08", "nome": "Agosto", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-09", "nome": "Setembro", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-10", "nome": "Outubro", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-11", "nome": "Novembro", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-12", "nome": "Dezembro", "ano": 2026, "status": "aguardando", "dados": null}]};
+const DATA = {"meses": [{"key": "2026-07", "nome": "Julho", "ano": 2026, "status": "fechado", "dados": {"periodo": {"ini": "01/07/2026", "fim": "31/07/2026"}, "kpi": {"msgs": 58313, "recebidas": 32439, "enviadas": 25874, "conversas": 7470, "auto_pct": 60.7, "manual": 5304, "ia": 6742, "pos": 3610, "reclam": 767, "pre": 274, "med_resp": "4m 31s", "med_resp_s": 271.5, "p1h": 63.1, "p24h": 84.2, "fechados": 1042, "abertos": 814, "aguard_atend": 52, "med_ciclo": "6d 20h"}, "canais": [{"id": "shopee", "nome": "Shopee", "msgs": 27221, "rec": 18327, "env": 8894, "conversas": 2470, "auto_pct": 43.3, "med": "2m 23s", "med_s": 143.0, "p1h": 63.1, "pos": 0, "reclam": 0, "fech_pct": 0, "pre": 0, "msg_conv": 11.0}, {"id": "mercadolivre", "nome": "Mercado Livre", "msgs": 19577, "rec": 6926, "env": 12651, "conversas": 3773, "auto_pct": 76.9, "med": "5m 10s", "med_s": 310.0, "p1h": 63.1, "pos": 2788, "reclam": 481, "fech_pct": 15.6, "pre": 262, "msg_conv": 5.2}, {"id": "magalu", "nome": "Magalu", "msgs": 11500, "rec": 7180, "env": 4320, "conversas": 1223, "auto_pct": 49.3, "med": "9m 11s", "med_s": 551.0, "p1h": 63.0, "pos": 818, "reclam": 282, "fech_pct": 74.1, "pre": 12, "msg_conv": 9.4}, {"id": "madeira", "nome": "Madeira Madeira", "msgs": 15, "rec": 6, "env": 9, "conversas": 4, "auto_pct": 0.0, "med": "1h 58m", "med_s": 7113.0, "p1h": 0.0, "pos": 4, "reclam": 4, "fech_pct": 25.0, "pre": 0, "msg_conv": 3.8}], "atendentes": [{"nome": "Yasmin Fernandes", "primeiro": "02/07", "dias_ativos": 24, "dias_corridos": 31, "inicio": "01/07", "msgs": 2165, "msg_dia": 90.2, "canal": "Mercado Livre", "canal_pct": 84.4, "mix": {"Mercado Livre": 1828, "Magalu": 334, "Shopee": 3}, "med": "5h 44m", "med_s": 20663.0, "p1h": 15.2, "respostas": 1343, "pos": 590, "pos_reclam": 293, "fech_pct": 47.6, "msgs_ticket": 12.0, "ciclo": "7d 19h", "pre": 123, "pre_sla": 1.6, "pre_med": "3d 13h", "tickets_dia": 24.6}, {"nome": "Fabricio Barros", "primeiro": "06/07", "dias_ativos": 17, "dias_corridos": 31, "inicio": "01/07", "msgs": 1792, "msg_dia": 105.4, "canal": "Shopee", "canal_pct": 93.4, "mix": {"Shopee": 1673, "Magalu": 67, "Mercado Livre": 52}, "med": "23h 13m", "med_s": 83617.0, "p1h": 1.9, "respostas": 1470, "pos": 0, "pos_reclam": 0, "fech_pct": 0, "msgs_ticket": 0, "ciclo": "—", "pre": 51, "pre_sla": 7.8, "pre_med": "2d 1h", "tickets_dia": 0.0}, {"nome": "Sara Juste", "primeiro": "13/07", "dias_ativos": 15, "dias_corridos": 19, "inicio": "13/07", "msgs": 1348, "msg_dia": 89.9, "canal": "Magalu", "canal_pct": 100.0, "mix": {"Magalu": 1348}, "med": "2h 01m", "med_s": 7267.5, "p1h": 38.5, "respostas": 1042, "pos": 451, "pos_reclam": 152, "fech_pct": 62.7, "msgs_ticket": 12.0, "ciclo": "8d 11h", "pre": 6, "pre_sla": 0.0, "pre_med": "1d 21h", "tickets_dia": 30.1}], "sem_atendente": {"pos": 2569, "pre": 94}, "serie": [{"d": 1, "dow": 2, "mercadolivre": 499, "magalu": 480, "shopee": 717, "madeira": 0, "total": 1696}, {"d": 2, "dow": 3, "mercadolivre": 566, "magalu": 399, "shopee": 1014, "madeira": 0, "total": 1979}, {"d": 3, "dow": 4, "mercadolivre": 509, "magalu": 518, "shopee": 1106, "madeira": 0, "total": 2133}, {"d": 4, "dow": 5, "mercadolivre": 232, "magalu": 211, "shopee": 459, "madeira": 0, "total": 902}, {"d": 5, "dow": 6, "mercadolivre": 181, "magalu": 58, "shopee": 185, "madeira": 0, "total": 424}, {"d": 6, "dow": 0, "mercadolivre": 635, "magalu": 480, "shopee": 1127, "madeira": 0, "total": 2242}, {"d": 7, "dow": 1, "mercadolivre": 935, "magalu": 397, "shopee": 1076, "madeira": 0, "total": 2408}, {"d": 8, "dow": 2, "mercadolivre": 801, "magalu": 404, "shopee": 998, "madeira": 0, "total": 2203}, {"d": 9, "dow": 3, "mercadolivre": 981, "magalu": 434, "shopee": 986, "madeira": 0, "total": 2401}, {"d": 10, "dow": 4, "mercadolivre": 634, "magalu": 379, "shopee": 908, "madeira": 0, "total": 1921}, {"d": 11, "dow": 5, "mercadolivre": 262, "magalu": 117, "shopee": 417, "madeira": 0, "total": 796}, {"d": 12, "dow": 6, "mercadolivre": 172, "magalu": 84, "shopee": 348, "madeira": 0, "total": 604}, {"d": 13, "dow": 0, "mercadolivre": 933, "magalu": 520, "shopee": 1221, "madeira": 0, "total": 2674}, {"d": 14, "dow": 1, "mercadolivre": 658, "magalu": 424, "shopee": 1162, "madeira": 0, "total": 2244}, {"d": 15, "dow": 2, "mercadolivre": 744, "magalu": 422, "shopee": 1131, "madeira": 0, "total": 2297}, {"d": 16, "dow": 3, "mercadolivre": 774, "magalu": 401, "shopee": 975, "madeira": 0, "total": 2150}, {"d": 17, "dow": 4, "mercadolivre": 819, "magalu": 408, "shopee": 896, "madeira": 0, "total": 2123}, {"d": 18, "dow": 5, "mercadolivre": 361, "magalu": 155, "shopee": 388, "madeira": 0, "total": 904}, {"d": 19, "dow": 6, "mercadolivre": 305, "magalu": 103, "shopee": 295, "madeira": 0, "total": 703}, {"d": 20, "dow": 0, "mercadolivre": 766, "magalu": 368, "shopee": 1140, "madeira": 1, "total": 2275}, {"d": 21, "dow": 1, "mercadolivre": 650, "magalu": 399, "shopee": 1183, "madeira": 0, "total": 2232}, {"d": 22, "dow": 2, "mercadolivre": 855, "magalu": 465, "shopee": 1098, "madeira": 0, "total": 2418}, {"d": 23, "dow": 3, "mercadolivre": 806, "magalu": 504, "shopee": 1229, "madeira": 0, "total": 2539}, {"d": 24, "dow": 4, "mercadolivre": 811, "magalu": 501, "shopee": 977, "madeira": 0, "total": 2289}, {"d": 25, "dow": 5, "mercadolivre": 344, "magalu": 155, "shopee": 535, "madeira": 0, "total": 1034}, {"d": 26, "dow": 6, "mercadolivre": 165, "magalu": 56, "shopee": 267, "madeira": 0, "total": 488}, {"d": 27, "dow": 0, "mercadolivre": 1090, "magalu": 584, "shopee": 1359, "madeira": 0, "total": 3033}, {"d": 28, "dow": 1, "mercadolivre": 715, "magalu": 573, "shopee": 1254, "madeira": 3, "total": 2545}, {"d": 29, "dow": 2, "mercadolivre": 843, "magalu": 396, "shopee": 879, "madeira": 0, "total": 2118}, {"d": 30, "dow": 3, "mercadolivre": 798, "magalu": 520, "shopee": 980, "madeira": 0, "total": 2298}, {"d": 31, "dow": 4, "mercadolivre": 733, "magalu": 585, "shopee": 911, "madeira": 11, "total": 2240}], "horas": [{"h": 0, "rec": 195, "man": 0, "bot": 599}, {"h": 1, "rec": 96, "man": 0, "bot": 52}, {"h": 2, "rec": 72, "man": 0, "bot": 35}, {"h": 3, "rec": 54, "man": 0, "bot": 37}, {"h": 4, "rec": 38, "man": 0, "bot": 35}, {"h": 5, "rec": 83, "man": 0, "bot": 54}, {"h": 6, "rec": 363, "man": 4, "bot": 174}, {"h": 7, "rec": 996, "man": 276, "bot": 442}, {"h": 8, "rec": 2062, "man": 452, "bot": 972}, {"h": 9, "rec": 2674, "man": 613, "bot": 1170}, {"h": 10, "rec": 3119, "man": 722, "bot": 1279}, {"h": 11, "rec": 2740, "man": 54, "bot": 1146}, {"h": 12, "rec": 2666, "man": 379, "bot": 1169}, {"h": 13, "rec": 2669, "man": 612, "bot": 1008}, {"h": 14, "rec": 2606, "man": 678, "bot": 1044}, {"h": 15, "rec": 2488, "man": 590, "bot": 934}, {"h": 16, "rec": 2487, "man": 880, "bot": 1372}, {"h": 17, "rec": 1788, "man": 43, "bot": 1010}, {"h": 18, "rec": 1332, "man": 0, "bot": 787}, {"h": 19, "rec": 1227, "man": 0, "bot": 740}, {"h": 20, "rec": 935, "man": 0, "bot": 539}, {"h": 21, "rec": 728, "man": 1, "bot": 453}, {"h": 22, "rec": 644, "man": 0, "bot": 391}, {"h": 23, "rec": 377, "man": 0, "bot": 262}], "motivos": [{"m": "A data de entrega combinada não foi cumprida", "n": 105, "pct": 13.7}, {"m": "Indisponivel", "n": 83, "pct": 10.8}, {"m": "Chegou bem", "n": 80, "pct": 10.4}, {"m": "Mudança de ideia", "n": 71, "pct": 9.3}, {"m": "Me arrependi da compra", "n": 58, "pct": 7.6}, {"m": "Outro", "n": 56, "pct": 7.3}, {"m": "Outro motivo", "n": 42, "pct": 5.5}, {"m": "Reclamação do cliente em relação à um ticket anterior", "n": 40, "pct": 5.2}, {"m": "Peças danificadas", "n": 39, "pct": 5.1}, {"m": "Não recebi o pacote", "n": 28, "pct": 3.7}], "status": [{"s": "MENSAGERIA AUTOMATICA", "n": 1550}, {"s": "FECHADO", "n": 1042}, {"s": "AGUARDANDO CLIENTE OU MARKETPLACE", "n": 762}, {"s": "BLOQUEADO", "n": 204}, {"s": "AGUARDANDO ATENDENTE", "n": 52}], "tipo_atend": [{"t": "CHAT", "n": 28342}, {"t": "MENSAGERIA", "n": 20350}, {"t": "RECLAMACAO", "n": 9095}, {"t": "PRE-VENDA", "n": 526}], "origem": [{"o": "POR FORA AUTOMATICA", "n": 7809, "pct": 30.2, "med": "17h 09m"}, {"o": "MIA2", "n": 6742, "pct": 26.1, "med": "1m 20s"}, {"o": "MANUAL", "n": 5304, "pct": 20.5, "med": "16h 46m"}, {"o": "POR FORA", "n": 4866, "pct": 18.8, "med": "7h 44m"}, {"o": "AUSENCIA", "n": 1153, "pct": 4.5, "med": "5m 11s"}], "pre": {"total": 274, "sem_resposta": 22, "sla": 28.5, "venda": 3.3, "tipos": [{"t": "Agente Humano", "n": 202, "sla": 3.0, "venda": 1.0, "med": "2d 20h"}, {"t": "Agente Virtual", "n": 72, "sla": 100.0, "venda": 9.7, "med": "32s"}]}, "semana": [{"d": "Seg", "n": 10224}, {"d": "Ter", "n": 9429}, {"d": "Qua", "n": 10732}, {"d": "Qui", "n": 11367}, {"d": "Sex", "n": 10706}, {"d": "Sáb", "n": 3636}, {"d": "Dom", "n": 2219}], "janela": [{"nome": "Yasmin Fernandes", "msgs": 1879, "dias": 18, "msg_dia": 104.4, "pos": 365, "fech_pct": 42.7}, {"nome": "Fabricio Barros", "msgs": 1519, "dias": 14, "msg_dia": 108.5, "pos": 0, "fech_pct": 0}, {"nome": "Sara Juste", "msgs": 1348, "dias": 15, "msg_dia": 89.9, "pos": 393, "fech_pct": 59.3}], "sara_herdados": 58, "chat": {"total": 2205, "sla_h": 12, "t1_med": "1m 11s", "t1h_med": "1d 11h", "sla_any": 86.5, "sla_hum": 13.1, "com_humano": 1322, "sem_humano": 883, "sem_humano_pct": 40.0, "sem_1a": 239, "fechados": 26, "aguard_agente": 159, "aguard_cliente": 2020, "buckets": [{"b": "Até 12h (dentro do SLA)", "n": 289, "pct": 13.1}, {"b": "12h a 24h", "n": 213, "pct": 9.7}, {"b": "1 a 3 dias", "n": 471, "pct": 21.4}, {"b": "Mais de 3 dias", "n": 349, "pct": 15.8}, {"b": "Sem atendente humano", "n": 883, "pct": 40.0}], "canais": [{"nome": "Shopee", "id": "shopee", "n": 2053, "t1": "1m 11s", "t1h": "1d 11h", "sla": 12.7, "hum": 58.9}, {"nome": "Magalu", "id": "magalu", "n": 152, "t1": "1m 38s", "t1h": "1d 18h", "sla": 18.4, "hum": 73.7}], "contexto": [{"c": "Pós-Venda", "n": 953, "t1h": "1d 13h", "sla": 16.7, "hum": 72.9}, {"c": "Pré-Venda", "n": 944, "t1h": "1d 8h", "sla": 12.3, "hum": 57.7}, {"c": "Não Identificado", "n": 308, "t1h": "1d 17h", "sla": 4.5, "hum": 26.6}], "atendentes": [{"nome": "Sem atendente", "n": 1335, "t1h": "1d 4h", "sla": 8.2, "pre": 609, "pos": 441}, {"nome": "Fabricio Barros", "n": 801, "t1h": "1d 16h", "sla": 19.2, "pre": 275, "pos": 507}, {"nome": "Sara Juste", "n": 65, "t1h": "16h 46m", "sla": 38.5, "pre": 59, "pos": 2}, {"nome": "Yasmin Fernandes", "n": 4, "t1h": "1d 0h", "sla": 25.0, "pre": 1, "pos": 3}], "dia": [{"d": 1, "n": 52}, {"d": 2, "n": 66}, {"d": 3, "n": 70}, {"d": 4, "n": 51}, {"d": 5, "n": 22}, {"d": 6, "n": 95}, {"d": 7, "n": 111}, {"d": 8, "n": 84}, {"d": 9, "n": 101}, {"d": 10, "n": 73}, {"d": 11, "n": 50}, {"d": 12, "n": 52}, {"d": 13, "n": 97}, {"d": 14, "n": 91}, {"d": 15, "n": 104}, {"d": 16, "n": 73}, {"d": 17, "n": 61}, {"d": 18, "n": 54}, {"d": 19, "n": 37}, {"d": 20, "n": 82}, {"d": 21, "n": 92}, {"d": 22, "n": 90}, {"d": 23, "n": 107}, {"d": 24, "n": 58}, {"d": 25, "n": 60}, {"d": 26, "n": 37}, {"d": 27, "n": 73}, {"d": 28, "n": 72}, {"d": 29, "n": 69}, {"d": 30, "n": 63}, {"d": 31, "n": 58}]}, "leitura": {"bom": ["<b>Resposta mediana de 4m 31s</b>, com 63.1% em até uma hora — sustentado pela automação (60.7% das respostas).", "<b>Automação segura a abertura do chat</b>: 86.5% dos protocolos respondidos dentro das 12h, em 1m 11s.", "<b>Magalu tem a melhor resolução</b>: 74.1% dos tickets fechados, contra 15.6% no Mercado Livre.", "<b>Sara entregou desde a 1ª semana</b>: 1.348 mensagens em 15 dias e a melhor mediana da equipe (2h 01m)."], "ruim": ["<b>Só 13.1% dos protocolos tiveram atendente dentro do SLA de 12h</b> e 40.0% (883 conversas) nunca chegaram a um humano.", "<b>Pré-venda é o maior vazamento</b>: 2d 20h de mediana no humano e 3.0% dentro do SLA — mais 944 conversas de pré-venda no chat.", "<b>Um único atendente sustenta a Shopee</b>: 801 dos 2.205 protocolos com Fabricio, sem retaguarda.", "<b>814 tickets seguiam abertos</b> no fechamento do mês (52 parados na equipe) e o ciclo mediano é de 6d 20h.", "<b>Atraso de entrega domina as reclamações</b>: 13.7% dos casos — problema logístico chegando como demanda de SAC."]}, "metodo": ["<b>Sara Juste iniciou em 13/07/2026.</b> Todos os indicadores dela cobrem 19 dias corridos (15 com atividade registrada), contra 31 dias dos demais. A tabela de comparação usa a janela de 13 a 31/07 para avaliar os três em igualdade de condições.", "<b>58 tickets atribuídos a Sara foram abertos antes de 13/07</b> — casos herdados da fila, não atendimentos originados por ela.", "<b>Tempo de resposta</b> é medido da entrada da mensagem do cliente até o envio da resposta seguinte, por conversa. Usamos a mediana no lugar da média porque casos extremos (dias de espera) distorcem a média.", "<b>Respostas automáticas</b> reúnem IA (MIA2), mensagens automáticas do marketplace e avisos de ausência. Manuais são as digitadas por um atendente dentro da plataforma.", "<b>Mensagens sem atendente identificado</b> (20.570 envios) são automáticas ou enviadas fora da plataforma, e por isso não entram no comparativo individual.", "<b>Tickets sem responsável</b> (2.569 de pós-venda) são majoritariamente mensageria automática do Mercado Livre.", "<b>SLA de protocolo de chat</b> é de 12h a partir da abertura, conforme o próprio relatório. Conta como cumprido quando a primeira mensagem de um atendente humano ocorre dentro da janela; a coluna \"1ª resposta\" considera qualquer resposta, inclusive automática.", "<b>Protocolos encerrados</b> (26 de 2.205) refletem o registro de baixa na plataforma, não o volume de casos resolvidos.", "<b>Metas indicadas no topo são referências</b> para leitura do painel; ajuste-as ao acordo formal do setor quando houver."]}}, {"key": "2026-08", "nome": "Agosto", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-09", "nome": "Setembro", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-10", "nome": "Outubro", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-11", "nome": "Novembro", "ano": 2026, "status": "aguardando", "dados": null}, {"key": "2026-12", "nome": "Dezembro", "ano": 2026, "status": "aguardando", "dados": null}]};
 
 const CC={shopee:'#FF6B35',mercadolivre:'#EAB308',magalu:'#3B82F6',madeira:'#22C55E'};
 const AVC={'Yasmin Fernandes':'#EAB308','Fabricio Barros':'#FF6B35','Sara Juste':'#3B82F6'};
@@ -230,6 +276,11 @@ let atual = 'geral';
 
 /* ---------- cabeçalho ---------- */
 function pintaTopo(){
+  if(atual==='rep'){
+    el('heroPills').innerHTML=`<span class="pill g"><i></i>Reputação</span>`+
+      `<span class="pill b">📅 Atualizado em ${REP.atualizado}</span>`+
+      `<span class="pill o">4 MARKETPLACES</span>`;
+    el('ger').textContent='Reputação atualizada diariamente · dados de atendimento por mês';return;}
   const m = atual==='geral' ? null : DATA.meses.find(m=>m.key===atual);
   const ult = comDados[comDados.length-1];
   const per = m ? (m.dados? m.dados.periodo : {ini:'—',fim:'—'}) : {ini:comDados[0].dados.periodo.ini, fim:ult.dados.periodo.fim};
@@ -245,9 +296,111 @@ el('strip').innerHTML =
   `<b>Protocolo de chat:</b> 1º contato humano em até 12h <span class="sep">·</span> `+
   `<b>Pré-venda:</b> resposta no mesmo dia <span class="sep">·</span> Quanto menor o tempo de resposta, melhor.`;
 
+/* =========================================================================
+   REPUTAÇÃO NOS MARKETPLACES — ATUALIZAÇÃO DIÁRIA
+   Este bloco NÃO pertence a nenhum mês: aparece igual em todas as abas.
+   Para atualizar, troque os valores abaixo e a data em "atualizado".
+   st: 'ok' (verde) | 'atencao' (amarelo) | 'ruim' (vermelho)
+   nivel: posição na régua de 0 a 5, usada para desenhar o marcador.
+   ========================================================================= */
+const REP = {
+  atualizado: '05/08/2026',
+  canais: [
+    { id:'mercadolivre', nome:'Mercado Livre', fonte:'Reputação do vendedor', periodo:'Últimos 60 dias',
+      valor:'Verde', unidade:'cor da reputação', nivel:5, st:'atencao', badge:'Perto de perder a cor',
+      alerta:'Você está perto de perder a cor verde. Verifique as variáveis que estão prestes a ultrapassar os limites.',
+      resumo:[['Vendas','4.826'],['Concluídas','4.503'],['Faturado','R$ 4,30M']],
+      itens:[
+        {n:'Reclamações', v:'1,2%', d:'58 vendas', lm:'limite 2%', st:'atencao'},
+        {n:'Mediações', v:'0,06%', d:'3 vendas', lm:'limite 0,5%', st:'ok'},
+        {n:'Canceladas por você', v:'0,12%', d:'6 vendas', lm:'limite 1,5%', st:'ok'},
+        {n:'Envios incorretos', v:'0%', d:'0 vendas', lm:'limite 10%', st:'ok'}
+      ]},
+    { id:'shopee', nome:'Shopee', fonte:'Avaliação da loja', periodo:'Visão geral',
+      valor:'4.85', unidade:'de 5.00', nivel:4.85, st:'ok', badge:'Meta ≥ 4.50',
+      resumo:[['Dia anterior','4.85'],['Meta','≥ 4.50'],['Variação','estável']],
+      itens:[
+        {n:'Avaliação da loja', v:'4.85/5', d:'', lm:'meta 4.50', st:'ok'}
+      ]},
+    { id:'magalu', nome:'Magalu', fonte:'Régua de indicadores', periodo:'Últimos 30 dias',
+      valor:'3,9', unidade:'de 1 a 5', nivel:3.9, st:'atencao', badge:'Faixa 4 de 5',
+      resumo:[['Escala','1 a 5'],['Faixa atual','4'],['Meta','5']],
+      itens:[
+        {n:'Nível de serviço', v:'89%', d:'faixa 3', lm:'faixa 5 ≥ 95%', st:'atencao'},
+        {n:'Agilidade no atendimento', v:'89,99%', d:'faixa 4', lm:'faixa 5 ≥ 90%', st:'atencao'},
+        {n:'Cancelamento', v:'2%', d:'faixa 5', lm:'faixa 5 ≤ 2%', st:'ok'}
+      ]},
+    { id:'madeira', nome:'Madeira Madeira', fonte:'Score do vendedor', periodo:'Pedidos dos últimos 30 dias',
+      valor:'2,60', unidade:'de 5,00', nivel:2.6, st:'ruim', badge:'Score amarelo',
+      alerta:'Você está próximo de perder seus benefícios.',
+      resumo:[['Score','2,60/5'],['Situação','Amarelo'],['Pedidos','últimos 30 dias']],
+      itens:[
+        {n:'Atraso na expedição', v:'3,4%', d:'2 pedidos', lm:'', st:'ok'},
+        {n:'Atraso na entrega', v:'11,2%', d:'7 pedidos', lm:'', st:'ruim'},
+        {n:'Ocorrências', v:'23,7%', d:'14 pedidos', lm:'', st:'ruim'},
+        {n:'Cancelamentos', v:'5,0%', d:'3 pedidos', lm:'', st:'atencao'},
+        {n:'Mediações', v:'3,3%', d:'2 pedidos', lm:'', st:'ok'}
+      ]}
+  ]
+};
+
+const STC={ok:'#22C55E',atencao:'#EAB308',ruim:'#EF4444'};
+const STB={ok:'b-ok',atencao:'b-wr',ruim:'b-al'};
+function repCards(){
+  const seg=['#EF4444','#F97316','#EAB308','#84CC16','#22C55E'];
+  return REP.canais.map(c=>{
+    const pos=Math.max(8,Math.min(92,(c.nivel/5)*100));
+    const ativo=Math.min(4,Math.max(0,Math.ceil(c.nivel)-1));
+    return `<div class="rc" style="--c:${CC[c.id]}">
+      <div class="rc-h"><span class="dot" style="background:${CC[c.id]}"></span><h4>${c.nome}</h4>
+        <span class="bdg2 ${STB[c.st]}" style="margin:0">${c.badge}</span>
+        <span class="src">${c.fonte}</span></div>
+      <div class="rc-v"><b style="color:${STC[c.st]}">${c.valor}</b><span>${c.unidade} · ${c.periodo}</span></div>
+      <div class="regua">${seg.map((s,i)=>`<i class="${i===ativo?'on':''}" style="background:${s}"></i>`).join('')}</div>
+      <div class="marca"><span style="left:${pos}%">▲ você está aqui</span></div>
+      <div class="rc-p">${c.resumo.map(r=>`<span>${r[0]} <b>${r[1]}</b></span>`).join('')}</div>
+      ${c.itens.map(i=>`<div class="ri"><span class="sd" style="background:${STC[i.st]}"></span>
+        <span class="n">${i.n}${i.d?` <span style="color:#5E636D">· ${i.d}</span>`:''}</span>
+        <span class="v" style="color:${STC[i.st]}">${i.v}</span><span class="lm">${i.lm||''}</span></div>`).join('')}
+      ${c.alerta?`<div class="alertbox"><span>⚠️</span><span>${c.alerta}</span></div>`:''}
+    </div>`;
+  }).join('');
+}
+function pintaRepBar(){
+  el('repBar').innerHTML=`<div class="repbar">
+    <span class="tt">Reputação · ${REP.atualizado}</span>
+    ${REP.canais.map(c=>`<button class="repchip" data-rep="1" style="border-left:3px solid ${CC[c.id]}">
+      <span class="sd" style="background:${STC[c.st]}"></span>${c.nome} <b style="color:${STC[c.st]}">${c.valor}</b></button>`).join('')}
+    <button class="lk" data-rep="1">Ver aba de reputação →</button></div>`;
+  el('repBar').querySelectorAll('[data-rep]').forEach(b=>b.onclick=()=>{atual='rep';pintaTabs();pintaTopo();render();window.scrollTo({top:0,behavior:'smooth'})});
+}
+function viewRep(){
+  const pior=REP.canais.filter(c=>c.st!=='ok').length;
+  return `<div class="slab">Reputação nos marketplaces
+      <span class="hint">Atualização diária · independente do mês selecionado</span>
+      <span class="bdg2 b-nt" style="margin:0">📅 Atualizado em ${REP.atualizado}</span></div>
+    <div class="repgrid">${repCards()}</div>
+    <div class="slab">Situação consolidada</div>
+    <div class="panel"><table>
+      <thead><tr><th>Canal</th><th>Indicador</th><th>Valor</th><th>Período</th><th>Situação</th><th>Ponto crítico</th></tr></thead>
+      <tbody>${REP.canais.map(c=>{
+        const crit=c.itens.filter(i=>i.st!=='ok').sort((a,b)=>a.st==='ruim'?-1:1)[0];
+        const lbl={ok:'Saudável',atencao:'Atenção',ruim:'Crítico'}[c.st];
+        return `<tr><td><span class="dot" style="background:${CC[c.id]};margin-right:8px"></span>${c.nome}</td>
+          <td>${c.fonte}</td><td style="color:${STC[c.st]};font-weight:700">${c.valor}</td><td>${c.periodo}</td>
+          <td><span class="bdg2 ${STB[c.st]}" style="margin:0">${lbl}</span></td>
+          <td>${crit?crit.n+' · '+crit.v:'—'}</td></tr>`;}).join('')}</tbody></table>
+      <div class="note">${pior} dos 4 canais estão fora da zona saudável. Os pontos críticos são logísticos — atraso na entrega e ocorrências no Madeira, nível de serviço no Magalu, reclamações no Mercado Livre — e chegam ao SAC como reclamação: no último mês fechado, atraso de entrega respondeu por ${DATA.meses[0].dados.motivos[0].pct}% dos motivos de reclamação.</div></div>
+    <details class="met" style="margin-top:14px"><summary>Como atualizar estes números</summary>
+      <ul class="ls"><li>Os dados ficam no bloco <b>REP</b>, no início do script deste arquivo, separados dos dados mensais.</li>
+      <li>Troque os valores de cada canal e a data em <b>atualizado</b>. O campo <b>st</b> define a cor (<b>ok</b>, <b>atencao</b>, <b>ruim</b>) e <b>nivel</b> posiciona o marcador na régua de 0 a 5.</li>
+      <li>Fontes: Reputação do vendedor (Mercado Livre), Avaliação da loja (Shopee), Régua de indicadores (Magalu) e Score do vendedor (Madeira Madeira).</li></ul></details>`;
+}
+
 /* ---------- abas ---------- */
 function pintaTabs(){
-  const t=[`<button class="tab ${atual==='geral'?'on':''}" data-k="geral"><i></i>Visão Geral</button>`];
+  const t=[`<button class="tab ${atual==='geral'?'on':''}" data-k="geral"><i></i>Visão Geral</button>`,
+    `<button class="tab ${atual==='rep'?'on':''}" data-k="rep"><i></i>Reputação <span class="bdg or">Diário</span></button>`];
   DATA.meses.forEach(m=>{
     const b = m.status==='fechado' ? '<span class="bdg gr">Fechado</span>'
             : m.status==='parcial' ? '<span class="bdg or">Parcial</span>'
@@ -332,9 +485,7 @@ function viewMes(m){
       <div class="big">${NB(c.msgs)} <small>mensagens</small></div>
       <div class="kv"><span>Conversas</span><b>${NB(c.conversas)}</b></div>
       <div class="kv"><span>Resposta mediana</span><b>${c.med}</b></div>
-      <div class="kv"><span>Automação</span><b>${c.auto_pct}%</b></div>
-      <div class="kv"><span>Tickets pós-venda</span><b>${NB(c.pos)}</b></div>
-      <div class="kv"><span>Reclamações</span><b>${NB(c.reclam)}</b></div></div>`).join('')+`</div>`;
+      <div class="kv"><span>Pós-venda · reclamações</span><b>${NB(c.pos)} · ${NB(c.reclam)}</b></div></div>`).join('')+`</div>`;
 
   h += `<div class="slab">Ritmo do mês</div>
     <div class="panel"><p class="pt">Volume diário por canal <small>barras claras = fim de semana</small></p>
@@ -358,17 +509,15 @@ function viewMes(m){
         <div><div class="l">Resposta mediana</div><div class="v" style="font-size:16px">${a.med}</div></div>
         <div><div class="l">Dias ativos</div><div class="v">${a.dias_ativos}</div></div></div>
       <div style="margin-top:13px">
-        <div class="kv"><span>Tickets pós-venda</span><b>${a.pos?NB(a.pos):'—'}</b></div>
-        <div class="kv"><span>Tickets fechados</span><b>${a.pos?a.fech_pct+'%':'—'}</b></div>
+        <div class="kv"><span>Pós-venda · fechados</span><b>${a.pos?NB(a.pos)+' · '+a.fech_pct+'%':'—'}</b></div>
         <div class="kv"><span>Protocolos de chat</span><b>${NB((C.atendentes.find(x=>x.nome===a.nome)||{n:0}).n)}</b></div>
-        <div class="kv"><span>Perguntas pré-venda</span><b>${a.pre}</b></div>
-        <div class="kv"><span>Respostas em até 1h</span><b>${a.p1h}%</b></div></div></div>`).join('')+`</div>`;
+        <div class="kv"><span>Pré-venda · até 1h</span><b>${a.pre} · ${a.p1h}%</b></div></div></div>`).join('')+`</div>`;
 
   h += `<div class="panel" style="margin-top:14px"><p class="pt">Comparação em igualdade de condições <small>janela de 13 a 31/07, período em que os três atuaram juntos</small></p>
     <table><thead><tr><th>Atendente</th><th>Mensagens</th><th>Dias ativos</th><th>Média/dia</th><th>Tickets abertos</th><th>% fechados</th></tr></thead><tbody>`+
     D.janela.map(j=>`<tr><td><span class="dot" style="background:${AVC[j.nome]};margin-right:8px"></span>${j.nome}</td>
       <td>${NB(j.msgs)}</td><td>${j.dias}</td><td>${j.msg_dia}</td><td>${j.pos?NB(j.pos):'—'}</td><td>${j.pos?j.fech_pct+'%':'—'}</td></tr>`).join('')+
-    `</tbody></table><div class="note">Na janela em que os três trabalharam juntos o ritmo diário é equivalente (89 a 109 mensagens/dia ativo). A diferença está no <b>tipo de fila</b>: Fabricio absorve o chat da Shopee, conversa curta e volumosa; Sara e Yasmin carregam tickets de pós-venda, que se arrastam por dias. Mesmo entrando em 13/07, Sara abriu mais tickets (${NB(D.janela[2].pos)}) e fechou proporção maior (${D.janela[2].fech_pct}% contra ${D.janela[0].fech_pct}%), além de herdar ${D.sara_herdados} tickets abertos antes da sua entrada.</div></div>`;
+    `</tbody></table><div class="note">Ritmo diário equivalente entre os três. A diferença está no tipo de fila: Fabricio absorve o chat da Shopee (conversa curta e volumosa); Sara e Yasmin carregam pós-venda, que se arrasta por dias. Mesmo entrando em 13/07, <b>Sara abriu mais tickets (${NB(D.janela[2].pos)}) e fechou proporção maior (${D.janela[2].fech_pct}% contra ${D.janela[0].fech_pct}%)</b>, além de herdar ${D.sara_herdados} tickets anteriores.</div></div>`;
 
   h += `<div class="slab">Protocolos de chat <span class="hint">SLA de 12h para o primeiro contato</span></div>
     <div class="kgrid">`+[
@@ -381,28 +530,25 @@ function viewMes(m){
       <div id="c-funil"></div><div class="note" id="n-funil"></div></div>
     <div class="g2" style="margin-top:14px">
       <div class="panel"><p class="pt">Tempo até a primeira mensagem de um atendente</p><div id="c-bucket"></div></div>
-      <div class="panel"><p class="pt">Por contexto e por canal</p>
-        <table><thead><tr><th>Contexto</th><th>Protocolos</th><th>Com atendente</th><th>Mediana</th><th>No SLA</th></tr></thead>
+      <div class="panel"><p class="pt">Por responsável e por contexto</p>
+        <table><thead><tr><th>Responsável</th><th>Protocolos</th><th>Pré / pós</th><th>Mediana</th><th>No SLA</th></tr></thead>
+        <tbody>${C.atendentes.map(a=>`<tr><td>${AVC[a.nome]?`<span class="dot" style="background:${AVC[a.nome]};margin-right:8px"></span>`:''}${a.nome}</td>
+          <td>${NB(a.n)}</td><td>${NB(a.pre)} / ${NB(a.pos)}</td><td>${a.t1h}</td><td>${a.sla}%</td></tr>`).join('')}</tbody></table>
+        <table style="margin-top:16px"><thead><tr><th>Contexto</th><th>Protocolos</th><th>Com atendente</th><th>Mediana</th><th>No SLA</th></tr></thead>
         <tbody>${C.contexto.map(c=>`<tr><td>${c.c}</td><td>${NB(c.n)}</td><td>${c.hum}%</td><td>${c.t1h}</td><td>${c.sla}%</td></tr>`).join('')}</tbody></table>
-        <table style="margin-top:18px"><thead><tr><th>Canal</th><th>Protocolos</th><th>1ª resposta</th><th>Mediana humana</th><th>No SLA</th></tr></thead>
-        <tbody>${C.canais.map(c=>`<tr><td><span class="dot" style="background:${CC[c.id]};margin-right:8px"></span>${c.nome}</td><td>${NB(c.n)}</td><td>${c.t1}</td><td>${c.t1h}</td><td>${c.sla}%</td></tr>`).join('')}</tbody></table>
-      </div></div>
-    <div class="panel" style="margin-top:14px"><p class="pt">Protocolos por responsável</p>
-      <table><thead><tr><th>Responsável</th><th>Protocolos</th><th>Pré-venda</th><th>Pós-venda</th><th>Mediana até o humano</th><th>No SLA de 12h</th></tr></thead>
-      <tbody>${C.atendentes.map(a=>`<tr><td>${AVC[a.nome]?`<span class="dot" style="background:${AVC[a.nome]};margin-right:8px"></span>`:''}${a.nome}</td>
-        <td>${NB(a.n)}</td><td>${NB(a.pre)}</td><td>${NB(a.pos)}</td><td>${a.t1h}</td><td>${a.sla}%</td></tr>`).join('')}</tbody></table>
-      <div class="note">O chat é uma fila praticamente individual: <b>Fabricio responde por ${NB(C.atendentes.find(a=>a.nome==='Fabricio Barros').n)} dos ${NB(C.total)} protocolos</b>, sozinho na Shopee. Sara cobre os ${NB(C.atendentes.find(a=>a.nome==='Sara Juste').n)} do Magalu com o melhor índice de SLA da equipe. Os ${NB(C.atendentes.find(a=>a.nome==='Sem atendente').n)} sem responsável são o volume que a operação não absorveu — ${NB(C.atendentes.find(a=>a.nome==='Sem atendente').pre)} deles de pré-venda, cliente com intenção de compra esperando resposta.</div></div>`;
+        <div class="note">Fila praticamente individual: <b>Fabricio responde por ${NB(C.atendentes.find(a=>a.nome==='Fabricio Barros').n)} dos ${NB(C.total)} protocolos</b>, sozinho na Shopee. Os ${NB(C.atendentes.find(a=>a.nome==='Sem atendente').n)} sem responsável incluem ${NB(C.atendentes.find(a=>a.nome==='Sem atendente').pre)} de pré-venda.</div>
+      </div></div>`;
 
   h += `<div class="slab">Pós-venda</div><div class="g2">
     <div class="panel"><p class="pt">Situação dos tickets no fechamento do mês</p><div id="c-status"></div><div class="legend" id="l-status"></div></div>
-    <div class="panel"><p class="pt">Motivos das reclamações <small>top 8</small></p><div id="c-motivo"></div></div></div>`;
+    <div class="panel"><p class="pt">Motivos das reclamações <small>top 6</small></p><div id="c-motivo"></div></div></div>`;
 
   h += `<div class="slab">Pré-venda</div><div class="g2">
     <div class="panel"><p class="pt">Agente virtual × agente humano</p>
       <table><thead><tr><th>Tipo</th><th>Perguntas</th><th>Resposta mediana</th><th>No SLA</th><th>Gerou venda</th></tr></thead>
       <tbody>${D.pre.tipos.map(t=>`<tr><td>${t.t}</td><td>${t.n}</td><td>${t.med}</td><td>${t.sla}%</td><td>${t.venda}%</td></tr>`).join('')}
       <tr class="tot"><td>Total</td><td>${D.pre.total}</td><td>—</td><td>${D.pre.sla}%</td><td>${D.pre.venda}%</td></tr></tbody></table>
-      <div class="note green">O agente virtual responde em <b>${D.pre.tipos.find(t=>t.t==='Agente Virtual').med}</b> e converte <b>${D.pre.tipos.find(t=>t.t==='Agente Virtual').venda}%</b> das perguntas em venda; o humano responde em <b>${D.pre.tipos.find(t=>t.t==='Agente Humano').med}</b> e converte ${D.pre.tipos.find(t=>t.t==='Agente Humano').venda}%. ${D.pre.sem_resposta} perguntas ficaram sem qualquer resposta no mês.</div></div>
+      <div class="note green">O agente virtual responde em <b>${D.pre.tipos.find(t=>t.t==='Agente Virtual').med}</b> e converte <b>${D.pre.tipos.find(t=>t.t==='Agente Virtual').venda}%</b>; o humano leva ${D.pre.tipos.find(t=>t.t==='Agente Humano').med} e converte ${D.pre.tipos.find(t=>t.t==='Agente Humano').venda}%. ${D.pre.sem_resposta} perguntas ficaram sem resposta.</div></div>
     <div class="panel"><p class="pt">Pré-venda por atendente</p>
       <table><thead><tr><th>Atendente</th><th>Perguntas</th><th>Resposta mediana</th><th>No SLA</th></tr></thead>
       <tbody>${D.atendentes.map(a=>`<tr><td><span class="dot" style="background:${AVC[a.nome]};margin-right:8px"></span>${a.nome}</td><td>${a.pre}</td><td>${a.pre_med}</td><td>${a.pre_sla}%</td></tr>`).join('')}
@@ -413,7 +559,8 @@ function viewMes(m){
     <div class="panel"><p class="pt">✅ O que está funcionando</p><ul class="ls">${D.leitura.bom.map(x=>'<li>'+x+'</li>').join('')}</ul></div>
     <div class="panel"><p class="pt">⚠️ O que exige ação</p><ul class="ls">${D.leitura.ruim.map(x=>'<li>'+x+'</li>').join('')}</ul></div></div>`;
 
-  h += `<div class="slab">Como ler estes números</div><div class="panel"><ul class="ls">${D.metodo.map(x=>'<li>'+x+'</li>').join('')}</ul></div>`;
+  h += `<div class="slab">Notas</div><details class="met"><summary>Como ler estes números · critérios de cálculo</summary>
+    <ul class="ls">${D.metodo.map(x=>'<li>'+x+'</li>').join('')}</ul></details>`;
   return h;
 }
 
@@ -422,7 +569,7 @@ function graficos(D){
   const C=D.chat, K=D.kpi;
   /* dia */
   (function(){
-    const S=D.serie,W=1000,H=270,p={l:40,r:10,t:12,b:30};
+    const S=D.serie,W=1000,H=225,p={l:40,r:10,t:12,b:28};
     const iw=W-p.l-p.r, ih=H-p.t-p.b, bw=iw/S.length, max=Math.max(...S.map(d=>d.total));
     const y=v=>p.t+ih-(v/max)*ih, s=svg(W,H);
     for(let i=0;i<=4;i++){const v=max*i/4;
@@ -438,7 +585,7 @@ function graficos(D){
   })();
   /* hora */
   (function(){
-    const S=D.horas,W=1000,H=280,p={l:38,r:10,t:14,b:30};
+    const S=D.horas,W=1000,H=235,p={l:38,r:10,t:14,b:28};
     const iw=W-p.l-p.r,ih=H-p.t-p.b,bw=iw/24,max=Math.max(...S.map(d=>Math.max(d.rec,d.man+d.bot)));
     const y=v=>p.t+ih-(v/max)*ih,s=svg(W,H);
     s.appendChild(mk('rect',{x:p.l+7*bw,y:p.t-6,width:11*bw,height:ih+6,fill:'rgba(255,107,53,.06)',rx:6}));
@@ -454,7 +601,7 @@ function graficos(D){
       if(d.h%2===0)s.appendChild(tx(x+bw/2,H-p.b+17,String(d.h).padStart(2,'0')+'h',{size:9.5}));});
     el('c-hora').appendChild(s);
     const nt=S.filter(d=>d.h<7||d.h>=18),rn=nt.reduce((a,b)=>a+b.rec,0),mn=nt.reduce((a,b)=>a+b.man,0);
-    el('n-hora').innerHTML=`<b>${((rn/K.recebidas)*100).toFixed(0)}% das mensagens chegam fora da janela de atendimento</b> (${NB(rn)} entre 18h e 07h) e apenas ${NB(mn)} respostas manuais acontecem nesse intervalo. À noite quem segura o tempo de resposta é a automação; o pico de demanda humana está entre 09h e 11h.`;
+    el('n-hora').innerHTML=`<b>${((rn/K.recebidas)*100).toFixed(0)}% das mensagens chegam fora da janela de atendimento</b> (${NB(rn)} entre 18h e 07h), com apenas ${NB(mn)} respostas manuais nesse intervalo. À noite quem segura o tempo de resposta é a automação; o pico humano é entre 09h e 11h.`;
   })();
   /* funil */
   (function(){
@@ -463,19 +610,19 @@ function graficos(D){
       {l:'Tiveram um atendente humano',n:C.com_humano,c:'#FF6B35'},
       {l:'Atendidos dentro do SLA de 12h',n:C.buckets[0].n,c:'#EF4444'},
       {l:'Encerrados formalmente',n:C.fechados,c:'#7C818C'}];
-    const W=1000,rh=54,H=st.length*rh+8,bx=330,iw=W-bx-120,s=svg(W,H);
+    const W=1000,rh=46,H=st.length*rh+6,bx=330,iw=W-bx-120,s=svg(W,H);
     st.forEach((d,i)=>{const y=i*rh+8,w=(d.n/C.total)*iw;
       s.appendChild(tx(0,y+19,d.l,{anchor:'start',size:12.5,fill:'#FFF',weight:600}));
       s.appendChild(tx(0,y+35,((d.n/C.total)*100).toFixed(1)+'% do total',{anchor:'start',size:10.5}));
       s.appendChild(mk('rect',{x:bx,y:y+5,width:Math.max(3,w),height:29,fill:d.c,rx:5,opacity:.9}));
       s.appendChild(tx(bx+Math.max(3,w)+12,y+24,NB(d.n),{anchor:'start',size:14,fill:'#FFF',weight:700}));
-      if(i<st.length-1)s.appendChild(tx(bx+4,y+49,'↓ '+NB(d.n-st[i+1].n)+' não avançam',{anchor:'start',size:10}));});
+      if(i<st.length-1)s.appendChild(tx(bx+4,y+45,'↓ '+NB(d.n-st[i+1].n)+' não avançam',{anchor:'start',size:10}));});
     el('c-funil').appendChild(s);
-    el('n-funil').innerHTML=`A automação cobre a abertura: <b>${C.sla_any}% dos protocolos recebem a primeira resposta dentro das 12h</b>, em ${C.t1_med} na mediana. O gargalo é o passo seguinte — ${NB(C.sem_humano)} conversas (${C.sem_humano_pct}%) nunca chegaram a um atendente, e entre as que chegaram a mediana foi de ${C.t1h_med}. Só <b>${C.sla_hum}% tiveram atendimento humano no prazo</b>. Os ${NB(C.fechados)} encerramentos formais mostram que a baixa não vem sendo registrada na plataforma — não leia esse número como taxa de resolução.`;
+    el('n-funil').innerHTML=`A automação cobre a abertura (${C.sla_any}% no prazo, ${C.t1_med} de mediana). O gargalo é o passo seguinte: <b>${NB(C.sem_humano)} conversas (${C.sem_humano_pct}%) nunca chegaram a um atendente</b> e só ${C.sla_hum}% tiveram atendimento humano dentro das 12h. Os ${NB(C.fechados)} encerramentos formais refletem falta de registro de baixa, não taxa de resolução.`;
   })();
   /* buckets */
   (function(){
-    const B=C.buckets,W=1000,rh=44,H=B.length*rh+8,cols=['#22C55E','#EAB308','#FF6B35','#EF4444','#2E3138'];
+    const B=C.buckets,W=1000,rh=36,H=B.length*rh+6,cols=['#22C55E','#EAB308','#FF6B35','#EF4444','#2E3138'];
     const mx=Math.max(...B.map(b=>b.n)),bx=240,s=svg(W,H);
     B.forEach((b,i)=>{const y=i*rh+8,w=(b.n/mx)*(W-bx-130);
       s.appendChild(tx(0,y+18,b.b,{anchor:'start',size:12.5,fill:'#B7BBC4'}));
@@ -507,7 +654,7 @@ function graficos(D){
   })();
   /* motivos */
   (function(){
-    const M=D.motivos.slice(0,8),W=1000,rh=34,H=M.length*rh+12,mx=Math.max(...M.map(m=>m.n)),bx=420,s=svg(W,H);
+    const M=D.motivos.slice(0,6),W=1000,rh=32,H=M.length*rh+10,mx=Math.max(...M.map(m=>m.n)),bx=420,s=svg(W,H);
     M.forEach((m,i)=>{const y=i*rh+8,w=(m.n/mx)*(W-bx-95);
       s.appendChild(tx(0,y+15,m.m.length>52?m.m.slice(0,50)+'…':m.m,{anchor:'start',size:12,fill:'#B7BBC4'}));
       s.appendChild(mk('rect',{x:bx,y:y+3,width:Math.max(2,w),height:17,fill:i===0?'#EF4444':'#3B82F6',rx:4,opacity:i===0?.9:.6}));
@@ -519,12 +666,13 @@ function graficos(D){
 /* ---------- render ---------- */
 function render(){
   const v=el('view');
+  if(atual==='rep'){v.innerHTML=`<div class="fade">${viewRep()}</div>`;return;}
   if(atual==='geral'){v.innerHTML=`<div class="fade">${viewGeral()}</div>`;return;}
   const m=DATA.meses.find(x=>x.key===atual);
   v.innerHTML=`<div class="fade">${viewMes(m)}</div>`;
   if(m.dados) graficos(m.dados);
 }
-pintaTabs();pintaTopo();render();
+pintaRepBar();pintaTabs();pintaTopo();render();
 </script>
 </body>
 </html>
