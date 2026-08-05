@@ -3446,6 +3446,16 @@ body.light-mode .scroll-hint-arrow:hover {
   box-shadow: 0 0 10px rgba(217,94,16,0.12);
   color: var(--accent-orange);
 }
+.card-posvendasub-btn-teal {
+  border-color: rgba(8,145,178,0.28);
+  color: var(--accent-teal);
+}
+.card-posvendasub-btn-teal:hover {
+  border-color: rgba(8,145,178,0.55);
+  background: rgba(8,145,178,0.08);
+  box-shadow: 0 0 10px rgba(8,145,178,0.12);
+  color: var(--accent-teal);
+}
 .card-posvendasub-btn-rust {
   border-color: rgba(160,82,45,0.28);
   color: #a0522d;
@@ -4186,14 +4196,6 @@ body.light-mode #iframe-page-title {
         </button>
         <div class="eh-tooltip">Alternar tema</div>
       </div>
-      <!-- REPUTAÇÃO (só Easy House) -->
-      <div class="eh-tooltip-wrap">
-        <button class="btn-reputacao" id="btnReputacao"
-          onclick="iframeAbrir('https://easyhouseloja.github.io/painelgestao/reputacao.html','Reputação')">
-          <i data-lucide="star" style="width:16px;height:16px"></i>
-        </button>
-        <div class="eh-tooltip">Reputação</div>
-      </div>
       <!-- SINO (só Easy House) -->
       <div class="notif-wrap eh-tooltip-wrap" id="notifWrap">
         <button class="notif-btn" id="notifBtn">
@@ -4353,6 +4355,11 @@ body.light-mode #iframe-page-title {
           <p>Gestão de assistência técnica e acompanhamento de devoluções por marketplace.</p>
           <div class="card-posvendasub">
             <div class="card-posvendasub-label">Acessar</div>
+            <a class="card-posvendasub-btn card-posvendasub-btn-teal" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/dashboard-sac.html" data-title="SAC" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
+              <i data-lucide="headset" style="width:13px;height:13px;flex-shrink:0;"></i>
+              SAC
+              <i data-lucide="arrow-right" style="width:11px;height:11px;margin-left:auto;opacity:0.5;"></i>
+            </a>
             <a class="card-posvendasub-btn card-posvendasub-btn-rust" href="javascript:void(0)" data-iframe="https://easyhouseloja.github.io/painelgestao/assistencia.html" data-title="Assistência Técnica" onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)">
               <i data-lucide="wrench" style="width:13px;height:13px;flex-shrink:0;"></i>
               Assistência Técnica
@@ -5968,7 +5975,7 @@ function vtexCarregarResumo(force) {
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 let NOTIFICACOES_HOJE = [
   {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 13 variações em alerta ⚠️',desc:'55,0% reservado · ',hora:'29/07/2026',lida:false,link:'estoque.html',critico:true},
-  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 0,00%',desc:'215 em atraso · 267 sem faturar · Todas transportadoras na meta ✅',hora:'05/08/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 0,00%',desc:'187 em atraso · 55 sem faturar · Todas transportadoras na meta ✅',hora:'04/08/2026',lida:false,link:'sla_transporte.html',critico:true},
   {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: Abr 118,56% da Meta (01–30/04)',desc:'R$ 9,05M faturado em 30 dias · Média diária R$ 302K · Meta R$ 8,6M · +168% Ano x Ano',hora:'30/04/2026',lida:false,link:'comercial.html',critico:false},
   {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: Em dia ✅',desc:'76 itens · ? pedidos · 5 em atraso · Atraso médio 5,1d · Maior: 27d (#2128015 Juliana (SP) — 🟠 Moderado · Carmem ENTREGUE ✅) · 0 moderado(s):  · 0 críticos',hora:'20/07/2026',lida:false,link:'assistencia.html',critico:false},
   {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: ? recebido ✓',desc:'Cartas de Débito · ? recebido · R$ 46.916 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'22/07/2026',lida:false,link:'financeiro.html',critico:false},
