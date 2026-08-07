@@ -1152,7 +1152,7 @@
       setStep('parse','done','✓ XLSX lido: <strong>'+fmtInt(dados.meta.total_registros)+'</strong> registros · ref '+dados.meta.data_referencia_br);
       setStep('aggr','done','✓ Dados agregados: <strong>'+dados.resumo.pendentes+'</strong> pendentes / <strong>'+dados.resumo.em_atraso_itens+'</strong> em atraso');
 
-      setStep('save','doing','<span class="spin"></span> Salvando em easyhouse/ultimo_relatorio …');
+      setStep('save','doing','<span class="spin"></span> Salvando em easyhouse/ultimo_relatorio_easy …');
       const timestamp = firebase.database.ServerValue.TIMESTAMP;
       let usuario = 'anônimo';
       try { usuario = sessionStorage.getItem('email') || localStorage.getItem('email') || 'anônimo'; } catch(e){}
@@ -1160,17 +1160,17 @@
       // Backup penúltimo
       let penultAtual = null;
       try {
-        const atual = await _fbDB.ref('easyhouse/ultimo_relatorio').once('value');
+        const atual = await _fbDB.ref('easyhouse/ultimo_relatorio_easy').once('value');
         penultAtual = atual.val();
-        if(penultAtual) await _fbDB.ref('easyhouse/penultimo_relatorio').set(penultAtual);
+        if(penultAtual) await _fbDB.ref('easyhouse/penultimo_relatorio_easy').set(penultAtual);
       } catch(e){ console.warn('penultimo:', e); }
 
       const payload = Object.assign({}, dados, {
         meta: Object.assign({}, dados.meta, { timestamp_upload: timestamp, usuario: usuario })
       });
-      await _fbDB.ref('easyhouse/ultimo_relatorio').set(payload);
+      await _fbDB.ref('easyhouse/ultimo_relatorio_easy').set(payload);
       window._fbPenult = penultAtual;
-      setStep('save','done','✓ Salvo em <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">easyhouse/ultimo_relatorio</code>');
+      setStep('save','done','✓ Salvo em <code style="background:var(--surface2);padding:2px 6px;border-radius:4px">easyhouse/ultimo_relatorio_easy</code>');
 
       setStep('hist','doing','<span class="spin"></span> Registrando no histórico…');
       await _fbDB.ref('easyhouse/historico').push({
@@ -1230,7 +1230,7 @@
     el('fbModalTitle').textContent = '🗂 Último relatório salvo';
     ['parse','aggr','save','hist'].forEach(id=>{ const e=el('fbStep-'+id); if(e) e.style.display='none'; });
     try {
-      const snap = await _fbDB.ref('easyhouse/ultimo_relatorio').once('value');
+      const snap = await _fbDB.ref('easyhouse/ultimo_relatorio_easy').once('value');
       const d = snap.val();
       if(!d){
         el('fbSummary').innerHTML = '<div class="fb-summary">Nenhum relatório salvo ainda.<br>Clique em <strong>📥 Importar relatório</strong> para começar.</div>';
@@ -1256,7 +1256,7 @@
 
   async function atualizarBadgeUltimo(){
     try {
-      const snap = await _fbDB.ref('easyhouse/ultimo_relatorio/meta').once('value');
+      const snap = await _fbDB.ref('easyhouse/ultimo_relatorio_easy/meta').once('value');
       const m = snap.val();
       if(m && m.timestamp_upload){
         setBadge('📡 Firebase · último upload '+fmtDataHora(new Date(m.timestamp_upload)), '');
@@ -1270,8 +1270,8 @@
   async function fbAutoCarregar(){
     try {
       const [snap, snapP] = await Promise.all([
-        _fbDB.ref('easyhouse/ultimo_relatorio').once('value'),
-        _fbDB.ref('easyhouse/penultimo_relatorio').once('value')
+        _fbDB.ref('easyhouse/ultimo_relatorio_easy').once('value'),
+        _fbDB.ref('easyhouse/penultimo_relatorio_easy').once('value')
       ]);
       window._fbPenult = snapP.val();
       const d = snap.val();
