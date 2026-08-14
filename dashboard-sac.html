@@ -67,6 +67,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--f);font-size:14px;li
 .bdg.gr{background:rgba(34,197,94,.16);color:#4ADE80}
 .bdg.or{background:rgba(255,107,53,.16);color:#FF8A5B}
 .bdg.gy{background:#202329;color:var(--mut)}
+.bdg.rd{background:rgba(239,68,68,.16);color:#F87171}
 .tab:focus-visible{outline:2px solid var(--orange);outline-offset:-4px;border-radius:6px}
 
 /* section label */
@@ -296,6 +297,11 @@ let atual = 'geral';
 
 /* ---------- cabeçalho ---------- */
 function pintaTopo(){
+  if(atual==='ra'){
+    el('heroPills').innerHTML=`<span class="pill o"><i></i>Reclame Aqui</span>`+
+      `<span class="pill b">📅 ${RA.periodo}</span>`+
+      `<span class="pill g">ÍNDICE ${RA.indice.toString().replace('.',',')} · ${RA.faixa.toUpperCase()}</span>`;
+    el('ger').textContent='Índice referente aos últimos 6 meses · volume do período filtrado';return;}
   if(atual==='rep'){
     el('heroPills').innerHTML=`<span class="pill g"><i></i>Reputação</span>`+
       `<span class="pill b">📅 Atualizado em ${REP.atualizado}</span>`+
@@ -324,17 +330,16 @@ el('strip').innerHTML =
    nivel: posição na régua de 0 a 5, usada para desenhar o marcador.
    ========================================================================= */
 const REP = {
-  atualizado: '14/08/2026',
+  atualizado: '15/08/2026',
   canais: [
     { id:'mercadolivre', nome:'Mercado Livre', fonte:'Reputação do vendedor', periodo:'Últimos 60 dias',
-      valor:'Platinum', unidade:'MercadoLíder', nivel:5, st:'ok', badgeSt:'atencao', badge:'2 variáveis no limite',
-      alerta:'Canceladas por você subiu para 0,44%, muito perto do teto de 0,5%.',
-      variacao:'Reclamações caíram para 0,88%, mas canceladas saltaram de 0,15% para 0,44%',
-      resumo:[['Vendas','5.220'],['Concluídas','4.845'],['Faturado','R$ 4,61M']],
+      valor:'Platinum', unidade:'MercadoLíder', nivel:5, st:'ok', badgeSt:'atencao', badge:'Reclamações perto do limite',
+      variacao:'Canceladas voltaram ao normal: 0,44% → 0,07%',
+      resumo:[['Vendas','5.253'],['Concluídas','4.872'],['Faturado','R$ 4,61M']],
       itens:[
-        {n:'Reclamações', v:'0,88%', d:'46 vendas', lm:'limite 1%', st:'atencao'},
-        {n:'Canceladas por você', v:'0,44%', d:'23 vendas', lm:'limite 0,5%', st:'ruim'},
-        {n:'Mediações', v:'0,05%', d:'3 vendas', lm:'limite 0,5%', st:'ok'},
+        {n:'Reclamações', v:'0,89%', d:'47 vendas', lm:'limite 1%', st:'atencao'},
+        {n:'Mediações', v:'0,11%', d:'6 vendas', lm:'limite 0,5%', st:'ok'},
+        {n:'Canceladas por você', v:'0,07%', d:'4 vendas', lm:'limite 0,5%', st:'ok'},
         {n:'Envios incorretos', v:'0%', d:'0 vendas', lm:'limite 6%', st:'ok'}
       ]},
     { id:'shopee', nome:'Shopee', fonte:'Avaliação da loja', periodo:'Visão geral',
@@ -345,26 +350,49 @@ const REP = {
         {n:'Avaliação da loja', v:'4.85/5', d:'', lm:'meta 4.50', st:'ok'}
       ]},
     { id:'magalu', nome:'Magalu', fonte:'Régua de indicadores', periodo:'Últimos 30 dias',
-      valor:'3,9', unidade:'de 1 a 5', nivel:3.9, st:'atencao', badge:'Caiu de 4,2 para 3,9',
-      alerta:'Cancelamento saiu da faixa 5 (2%) e caiu para a faixa 4 (2,01%).',
-      variacao:'Recuou de 4,2 para 3,9 · cancelamento perdeu a faixa 5',
-      resumo:[['Escala','1 a 5'],['Anterior','4,2'],['Meta','5']],
+      valor:'4,2', unidade:'de 1 a 5', nivel:4.2, st:'ok', badgeSt:'atencao', badge:'Nível de serviço na faixa 3',
+      variacao:'Voltou de 3,9 para 4,2 · nível de serviço subiu para 91,99%',
+      resumo:[['Escala','1 a 5'],['Anterior','3,9'],['Meta','5']],
       itens:[
-        {n:'Nível de serviço', v:'89%', d:'faixa 3', lm:'faixa 5 ≥ 95%', st:'atencao'},
-        {n:'Cancelamento', v:'2,01%', d:'faixa 4', lm:'faixa 5 ≤ 2%', st:'atencao'},
-        {n:'Agilidade no atendimento', v:'90%', d:'faixa 5', lm:'faixa 5 ≥ 90%', st:'ok'}
+        {n:'Nível de serviço', v:'91,99%', d:'faixa 3', lm:'faixa 5 ≥ 95%', st:'atencao'},
+        {n:'Agilidade no atendimento', v:'90%', d:'faixa 5', lm:'faixa 5 ≥ 90%', st:'ok'},
+        {n:'Cancelamento', v:'2%', d:'faixa 5', lm:'faixa 5 ≤ 2%', st:'ok'}
       ]},
     { id:'madeira', nome:'Madeira Madeira', fonte:'Score do vendedor', periodo:'Pedidos dos últimos 30 dias',
-      valor:'3,80', unidade:'de 5,00', nivel:3.8, st:'ok', badge:'Score verde',
-      variacao:'Saiu do amarelo: 3,05 → 3,45 → 3,80 · benefícios recuperados',
-      resumo:[['Score','3,80/5'],['Anterior','3,45'],['Situação','Verde']],
+      valor:'3,40', unidade:'de 5,00', nivel:3.4, st:'atencao', badge:'Voltou ao amarelo',
+      alerta:'Você está próximo de perder seus benefícios.',
+      variacao:'Recuou de 3,80 para 3,40 · cancelamentos subiram para 4,4%',
+      resumo:[['Score','3,40/5'],['Anterior','3,80'],['Meta','verde']],
       itens:[
         {n:'Atraso na expedição', v:'0,0%', d:'0 pedidos', lm:'', st:'ok'},
-        {n:'Atraso na entrega', v:'8,3%', d:'5 pedidos', lm:'', st:'atencao'},
-        {n:'Ocorrências', v:'20,0%', d:'14 pedidos', lm:'', st:'ruim'},
-        {n:'Cancelamentos', v:'1,4%', d:'1 pedido', lm:'', st:'ok'},
+        {n:'Atraso na entrega', v:'8,2%', d:'5 pedidos', lm:'', st:'atencao'},
+        {n:'Ocorrências', v:'19,1%', d:'13 pedidos', lm:'', st:'ruim'},
+        {n:'Cancelamentos', v:'4,4%', d:'3 pedidos', lm:'', st:'atencao'},
         {n:'Mediações', v:'1,4%', d:'1 pedido', lm:'', st:'ok'}
       ]}
+  ]
+};
+
+/* =========================================================================
+   RECLAME AQUI — aba própria, mas contabilizado junto na reputação
+   Índice: referente aos últimos 6 meses. Volume: período de 01 a 31/07/2026.
+   ========================================================================= */
+const RA = {
+  atualizado: '15/08/2026',
+  periodo: '01/07 a 31/07/2026',
+  indice: 5.7, faixa: 'Ruim', st: 'ruim',
+  paraRegular: 0.3, paraNaoRecomendada: 0.8,
+  total: 38, nao_respondidas: 37, respondidas: 1, replicas: 0, avaliadas: 1,
+  tempo_resposta: 'Indefinido',
+  indice_solucao: 0, voltaria: 0, nota_media: 0,
+  horas: {7:2,8:2,10:5,11:3,12:5,13:3,14:2,15:3,16:2,17:4,18:2,19:3,21:1,22:1},
+  dias: {2:2,3:2,5:1,6:2,7:1,8:2,10:3,14:4,15:2,16:4,17:1,21:1,22:1,25:1,26:1,27:3,28:2,29:2,30:3},
+  temas: [
+    {t:'Falta de retorno · troca ou devolução', v:42},
+    {t:'Loja não é confiável (Magalu)', v:37},
+    {t:'Item faltando na entrega', v:31},
+    {t:'Guarda-roupa não entregue', v:22},
+    {t:'Produto não recebido', v:20}
   ]
 };
 
@@ -396,11 +424,14 @@ function pintaRepBar(){
     <span class="tt">Reputação · ${REP.atualizado}</span>
     ${REP.canais.map(c=>`<button class="repchip" data-rep="1" style="border-left:3px solid ${CC[c.id]}">
       <span class="sd" style="background:${STC[c.st]}"></span>${c.nome} <b style="color:${STC[c.st]}">${c.valor}</b></button>`).join('')}
-    <button class="lk" data-rep="1">Ver aba de reputação →</button></div>`;
+    <button class="repchip" data-ra="1" style="border-left:3px solid #EF4444">
+      <span class="sd" style="background:${STC[RA.st]}"></span>Reclame Aqui <b style="color:${STC[RA.st]}">${RA.indice.toString().replace('.',',')}</b></button>
+    <button class="lk" data-rep="1">Ver reputação →</button></div>`;
   el('repBar').querySelectorAll('[data-rep]').forEach(b=>b.onclick=()=>{atual='rep';pintaTabs();pintaTopo();render();window.scrollTo({top:0,behavior:'smooth'})});
+  el('repBar').querySelectorAll('[data-ra]').forEach(b=>b.onclick=()=>{atual='ra';pintaTabs();pintaTopo();render();window.scrollTo({top:0,behavior:'smooth'})});
 }
 function viewRep(){
-  const pior=REP.canais.filter(c=>(c.badgeSt||c.st)!=='ok').length;
+  const pior=REP.canais.filter(c=>(c.badgeSt||c.st)!=='ok').length+1;
   return `<div class="slab">Reputação nos marketplaces
       <span class="hint">Atualização diária · independente do mês selecionado</span>
       <span class="bdg2 b-nt" style="margin:0">📅 Atualizado em ${REP.atualizado}</span></div>
@@ -414,18 +445,75 @@ function viewRep(){
         return `<tr><td><span class="dot" style="background:${CC[c.id]};margin-right:8px"></span>${c.nome}</td>
           <td>${c.fonte}</td><td style="color:${STC[c.st]};font-weight:700">${c.valor}</td><td>${c.periodo}</td>
           <td><span class="bdg2 ${STB[sit]}" style="margin:0">${lbl}</span></td>
-          <td>${crit?crit.n+' · '+crit.v:'—'}</td></tr>`;}).join('')}</tbody></table>
-      <div class="note">${pior} dos 4 canais estão fora da zona saudável. Os pontos críticos são logísticos — atraso na entrega e ocorrências no Madeira, nível de serviço no Magalu, reclamações no Mercado Livre — e chegam ao SAC como reclamação: no último mês fechado, atraso de entrega respondeu por ${DATA.meses[0].dados.motivos[0].pct}% dos motivos de reclamação.</div></div>
+          <td>${crit?crit.n+' · '+crit.v:'—'}</td></tr>`;}).join('')}
+        <tr><td><span class="dot" style="background:#EF4444;margin-right:8px"></span>Reclame Aqui</td>
+          <td>Índice de reputação</td><td style="color:${STC[RA.st]};font-weight:700">${RA.indice.toString().replace('.',',')}</td>
+          <td>Últimos 6 meses</td><td><span class="bdg2 b-al" style="margin:0">Crítico</span></td>
+          <td>Reclamações sem resposta · ${RA.nao_respondidas} de ${RA.total}</td></tr></tbody></table>
+      <div class="note">${pior} das 5 fontes estão fora da zona saudável. Os pontos críticos são logísticos — atraso na entrega e ocorrências no Madeira, nível de serviço no Magalu, reclamações no Mercado Livre — e chegam ao SAC como reclamação: no último mês fechado, atraso de entrega respondeu por ${DATA.meses[0].dados.motivos[0].pct}% dos motivos de reclamação. O <b>Reclame Aqui é hoje o ponto mais grave</b>: índice ${RA.indice.toString().replace('.',',')} (faixa Ruim), com ${RA.nao_respondidas} das ${RA.total} reclamações do mês sem qualquer resposta.</div></div>
     <details class="met" style="margin-top:14px"><summary>Como atualizar estes números</summary>
       <ul class="ls"><li>Os dados ficam no bloco <b>REP</b>, no início do script deste arquivo, separados dos dados mensais.</li>
       <li>Troque os valores de cada canal e a data em <b>atualizado</b>. O campo <b>st</b> define a cor (<b>ok</b>, <b>atencao</b>, <b>ruim</b>) e <b>nivel</b> posiciona o marcador na régua de 0 a 5.</li>
       <li>Fontes: Reputação do vendedor (Mercado Livre), Avaliação da loja (Shopee), Régua de indicadores (Magalu) e Score do vendedor (Madeira Madeira).</li></ul></details>`;
 }
 
+function viewRA(){
+  const R=RA, semResp=Math.round(R.nao_respondidas/R.total*100);
+  const kc=[
+    {l:'Índice de reputação',v:R.indice.toString().replace('.',','),g:'linear-gradient(90deg,#EF4444,#EC4899)',c:'#F87171',
+     s:`Faixa ${R.faixa} · últimos 6 meses`,gh:'😠',b:['b-al',`+${R.paraRegular.toString().replace('.',',')} para sair de Ruim`]},
+    {l:'Reclamações no período',v:R.total,g:'linear-gradient(90deg,#FF6B35,#F59E0B)',s:R.periodo,gh:'📣',
+     b:['b-nt','1,3 por dia útil']},
+    {l:'Sem resposta',v:R.nao_respondidas,g:'linear-gradient(90deg,#EF4444,#F97316)',c:'#F87171',
+     s:`${semResp}% das reclamações do mês`,gh:'🔇',b:['b-al','tempo de resposta indefinido']},
+    {l:'Índice de solução',v:R.indice_solucao+'%',g:'linear-gradient(90deg,#EF4444,#EC4899)',c:'#F87171',
+     s:`${R.avaliadas} avaliação recebida · nota ${R.nota_media}`,gh:'📉',b:['b-al',`${R.voltaria}% voltaria a fazer negócio`]}
+  ];
+  let h=`<div class="slab">Reclame Aqui <span class="hint">índice dos últimos 6 meses · volume de ${R.periodo}</span>
+      <span class="bdg2 b-nt" style="margin:0">📅 Atualizado em ${R.atualizado}</span></div>
+    <div class="obsbox" style="background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:#FCA5A5">
+      <span class="oi">🚨</span><span><b>Situação crítica.</b> ${R.nao_respondidas} das ${R.total} reclamações do período não foram respondidas, o tempo de resposta aparece como indefinido e o índice de solução está em ${R.indice_solucao}%. Diferente dos marketplaces, o Reclame Aqui é público: cada reclamação sem resposta fica visível para qualquer comprador que pesquise a loja.</span></div>
+    <div class="kgrid">${kc.map(cardKPI).join('')}</div>`;
+
+  h+=`<div class="slab">Régua de reputação</div>
+    <div class="panel"><p class="pt">Onde a loja está hoje <small>faixas do Reclame Aqui</small></p>
+      <div id="ra-regua"></div>
+      <div class="note">Com <b>${R.indice.toString().replace('.',',')}</b> a loja está na faixa <b>${R.faixa}</b>. Faltam apenas <b>${R.paraRegular.toString().replace('.',',')} ponto</b> para chegar a Regular e há <b>${R.paraNaoRecomendada.toString().replace('.',',')} ponto</b> de margem antes de cair para "Não recomendada" — a faixa que costuma afastar compradores e pesa em marketplaces que consultam a reputação externa.</div></div>`;
+
+  h+=`<div class="g2" style="margin-top:14px">
+    <div class="panel"><p class="pt">Reclamações por hora <small>quando o cliente recorre ao Reclame Aqui</small></p>
+      <div id="ra-hora"></div><div class="note" id="ra-nhora"></div></div>
+    <div class="panel"><p class="pt">Reclamações por dia <small>julho de 2026</small></p>
+      <div id="ra-dia"></div><div class="note" id="ra-ndia"></div></div></div>`;
+
+  h+=`<div class="panel" style="margin-top:14px"><p class="pt">Temas mais acessados <small>o que o comprador lê antes de decidir a compra</small></p>
+      <div id="ra-tema"></div>
+      <div class="note">Os cinco temas mais lidos somam ${R.temas.reduce((a,b)=>a+b.v,0)} visualizações e repetem o mesmo eixo do painel de atendimento: <b>falta de retorno, entrega incompleta e produto não recebido</b>. O tema em segundo lugar questiona diretamente a confiabilidade da loja em um marketplace — é o tipo de conteúdo que impacta conversão, não só reputação.</div></div>`;
+
+  h+=`<div class="slab">Leitura</div><div class="g2">
+    <div class="panel"><p class="pt">⚠️ Riscos</p><ul class="ls">
+      <li><b>${semResp}% das reclamações sem resposta.</b> No Reclame Aqui, não responder derruba o índice tanto quanto não resolver.</li>
+      <li><b>Índice de solução em ${R.indice_solucao}%</b> e ${R.voltaria}% de intenção de voltar a comprar, sobre a única avaliação recebida (nota ${R.nota_media}).</li>
+      <li><b>Tempo de resposta indefinido</b>: sem histórico de resposta, a plataforma não calcula o indicador, o que também penaliza o índice.</li>
+      <li><b>Canal fora da rotina do SAC.</b> As planilhas do Predize não cobrem o Reclame Aqui, então essas ${R.total} reclamações não aparecem em nenhuma fila da equipe.</li></ul></div>
+    <div class="panel"><p class="pt">✅ Onde agir primeiro</p><ul class="ls">
+      <li><b>Responder o passivo de ${R.nao_respondidas} reclamações</b> é a ação de maior retorno: sai do "indefinido" e começa a construir tempo de resposta.</li>
+      <li><b>Definir um responsável fixo</b> pelo canal, com meta de resposta em até 48h, hoje inexistente na operação.</li>
+      <li><b>Pedir avaliação após a solução</b>: com apenas 1 avaliação, cada nova nota move o índice de forma desproporcional.</li>
+      <li><b>Atacar a causa raiz</b>: os temas repetem atraso e entrega incompleta, os mesmos ${DATA.meses[0].dados.motivos[0].pct}% de motivo nº 1 das reclamações de pós-venda em julho.</li></ul></div></div>`;
+
+  h+=`<details class="met" style="margin-top:14px"><summary>Como atualizar estes números</summary>
+    <ul class="ls"><li>Os dados ficam no bloco <b>RA</b>, no início do script, separados dos dados mensais e da reputação dos marketplaces.</li>
+    <li>O <b>índice</b> refere-se aos últimos 6 meses; o volume de reclamações segue o período filtrado no painel do Reclame Aqui.</li>
+    <li>O canal também aparece na barra do topo e na tabela consolidada da aba Reputação, para que a visão gerencial considere as 5 fontes juntas.</li></ul></details>`;
+  return h;
+}
+
 /* ---------- abas ---------- */
 function pintaTabs(){
   const t=[`<button class="tab ${atual==='geral'?'on':''}" data-k="geral"><i></i>Visão Geral</button>`,
-    `<button class="tab ${atual==='rep'?'on':''}" data-k="rep"><i></i>Reputação <span class="bdg or">Diário</span></button>`];
+    `<button class="tab ${atual==='rep'?'on':''}" data-k="rep"><i></i>Reputação <span class="bdg or">Diário</span></button>`,
+    `<button class="tab ${atual==='ra'?'on':''}" data-k="ra"><i></i>Reclame Aqui <span class="bdg rd">Crítico</span></button>`];
   DATA.meses.forEach(m=>{
     const b = m.status==='fechado' ? '<span class="bdg gr">Fechado</span>'
             : m.status==='parcial' ? '<span class="bdg or">Parcial</span>'
@@ -713,9 +801,67 @@ function graficos(D){
   })();
 }
 
+/* ---------- gráficos do Reclame Aqui ---------- */
+function graficosRA(){
+  const R=RA;
+  /* régua */
+  (function(){
+    const faixas=[{l:'Não recomendada',c:'#7C3AED',a:0,b:5},{l:'Ruim',c:'#EF4444',a:5,b:6},
+      {l:'Regular',c:'#EAB308',a:6,b:7},{l:'Bom',c:'#3B82F6',a:7,b:8},
+      {l:'Ótimo',c:'#16A34A',a:8,b:10},{l:'RA1000',c:'#4ADE80',a:10,b:10.6}];
+    const W=1000,H=110,pad=10,iw=W-pad*2,esc=v=>pad+(v/10.6)*iw,s=svg(W,H);
+    faixas.forEach(f=>{const x=esc(f.a),w=esc(f.b)-x;
+      s.appendChild(mk('rect',{x,y:34,width:w-3,height:30,fill:f.c,rx:5,opacity:f.l===R.faixa?1:.35}));
+      s.appendChild(tx(x+w/2,54,f.l,{fill:f.l===R.faixa?'#fff':'#0A0A0B',size:11,weight:700}));
+      if(f.b<=10)s.appendChild(tx(esc(f.b),80,f.b,{size:10}));});
+    const px=esc(R.indice);
+    s.appendChild(mk('path',{d:`M${px} 30 l-7 -10 l14 0 z`,fill:'#fff'}));
+    s.appendChild(tx(px,14,`você está aqui · ${R.indice.toString().replace('.',',')}`,{fill:'#fff',size:11.5,weight:700}));
+    s.appendChild(mk('line',{x1:esc(6),x2:esc(6),y1:34,y2:70,stroke:'#EAB308','stroke-dasharray':'3 3'}));
+    s.appendChild(tx(esc(6),100,'meta imediata: 6,0 (Regular)',{fill:'#FACC15',size:10.5}));
+    el('ra-regua').appendChild(s);
+  })();
+  /* hora */
+  (function(){
+    const W=1000,H=200,p={l:28,r:8,t:12,b:26},iw=W-p.l-p.r,ih=H-p.t-p.b,bw=iw/24;
+    const max=Math.max(...Object.values(R.horas)),y=v=>p.t+ih-(v/max)*ih,s=svg(W,H);
+    s.appendChild(mk('rect',{x:p.l+7*bw,y:p.t-4,width:11*bw,height:ih+4,fill:'rgba(255,107,53,.06)',rx:5}));
+    for(let i=0;i<=max;i++){s.appendChild(mk('line',{x1:p.l,x2:W-p.r,y1:y(i),y2:y(i),stroke:'#212329'}));
+      s.appendChild(tx(p.l-7,y(i)+3.5,i,{anchor:'end',size:9.5}));}
+    for(let hh=0;hh<24;hh++){const v=R.horas[hh]||0,x=p.l+hh*bw;
+      if(v)s.appendChild(mk('rect',{x:x+bw*.2,y:y(v),width:bw*.6,height:ih-(y(v)-p.t),fill:hh>=7&&hh<18?'#EF4444':'#7C3AED',rx:3,opacity:.9}));
+      if(hh%2===0)s.appendChild(tx(x+bw/2,H-p.b+16,String(hh).padStart(2,'0'),{size:9.5}));}
+    el('ra-hora').appendChild(s);
+    const dentro=Object.entries(R.horas).filter(([h])=>+h>=7&&+h<18).reduce((a,[,v])=>a+v,0);
+    el('ra-nhora').innerHTML=`<b>${Math.round(dentro/R.total*100)}% das reclamações chegam dentro do horário comercial</b> (${dentro} de ${R.total}), com picos às 10h e 12h. Ou seja, não é falta de horário: é falta de alguém designado para o canal.`;
+  })();
+  /* dia */
+  (function(){
+    const W=1000,H=200,p={l:28,r:8,t:12,b:26},iw=W-p.l-p.r,ih=H-p.t-p.b,bw=iw/31;
+    const max=Math.max(...Object.values(R.dias)),y=v=>p.t+ih-(v/max)*ih,s=svg(W,H);
+    for(let i=0;i<=max;i++){s.appendChild(mk('line',{x1:p.l,x2:W-p.r,y1:y(i),y2:y(i),stroke:'#212329'}));
+      s.appendChild(tx(p.l-7,y(i)+3.5,i,{anchor:'end',size:9.5}));}
+    for(let d=1;d<=31;d++){const v=R.dias[d]||0,x=p.l+(d-1)*bw;
+      if(v)s.appendChild(mk('rect',{x:x+bw*.18,y:y(v),width:bw*.64,height:ih-(y(v)-p.t),fill:v>=4?'#EF4444':'#FF6B35',rx:3,opacity:.9}));
+      if(d%2===1)s.appendChild(tx(x+bw/2,H-p.b+16,String(d).padStart(2,'0'),{size:9.5}));}
+    el('ra-dia').appendChild(s);
+    el('ra-ndia').innerHTML=`Distribuição constante ao longo do mês, com pico nos dias <b>14 e 16</b> (4 reclamações cada). Não é um evento isolado: é um fluxo contínuo de cerca de <b>1,3 reclamação por dia útil</b> que hoje não tem tratamento.`;
+  })();
+  /* temas */
+  (function(){
+    const T=R.temas,W=1000,rh=34,H=T.length*rh+8,mx=Math.max(...T.map(t=>t.v)),bx=380,s=svg(W,H);
+    T.forEach((t,i)=>{const y=i*rh+8,w=(t.v/mx)*(W-bx-110);
+      s.appendChild(tx(0,y+16,`${i+1}. ${t.t}`,{anchor:'start',size:12.5,fill:'#B7BBC4'}));
+      s.appendChild(mk('rect',{x:bx,y:y+3,width:Math.max(2,w),height:18,fill:i===0?'#EF4444':'#FF6B35',rx:4,opacity:i===0?.92:.6}));
+      s.appendChild(tx(bx+w+10,y+17,t.v+' visualizações',{anchor:'start',size:11}));});
+    el('ra-tema').appendChild(s);
+  })();
+}
+
 /* ---------- render ---------- */
 function render(){
   const v=el('view');
+  if(atual==='ra'){v.innerHTML=`<div class="fade">${viewRA()}</div>`;graficosRA();return;}
   if(atual==='rep'){v.innerHTML=`<div class="fade">${viewRep()}</div>`;return;}
   if(atual==='geral'){v.innerHTML=`<div class="fade">${viewGeral()}</div>`;return;}
   const m=DATA.meses.find(x=>x.key===atual);
