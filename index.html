@@ -3406,6 +3406,45 @@ body.light-mode .scroll-hint-arrow:hover {
 #panel-3p .card-vtex #vtex-resumo > div { padding: 8px 10px; }
 #panel-3p .card-vtex #vtex-pagos, #panel-3p .card-vtex #vtex-pendentes { font-size: 24px; }
 
+/* ── CARD COMERCIAL · SITE OFICIAL (aba VTEX) ── */
+.card-vtexcom { text-decoration: none; }
+.card-vtexcom:hover {
+  border-color: rgba(56,189,248,0.5) !important;
+  box-shadow: 0 0 22px rgba(56,189,248,0.12);
+}
+.vtexcom-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+.vtexcom-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+}
+.vtexcom-chip b { font-weight: 800; }
+.vtexcom-chip-cyan   { border-color: rgba(56,189,248,0.35);  background: rgba(56,189,248,0.08);  color: #38bdf8; }
+.vtexcom-chip-green  { border-color: rgba(31,189,114,0.35);  background: rgba(31,189,114,0.08);  color: #1fbd72; }
+.vtexcom-chip-orange { border-color: rgba(217,94,16,0.35);   background: rgba(217,94,16,0.08);   color: #d95e10; }
+.vtexcom-chip-purple { border-color: rgba(156,111,255,0.35); background: rgba(156,111,255,0.08); color: #9c6fff; }
+.vtexcom-chip-gold   { border-color: rgba(245,158,11,0.35);  background: rgba(245,158,11,0.08);  color: #f59e0b; }
+
+/* Grid VTEX responsivo (6 cards) */
+@media (min-width: 769px) and (max-width: 1500px) {
+  #vtex-kpi-grid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
 /* Sub-links dentro do card Pós-venda */
 .card-posvendasub {
   display: flex;
@@ -4488,7 +4527,31 @@ body.light-mode #iframe-page-title {
     <div class="channel-panel panel-vtex" id="panel-vtex">
 
       <!-- KPIs -->
-      <div class="dashboard" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px;">
+      <div class="dashboard" id="vtex-kpi-grid" style="grid-template-columns:repeat(6,1fr);margin-bottom:20px;">
+
+        <!-- DASHBOARD COMERCIAL · SITE OFICIAL -->
+        <a class="card card-vtexcom" href="javascript:void(0)"
+           data-iframe="https://easyhouseloja.github.io/painelgestao/comercial_vtex.html"
+           data-title="Dashboard Easy House · Site Oficial"
+           onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)"
+           style="cursor:pointer;border-color:rgba(56,189,248,0.22);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <div class="icon-wrap" style="background:rgba(56,189,248,0.12);border-color:rgba(56,189,248,0.25);margin-bottom:0;width:36px;height:36px;">
+              <i data-lucide="layout-dashboard" style="width:18px;height:18px;color:#38bdf8;"></i>
+            </div>
+            <span style="font-size:9px;color:#38bdf8;font-weight:700;letter-spacing:1px;opacity:0.8;">VER DASHBOARD →</span>
+          </div>
+          <div class="card-tag" style="color:#38bdf8;margin-top:10px;">Comercial · Site Oficial</div>
+          <h2 style="font-size:14px;margin:2px 0 4px;color:var(--text-primary);">Dashboard Easy House</h2>
+          <div id="vtex-com-periodo" style="font-size:9.5px;letter-spacing:0.6px;color:var(--text-secondary);text-transform:uppercase;font-weight:600;opacity:0.8;line-height:1.4;margin-bottom:10px;">Mês em curso · 1ª operação do canal próprio</div>
+          <div class="vtexcom-chips">
+            <span class="vtexcom-chip vtexcom-chip-cyan">GMV: <b id="vtex-com-gmv">—</b></span>
+            <span class="vtexcom-chip vtexcom-chip-green"><b id="vtex-com-pedidos">—</b> pedidos</span>
+            <span class="vtexcom-chip vtexcom-chip-orange">TM: <b id="vtex-com-tm">—</b></span>
+            <span class="vtexcom-chip vtexcom-chip-purple"><b id="vtex-com-dias">—</b> dias corridos</span>
+            <span class="vtexcom-chip vtexcom-chip-gold"><b id="vtex-com-canc">—</b> cancelamentos</span>
+          </div>
+        </a>
 
         <!-- PAGOS -->
         <div class="card" style="cursor:default;border-color:rgba(240,17,106,0.2);">
@@ -5918,6 +5981,31 @@ function vtexCarregarResumo(force) {
       if (el('vtex-det-pagos'))     el('vtex-det-pagos').textContent     = pagos;
       if (el('vtex-det-pendentes')) el('vtex-det-pendentes').textContent = pendentes;
       if (el('vtex-det-cancelados'))el('vtex-det-cancelados').textContent= (total - pagos - pendentes) > 0 ? (total - pagos - pendentes) : 0;
+
+      // ── Chips do card Comercial · Site Oficial ──
+      var canc = (total - pagos - pendentes) > 0 ? (total - pagos - pendentes) : 0;
+      var hoje = new Date();
+      var diasCorridos = hoje.getDate();
+      if (el('vtex-com-gmv'))     el('vtex-com-gmv').textContent     = vtexFmt(receita);
+      if (el('vtex-com-pedidos')) el('vtex-com-pedidos').textContent = pagos;
+      if (el('vtex-com-tm'))      el('vtex-com-tm').textContent      = vtexFmt(ticket);
+      if (el('vtex-com-dias'))    el('vtex-com-dias').textContent    = diasCorridos;
+      if (el('vtex-com-canc'))    el('vtex-com-canc').textContent    = canc;
+      var _chipCanc = el('vtex-com-canc');
+      if (_chipCanc && _chipCanc.parentElement) {
+        _chipCanc.parentElement.innerHTML = canc === 0
+          ? '<b id="vtex-com-canc">0</b> cancelamentos ✦'
+          : '<b id="vtex-com-canc">' + canc + '</b> cancelamentos';
+      }
+      var _per = el('vtex-com-periodo');
+      if (_per) {
+        var _meses = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+        var _dd = String(diasCorridos).padStart(2,'0');
+        var _mm = String(hoje.getMonth()+1).padStart(2,'0');
+        _per.textContent = _meses[hoje.getMonth()] + ' ' + hoje.getFullYear()
+          + ' · PERÍODO 01/' + _mm + ' À ' + _dd + '/' + _mm
+          + ' · MÊS EM CURSO · 1ª OPERAÇÃO DO CANAL PRÓPRIO';
+      }
 
       // Comparativo mês anterior
       var elComp = el('vtex-comparativo');
