@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Easy House · Site Oficial · Agosto 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{--bg-base:#0d1117;--bg-card:#161b24;--border:#ffffff12;--green:#00e676;--green-dim:#00e67620;--orange:#ff9100;--orange-dim:#ff910020;--blue:#29b6f6;--blue-dim:#29b6f620;--purple:#b388ff;--purple-dim:#b388ff20;--pink:#ff4081;--pink-dim:#ff408120;--yellow:#ffd740;--yellow-dim:#ffd74020;--red:#ff5252;--red-dim:#ff525220;--txt:#e8eaf0;--txt2:#8892a4;--txt3:#3a4558;--fd:'Barlow Condensed',sans-serif;--fb:'Barlow',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-base);font-family:var(--fb);color:var(--txt);min-height:100vh}
+.db{max-width:1500px;margin:0 auto;padding:24px 24px 60px}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
+.topbar-left h1{font-family:var(--fd);font-size:34px;font-weight:800;color:var(--blue);display:flex;align-items:center;gap:10px}
+.icon-sq{width:28px;height:28px;background:var(--txt);border-radius:4px;flex-shrink:0}
+.period{font-size:11px;color:var(--txt2);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tb{padding:5px 13px;border-radius:20px;font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.04em;border:1.5px solid;white-space:nowrap}
+.tb-blue{color:var(--blue);border-color:var(--blue);background:var(--blue-dim)}
+.tb-green{color:var(--green);border-color:var(--green);background:var(--green-dim)}
+.tb-orange{color:var(--orange);border-color:var(--orange);background:var(--orange-dim)}
+.tb-purple{color:var(--purple);border-color:var(--purple);background:var(--purple-dim)}
+.tb-yellow{color:var(--yellow);border-color:var(--yellow);background:var(--yellow-dim)}
+.month-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:26px;gap:0;overflow-x:auto}
+.month-tab{padding:13px 24px;font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--txt2);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:.2s}
+.month-tab:hover{color:var(--txt)}.month-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.month-page{display:none}.month-page.active{display:block}
+.section-lbl{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--txt3);margin-bottom:12px;margin-top:26px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi-grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.kpi-card{background:var(--bg-card);border-radius:10px;padding:18px 20px;border:1px solid var(--border);border-top:2px solid var(--txt3);animation:fadeUp .4s ease both}
+.kpi-grid .kpi-card:nth-child(1){border-top-color:var(--txt);animation-delay:.04s}
+.kpi-grid .kpi-card:nth-child(2){border-top-color:var(--green);animation-delay:.08s}
+.kpi-grid .kpi-card:nth-child(3){border-top-color:var(--orange);animation-delay:.12s}
+.kpi-grid .kpi-card:nth-child(4){border-top-color:var(--purple);animation-delay:.16s}
+.kpi-lbl{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--txt2);margin-bottom:8px}
+.kpi-val{font-family:var(--fd);font-size:40px;font-weight:800;line-height:1;margin-bottom:6px;color:var(--txt)}
+.kpi-grid .kpi-card:nth-child(2) .kpi-val{color:var(--green)}
+.kpi-grid .kpi-card:nth-child(3) .kpi-val{color:var(--orange)}
+.kpi-grid .kpi-card:nth-child(4) .kpi-val{color:var(--purple)}
+.kpi-sub{font-size:11px;color:var(--txt2);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.badge-sm{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700}
+.bg-green{background:var(--green-dim);color:var(--green)}.bg-red{background:var(--red-dim);color:var(--red)}.bg-orange{background:var(--orange-dim);color:var(--orange)}.bg-blue{background:var(--blue-dim);color:var(--blue)}.bg-purple{background:var(--purple-dim);color:var(--purple)}.bg-yellow{background:var(--yellow-dim);color:var(--yellow)}
+.class-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.class-card{background:var(--bg-card);border-radius:10px;padding:20px;border:1px solid var(--border);border-top:2px solid;animation:fadeUp .5s ease both}
+.class-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.class-dot{width:10px;height:10px;border-radius:50%}
+.class-title{font-family:var(--fd);font-size:15px;font-weight:700}
+.class-val{font-family:var(--fd);font-size:34px;font-weight:800;line-height:1;margin-bottom:4px}
+.class-meta{font-size:11px;color:var(--txt2);margin-bottom:12px}
+.prog-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.prog-lbl{font-size:10px;color:var(--txt2);min-width:52px}
+.prog-track{flex:1;height:5px;background:#ffffff08;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.prog-pct{font-family:var(--fd);font-size:13px;font-weight:700;min-width:46px;text-align:right}
+.chart-row-2{display:grid;grid-template-columns:1.4fr 1fr;gap:12px}
+.chart-row-2e{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chart-card{background:var(--bg-card);border-radius:10px;padding:20px;border:1px solid var(--border);border-top:2px solid var(--blue);animation:fadeUp .5s ease both}
+.chart-title{font-family:var(--fd);font-size:16px;font-weight:700;margin-bottom:2px}
+.chart-sub{font-size:11px;color:var(--txt2);margin-bottom:16px}
+.chart-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;justify-content:center}
+.lg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt2)}
+.lg-dot{width:9px;height:9px;border-radius:2px}
+.table-card,.daily-card,.ov-card{background:var(--bg-card);border-radius:10px;border:1px solid var(--border);overflow:hidden;animation:fadeUp .5s ease both}
+.table-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px}
+.table-title{font-family:var(--fd);font-size:16px;font-weight:700}
+.table-sub{font-size:11px;color:var(--txt2)}
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--txt2);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);background:#0d111780}
+th.r{text-align:right}
+td{font-size:12px;padding:10px 14px;border-bottom:1px solid #ffffff05}
+td.r{text-align:right;font-family:var(--fd);font-size:13px}
+tbody tr:hover{background:#ffffff04}
+.rk{font-family:var(--fd);font-size:14px;font-weight:800;color:var(--txt3)}
+.mini-track{height:5px;background:#ffffff08;border-radius:3px;overflow:hidden;min-width:70px}
+.mini-fill{height:100%;background:var(--blue);border-radius:3px}
+.dn{font-family:var(--fd);font-size:16px;font-weight:800;color:var(--blue)}
+.note{background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:8px;padding:14px 18px;font-size:12px;color:var(--txt2);line-height:1.6}
+.note b{color:var(--txt)}
+.ins-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ins{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;border-left:3px solid}
+.ins h4{font-family:var(--fd);font-size:16px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.ins p{font-size:12px;color:var(--txt2);line-height:1.65}
+.ins p+p{margin-top:8px}
+.meta-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px 20px}
+.meta-box input{background:#0d1117;border:1px solid var(--border);border-radius:6px;color:var(--txt);font-family:var(--fd);font-size:20px;font-weight:700;padding:6px 12px;width:170px}
+.meta-box input:focus{outline:2px solid var(--blue);outline-offset:1px}
+.meta-box label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.kpi-grid,.kpi-grid-3,.class-grid,.chart-row-2,.chart-row-2e,.ins-grid{grid-template-columns:1fr}.db{padding:14px 14px 40px}.kpi-val{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="db">
+<div class="topbar">
+  <div class="topbar-left">
+    <h1><span class="icon-sq"></span>Dashboard Easy House · Site Oficial</h1>
+    <div class="period">Agosto 2026 · Período 01/08 à 20/08 (D-1) · Mês em curso · 1ª operação do canal próprio</div>
+  </div>
+  <div class="topbar-right">
+    <span class="tb tb-blue">GMV: R$ 195,7K</span>
+    <span class="tb tb-green">57 pedidos</span>
+    <span class="tb tb-orange">TM: R$ 3.434</span>
+    <span class="tb tb-purple">20 dias corridos</span>
+    <span class="tb tb-yellow">1 cancelamento (1,7%)</span>
+  </div>
+</div>
+<div class="month-tabs">
+  <div class="month-tab active" onclick="sw(0)">Visão Geral</div>
+  <div class="month-tab" onclick="sw(1)">Produtos</div>
+  <div class="month-tab" onclick="sw(2)">Clientes &amp; Praça</div>
+  <div class="month-tab" onclick="sw(3)">Pagamento</div>
+  <div class="month-tab" onclick="sw(4)">Operação</div>
+  <div class="month-tab" onclick="sw(5)">Diagnóstico</div>
+</div>
+
+<!-- ================= VISÃO GERAL ================= -->
+<div class="month-page active" id="pg0">
+  <div class="note">Primeiro mês de operação do site oficial. Não há base histórica (mês anterior ou ano anterior) para comparação — <b>a leitura aqui é de ritmo e tendência dentro do próprio mês</b>: média diária sobre o mês corrido, evolução semanal e projeção de fechamento. Apuração <b>D-1</b>: o dia corrente não entra na base. As comparações Ano vs Ano passam a existir a partir de Agosto/2027.</div>
+
+  <div class="section-lbl">Indicadores Gerais · Agosto 2026 <span style="color:var(--green);font-size:9px">✦ 01/08 à 20/08 · fechamento D-1 · 20 dias de 31</span></div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-lbl">GMV Realizado</div><div class="kpi-val">R$ 195,7K</div><div class="kpi-sub">R$ 195.745,08 · 57 pedidos</div><div style="margin-top:6px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3)">Média diária (20 dias corridos)</div><div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--yellow)">R$ 9.787,25</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Pedidos Aprovados</div><div class="kpi-val">57</div><div class="kpi-sub"><span class="badge-sm bg-green">98,3% aprovados</span> · 1 cancelado (R$ 3.332,90)</div><div style="margin-top:6px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3)">Itens vendidos</div><div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--blue)">76 un · 1,33 por pedido</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Ticket Médio</div><div class="kpi-val">R$ 3.434</div><div class="kpi-sub">Preço médio por item: R$ 2.462,99</div><div style="margin-top:6px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3)">Parcelamento médio</div><div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--pink)">7,5x · R$ 565,58/parcela</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Projeção Fechamento Ago</div><div class="kpi-val">R$ 303K</div><div class="kpi-sub">Cenário base · <span class="badge-sm bg-green">▲ Tendência 7d: R$ 457K</span></div><div style="margin-top:6px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3)">11 dias restantes (21 à 31/08)</div><div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--orange)">~88 a 134 pedidos</div></div>
+  </div>
+
+  <div class="section-lbl">Composição do GMV</div>
+  <div class="kpi-grid-3">
+    <div class="kpi-card" style="border-top-color:var(--green)"><div class="kpi-lbl">Mercadoria</div><div class="kpi-val" style="font-size:32px;color:var(--green)">R$ 187.187,27</div><div class="kpi-sub">95,6% do GMV</div></div>
+    <div class="kpi-card" style="border-top-color:var(--blue)"><div class="kpi-lbl">Frete Cobrado</div><div class="kpi-val" style="font-size:32px;color:var(--blue)">R$ 8.557,81</div><div class="kpi-sub">4,37% do GMV · R$ 150,14 por pedido</div></div>
+    <div class="kpi-card" style="border-top-color:var(--pink)"><div class="kpi-lbl">Descontos Concedidos</div><div class="kpi-val" style="font-size:32px;color:var(--pink)">R$ 379,37</div><div class="kpi-sub">0,19% do GMV · 3 cupons Primeiracompra</div></div>
+  </div>
+
+  <div class="section-lbl">Projeção de Fechamento · Agosto 2026</div>
+  <div class="chart-row-2e">
+    <div class="kpi-card" style="border-top-color:var(--orange)">
+      <div class="kpi-lbl">Cenário Base · Média do Mês Corrido</div>
+      <div class="kpi-val" style="color:var(--orange);font-size:34px">R$ 303.404,87</div>
+      <div class="kpi-sub" style="display:block;line-height:1.7">Ritmo de R$ 9.787,25 por dia<br><span style="color:var(--txt3)">Faltam R$ 107.659,79 em 11 dias · ~88 pedidos no mês</span></div>
+    </div>
+    <div class="kpi-card" style="border-top-color:var(--green)">
+      <div class="kpi-lbl">Cenário Tendência · Ritmo dos Últimos 7 Dias</div>
+      <div class="kpi-val" style="color:var(--green);font-size:34px">R$ 457.397,49</div>
+      <div class="kpi-sub" style="display:block;line-height:1.7">Ritmo de R$ 23.786,58 por dia<br><span style="color:var(--txt3)">Otimista: inclui os picos de 15 e 17/08 · ~134 pedidos</span></div>
+    </div>
+  </div>
+  <div class="note" style="margin-top:12px">O <b>cenário base</b> é a leitura oficial e considera o mês corrido, incluindo os dias sem venda — por isso é conservador. O <b>cenário tendência</b> serve como teto e assume que o ritmo da última semana se mantém até o dia 31. O fechamento provável fica entre os dois. Toda a apuração é <b>D-1</b>: o dia corrente não entra na base.</div>
+
+  <div class="section-lbl">Meta do Mês <span style="color:var(--txt3);font-size:9px">(defina a meta para acompanhar o atingimento)</span></div>
+  <div class="meta-box">
+    <label for="metaIn">Meta Agosto (R$)</label>
+    <input id="metaIn" type="number" step="1000" placeholder="ex: 400000" oninput="calcMeta()">
+    <div id="metaOut" style="font-size:12px;color:var(--txt2)">Informe a meta para calcular atingimento, gap e ritmo diário necessário.</div>
+  </div>
+
+  <div class="section-lbl">Evolução Diária</div>
+  <div class="chart-row-2">
+    <div class="chart-card"><div class="chart-title">GMV por Dia · Agosto</div><div class="chart-sub">Valor do pedido por data de criação · 01 à 20/08 (D-1) · linha = acumulado</div><div style="position:relative;height:280px"><canvas id="cDia"></canvas></div></div>
+    <div class="chart-card" style="border-top-color:var(--green)"><div class="chart-title">Mix por Categoria</div><div class="chart-sub">Participação sobre a mercadoria vendida</div><div style="position:relative;height:220px"><canvas id="cMix"></canvas></div><div class="chart-legend" id="lgMix"></div></div>
+  </div>
+
+  <div class="section-lbl">Curva Semanal · Aceleração do Canal</div>
+  <div class="chart-row-2e">
+    <div class="chart-card" style="border-top-color:var(--purple)"><div class="chart-title">GMV e Pedidos por Semana</div><div class="chart-sub">S3 ainda parcial (17 à 20/08 · 4 dias)</div><div style="position:relative;height:250px"><canvas id="cSem"></canvas></div></div>
+    <div class="ov-card"><div class="table-header"><div class="table-title">Resumo Semanal</div><div class="table-sub">Ritmo diário em evolução</div></div><div style="overflow-x:auto"><table><thead><tr><th>Semana</th><th class="r">Dias</th><th class="r">Pedidos</th><th class="r">GMV</th><th class="r">Ticket Médio</th><th class="r">GMV/dia</th></tr></thead><tbody id="semTb"></tbody></table></div></div>
+  </div>
+
+  <div class="section-lbl">Categorias · Realizado no Período</div>
+  <div class="class-grid" id="clsGrid"></div>
+
+  <div class="section-lbl">Detalhe Diário</div>
+  <div class="daily-card"><div style="overflow-x:auto"><table><thead><tr><th>Dia</th><th>Dia da semana</th><th class="r">Pedidos</th><th class="r">GMV</th><th class="r">Ticket Médio</th><th style="width:150px">% Acumulado</th></tr></thead><tbody id="dtTb"></tbody></table></div></div>
+</div>
+
+<!-- ================= PRODUTOS ================= -->
+<div class="month-page" id="pg1">
+  <div class="section-lbl">Indicadores de Sortimento</div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-lbl">SKUs Vendidos</div><div class="kpi-val">38</div><div class="kpi-sub">76 unidades faturadas</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Concentração Top 10</div><div class="kpi-val">54,5%</div><div class="kpi-sub">R$ 101.937,90 da mercadoria</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Guarda-Roupas</div><div class="kpi-val">61,9%</div><div class="kpi-sub">R$ 115.927,22 · 40 unidades</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">SKUs Easy House Cadastrados</div><div class="kpi-val">4 de 38</div><div class="kpi-sub"><span class="badge-sm bg-green">16,5% da mercadoria ▲</span> · migração em andamento</div></div>
+  </div>
+
+  <div class="section-lbl">Top 10 Produtos · Ranking por Faturamento</div>
+  <div class="table-card"><div class="table-header"><div class="table-title">Ranking de Produtos</div><div class="table-sub">01/08 à 20/08 · base: preço de venda do item</div></div><div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Produto</th><th class="r">Qtde</th><th class="r">Faturamento</th><th class="r">Preço Médio</th><th style="width:140px">Part.</th></tr></thead><tbody id="topTb"></tbody></table></div></div>
+
+  <div class="section-lbl">Categoria por Dia · Onde o Faturamento Nasce</div>
+  <div class="chart-row-2">
+    <div class="chart-card" style="border-top-color:var(--orange)"><div class="chart-title">Mercadoria por Dia e Categoria</div><div class="chart-sub">Barras empilhadas · valor do item</div><div style="position:relative;height:280px"><canvas id="cDiaCls"></canvas></div></div>
+    <div class="chart-card" style="border-top-color:var(--pink)"><div class="chart-title">Composição do Catálogo Vendido</div><div class="chart-sub">Reflete o que está cadastrado hoje · migração para Easy House em andamento</div><div style="position:relative;height:220px"><canvas id="cMarca"></canvas></div><div class="chart-legend" id="lgMarca"></div></div>
+  </div>
+
+  <div class="section-lbl">Migração de Catálogo · Easy House vs Lopas</div>
+  <div class="table-card"><div class="table-header"><div class="table-title">Produtividade por SKU Cadastrado</div><div class="table-sub">Base: 38 SKUs vendidos no período</div></div><div style="overflow-x:auto"><table><thead><tr><th>Origem do cadastro</th><th class="r">SKUs</th><th class="r">Unidades</th><th class="r">Faturamento</th><th class="r">Fat. por SKU</th><th class="r">Pedidos</th></tr></thead><tbody>
+    <tr><td><span style="display:inline-flex;align-items:center;gap:8px"><span class="class-dot" style="background:var(--pink)"></span>Easy House <span class="badge-sm bg-green">manter e ampliar</span></span></td><td class="r">4</td><td class="r">19</td><td class="r">R$ 30.949,32</td><td class="r" style="color:var(--green)">R$ 7.737,33</td><td class="r">15</td></tr>
+    <tr><td><span style="display:inline-flex;align-items:center;gap:8px"><span class="class-dot" style="background:var(--blue)"></span>Lopas <span class="badge-sm bg-orange">desativar após migração</span></span></td><td class="r">34</td><td class="r">57</td><td class="r">R$ 156.237,95</td><td class="r" style="color:var(--txt2)">R$ 4.595,23</td><td class="r">49</td></tr>
+  </tbody></table></div></div>
+  <div class="note" style="margin-top:12px;border-left-color:var(--pink)">Cada SKU Easy House cadastrado gera <b>R$ 7.737,33</b> contra R$ 4.595,23 de cada SKU Lopas — <b>68% a mais por cadastro</b>, e a distância aumentou nos últimos dias. <b>A baixa participação da marca vem da quantidade de cadastros ativos, não da preferência do cliente.</b> Com apenas 4 SKUs no ar, a linha Easy já entrou em 15 dos 57 pedidos (26,3%). Concluir os cadastros Easy e desativar os itens Lopas tende a transferir esse volume sem perda de venda — a prioridade natural é começar por guarda-roupas e salas de jantar, que juntos concentram 88,9% da mercadoria.</div>
+
+  <div class="section-lbl">Categorias · Detalhe</div>
+  <div class="table-card"><div style="overflow-x:auto"><table><thead><tr><th>Categoria</th><th class="r">Pedidos</th><th class="r">Unidades</th><th class="r">Faturamento</th><th class="r">Preço Médio</th><th style="width:150px">Part. Mercadoria</th></tr></thead><tbody id="clsTb"></tbody></table></div></div>
+</div>
+
+<!-- ================= CLIENTES & PRAÇA ================= -->
+<div class="month-page" id="pg2">
+  <div class="section-lbl">Base de Clientes</div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-lbl">Clientes Únicos</div><div class="kpi-val">56</div><div class="kpi-sub">CPFs distintos em 57 pedidos</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Recompra no Período</div><div class="kpi-val">1</div><div class="kpi-sub">1,8% da base · 2 pedidos no mesmo dia</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Concentração em MG</div><div class="kpi-val">92,3%</div><div class="kpi-sub">R$ 180.724,47 · 51 pedidos</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Praças Atendidas</div><div class="kpi-val">3 UFs</div><div class="kpi-sub">16 cidades · MG, SP e RJ</div></div>
+  </div>
+
+  <div class="section-lbl">Distribuição Geográfica</div>
+  <div class="chart-row-2">
+    <div class="chart-card"><div class="chart-title">Top Cidades por GMV</div><div class="chart-sub">Região metropolitana de BH concentra a operação</div><div style="position:relative;height:300px"><canvas id="cCid"></canvas></div></div>
+    <div class="chart-card" style="border-top-color:var(--purple)"><div class="chart-title">GMV por UF</div><div class="chart-sub">Cobertura ainda regional</div><div style="position:relative;height:220px"><canvas id="cUF"></canvas></div><div class="chart-legend" id="lgUF"></div></div>
+  </div>
+
+  <div class="section-lbl">Faixa de Ticket · Perfil de Compra</div>
+  <div class="chart-row-2e">
+    <div class="chart-card" style="border-top-color:var(--yellow)"><div class="chart-title">Pedidos por Faixa de Valor</div><div class="chart-sub">Concentração entre R$ 2,5K e R$ 3,5K</div><div style="position:relative;height:250px"><canvas id="cFaixa"></canvas></div></div>
+    <div class="table-card"><div class="table-header"><div class="table-title">Faixas de Ticket</div><div class="table-sub">57 pedidos</div></div><div style="overflow-x:auto"><table><thead><tr><th>Faixa</th><th class="r">Pedidos</th><th class="r">% Pedidos</th><th class="r">GMV</th><th class="r">% GMV</th></tr></thead><tbody id="faixaTb"></tbody></table></div></div>
+  </div>
+
+  <div class="section-lbl">Cidades · Detalhe</div>
+  <div class="table-card"><div style="overflow-x:auto"><table><thead><tr><th>Cidade</th><th class="r">Pedidos</th><th class="r">GMV</th><th class="r">Ticket Médio</th><th style="width:150px">Part.</th></tr></thead><tbody id="cidTb"></tbody></table></div></div>
+</div>
+
+<!-- ================= PAGAMENTO ================= -->
+<div class="month-page" id="pg3">
+  <div class="section-lbl">Perfil de Pagamento</div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-lbl">Parcelamento Médio</div><div class="kpi-val">7,5x</div><div class="kpi-sub">Ponderado pelo valor do pedido</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Valor Médio da Parcela</div><div class="kpi-val">R$ 566</div><div class="kpi-sub">Média simples entre os 57 pedidos</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Pedidos em 8x ou Mais</div><div class="kpi-val">49,1%</div><div class="kpi-sub">28 pedidos · R$ 96.120,47 (49,1% do GMV)</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Meio de Pagamento</div><div class="kpi-val">100%</div><div class="kpi-sub">Cartão de crédito · 3 bandeiras (Mastercard, Visa e Elo)</div></div>
+  </div>
+
+  <div class="section-lbl">Bandeiras e Parcelas</div>
+  <div class="chart-row-2">
+    <div class="chart-card"><div class="chart-title">Pedidos por Número de Parcelas</div><div class="chart-sub">Barras = pedidos · linha = GMV da faixa</div><div style="position:relative;height:280px"><canvas id="cParc"></canvas></div></div>
+    <div class="chart-card" style="border-top-color:var(--green)"><div class="chart-title">GMV por Bandeira</div><div class="chart-sub">Distribuição do valor aprovado</div><div style="position:relative;height:220px"><canvas id="cBand"></canvas></div><div class="chart-legend" id="lgBand"></div></div>
+  </div>
+
+  <div class="section-lbl">Detalhe por Parcelamento</div>
+  <div class="table-card"><div style="overflow-x:auto"><table><thead><tr><th>Parcelas</th><th class="r">Pedidos</th><th class="r">GMV</th><th class="r">Ticket Médio</th><th class="r">Valor da Parcela</th><th style="width:140px">Part. GMV</th></tr></thead><tbody id="parcTb"></tbody></table></div></div>
+
+  <div class="note" style="margin-top:22px">Todo o volume do período foi capturado via cartão de crédito (Mastercard, Visa e Elo), com aprovação de 100% e apenas 1 cancelamento no período (1,7% dos pedidos). <b>O crédito parcelado é o motor da venda neste ticket</b>: 49,1% dos pedidos saíram em 8x ou mais, com parcela média de R$ 565,58.</div>
+</div>
+
+<!-- ================= OPERAÇÃO ================= -->
+<div class="month-page" id="pg4">
+  <div class="section-lbl">Status da Carteira · Onde Estão os Pedidos</div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-lbl">Faturado</div><div class="kpi-val">33</div><div class="kpi-sub">R$ 111.155,25 · 56,8% do GMV</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Pronto para Manuseio</div><div class="kpi-val">13</div><div class="kpi-sub">R$ 44.485,77 · 22,7% do GMV</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Preparando Entrega</div><div class="kpi-val">11</div><div class="kpi-sub">R$ 40.104,06 · 20,5% do GMV</div></div>
+    <div class="kpi-card"><div class="kpi-lbl">Já Entregues</div><div class="kpi-val">7</div><div class="kpi-sub">12,3% dos pedidos do período</div></div>
+  </div>
+
+  <div class="section-lbl">Funil Operacional e Prazos</div>
+  <div class="chart-row-2">
+    <div class="chart-card"><div class="chart-title">Carteira por Status</div><div class="chart-sub">GMV em cada etapa · 1 pedido cancelado no período</div><div style="position:relative;height:250px"><canvas id="cStatus"></canvas></div></div>
+    <div class="chart-card" style="border-top-color:var(--yellow)"><div class="chart-title">Prazo de Entrega Prometido</div><div class="chart-sub">Dias úteis no checkout · 49 dos 57 pedidos em 10 dias úteis</div><div style="position:relative;height:250px"><canvas id="cPrazo"></canvas></div></div>
+  </div>
+
+  <div class="section-lbl">Transportadoras e Modalidade de Frete</div>
+  <div class="chart-row-2e">
+    <div class="table-card"><div class="table-header"><div class="table-title">Transportadora</div><div class="table-sub">Por pedido</div></div><div style="overflow-x:auto"><table><thead><tr><th>Transportadora</th><th class="r">Pedidos</th><th style="width:160px">Part.</th></tr></thead><tbody id="courTb"></tbody></table></div></div>
+    <div class="table-card"><div class="table-header"><div class="table-title">Modalidade de Envio</div><div class="table-sub">SLA selecionado no checkout</div></div><div style="overflow-x:auto"><table><thead><tr><th>Modalidade</th><th class="r">Pedidos</th><th class="r">Prazo Médio</th><th style="width:130px">Part.</th></tr></thead><tbody id="slaTb"></tbody></table></div></div>
+  </div>
+
+  <div class="section-lbl">Janela de Compra · Quando o Cliente Fecha</div>
+  <div class="chart-row-2e">
+    <div class="chart-card" style="border-top-color:var(--pink)"><div class="chart-title">Pedidos por Faixa de Horário</div><div class="chart-sub">Horário de criação do pedido</div><div style="position:relative;height:230px"><canvas id="cHora"></canvas></div></div>
+    <div class="chart-card" style="border-top-color:var(--purple)"><div class="chart-title">Pedidos por Dia da Semana</div><div class="chart-sub">Acumulado do período</div><div style="position:relative;height:230px"><canvas id="cDow"></canvas></div></div>
+  </div>
+
+  <div class="note" style="margin-top:22px"><b>Atenção operacional:</b> 48 dos 57 pedidos (84,2%) saíram com a transportadora marcada como <b>"Contingência"</b> e prazo padrão de 10 dias úteis. Isso indica que a maior parte das entregas não caiu em uma transportadora contratada no momento do pedido. Corrigir a matriz de frete tende a reduzir o prazo prometido e melhorar a conversão em ticket alto.</div>
+</div>
+
+<!-- ================= DIAGNÓSTICO ================= -->
+<div class="month-page" id="pg5">
+  <div class="section-lbl">Leitura do Primeiro Mês</div>
+  <div class="ins-grid">
+    <div class="ins" style="border-left-color:var(--green)"><h4><span class="class-dot" style="background:var(--green)"></span>O canal está acelerando</h4>
+      <p>A operação saiu de <b>7 pedidos na primeira semana</b> (01–09/08) para <b>18 na segunda</b> e <b>32 nos quatro primeiros dias da terceira</b> (17 à 20/08). O ritmo diário passou de R$ 2,7K para cerca de R$ 28,4K por dia.</p>
+      <p>No ritmo atual, agosto fecha em <b>R$ 303K</b>. Se o ritmo dos últimos 7 dias se mantiver até o dia 31, o fechamento chega a <b>R$ 457K</b>.</p></div>
+
+    <div class="ins" style="border-left-color:var(--red)"><h4><span class="class-dot" style="background:var(--red)"></span>Catálogo ainda é majoritariamente Lopas</h4>
+      <p>Dos <b>38 SKUs vendidos, 34 são Lopas</b> e apenas 4 são Easy House. O site está vendendo o que está cadastrado — não o que a marca quer vender.</p>
+      <p>A conclusão do cadastro das linhas Easy e a desativação dos itens Lopas é o ajuste estrutural mais importante do canal. Enquanto isso não acontece, o mix por marca não mede preferência de cliente.</p></div>
+
+    <div class="ins" style="border-left-color:var(--orange)"><h4><span class="class-dot" style="background:var(--orange)"></span>Dependência de guarda-roupas</h4>
+      <p>Guarda-roupas representam <b>61,9% da mercadoria</b> e aparecem em 36 dos 57 pedidos. Salas de jantar somam 26,9%. Cozinhas e complementos de dormitório juntos ficam em <b>11,1%</b>.</p>
+      <p>Com 1,33 item por pedido, há espaço claro para cross-sell: cabeceira, cômoda e cama junto ao guarda-roupa elevariam o ticket sem custo de aquisição adicional.</p></div>
+
+    <div class="ins" style="border-left-color:var(--blue)"><h4><span class="class-dot" style="background:var(--blue)"></span>Praça concentrada na Grande BH</h4>
+      <p>MG responde por <b>92,3% do GMV</b>. Belo Horizonte, Contagem e Betim sozinhas somam R$ 113,6K (58,0%). Fora de MG foram apenas 6 pedidos (SP e RJ).</p>
+      <p>Isso é esperado no início e favorece o custo logístico, mas concentra risco. Ampliar a praça depende de frete competitivo fora da Grande BH — hoje 84,2% dos pedidos saem com prazo de 10 dias úteis.</p></div>
+
+    <div class="ins" style="border-left-color:var(--purple)"><h4><span class="class-dot" style="background:var(--purple)"></span>Crédito longo sustenta o ticket</h4>
+      <p>O parcelamento médio é de <b>7,5x</b>, com parcela média de R$ 565,58. Quase metade do GMV veio de pedidos em 8x ou mais, e 13 pedidos usaram 10x.</p>
+      <p>O cliente compra móvel de alto valor pela parcela. Destacar o valor da parcela na vitrine e na página de produto tende a mover conversão mais do que desconto no preço cheio.</p></div>
+
+    <div class="ins" style="border-left-color:var(--yellow);grid-column:1/-1"><h4><span class="class-dot" style="background:var(--yellow)"></span>Cada SKU Easy vende 68% mais que um SKU Lopas</h4>
+      <p>Os 4 SKUs Easy House cadastrados geraram <b>R$ 30.949,32 — média de R$ 7.737,33 por SKU</b>. Os 34 SKUs Lopas geraram R$ 156.237,95 — média de <b>R$ 4.595,23 por SKU</b>. A vantagem da Easy cresceu: no corte de 18/08 as duas origens estavam empatadas.</p>
+      <p>Ou seja: a baixa participação da Easy House (16,5% da mercadoria, contra 12,4% há dois dias) não vem de rejeição do cliente, e sim de <b>cobertura de catálogo</b>. Com 4 cadastros a linha já apareceu em 15 dos 57 pedidos (26,3%). Terminar os cadastros Easy e desativar os Lopas deve elevar essa participação sem precisar de investimento em aquisição.</p></div>
+  </div>
+
+  <div class="section-lbl">Base de Comparação · O Que Passa a Existir</div>
+  <div class="table-card"><div style="overflow-x:auto"><table><thead><tr><th>Indicador</th><th class="r">Agosto 2026 (base)</th><th>Passa a comparar</th></tr></thead><tbody>
+    <tr><td>GMV mensal</td><td class="r">R$ 195.745,08 <span style="color:var(--txt3);font-size:11px">(20 de 31 dias)</span></td><td style="color:var(--txt2)">Mês x mês a partir de Set/26 · Ano vs Ano em Ago/27</td></tr>
+    <tr><td>Pedidos</td><td class="r">57</td><td style="color:var(--txt2)">Volume e frequência mensal</td></tr>
+    <tr><td>Ticket médio</td><td class="r">R$ 3.434,12</td><td style="color:var(--txt2)">Evolução do mix e do cross-sell</td></tr>
+    <tr><td>Itens por pedido</td><td class="r">1,33</td><td style="color:var(--txt2)">Efeito de ações de venda casada</td></tr>
+    <tr><td>Participação Easy House</td><td class="r">16,5%</td><td style="color:var(--txt2)">Ganho de espaço conforme o catálogo migra</td></tr>
+    <tr><td>SKUs Easy vendidos</td><td class="r">4 de 38</td><td style="color:var(--txt2)">Avanço da migração de catálogo</td></tr>
+    <tr><td>Frete sobre GMV</td><td class="r">4,37%</td><td style="color:var(--txt2)">Eficiência da matriz de frete</td></tr>
+    <tr><td>Taxa de cancelamento</td><td class="r">1,7%</td><td style="color:var(--txt2)">Saúde do checkout e do antifraude</td></tr>
+  </tbody></table></div></div>
+
+  <div class="section-lbl">Próximos Passos Sugeridos</div>
+  <div class="note" style="border-left-color:var(--green)">
+    <b>1.</b> Concluir o cadastro das linhas Easy House e desativar os SKUs Lopas — hoje 34 dos 38 SKUs vendidos são Lopas.<br>
+    <b>2.</b> Priorizar o cadastro por categoria de maior giro: guarda-roupas (61,9% da mercadoria) e salas de jantar (26,9%).<br>
+    <b>3.</b> Revisar a matriz de frete: 84,2% dos pedidos caíram em "Contingência" com 10 dias úteis de prazo.<br>
+    <b>4.</b> Montar kits (guarda-roupa + cômoda + cabeceira) para subir de 1,33 para 1,6 item por pedido.<br>
+    <b>5.</b> Definir a meta de setembro considerando o mês cheio: agosto projeta R$ 303K pela média corrida e R$ 457K pelo ritmo das últimas semanas.
+  </div>
+</div>
+
+</div>
+<script>
+const BRL=v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const BRLk=v=>v>=1e6?'R$ '+(v/1e6).toFixed(2).replace('.',',')+'M':'R$ '+(v/1e3).toFixed(1).replace('.',',')+'K';
+const PCT=v=>v.toFixed(1).replace('.',',')+'%';
+const GMV=195745.08, MERC=187187.27, PED=57;
+
+const DIAS=[
+ {d:1,dow:'Sáb',f:0,q:0},{d:2,dow:'Dom',f:0,q:0},{d:3,dow:'Seg',f:0,q:0},
+ {d:4,dow:'Ter',f:9780.60,q:3},{d:5,dow:'Qua',f:7781.70,q:2},{d:6,dow:'Qui',f:3332.90,q:1},{d:7,dow:'Sex',f:3328.90,q:1},
+ {d:8,dow:'Sáb',f:0,q:0},{d:9,dow:'Dom',f:0,q:0},{d:10,dow:'Seg',f:5014.90,q:1},{d:11,dow:'Ter',f:0,q:0},
+ {d:12,dow:'Qua',f:0,q:0},{d:13,dow:'Qui',f:0,q:0},{d:14,dow:'Sex',f:4656.21,q:2},{d:15,dow:'Sáb',f:38827.70,q:11},
+ {d:16,dow:'Dom',f:9271.89,q:4},{d:17,dow:'Seg',f:43354.14,q:10},{d:18,dow:'Ter',f:29844.23,q:9},
+ {d:19,dow:'Qua',f:20113.30,q:6},{d:20,dow:'Qui',f:20438.61,q:7}
+];
+const CLS=[
+ {k:'gr',n:'Guarda-Roupas',c:'#00e676',f:115927.22,q:40,p:36},
+ {k:'sala',n:'Salas de Jantar',c:'#b388ff',f:50427.61,q:18,p:18},
+ {k:'dorm',n:'Complementos Dormitório',c:'#ff9100',f:10733.24,q:10,p:9},
+ {k:'coz',n:'Cozinhas',c:'#29b6f6',f:10099.20,q:8,p:7}
+];
+const DIACLS={gr:[0,0,0,2899.90,2559.90,0,0,0,0,4839.90,0,0,0,4429.80,25239.20,4015.41,28739.10,22459.20,9669.70,11075.11],
+ sala:[0,0,0,5619.80,3519.90,3179.90,3179.90,0,0,0,0,0,0,0,9879.70,3519.90,6989.70,4759.80,8309.70,1469.31],
+ dorm:[0,0,0,809.90,1399.90,0,0,0,0,0,0,0,0,0,809.90,1279.80,3406.82,0,0,3026.92],
+ coz:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,1189.90,0,2669.80,1189.90,1189.90,3859.70]};
+const SEM=[{n:'S1 · 01 a 09/08',dias:9,q:7,f:24224.10},{n:'S2 · 10 a 16/08',dias:7,q:18,f:57770.70},{n:'S3 · 17 a 20/08',dias:4,q:32,f:113750.28}];
+const TOP=[
+ {n:'Guarda-Roupa Solteiro Easy Like 100% MDF 4 Portas, 3 Gavetas e 8 Nichos Amêndoa Clean/Off White',f:17010.32,q:9},
+ {n:'Guarda-Roupa Casal 8 Portas 100% MDF Ergon Com Espelhos Amêndoa Clean',f:14519.70,q:3},
+ {n:'Guarda-Roupa Casal 8 Portas 100% MDF Ergon Frassino/Off White',f:12719.70,q:3},
+ {n:'Guarda-Roupa Casal 6 Portas 100% MDF Alonzo Com Espelhos e Pés Amêndoa Clean/Off White',f:11599.60,q:4},
+ {n:'Conj. Sala de Jantar Mesa 1,70 Sintonia Maxi Tampo + 6 cad. Luar Couro Morano Avelã',f:10559.70,q:3},
+ {n:'Conj. Sala de Jantar Mesa 1,70 Sintonia Maxi Tampo + 6 cad. Apogeu Veludo Capuccino',f:9539.70,q:3},
+ {n:'Cozinha Compacta Modular Easy House Nina 279cm em MDP Branco',f:7139.40,q:6},
+ {n:'Conj. Sala de Jantar Mesa 1,70 Apogeu + 6 cad. Apogeu Suede Animale Bege',f:6549.70,q:3},
+ {n:'Conj. Sala de Jantar Mesa 1,70 Sintonia Maxi Tampo + 6 cad. Apogeu Suede Animale Bege',f:6359.80,q:2},
+ {n:'Cama Casal 1,40 Loop Tecido Korino Branco',f:5940.28,q:4}
+];
+const CID=[{n:'Contagem',f:41828.06,q:12},{n:'Belo Horizonte',f:40121.74,q:11},{n:'Betim',f:31621.23,q:12},{n:'Ituiutaba',f:19851.40,q:4},{n:'Iturama',f:10139.16,q:2},{n:'Ibirité',f:9732.37,q:2},{n:'Salto de Pirapora (SP)',f:6959.80,q:2},{n:'Uberaba',f:6534.70,q:3},{n:'Demais cidades',f:28956.62,q:9}];
+const UF=[{n:'MG',f:180724.47,q:51,c:'#00e676'},{n:'SP',f:10831.42,q:4,c:'#29b6f6'},{n:'RJ',f:4189.19,q:2,c:'#b388ff'}];
+const FAIXA=[{n:'Até R$ 1,5K',q:2,f:2395.70},{n:'R$ 1,5K a 2,5K',q:13,f:26146.10},{n:'R$ 2,5K a 3,5K',q:20,f:62354.39},{n:'R$ 3,5K a 5K',q:11,f:44255.17},{n:'Acima de R$ 5K',q:11,f:60593.72}];
+const PARC=[{p:2,q:5,f:13915.07},{p:3,q:1,f:1432.80},{p:4,q:2,f:2629.36},{p:5,q:7,f:30714.02},{p:6,q:9,f:31072.68},{p:7,q:5,f:19860.68},{p:8,q:9,f:26838.72},{p:10,q:13,f:51491.50},{p:12,q:6,f:17790.25}];
+const BAND=[{n:'Mastercard',q:33,f:108738.86,c:'#ff9100'},{n:'Visa',q:21,f:77291.52,c:'#29b6f6'},{n:'Elo',q:3,f:9714.70,c:'#b388ff'}];
+const STATUS=[{n:'Faturado',q:33,f:111155.25,c:'#00e676'},{n:'Pronto para manuseio',q:13,f:44485.77,c:'#29b6f6'},{n:'Preparando entrega',q:11,f:40104.06,c:'#ff9100'},{n:'Cancelado',q:1,f:3332.90,c:'#ff5252'}];
+const PRAZO=[{n:'2 dias úteis',q:2},{n:'3 dias úteis',q:2},{n:'4 dias úteis',q:1},{n:'8 dias úteis',q:1},{n:'9 dias úteis',q:1},{n:'10 dias úteis',q:49},{n:'Sem prazo',q:1}];
+const COUR=[{n:'Contingência',q:48},{n:'RGE Soluções',q:5},{n:'Transbarbosa',q:2},{n:'Nova Era',q:1},{n:'Vig Log',q:1}];
+const SLA=[{n:'Convencional',q:48,pz:'10 dias úteis'},{n:'Normal',q:9,pz:'2 a 8 dias úteis'}];
+const HORA=[{n:'00h–06h',q:2,f:4449.80},{n:'06h–12h',q:14,f:49712.04},{n:'12h–18h',q:25,f:94777.39},{n:'18h–24h',q:16,f:46805.85}];
+const DOW=[{n:'Seg',q:11,f:48369.04},{n:'Ter',q:12,f:39624.83},{n:'Qua',q:8,f:27895.00},{n:'Qui',q:8,f:23771.51},{n:'Sex',q:3,f:7985.11},{n:'Sáb',q:11,f:38827.70},{n:'Dom',q:4,f:9271.89}];
+
+const GOPT={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8892a4',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#8892a4',font:{size:10}},grid:{color:'#ffffff08'}}}};
+
+function sw(i){document.querySelectorAll('.month-page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.month-tab').forEach(t=>t.classList.remove('active'));document.getElementById('pg'+i).classList.add('active');document.querySelectorAll('.month-tab')[i].classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+
+function calcMeta(){
+  const v=parseFloat(document.getElementById('metaIn').value);
+  const out=document.getElementById('metaOut');
+  if(!v||v<=0){out.innerHTML='Informe a meta para calcular atingimento, gap e ritmo diário necessário.';out.style.color='#8892a4';return;}
+  const pct=GMV/v*100, gap=v-GMV, need=gap>0?gap/11:0;
+  const cor=pct>=100?'#00e676':pct>=60?'#ffd740':'#ff5252';
+  out.innerHTML=`<span style="font-family:var(--fd);font-size:26px;font-weight:800;color:${cor}">${PCT(pct)}</span>
+   <span style="margin-left:10px">atingido · falta <b style="color:#e8eaf0">${BRL(Math.max(gap,0))}</b> · exige <b style="color:${cor}">${BRL(need)}/dia</b> nos 11 dias restantes
+   <span style="color:#3a4558">(ritmo atual: R$ 9.787,25/dia · últimos 7 dias: R$ 23.786,58/dia)</span></span>`;
+  out.style.color='#8892a4';
+}
+
+/* ---------- VISÃO GERAL ---------- */
+let acc=0;const accArr=DIAS.map(d=>{acc+=d.f;return acc;});
+new Chart(document.getElementById('cDia'),{data:{labels:DIAS.map(d=>d.d+'/08'),datasets:[
+ {type:'bar',label:'GMV do dia',data:DIAS.map(d=>d.f),backgroundColor:DIAS.map(d=>d.f>0?'#29b6f6cc':'#ffffff10'),borderRadius:4,yAxisID:'y'},
+ {type:'line',label:'Acumulado',data:accArr,borderColor:'#00e676',borderWidth:2,pointRadius:2.5,pointBackgroundColor:'#00e676',tension:.25,yAxisID:'y1'}
+]},options:{...GOPT,plugins:{legend:{display:true,labels:{color:'#8892a4',font:{size:10},boxWidth:12}},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+BRL(c.raw)}}},
+ scales:{x:{ticks:{color:'#8892a4',font:{size:10}},grid:{display:false}},
+ y:{ticks:{color:'#8892a4',font:{size:10},callback:v=>BRLk(v)},grid:{color:'#ffffff08'}},
+ y1:{position:'right',ticks:{color:'#00e676',font:{size:10},callback:v=>BRLk(v)},grid:{display:false}}}}});
+
+function donut(cvId,lgId,items){
+ new Chart(document.getElementById(cvId),{type:'doughnut',data:{labels:items.map(i=>i.n),datasets:[{data:items.map(i=>i.f),backgroundColor:items.map(i=>i.c),borderColor:'#161b24',borderWidth:2}]},
+ options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+BRL(c.raw)}}}}});
+ const tot=items.reduce((a,b)=>a+b.f,0);
+ document.getElementById(lgId).innerHTML=items.map(i=>`<div class="lg-item"><span class="lg-dot" style="background:${i.c}"></span>${i.n} · <b style="color:${i.c}">${PCT(i.f/tot*100)}</b></div>`).join('');
+}
+donut('cMix','lgMix',CLS);
+
+new Chart(document.getElementById('cSem'),{data:{labels:SEM.map(s=>s.n),datasets:[
+ {type:'bar',label:'GMV',data:SEM.map(s=>s.f),backgroundColor:'#b388ffcc',borderRadius:4,yAxisID:'y'},
+ {type:'line',label:'Pedidos',data:SEM.map(s=>s.q),borderColor:'#ffd740',borderWidth:2,pointRadius:4,pointBackgroundColor:'#ffd740',tension:.2,yAxisID:'y1'}
+]},options:{...GOPT,plugins:{legend:{display:true,labels:{color:'#8892a4',font:{size:10},boxWidth:12}},tooltip:{callbacks:{label:c=>c.dataset.label==='GMV'?' GMV: '+BRL(c.raw):' Pedidos: '+c.raw}}},
+ scales:{x:{ticks:{color:'#8892a4',font:{size:10}},grid:{display:false}},
+ y:{ticks:{color:'#8892a4',font:{size:10},callback:v=>BRLk(v)},grid:{color:'#ffffff08'}},
+ y1:{position:'right',beginAtZero:true,ticks:{color:'#ffd740',font:{size:10},stepSize:5},grid:{display:false}}}}});
+
+document.getElementById('semTb').innerHTML=SEM.map(s=>`<tr><td>${s.n}</td><td class="r">${s.dias}</td><td class="r">${s.q}</td><td class="r">${BRL(s.f)}</td><td class="r">${BRL(s.f/s.q)}</td><td class="r" style="color:var(--green)">${BRL(s.f/s.dias)}</td></tr>`).join('');
+
+document.getElementById('clsGrid').innerHTML=CLS.map(c=>{
+ const p=c.f/MERC*100;
+ return`<div class="class-card" style="border-top-color:${c.c}">
+  <div class="class-head"><span class="class-dot" style="background:${c.c}"></span><span class="class-title">${c.n}</span></div>
+  <div class="class-val" style="color:${c.c}">${BRLk(c.f)}</div>
+  <div class="class-meta">${c.q} unidades · ${c.p} pedidos · preço médio ${BRL(c.f/c.q)}</div>
+  <div class="prog-row"><div class="prog-lbl">Part.</div><div class="prog-track"><div class="prog-fill" style="width:${p.toFixed(1)}%;background:${c.c}"></div></div><div class="prog-pct" style="color:${c.c}">${PCT(p)}</div></div>
+ </div>`;}).join('');
+
+let ac=0;
+document.getElementById('dtTb').innerHTML=DIAS.map(d=>{ac+=d.f;const p=ac/GMV*100;
+ return`<tr><td><span class="dn">${d.d}/08</span></td><td style="color:var(--txt2)">${d.dow}</td><td class="r">${d.q||'—'}</td><td class="r" style="color:${d.f>0?'var(--txt)':'var(--txt3)'}">${d.f>0?BRL(d.f):'sem venda'}</td><td class="r" style="color:var(--txt2)">${d.q?BRL(d.f/d.q):'—'}</td>
+ <td><div style="display:flex;align-items:center;gap:8px"><div class="mini-track" style="flex:1"><div class="mini-fill" style="width:${p.toFixed(1)}%"></div></div><span style="font-family:var(--fd);font-size:12px;color:var(--txt2);min-width:42px;text-align:right">${PCT(p)}</span></div></td></tr>`;}).join('');
+
+/* ---------- PRODUTOS ---------- */
+document.getElementById('topTb').innerHTML=TOP.map((t,i)=>{const p=t.f/MERC*100;
+ return`<tr><td class="rk">${String(i+1).padStart(2,'0')}</td><td style="max-width:420px">${t.n}</td><td class="r">${t.q}</td><td class="r">${BRL(t.f)}</td><td class="r" style="color:var(--txt2)">${BRL(t.f/t.q)}</td>
+ <td><div style="display:flex;align-items:center;gap:8px"><div class="mini-track" style="flex:1"><div class="mini-fill" style="width:${(p/10*100).toFixed(1)}%"></div></div><span style="font-family:var(--fd);font-size:12px;color:var(--blue);min-width:38px;text-align:right">${PCT(p)}</span></div></td></tr>`;}).join('');
+
+new Chart(document.getElementById('cDiaCls'),{type:'bar',data:{labels:DIAS.map(d=>d.d+'/08'),datasets:CLS.map(c=>({label:c.n,data:DIACLS[c.k],backgroundColor:c.c+'cc',borderRadius:3}))},
+ options:{...GOPT,plugins:{legend:{display:true,labels:{color:'#8892a4',font:{size:10},boxWidth:12}},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+BRL(c.raw)}}},
+ scales:{x:{stacked:true,ticks:{color:'#8892a4',font:{size:10}},grid:{display:false}},y:{stacked:true,ticks:{color:'#8892a4',font:{size:10},callback:v=>BRLk(v)},grid:{color:'#ffffff08'}}}}});
+
+donut('cMarca','lgMarca',[{n:'Portfólio Lopas',f:133082.32,c:'#29b6f6'},{n:'Marca própria Easy House',f:18354.51,c:'#ff4081'}]);
+
+document.getElementById('clsTb').innerHTML=CLS.map(c=>{const p=c.f/MERC*100;
+ return`<tr><td><span style="display:inline-flex;align-items:center;gap:8px"><span class="class-dot" style="background:${c.c}"></span>${c.n}</span></td><td class="r">${c.p}</td><td class="r">${c.q}</td><td class="r">${BRL(c.f)}</td><td class="r" style="color:var(--txt2)">${BRL(c.f/c.q)}</td>
+ <td><div style="display:flex;align-items:center;gap:8px"><div class="mini-track" style="flex:1"><div class="mini-fill" style="width:${p.toFixed(1)}%;background:${c.c}"></div></div><span style="font-family:var(--fd);font-size:12px;color:${c.c};min-width:42px;text-align:right">${PCT(p)}</span></div></td></tr>`;}).join('');
+
+/* ---------- CLIENTES & PRAÇA ---------- */
+new Chart(document.getElementById('cCid'),{type:'bar',data:{labels:CID.map(c=>c.n),datasets:[{data:CID.map(c=>c.f),backgroundColor:'#29b6f6cc',borderRadius:4}]},
+ options:{...GOPT,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+BRL(c.raw)+' · '+CID[c.dataIndex].q+' pedidos'}}},
+ scales:{x:{ticks:{color:'#8892a4',font:{size:10},callback:v=>BRLk(v)},grid:{color:'#ffffff08'}},y:{ticks:{color:'#8892a4',font:{size:10}},grid:{display:false}}}}});
+donut('cUF','lgUF',UF);
+
+new Chart(document.getElementById('cFaixa'),{type:'bar',data:{labels:FAIXA.map(f=>f.n),datasets:[{data:FAIXA.map(f=>f.q),backgroundColor:'#ffd740cc',borderRadius:4}]},
+ options:{...GOPT,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' pedidos · '+BRL(FAIXA[c.dataIndex].f)}}},scales:{...GOPT.scales,y:{beginAtZero:true,ticks:{color:'#8892a4',font:{size:10},stepSize:5},grid:{color:'#ffffff08'}}}}});
+
+document.getElementById('faixaTb').innerHTML=FAIXA.map(f=>`<tr><td>${f.n}</td><td class="r">${f.q}</td><td class="r" style="color:var(--txt2)">${PCT(f.q/PED*100)}</td><td class="r">${BRL(f.f)}</td><td class="r" style="color:var(--yellow)">${PCT(f.f/GMV*100)}</td></tr>`).join('');
+
+document.getElementById('cidTb').innerHTML=CID.map(c=>{const p=c.f/GMV*100;
+ return`<tr><td>${c.n}</td><td class="r">${c.q}</td><td class="r">${BRL(c.f)}</td><td class="r" style="color:var(--txt2)">${BRL(c.f/c.q)}</td>
+ <td><div style="display:flex;align-items:center;gap:8px"><div class="mini-track" style="flex:1"><div class="mini-fill" style="width:${(p/22.2*100).toFixed(1)}%"></div></div><span style="font-family:var(--fd);font-size:12px;color:var(--blue);min-width:42px;text-align:right">${PCT(p)}</span></div></td></tr>`;}).join('');
+
+/* ---------- PAGAMENTO ---------- */
+new Chart(document.getElementById('cParc'),{data:{labels:PARC.map(p=>p.p+'x'),datasets:[
+ {type:'bar',label:'Pedidos',data:PARC.map(p=>p.q),backgroundColor:'#ff4081cc',borderRadius:4,yAxisID:'y'},
+ {type:'line',label:'GMV',data:PARC.map(p=>p.f),borderColor:'#00e676',borderWidth:2,pointRadius:3,tension:.25,yAxisID:'y1'}
+]},options:{...GOPT,plugins:{legend:{display:true,labels:{color:'#8892a4',font:{size:10},boxWidth:12}},tooltip:{callbacks:{label:c=>c.dataset.label==='GMV'?' GMV: '+BRL(c.raw):' Pedidos: '+c.raw}}},
+ scales:{x:{ticks:{color:'#8892a4',font:{size:10}},grid:{display:false}},
+ y:{beginAtZero:true,ticks:{color:'#8892a4',font:{size:10},stepSize:3},grid:{color:'#ffffff08'}},
+ y1:{position:'right',ticks:{color:'#00e676',font:{size:10},callback:v=>BRLk(v)},grid:{display:false}}}}});
+donut('cBand','lgBand',BAND);
+
+document.getElementById('parcTb').innerHTML=PARC.map(p=>{const pc=p.f/GMV*100;
+ return`<tr><td><span class="dn">${p.p}x</span></td><td class="r">${p.q}</td><td class="r">${BRL(p.f)}</td><td class="r" style="color:var(--txt2)">${BRL(p.f/p.q)}</td><td class="r" style="color:var(--pink)">${BRL(p.f/p.q/p.p)}</td>
+ <td><div style="display:flex;align-items:center;gap:8px"><div class="mini-track" style="flex:1"><div class="mini-fill" style="width:${(pc/30.5*100).toFixed(1)}%;background:var(--pink)"></div></div><span style="font-family:var(--fd);font-size:12px;color:var(--txt2);min-width:42px;text-align:right">${PCT(pc)}</span></div></td></tr>`;}).join('');
+
+/* ---------- OPERAÇÃO ---------- */
+new Chart(document.getElementById('cStatus'),{type:'bar',data:{labels:STATUS.map(s=>s.n),datasets:[{data:STATUS.map(s=>s.f),backgroundColor:STATUS.map(s=>s.c+'cc'),borderRadius:4}]},
+ options:{...GOPT,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+BRL(c.raw)+' · '+STATUS[c.dataIndex].q+' pedidos'}}},
+ scales:{x:{ticks:{color:'#8892a4',font:{size:10},callback:v=>BRLk(v)},grid:{color:'#ffffff08'}},y:{ticks:{color:'#8892a4',font:{size:10}},grid:{display:false}}}}});
+
+new Chart(document.getElementById('cPrazo'),{type:'bar',data:{labels:PRAZO.map(p=>p.n),datasets:[{data:PRAZO.map(p=>p.q),backgroundColor:PRAZO.map(p=>p.q>10?'#ffd740cc':'#00e676cc'),borderRadius:4}]},
+ options:{...GOPT,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' pedidos'}}},scales:{...GOPT.scales,y:{beginAtZero:true,ticks:{color:'#8892a4',font:{size:10},stepSize:10},grid:{color:'#ffffff08'}}}}});
+
+document.getElementById('courTb').innerHTML=COUR.map(c=>{const p=c.q/PED*100;
+ return`<tr><td>${c.n}${c.n==='Contingência'?' <span class="badge-sm bg-red" style="margin-left:6px">revisar</span>':''}</td><td class="r">${c.q}</td>
+ <td><div style="display:flex;align-items:center;gap:8px"><div class="mini-track" style="flex:1"><div class="mini-fill" style="width:${p.toFixed(1)}%;background:${c.n==='Contingência'?'var(--red)':'var(--blue)'}"></div></div><span style="font-family:var(--fd);font-size:12px;color:var(--txt2);min-width:42px;text-align:right">${PCT(p)}</span></div></td></tr>`;}).join('');
+
+document.getElementById('slaTb').innerHTML=SLA.map(s=>{const p=s.q/PED*100;
+ return`<tr><td>${s.n}</td><td class="r">${s.q}</td><td class="r" style="color:var(--txt2)">${s.pz}</td>
+ <td><div style="display:flex;align-items:center;gap:8px"><div class="mini-track" style="flex:1"><div class="mini-fill" style="width:${p.toFixed(1)}%;background:var(--purple)"></div></div><span style="font-family:var(--fd);font-size:12px;color:var(--txt2);min-width:42px;text-align:right">${PCT(p)}</span></div></td></tr>`;}).join('');
+
+new Chart(document.getElementById('cHora'),{type:'bar',data:{labels:HORA.map(h=>h.n),datasets:[{data:HORA.map(h=>h.q),backgroundColor:'#ff4081cc',borderRadius:4}]},
+ options:{...GOPT,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' pedidos · '+BRL(HORA[c.dataIndex].f)}}},scales:{...GOPT.scales,y:{beginAtZero:true,ticks:{color:'#8892a4',font:{size:10},stepSize:5},grid:{color:'#ffffff08'}}}}});
+
+new Chart(document.getElementById('cDow'),{type:'bar',data:{labels:DOW.map(d=>d.n),datasets:[{data:DOW.map(d=>d.q),backgroundColor:'#b388ffcc',borderRadius:4}]},
+ options:{...GOPT,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' pedidos · '+BRL(DOW[c.dataIndex].f)}}},scales:{...GOPT.scales,y:{beginAtZero:true,ticks:{color:'#8892a4',font:{size:10},stepSize:3},grid:{color:'#ffffff08'}}}}});
+</script>
+</body>
+</html>
