@@ -2,6 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="theme-color" content="#0a0a0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -4890,15 +4893,8 @@ db.ref('painel/ultimaAtualizacao').once('value', function(snap) {
   if (ts) {
     exibirDataAtualizacao(ts);
   } else {
-    // Fallback: usa o timestamp do cache de pedidos (já existia antes da feature)
-    db.ref('cache/pedidos').once('value', function(snap2) {
-      var cache = snap2.val();
-      if (cache && cache.ts) {
-        exibirDataAtualizacao(cache.ts);
-        // Migra para o novo nó para não precisar de fallback nas próximas vezes
-        db.ref('painel/ultimaAtualizacao').set(cache.ts);
-      }
-    });
+    // Sem registro ainda — usa a data/hora atual (cache removido do projeto).
+    exibirDataAtualizacao(Date.now());
   }
 });
 
@@ -5309,7 +5305,8 @@ function iframeAbrir(url, titulo) {
   var iframe  = document.getElementById('iframe-content');
   var title   = document.getElementById('iframe-page-title');
   if (!overlay || !iframe) return;
-  iframe.src = url;
+  // CACHE REMOVIDO — parâmetro anti-cache para sempre carregar a versão atual
+  iframe.src = url + (url.indexOf('?') > -1 ? '&' : '?') + '_nc=' + Date.now();
   if (title) title.textContent = titulo || '';
   overlay.style.display = 'flex';
   document.body.style.overflow = 'hidden';
@@ -5943,7 +5940,7 @@ function vtexSincronizar() {
   if (sync) sync.textContent = '🔄 Buscando novos pedidos...';
 
   // Chama acao=sincronizar → Apps Script busca pedidos novos e atualiza o cache
-  fetch(VTEX_API + '?acao=sincronizar')
+  fetch(VTEX_API + '?acao=sincronizar', { cache:'no-store' })
     .then(function(r){ return r.json(); })
     .then(function(data) {
       if (btn)  { btn.style.opacity = ''; btn.style.pointerEvents = ''; btn.textContent = '↻ Sincronizar'; }
@@ -5962,7 +5959,7 @@ function vtexSincronizar() {
 }
 
 function vtexCarregarResumo(force) {
-  fetch(VTEX_API + '?acao=resumo')
+  fetch(VTEX_API + '?acao=resumo', { cache:'no-store' })
     .then(function(r){ return r.json(); })
     .then(function(data) {
       var pagos     = data.pedidosPagos     || 0;
@@ -6036,7 +6033,7 @@ function vtexCarregarResumo(force) {
     });
 
   // Carrega pedidos para a tabela e charts
-  fetch(VTEX_API + '?acao=pedidos')
+  fetch(VTEX_API + '?acao=pedidos', { cache:'no-store' })
     .then(function(r){ return r.json(); })
     .then(function(data) {
       var peds = data.pedidos || [];
@@ -6050,7 +6047,7 @@ function vtexCarregarResumo(force) {
     });
 
   // Carrega analytics (abandono + hora do dia)
-  fetch(VTEX_API + '?acao=analytics')
+  fetch(VTEX_API + '?acao=analytics', { cache:'no-store' })
     .then(function(r){ return r.json(); })
     .then(function(data) {
       window._vtexAnalytics = data;
@@ -7296,8 +7293,7 @@ let anyFiltro = 'zerado';
 let anyProdutoAtual = null;
 let anyToastTimer;
 let anyCarregado = false;
-const ANY_CACHE_KEY      = 'eh_any_estoque_cache';
-const ANY_CACHE_TIME_KEY = 'eh_any_estoque_time';
+let ANY_ULTIMO_SYNC = null;   // timestamp em memória (cache removido)
 const ANY_AUTO_INTERVAL  = 60 * 60 * 1000; // 60 minutos
 let anyAutoTimer = null;
 
@@ -7340,12 +7336,7 @@ function anyIniciarAutoRefresh() {
         anyRenderTabela();
       }
     })
-    .catch(() => {
-      try {
-        const cache = anyCarregarCache();
-        if (cache) { ANY_PRODUTOS = cache.produtos; anyCarregado = true; }
-      } catch(e) {}
-    });
+    .catch(() => {});   // sem cache de fallback — falha silenciosa
   anyIniciarAutoRefresh();
 })();
 
@@ -7371,7 +7362,7 @@ function anyNomeCanal(raw) {
 
 // ── BUSCAR DO CACHE (Google Sheets) ──────────────────────────────────────────
 async function anyBuscarAPI() {
-  const r    = await fetch(`${ANY_API}?acao=cache`);
+  const r    = await fetch(`${ANY_API}?acao=cache&_nc=${Date.now()}`, { cache:'no-store' });
   const json = await r.json();
 
   if (json.erro) throw new Error(json.erro);
@@ -7425,20 +7416,14 @@ function anySetLoading(on) {
   }
 }
 
+// CACHE REMOVIDO — nada é persistido. Guarda só a hora do último carregamento.
 function anySalvarCache(produtos) {
-  try {
-    localStorage.setItem(ANY_CACHE_KEY, JSON.stringify(produtos));
-    localStorage.setItem(ANY_CACHE_TIME_KEY, new Date().toISOString());
-  } catch(e) {}
+  ANY_ULTIMO_SYNC = new Date().toISOString();
 }
 
 function anyCarregarCache() {
-  try {
-    const raw = localStorage.getItem(ANY_CACHE_KEY);
-    const time = localStorage.getItem(ANY_CACHE_TIME_KEY);
-    if (raw && time) return { produtos: JSON.parse(raw), time };
-  } catch(e) {}
-  return null;
+  if (!ANY_ULTIMO_SYNC) return null;
+  return { produtos: ANY_PRODUTOS, time: ANY_ULTIMO_SYNC };
 }
 
 function anyFormatarTempo(iso) {
@@ -7577,7 +7562,7 @@ function anyRenderTabela() {
 
 async function anyBuscarAPIDirecta() {
   // Busca direto da API — todas as páginas em paralelo
-  const r0  = await fetch(`${ANY_API}?endpoint=stocks&limit=50&offset=0`);
+  const r0  = await fetch(`${ANY_API}?endpoint=stocks&limit=50&offset=0`, { cache:'no-store' });
   const j0  = await r0.json();
   const pg0 = (j0.content || []).filter(i => SKUS_MONITORADOS.includes((i.stockKeepingUnit && i.stockKeepingUnit.partnerId) || ''));
   const totalPages = (j0.page && j0.page.totalPages) ? j0.page.totalPages : 1;
@@ -7587,7 +7572,7 @@ async function anyBuscarAPIDirecta() {
   const promises = [];
   for (let p = 1; p < totalPages; p++) {
     promises.push(
-      fetch(`${ANY_API}?endpoint=stocks&limit=50&offset=${p * 50}`)
+      fetch(`${ANY_API}?endpoint=stocks&limit=50&offset=${p * 50}`, { cache:'no-store' })
         .then(r => r.json())
         .then(j => (j.content || []).filter(i => SKUS_MONITORADOS.includes((i.stockKeepingUnit && i.stockKeepingUnit.partnerId) || '')))
         .catch(() => [])
@@ -7698,25 +7683,12 @@ let pedToastTimer;
 function pedCanalIcon(canal) { return ''; }
 
 // ── PRÉ-CARREGAMENTO após login ───────────────────────────────────────
-const PED_CACHE_KEY = 'eh_ped_cache';
+var PED_ULTIMO_FETCH = 0;   // timestamp do último fetch (memória, sem cache)
 
 function pedSalvarCache(dados) {
-  // Salva localmente (carregamento instantâneo)
-  try {
-    localStorage.setItem(PED_CACHE_KEY, JSON.stringify({
-      ts: Date.now(),
-      tsReal: PED_ATUALIZADO_EM ? PED_ATUALIZADO_EM.toISOString() : null,
-      dados: dados
-    }));
-  } catch(e) {}
-  // Salva no Firebase (compartilhado entre todos os usuários)
-  try {
-    db.ref('cache/pedidos').set({
-      ts: Date.now(),
-      tsReal: PED_ATUALIZADO_EM ? PED_ATUALIZADO_EM.toISOString() : null,
-      dados: dados
-    });
-  } catch(e) {}
+  // CACHE REMOVIDO — nada é persistido. Mantido apenas o timestamp em memória
+  // para o rótulo de "última atualização".
+  PED_ULTIMO_FETCH = Date.now();
 }
 
 // Atualiza dados quando pedidos chegam (só regenera conteúdo, sem resetar animação)
@@ -7726,67 +7698,24 @@ pedSalvarCache = function(dados) {
 };
 
 function pedLerCacheLocal() {
-  try {
-    var raw = localStorage.getItem(PED_CACHE_KEY);
-    if (!raw) return null;
-    var obj = JSON.parse(raw);
-    if (Date.now() - obj.ts > 2 * 60 * 60 * 1000) return null;
-    // Restaura o timestamp real da última sincronização
-    if (obj.tsReal && !PED_ATUALIZADO_EM) {
-      var d = new Date(obj.tsReal);
-      if (!isNaN(d)) PED_ATUALIZADO_EM = d;
-    }
-    return obj.dados;
-  } catch(e) { return null; }
+  // CACHE REMOVIDO — sempre força busca na API.
+  return null;
 }
 
 function pedPreCarregar() {
   if (PED_TODOS.length > 0) return;
 
-  // 1. Carrega do cache local instantaneamente
-  var cacheLocal = pedLerCacheLocal();
-  if (cacheLocal && cacheLocal.length > 0) {
-    PED_TODOS = cacheLocal;
+  // CACHE REMOVIDO — busca sempre direto da API.
+  pedBuscarCache().then(function(dados) {
+    PED_TODOS = dados;
+    pedSalvarCache(dados);
     pedAtualizarHora();
-  }
+    var v = document.getElementById('pedidos-view');
+    if (v && v.classList.contains('open')) pedRenderTabela();
+  }).catch(function() {});
 
-  // 2. Verifica cache do Firebase (compartilhado entre usuários)
-  db.ref('cache/pedidos').once('value', function(snap) {
-    var cacheFirebase = snap.val();
-    var TTL = 2 * 60 * 60 * 1000; // 2 horas
-
-    if (cacheFirebase && cacheFirebase.dados && (Date.now() - cacheFirebase.ts) < TTL) {
-      var dadosFirebase = cacheFirebase.dados;
-      var tsLocal = cacheLocal ? (JSON.parse(localStorage.getItem(PED_CACHE_KEY) || '{}').ts || 0) : 0;
-      if (cacheFirebase.ts > tsLocal) {
-        PED_TODOS = dadosFirebase;
-        if (cacheFirebase.tsReal && !PED_ATUALIZADO_EM) {
-          var d = new Date(cacheFirebase.tsReal);
-          if (!isNaN(d)) PED_ATUALIZADO_EM = d;
-        }
-        try {
-          localStorage.setItem(PED_CACHE_KEY, JSON.stringify({
-            ts: cacheFirebase.ts, tsReal: cacheFirebase.tsReal, dados: dadosFirebase
-          }));
-        } catch(e) {}
-        pedAtualizarHora();
-        if (document.getElementById('pedidos-view').classList.contains('open')) {
-          pedRenderTabela();
-        }
-      }
-    } else {
-      pedBuscarCache().then(function(dados) {
-        PED_TODOS = dados;
-        pedSalvarCache(dados);
-        pedAtualizarHora();
-        if (document.getElementById('pedidos-view').classList.contains('open')) {
-          pedRenderTabela();
-        }
-      }).catch(function() {});
-    }
-    // Busca confirmados (SENT/DELIVERED/INVOICED) em background para o financeiro
-    pedBuscarConfirmados();
-  });
+  // Busca confirmados (SENT/DELIVERED/INVOICED) em background para o financeiro
+  pedBuscarConfirmados();
 }
 
 const CANAL_NOMES_PED = {
@@ -7862,7 +7791,7 @@ function pedNormalizarStatus(st) {
 
 // Lê do cache da planilha (abertura do painel)
 async function pedBuscarCache() {
-  const r    = await fetch(PED_API + '?acao=pedidos');
+  const r    = await fetch(PED_API + '?acao=pedidos&_nc=' + Date.now(), { cache:'no-store' });
   const json = await r.json();
   if (json.erro) throw new Error(json.erro);
 
@@ -7934,7 +7863,7 @@ async function pedBuscarPagosPorStatus(status) {
 
   while (temMais) {
     const url  = PED_API + '?endpoint=orders&limit=50&offset=' + offset + '&status=' + status;
-    const r    = await fetch(url);
+    const r    = await fetch(url, { cache:'no-store' });
     const json = await r.json();
     const itens = json.content || [];
     let foraMes = 0;
@@ -8163,15 +8092,12 @@ function pedSincronizar() {
   btn.disabled = true;
   lucide.createIcons();
 
-  // Limpa cache local e do Firebase para forçar dados frescos
-  try { localStorage.removeItem(PED_CACHE_KEY); } catch(e) {}
-  try { db.ref('cache/pedidos').remove(); } catch(e) {}
   PED_TODOS = [];
 
   pedBuscarCache()
     .then(function(dados) {
       PED_TODOS = dados;
-      pedSalvarCache(dados); // salva no localStorage E no Firebase
+      pedSalvarCache(dados);
       btn.innerHTML = '<i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Sincronizar';
       btn.disabled = false;
       lucide.createIcons();
@@ -8588,12 +8514,9 @@ abrirPedidos = function() {
   pedRestaurarFiltros(); pedAtualizarHora();
   if (PED_TODOS.length > 0) {
     pedRenderTabela();
-    var raw=localStorage.getItem(PED_CACHE_KEY), ts=raw?(JSON.parse(raw).ts||0):0;
-    if (Date.now()-ts > 15*60*1000) pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();}).catch(function(){});
+    pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();}).catch(function(){});
   } else {
-    var cl=pedLerCacheLocal();
-    if(cl&&cl.length>0){ PED_TODOS=cl; pedRenderTabela(); pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();}).catch(function(){}); }
-    else { pedSetLoading(true); pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();pedShowToast('Carregado: '+d.length+' pedidos');}).catch(function(){ document.getElementById('pedTbody').innerHTML='<div class="ped-empty"><i data-lucide="wifi-off" style="width:32px;height:32px;color:var(--accent-red);opacity:0.5;"></i><p>Erro ao conectar.</p></div>'; lucide.createIcons(); }); }
+    pedSetLoading(true); pedBuscarCache().then(function(d){PED_TODOS=d;pedSalvarCache(d);pedAtualizarHora();pedRenderTabela();pedShowToast('Carregado: '+d.length+' pedidos');}).catch(function(){ document.getElementById('pedTbody').innerHTML='<div class="ped-empty"><i data-lucide="wifi-off" style="width:32px;height:32px;color:var(--accent-red);opacity:0.5;"></i><p>Erro ao conectar.</p></div>'; lucide.createIcons(); });
   }
   lucide.createIcons();
 };
@@ -8706,9 +8629,9 @@ renderMural=function(notas){
 // System Health
 var HEALTH_SERVICES=[
   {id:'firebase',name:'Firebase Realtime DB',desc:'Mural, logs, cache',checkFn:function(){return new Promise(function(res){var t=setTimeout(function(){res({status:'error',label:'Sem resposta'});},4000);db.ref('.info/connected').once('value',function(s){clearTimeout(t);res(s.val()?{status:'ok',label:'Conectado'}:{status:'warn',label:'Desconectado'});},function(){clearTimeout(t);res({status:'error',label:'Erro'});});});}},
-  {id:'pedapi',name:'Google Apps Script',desc:'Cache de pedidos',checkFn:function(){return Promise.race([fetch(PED_API+'?acao=ping').then(function(r){return r.ok?{status:'ok',label:'Operacional'}:{status:'warn',label:'HTTP '+r.status};}),new Promise(function(_,rej){setTimeout(function(){rej(new Error('t'));},6000);})]).catch(function(e){return e.message==='t'?{status:'warn',label:'Resposta lenta'}:{status:'ok',label:'Operacional'};});}},
+  {id:'pedapi',name:'Google Apps Script',desc:'API de pedidos',checkFn:function(){return Promise.race([fetch(PED_API+'?acao=ping', { cache:'no-store' }).then(function(r){return r.ok?{status:'ok',label:'Operacional'}:{status:'warn',label:'HTTP '+r.status};}),new Promise(function(_,rej){setTimeout(function(){rej(new Error('t'));},6000);})]).catch(function(e){return e.message==='t'?{status:'warn',label:'Resposta lenta'}:{status:'ok',label:'Operacional'};});}},
   {id:'alertas',name:'Alertas Anymarket',desc:'Alertas no Firebase',link:'https://status.anymarket.com.br',checkFn:function(){return new Promise(function(res){db.ref('alertas').once('value',function(s){var a=Object.values(s.val()||{}).filter(function(x){return x&&x.ativo;});res(a.length>0?{status:'warn',label:a.length+' alerta(s)',detail:a[0].titulo}:{status:'ok',label:'Sem alertas'});},function(){res({status:'ok',label:'Desconhecido'});});});}},
-  {id:'cache',name:'Cache de Pedidos',desc:'Ultima sincronizacao',link:null,checkFn:function(){return new Promise(function(res){try{var r=localStorage.getItem(PED_CACHE_KEY);if(!r)return res({status:'warn',label:'Sem cache'});var o=JSON.parse(r),m=Math.round((Date.now()-o.ts)/60000);res(m>120?{status:'warn',label:'Expirado ('+m+'min)'}:{status:'ok',label:'Ha '+m+'min'});}catch(e){res({status:'warn',label:'Cache invalido'});}});}}
+  {id:'cache',name:'Dados de Pedidos',desc:'Sempre ao vivo (sem cache)',link:null,checkFn:function(){return new Promise(function(res){try{if(!PED_ULTIMO_FETCH)return res({status:'warn',label:'Nao carregado'});var m=Math.round((Date.now()-PED_ULTIMO_FETCH)/60000);res({status:'ok',label:m<1?'Agora mesmo':'Ha '+m+'min'});}catch(e){res({status:'warn',label:'Indisponivel'});}});}}
 ];
 var _healthResults={};
 
@@ -9862,7 +9785,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // ── Metas comerciais (comercial.html) — último mês de análise ──
   // Devolvem o % de cumprimento (faturado ÷ meta × 100) para comparar com 100.
   const CAT_METAS = ['COMP','GR','SALA','COZINHA'];
-  let _comCacheMetas = null;
 
   function parseMoneyMetas(txt){
     if(txt === null || txt === undefined) return null;
@@ -9874,7 +9796,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function carregarComercialMetas(){
-    if(_comCacheMetas) return _comCacheMetas;
     const res = await fetch(COM_URL_METAS, { cache:'no-store' });
     if(!res.ok) throw new Error('HTTP '+res.status);
     const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
@@ -9922,8 +9843,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let catFat=0, catMeta=0;
     CAT_METAS.forEach(function(c){ catFat+=cat[c].fat; catMeta+=cat[c].meta; });
 
-    _comCacheMetas = { mktFat, mktMeta, catFat, catMeta };
-    return _comCacheMetas;
+    return { mktFat, mktMeta, catFat, catMeta };
   }
 
   async function fetchMktParaMetas(){
@@ -9955,7 +9875,6 @@ document.addEventListener('DOMContentLoaded', function() {
   async function atualizarMetas(){
     const widget = document.getElementById('metas-widget');
     if(!widget) return;
-    _comCacheMetas = null;   // zera cache do comercial p/ buscar dados frescos
 
     try{
       const resultados = await Promise.all(METAS.map(async function(m){
@@ -10729,10 +10648,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const MESES_KEY  = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   const MESES_NOME = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const MESES_ABV  = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  const CACHE_MS   = 10 * 60 * 1000;
+  const REFRESH_MS = 10 * 60 * 1000;   // só intervalo de refresh — sem cache
 
-  let cacheHtml = null;
-  let cacheTime = 0;
   let fetching  = false;
 
   const BRLm = v => v >= 1e6
@@ -10908,17 +10825,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if(!track) return;
     if(fetching) return;
 
-    // Cache válido — usa direto
-    if(cacheHtml && (Date.now() - cacheTime) < CACHE_MS){
-      track.innerHTML = cacheHtml;
-      return;
-    }
-
     fetching = true;
     try{
       const html = await gerarHtmlTicker();
-      cacheHtml = html;
-      cacheTime = Date.now();
       // Só substitui se ainda estamos no 1P quando o fetch terminou
       if(document.body.classList.contains('body-1p')){
         track.innerHTML = html;
@@ -10936,11 +10845,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // Refresh periódico enquanto estiver no 1P
   setInterval(() => {
     if(document.body && document.body.classList.contains('body-1p')){
-      // Invalida cache pra forçar refetch
-      cacheTime = 0;
       popularTickerReal();
     }
-  }, CACHE_MS);
+  }, REFRESH_MS);
 
   // Se a página já abrir no 1P (via sessionStorage), atualizarModo já foi chamada antes deste script.
   // Roda uma vez agora pra cobrir esse caso.
