@@ -3443,10 +3443,11 @@ body.light-mode .scroll-hint-arrow:hover {
 .vtexcom-chip-purple { border-color: rgba(156,111,255,0.35); background: rgba(156,111,255,0.08); color: #9c6fff; }
 .vtexcom-chip-gold   { border-color: rgba(245,158,11,0.35);  background: rgba(245,158,11,0.08);  color: #f59e0b; }
 
-/* Grid VTEX responsivo (6 cards) */
-@media (min-width: 769px) and (max-width: 1500px) {
-  #vtex-kpi-grid { grid-template-columns: repeat(3, 1fr) !important; }
-}
+/* Grid VTEX — card único ocupando a largura */
+#vtex-kpi-grid { grid-template-columns: 1fr !important; }
+.card-vtexcom { padding: 26px 30px; }
+.card-vtexcom .vtexcom-chips { padding-top: 14px; }
+.card-vtexcom .vtexcom-chip { font-size: 11px; padding: 5px 12px; }
 
 /* Sub-links dentro do card Pós-venda */
 .card-posvendasub {
@@ -4530,7 +4531,7 @@ body.light-mode #iframe-page-title {
     <div class="channel-panel panel-vtex" id="panel-vtex">
 
       <!-- KPIs -->
-      <div class="dashboard" id="vtex-kpi-grid" style="grid-template-columns:repeat(6,1fr);margin-bottom:20px;">
+      <div class="dashboard" id="vtex-kpi-grid" style="grid-template-columns:1fr;margin-bottom:20px;">
 
         <!-- DASHBOARD COMERCIAL · SITE OFICIAL -->
         <a class="card card-vtexcom" href="javascript:void(0)"
@@ -4539,14 +4540,14 @@ body.light-mode #iframe-page-title {
            onclick="iframeAbrir(this.dataset.iframe,this.dataset.title)"
            style="cursor:pointer;border-color:rgba(56,189,248,0.22);">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-            <div class="icon-wrap" style="background:rgba(56,189,248,0.12);border-color:rgba(56,189,248,0.25);margin-bottom:0;width:36px;height:36px;">
-              <i data-lucide="layout-dashboard" style="width:18px;height:18px;color:#38bdf8;"></i>
+            <div class="icon-wrap" style="background:rgba(56,189,248,0.12);border-color:rgba(56,189,248,0.25);margin-bottom:0;width:44px;height:44px;">
+              <i data-lucide="layout-dashboard" style="width:22px;height:22px;color:#38bdf8;"></i>
             </div>
             <span style="font-size:9px;color:#38bdf8;font-weight:700;letter-spacing:1px;opacity:0.8;">VER DASHBOARD →</span>
           </div>
           <div class="card-tag" style="color:#38bdf8;margin-top:10px;">Comercial · Site Oficial</div>
-          <h2 style="font-size:14px;margin:2px 0 4px;color:var(--text-primary);">Dashboard Easy House</h2>
-          <div id="vtex-com-periodo" style="font-size:9.5px;letter-spacing:0.6px;color:var(--text-secondary);text-transform:uppercase;font-weight:600;opacity:0.8;line-height:1.4;margin-bottom:10px;">Mês em curso · 1ª operação do canal próprio</div>
+          <h2 style="font-size:24px;font-weight:800;letter-spacing:-0.6px;margin:6px 0 6px;color:var(--text-primary);">Dashboard Easy House · Site Oficial</h2>
+          <div id="vtex-com-periodo" style="font-size:10.5px;letter-spacing:0.7px;color:var(--text-secondary);text-transform:uppercase;font-weight:600;opacity:0.8;line-height:1.4;margin-bottom:4px;">Mês em curso · 1ª operação do canal próprio</div>
           <div class="vtexcom-chips">
             <span class="vtexcom-chip vtexcom-chip-cyan">GMV: <b id="vtex-com-gmv">—</b></span>
             <span class="vtexcom-chip vtexcom-chip-green"><b id="vtex-com-pedidos">—</b> pedidos</span>
@@ -4555,99 +4556,6 @@ body.light-mode #iframe-page-title {
             <span class="vtexcom-chip vtexcom-chip-gold"><b id="vtex-com-canc">—</b> cancelamentos</span>
           </div>
         </a>
-
-        <!-- PAGOS -->
-        <div class="card" style="cursor:default;border-color:rgba(240,17,106,0.2);">
-          <div class="icon-wrap" style="background:rgba(240,17,106,0.12);border-color:rgba(240,17,106,0.25);">
-            <i data-lucide="check-circle" style="width:22px;height:22px;color:#f0116a;"></i>
-          </div>
-          <div class="card-tag" style="color:#f0116a;">Pedidos Pagos</div>
-          <div id="vtex-pagos" style="font-size:52px;font-weight:800;color:var(--text-primary);line-height:1;margin:8px 0 6px;">—</div>
-          <div id="vtex-receita" style="font-size:16px;font-weight:700;color:#f0116a;">—</div>
-          <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;">receita do mês</div>
-          <div id="vtex-comparativo" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--text-secondary);">—</div>
-        </div>
-
-        <!-- DETALHAMENTO -->
-        <div class="card" id="vtex-card-det" style="cursor:pointer;transition:all 0.2s;" onclick="vtexAbrirModal()">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-            <div class="icon-wrap" style="background:rgba(240,17,106,0.12);border-color:rgba(240,17,106,0.25);margin-bottom:0;width:36px;height:36px;">
-              <i data-lucide="list" style="width:18px;height:18px;color:#f0116a;"></i>
-            </div>
-            <span style="font-size:9px;color:#f0116a;font-weight:700;letter-spacing:1px;opacity:0.8;">VER PEDIDOS →</span>
-          </div>
-          <div class="card-tag" style="color:#f0116a;margin-top:10px;">Pedidos · Detalhamento</div>
-          <h2 style="font-size:14px;margin:2px 0 10px;color:var(--text-primary);">moveislopas.com.br</h2>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:rgba(31,189,114,0.08);border:1px solid rgba(31,189,114,0.2);border-radius:7px;">
-              <span style="font-size:11px;color:var(--text-secondary);">✅ Pagos</span>
-              <span id="vtex-det-pagos" style="font-size:15px;font-weight:800;color:#1fbd72;">—</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.2);border-radius:7px;">
-              <span style="font-size:11px;color:var(--text-secondary);">⏳ Pendentes</span>
-              <span id="vtex-det-pendentes" style="font-size:15px;font-weight:800;color:#d4a017;">—</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:rgba(204,40,40,0.08);border:1px solid rgba(204,40,40,0.2);border-radius:7px;">
-              <span style="font-size:11px;color:var(--text-secondary);">❌ Cancelados</span>
-              <span id="vtex-det-cancelados" style="font-size:15px;font-weight:800;color:#cc2828;">—</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- TICKET MÉDIO -->
-        <div class="card" style="cursor:default;">
-          <div class="icon-wrap" style="background:rgba(31,189,114,0.1);border-color:rgba(31,189,114,0.2);">
-            <i data-lucide="trending-up" style="width:22px;height:22px;color:var(--accent-green);"></i>
-          </div>
-          <div class="card-tag" style="color:var(--accent-green);">Ticket Médio</div>
-          <div id="vtex-ticket" style="font-size:36px;font-weight:800;color:var(--text-primary);line-height:1;margin:8px 0 6px;">—</div>
-          <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;">por pedido pago</div>
-        </div>
-
-        <!-- ANALYTICS -->
-        <div class="card" style="cursor:pointer;border-color:rgba(156,111,255,0.2);" onclick="vtexAbrirAnalytics()">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-            <div class="icon-wrap" style="background:rgba(156,111,255,0.12);border-color:rgba(156,111,255,0.25);margin-bottom:0;width:36px;height:36px;">
-              <i data-lucide="bar-chart-2" style="width:18px;height:18px;color:#9c6fff;"></i>
-            </div>
-            <span style="font-size:9px;color:#9c6fff;font-weight:700;letter-spacing:1px;opacity:0.8;">VER ANÁLISE →</span>
-          </div>
-          <div class="card-tag" style="color:#9c6fff;margin-top:10px;">Analytics</div>
-          <h2 style="font-size:14px;margin:2px 0 10px;color:var(--text-primary);">Análise do Mês</h2>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
-              <i data-lucide="bar-chart" style="width:13px;height:13px;color:#9c6fff;flex-shrink:0;"></i>
-              <span style="font-size:11px;color:var(--text-secondary);">Evolução diária</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
-              <i data-lucide="map-pin" style="width:13px;height:13px;color:#9c6fff;flex-shrink:0;"></i>
-              <span style="font-size:11px;color:var(--text-secondary);">Ranking por estado</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
-              <i data-lucide="package" style="width:13px;height:13px;color:#9c6fff;flex-shrink:0;"></i>
-              <span style="font-size:11px;color:var(--text-secondary);">Top produtos</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
-              <i data-lucide="shopping-cart" style="width:13px;height:13px;color:#9c6fff;flex-shrink:0;"></i>
-              <span style="font-size:11px;color:var(--text-secondary);">Abandono de carrinho</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;">
-              <i data-lucide="clock" style="width:13px;height:13px;color:#9c6fff;flex-shrink:0;"></i>
-              <span style="font-size:11px;color:var(--text-secondary);">Pico de compras</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- TOTAL + SYNC -->
-        <div class="card" style="cursor:default;">
-          <div class="icon-wrap" style="background:rgba(45,125,210,0.12);border-color:rgba(45,125,210,0.2);">
-            <i data-lucide="shopping-cart" style="width:22px;height:22px;color:var(--accent-blue);"></i>
-          </div>
-          <div class="card-tag" style="color:var(--accent-blue);">Total do Mês</div>
-          <div id="vtex-total" style="font-size:52px;font-weight:800;color:var(--text-primary);line-height:1;margin:8px 0 6px;">—</div>
-          <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;">todos os pedidos</div>
-          <div id="vtex-sync" style="font-size:10px;color:var(--text-secondary);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">—</div>
-        </div>
 
       </div>
 
@@ -6060,12 +5968,12 @@ function vtexCarregarResumo(force) {
 // ── NOTIFICAÇÕES DO DIA (geradas automaticamente) ────────────────────
 let NOTIFICACOES_HOJE = [
   {id:1,icon:'📦',cor:'rgba(212,160,23,0.15)',titulo:'Estoque: 13 variações em alerta ⚠️',desc:'55,0% reservado · ',hora:'29/07/2026',lida:false,link:'estoque.html',critico:true},
-  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 0,00%',desc:'93 em atraso · 197 sem faturar · Todas transportadoras na meta ✅',hora:'21/08/2026',lida:false,link:'sla_transporte.html',critico:true},
+  {id:2,icon:'🚚',cor:'rgba(204,40,40,0.18)',titulo:'SLA: ⚠️ Abaixo da meta — 0,00%',desc:'93 em atraso · 240 sem faturar · Todas transportadoras na meta ✅',hora:'20/08/2026',lida:false,link:'sla_transporte.html',critico:true},
   {id:3,icon:'📈',cor:'rgba(45,125,210,0.15)',titulo:'Comercial: Abr 118,56% da Meta (01–30/04)',desc:'R$ 9,05M faturado em 30 dias · Média diária R$ 302K · Meta R$ 8,6M · +168% Ano x Ano',hora:'30/04/2026',lida:false,link:'comercial.html',critico:false},
-  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: Em dia ✅',desc:'? itens · ? pedidos · ? em atraso · Atraso médio ? · Maior: 0 () · 0 moderado(s):  · 0 críticos',hora:'21/08/2026',lida:false,link:'assistencia.html',critico:false},
+  {id:4,icon:'🔧',cor:'rgba(234,179,8,0.12)',titulo:'Assistência: Em dia ✅',desc:'? itens · ? pedidos · ? em atraso · Atraso médio ? · Maior: 0 () · 0 moderado(s):  · 0 críticos',hora:'20/08/2026',lida:false,link:'assistencia.html',critico:false},
   {id:6,icon:'💰',cor:'rgba(34,197,94,0.12)',titulo:'Financeiro: ? recebido ✓',desc:'Cartas de Débito · ? recebido · R$ 39.305 pendente · ⚠️ R$ 70.804 em jurídico (Vix · Dominalog · Vhz · Novo Rumo)',hora:'11/08/2026',lida:false,link:'financeiro.html',critico:false},
   {id:7,icon:'↩️',cor:'rgba(188,140,255,0.12)',titulo:'Devoluções: 1303 no período',desc:'01/01 a 19/08/2026 · R$ 1,34M · 1303 notas · Ticket médio R$ 1.029 · Top motivo: 35,9% (Desistência · 466 notas) · Top transp: 339 notas (Nova Era Express) · Maior mês: ? ',hora:'19/08/2026',lida:false,link:'devolucao.html',critico:false},
-  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'21/08/2026',lida:false,link:'reputacao.html',critico:false}
+  {id:8,icon:'⭐',cor:'rgba(245,158,11,0.12)',titulo:'Reputação: Magalu · Madeira Laranja 🔴',desc:'Magalu 2,8 Laranja 🔴 · Mercado Livre 3,8 Verde ✓ · Madeira 1,95 Laranja 🔴 · Shopee 4,8 Verde ✓ · Via Varejo 4,1 Verde ✓',hora:'20/08/2026',lida:false,link:'reputacao.html',critico:false}
 ];
 let TEM_CRITICOS = NOTIFICACOES_HOJE.some(n => n.critico);
 
