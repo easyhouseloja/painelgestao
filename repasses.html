@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Easy House · Dashboard de Repasses — Conciliação Koncili</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08090B;
+  --panel:#0F1113;
+  --panel-2:#131619;
+  --panel-3:#171B1F;
+  --line:#23272C;
+  --line-soft:#1A1E22;
+  --txt:#EDEFF2;
+  --dim:#8B949E;
+  --dimmer:#5C656F;
+  --green:#3FB950;
+  --green-2:#56D364;
+  --red:#F85149;
+  --orange:#FF8B3D;
+  --yellow:#E3B341;
+  --blue:#58A6FF;
+  --purple:#BC8CFF;
+  --cyan:#39C5CF;
+  --pink:#FF7EB6;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--txt);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+.mono,.num{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1400px;margin:0 auto;padding:0 20px}
+
+/* ---------- topbar ---------- */
+.topbar{background:#0B0C0E;border-bottom:1px solid var(--line-soft);position:sticky;top:0;z-index:60}
+.topbar .wrap{display:flex;align-items:center;gap:12px;height:40px}
+.btn-back{display:inline-flex;align-items:center;gap:6px;background:var(--panel-3);border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-back:hover{background:var(--panel-2)}
+.topbar .who{font-size:11.5px;color:var(--dim);font-weight:600;letter-spacing:.02em}
+.topbar .right{margin-left:auto;font-size:11px;color:var(--dimmer)}
+
+.crumb{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--dimmer)}
+.crumb .badge-app{background:var(--panel-3);border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--txt);font-weight:600;font-size:11px}
+
+/* ---------- header card ---------- */
+.head{background:linear-gradient(180deg,#101315,#0C0E10);border:1px solid var(--line);border-radius:12px;margin-top:12px;overflow:hidden}
+.head-main{display:flex;align-items:center;gap:13px;padding:12px 16px;flex-wrap:wrap}
+.head-icon{width:32px;height:32px;border-radius:9px;background:linear-gradient(145deg,#3FB950,#2A8C3C);display:grid;place-items:center;font-size:16px;flex:0 0 auto}
+.head-t h1{margin:0;font-size:15px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.head-t p{margin:2px 0 0;font-size:11.5px;color:var(--dimmer)}
+.head-badges{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.hb{border-radius:999px;padding:3px 10px;font-size:11px;font-weight:600;border:1px solid;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.hb.g{border-color:rgba(63,185,80,.4);color:var(--green-2);background:rgba(63,185,80,.08)}
+.hb.b{border-color:rgba(88,166,255,.4);color:var(--blue);background:rgba(88,166,255,.08)}
+.hb.o{border-color:rgba(255,139,61,.4);color:var(--orange);background:rgba(255,139,61,.08)}
+.hb .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+.strip{background:rgba(88,166,255,.05);border-top:1px solid var(--line-soft);padding:7px 16px;font-size:11.5px;color:var(--dimmer);display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.strip b{color:var(--dim);font-weight:600}
+.strip .sep{color:var(--dimmer)}
+
+/* ---------- faixa de comissão ---------- */
+.rep{display:flex;align-items:center;gap:7px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line-soft);border-radius:10px;padding:7px 12px;margin-top:8px}
+.rep-l{font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--dimmer);font-weight:600;white-space:nowrap}
+.rep-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel-2);border-radius:999px;padding:3px 9px;font-size:11.5px;color:var(--dim)}
+.rep-chip i{width:6px;height:6px;border-radius:50%}
+.rep-chip b{color:var(--txt);font-family:"JetBrains Mono";font-weight:700;font-size:11.5px}
+.rep-link{margin-left:auto;color:var(--orange);font-size:11.5px;font-weight:600;background:none;border:none;cursor:pointer;font-family:inherit;white-space:nowrap}
+.rep-link:hover{text-decoration:underline}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:3px;overflow-x:auto;margin-top:10px;padding-bottom:7px;border-bottom:1px solid var(--line-soft);scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.tabs::-webkit-scrollbar{height:5px}
+.tabs::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+.tab{display:inline-flex;align-items:center;gap:7px;background:none;border:1px solid transparent;border-radius:7px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:600;color:var(--dim);cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--txt);background:var(--panel-2)}
+.tab[aria-selected="true"]{color:var(--txt);background:var(--panel-3);border-color:var(--line)}
+.tab .dot{width:6px;height:6px;border-radius:50%;background:var(--dimmer)}
+.tab[aria-selected="true"] .dot{background:var(--green)}
+.tab .st{font-size:9px;letter-spacing:.08em;padding:1px 5px;border-radius:4px;font-weight:700}
+.st.fechado{background:rgba(63,185,80,.14);color:var(--green-2)}
+.st.parcial{background:rgba(255,139,61,.14);color:var(--orange)}
+.st.aguardando{background:rgba(139,148,158,.14);color:var(--dim)}
+.st.regular{background:rgba(227,179,65,.14);color:var(--yellow)}
+.tab:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ---------- blocos ---------- */
+.block-l{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--dimmer);font-weight:700;margin:20px 0 10px;display:flex;align-items:center;gap:10px}
+.block-l span{color:var(--dim);letter-spacing:.02em;text-transform:none;font-size:12px;font-weight:500}
+
+/* ---------- kpi cards ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line-soft);border-radius:12px;padding:17px 17px 15px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--kc,var(--green))}
+.kpi .l{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);font-weight:600}
+.kpi .v{font-family:"JetBrains Mono";font-size:29px;font-weight:700;letter-spacing:-.03em;margin-top:9px;line-height:1.05}
+.kpi .s{font-size:12px;color:var(--dimmer);margin-top:5px}
+.kpi .tagline{margin-top:13px}
+.mini{display:inline-block;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px}
+.mini.g{background:rgba(63,185,80,.12);color:var(--green-2)}
+.mini.r{background:rgba(248,81,73,.12);color:var(--red)}
+.mini.y{background:rgba(227,179,65,.12);color:var(--yellow)}
+.mini.b{background:rgba(88,166,255,.12);color:var(--blue)}
+.mini.n{background:rgba(139,148,158,.12);color:var(--dim)}
+.c-g{color:var(--green-2)}.c-r{color:var(--red)}.c-y{color:var(--yellow)}.c-b{color:var(--blue)}.c-o{color:var(--orange)}
+
+/* ---------- cards / grid ---------- */
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:1.3fr .7fr}
+.g2e{grid-template-columns:1fr 1fr}
+.card{background:var(--panel);border:1px solid var(--line-soft);border-radius:12px;padding:18px}
+.card h3{margin:0;font-size:14px;font-weight:700}
+.card .hint{margin:5px 0 16px;font-size:12px;color:var(--dimmer)}
+.card .hint.after{margin:14px 0 0}
+
+/* ---------- tabela ---------- */
+.tw{overflow-x:auto;margin:0 -2px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
+thead th{text-align:right;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dimmer);font-weight:700;padding:0 10px 9px;border-bottom:1px solid var(--line);white-space:nowrap}
+thead th:first-child{text-align:left}
+tbody td{padding:9px 10px;border-bottom:1px solid var(--line-soft);text-align:right;white-space:nowrap}
+tbody td:first-child{text-align:left;white-space:normal}
+tbody tr:hover td{background:rgba(88,166,255,.045)}
+tr.total td{border-top:1px solid var(--line);font-weight:700;background:rgba(63,185,80,.05)}
+.ch{display:inline-flex;align-items:center;gap:8px;font-weight:600}
+.ch i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.dim{color:var(--dim)}
+.sku{font-family:"JetBrains Mono";font-size:11.5px;color:var(--dimmer)}
+.pill{font-family:"JetBrains Mono";font-size:11.5px;padding:2px 8px;border-radius:5px;font-weight:500}
+.pill.g{background:rgba(63,185,80,.13);color:var(--green-2)}
+.pill.r{background:rgba(248,81,73,.13);color:var(--red)}
+.pill.y{background:rgba(227,179,65,.13);color:var(--yellow)}
+.pill.n{background:rgba(139,148,158,.12);color:var(--dim)}
+
+/* ---------- barras ---------- */
+.hbars{display:flex;flex-direction:column;gap:10px}
+.hrow{display:grid;grid-template-columns:126px 1fr 104px;align-items:center;gap:12px}
+.hrow .nm{font-size:12.5px;display:flex;align-items:center;gap:8px;color:var(--dim)}
+.hrow .nm i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.track{height:20px;background:var(--panel-3);border-radius:5px;overflow:hidden}
+.fill{height:100%;border-radius:5px;transition:width .55s cubic-bezier(.2,.7,.3,1)}
+.hrow .val{text-align:right;font-family:"JetBrains Mono";font-size:12.5px}
+.metric-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.metric-tabs button{font:inherit;font-size:12px;font-weight:600;color:var(--dim);background:var(--panel-2);border:1px solid var(--line-soft);padding:6px 12px;border-radius:7px;cursor:pointer}
+.metric-tabs button:hover{color:var(--txt)}
+.metric-tabs button[aria-selected="true"]{background:var(--txt);color:#0B0C0E;border-color:var(--txt)}
+.metric-tabs button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ---------- ponte de caixa ---------- */
+.bridge{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:clamp(10px,4vw,46px);height:240px;align-items:end;margin-top:34px}
+.bcol{position:relative;height:100%}
+.bbar{position:absolute;left:0;right:0;border-radius:6px;overflow:hidden;transition:height .8s cubic-bezier(.2,.7,.3,1)}
+.bbar.in{bottom:0;background:linear-gradient(180deg,#2F8F45,#236B34)}
+.bbar.out{top:0;background:var(--panel-3);display:flex;flex-direction:column}
+.bbar.net{bottom:0;background:linear-gradient(180deg,#56D364,#2F9E45)}
+.seg{width:100%}
+.bcap{position:absolute;width:100%;text-align:center;font-size:11.5px;color:var(--dim)}
+.bcap.above{bottom:calc(100% + 8px)}
+.bcap.below{top:calc(100% + 9px)}
+.bcap .n{display:block;font-family:"JetBrains Mono";font-size:14px;color:var(--txt);font-weight:700}
+.blegend{display:flex;gap:16px;flex-wrap:wrap;margin-top:56px;padding-top:14px;border-top:1px solid var(--line-soft)}
+.blegend div{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--dim)}
+.blegend i{width:9px;height:9px;border-radius:2px}
+.blegend b{color:var(--txt);font-family:"JetBrains Mono";font-weight:500}
+
+/* ---------- comissão barras agrupadas ---------- */
+.cbars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:190px;margin-top:6px}
+.cgroup{display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:8px}
+.cset{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:100%}
+.cbar{width:24%;max-width:20px;border-radius:3px 3px 0 0;transition:height .65s cubic-bezier(.2,.7,.3,1)}
+.cbar.m1{opacity:.35}.cbar.m2{opacity:.65}
+.clbl{text-align:center;font-size:10.5px;color:var(--dimmer);line-height:1.25;min-height:30px}
+.clbl b{display:block;font-family:"JetBrains Mono";font-size:12px;color:var(--txt);font-weight:700}
+.mini-legend{display:flex;gap:14px;justify-content:flex-end;font-size:11px;color:var(--dimmer);margin-top:8px}
+.mini-legend span{display:flex;align-items:center;gap:6px}
+.mini-legend i{width:9px;height:9px;border-radius:2px;background:var(--dim)}
+
+svg.line{width:100%;height:auto;display:block}
+
+/* ---------- notas ---------- */
+.note{background:rgba(88,166,255,.055);border:1px solid rgba(88,166,255,.22);border-radius:11px;padding:15px 17px;font-size:13px;color:#B7CDEA;margin-top:12px}
+.note b{color:#fff}
+.note.w{background:rgba(227,179,65,.05);border-color:rgba(227,179,65,.24);color:#E4CFA1}
+.note.n{background:var(--panel);border-color:var(--line-soft);color:var(--dim)}
+/* ---------- estado vazio ---------- */
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:44px 28px;text-align:center;margin-top:14px}
+.empty .ic{font-size:30px}
+.empty h3{margin:14px 0 8px;font-size:17px}
+.empty p{margin:0 auto;max-width:56ch;color:var(--dim);font-size:13.5px}
+.empty code{background:var(--panel-3);border:1px solid var(--line);border-radius:5px;padding:2px 7px;font-family:"JetBrains Mono";font-size:12px;color:var(--txt)}
+
+footer{margin-top:44px;border-top:1px solid var(--line-soft);padding:22px 0 40px;color:var(--dimmer);font-size:12px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@media (max-width:980px){
+  .g2,.g2e{grid-template-columns:1fr}
+  .cbars{grid-template-columns:repeat(4,1fr);height:170px;row-gap:20px}
+  .bridge{height:190px;gap:12px}
+  .blegend{margin-top:52px}
+  .hrow{grid-template-columns:96px 1fr 88px;gap:9px}
+  .head-badges{margin-left:0;width:100%}
+}
+@media (max-width:760px){
+  .crumb{display:none}
+  .topbar .right{display:none}
+}
+@media (max-width:560px){
+  .cbars{grid-template-columns:repeat(3,1fr)}
+  .kpi .v{font-size:25px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <button class="btn-back" type="button" onclick="window.scrollTo({top:0})">← Voltar</button>
+    <span class="who">FINANCEIRO</span>
+    <span class="crumb"><span class="badge-app">Koncili</span> Conciliação · Repasses de Marketplaces</span>
+    <span class="right">Confidencial · gerado pelo Koncili</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="head">
+    <div class="head-main">
+      <div class="head-icon">💸</div>
+      <div class="head-t">
+        <h1>Dashboard de Repasses</h1>
+        <p>Relatório consolidado · Entradas, saídas, comissionamento e estornos por marketplace</p>
+      </div>
+      <div class="head-badges">
+        <span class="hb g"><span class="dot"></span> <span id="hbEscopo">Visão geral</span></span>
+        <span class="hb b">🗓 01/05/2026 a 31/07/2026</span>
+        <span class="hb o">104.011 LANÇAMENTOS</span>
+      </div>
+    </div>
+    <div class="strip">
+      <b>Regime de caixa</b> · reconhecido na data do repasse
+      <span class="sep">·</span> <b>Conciliação</b> ≈ 25 dias
+      <span class="sep">·</span> <b>Metas:</b> comissão &lt; 9% · estorno &lt; 2% · saídas &lt; 18% das entradas
+    </div>
+  </div>
+
+  <div class="rep">
+    <span class="rep-l">Comissão média 3M</span>
+    <span class="rep-chip"><i style="background:#58A6FF"></i>Magazine Luiza <b>12,80%</b></span>
+    <span class="rep-chip"><i style="background:#E3B341"></i>Mercado Livre <b>10,37%</b></span>
+    <span class="rep-chip"><i style="background:#FF8B3D"></i>Shopee <b>5,81%</b></span>
+    <span class="rep-chip"><i style="background:#3FB950"></i>Madeira Madeira <b>14,57%</b></span>
+    <span class="rep-chip"><i style="background:#BC8CFF"></i>Casas Bahia <b>10,04%</b></span>
+    <span class="rep-chip"><i style="background:#39C5CF"></i>WebContinental <b>12,65%</b></span>
+    <span class="rep-chip"><i style="background:#FF7EB6"></i>Amazon <b>10,92%</b></span>
+    <button class="rep-link" type="button" data-goto="comissao">Ver detalhe →</button>
+  </div>
+
+  <div class="tabs" id="tabs" role="tablist" aria-label="Períodos e visões"></div>
+
+  <main id="painel"></main>
+
+  <footer>
+    <div>
+      Fonte: relatórios de fluxo de pagamentos da Koncili, filtrados por data de repasse.<br>
+      Comissão apurada por pedido como |comissão| ÷ venda; resultados fora de 1%–50% excluídos como outliers.
+    </div>
+    <div style="text-align:right">Easy House · Análise emitida em 07/08/2026<br>Próxima atualização: fechamento de agosto/26</div>
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* =====================================================================
+   DADOS — para publicar um novo mês, edite apenas este bloco:
+   1. troque o status do mês novo para "FECHADO" e preencha os campos;
+   2. os campos opcionais (categorias, canais, produtos, estornos) podem
+      ficar de fora — o painel só desenha o que existir;
+   3. acrescente o próximo mês com status "AGUARDANDO".
+   ===================================================================== */
+
+var CANAL = {
+  SHP:  {nome:"Shopee",          cor:"#FF8B3D"},
+  MGL:  {nome:"Magazine Luiza",  cor:"#58A6FF"},
+  ML:   {nome:"Mercado Livre",   cor:"#E3B341"},
+  CB:   {nome:"Casas Bahia",     cor:"#BC8CFF"},
+  MDMD: {nome:"Madeira Madeira", cor:"#3FB950"},
+  WBC:  {nome:"WebContinental",  cor:"#39C5CF"},
+  AMZ:  {nome:"Amazon",          cor:"#FF7EB6"}
+};
+
+var MESES = [
+{
+  id:"2026-05", label:"Maio 2026", curto:"Mai/26", status:"FECHADO",
+  saldo:8560000, saldoAprox:true, entradas:null, saidas:null, varSaldo:null,
+  estornoPct:1.73,
+  comissao:{MGL:12.79, ML:11.01, SHP:6.47, MDMD:14.13, CB:9.51, WBC:12.11, AMZ:11.10},
+  pedidosComissao:{MGL:8269, ML:1525, SHP:4114, MDMD:1054, CB:189, WBC:41, AMZ:1},
+  mlCorrigidos:74,
+  nota:"O fechamento de maio disponível traz o saldo consolidado e o comissionamento por canal. O detalhamento por categoria, SKU e estorno passou a ser apurado a partir de junho."
+},
+{
+  id:"2026-06", label:"Junho 2026", curto:"Jun/26", status:"FECHADO",
+  saldo:10807604.49, entradas:13029042.79, saidas:2221438.30, varSaldo:26.2,
+  estornoPct:1.72,
+  comissao:{MGL:12.80, ML:10.07, SHP:5.31, MDMD:14.59, CB:11.01, WBC:12.51, AMZ:10.81},
+  pedidosComissao:{MGL:8820, ML:2045, SHP:3016, MDMD:952, CB:101, WBC:49, AMZ:5},
+  mlCorrigidos:70,
+  categorias:[
+    {cat:"Venda (líquida de estornos)", grupo:"Entrada", valor:11587673.77},
+    {cat:"Frete e logística",           grupo:"Entrada", valor:966385.96},
+    {cat:"Campanha",                    grupo:"Entrada", valor:247179.29},
+    {cat:"Outros",                      grupo:"Entrada", valor:205672.60},
+    {cat:"Comissão (estorno de cobrança)",grupo:"Entrada",valor:20396.78},
+    {cat:"Impostos",                    grupo:"Entrada", valor:1324.53},
+    {cat:"Multas",                      grupo:"Entrada", valor:409.86},
+    {cat:"Comissão",                    grupo:"Saída",   valor:-1108805.45},
+    {cat:"Campanha",                    grupo:"Saída",   valor:-1010486.24},
+    {cat:"Outros",                      grupo:"Saída",   valor:-88151.25},
+    {cat:"Frete e logística",           grupo:"Saída",   valor:-12301.94},
+    {cat:"Multas",                      grupo:"Saída",   valor:-1326.71},
+    {cat:"Judicial",                    grupo:"Saída",   valor:-219.99},
+    {cat:"Impostos",                    grupo:"Saída",   valor:-146.72}
+  ],
+  nota:"Junho fechou com o maior salto do trimestre (+26,2%). O detalhamento por SKU e estorno por canal passou a ser publicado no fechamento de julho."
+},
+{
+  id:"2026-07", label:"Julho 2026", curto:"Jul/26", status:"FECHADO",
+  saldo:11672770.07, saldoAnt:10807604.49, entradas:14305914.48, saidas:2633144.41, varSaldo:8.0,
+  estornoPct:2.15, lancamentos:104011, recebido:12962482.01, estornado:401176.65,
+  pedidos:20324, ticketGeral:637.79, skus:365, coberturaSku:99.0,
+  comissao:{MGL:12.80, ML:10.02, SHP:5.65, MDMD:15.00, CB:9.60, WBC:13.34, AMZ:10.85},
+  pedidosComissao:{MGL:9157, ML:1819, SHP:2073, MDMD:810, CB:313, WBC:49, AMZ:3},
+  mlCorrigidos:70,
+  categorias:[
+    {cat:"Venda (líquida de estornos)", grupo:"Entrada", valor:12561305.36, ant:11587673.77},
+    {cat:"Frete e logística",           grupo:"Entrada", valor:1119221.71,  ant:966385.96},
+    {cat:"Campanha",                    grupo:"Entrada", valor:597330.46,   ant:247179.29},
+    {cat:"Comissão (estorno de cobrança)",grupo:"Entrada",valor:23451.56,   ant:20396.78},
+    {cat:"Multas",                      grupo:"Entrada", valor:2094.48,     ant:409.86},
+    {cat:"Impostos",                    grupo:"Entrada", valor:1462.04,     ant:1324.53},
+    {cat:"Outros",                      grupo:"Entrada", valor:1048.87,     ant:205672.60},
+    {cat:"Campanha",                    grupo:"Saída",   valor:-1202687.77, ant:-1010486.24},
+    {cat:"Comissão",                    grupo:"Saída",   valor:-1131354.34, ant:-1108805.45},
+    {cat:"Outros",                      grupo:"Saída",   valor:-287567.62,  ant:-88151.25},
+    {cat:"Frete e logística",           grupo:"Saída",   valor:-9133.58,    ant:-12301.94},
+    {cat:"Multas",                      grupo:"Saída",   valor:-2302.50,    ant:-1326.71},
+    {cat:"Impostos",                    grupo:"Saída",   valor:-98.60,      ant:-146.72},
+    {cat:"Judicial",                    grupo:"Saída",   valor:0,           ant:-219.99}
+  ],
+  outrosDetalhe:[
+    {nome:"Outros débitos",     valor:152000},
+    {nome:"Despesas de serviços",valor:74000},
+    {nome:"Estorno-débito",     valor:39000},
+    {nome:"Demais",             valor:22568}
+  ],
+  canais:[
+    {k:"SHP",  recebido:7976645.23, pedidos:8110, ticket:983.56,  estornado:30032.97,  estorno:0.3,  comissao:5.65},
+    {k:"MGL",  recebido:2325989.53, pedidos:9157, ticket:254.01,  estornado:126760.73, estorno:1.4,  comissao:12.80},
+    {k:"ML",   recebido:2059335.46, pedidos:1882, ticket:1094.23, estornado:211395.48, estorno:10.6, comissao:10.02},
+    {k:"CB",   recebido:333584.15,  pedidos:313,  ticket:1065.76, estornado:12730.34,  estorno:3.8,  comissao:9.60},
+    {k:"MDMD", recebido:174617.33,  pedidos:810,  ticket:215.58,  estornado:20257.13,  estorno:8.4,  comissao:15.00},
+    {k:"WBC",  recebido:87879.52,   pedidos:49,   ticket:1793.46, estornado:0,         estorno:0,    comissao:13.34},
+    {k:"AMZ",  recebido:4430.79,    pedidos:3,    ticket:1476.93, estornado:0,         estorno:0,    comissao:10.85}
+  ],
+  topSkus:[
+    {p:"Guarda-roupa Casal Easy Slim 8 Portas", sku:"85419.59.636", c:"MGL+ML+SHP", v:1913655.22, ped:2086, part:14.9, saida:16.4},
+    {p:"Guarda-roupa Casal Easy Slim 8 Portas", sku:"85419.3.636",  c:"MGL+ML+SHP", v:1126065.70, ped:3583, part:8.8,  saida:16.6},
+    {p:"Guarda-roupa Casal 6 Portas Easy Slim", sku:"95550.52.636", c:"MGL+ML+SHP", v:945679.64,  ped:2380, part:7.4,  saida:18.3},
+    {p:"Guarda-roupa Casal MDF 2 Portas",       sku:"45888.52.8",   c:"MGL+ML+SHP", v:580525.25,  ped:335,  part:4.5,  saida:14.7},
+    {p:"Guarda-roupa Casal Easy Slim 8 Portas", sku:"85419.59.650", c:"MGL+ML+SHP", v:528473.86,  ped:633,  part:4.1,  saida:17.2},
+    {p:"Guarda-roupa Casal Easy Slim 8 Portas", sku:"85419.3.640",  c:"MGL+ML+SHP", v:464039.17,  ped:1089, part:3.6,  saida:16.7},
+    {p:"Cômoda Lopas Easy Like Amêndoa",        sku:"97434.636",    c:"MGL+ML+SHP", v:390060.74,  ped:480,  part:3.0,  saida:18.2},
+    {p:"Conjunto Sala de Jantar com 4 Cadeiras",sku:"92830.173.640",c:"AMZ+MGL+…",  v:374216.86,  ped:820,  part:2.9,  saida:16.2},
+    {p:"Mesa 1,70 Apogeu com Vidro e 6 Cadeiras",sku:"77020.118.643",c:"ML+SHP",    v:372453.14,  ped:246,  part:2.9,  saida:19.4},
+    {p:"Guarda-roupa Casal Easy Slim 8 Portas", sku:"85419.52.636", c:"MGL+SHP",    v:324589.77,  ped:319,  part:2.5,  saida:18.7}
+  ],
+  semRepasse:{total:76, media:5840.64, itens:[
+    {p:"Guarda-roupa Casal Alonzo",        sku:"59944.3.636",  c:"SHP", ult:"Jun/26", v:8912.60, conf:"Alta"},
+    {p:"Guarda-roupa Casal MDF 8 Pts",     sku:"99097.59.640", c:"SHP", ult:"Jun/26", v:7919.70, conf:"Alta"},
+    {p:"Cômoda 6 Gavetas Maggiore",        sku:"41595.763",    c:"SHP", ult:"Jun/26", v:6299.10, conf:"Alta"},
+    {p:"Guarda-roupa Casal MDF 8 Pts",     sku:"1263423367-1", c:"CB",  ult:"Mai/26", v:5637.58, conf:"Média"},
+    {p:"Guarda-roupa Casal Alonzo 6 Pts",  sku:"59944.59.640", c:"AMZ", ult:"Jun/26", v:5419.70, conf:"Alta"},
+    {p:"Conjunto Sala de Jantar",          sku:"87471[91621]", c:"SHP", ult:"Jun/26", v:5169.00, conf:"Alta"}
+  ]},
+  quedas:{total:145, variacao:-108733.32, itens:[
+    {p:"Guarda-roupa Spazio 270",          sku:"42508.226.8",  c:"MGL", a:31103.10, b:404.00,  q:-98.7},
+    {p:"Guarda-roupa 2 Pts Correr",        sku:"100024.227.6", c:"MGL", a:4363.16,  b:120.33,  q:-97.2},
+    {p:"Guarda-roupa Casal MDF",           sku:"59944.58.650", c:"MGL", a:3474.36,  b:155.99,  q:-95.5},
+    {p:"Cabeceira Box 1,60 Easy Glow",     sku:"99092.574.64", c:"MGL", a:5542.96,  b:263.10,  q:-95.3},
+    {p:"Sapateira Giratória Espelhada",    sku:"91015.763",    c:"SHP", a:18471.35, b:927.02,  q:-95.0},
+    {p:"Guarda-roupa Casal MDF",           sku:"99097.3.636",  c:"MGL", a:30565.44, b:2277.85, q:-92.5}
+  ]},
+  riscoEstorno:[
+    {p:"Balcão de Cozinha 119 cm 3 Pts 2 Gav", sku:"97503[102099]", c:"ML",   ped:9,  est:6, pct:66.7},
+    {p:"Guarda-roupa 6 Portas s/ Espelho Easy",sku:"313038494",     c:"MDMD", ped:9,  est:5, pct:55.6},
+    {p:"Mesa de Cabeceira 2 Gavetas Easy Like",sku:"830226038",     c:"MDMD", ped:5,  est:2, pct:40.0},
+    {p:"Mesa de Cabeceira Easy Like Amêndoa",  sku:"97435.636",     c:"ML",   ped:8,  est:3, pct:37.5},
+    {p:"Guarda-roupa Casal MDF 2 Portas",      sku:"563527715",     c:"MDMD", ped:6,  est:2, pct:33.3},
+    {p:"Mesa 1,70 Apogeu com Vidro e 6 Cad.",  sku:"77020.118.643", c:"ML",   ped:22, est:7, pct:31.8},
+    {p:"Guarda-roupa 6 Portas Easy Slim",      sku:"95550.58.636",  c:"ML",   ped:13, est:4, pct:30.8},
+    {p:"Guarda-roupa Casal Easy Slim 8 Portas",sku:"85419.58.636",  c:"ML",   ped:35, est:8, pct:22.9}
+  ],
+  linhas:[
+    {n:"Easy Max",   skus:4,   ped:10,    est:3,   pct:30.0},
+    {n:"Nina",       skus:12,  ped:46,    est:7,   pct:15.2},
+    {n:"Easy Space", skus:23,  ped:80,    est:9,   pct:11.2},
+    {n:"Easy Glow",  skus:24,  ped:135,   est:7,   pct:5.2},
+    {n:"Lívia",      skus:2,   ped:295,   est:14,  pct:4.7},
+    {n:"Lopas",      skus:69,  ped:1086,  est:42,  pct:3.9},
+    {n:"Outros",     skus:136, ped:2200,  est:62,  pct:2.8},
+    {n:"Easy Like",  skus:54,  ped:1438,  est:36,  pct:2.5},
+    {n:"Easy Slim",  skus:83,  ped:13050, est:236, pct:1.8},
+    {n:"Apogeu",     skus:20,  ped:1967,  est:20,  pct:1.0},
+    {n:"Maggiore",   skus:6,   ped:17,    est:0,   pct:0.0}
+  ]
+},
+{ id:"2026-08", label:"Agosto 2026", curto:"Ago/26", status:"AGUARDANDO" },
+{ id:"2026-09", label:"Setembro 2026", curto:"Set/26", status:"AGUARDANDO" }
+];
+
+/* ===================== helpers ===================== */
+var nfBRL0 = new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
+var nfBRL2 = new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:2});
+var nfInt  = new Intl.NumberFormat("pt-BR");
+function moeda(v){ return nfBRL0.format(v); }
+function moeda2(v){ return nfBRL2.format(v); }
+function milhoes(v){ return "R$ " + (v/1e6).toFixed(2).replace(".",",") + " M"; }
+function pct(v,d){ return (v==null?"—":v.toFixed(d===undefined?1:d).replace(".",",")+"%"); }
+function varPct(a,b){ if(!b) return null; return ((a-b)/Math.abs(b))*100; }
+function sinal(v,inverso){
+  if(v===null||v===undefined) return '<span class="pill n">—</span>';
+  var bom = inverso ? v<0 : v>0;
+  var cls = Math.abs(v)<0.05 ? "n" : (bom ? "g" : "r");
+  return '<span class="pill '+cls+'">'+(v>0?"+":"")+v.toFixed(1).replace(".",",")+"%</span>";
+}
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function chip(k){ var c=CANAL[k]; return '<span class="ch"><i style="background:'+c.cor+'"></i>'+c.nome+"</span>"; }
+function fechados(){ return MESES.filter(function(m){ return m.status==="FECHADO"; }); }
+function ultimo(){ var f=fechados(); return f[f.length-1]; }
+function porId(id){ for(var i=0;i<MESES.length;i++) if(MESES[i].id===id) return MESES[i]; return null; }
+
+function kpi(cor,label,valor,sub,tag){
+  return '<div class="kpi" style="--kc:'+cor+'">'+
+    '<div class="l">'+label+'</div>'+
+    '<div class="v">'+valor+'</div>'+
+    (sub?'<div class="s">'+sub+'</div>':'')+
+    (tag?'<div class="tagline">'+tag+'</div>':'')+
+  '</div>';
+}
+function barras(rows,max,fmt){
+  var mx = max || Math.max.apply(null, rows.map(function(r){return r.v;})) || 1;
+  return '<div class="hbars">'+rows.map(function(r){
+    var w = Math.max((r.v/mx)*100, r.v>0?1.5:0.5);
+    return '<div class="hrow"><div class="nm">'+(r.cor?'<i style="background:'+r.cor+'"></i>':'')+r.n+'</div>'+
+      '<div class="track"><div class="fill" style="width:'+w.toFixed(1)+'%;background:'+(r.cor||"#3FB950")+'"></div></div>'+
+      '<div class="val">'+(r.t||fmt(r.v))+'</div></div>';
+  }).join("")+'</div>';
+}
+
+/* linha de evolução — desenhada a partir dos meses fechados */
+function grafLinha(pontos,corLinha){
+  var W=640,H=250,L=62,R=24,T=26,B=52;
+  var vals=pontos.map(function(p){return p.v;});
+  var mx=Math.max.apply(null,vals), mn=Math.min.apply(null,vals);
+  var pad=(mx-mn)*0.45 || mx*0.2; var top=mx+pad*0.6, bot=Math.max(0,mn-pad);
+  function X(i){ return pontos.length===1?(L+(W-L-R)/2):L+i*((W-L-R)/(pontos.length-1)); }
+  function Y(v){ return T+(1-(v-bot)/(top-bot))*(H-T-B); }
+  var d=pontos.map(function(p,i){return (i?"L":"M")+X(i).toFixed(1)+","+Y(p.v).toFixed(1);}).join(" ");
+  var area=d+" L"+X(pontos.length-1).toFixed(1)+","+(H-B)+" L"+X(0).toFixed(1)+","+(H-B)+" Z";
+  var grid="",i,gy;
+  for(i=0;i<4;i++){ gy=T+i*((H-T-B)/3); grid+='<line class="gl" x1="'+L+'" y1="'+gy.toFixed(1)+'" x2="'+(W-R)+'" y2="'+gy.toFixed(1)+'" stroke="#1A1E22" stroke-dasharray="3 5"/>'+
+    '<text x="'+(L-10)+'" y="'+(gy+4).toFixed(1)+'" text-anchor="end" fill="#5C656F" font-size="11" font-family="JetBrains Mono">'+((top-i*((top-bot)/3))/1e6).toFixed(1).replace(".",",")+'M</text>'; }
+  var pts=pontos.map(function(p,i){
+    var last=i===pontos.length-1;
+    return '<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="'+(last?5.5:4.5)+'" fill="'+(last?corLinha:"#08090B")+'" stroke="'+corLinha+'" stroke-width="2.5"/>'+
+      '<text x="'+X(i).toFixed(1)+'" y="'+(Y(p.v)-14).toFixed(1)+'" text-anchor="middle" fill="'+(last?corLinha:"#EDEFF2")+'" font-size="11.5" font-family="JetBrains Mono">'+(p.v/1e6).toFixed(2).replace(".",",")+'M</text>'+
+      '<text x="'+X(i).toFixed(1)+'" y="'+(H-B+22)+'" text-anchor="middle" fill="#8B949E" font-size="11" font-family="JetBrains Mono">'+p.n+'</text>';
+  }).join("");
+  return '<svg class="line" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Evolução do saldo de caixa">'+
+    '<defs><linearGradient id="grd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+corLinha+'" stop-opacity=".28"/><stop offset="100%" stop-color="'+corLinha+'" stop-opacity="0"/></linearGradient></defs>'+
+    grid+'<line x1="'+L+'" y1="'+(H-B)+'" x2="'+(W-R)+'" y2="'+(H-B)+'" stroke="#23272C"/>'+
+    '<path d="'+area+'" fill="url(#grd)"/><path d="'+d+'" fill="none" stroke="'+corLinha+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+pts+'</svg>';
+}
+
+/* ===================== blocos reutilizáveis ===================== */
+function blocoComissao(m){
+  var ks=Object.keys(m.comissao);
+  var rows=ks.map(function(k){
+    return {n:CANAL[k].nome, cor:CANAL[k].cor, v:m.comissao[k], t:pct(m.comissao[k],2)};
+  }).sort(function(a,b){return b.v-a.v;});
+  return '<div class="card"><h3>Comissão média por canal</h3>'+
+    '<p class="hint">% médio por pedido sobre o valor de venda no mês de repasse · pedidos apurados entre parênteses</p>'+
+    barras(rows,16,function(v){return pct(v,2);})+
+    '<p class="hint after">Pedidos apurados: '+ks.map(function(k){return CANAL[k].nome+" "+nfInt.format(m.pedidosComissao[k]);}).join(" · ")+'.</p></div>';
+}
+
+function blocoCategorias(m){
+  var ent=m.categorias.filter(function(c){return c.grupo==="Entrada";});
+  var sai=m.categorias.filter(function(c){return c.grupo==="Saída";});
+  function linhas(arr){
+    return arr.map(function(c){
+      var v = c.ant!==undefined ? (c.valor===0 && c.ant!==0 ? -100 : varPct(c.valor,c.ant)) : null;
+      return "<tr><td>"+c.cat+'</td><td class="dim">'+c.grupo+'</td>'+
+        '<td class="mono '+(c.valor<0?"c-r":"c-g")+'">'+(c.valor===0?"—":moeda(c.valor))+"</td>"+
+        (c.ant!==undefined?'<td class="mono dim">'+moeda(c.ant)+"</td><td>"+sinal(v, c.grupo==="Saída")+"</td>":"")+
+        "</tr>";
+    }).join("");
+  }
+  var temAnt = m.categorias[0].ant!==undefined;
+  return '<div class="card"><h3>Entradas e saídas por categoria</h3>'+
+    '<p class="hint">Uma mesma categoria aparece dos dois lados: campanha soma investimento em publicidade (saída) e estorno de cobrança (entrada)</p>'+
+    '<div class="tw"><table><thead><tr><th>Categoria</th><th>Grupo</th><th>'+m.curto+'</th>'+
+    (temAnt?'<th>Mês anterior</th><th>Variação</th>':'')+'</tr></thead><tbody>'+
+    linhas(ent)+linhas(sai)+
+    '<tr class="total"><td>Saldo líquido de caixa</td><td class="dim">Resultado</td><td class="mono">'+moeda(m.saldo)+"</td>"+
+    (temAnt?'<td class="mono dim">'+(m.saldoAnt?moeda(m.saldoAnt):"—")+"</td><td>"+sinal(m.varSaldo)+"</td>":"")+
+    "</tr></tbody></table></div></div>";
+}
+
+function blocoPonte(m){
+  var sai=m.categorias.filter(function(c){return c.grupo==="Saída" && c.valor!==0;})
+    .map(function(c){return {n:c.cat,v:Math.abs(c.valor)};}).sort(function(a,b){return b.v-a.v;});
+  var tot=m.saidas, cores=["#D3392F","#B33028","#8A2721","#5E1F1B","#3E1614"];
+  var maiores=sai.slice(0,3), resto=sai.slice(3).reduce(function(s,c){return s+c.v;},0);
+  if(resto>0) maiores.push({n:"Frete, multas e impostos",v:resto});
+  var hOut=(m.saidas/m.entradas)*100;
+  var segs=maiores.map(function(c,i){
+    return '<div class="seg" style="height:'+((c.v/tot)*100).toFixed(2)+'%;background:'+cores[i]+'" title="'+c.n+": "+moeda2(c.v)+'"></div>';
+  }).join("");
+  var leg=maiores.map(function(c,i){
+    return '<div><i style="background:'+cores[i]+'"></i>'+c.n+" <b>"+moeda(c.v)+"</b></div>";
+  }).join("");
+  return '<div class="card"><h3>Ponte de caixa — de tudo que foi creditado ao que sobrou</h3>'+
+    '<p class="hint">'+maiores[0].n+" e "+maiores[1].n+" explicam "+
+      (((maiores[0].v+maiores[1].v)/tot)*100).toFixed(0)+'% de tudo que saiu</p>'+
+    '<div class="bridge">'+
+      '<div class="bcol"><div class="bbar in" data-h="100" style="height:0"></div>'+
+        '<div class="bcap above">Entradas<span class="n">'+milhoes(m.entradas)+'</span></div></div>'+
+      '<div class="bcol"><div class="bbar out" data-h="'+hOut.toFixed(2)+'" style="height:0">'+segs+'</div>'+
+        '<div class="bcap below">Saídas<span class="n">− '+milhoes(m.saidas)+'</span></div></div>'+
+      '<div class="bcol"><div class="bbar net" data-h="'+(100-hOut).toFixed(2)+'" style="height:0"></div>'+
+        '<div class="bcap above">Saldo<span class="n">'+milhoes(m.saldo)+'</span></div></div>'+
+    '</div><div class="blegend">'+leg+'</div></div>';
+}
+
+function blocoCanais(m){
+  var tot=m.recebido, totEst=m.estornado;
+  return '<div class="card"><h3>Ficha por canal</h3>'+
+    '<p class="hint">Valor creditado, ticket, estorno e comissão do mês na mesma linha</p>'+
+    '<div class="metric-tabs" role="tablist">'+
+      ['recebido|Valor recebido','pedidos|Pedidos','ticket|Ticket médio','comissao|Comissão %','estorno|Estorno %']
+      .map(function(o,i){var p=o.split("|");return '<button type="button" role="tab" data-m="'+p[0]+'" aria-selected="'+(i===0)+'">'+p[1]+'</button>';}).join("")+
+    '</div><div id="canalBars"></div>'+
+    '<div class="tw" style="margin-top:20px"><table><thead><tr><th>Canal</th><th>Recebido em vendas</th><th>% do total</th><th>Pedidos</th><th>Ticket médio</th><th>Estornado</th><th>% estornado</th><th>Comissão</th></tr></thead><tbody>'+
+    m.canais.map(function(c){
+      var cls = c.estorno>=8?"r":(c.estorno>=3?"y":(c.pedidos<50?"n":"g"));
+      return "<tr><td>"+chip(c.k)+'</td><td class="mono">'+moeda(c.recebido)+'</td><td class="mono">'+((c.recebido/tot)*100).toFixed(1).replace(".",",")+'%</td>'+
+      '<td class="mono">'+nfInt.format(c.pedidos)+'</td><td class="mono">'+moeda2(c.ticket)+'</td>'+
+      '<td class="mono">'+(c.estornado?"−"+moeda(c.estornado):'<span class="dim">—</span>')+'</td>'+
+      '<td><span class="pill '+cls+'">'+pct(c.estorno)+'</span></td><td class="mono">'+pct(c.comissao,2)+"</td></tr>";
+    }).join("")+
+    '<tr class="total"><td>Total</td><td class="mono">'+moeda(tot)+'</td><td class="mono">100%</td><td class="mono">'+nfInt.format(m.pedidos)+
+    '</td><td class="mono">'+moeda2(m.ticketGeral)+'</td><td class="mono">−'+moeda(totEst)+'</td><td class="mono">'+pct(m.estornoPct,1)+'</td><td class="dim">—</td></tr>'+
+    '</tbody></table></div>'+
+    '<p class="hint after">Casas Bahia repassa em parcelas mensais — o ticket é a parcela recebida no mês, não o valor do pedido. WebContinental e Amazon têm volume mínimo e não são comparáveis.</p></div>';
+}
+
+/* ===================== abas ===================== */
+function viewVisaoGeral(){
+  var f=fechados(), u=ultimo();
+  var acum=f.reduce(function(s,m){return s+m.saldo;},0);
+  var lanc=f.reduce(function(s,m){return s+(m.lancamentos||0);},0);
+  var pondPct=null;
+  if(u.canais){ var soma=u.canais.reduce(function(s,c){return s+c.comissao*c.recebido;},0); pondPct=soma/u.recebido; }
+
+  var h='<div class="block-l">Indicadores acumulados <span>'+f.length+' mês(es) carregado(s) · '+f[0].curto+" a "+u.curto+'</span></div>';
+  h+='<div class="kpis">'+
+    kpi("#3FB950","Saldo acumulado", milhoes(acum), f.map(function(m){return (m.saldo/1e6).toFixed(2).replace(".",",");}).join(" + ")+" M",
+        '<span class="mini g">3 meses seguidos de alta</span>')+
+    kpi("#58A6FF","Último fechamento", milhoes(u.saldo), u.label+" · regime de caixa",
+        '<span class="mini g">+'+u.varSaldo.toFixed(1).replace(".",",")+"% vs. mês anterior</span>")+
+    kpi("#FF8B3D","Entradas de caixa", milhoes(u.entradas), "Venda líquida: "+milhoes(12561305.36),
+        '<span class="mini b">'+nfInt.format(u.pedidos)+" pedidos com repasse</span>")+
+    kpi("#F85149","Saídas de caixa", milhoes(u.saidas), "Comissão + campanha = 89% do total",
+        '<span class="mini r">'+((u.saidas/u.entradas)*100).toFixed(1).replace(".",",")+"% das entradas (meta: 18%)</span>")+
+    kpi("#E3B341","Comissão ponderada", pct(pondPct,2), "Média por canal pesada pelo faturamento",
+        '<span class="mini y">acima da meta de 9%</span>')+
+    kpi("#BC8CFF","Estorno sobre pedidos", pct(u.estornoPct,2), "1,73% → 1,72% → "+pct(u.estornoPct,2),
+        '<span class="mini r">acima da meta de 2%</span>')+
+    kpi("#39C5CF","Lançamentos conciliados", nfInt.format(lanc||104011), "Processados pela Koncili em "+u.curto,
+        '<span class="mini n">prazo médio ≈ 25 dias</span>')+
+  '</div>';
+
+  h+='<div class="block-l">Evolução mês a mês</div>';
+  h+='<div class="grid g2">'+
+    '<div class="card"><h3>Saldo líquido de caixa</h3><p class="hint">Valores em milhões de reais · apenas meses fechados</p>'+
+    grafLinha(f.map(function(m){return {n:m.curto,v:m.saldo};}),"#3FB950")+'</div>'+
+    '<div class="card"><h3>Resumo por mês</h3><p class="hint">Conforme os fechamentos publicados</p>'+
+    '<div class="tw"><table style="min-width:340px"><thead><tr><th>Mês</th><th>Entradas</th><th>Saídas</th><th>Saldo</th><th>Var.</th><th>Estorno</th></tr></thead><tbody>'+
+    f.map(function(m){
+      return "<tr><td><b>"+m.curto+'</b></td><td class="mono">'+(m.entradas?milhoes(m.entradas):'<span class="dim">—</span>')+
+      '</td><td class="mono">'+(m.saidas?milhoes(m.saidas):'<span class="dim">—</span>')+
+      '</td><td class="mono">'+milhoes(m.saldo)+"</td><td>"+(m.varSaldo?sinal(m.varSaldo):'<span class="pill n">—</span>')+
+      '</td><td class="mono">'+pct(m.estornoPct,2)+"</td></tr>";
+    }).join("")+
+    '<tr class="total"><td>Acumulado</td><td class="dim">—</td><td class="dim">—</td><td class="mono">'+milhoes(acum)+'</td><td class="dim">—</td><td class="dim">—</td></tr>'+
+    "</tbody></table></div>"+
+    '<p class="hint after">Maio traz apenas o saldo consolidado e o comissionamento; a abertura por categoria começa em junho.</p></div></div>';
+
+  h+='<div class="note"><b>Leitura do trimestre:</b> o caixa cresce há três meses, mas desacelerou — de +26,2% em junho para +8,0% em julho. As saídas subiram mais rápido que as entradas (18,5% contra 9,8%), puxadas por campanha e pela categoria "Outros". Estorno e comissão ponderada estão os dois acima da meta.</div>';
+  return h;
+}
+
+function viewComissao(){
+  var f=fechados();
+  var ordem=["MGL","ML","SHP","MDMD","CB","WBC","AMZ"];
+  var media={MGL:12.80,ML:10.37,SHP:5.81,MDMD:14.57,CB:10.04,WBC:12.65,AMZ:10.92};
+
+  var h='<div class="block-l">Comissionamento por marketplace <span>'+f[0].curto+" a "+f[f.length-1].curto+'</span></div>';
+  h+='<div class="kpis">'+ordem.slice(0,4).map(function(k,i){
+    var cor=CANAL[k].cor, ini=f[0].comissao[k], fim=f[f.length-1].comissao[k], d=fim-ini;
+    return kpi(cor,CANAL[k].nome,pct(media[k],2),"Média dos 3 meses",
+      '<span class="mini '+(Math.abs(d)<0.15?"n":(d>0?"r":"g"))+'">'+(d>0?"+":"")+d.toFixed(2).replace(".",",")+" pp no período</span>");
+  }).join("")+'</div>';
+  h+='<div class="kpis" style="margin-top:12px">'+ordem.slice(4).map(function(k){
+    var cor=CANAL[k].cor, ini=f[0].comissao[k], fim=f[f.length-1].comissao[k], d=fim-ini;
+    return kpi(cor,CANAL[k].nome,pct(media[k],2),"Média dos 3 meses",
+      '<span class="mini '+(Math.abs(d)<0.15?"n":(d>0?"r":"g"))+'">'+(d>0?"+":"")+d.toFixed(2).replace(".",",")+" pp no período</span>");
+  }).join("")+'</div>';
+
+  h+='<div class="block-l">Evolução mensal</div>';
+  h+='<div class="card"><h3>Comissão média por canal e por mês</h3><p class="hint">Escala 0–16% · barras claras = '+f[0].curto+", sólidas = "+f[f.length-1].curto+'</p><div class="cbars">'+
+    ordem.map(function(k){
+      var bars=f.map(function(m,i){
+        var v=m.comissao[k];
+        return '<div class="cbar m'+(i+1)+'" data-h="'+((v/16)*100).toFixed(1)+'" style="height:0;background:'+CANAL[k].cor+'" title="'+m.label+": "+pct(v,2)+'"></div>';
+      }).join("");
+      return '<div class="cgroup"><div class="cset">'+bars+'</div><div class="clbl"><b>'+pct(f[f.length-1].comissao[k],2)+"</b>"+CANAL[k].nome+"</div></div>";
+    }).join("")+
+    '</div><div class="mini-legend">'+f.map(function(m,i){return '<span><i style="opacity:'+(0.35+i*0.32)+'"></i>'+m.curto+"</span>";}).join("")+"</div></div>";
+
+  h+='<div class="card" style="margin-top:12px"><h3>Tabela de comissão e tendência</h3><p class="hint">Média dos 3 meses e variação em pontos percentuais</p><div class="tw"><table><thead><tr><th>Canal</th>'+
+    f.map(function(m){return "<th>"+m.curto+"</th>";}).join("")+'<th>Média 3M</th><th>Var. período</th><th>Base de cálculo</th></tr></thead><tbody>'+
+    ordem.map(function(k){
+      var d=f[f.length-1].comissao[k]-f[0].comissao[k];
+      var base={MGL:"taxa fixa contratual",ML:"comissão prevista corrigida",SHP:"varia por modalidade",MDMD:"valor total do pedido",CB:"varia por categoria",WBC:"faixas de 13% e 15%",AMZ:"amostra reduzida"}[k];
+      var cls=Math.abs(d)<0.15?"n":(d>0?"r":"g");
+      return "<tr><td>"+chip(k)+"</td>"+f.map(function(m){return '<td class="mono">'+pct(m.comissao[k],2)+"</td>";}).join("")+
+        '<td class="mono">'+pct(media[k],2)+'</td><td><span class="pill '+cls+'">'+(d>0?"+":"")+d.toFixed(2).replace(".",",")+' pp</span></td><td class="dim">'+base+"</td></tr>";
+    }).join("")+"</tbody></table></div></div>";
+
+  h+='<div class="note w"><b>Mercado Livre — correção da taxa de parcelamento.</b> O ML retém a taxa de parcelamento e a abate direto do repasse da comissão, o que faz a comissão parecer menor do que é. A apuração usou o valor previsto do lançamento de comissão. Sem a correção, a média apareceria em torno de 6% em vez dos ~10% reais — diferença de cerca de 4 pp. A correção atingiu 70% dos pedidos de julho e 74% em maio.<br><br><b>Amazon:</b> 1 pedido em maio, 5 em junho e 3 em julho. O percentual é consistente (10,3%–11,2%), mas não é estatisticamente representativo.</div>';
+  h+='<div class="note n"><b>Conferência com o caixa:</b> a comissão ponderada pelo faturamento de julho dá 7,91% sobre o valor recebido, enquanto a comissão efetivamente debitada no caixa foi R$ 1.131.354 (8,73% do recebido). A diferença de ~R$ 106 K vem da defasagem entre venda e repasse — comissões de pedidos de junho debitadas em julho.</div>';
+  return h;
+}
+
+function viewMes(m){
+  if(m.status!=="FECHADO"){
+    return '<div class="empty"><div class="ic">🗓</div><h3>'+m.label+" ainda não foi conciliado</h3>"+
+      "<p>Os números aparecem aqui assim que o relatório de fluxo de pagamentos de "+m.curto+
+      " sair na Koncili. Para publicar: abra o arquivo, localize o bloco <code>MESES</code> no script, preencha o mês e troque o status para <code>FECHADO</code>.</p></div>";
+  }
+  var h='<div class="block-l">Indicadores do mês <span>'+m.label+" · regime de caixa</span></div>";
+  h+='<div class="kpis">'+
+    kpi("#3FB950","Saldo líquido de caixa", milhoes(m.saldo), m.saldoAprox?"Valor consolidado do fechamento":"Entradas menos saídas do mês",
+      m.varSaldo?'<span class="mini g">+'+m.varSaldo.toFixed(1).replace(".",",")+"% vs. mês anterior</span>":'<span class="mini n">sem base comparativa</span>')+
+    (m.entradas?kpi("#FF8B3D","Entradas de caixa", milhoes(m.entradas), "Tudo que os marketplaces creditaram",
+      '<span class="mini b">'+(m.pedidos?nfInt.format(m.pedidos)+" pedidos":"—")+"</span>"):"")+
+    (m.saidas?kpi("#F85149","Saídas de caixa", milhoes(m.saidas), "Comissão, campanha e demais débitos",
+      '<span class="mini '+((m.saidas/m.entradas)*100>18?"r":"g")+'">'+((m.saidas/m.entradas)*100).toFixed(1).replace(".",",")+"% das entradas</span>"):"")+
+    (m.recebido?kpi("#58A6FF","Recebido em vendas", milhoes(m.recebido), "Bruto, antes de estornos",
+      '<span class="mini n">ticket médio '+moeda2(m.ticketGeral)+"</span>"):"")+
+    kpi("#BC8CFF","Estorno sobre pedidos", pct(m.estornoPct,2), m.estornado?"Valor estornado: "+moeda(m.estornado):"Pedidos estornados ÷ pedidos com venda",
+      '<span class="mini '+(m.estornoPct>2?"r":"g")+'">'+(m.estornoPct>2?"acima":"dentro")+" da meta de 2%</span>")+
+    (m.skus?kpi("#39C5CF","SKUs com repasse", nfInt.format(m.skus), "Cobertura de identificação: "+pct(m.coberturaSku,1),
+      '<span class="mini y">'+m.semRepasse.total+" SKUs sem repasse no mês</span>"):"")+
+  "</div>";
+
+  if(m.nota) h+='<div class="note n">'+m.nota+"</div>";
+
+  if(m.categorias && m.entradas){
+    h+='<div class="block-l">Ponte de caixa e categorias</div>'+blocoPonte(m);
+  }
+  if(m.categorias){
+    h+='<div style="margin-top:12px">'+blocoCategorias(m)+"</div>";
+  }
+  if(m.outrosDetalhe){
+    h+='<div class="grid g2e" style="margin-top:12px">'+
+      '<div class="card"><h3>A anomalia do mês: "Outros" nas saídas</h3><p class="hint">De R$ 88 K em junho para R$ 288 K em julho — quase o triplo</p>'+
+      barras(m.outrosDetalhe.map(function(o){return {n:o.nome,v:o.valor,cor:"#B33028"};}),null,function(v){return moeda(v);})+
+      '<p class="hint after">Confirmar com o financeiro se foi cobrança pontual ou início de padrão recorrente antes do fechamento de agosto.</p></div>'+
+      '<div class="card"><h3>Campanha cresce mais que a venda</h3><p class="hint">Investimento contra retorno no mês</p>'+
+      '<div class="kpis" style="grid-template-columns:1fr 1fr">'+
+        kpi("#F85149","Saída de campanha","+19,0%","R$ 1,20 M no mês","")+
+        kpi("#3FB950","Venda líquida","+8,4%","R$ 12,56 M no mês","")+
+      '</div><p class="hint after">Campanha é a maior saída do mês (45,7% do total) e cresce mais que o dobro do ritmo da venda. Do lado positivo, frete e logística caiu 25,8% nas saídas.</p></div></div>';
+  }
+
+  h+='<div class="block-l">Comissionamento</div>'+blocoComissao(m);
+
+  if(m.canais){
+    h+='<div class="block-l">Repasse por marketplace</div>'+blocoCanais(m)+
+      '<div class="note">Onde está a lacuna de SKU: '+pct(m.coberturaSku,1)+' do valor de vendas tem SKU identificado. Toda a diferença está na WebContinental — 49 pedidos, R$ 87.880, sem SKU. Esse valor entra nos totais, mas fica fora das análises por produto.</div>';
+  }
+
+  if(m.topSkus){
+    h+='<div class="block-l">Produtos que trouxeram o repasse</div>'+
+      '<div class="card"><h3>Top 10 SKUs por valor recebido</h3><p class="hint">% saída = comissão, frete e impostos do SKU ÷ valor recebido em vendas</p>'+
+      '<div class="tw"><table><thead><tr><th>Produto</th><th>SKU</th><th>Canais</th><th>Valor recebido</th><th>Pedidos</th><th>% do identificado</th><th>% saída</th></tr></thead><tbody>'+
+      m.topSkus.map(function(s){
+        var cls=s.saida>=19?"r":(s.saida>=18?"y":null);
+        return "<tr><td>"+esc(s.p)+'</td><td class="sku">'+s.sku+'</td><td class="dim">'+s.c+'</td><td class="mono">'+moeda(s.v)+
+          '</td><td class="mono">'+nfInt.format(s.ped)+'</td><td class="mono">'+pct(s.part)+"</td><td>"+
+          (cls?'<span class="pill '+cls+'">'+pct(s.saida)+"</span>":'<span class="mono">'+pct(s.saida)+"</span>")+"</td></tr>";
+      }).join("")+'</tbody></table></div><p class="hint after">Os três primeiros SKUs, todos da linha Easy Slim, somam R$ 3,99 M — 31% do valor identificado. SKUs com % saída acima de 18% comprimem margem e merecem revisão de preço.</p></div>';
+
+    h+='<div class="grid g2e" style="margin-top:12px">'+
+      '<div class="card"><h3>'+m.semRepasse.total+' SKUs sem repasse no mês</h3><p class="hint">Tiveram repasse em maio ou junho e nada em julho · valor médio do último repasse: '+moeda2(m.semRepasse.media)+'</p>'+
+      '<div class="tw"><table style="min-width:420px"><thead><tr><th>Produto</th><th>Canal</th><th>Último</th><th>Valor</th><th>Confiança</th></tr></thead><tbody>'+
+      m.semRepasse.itens.map(function(s){
+        return "<tr><td>"+esc(s.p)+' <span class="sku">'+s.sku+'</span></td><td class="dim">'+s.c+'</td><td class="mono">'+s.ult+
+          '</td><td class="mono">'+moeda(s.v)+'</td><td><span class="pill '+(s.conf==="Alta"?"g":"y")+'">'+s.conf+"</span></td></tr>";
+      }).join("")+'</tbody></table></div><p class="hint after">Sem repasse não significa que o produto parou de vender: pode ser calendário, ruptura temporária ou oscilação do marketplace.</p></div>'+
+
+      '<div class="card"><h3>'+m.quedas.total+' SKUs com queda no repasse</h3><p class="hint">Junho → julho · variação total dos SKUs em queda: '+moeda(m.quedas.variacao)+'</p>'+
+      '<div class="tw"><table style="min-width:420px"><thead><tr><th>Produto</th><th>Canal</th><th>Jun/26</th><th>Jul/26</th><th>Queda</th></tr></thead><tbody>'+
+      m.quedas.itens.map(function(s){
+        return "<tr><td>"+esc(s.p)+' <span class="sku">'+s.sku+'</span></td><td class="dim">'+s.c+'</td><td class="mono">'+moeda(s.a)+
+          '</td><td class="mono">'+moeda(s.b)+'</td><td><span class="pill r">'+s.q.toFixed(1).replace(".",",")+"%</span></td></tr>";
+      }).join("")+'</tbody></table></div><p class="hint after">Cinco SKUs caíram mais de 95%, todos no Magazine Luiza e com confiabilidade alta — candidatos a verificação de deslistagem ou ruptura.</p></div></div>';
+  }
+
+  if(m.riscoEstorno){
+    h+='<div class="block-l">Estornos</div>'+
+      '<div class="grid g2">'+
+      '<div class="card"><h3>SKUs de maior risco de estorno</h3><p class="hint">Mínimo de 5 pedidos no mês · % = pedidos estornados ÷ pedidos com venda</p>'+
+      '<div class="tw"><table><thead><tr><th>Produto</th><th>SKU</th><th>Canal</th><th>Pedidos</th><th>Estornados</th><th>% estornado</th></tr></thead><tbody>'+
+      m.riscoEstorno.map(function(s){
+        return "<tr><td>"+esc(s.p)+'</td><td class="sku">'+s.sku+'</td><td class="dim">'+s.c+'</td><td class="mono">'+s.ped+
+          '</td><td class="mono">'+s.est+'</td><td><span class="pill '+(s.pct>=30?"r":"y")+'">'+pct(s.pct)+"</span></td></tr>";
+      }).join("")+"</tbody></table></div></div>"+
+      '<div class="card"><h3>Estorno por linha de produto</h3><p class="hint">Catálogo de marca única — a linha é o corte que revela concentração</p>'+
+      barras(m.linhas.filter(function(l){return l.pct>0;}).map(function(l){
+        var cor = l.pct>=10?"#F85149":(l.pct>=4?"#E3B341":"#3FB950");
+        return {n:l.n,v:l.pct,cor:cor,t:pct(l.pct)+" · "+l.est};
+      }),null,function(v){return pct(v);})+
+      '<p class="hint after">Easy Max e Nina lideram em percentual, mas com 10 e 46 pedidos — um retorno a mais muda o quadro. O impacto financeiro real está em Easy Slim: 1,8% sobre 13.050 pedidos são 236 estornos. Valor após o percentual = pedidos estornados.</p></div></div>'+
+      '<div class="note w"><b>Alerta duplo — Easy Slim no Mercado Livre.</b> Os mesmos modelos que lideram vendas no ML também lideram os estornos do canal: 199 pedidos estornados em julho, 10,6% do volume, mais de 7× a taxa do Magazine Luiza. Somado à comissão de 10,02%, é o ponto onde a margem real mais se comprime.</div>'+
+      '<div class="note n">Estorno registrado em julho pode se referir a venda repassada em meses anteriores — o regime de caixa reconhece na data do repasse, não na da venda. Por isso o percentual pode divergir do painel do marketplace sem que haja erro.</div>';
+  }
+
+  return h;
+}
+
+/* ===================== render / navegação ===================== */
+var ABAS=[{id:"visao",label:"Visão Geral",tipo:"visao"},{id:"comissao",label:"Comissionamento",status:"REGULAR",tipo:"comissao"}]
+  .concat(MESES.map(function(m){return {id:m.id,label:m.label,status:m.status,tipo:"mes"};}));
+var atual=null;
+
+function pintaTabs(){
+  document.getElementById("tabs").innerHTML=ABAS.map(function(a){
+    var st=a.status?'<span class="st '+a.status.toLowerCase()+'">'+a.status+"</span>":"";
+    return '<button class="tab" type="button" role="tab" data-id="'+a.id+'" aria-selected="'+(a.id===atual)+'"><span class="dot"></span>'+a.label+st+"</button>";
+  }).join("");
+}
+
+function animar(){
+  document.querySelectorAll("[data-h]").forEach(function(el){ el.style.height=el.getAttribute("data-h")+"%"; });
+}
+
+function ligarCanais(m){
+  var box=document.getElementById("canalBars");
+  if(!box||!m.canais) return;
+  function fmt(k,v){
+    if(k==="recebido") return v>=1e6?milhoes(v):moeda(v);
+    if(k==="pedidos") return nfInt.format(v);
+    if(k==="ticket") return moeda2(v);
+    return pct(v, k==="comissao"?2:1);
+  }
+  function render(k){
+    var rows=m.canais.slice().sort(function(a,b){return b[k]-a[k];}).map(function(c){
+      return {n:CANAL[c.k].nome, cor:CANAL[c.k].cor, v:c[k], t:fmt(k,c[k])};
+    });
+    box.innerHTML=barras(rows,null,function(v){return v;});
+  }
+  render("recebido");
+  document.querySelectorAll(".metric-tabs button").forEach(function(b){
+    b.addEventListener("click",function(){
+      document.querySelectorAll(".metric-tabs button").forEach(function(x){x.setAttribute("aria-selected","false");});
+      b.setAttribute("aria-selected","true");
+      render(b.dataset.m);
+    });
+  });
+}
+
+function abrir(id){
+  atual=id;
+  var aba=ABAS.filter(function(a){return a.id===id;})[0]||ABAS[0];
+  var alvo=document.getElementById("painel");
+  if(aba.tipo==="visao"){ alvo.innerHTML=viewVisaoGeral(); document.getElementById("hbEscopo").textContent="Visão geral"; }
+  else if(aba.tipo==="comissao"){ alvo.innerHTML=viewComissao(); document.getElementById("hbEscopo").textContent="Comissionamento · 3 meses"; }
+  else {
+    var m=porId(id);
+    alvo.innerHTML=viewMes(m);
+    document.getElementById("hbEscopo").textContent=m.label+(m.status==="FECHADO"?" · fechado":" · aguardando");
+    ligarCanais(m);
+  }
+  pintaTabs();
+  setTimeout(animar,60);
+}
+
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-id],[data-goto]");
+  if(!t) return;
+  abrir(t.dataset.id||t.dataset.goto);
+  if(t.dataset.goto) window.scrollTo({top:document.getElementById("tabs").offsetTop-70,behavior:"smooth"});
+});
+
+abrir("visao");
+</script>
+</body>
+</html>
