@@ -338,78 +338,84 @@ el('strip').innerHTML =
    nivel: posição na régua de 0 a 5, usada para desenhar o marcador.
    ========================================================================= */
 const REP = {
-  atualizado: '25/08/2026',
+  atualizado: '27/08/2026',
+  anterior: '25/08/2026',
   canais: [
     { id:'mercadolivre', nome:'Mercado Livre', fonte:'Reputação do vendedor', periodo:'Últimos 60 dias',
       valor:'Platinum', unidade:'MercadoLíder', nivel:5, st:'ok', badgeSt:'atencao', badge:'Reclamações perto do limite',
-      variacao:'Envios incorretos saíram de 0% para 2,73% · reclamações estáveis',
-      resumo:[['Vendas','5.775'],['Concluídas','5.354'],['Faturado','R$ 5,02M']],
+      variacao:'Envios incorretos zerados (2,73% → 0%) · reclamações estáveis em 0,89%, mas o volume subiu de 51 para 54 vendas',
+      resumo:[['Vendas','6.053'],['Concluídas','5.608'],['Faturado','R$ 5,29M']],
       itens:[
-        {n:'Reclamações', v:'0,88%', d:'51 vendas', lm:'limite 1%', st:'atencao'},
-        {n:'Envios incorretos', v:'2,73%', d:'2 vendas com Envios', lm:'limite 6%', st:'atencao'},
-        {n:'Canceladas por você', v:'0,19%', d:'11 vendas', lm:'limite 0,5%', st:'ok'},
-        {n:'Mediações', v:'0,08%', d:'5 vendas', lm:'limite 0,5%', st:'ok'}
+        {n:'Reclamações', v:'0,89%', d:'54 vendas · antes 51', lm:'limite 1%', st:'atencao'},
+        {n:'Envios incorretos', v:'0%', d:'0 vendas com Envios · antes 2,73%', lm:'limite 6%', st:'ok'},
+        {n:'Canceladas por você', v:'0,24%', d:'15 vendas · antes 11', lm:'limite 0,5%', st:'ok'},
+        {n:'Mediações', v:'0,09%', d:'6 vendas · antes 5', lm:'limite 0,5%', st:'ok'}
       ]},
     { id:'shopee', nome:'Shopee', fonte:'Avaliação da loja e taxa de resposta', periodo:'Visão geral',
-      valor:'4.85', unidade:'de 5.00 · resposta no chat 73,41%', nivel:4.85, st:'ok', badge:'Acima das duas metas',
-      variacao:'Taxa de resposta em alta contínua: 72,37% → 73,41%',
-      resumo:[['Avaliação','4.85'],['Resposta no chat','73,41%'],['Metas','4.50 e 60%']],
+      valor:'4.85', unidade:'de 5.00 · resposta no chat 75,63%', nivel:4.85, st:'ok', badge:'Acima das duas metas',
+      variacao:'Taxa de resposta em alta pela terceira leitura: 72,37% → 73,41% → 75,63%',
+      resumo:[['Avaliação','4.85'],['Resposta no chat','75,63%'],['Metas','4.50 e 60%']],
       itens:[
         {n:'Avaliação da loja', v:'4.85/5', d:'estável', lm:'meta 4.50', st:'ok'},
-        {n:'Taxa de resposta no chat', v:'73,41%', d:'dia anterior 72,37%', lm:'meta 60%', st:'ok'}
+        {n:'Taxa de resposta no chat', v:'75,63%', d:'leitura anterior 73,41%', lm:'meta 60%', st:'ok'}
       ]},
     { id:'magalu', nome:'Magalu', fonte:'Régua de indicadores', periodo:'Últimos 30 dias',
-      valor:'4,6', unidade:'de 1 a 5', nivel:4.6, st:'ok', badge:'Melhor nota da série',
-      variacao:'Subiu de 4,3 para 4,6 · cancelamento voltou à faixa 5 (2%)',
-      resumo:[['Escala','1 a 5'],['Anterior','4,3'],['Meta','5']],
+      valor:'4,6', unidade:'de 1 a 5', nivel:4.6, st:'ok', badge:'Nota mantida em 4,6',
+      variacao:'Estável em 4,6 · nível de serviço segue em 92%, único indicador fora da faixa 5',
+      resumo:[['Escala','1 a 5'],['Anterior','4,6'],['Meta','5']],
       itens:[
-        {n:'Nível de serviço', v:'92%', d:'faixa 4', lm:'faixa 5 ≥ 95%', st:'ok'},
+        {n:'Nível de serviço', v:'92%', d:'faixa 4', lm:'faixa 5 ≥ 95%', st:'atencao'},
         {n:'Agilidade no atendimento', v:'90%', d:'faixa 5', lm:'faixa 5 ≥ 90%', st:'ok'},
         {n:'Cancelamento', v:'2%', d:'faixa 5', lm:'faixa 5 ≤ 2%', st:'ok'}
       ]},
     { id:'madeira', nome:'Madeira Madeira', fonte:'Score do vendedor', periodo:'Pedidos dos últimos 30 dias',
-      valor:'3,90', unidade:'de 5,00', nivel:3.9, st:'ok', badgeSt:'atencao', badge:'Melhor score da série',
-      variacao:'Subiu de 3,75 para 3,90 · atraso na entrega caiu para 3,3%',
-      resumo:[['Score','3,90/5'],['Anterior','3,75'],['Situação','Verde']],
+      valor:'4,10', unidade:'de 5,00', nivel:4.1, st:'ok', badgeSt:'atencao', badge:'Melhor score da série',
+      variacao:'Subiu de 3,90 para 4,10 · ocorrências caíram de 26,3% para 23,6% e cancelamentos de 5,5% para 4,1%',
+      resumo:[['Score','4,10/5'],['Anterior','3,90'],['Situação','Verde']],
       itens:[
-        {n:'Atraso na entrega', v:'3,3%', d:'2 pedidos', lm:'', st:'ok'},
-        {n:'Atraso na expedição', v:'1,4%', d:'1 pedido', lm:'', st:'ok'},
+        {n:'Atraso na expedição', v:'1,3%', d:'1 pedido', lm:'', st:'ok'},
+        {n:'Atraso na entrega', v:'3,2%', d:'2 pedidos · antes 3,3%', lm:'', st:'ok'},
         {n:'Mediações', v:'1,3%', d:'1 pedido', lm:'', st:'ok'},
-        {n:'Cancelamentos', v:'5,5%', d:'4 pedidos', lm:'', st:'atencao'},
-        {n:'Ocorrências', v:'26,3%', d:'19 pedidos', lm:'', st:'ruim'}
+        {n:'Cancelamentos', v:'4,1%', d:'3 pedidos · antes 5,5%', lm:'', st:'atencao'},
+        {n:'Ocorrências', v:'23,6%', d:'17 pedidos · antes 26,3%', lm:'', st:'ruim'}
       ]}
   ]
 };
 
 /* =========================================================================
    RECLAME AQUI — aba própria, mas contabilizado junto na reputação
-   Índice: referente aos últimos 6 meses. Volume: período de 01 a 31/07/2026.
+   Índice: referente aos últimos 6 meses. Volume: exportação de 01/02/2026 a 26/08/2026.
    ========================================================================= */
 const RA = {
-  atualizado: '25/08/2026',
+  atualizado: '27/08/2026',
   indice: 6.2, faixa: 'Regular', st: 'atencao',
-  indice_anterior: 6.1,
+  indice_anterior: 6.2, indice_ref: 6.1, indice_ref_rot: 'leitura de 18/08',
+  serie_indice: [5.7, 6.1, 6.2, 6.2],
   paraBom: 0.8, paraRuim: 0.3,
-  nota_consumidor: 4,
+  nota_consumidor: 3.95,
   periodos: {
     semestre: {
-      key:'semestre', rotulo:'Últimos 6 meses', janela:'01/02/2026 a 24/08/2026', dias:205,
-      total:232, nao_respondidas:0, respondidas:224, replicas:15, avaliadas:62,
+      key:'semestre', rotulo:'Últimos 6 meses', janela:'01/02/2026 a 26/08/2026', dias:207,
+      total:234, nao_respondidas:2, respondidas:224, replicas:15, avaliadas:63,
       tempo_resposta:'39 dias e 4h',
-      indice_solucao:73.77, voltaria:39.34, solucao_ref:'leitura de 24/08',
-      pct_respondidas:96.6,
-      notas:{10:9,9:2,8:5,7:6,6:6,5:0,4:1,3:2,2:3,1:2,0:25},
-      horas:{0:3,1:3,4:1,5:2,6:2,7:10,8:11,9:20,10:20,11:13,12:19,13:18,14:15,15:18,16:14,17:16,18:11,19:11,20:9,21:7,22:4,23:5},
-      dias_mes:{1:3,2:9,3:5,4:12,5:9,6:6,7:7,8:10,9:10,10:11,11:6,12:8,13:10,14:11,15:5,16:8,17:9,18:6,19:8,20:9,21:4,22:3,23:8,24:6,25:8,26:7,27:10,28:10,29:6,30:8},
-      meses:[{m:'Fev',n:33},{m:'Mar',n:41},{m:'Abr',n:33},{m:'Mai',n:32},{m:'Jun',n:34},{m:'Jul',n:38},{m:'Ago',n:21,parcial:true}],
+      indice_solucao:73.77, voltaria:39.34, solucao_ref:'leitura de 25/08', solucao_stale:true,
+      pct_respondidas:95.7,
+      notas:{10:9,9:2,8:5,7:6,6:6,5:1,4:1,3:2,2:3,1:2,0:26},
+      horas:{0:3,1:3,4:1,5:2,6:2,7:10,8:11,9:20,10:20,11:13,12:20,13:19,14:15,15:18,16:14,17:16,18:11,19:11,20:9,21:7,22:4,23:5},
+      dias_mes:{1:3,2:9,3:5,4:12,5:9,6:6,7:7,8:10,9:10,10:11,11:6,12:8,13:10,14:11,15:5,16:8,17:9,18:6,19:8,20:9,21:4,22:3,23:8,24:6,25:9,26:8,27:10,28:10,29:6,30:8},
+      meses:[{m:'Fev',n:33},{m:'Mar',n:41},{m:'Abr',n:33},{m:'Mai',n:32},{m:'Jun',n:34},{m:'Jul',n:38},{m:'Ago',n:23,parcial:true}],
+      categorias:[
+        {p:'Móveis em Geral', v:21.37},{p:'Problemas na Loja', v:9.40},
+        {p:'Logística e Entrega Rápida', v:6.41},{p:'Não encontrei meu problema', v:2.56}
+      ],
       problemas:[
-        {p:'Produto com defeito', v:21.05},{p:'Atraso na entrega', v:15.35},
-        {p:'Produto não recebido', v:12.72},{p:'Produto com peças faltando', v:7.89},
-        {p:'Outro problema', v:6.58},{p:'Produto danificado', v:5.26}
+        {p:'Produto com defeito', v:20.51},{p:'Atraso na entrega', v:14.96},
+        {p:'Produto não recebido', v:12.39},{p:'Produto com peças faltando', v:8.97},
+        {p:'Outro problema', v:6.84},{p:'Produto danificado', v:5.13}
       ],
       produtos:[
-        {p:'Guarda-roupas', v:20.61},{p:'Móveis', v:14.91},{p:'Mesas e cadeiras', v:9.65},
-        {p:'Entrega', v:3.07},{p:'Problemas gerais', v:1.32}
+        {p:'Guarda-roupas', v:22.22},{p:'Móveis', v:14.96},{p:'Mesas e cadeiras', v:9.40},
+        {p:'Entrega', v:2.99},{p:'Problemas gerais', v:1.28}
       ],
       temas:[
         {t:'Guarda-roupas não entregue desde abril, sem resposta', v:300},
@@ -418,14 +424,17 @@ const RA = {
         {t:'Falta de itens', v:98},
         {t:'Não recomendo esta loja · produto parado no rastreio', v:56},
         {t:'Empresa não entrega os produtos', v:51},
-        {t:'Falta de retorno · troca ou devolução', v:42},
-        {t:'Guarda-roupa com cupim, sem contato após 7 meses', v:38}
+        {t:'Falta de retorno · troca ou devolução', v:45},
+        {t:'Guarda-roupa com cupim, sem contato após 7 meses', v:38},
+        {t:'Loja não é confiável (Magalu)', v:37},
+        {t:'Item faltando na entrega', v:31}
       ],
       lidas_problema:[
         {p:'Produto não recebido', t:'Guarda-roupas não entregue desde abril', v:300},
         {p:'Produto com defeito', t:'Guarda-roupa chegou quebrado e loja ignora contato', v:237},
         {p:'Outro problema', t:'Não recomendo esta loja · produto parado no rastreio', v:56},
         {p:'Atraso na entrega', t:'Status de rota Shopee não atualizado e sem retorno', v:30},
+        {p:'Peças faltando', t:'Guarda-roupa incompleto e atraso na entrega', v:30},
         {p:'Produto com peças faltando', t:'Falta de portas no guarda-roupa e falta de suporte', v:28},
         {p:'Produto danificado', t:'Produto danificado e vendedor não responde via Shopee', v:24},
         {p:'Estorno do valor pago', t:'Recusa de recebimento por peças quebradas', v:17}
@@ -437,18 +446,21 @@ const RA = {
         {t:'Recusa de recebimento por peças quebradas', nota:10, v:17},
         {t:'Atraso na entrega e dificuldade de contato (Shopee)', nota:0, v:13},
         {t:'Guarda-roupas comprado pela Shopee', nota:6, v:13},
-        {t:'Mesa incompleta sem tampo de vidro', nota:0, v:10}
+        {t:'Mesa incompleta sem tampo de vidro', nota:0, v:10},
+        {t:'Produto não entregue, mas consta como entregue no app', nota:2, v:9},
+        {t:'Mercadoria errada', nota:0, v:8},
+        {t:'Sapateira sem espelho e falta de resolução da loja', nota:10, v:8}
       ]
     },
     mes: {
-      key:'mes', rotulo:'Julho de 2026', janela:'01/07/2026 a 31/07/2026', dias:31,
+      key:'mes', rotulo:'Julho de 2026', janela:'01/07/2026 a 31/07/2026', dias:31, snapshot:'24/08/2026',
       total:38, nao_respondidas:37, respondidas:1, replicas:0, avaliadas:1,
       tempo_resposta:'Indefinido',
       indice_solucao:0, voltaria:0, solucao_ref:'', pct_respondidas:2.6,
       notas:{10:0,9:0,8:0,7:0,6:0,5:0,4:0,3:0,2:0,1:0,0:1},
       horas:{7:2,8:2,10:5,11:3,12:5,13:3,14:2,15:3,16:2,17:4,18:2,19:3,21:1,22:1},
       dias_mes:{2:2,3:2,5:1,6:2,7:1,8:2,10:3,14:4,15:2,16:4,17:1,21:1,22:1,25:1,26:1,27:3,28:2,29:2,30:3},
-      meses:[], problemas:[], produtos:[], lidas_problema:[],
+      meses:[], problemas:[], produtos:[], categorias:[], lidas_problema:[],
       temas:[
         {t:'Falta de retorno · troca ou devolução', v:42},
         {t:'Loja não é confiável (Magalu)', v:37},
@@ -516,7 +528,7 @@ function viewRep(){
           <td>Índice de reputação</td><td style="color:${STC[RA.st]};font-weight:700">${RA.indice.toString().replace('.',',')}</td>
           <td>Últimos 6 meses</td><td><span class="bdg2 b-wr" style="margin:0">Atenção</span></td>
           <td>Tempo de resposta · ${RA.periodos.semestre.tempo_resposta}</td></tr></tbody></table>
-      <div class="note">${pior} das 5 fontes estão fora da zona saudável. Os pontos críticos são logísticos — atraso na entrega e ocorrências no Madeira, nível de serviço no Magalu, reclamações no Mercado Livre — e chegam ao SAC como reclamação: no último mês fechado, atraso de entrega respondeu por ${DATA.meses[0].dados.motivos[0].pct}% dos motivos de reclamação. No <b>Reclame Aqui</b> o índice subiu para ${RA.indice.toString().replace('.',',')} e a loja entrou na faixa Regular, mas o tempo médio de resposta de ${RA.periodos.semestre.tempo_resposta} ainda impede avançar para "Bom".</div></div>
+      <div class="note">${pior} das 5 fontes estão fora da zona saudável. Os pontos críticos continuam logísticos e de produto — ocorrências em 23,6% dos pedidos no Madeira Madeira, nível de serviço em 92% no Magalu e reclamações a 0,89% no Mercado Livre, a um décimo do limite — e chegam ao SAC como reclamação: no último mês fechado, atraso de entrega respondeu por ${DATA.meses[0].dados.motivos[0].pct}% dos motivos de reclamação. No <b>Reclame Aqui</b> o índice se manteve em ${RA.indice.toString().replace('.',',')} na faixa Regular, mas o tempo médio de resposta de ${RA.periodos.semestre.tempo_resposta} ainda impede avançar para "Bom". A leitura desta atualização é positiva nos quatro marketplaces: envios incorretos do Mercado Livre voltaram a 0%, a taxa de resposta na Shopee subiu para 75,63% e o score do Madeira Madeira passou de 3,90 para 4,10.</div></div>
     <details class="met" style="margin-top:14px"><summary>Como atualizar estes números</summary>
       <ul class="ls"><li>Os dados ficam no bloco <b>REP</b>, no início do script deste arquivo, separados dos dados mensais.</li>
       <li>Troque os valores de cada canal e a data em <b>atualizado</b>. O campo <b>st</b> define a cor (<b>ok</b>, <b>atencao</b>, <b>ruim</b>) e <b>nivel</b> posiciona o marcador na régua de 0 a 5.</li>
@@ -528,7 +540,8 @@ function viewRA(){
   const outro = raPer==='semestre'?RA.periodos.mes:RA.periodos.semestre;
   const kc=[
     {l:'Índice de reputação',v:R.indice.toString().replace('.',','),g:'linear-gradient(90deg,#EAB308,#22C55E)',c:'#FACC15',
-     s:`Faixa ${R.faixa} · nota do consumidor ${R.nota_consumidor}/10`,gh:'😐',b:['b-ok',`subiu de ${R.indice_anterior.toString().replace('.',',')} para ${R.indice.toString().replace('.',',')}`]},
+     s:`Faixa ${R.faixa} · nota do consumidor ${R.nota_consumidor.toFixed(1).replace('.',',')}/10`,gh:'😐',
+     b:['b-nt',`estável em ${R.indice.toString().replace('.',',')} · 2ª leitura seguida`]},
     {l:'Reclamações no período',v:NB(P.total),g:'linear-gradient(90deg,#FF6B35,#F59E0B)',s:P.janela,gh:'📣',
      b:['b-nt',(P.total/P.dias).toFixed(1)+' por dia']},
     {l:'Reclamações respondidas',v:Math.round(P.respondidas/P.total*100)+'%',g:P.nao_respondidas?'linear-gradient(90deg,#EAB308,#22C55E)':'linear-gradient(90deg,#22C55E,#4ADE80)',c:P.nao_respondidas>10?'#FACC15':'#4ADE80',
@@ -544,10 +557,10 @@ function viewRA(){
 
   if(raPer==='semestre'){
     h+=`<div class="obsbox" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86EFAC">
-      <span class="oi">✅</span><span><b>Passivo zerado novamente.</b> Nenhuma reclamação sem resposta em ${NB(P.total)} — eram 54 pendentes há duas semanas, e as novas entram e saem no mesmo dia. O índice subiu de ${R.indice_anterior.toString().replace('.',',')} para <b>${R.indice.toString().replace('.',',')}</b> e a margem para voltar a "Ruim" cresceu de 0,2 para ${R.paraRuim.toString().replace('.',',')}. O que ainda segura a nota é o <b>tempo médio de ${P.tempo_resposta}</b>, herdado do passivo antigo: ele só cai à medida que as novas respostas rápidas entram na média dos 6 meses.</span></div>`;
+      <span class="oi">✅</span><span><b>Passivo sob controle.</b> Apenas ${P.nao_respondidas} reclamações sem resposta em ${NB(P.total)} do semestre (${Math.round(P.respondidas/P.total*100)}% respondidas) — eram 54 pendentes há três semanas e 37 só em julho. O índice se manteve em <b>${R.indice.toString().replace('.',',')}</b> na segunda leitura seguida, com ${R.paraRuim.toString().replace('.',',')} de margem antes de voltar a "Ruim". O que ainda segura a nota é o <b>tempo médio de ${P.tempo_resposta}</b>, herdado do passivo antigo: ele só cai à medida que as novas respostas rápidas entram na média dos 6 meses.</span></div>`;
   } else {
     h+=`<div class="obsbox" style="background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:#FCA5A5">
-      <span class="oi">🚨</span><span><b>Julho foi o pior mês da série.</b> ${P.nao_respondidas} das ${P.total} reclamações ficaram sem resposta e o tempo de resposta aparece como indefinido — contra ${Math.round(RA.periodos.semestre.respondidas/RA.periodos.semestre.total*100)}% de resposta no acumulado de 6 meses. O canal deixou de ser tratado exatamente no mês analisado no painel de atendimento.</span></div>`;
+      <span class="oi">🚨</span><span><b>Julho foi o pior mês da série</b> — números congelados na leitura de ${P.snapshot}. ${P.nao_respondidas} das ${P.total} reclamações estavam sem resposta e o tempo aparecia como indefinido. Esse passivo já foi trabalhado: o acumulado de 6 meses hoje mostra ${Math.round(RA.periodos.semestre.respondidas/RA.periodos.semestre.total*100)}% de resposta e só ${RA.periodos.semestre.nao_respondidas} pendências. O bloco fica aqui como registro do ponto de partida, não da situação atual.</span></div>`;
   }
   h+=`<div class="kgrid">${kc.map(cardKPI).join('')}</div>`;
 
@@ -570,7 +583,12 @@ function viewRA(){
         <div class="panel"><p class="pt">Principais problemas <small>% das reclamações classificadas</small></p><div id="ra-prob"></div>
           <div class="note">Somados, <b>defeito, avaria e peças faltando respondem por ${(P.problemas[0].v+P.problemas[3].v+P.problemas[5].v).toFixed(2)}%</b> das reclamações, contra ${(P.problemas[1].v+P.problemas[2].v).toFixed(2)}% de atraso ou não recebimento. É problema de produto e embalagem tanto quanto de transporte.</div></div>
         <div class="panel"><p class="pt">Produtos mais reclamados</p><div id="ra-prod"></div>
-          <div class="note">Guarda-roupas concentram <b>${P.produtos[0].v}%</b> das reclamações — o mesmo item aparece nos dois temas mais lidos do período. Vale revisar embalagem e conferência de peças dessa linha antes de qualquer ação no atendimento.</div></div></div>`;
+          <div class="note">Guarda-roupas concentram <b>${P.produtos[0].v.toFixed(2).replace('.',',')}%</b> das reclamações — o mesmo item aparece nos dois temas mais lidos do período. Vale revisar embalagem e conferência de peças dessa linha antes de qualquer ação no atendimento.</div></div></div>`;
+    if(P.categorias&&P.categorias.length){
+      h+=`<div class="panel" style="margin-top:14px"><p class="pt">Categoria da reclamação <small>como o consumidor classifica o caso ao abrir</small></p>
+        <div id="ra-cat"></div>
+        <div class="note"><b>${P.categorias[0].v.toFixed(2).replace('.',',')}% entram como "Móveis em Geral"</b> — ou seja, o consumidor aponta o produto, não o atendimento. "Problemas na Loja" responde por ${P.categorias[1].v.toFixed(2).replace('.',',')}% e logística por ${P.categorias[2].v.toFixed(2).replace('.',',')}%. A leitura reforça o que os gráficos acima já mostram: o Reclame Aqui está sendo alimentado por qualidade e entrega do produto, e o SAC entra como agravante quando não responde.</div></div>`;
+    }
   }
   if(P.top_avaliadas.length){
     h+=`<div class="g2" style="margin-top:14px">
@@ -580,7 +598,7 @@ function viewRA(){
         <table><thead><tr><th>Problema</th><th>Reclamação</th><th>Views</th></tr></thead><tbody>
         ${P.lidas_problema.map(a=>`<tr><td style="font-weight:600">${a.p}</td>
           <td style="font-weight:400;color:var(--mut);font-size:12px">${a.t.length>44?a.t.slice(0,42)+'…':a.t}</td><td>${a.v}</td></tr>`).join('')}</tbody></table>
-        <div class="note">As duas reclamações mais lidas do período — não recebimento e produto quebrado — somam ${P.lidas_problema[0].v+P.lidas_problema[1].v} visualizações, quase metade de todo o tráfego dos temas.</div></div></div>`;
+        <div class="note">As duas reclamações mais lidas do período — não recebimento e produto quebrado — somam ${P.lidas_problema[0].v+P.lidas_problema[1].v} visualizações, <b>${Math.round((P.lidas_problema[0].v+P.lidas_problema[1].v)/P.temas.reduce((a,b)=>a+b.v,0)*100)}% de todo o tráfego dos temas</b>. Duas páginas concentram mais leitura que as outras oito somadas.</div></div></div>`;
     h+=`<div class="panel" style="margin-top:14px"><p class="pt">Reclamações avaliadas mais acessadas <small>nota dada pelo cliente</small></p>
         <table><thead><tr><th>Reclamação</th><th>Nota</th><th>Views</th></tr></thead><tbody>
         ${P.top_avaliadas.map(a=>`<tr><td style="font-weight:500">${a.t}</td>
@@ -590,7 +608,7 @@ function viewRA(){
   }
   h+=`<div class="panel" style="margin-top:14px"><p class="pt">Temas mais acessados <small>${P.rotulo}</small></p>
       <div id="ra-tema"></div>
-      <div class="note">Os cinco temas somam ${NB(P.temas.reduce((a,b)=>a+b.v,0))} visualizações e repetem o eixo do painel de atendimento: <b>entrega não realizada, produto avariado e falta de retorno</b>. Dois deles citam explicitamente ausência de resposta da loja — é reputação sendo formada pelo silêncio, não pelo problema em si.</div></div>`;
+      <div class="note">Os ${P.temas.length} temas somam ${NB(P.temas.reduce((a,b)=>a+b.v,0))} visualizações e repetem o eixo do painel de atendimento: <b>entrega não realizada, produto avariado e falta de retorno</b>. Dois deles citam explicitamente ausência de resposta da loja — é reputação sendo formada pelo silêncio, não pelo problema em si.</div></div>`;
 
   h+=`<div class="slab">Comparação entre períodos</div><div class="panel"><table>
     <thead><tr><th>Período</th><th>Reclamações</th><th>Respondidas</th><th>Sem resposta</th><th>Avaliadas</th><th>Índice de solução</th><th>Voltaria a comprar</th><th>Tempo de resposta</th></tr></thead>
@@ -598,24 +616,27 @@ function viewRA(){
       <td>${NB(p.total)}</td><td>${NB(p.respondidas)}</td>
       <td style="color:${(p.nao_respondidas/p.total)>0.5?'#F87171':'#FACC15'};font-weight:700">${NB(p.nao_respondidas)} (${Math.round(p.nao_respondidas/p.total*100)}%)</td>
       <td>${p.avaliadas}</td><td>${p.indice_solucao}%</td><td>${p.voltaria}%</td><td>${p.tempo_resposta}</td></tr>`).join('')}</tbody></table>
-    <div class="note">No acumulado de 6 meses a loja responde <b>${Math.round(RA.periodos.semestre.respondidas/RA.periodos.semestre.total*100)}% das reclamações</b> e resolve 75% dos casos avaliados. Julho aparece como o mês com menor cobertura da série — parte dessas reclamações foi respondida depois, o que explica o tempo médio de 42 dias.</div></div>`;
+    <div class="note">No acumulado de 6 meses a loja responde <b>${Math.round(RA.periodos.semestre.respondidas/RA.periodos.semestre.total*100)}% das reclamações</b> e resolve ${RA.periodos.semestre.indice_solucao.toString().replace('.',',')}% dos casos avaliados. A linha de julho é a leitura de ${RA.periodos.mes.snapshot} e mostra o passivo no pior momento: as 37 pendências daquele mês já foram respondidas, e é justamente esse mutirão tardio que sustenta o tempo médio de ${RA.periodos.semestre.tempo_resposta} no semestre.</div></div>`;
 
   h+=`<div class="slab">Leitura</div><div class="g2">
     <div class="panel"><p class="pt">✅ O que melhorou</p><ul class="ls">
-      <li><b>Índice em alta consistente</b>: 5,7 → 6,1 → ${R.indice.toString().replace('.',',')}, já dentro da faixa Regular e com ${R.paraRuim.toString().replace('.',',')} de margem para não recuar.</li>
-      <li><b>Passivo zerado</b>: nenhuma reclamação sem resposta em ${NB(RA.periodos.semestre.total)}, contra 54 pendentes há duas semanas.</li>
+      <li><b>Índice consolidado na faixa Regular</b>: ${R.serie_indice.map(v=>v.toString().replace('.',',')).join(' → ')} — segunda leitura seguida em ${R.indice.toString().replace('.',',')}, com ${R.paraRuim.toString().replace('.',',')} de margem para não recuar.</li>
+      <li><b>Passivo praticamente zerado</b>: ${RA.periodos.semestre.nao_respondidas} sem resposta em ${NB(RA.periodos.semestre.total)} (${Math.round(RA.periodos.semestre.respondidas/RA.periodos.semestre.total*100)}% respondidas), contra 54 pendentes há três semanas.</li>
       <li><b>${RA.periodos.semestre.replicas} reclamações em réplica</b>, sinal de que há diálogo em andamento e não apenas resposta protocolar.</li>
-      <li><b>Tempo médio caindo</b>: de 42 dias para ${RA.periodos.semestre.tempo_resposta}, efeito das respostas rápidas entrando na média.</li></ul></div>
+      <li><b>Tempo médio estacionado, mas não subindo</b>: ${RA.periodos.semestre.tempo_resposta}, mesma leitura de duas semanas atrás — sinal de que as novas respostas rápidas já compensam o peso do passivo antigo na média.</li></ul></div>
     <div class="panel"><p class="pt">⚠️ O que ainda pesa</p><ul class="ls">
-      <li><b>Tempo médio de ${RA.periodos.semestre.tempo_resposta}</b> — é o principal item que separa a loja da faixa "Bom".</li>
-      <li><b>${RA.periodos.semestre.notas[0]} das ${RA.periodos.semestre.avaliadas} avaliações são nota zero</b>, o que puxa a nota do consumidor para ${R.nota_consumidor}/10.</li>
-      <li><b>Só ${RA.periodos.semestre.voltaria}% voltariam a comprar</b> e o índice de solução recuou para ${RA.periodos.semestre.indice_solucao}%.</li>
+      <li><b>Tempo médio de ${RA.periodos.semestre.tempo_resposta}</b> — é o principal item que separa a loja da faixa "Bom" e não se moveu na última leitura.</li>
+      <li><b>${RA.periodos.semestre.notas[0]} das ${RA.periodos.semestre.avaliadas} avaliações são nota zero</b>, o que puxa a nota do consumidor para ${R.nota_consumidor.toFixed(2).replace('.',',')}/10.</li>
+      <li><b>Voltaram a aparecer pendências</b>: ${RA.periodos.semestre.nao_respondidas} reclamações sem resposta depois de o painel ter zerado — número pequeno, mas exige rotina diária para não virar passivo de novo.</li>
+      <li><b>Só ${RA.periodos.semestre.voltaria}% voltariam a comprar</b> e o índice de solução está em ${RA.periodos.semestre.indice_solucao}% (${RA.periodos.semestre.solucao_ref}, campo não incluído na exportação de 26/08).</li>
       <li><b>Causa raiz em produto</b>: defeito, avaria e peças faltando somam mais que atraso de entrega — assunto de embalagem e conferência, não de atendimento.</li></ul></div></div>`;
 
   h+=`<details class="met" style="margin-top:14px"><summary>Como atualizar estes números</summary>
     <ul class="ls"><li>Os dados ficam no bloco <b>RA</b>, no início do script, com dois períodos: <b>semestre</b> e <b>mes</b>.</li>
     <li>O <b>índice</b> é sempre calculado pelo Reclame Aqui sobre os últimos 6 meses; volume, notas e temas seguem o período selecionado.</li>
-    <li>O canal aparece na barra do topo e na tabela consolidada da aba Reputação, para que a visão gerencial considere as 5 fontes juntas.</li></ul></details>`;
+    <li>O canal aparece na barra do topo e na tabela consolidada da aba Reputação, para que a visão gerencial considere as 5 fontes juntas.</li>
+    <li><b>Índice de solução e "voltaria a comprar"</b> não vêm na exportação de reclamações — precisam ser lidos na tela do painel do Reclame Aqui. Os valores atuais (${RA.periodos.semestre.indice_solucao}% e ${RA.periodos.semestre.voltaria}%) são da ${RA.periodos.semestre.solucao_ref} e estão sinalizados como tal.</li>
+    <li>O bloco <b>mes</b> guarda a leitura de ${RA.periodos.mes.snapshot} de julho, mantida como registro do pior momento do passivo. Ele não é reprocessado a cada atualização.</li></ul></details>`;
   return h;
 }
 
@@ -677,15 +698,15 @@ function viewGeral(){
   h += `<div class="slab">Reputação externa <span class="hint">Reclame Aqui · últimos 6 meses</span></div>
     <div class="kgrid">`+[
       {l:'Índice Reclame Aqui',v:RA.indice.toString().replace('.',','),g:'linear-gradient(90deg,#EAB308,#22C55E)',c:'#FACC15',
-       s:`Faixa ${RA.faixa} · ${S.janela}`,gh:'😐',b:['b-ok',`subiu de ${RA.indice_anterior.toString().replace('.',',')}`]},
+       s:`Faixa ${RA.faixa} · ${S.janela}`,gh:'😐',b:['b-nt','estável · veio de '+RA.indice_ref.toString().replace('.',',')]},
       {l:'Reclamações no semestre',v:NB(S.total),g:'linear-gradient(90deg,#FF6B35,#F59E0B)',
        s:`${NB(S.respondidas)} respondidas · ${NB(S.nao_respondidas)} sem resposta`,gh:'📣',b:['b-wr',(S.total/S.dias).toFixed(1)+' por dia']},
-      {l:'Tempo de resposta',v:'42d',g:'linear-gradient(90deg,#EF4444,#F97316)',c:'#F87171',
+      {l:'Tempo de resposta',v:'39d',g:'linear-gradient(90deg,#EF4444,#F97316)',c:'#F87171',
        s:S.tempo_resposta,gh:'⏳',b:['b-al','trava a subida para "Bom"']},
       {l:'Índice de solução',v:S.indice_solucao+'%',g:'linear-gradient(90deg,#EAB308,#22C55E)',c:'#FACC15',
        s:`${S.avaliadas} avaliações no período`,gh:'📊',b:['b-wr',S.voltaria+'% voltaria a comprar']}
     ].map(cardKPI).join('')+`</div>
-    <div class="note" style="margin-top:11px">A loja <b>saiu da faixa Ruim e entrou em Regular</b> (${RA.indice_anterior.toString().replace('.',',')} → ${RA.indice.toString().replace('.',',')}), com as reclamações sem resposta caindo de 54 para ${S.nao_respondidas}. O que ainda segura a nota é o tempo médio de ${S.tempo_resposta}. Detalhamento completo na aba Reclame Aqui.</div>`;
+    <div class="note" style="margin-top:11px">A loja <b>se firmou na faixa Regular</b> (${RA.serie_indice.map(v=>v.toString().replace('.',',')).join(' → ')}), com as reclamações sem resposta caindo de 54 para ${S.nao_respondidas} em ${NB(S.total)}. O que ainda segura a nota é o tempo médio de ${S.tempo_resposta}, herdado do passivo antigo. Detalhamento completo na aba Reclame Aqui.</div>`;
 
   h += `<div class="slab">Destaques do período</div><div class="g2">
     <div class="panel"><p class="pt">✅ O que está funcionando</p><ul class="ls">${ult.leitura.bom.map(x=>'<li>'+x+'</li>').join('')}</ul></div>
@@ -1014,8 +1035,8 @@ function graficosRA(){
     s.appendChild(tx(px,14,`você está aqui · ${R.indice.toString().replace('.',',')}`,{fill:'#fff',size:11.5,weight:700}));
     s.appendChild(mk('line',{x1:esc(7),x2:esc(7),y1:34,y2:70,stroke:'#3B82F6','stroke-dasharray':'3 3'}));
     s.appendChild(tx(esc(7),100,'próxima meta: 7,0 (Bom)',{fill:'#60A5FA',size:10.5}));
-    s.appendChild(mk('circle',{cx:esc(R.indice_anterior),cy:49,r:4,fill:'none',stroke:'#7C818C','stroke-width':1.5}));
-    s.appendChild(tx(esc(R.indice_anterior),100,'leitura anterior '+R.indice_anterior.toString().replace('.',','),{fill:'#7C818C',size:10}));
+    s.appendChild(mk('circle',{cx:esc(R.indice_ref),cy:49,r:4,fill:'none',stroke:'#7C818C','stroke-width':1.5}));
+    s.appendChild(tx(esc(R.indice_ref),100,R.indice_ref_rot+': '+R.indice_ref.toString().replace('.',','),{fill:'#7C818C',size:10}));
     el('ra-regua').appendChild(s);
   })();
   /* hora */
@@ -1064,7 +1085,7 @@ function graficosRA(){
       s.appendChild(tx(x+bw/2,H-p.b+16,m.m+(m.parcial?' *':''),{size:10.5}));});
     el('ra-mes').appendChild(s);
     const med=(M.filter(m=>!m.parcial).reduce((a,b)=>a+b.n,0)/6).toFixed(1);
-    el('ra-nmes').innerHTML=`Volume estável entre <b>32 e 41 reclamações por mês</b> (média de ${med}), sem tendência de queda. Agosto marca ${M[6].n} até o dia 18 — projetando o mês fechado, fica na mesma faixa. <span style="color:#5E636D">* mês parcial.</span>`;
+    el('ra-nmes').innerHTML=`Volume estável entre <b>32 e 41 reclamações por mês</b> (média de ${med}), sem tendência de queda. Agosto marca ${M[6].n} até o dia 26 — projetado para o mês fechado dá cerca de ${Math.round(M[6].n/26*31)}, dentro da mesma faixa. <span style="color:#5E636D">* mês parcial.</span>`;
   }
   /* notas */
   if(el('ra-notas')&&P.top_avaliadas.length){
@@ -1081,10 +1102,10 @@ function graficosRA(){
       s.appendChild(tx(x+bw/2,H-p.b+16,n,{size:10.5}));}
     el('ra-notas').appendChild(s);
     const prom=(N[10]||0)+(N[9]||0),det=Object.entries(N).filter(([n])=>+n<=6).reduce((a,b)=>a+b[1],0);
-    el('ra-nnotas').innerHTML=`<b>${N[0]||0} avaliações nota zero</b> contra ${prom} notas 9 e 10. Os detratores (até 6) somam ${det} das ${P.avaliadas}. A concentração no extremo zero indica cliente que avaliou depois de desistir — como o passivo de respostas acabou de ser zerado, o efeito das novas respostas ainda não aparece aqui.`;
+    el('ra-nnotas').innerHTML=`<b>${N[0]||0} avaliações nota zero</b> contra ${prom} notas 9 e 10. Os detratores (até 6) somam ${det} das ${P.avaliadas}, o que puxa a média para ${RA.nota_consumidor.toFixed(2).replace('.',',')}/10. A concentração no extremo zero indica cliente que avaliou depois de desistir — o passivo de respostas foi zerado há poucas semanas e o efeito das novas respostas ainda não chegou nesta distribuição, que olha 6 meses para trás.`;
   }
   /* problemas e produtos */
-  [['ra-prob',P.problemas,'#EF4444'],['ra-prod',P.produtos,'#3B82F6']].forEach(([id,arr,cor])=>{
+  [['ra-prob',P.problemas,'#EF4444'],['ra-prod',P.produtos,'#3B82F6'],['ra-cat',P.categorias||[],'#A855F7']].forEach(([id,arr,cor])=>{
     if(!el(id)||!arr.length)return;
     const W=1000,rh=34,H=arr.length*rh+8,mx=Math.max(...arr.map(a=>a.v)),bx=330,s=svg(W,H);
     arr.forEach((a,i)=>{const y=i*rh+8,w=(a.v/mx)*(W-bx-110);
