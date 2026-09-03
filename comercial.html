@@ -37,6 +37,9 @@ function showMonth(month, el) {
   if (month === 'ago' && typeof buildAgoCharts === 'function' && !agoChartsBuilt['visao']) {
     setTimeout(function(){ buildAgoCharts('visao'); agoChartsBuilt['visao'] = true; }, 50);
   }
+  if (month === 'set' && typeof buildSetCharts === 'function' && !setChartsBuilt['visao']) {
+    setTimeout(function(){ buildSetCharts('visao'); setChartsBuilt['visao'] = true; }, 50);
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -409,6 +412,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="month-btn jun"          onclick="showMonth('jun', this)">📅 Junho 2026</div>
   <div class="month-btn jul"          onclick="showMonth('jul', this)">📅 Julho 2026</div>
   <div class="month-btn ago"          onclick="showMonth('ago', this)">📅 Agosto 2026</div>
+  <div class="month-btn set"          onclick="showMonth('set', this)">📅 Setembro 2026</div>
 </div>
 
 <!-- ═══════════════ MÊS: MARÇO 2026 ═══════════════ -->
@@ -4184,6 +4188,563 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 </div><!-- /month-ago -->
 
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ═══ SETEMBRO 2026 ═══ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="month-dashboard" id="month-set">
+
+<div class="header">
+  <div>
+    <h1>📊 Dashboard Vendas</h1>
+    <div class="header-sub" id="set-hdr-periodo">Setembro 2026 · 🟡 EM ANDAMENTO (01-02/09 · D+2 · meta R$ 15,59M · Fat. + Categorias + Vendas Diárias · ADS &amp; Afiliados e Análise de Produtos em breve)</div>
+  </div>
+  <div class="header-badges">
+    <span class="badge" style="color:var(--yellow)">🟡 PARCIAL D+2: R$ 1.298.705,50 · 8,33% de R$ 15,59M</span>
+    <span class="badge" style="color:var(--green)">A×A +250% · M×M +93,10%</span>
+  </div>
+</div>
+
+<div class="tabs" id="set-tabs">
+  <div class="tab active" onclick="showSetPage('visao',event)">Visão Geral</div>
+  <div class="tab" onclick="showSetPage('marketplaces',event)">Marketplaces</div>
+  <div class="tab" onclick="showSetPage('categorias',event)">Categorias</div>
+  <div class="tab" onclick="showSetPage('diario',event)">Vendas Diárias</div>
+  <div class="tab" onclick="showSetPage('produtos',event)">Análise de Produtos</div>
+  <div class="tab" onclick="showSetPage('ads',event)">📣 ADS &amp; Afiliados</div>
+</div>
+
+<!-- ═══ SETEMBRO: VISÃO GERAL ═══ -->
+<div class="page active" id="set-page-visao">
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Faturamento (parcial · 01-02/09)</div>
+      <div class="kpi-value">R$ 1.298.705,50</div>
+      <div class="kpi-sub"><span class="kpi-pill">2 dias</span> · proj. mês R$ 19.480.582,53</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--yellow)">
+      <div class="kpi-label">% Meta Mensal (D+2)</div>
+      <div class="kpi-value" style="color:var(--yellow)">8,33%</div>
+      <div class="kpi-sub">Meta setembro <strong>R$ 15.593.318,00</strong> · <span class="kpi-pill">tend. atingim. +25%</span></div>
+    </div>
+    <div class="kpi-card" style="--c:var(--green)">
+      <div class="kpi-label">Crescimento A×A (mesmos dias)</div>
+      <div class="kpi-value" style="color:var(--green)">+250%</div>
+      <div class="kpi-sub">2025: R$ 371.219,70 → 2026: R$ 1.298.705,50</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--green)">
+      <div class="kpi-label">Comparativo M×M (mesmos dias)</div>
+      <div class="kpi-value" style="color:var(--green)">+93,10%</div>
+      <div class="kpi-sub">anterior R$ 672.556,15 · <span class="kpi-pill">quase o dobro</span></div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,rgba(251,191,36,.08),transparent);border:1px solid rgba(251,191,36,.35);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.78rem;color:var(--muted);line-height:1.5;">
+    ⚠️ <strong style="color:var(--yellow);">Ainda com base curta — leia com cautela.</strong> Com <strong>dois dias</strong> de base, a projeção linear (R$ 19,5 milhões) e as tendências de atingimento seguem instáveis: o GR aparece com <strong>+56% de tendência</strong> porque concentra 79,9% do faturamento do período. Esses números só ficam confiáveis a partir do D+5. <em>✅ A base de comparação "Mês Anterior" foi carregada neste corte (R$ 672.556,15) e o M×M já aparece em <strong style="color:var(--green)">+93,10%</strong>. ⚠️ A base de 2025 continua em R$ 371.219,70 — o mesmo valor do D+1, ou seja, o dia 02/09/2025 ainda não entrou, o que infla o A×A de +250%.</em>
+  </div>
+
+  <div class="section-title">Performance por Categoria — Parcial (01-02/09) · metas de setembro</div>
+  <div class="grid-4">
+    <div class="chart-card">
+      <div class="chart-title">🛋️ Guarda-Roupa (GR)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--gr);">R$ 1,04M</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 9.979.723,52 · Realizado: <strong>R$ 1.038.164,34</strong></div>
+      <div class="prog-row"><div class="prog-label">Realizado</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:10.40%;background:var(--gr);"></div></div><div class="prog-val" style="color:var(--green)">10,40%</div></div>
+      <div style="margin-top:12px;"><span class="tag tag-green">🥇 79,9% do faturamento · tend. +56%</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">Única acima do ritmo do calendário (6,7% em 2 dias) · proj. R$ 15.572.465,11</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🪞 Complementos (COMP)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--comp);">R$ 144,98K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 2.338.997,70 · Realizado: <strong>R$ 144.983,55</strong></div>
+      <div class="prog-row"><div class="prog-label">Realizado</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:6.20%;background:var(--comp);"></div></div><div class="prog-val" style="color:var(--yellow)">6,20%</div></div>
+      <div style="margin-top:12px;"><span class="tag tag-yellow">📊 Praticamente no ritmo · tend. -7%</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">11,2% do faturamento do período · proj. R$ 2.174.753,21</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🪑 Sala de Jantar (SALA)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--sala);">R$ 93,75K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 3.430.529,96 · Realizado: <strong>R$ 93.753,51</strong></div>
+      <div class="prog-row"><div class="prog-label">Realizado</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:2.73%;background:var(--sala);"></div></div><div class="prog-val" style="color:var(--red)">2,73%</div></div>
+      <div style="margin-top:12px;"><span class="tag tag-red">⚠️ Pior tendência (excl. Cozinha) · -59%</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">7,2% do faturamento do período · proj. R$ 1.406.302,70</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🍳 Cozinha <span style="font-size:.65rem;color:#f59e0b;">BÔNUS</span></div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:#f59e0b;">R$ 21,80K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta-bônus: R$ 1.559.331,80 · Realizado: <strong>R$ 21.804,10</strong></div>
+      <div class="prog-row"><div class="prog-label">Realizado</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:1.40%;background:#f59e0b;"></div></div><div class="prog-val" style="color:#f59e0b">1,40%</div></div>
+      <div style="margin-top:12px;"><span class="tag" style="background:rgba(245,158,11,.15);color:#f59e0b;">🎁 BÔNUS · mais que dobrou no dia</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">1,7% do faturamento do período · tend. -79,03%</div>
+    </div>
+  </div>
+
+  <div class="section-title">📌 Metas de setembro vs agosto</div>
+  <div class="chart-card" style="margin-bottom:20px;overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Meta</th><th>Agosto (revisada)</th><th>Setembro</th><th style="text-align:center;">Δ</th><th style="text-align:center;">% atingido D+2</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Geral</strong></td><td style="color:var(--muted)">R$ 15.233.318,00</td><td><strong>R$ 15.593.318,00</strong></td><td style="text-align:center;"><span class="tag tag-yellow">+2,4%</span></td><td style="text-align:center;"><span class="tag">8,33%</span></td></tr>
+        <tr><td>GR</td><td style="color:var(--muted)">R$ 9.749.323,52</td><td>R$ 9.979.723,52</td><td style="text-align:center;"><span class="tag tag-yellow">+2,4%</span></td><td style="text-align:center;"><span class="tag">10,40%</span></td></tr>
+        <tr><td>COMP</td><td style="color:var(--muted)">R$ 2.284.997,70</td><td>R$ 2.338.997,70</td><td style="text-align:center;"><span class="tag tag-yellow">+2,4%</span></td><td style="text-align:center;"><span class="tag">6,20%</span></td></tr>
+        <tr><td>SALA</td><td style="color:var(--muted)">R$ 3.351.329,96</td><td>R$ 3.430.529,96</td><td style="text-align:center;"><span class="tag tag-yellow">+2,4%</span></td><td style="text-align:center;"><span class="tag">2,73%</span></td></tr>
+        <tr><td style="color:#f59e0b">🎁 Cozinha (bônus)</td><td style="color:var(--muted)">R$ 1.523.331,80</td><td>R$ 1.559.331,80</td><td style="text-align:center;"><span class="tag tag-yellow">+2,4%</span></td><td style="text-align:center;"><span class="tag">1,40%</span></td></tr>
+        <tr><td style="border-top:2px solid var(--border);"><strong style="color:var(--shopee)">Shopee</strong></td><td style="color:var(--muted);border-top:2px solid var(--border);">R$ 7.000.000,00</td><td style="border-top:2px solid var(--border);">R$ 7.500.000,00</td><td style="text-align:center;border-top:2px solid var(--border);"><span class="tag tag-green">+7,1%</span></td><td style="text-align:center;border-top:2px solid var(--border);"><span class="tag">7,63%</span></td></tr>
+        <tr><td><strong style="color:var(--ml)">Mercado Livre</strong></td><td style="color:var(--muted)">R$ 4.200.000,00</td><td>R$ 4.500.000,00</td><td style="text-align:center;"><span class="tag tag-green">+7,1%</span></td><td style="text-align:center;"><span class="tag">8,36%</span></td></tr>
+        <tr><td><strong style="color:var(--magalu)">Magalu</strong></td><td style="color:var(--muted)">R$ 3.800.000,00</td><td>R$ 3.200.000,00</td><td style="text-align:center;"><span class="tag tag-red">−15,8%</span></td><td style="text-align:center;"><span class="tag">9,77%</span></td></tr>
+        <tr><td><strong style="color:var(--via)">Via Varejo</strong></td><td style="color:var(--muted)">R$ 450.000,00</td><td>R$ 300.000,00</td><td style="text-align:center;"><span class="tag tag-red">−33,3%</span></td><td style="text-align:center;"><span class="tag">4,95%</span></td></tr>
+        <tr><td><strong style="color:var(--madeira)">Madeira</strong></td><td style="color:var(--muted)">R$ 150.000,00</td><td>R$ 150.000,00</td><td style="text-align:center;"><span class="tag">=</span></td><td style="text-align:center;"><span class="tag tag-red">2,23%</span></td></tr>
+        <tr><td><strong style="color:#06b6d4">Site/Venda Direta</strong></td><td style="color:var(--muted)">R$ 30.000,00</td><td>R$ 100.000,00</td><td style="text-align:center;"><span class="tag tag-green">+233%</span></td><td style="text-align:center;"><span class="tag tag-red">0,47%</span></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      📌 <strong style="color:var(--text);">As metas por categoria subiram 2,4% em bloco</strong>, mas a redistribuição por canal foi bem mais agressiva. <em>🚀 <strong style="color:#06b6d4">O Site/Venda Direta teve a meta triplicada</strong> (R$ 30K → R$ 100K), reconhecendo o fechamento de agosto em 476,96%. <strong style="color:var(--shopee)">Shopee</strong> e <strong style="color:var(--ml)">Mercado Livre</strong> ganharam +7,1% cada. Em contrapartida, <strong style="color:var(--magalu)">Magalu (−15,8%)</strong> e <strong style="color:var(--via)">Via (−33,3%)</strong> tiveram as metas cortadas — coerente com o fechamento de agosto (63,86% e 69,15%). ⚠️ A soma das metas por canal (R$ 15.750.000,00) fica R$ 156.682,00 acima da meta geral de R$ 15.593.318,00.</em>
+    </div>
+  </div>
+
+  <div class="section-title">Comparativos</div>
+  <div class="grid-3">
+    <div class="axo-card">
+      <div class="axo-label">Mês anterior (mesmos dias)</div>
+      <div class="axo-val" style="color:var(--muted);">R$ 672.556,15</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">base comparativa da planilha</div>
+      <div style="font-size:.7rem;color:var(--green);margin-top:6px;line-height:1.45;">✅ Base carregada neste corte — saiu de zero para R$ 672.556,15, o que destravou o cálculo do M×M.</div>
+    </div>
+    <div class="axo-card">
+      <div class="axo-label">Variação M×M</div>
+      <div class="axo-val" style="color:var(--green);">▲ +93,10%</div>
+      <div style="font-size:.75rem;color:var(--green);margin-top:4px;">R$ 1.298.705,50 vs R$ 672.556,15</div>
+      <div style="font-size:.7rem;color:var(--green);margin-top:6px;line-height:1.45;">✅ Setembro abre quase dobrando o mesmo período de agosto — <strong>+R$ 626.149,35</strong>. Agosto teve início fraco (D+2 em R$ 672,6K), então a régua é favorável.</div>
+    </div>
+    <div class="axo-card">
+      <div class="axo-label">Variação A×A</div>
+      <div class="axo-val" style="color:var(--green);">▲ +250%</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">set/2025 (mesmos dias): R$ 371.219,70</div>
+      <div style="font-size:.7rem;color:var(--red);margin-top:6px;line-height:1.45;">🔴 <strong>Base de 2025 parada</strong>: segue no mesmo valor do D+1, ou seja, o dia 02/09/2025 não entrou. O +250% está inflado — verificar na origem.</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">📈 Faturamento por Categoria · Parcial D+2</div>
+      <div class="chart-wrap"><canvas id="setCatChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🛒 Faturamento por Marketplace · Parcial D+2</div>
+      <div class="chart-wrap"><canvas id="setMktChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-title">🗺️ Representatividade por Estado — Setembro 2026 (D+2)</div>
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Distribuição do faturamento por UF</div>
+      <div class="chart-wrap"><canvas id="setEstadoChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Faturamento por estado (VLR LIQ PEDIDO)</div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead><tr><th>Estado</th><th>Faturamento</th><th style="text-align:center;">% do período</th><th style="text-align:center;">ago/26</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="border-left:3px solid #3b82f6;padding-left:10px;"><strong>SP</strong> <span style="color:var(--muted);font-size:.7rem;">São Paulo</span></td>
+              <td><strong>R$ 480.754,03</strong></td>
+              <td style="text-align:center;"><span class="tag tag-green">37,02%</span></td>
+              <td style="text-align:center;color:var(--muted)">40,27%</td>
+            </tr>
+            <tr>
+              <td style="border-left:3px solid #34d399;padding-left:10px;"><strong>MG</strong> <span style="color:var(--muted);font-size:.7rem;">Minas Gerais</span></td>
+              <td><strong>R$ 417.206,41</strong></td>
+              <td style="text-align:center;"><span class="tag tag-green">32,12%</span></td>
+              <td style="text-align:center;color:var(--muted)">34,59%</td>
+            </tr>
+            <tr>
+              <td style="border-left:3px solid #fb7185;padding-left:10px;"><strong>RJ</strong> <span style="color:var(--muted);font-size:.7rem;">Rio de Janeiro</span></td>
+              <td><strong>R$ 360.629,51</strong></td>
+              <td style="text-align:center;"><span class="tag tag-green">27,77%</span></td>
+              <td style="text-align:center;color:var(--muted)">25,09%</td>
+            </tr>
+            <tr>
+              <td style="border-left:3px solid #f59e0b;padding-left:10px;"><strong>BA</strong> <span style="color:var(--muted);font-size:.7rem;">Bahia</span></td>
+              <td><strong>R$ 40.115,55</strong></td>
+              <td style="text-align:center;"><span class="tag tag-green">3,09%</span></td>
+              <td style="text-align:center;color:var(--muted)">0,04%</td>
+            </tr>
+            <tr class="total-row">
+              <td><strong>TOTAL</strong></td>
+              <td><strong>R$ 1.298.705,50</strong></td>
+              <td style="text-align:center;"><strong>100%</strong></td>
+              <td style="text-align:center;"><strong>100%</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+        🗺️ <strong style="color:var(--text);">SP segue líder (37,02%), mas a distribuição ficou mais equilibrada.</strong> <em>Comparado a agosto, <strong style="color:#3b82f6">SP</strong> cede espaço (40,27% → 37,02%) e <strong style="color:#fb7185">RJ</strong> ganha (25,09% → 27,77%); <strong style="color:#34d399">MG</strong> fica próximo do mês passado (34,59% → 32,12%). 🚀 A <strong style="color:#f59e0b">Bahia</strong> se confirma: <strong>R$ 40.115,55</strong> em dois dias, contra R$ 5.178,69 em todo o mês de agosto — praticamente todo o volume veio no dia 01 (R$ 39.812,48), então ainda parece um pedido pontual mais do que uma abertura de praça.</em>
+      </div>
+      <div style="margin-top:8px;font-size:.7rem;color:var(--yellow);line-height:1.5;">
+        ✅ <strong>Nota sobre a origem:</strong> a tabela dinâmica deste corte está consistente — o "Total Geral" (R$ 1.298.705,50) bate exatamente com o faturamento oficial, corrigindo a duplicação observada no D+1.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETEMBRO: MARKETPLACES ═══ -->
+<div class="page" id="set-page-marketplaces">
+  <div style="background:linear-gradient(135deg,rgba(34,197,94,.06),transparent);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:.78rem;color:var(--muted);line-height:1.5;">
+    ✅ <strong style="color:var(--green);">Quadro reconciliado (01/09 a 02/09).</strong> O resumo por canal soma <strong>R$ 1.296.371,56</strong>, praticamente igual ao total oficial do período (R$ 1.298.705,50 — resíduo de R$ 2.333,94). <em>✅ O <strong style="color:#06b6d4">Site/Venda Direta</strong> (R$ 1.580,91) e o <strong style="color:var(--web)">Web Continental</strong> (R$ 1.016,85) estrearam no dia 02.</em>
+  </div>
+
+  <div class="kpi-strip">
+    <div class="kpi-card" style="--c:var(--shopee)">
+      <div class="kpi-label">🟠 Shopee</div>
+      <div class="kpi-value" style="color:var(--shopee);">R$ 572.447,30</div>
+      <div class="kpi-sub"><span class="kpi-pill">44% · 7,63% da meta</span> · M×M +61% · A×A +251%</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--ml)">
+      <div class="kpi-label">🟡 Mercado Livre</div>
+      <div class="kpi-value" style="color:var(--ml);">R$ 390.640,49</div>
+      <div class="kpi-sub"><span class="kpi-pill">30% · 8,36% da meta</span> · M×M +136% · A×A +224%</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--magalu)">
+      <div class="kpi-label">🔵 Magalu</div>
+      <div class="kpi-value" style="color:var(--magalu);">R$ 312.492,93</div>
+      <div class="kpi-sub"><span class="kpi-pill">24% · 9,77% da meta</span> · M×M +191% · A×A +497%</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Demais canais</div>
+      <div class="kpi-value" style="color:var(--comp);">R$ 20,8K</div>
+      <div class="kpi-sub">Via + Madeira + Site + Web · ~1,6%</div>
+    </div>
+  </div>
+
+  <div class="section-title">Participação — Parcial (01-02/09)</div>
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Distribuição do Faturamento — D+2</div>
+      <div class="mkt-rows">
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--shopee)">🟠 Shopee</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:44.08%;background:var(--shopee);"></div></div><div class="mkt-val">R$ 572.447,30</div><div class="mkt-var"><span class="tag">44%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--ml)">🟡 Meili/ML</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:30.08%;background:var(--ml);"></div></div><div class="mkt-val">R$ 390.640,49</div><div class="mkt-var"><span class="tag">30%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--magalu)">🔵 Magalu</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:24.06%;background:var(--magalu);"></div></div><div class="mkt-val">R$ 312.492,93</div><div class="mkt-var"><span class="tag">24%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--via)">🟣 Via Varejo</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1.14%;background:var(--via);"></div></div><div class="mkt-val">R$ 14.842,28</div><div class="mkt-var"><span class="tag">1%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--madeira)">🟤 Madeira</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:0.26%;background:var(--madeira);"></div></div><div class="mkt-val">R$ 3.350,80</div><div class="mkt-var"><span class="tag">0,3%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:#06b6d4">🌐 Site/Direta</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:0.12%;background:#06b6d4;"></div></div><div class="mkt-val">R$ 1.580,91</div><div class="mkt-var"><span class="tag">0,1%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--web)">⚪ Web Cont.</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:0.08%;background:var(--web);"></div></div><div class="mkt-val">R$ 1.016,85</div><div class="mkt-var"><span class="tag">0,1%</span></div></div>
+      </div>
+      <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+        💡 Participação calculada sobre o total oficial do período (R$ 1.298.705,50), conforme a coluna "Representatividade por Canal" da planilha. <em>📊 Os três grandes concentram <strong>98,2%</strong> do período. O <strong style="color:var(--magalu)">Magalu foi o maior avanço do dia</strong> (+R$ 110,1K, +54%) e subiu para 24% de participação. ✅ <strong style="color:#06b6d4">Site</strong> e <strong style="color:var(--web)">Web</strong> estrearam no mês.</em>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🛒 Faturado × Meta por canal</div>
+      <div class="chart-wrap"><canvas id="setMktMetaChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-title">Detalhamento por Canal — Mês×Mês · Ano×Ano · Projeção · Representatividade (01-02/09)</div>
+  <div class="chart-card" style="margin-bottom:20px;overflow-x:auto;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Canal</th>
+          <th>Mês Atual</th>
+          <th>Mês Anterior</th>
+          <th>Ano Anterior</th>
+          <th style="text-align:center;">M×M</th>
+          <th style="text-align:center;">A×A</th>
+          <th>Projeção</th>
+          <th style="text-align:center;">Repres.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="border-left:3px solid var(--shopee);padding-left:10px;"><strong style="color:var(--shopee)">🟠 Shopee</strong></td>
+          <td><strong>R$ 572.447,30</strong></td>
+          <td style="color:var(--muted)">R$ 356.235,62</td>
+          <td style="color:var(--muted)">R$ 163.221,40</td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +61%</span></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +251%</span></td>
+          <td>R$ 8.586.709,57</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">44%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid var(--ml);padding-left:10px;"><strong style="color:var(--ml)">🟡 Meili/ML</strong></td>
+          <td><strong>R$ 390.640,49</strong></td>
+          <td style="color:var(--muted)">R$ 165.741,70</td>
+          <td style="color:var(--muted)">R$ 120.711,14</td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +136%</span></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +224%</span></td>
+          <td>R$ 5.859.607,31</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">30%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid var(--magalu);padding-left:10px;"><strong style="color:var(--magalu)">🔵 Magalu</strong></td>
+          <td><strong>R$ 312.492,93</strong></td>
+          <td style="color:var(--muted)">R$ 107.234,92</td>
+          <td style="color:var(--muted)">R$ 52.327,86</td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +191%</span></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +497%</span></td>
+          <td>R$ 4.687.393,94</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">24%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid var(--via);padding-left:10px;"><strong style="color:var(--via)">🟣 Via Varejo</strong></td>
+          <td><strong>R$ 14.842,28</strong></td>
+          <td style="color:var(--muted)">R$ 36.473,01</td>
+          <td style="color:var(--muted)">R$ 10.796,64</td>
+          <td style="text-align:center;"><span class="tag tag-red">▼ -59%</span></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +37%</span></td>
+          <td>R$ 222.634,14</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">1%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid var(--madeira);padding-left:10px;"><strong style="color:var(--madeira)">🟤 Madeira</strong></td>
+          <td><strong>R$ 3.350,80</strong></td>
+          <td style="color:var(--muted)">R$ 5.486,81</td>
+          <td style="color:var(--muted)">R$ 15.601,29</td>
+          <td style="text-align:center;"><span class="tag tag-red">▼ -39%</span></td>
+          <td style="text-align:center;"><span class="tag tag-red">▼ -79%</span></td>
+          <td>R$ 50.262,00</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">0%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid var(--web);padding-left:10px;"><strong style="color:var(--web)">⚪ Web Continental</strong></td>
+          <td><strong>R$ 1.016,85</strong></td>
+          <td style="color:var(--muted)">R$ 782,49</td>
+          <td style="color:var(--muted)">R$ 6.686,83</td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +30%</span></td>
+          <td style="text-align:center;"><span class="tag tag-red">▼ -85%</span></td>
+          <td>R$ 15.252,78</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">0.1%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid #06b6d4;padding-left:10px;"><strong style="color:#06b6d4">🌐 Site/Venda Direta</strong></td>
+          <td><strong>R$ 1.580,91</strong></td>
+          <td style="color:var(--muted)">R$ 601,60</td>
+          <td style="color:var(--muted)">—</td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +163%</span></td>
+          <td style="text-align:center;"><span class="tag">—</span></td>
+          <td>R$ 23.713,61</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">0.1%</span></td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>TOTAL</strong></td>
+          <td><strong>R$ 1.296.371,56</strong></td>
+          <td><strong>R$ 672.556,15</strong></td>
+          <td><strong>R$ 369.345,16</strong></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +93%</span></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +251%</span></td>
+          <td><strong>R$ 19.445.573,35</strong></td>
+          <td style="text-align:center;"><strong>100%</strong></td>
+        </tr>
+    </table>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      📊 <strong style="color:var(--text);">Mês Atual</strong> = faturamento acumulado 01-02/09 · <strong>Mês Anterior</strong> e <strong>Ano Anterior</strong> = mesmos dias dos períodos comparativos · <strong>Projeção</strong> = faturado × 15 · <strong>Repres.</strong> = participação do canal sobre o total do período. <em>🚀 <strong style="color:var(--magalu)">Magalu é o destaque duplo</strong>: +191% no M×M e <strong>+497% no comparativo anual</strong>, o maior salto do mix. <strong style="color:var(--ml)">Mercado Livre (+136%)</strong> e <strong style="color:var(--shopee)">Shopee (+61%)</strong> também abrem bem acima de agosto. ⚠️ <strong style="color:var(--via)">Via (-59%)</strong> e <strong style="color:var(--madeira)">Madeira (-39%)</strong> começam atrás — a Madeira, inclusive, <strong>não faturou nada no dia 02</strong> (segue nos R$ 3.350,80 do dia 01). ✅ O <strong style="color:var(--web)">Web Continental</strong> voltou a faturar e já está +30% sobre agosto. Obs.: a soma dos canais (R$ 1.296.371,56) fica R$ 2.333,94 abaixo do total oficial (R$ 1.298.705,50). As projeções extrapolam dois dias e não devem orientar decisão.</em>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETEMBRO: CATEGORIAS ═══ -->
+<div class="page" id="set-page-categorias">
+  <div style="background:linear-gradient(135deg,rgba(56,189,248,.06),transparent);border:1px solid rgba(56,189,248,.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.78rem;color:var(--muted);line-height:1.5;">
+    📋 <strong style="color:var(--text);">Fonte deste bloco: a aba "Categoria × Marketplace" da planilha (01/09 a 02/09).</strong> Soma dos canais: R$ 1.294.241,15 contra R$ 1.298.705,50 do total oficial (R$ 4.464,35 de resíduo). As metas por canal são as de setembro. Projeção = faturado × 15 — com dois dias de base, serve apenas como referência aritmética. <em>⚠️ Duas mudanças na origem neste corte: a <strong>meta de SALA do Mercado Livre saltou de R$ 390.000 para R$ 990.000</strong>, e o <strong style="color:#06b6d4">Site</strong> aparece com R$ 467,35 aqui contra R$ 1.580,91 no resumo por canal (R$ 1.113,56 de diferença).</em>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card cat-mp-card" style="border-color:rgba(249,115,22,.35);">
+      <div class="chart-title" style="color:var(--shopee);">🟠 SHOPEE</div>
+      <div class="cat-mp-total">D+2: R$ 572.447,30</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td>R$ 100.501,41</td><td>R$ 1.050.000,00</td><td><span class="tag tag-green">9,57%</span></td><td>R$ 1.507.521,08</td></tr>
+        <tr><td>GR</td><td>R$ 417.986,11</td><td>R$ 4.800.000,00</td><td><span class="tag tag-green">8,71%</span></td><td>R$ 6.269.791,64</td></tr>
+        <tr><td>SALA</td><td>R$ 47.627,39</td><td>R$ 1.650.000,00</td><td><span class="tag tag-red">2,89%</span></td><td>R$ 714.410,91</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td>R$ 6.332,40</td><td><span style="color:var(--muted)">bônus R$ 750k</span></td><td><span class="tag tag-red">0,84%</span></td><td>R$ 94.985,96</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 572.447,31</td><td>R$ 7.500.000,00</td><td><span class="tag tag-yellow">7,63%</span></td><td>R$ 8.491.723,62</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;">🎯 <strong>COMP em 9,57%</strong>, o melhor índice do canal e bem acima do ritmo do calendário (6,7%). GR baixou para 73% do canal. <em>⚠️ SALA (2,89%) segue atrás — foi a categoria que fechou agosto em 97,88% e precisa de tração desde já.</em></div>
+    </div>
+
+    <div class="chart-card cat-mp-card" style="border-color:rgba(255,224,0,.3);">
+      <div class="chart-title" style="color:var(--ml);">🟡 MERCADO LIVRE</div>
+      <div class="cat-mp-total">D+2: R$ 390.640,49</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td>R$ 39.915,11</td><td>R$ 630.000,00</td><td><span class="tag tag-yellow">6,34%</span></td><td>R$ 598.726,70</td></tr>
+        <tr><td>GR</td><td>R$ 306.317,64</td><td>R$ 2.880.000,00</td><td><span class="tag tag-green">10,64%</span></td><td>R$ 4.594.764,62</td></tr>
+        <tr><td>SALA</td><td>R$ 29.878,12</td><td>R$ 990.000,00 <span style="color:var(--yellow);font-size:.65rem;">↑</span></td><td><span class="tag tag-yellow">3,02%</span></td><td>R$ 448.171,82</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td>R$ 14.529,61</td><td><span style="color:var(--muted)">bônus R$ 450k</span></td><td><span class="tag tag-yellow">3,23%</span></td><td>R$ 217.944,18</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 376.110,88</td><td>R$ 4.500.000,00</td><td><span class="tag tag-green">8,36%</span></td><td>R$ 5.641.663,13</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;"><strong>GR em 10,64%</strong>, bem acima do ritmo do calendário. <strong>Melhor Cozinha do painel (3,23%)</strong>, mantendo o padrão de agosto. <em>⚠️ A <strong>meta de SALA subiu de R$ 390.000 para R$ 990.000</strong> neste corte — a soma das metas do canal (R$ 4.950.000) agora fica R$ 450 mil acima da meta total de R$ 4.500.000. ✅ O TOTAL da planilha (R$ 376.110,88, exclui Cozinha) agora reconcilia. Com Cozinha, o canal soma R$ 390.640,49.</em></div>
+    </div>
+
+    <div class="chart-card cat-mp-card" style="border-color:rgba(0,134,255,.3);">
+      <div class="chart-title" style="color:var(--magalu);">🔵 MAGALU</div>
+      <div class="cat-mp-total">D+2: R$ 312.492,93</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td>R$ 3.453,47</td><td>R$ 448.000,00</td><td><span class="tag tag-red">0,77%</span></td><td>R$ 51.802,10</td></tr>
+        <tr><td>GR</td><td>R$ 294.466,13</td><td>R$ 2.048.000,00</td><td><span class="tag tag-green">14,38%</span></td><td>R$ 4.416.991,98</td></tr>
+        <tr><td>SALA</td><td>R$ 13.631,23</td><td>R$ 704.000,00</td><td><span class="tag tag-red">1,94%</span></td><td>R$ 204.468,48</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td>R$ 942,09</td><td><span style="color:var(--muted)">bônus R$ 320k</span></td><td><span class="tag tag-red">0,29%</span></td><td>R$ 14.131,38</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 312.492,93</td><td>R$ 3.200.000,00</td><td><span class="tag tag-green">9,77%</span></td><td>R$ 4.673.262,56</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;">🏆 <strong>Melhor GR do painel: 14,38% da meta</strong>, mais que o dobro do ritmo do calendário — puxou sozinho os +191% do M×M do canal. Dependência ainda extrema: <strong>94% do canal</strong>. <em>🔴 COMP (0,77%) e SALA (1,94%) repetem as lacunas que custaram R$ 1,11 milhão em agosto. A Cozinha ficou parada em R$ 942,09 desde o dia 01.</em></div>
+    </div>
+
+    <div class="chart-card cat-mp-card" style="border-color:rgba(224,123,84,.3);">
+      <div class="chart-title" style="color:var(--madeira);">🟤 MADEIRA MADEIRA</div>
+      <div class="cat-mp-total">D+2: R$ 3.350,80</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td style="color:var(--muted)">—</td><td>R$ 21.000,00</td><td><span class="tag tag-red">0,00%</span></td><td style="color:var(--muted)">—</td></tr>
+        <tr><td>GR</td><td>R$ 2.111,19</td><td>R$ 96.000,00</td><td><span class="tag tag-yellow">2,20%</span></td><td>R$ 63.335,61</td></tr>
+        <tr><td>SALA</td><td>R$ 1.239,61</td><td>R$ 33.000,00</td><td><span class="tag tag-green">3,76%</span></td><td>R$ 37.188,39</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td style="color:var(--muted)">—</td><td><span style="color:var(--muted)">bônus R$ 15k</span></td><td><span class="tag tag-red">0,00%</span></td><td style="color:var(--muted)">—</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 3.350,80</td><td>R$ 150.000,00</td><td><span class="tag tag-yellow">2,23%</span></td><td>R$ 100.524,00</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;">🔴 <strong style="color:var(--red)">Canal totalmente parado no dia 02</strong> — segue exatamente nos R$ 3.350,80 do dia 01, o que derruba o M×M para -39%. <em>⚠️ COMP e Cozinha zerados desde o início. COMP foi a categoria que fechou agosto em 142,92%, a maior folga do canal.</em></div>
+    </div>
+
+    <div class="chart-card cat-mp-card" style="border-color:rgba(192,132,252,.3);">
+      <div class="chart-title" style="color:var(--via);">🟣 VIA VAREJO</div>
+      <div class="cat-mp-total">D+2: R$ 14.842,28</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td style="color:var(--muted)">—</td><td>R$ 42.000,00</td><td><span class="tag tag-red">0,00%</span></td><td style="color:var(--muted)">—</td></tr>
+        <tr><td>GR</td><td>R$ 13.465,12</td><td>R$ 192.000,00</td><td><span class="tag tag-green">7,01%</span></td><td>R$ 201.976,85</td></tr>
+        <tr><td>SALA</td><td>R$ 1.377,15</td><td>R$ 66.000,00</td><td><span class="tag tag-red">2,09%</span></td><td>R$ 20.657,25</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td style="color:var(--muted)">—</td><td><span style="color:var(--muted)">bônus R$ 30k</span></td><td><span class="tag tag-red">0,00%</span></td><td style="color:var(--muted)">—</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 14.842,27</td><td>R$ 300.000,00</td><td><span class="tag tag-yellow">4,95%</span></td><td>R$ 222.634,10</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;">Meta cortada de R$ 450K para R$ 300K depois do fechamento de agosto em 69,15%. ✅ <strong>SALA estreou no dia 02</strong> (R$ 1.377,15), quebrando a estagnação que durava desde 20/08. <em>⚠️ COMP segue zerado e o canal está -59% no M×M — o pior do mix.</em></div>
+    </div>
+
+    <div class="chart-card cat-mp-card" style="border-color:rgba(6,182,212,.3);">
+      <div class="chart-title" style="color:#06b6d4;">🌐 SITE / VENDA DIRETA</div>
+      <div class="cat-mp-total">D+2: R$ 467,35</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td style="color:var(--muted)">—</td><td>R$ 6.366,08</td><td><span class="tag tag-red">0,00%</span></td><td style="color:var(--muted)">—</td></tr>
+        <tr><td>GR</td><td>R$ 467,35</td><td>R$ 64.000,00</td><td><span class="tag tag-red">0,73%</span></td><td>R$ 7.010,27</td></tr>
+        <tr><td>SALA</td><td style="color:var(--muted)">—</td><td>R$ 2.200,00</td><td><span class="tag tag-red">0,00%</span></td><td style="color:var(--muted)">—</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td style="color:var(--muted)">—</td><td><span style="color:var(--muted)">bônus R$ 10k</span></td><td><span class="tag tag-red">0,00%</span></td><td style="color:var(--muted)">—</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 467,35</td><td>R$ 100.000,00</td><td><span class="tag tag-red">0,47%</span></td><td>R$ 7.010,27</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;">🚨 <strong style="color:var(--yellow)">Meta triplicada (R$ 30K → R$ 100K) e o canal está em 0,47% após dois dias.</strong> Só o GR registrou venda (R$ 467,35). Depois de fechar agosto em 476,96%, é o canal que mais precisa ser acompanhado de perto. <em>⚠️ Aqui o canal soma R$ 467,35 contra R$ 1.580,91 no resumo — R$ 1.113,56 de diferença, vale conferir na origem.</em></div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-top:16px;">
+    <div class="chart-title">📊 Fat. por Categoria — Todos Canais (D+2)</div>
+    <div class="chart-wrap"><canvas id="setCatDetailChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ═══ SETEMBRO: VENDAS DIÁRIAS ═══ -->
+<div class="page" id="set-page-diario">
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Total Vendas (Geral · 2 dias)</div>
+      <div class="kpi-value">R$ 890.071,73</div>
+      <div class="kpi-sub">01-02/09 · 2 dias</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--yellow)">
+      <div class="kpi-label">Média Diária</div>
+      <div class="kpi-value" style="color:var(--yellow)">R$ 445K</div>
+      <div class="kpi-sub">R$ 445.035,87 / dia</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--shopee)">
+      <div class="kpi-label">Melhor canal · acumulado</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 381K</div>
+      <div class="kpi-sub">Shopee R$ 381.455,00 · 42,9% do período</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Projeção Vendas (mês)</div>
+      <div class="kpi-value" style="color:var(--green)">R$ 13,35M</div>
+      <div class="kpi-sub">R$ 13.351.075,95 (linear)</div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,rgba(56,189,248,.06),transparent);border:1px solid rgba(56,189,248,.2);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.8rem;color:var(--muted);line-height:1.5;">
+    💡 <strong style="color:var(--text);">Nota:</strong> "Vendas Diárias" (R$ 890.071,73 em 2 dias) = total de vendas registradas nos dias · "Faturamento" oficial (R$ 1.298.705,50) = pedidos confirmados/despachados. <em>🔄 <strong>O faturamento segue R$ 408.633,77 acima das vendas</strong> — inversão esperada na virada de mês, já que a defasagem de fechamento de agosto era de R$ 1,64 milhão e está sendo reconhecida agora. ✅ <strong style="color:var(--madeira)">Madeira</strong> (R$ 2.742,90) e <strong style="color:var(--web)">Web</strong> (R$ 2.380,56) estrearam nas vendas do dia 02. Na planilha original, o bloco está rotulado como "01/set a 02/set" — período 01-02/09.</em>
+  </div>
+
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">📅 Vendas Diárias Gerais — Parcial (01-02/09)</div>
+    <div style="position:relative;height:280px;"><canvas id="setDailyChart"></canvas></div>
+  </div>
+
+  <div class="section-title">Detalhe Diário por Marketplace · com Média e Projeção</div>
+  <div class="daily-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th style="color:var(--text)">Geral</th>
+          <th style="color:var(--shopee)">Shopee</th>
+          <th style="color:var(--ml)">Meili/ML</th>
+          <th style="color:var(--magalu)">Magalu</th>
+          <th style="color:var(--madeira)">Madeira</th>
+          <th style="color:var(--via)">Via</th>
+          <th style="color:var(--web)">Web</th>
+        </tr>
+      </thead>
+      <tbody id="setDailyTbody"></tbody>
+    </table>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      📊 <strong style="color:var(--accent);">MÉDIA</strong> = média diária por marketplace (dias com vendas) ·
+      🎯 <strong style="color:var(--green);">PROJEÇÃO</strong> = extrapolação linear para o mês de Setembro (conforme planilha). <span style="color:var(--yellow);">⚠️ Com um único dia de base, a projeção é apenas aritmética.</span>
+    </div>
+  </div>
+
+  <div class="section-title">💰 Orçado × Realizado por Dia</div>
+  <div class="chart-card">
+    <div style="padding:20px;text-align:center;color:var(--muted);font-size:.85rem;line-height:1.6;">
+      ⏳ <strong style="color:var(--yellow);">O bloco de orçado diário de setembro ainda não veio nesta remessa.</strong><br>
+      <span style="font-size:.78rem;">Para referência, o orçado diário equivalente à meta de R$ 15.593.318,00 seria de <strong>R$ 519.777,27/dia</strong> (30 dias). Será preenchido assim que a planilha trouxer a coluna ORÇADO × REALIZADO.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETEMBRO: ANÁLISE DE PRODUTOS ═══ -->
+<div class="page" id="set-page-produtos">
+  <div class="section-title">🏆 Análise de Produtos — Setembro 2026</div>
+  <div class="chart-card">
+    <div style="padding:40px 20px;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7;">
+      ⏳ <strong style="color:var(--yellow);font-size:1.05rem;">Dados em breve</strong><br>
+      <span style="font-size:.82rem;">A Análise de Produtos de setembro será adicionada no decorrer da semana, no mesmo formato dos meses anteriores (Top 15 por faturamento, curva ABC e detalhamento por canal).</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETEMBRO: ADS & AFILIADOS ═══ -->
+<div class="page" id="set-page-ads">
+  <div class="section-title">📣 ADS &amp; Afiliados — Setembro 2026</div>
+  <div class="chart-card">
+    <div style="padding:40px 20px;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7;">
+      ⏳ <strong style="color:var(--yellow);font-size:1.05rem;">Dados em breve</strong><br>
+      <span style="font-size:.82rem;">Os relatórios de Shopee Ads, Shopee Afiliados, Display Homepage, Mercado Livre Ads, ML Afiliados e Magalu Ads serão adicionados no decorrer da semana.</span><br><br>
+      <span style="font-size:.78rem;color:var(--muted);">📌 <strong>Referência de agosto:</strong> investimento total de R$ 335.937,62 (ADS R$ 201.760,07 + Afiliados R$ 134.177,55), retorno consolidado de 24,89× e 3,54% do faturamento. Pontos a acompanhar em setembro: a recuperação do programa de <strong>Afiliados Shopee</strong> (parado desde 14/08) e a retomada de consumo do <strong>Magalu Ads</strong>.</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- /month-set -->
+
 
 
 
@@ -5174,6 +5735,9 @@ function showMonth(month, el) {
   }
   if (month === 'ago' && typeof buildAgoCharts === 'function' && !agoChartsBuilt['visao']) {
     setTimeout(function(){ buildAgoCharts('visao'); agoChartsBuilt['visao'] = true; }, 50);
+  }
+  if (month === 'set' && typeof buildSetCharts === 'function' && !setChartsBuilt['visao']) {
+    setTimeout(function(){ buildSetCharts('visao'); setChartsBuilt['visao'] = true; }, 50);
   }
 }
 
@@ -6322,6 +6886,148 @@ function buildJulCharts(page) {
           y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } }
         }
       }
+    });
+  }
+}
+
+// ══════════════════════════════════════════════
+// SETEMBRO — TABS
+// ══════════════════════════════════════════════
+const setChartsBuilt = {};
+function showSetPage(id, e) {
+  const set = document.getElementById('month-set');
+  set.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  set.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('set-page-' + id).classList.add('active');
+  if (e && e.currentTarget) e.currentTarget.classList.add('active');
+  if (!setChartsBuilt[id]) { buildSetCharts(id); setChartsBuilt[id] = true; }
+}
+
+// Vendas Diárias Setembro 2026 — PARCIAL (01-02/09 · 2 dias)
+const setDaily = [
+  {d:'01/09', g:448425.66, sh:194660.98, me:120471.89, ma:128816.52, mad:0, via:3337.46, web:1138.81},
+  {d:'02/09', g:441646.07, sh:186794.02, me:112441.62, ma:134596.80, mad:2742.90, via:2690.17, web:2380.56},
+];
+const setProjecao = {
+  g: 13351075.95, sh: 5721825.00, me: 3493702.65,
+  ma: 3951199.80, mad: 41143.50, via: 90414.45, web: 52790.55
+};
+
+function renderSetDaily() {
+  const tbody = document.getElementById('setDailyTbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  const keys = ['sh','me','ma','mad','via','web'];
+  setDaily.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><strong>${row.d}</strong></td><td>R$ ${row.g.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>` +
+      keys.map(k => `<td>${row[k] ? 'R$ ' + row[k].toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</td>`).join('');
+    tbody.appendChild(tr);
+  });
+  const totalDays = setDaily.length;
+  const totals = keys.map(k => setDaily.reduce((a,r)=>a+r[k],0));
+  const totalG = setDaily.reduce((a,r)=>a+r.g,0);
+  const totalRow = document.createElement('tr');
+  totalRow.className = 'total-row';
+  totalRow.innerHTML = `<td><strong>TOTAL D+${totalDays}</strong></td><td><strong>R$ ${totalG.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></td>` +
+    totals.map(t => `<td><strong>${t ? 'R$ ' + t.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</strong></td>`).join('');
+  tbody.appendChild(totalRow);
+  const daysWithSales = {};
+  keys.forEach(k => daysWithSales[k] = setDaily.filter(r => r[k] > 0).length || 1);
+  const avgs = keys.map(k => totals[keys.indexOf(k)] / daysWithSales[k]);
+  const avgG = totalG / totalDays;
+  const mediaRow = document.createElement('tr');
+  mediaRow.style.background = 'rgba(56,189,248,.06)';
+  mediaRow.innerHTML = `<td><strong style="color:var(--accent)">MÉDIA</strong></td><td><strong style="color:var(--accent)">R$ ${avgG.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></td>` +
+    avgs.map(v => `<td style="color:var(--accent)"><strong>${v ? 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</strong></td>`).join('');
+  tbody.appendChild(mediaRow);
+  const projRow = document.createElement('tr');
+  projRow.style.background = 'rgba(34,197,94,.06)';
+  projRow.innerHTML = `<td><strong style="color:var(--green)">PROJEÇÃO</strong></td><td><strong style="color:var(--green)">R$ ${setProjecao.g.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></td>` +
+    keys.map(k => {
+      const v = setProjecao[k];
+      return `<td style="color:var(--green)"><strong>${v ? 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</strong></td>`;
+    }).join('');
+  tbody.appendChild(projRow);
+}
+
+function buildSetCharts(page) {
+  if (page === 'visao') {
+    const ec = Chart.getChart(document.getElementById('setCatChart')); if(ec) ec.destroy();
+    const em = Chart.getChart(document.getElementById('setMktChart')); if(em) em.destroy();
+    const ee = Chart.getChart(document.getElementById('setEstadoChart')); if(ee) ee.destroy();
+    new Chart(document.getElementById('setCatChart'), {
+      type: 'doughnut',
+      data: { labels: ['GR', 'COMP', 'SALA', '🍳 Cozinha'],
+        datasets: [{ data: [1038164.34, 144983.55, 93753.51, 21804.10],
+          backgroundColor: ['#34d399', '#818cf8', '#fb7185', '#f59e0b'], borderWidth: 2, borderColor: '#161d2e' }] },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: legendCfg, tooltip: { callbacks: { label: ctx => ' R$ ' + (ctx.raw/1000).toFixed(1) + 'K' } } } }
+    });
+    new Chart(document.getElementById('setMktChart'), {
+      type: 'bar',
+      data: { labels: ['Shopee', 'ML', 'Magalu', 'Via', 'Madeira', 'Site', 'Web'],
+        datasets: [{ data: [572447.30, 390640.49, 312492.93, 14842.28, 3350.80, 1580.91, 1016.85],
+          backgroundColor: ['#f97316', '#ffe000', '#0086ff', '#c084fc', '#e07b54', '#06b6d4', '#64748b'], borderRadius: 6, barThickness: 32 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { grid: gridCfg, ticks: tickCfg }, y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } } } }
+    });
+    new Chart(document.getElementById('setEstadoChart'), {
+      type: 'pie',
+      data: { labels: ['SP', 'MG', 'RJ', 'BA'],
+        datasets: [{ data: [480754.03, 417206.41, 360629.51, 40115.55],
+          backgroundColor: ['#3b82f6', '#34d399', '#fb7185', '#f59e0b'], borderWidth: 2, borderColor: '#161d2e' }] },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { ...legendCfg, position: 'right' },
+          tooltip: { callbacks: { label: ctx => {
+            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+            const pct = (ctx.raw / total * 100).toFixed(2);
+            const val = ctx.raw >= 1000000 ? 'R$ ' + (ctx.raw/1000000).toFixed(2) + 'M' : 'R$ ' + (ctx.raw/1000).toFixed(1) + 'K';
+            return ' ' + ctx.label + ': ' + val + ' (' + pct + '%)';
+          } } } } }
+    });
+  }
+  if (page === 'marketplaces') {
+    const em = Chart.getChart(document.getElementById('setMktMetaChart')); if(em) em.destroy();
+    new Chart(document.getElementById('setMktMetaChart'), {
+      type: 'bar',
+      data: { labels: ['Shopee', 'ML', 'Magalu', 'Via', 'Madeira', 'Site'],
+        datasets: [
+          { label: 'Faturado D+2', data: [572447.30, 390640.49, 312492.93, 14842.28, 3350.80, 1580.91], backgroundColor: '#38bdf8', borderRadius: 5 },
+          { label: 'Meta setembro', data: [7500000, 4500000, 3200000, 300000, 150000, 100000], backgroundColor: 'rgba(148,163,184,.28)', borderRadius: 5 }
+        ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: legendCfg },
+        scales: { x: { grid: gridCfg, ticks: tickCfg }, y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000000).toFixed(1) + 'M' } } } }
+    });
+  }
+  if (page === 'categorias') {
+    const ed = Chart.getChart(document.getElementById('setCatDetailChart')); if(ed) ed.destroy();
+    new Chart(document.getElementById('setCatDetailChart'), {
+      type: 'bar',
+      data: { labels: ['Shopee', 'ML', 'Magalu', 'Via', 'Madeira', 'Site'],
+        datasets: [
+          { label: 'GR',   data: [417986.11, 306317.64, 294466.13, 13465.12, 2111.19, 467.35], backgroundColor: '#34d399', borderRadius: 4 },
+          { label: 'SALA', data: [47627.39, 29878.12, 13631.23, 1377.15, 1239.61, 0], backgroundColor: '#fb7185', borderRadius: 4 },
+          { label: 'COMP', data: [100501.41, 39915.11, 3453.47, 0, 0, 0], backgroundColor: '#818cf8', borderRadius: 4 },
+          { label: '🎁 Cozinha', data: [6332.40, 14529.61, 942.09, 0, 0, 0], backgroundColor: '#f59e0b', borderRadius: 4 }
+        ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: legendCfg },
+        scales: { x: { grid: gridCfg, ticks: tickCfg }, y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } } } }
+    });
+  }
+  if (page === 'diario') {
+    renderSetDaily();
+    const ed = Chart.getChart(document.getElementById('setDailyChart')); if(ed) ed.destroy();
+    const avg = setDaily.reduce((a,r)=>a+r.g,0)/setDaily.length;
+    new Chart(document.getElementById('setDailyChart'), {
+      type: 'bar',
+      data: { labels: setDaily.map(r=>r.d),
+        datasets: [
+          { label: 'Vendas Diárias', data: setDaily.map(r=>r.g), backgroundColor: 'rgba(34,197,94,.75)', borderRadius: 5, order: 2 },
+          { label: 'Média Diária', data: Array(setDaily.length).fill(avg), type: 'line', borderColor: '#38bdf8', borderWidth: 2, borderDash: [6,4], pointRadius: 0, fill: false, order: 1 }
+        ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: legendCfg },
+        scales: { x: { grid: gridCfg, ticks: tickCfg }, y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } } } }
     });
   }
 }
