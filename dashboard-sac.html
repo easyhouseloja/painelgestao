@@ -377,60 +377,61 @@ function pintaTopo(){
    nivel: posição na régua de 0 a 5, usada para desenhar o marcador.
    ========================================================================= */
 const REP = {
-  atualizado: '15/09/2026',
-  anterior: '14/09/2026',
+  atualizado: '17/09/2026',
+  anterior: '15/09/2026',
   canais: [
     { id:'mercadolivre', nome:'Mercado Livre', fonte:'Reputação do vendedor', periodo:'Últimos 60 dias',
-      valor:'Platinum', unidade:'MercadoLíder · prazo até 16/09', nivel:5, st:'atencao', badgeSt:'ruim', badge:'Prazo para manter o MercadoLíder',
-      variacao:'Reclamações cruzaram 1% e chegaram a 1,02% (78 vendas) · o painel já avisa que o selo MercadoLíder Platinum só está preservado até amanhã',
-      resumo:[['Vendas','7.628'],['Concluídas','7.097'],['Cor','Verde']],
+      valor:'Platinum', unidade:'MercadoLíder mantido', nivel:5, st:'ok', badge:'Recuperou o MercadoLíder no prazo',
+      variacao:'Reclamações voltaram para baixo de 1% (1,02% → 0,97%) e os cancelamentos despencaram de 33 para 19 vendas · o aviso de prazo saiu do painel',
+      resumo:[['Vendas','7.761'],['Concluídas','7.212'],['Faturado','R$ 6,85M']],
       itens:[
-        {n:'Envios incorretos', v:'0%', d:'0 vendas com Envios · 10ª leitura zerada', lm:'MercadoLíder 6%', st:'ok'},
-        {n:'Mediações', v:'0,09%', d:'7 vendas · antes 6', lm:'MercadoLíder 0,5%', st:'ok'},
-        {n:'Canceladas por você', v:'0,43%', d:'33 vendas · estável', lm:'MercadoLíder 0,5%', st:'atencao'},
-        {n:'Reclamações', v:'1,02%', d:'78 vendas · antes 75 de 0,98% · acima do limite', lm:'MercadoLíder 1%', st:'ruim'}
+        {n:'Envios incorretos', v:'0%', d:'0 vendas com Envios · 11ª leitura zerada', lm:'MercadoLíder 6%', st:'ok'},
+        {n:'Mediações', v:'0,09%', d:'7 vendas · estável', lm:'MercadoLíder 0,5%', st:'ok'},
+        {n:'Canceladas por você', v:'0,24%', d:'19 vendas · antes 33 de 0,43%', lm:'MercadoLíder 0,5%', st:'ok'},
+        {n:'Reclamações', v:'0,97%', d:'76 vendas · antes 78 de 1,02%', lm:'MercadoLíder 1%', st:'atencao'}
       ],
-      alerta:'<b>O prazo venceu.</b> As reclamações cruzaram o limite de 1% do MercadoLíder e chegaram a 1,02% (78 vendas). O painel exibe o aviso de que a loja tem <b>até 16/09 para se recuperar</b> — até lá o selo Platinum continua sendo mostrado aos compradores, mas por cortesia, não por mérito. A cor do termômetro seguiria verde mesmo sem o selo, porque os limites para vendedor comum são mais folgados (2% de reclamações, 1,5% de cancelamentos); o que está em jogo é o MercadoLíder, cujos tetos são 1% e 0,5%. Os cancelamentos também estão a 0,43%, encostados no teto. Com R$ 6,72M faturados em 60 dias, é o canal mais importante da carteira e o único com prazo marcado.'},
+      alerta:'<b>O prazo foi cumprido.</b> As reclamações recuaram de 1,02% para 0,97% e voltaram a caber no teto de 1% do MercadoLíder; o aviso de recuperação até 16/09 desapareceu do painel e os limites exibidos voltaram a ser os do MercadoLíder. A virada mais expressiva foi nos <b>cancelamentos: de 33 para 19 vendas</b> (0,43% → 0,24%), que saíram da faixa de aviso e voltaram para menos da metade do teto. Ainda assim a margem é fina — 0,03 ponto — sobre uma base que cresceu para 7.761 vendas e R$ 6,85M em 60 dias. O canal saiu do risco imediato, não da zona de vigilância.'},
     { id:'shopee', nome:'Shopee', fonte:'Avaliação da loja e taxa de resposta', periodo:'Visão geral',
-      valor:'4.85', unidade:'de 5.00 · resposta no chat 81,01%', nivel:4.85, st:'ok', badge:'O canal mais estável da carteira',
-      variacao:'Segunda leitura seguida em 81,01% · é o único dos cinco canais que não piorou em nenhum indicador nas últimas três semanas',
-      resumo:[['Avaliação','4.85'],['Resposta no chat','81,01%'],['Metas','4.50 e 60%']],
+      valor:'4.85', unidade:'de 5.00 · resposta no chat 80,29%', nivel:4.85, st:'ok', badge:'Terceira leitura em queda',
+      variacao:'Taxa de resposta recuou de 81,64% para 80,29% em duas semanas · segue 20 pontos acima da meta, mas perdeu o ritmo de alta',
+      resumo:[['Avaliação','4.85'],['Resposta no chat','80,29%'],['Metas','4.50 e 60%']],
       itens:[
-        {n:'Avaliação da loja', v:'4.85/5', d:'estável há 12 leituras', lm:'meta 4.50', st:'ok'},
-        {n:'Taxa de resposta no chat', v:'81,01%', d:'igual à leitura anterior', lm:'meta 60%', st:'ok'}
-      ]},
+        {n:'Avaliação da loja', v:'4.85/5', d:'estável há 13 leituras', lm:'meta 4.50', st:'ok'},
+        {n:'Taxa de resposta no chat', v:'80,29%', d:'antes 81,01% · pico de 81,64%', lm:'meta 60%', st:'ok'}
+      ],
+      alerta:'A taxa de resposta caiu do pico de 81,64% para 80,29% em duas semanas — o indicador segue muito acima da meta de 60%, mas interrompeu uma sequência de dez altas seguidas e agora acumula três leituras sem subir. Coincide com o período em que o canal passou a exigir 186 atendimentos humanos por dia útil, contra 82 em agosto.'},
     { id:'magalu', nome:'Magalu', fonte:'Régua de indicadores', periodo:'Últimos 30 dias',
-      valor:'4,3', unidade:'de 1 a 5 · situação verde', nivel:4.3, st:'ok', badge:'Agilidade a 0,1 ponto da meta',
-      variacao:'Agilidade subiu 0,9 ponto, de 89,1% para 89,9%, e voltou a encostar nos 90% · cancelamento firme em 1,4%, abaixo do teto',
+      valor:'4,3', unidade:'de 1 a 5 · situação verde', nivel:4.3, st:'ok', badge:'Agilidade parada a 0,1 da meta',
+      variacao:'Nível de serviço subiu para 93,1% e cancelamento caiu para 1,2% · a agilidade segue em 89,9%, a 0,1 ponto de cruzar a meta',
       resumo:[['Escala','1 a 5'],['Anterior','4,3'],['Situação','Verde']],
       itens:[
-        {n:'Cancelamento', v:'1,4%', d:'53 pedidos cancelados · antes 1,5%', lm:'meta < 2,0%', st:'ok'},
-        {n:'Nível de serviço', v:'92,6%', d:'1.698 pedidos entregues · sem variação', lm:'meta > 95,0%', st:'atencao'},
-        {n:'Agilidade no atendimento', v:'89,9%', d:'2.434 interações avaliadas · +0,9 ponto', lm:'meta > 90,0%', st:'atencao'}
+        {n:'Cancelamento', v:'1,2%', d:'47 pedidos cancelados · antes 53 de 1,4%', lm:'meta < 2,0%', st:'ok'},
+        {n:'Nível de serviço', v:'93,1%', d:'1.967 pedidos entregues · +0,4 ponto', lm:'meta > 95,0%', st:'atencao'},
+        {n:'Agilidade no atendimento', v:'89,9%', d:'2.496 interações avaliadas · parada', lm:'meta > 90,0%', st:'atencao'}
       ],
-      alerta:'O canal está na faixa verde e é, junto com a Shopee, o mais saudável da carteira. A agilidade recuperou 0,9 ponto e está a <b>0,1 ponto da meta de 90%</b> — é o indicador que depende diretamente do SAC e segue sendo a correção mais barata disponível. O nível de serviço, travado em 92,6% contra meta de 95%, é logístico e mais lento de mover. A nota geral não apareceu nesta captura: mantida em 4,3.'},
+      alerta:'O canal segue na faixa verde e melhorou em dois dos três indicadores: nível de serviço de 92,6% para 93,1% e cancelamento de 1,4% para 1,2%, o menor já registrado aqui. A <b>agilidade continua em 89,9%</b>, a um décimo da meta de 90% pela segunda leitura seguida — é o único indicador da carteira que depende diretamente do SAC e que está a um passo de virar. A nota geral não apareceu nesta captura: mantida em 4,3.'},
     { id:'madeira', nome:'Madeira Madeira', fonte:'Score do vendedor', periodo:'Pedidos dos últimos 30 dias',
-      valor:'1,45', unidade:'de 5,00', nivel:1.45, st:'ruim', badgeSt:'ruim', badge:'Laranja · benefício já perdido',
-      variacao:'Score despencou de 2,55 para 1,45 e a faixa virou laranja · o painel confirma que um benefício já foi perdido',
-      resumo:[['Score','1,45/5'],['Anterior','2,55'],['Situação','Laranja']],
+      valor:'1,55', unidade:'de 5,00', nivel:1.55, st:'ruim', badgeSt:'ruim', badge:'Laranja · expedição ainda subindo',
+      variacao:'Score subiu de 1,45 para 1,55, mas o atraso na expedição foi de 7 para 8 pedidos (13,4% → 14,8%) e é o único indicador que continua piorando',
+      resumo:[['Score','1,55/5'],['Anterior','1,45'],['Situação','Laranja']],
       itens:[
-        {n:'Mediações', v:'3,9%', d:'2 pedidos · antes 3,7%', lm:'', st:'atencao'},
-        {n:'Cancelamentos', v:'7,6%', d:'4 pedidos · antes 5 de 9,4%', lm:'', st:'atencao'},
-        {n:'Atraso na entrega', v:'7,3%', d:'5 pedidos · antes 4', lm:'', st:'ruim'},
-        {n:'Atraso na expedição', v:'13,4%', d:'7 pedidos · antes 5 de 7,9%', lm:'', st:'ruim'},
-        {n:'Ocorrências', v:'25,4%', d:'13 pedidos · antes 12', lm:'', st:'ruim'}
+        {n:'Mediações', v:'2,0%', d:'1 pedido · antes 2 de 3,9%', lm:'', st:'ok'},
+        {n:'Atraso na entrega', v:'7,6%', d:'5 pedidos · estável', lm:'', st:'atencao'},
+        {n:'Cancelamentos', v:'7,8%', d:'4 pedidos · estável', lm:'', st:'atencao'},
+        {n:'Atraso na expedição', v:'14,8%', d:'8 pedidos · antes 7 de 13,4%', lm:'', st:'ruim'},
+        {n:'Ocorrências', v:'24,0%', d:'12 pedidos · antes 13 de 25,4%', lm:'', st:'ruim'}
       ],
-      alerta:'<b>O benefício já foi perdido</b> — o painel não avisa mais sobre risco, avisa que aconteceu. O score caiu de 2,55 para 1,45 e a faixa passou de amarela para laranja. O gatilho é o mesmo de sempre: o <b>atraso na expedição quase dobrou, de 5 para 7 pedidos</b> (7,9% → 13,4%), sobre uma base de cerca de 52 pedidos em 30 dias. Cancelamentos até melhoraram (5 → 4 pedidos). É expedição, e é a mesma expedição que está derrubando a Via Varejo e empurrando o Mercado Livre para fora do MercadoLíder.'},
+      alerta:'O score subiu 0,10 e a faixa continua laranja, com o benefício já perdido. A leve melhora veio de mediações (2 → 1 pedido) e ocorrências (13 → 12). O problema é que o <b>atraso na expedição segue subindo: de 7 para 8 pedidos</b>, 14,8% sobre uma base de cerca de 54 pedidos em 30 dias. É o quarto aumento consecutivo desse indicador e o único que não reagiu — enquanto o Mercado Livre, que também sofria de cancelamento por despacho, se recuperou nesta mesma leitura.'},
     { id:'via', nome:'Via Varejo', fonte:'Reputação da loja (LOPAS · Top Lojista)', periodo:'Nota fechada do mês',
-      valor:'2.0', unidade:'de 5.00 · −1,50 vs mês anterior', nivel:2.0, st:'atencao', badgeSt:'atencao', badge:'Nota subiu, expedição piorou',
-      variacao:'Nota recuperou de 1.7 para 2.0 porque a reclamação subiu para o nível 3 · mas a expedição foi de 20,5% para 25,6%, cinco vezes o teto',
-      resumo:[['Nota','2.0/5'],['Anterior','1.7'],['Situação','Amarelo']],
+      valor:'2.0', unidade:'de 5.00 · −1,50 vs mês anterior', nivel:2.0, st:'atencao', badgeSt:'atencao', badge:'Expedição em 30,6%, sexta vez o teto',
+      variacao:'Nota mantida em 2.0 · reclamação e cancelamento seguem melhorando, mas a expedição foi de 25,6% para 30,6% e o desvio mensal chegou a +25,00 pontos',
+      resumo:[['Nota','2.0/5'],['Anterior','2.0'],['Situação','Amarelo']],
       itens:[
-        {n:'Cancelamento', v:'1,3%', d:'nível 5 · melhorou 1,70 no mês', lm:'meta < 3%', st:'ok'},
-        {n:'Reclamação', v:'5,1%', d:'nível 3 · antes 6,8% · subiu um nível', lm:'meta < 2%', st:'atencao'},
-        {n:'Expedição', v:'25,6%', d:'nível 1 · antes 20,5% · +20,00 no mês', lm:'meta < 5%', st:'ruim'}
+        {n:'Cancelamento', v:'1,6%', d:'nível 5 · melhorou 1,40 no mês', lm:'meta < 3%', st:'ok'},
+        {n:'Reclamação', v:'4,6%', d:'nível 3 · antes 5,1% · melhorou 2,70', lm:'meta < 2%', st:'atencao'},
+        {n:'Expedição', v:'30,6%', d:'nível 1 · antes 25,6% · +25,00 no mês', lm:'meta < 5%', st:'ruim'}
       ],
-      alerta:'A nota subiu de 1.7 para 2.0, mas não por melhora na operação: a <b>reclamação caiu de 6,8% para 5,1%</b> e ganhou um nível. Enquanto isso a <b>expedição foi de 20,5% para 25,6%</b> — cinco vezes o teto de 5% — e o desvio contra o mês anterior chegou a +20,00 pontos. É o indicador no piso da escala há três leituras. Um canal com dois indicadores bons e um catastrófico: a média disfarça, o diagnóstico não.'}
+      alerta:'A <b>expedição chegou a 30,6%</b> — mais de seis vezes o teto de 5% — na quarta alta consecutiva: 7,4% → 19,9% → 20,5% → 25,6% → 30,6%. O desvio contra o mês anterior é de +25,00 pontos. Enquanto isso reclamação (4,6%) e cancelamento (1,6%) seguem melhorando, o que segura a nota em 2.0 e mascara a gravidade. Quase um em cada três pedidos do canal sai com atraso de despacho.'}
   ]
 };
 
@@ -444,20 +445,20 @@ const REP = {
    Cada leitura corresponde a uma captura dos painéis dos marketplaces.
    null = canal ainda não acompanhado naquela data. */
 const HIST = {
-  datas: ['25/08','27/08','28/08','01/09','02/09','03/09','04/09','08/09','11/09','14/09','15/09'],
+  datas: ['25/08','27/08','28/08','01/09','02/09','03/09','04/09','08/09','11/09','14/09','15/09','17/09'],
   series: [
     { id:'mercadolivre', nome:'Mercado Livre', metrica:'Reclamações', un:'%', inverso:true, meta:1, metaRot:'teto 1%',
-      v:[0.88,0.89,0.91,0.93,0.90,0.91,0.90,0.88,0.92,0.98,1.02] },
+      v:[0.88,0.89,0.91,0.93,0.90,0.91,0.90,0.88,0.92,0.98,1.02,0.97] },
     { id:'shopee', nome:'Shopee', metrica:'Resposta no chat', un:'%', meta:60, metaRot:'meta 60%',
-      v:[73.41,75.63,76.55,77.83,78.16,79.29,80.43,81.52,81.64,81.01,81.01] },
+      v:[73.41,75.63,76.55,77.83,78.16,79.29,80.43,81.52,81.64,81.01,81.01,80.29] },
     { id:'magalu', nome:'Magalu', metrica:'Nota', un:'', meta:5, metaRot:'escala 1 a 5',
-      v:[4.6,4.6,4.6,4.6,4.6,4.6,4.6,4.3,4.3,4.3,4.3] },
+      v:[4.6,4.6,4.6,4.6,4.6,4.6,4.6,4.3,4.3,4.3,4.3,4.3] },
     { id:'madeira', nome:'Madeira Madeira', metrica:'Score', un:'', meta:5, metaRot:'escala 0 a 5',
-      v:[3.90,4.10,4.10,4.30,4.30,4.30,3.90,3.70,2.55,2.55,1.45] },
+      v:[3.90,4.10,4.10,4.30,4.30,4.30,3.90,3.70,2.55,2.55,1.45,1.55] },
     { id:'via', nome:'Via Varejo', metrica:'Nota', un:'', meta:5, metaRot:'escala 0 a 5',
-      v:[null,null,null,null,null,3.5,3.5,3.5,2.3,1.7,2.0] },
+      v:[null,null,null,null,null,3.5,3.5,3.5,2.3,1.7,2.0,2.0] },
     { id:'ra', nome:'Reclame Aqui', metrica:'Índice', un:'', meta:10, metaRot:'escala 0 a 10',
-      v:[6.2,6.2,6.2,6.2,6.0,6.1,6.1,6.0,6.0,6.0,6.0] }
+      v:[6.2,6.2,6.2,6.2,6.0,6.1,6.1,6.0,6.0,6.0,6.0,6.1] }
   ]
 };
 
@@ -486,14 +487,15 @@ AUDIT.dims.concat([{k:'geral'}]).forEach(d=>{
 });
 
 const RA = {
-  atualizado: '15/09/2026',
-  indice: 6.0, faixa: 'Regular', st: 'atencao',
+  atualizado: '17/09/2026',
+  indice: 6.1, faixa: 'Regular', st: 'atencao',
   indice_anterior: 6.0, indice_ref: 6.2, indice_ref_rot: 'pico de 01/09',
-  serie_indice: [5.7, 6.1, 6.2, 6.0, 6.1, 6.0], leituras_estaveis: 4,
-  paraBom: 1.0, paraRuim: 0.1,
+  serie_indice: [5.7, 6.1, 6.2, 6.0, 6.1, 6.0, 6.1], leituras_estaveis: 1,
+  paraBom: 0.9, paraRuim: 0.2,
   nota_consumidor: 4.04,
   serie_pendentes: [54, 0, 2, 3, 5, 3, 3, 1, 1, 4, 5, 6],
-  janela_mudou: 'A janela vai de 01/03 a 14/09 e setembro saltou para 11 casos, acima do ritmo de agosto.',
+  janela_mudou: 'A janela vai de 01/03 a 14/09 e setembro está em 11 casos, acima do ritmo de agosto.',
+  volume_ref: 'Os números de volume são da exportação de 14/09 — nesta atualização veio apenas a régua do índice.',
   periodos: {
     semestre: {
       key:'semestre', rotulo:'Últimos 6 meses', janela:'01/03/2026 a 14/09/2026', dias:198,
@@ -659,7 +661,7 @@ function viewRep(){
           <td>Índice de reputação</td><td style="color:${STC[RA.st]};font-weight:700">${FX(RA.indice)}</td>
           <td>Últimos 6 meses</td><td><span class="bdg2 b-wr" style="margin:0">Atenção</span></td>
           <td>Tempo de resposta · ${RA.periodos.semestre.tempo_resposta}</td></tr></tbody></table>
-      <div class="note">${pior} das ${REP.canais.length+1} fontes estão fora da zona saudável, e o mesmo indicador aparece em três delas. <b>A expedição é o gargalo</b>: 25,6% na Via Varejo (cinco vezes o teto de 5%), <b>7 pedidos atrasados no Madeira Madeira</b> — quase o dobro da leitura anterior — e, no Mercado Livre, cancelamentos travados em 0,43% desde que a expedição começou a falhar. Expedição é despacho da própria operação, não do marketplace, então a correção não está no atendimento. O <b>Mercado Livre</b> é o caso com prazo: as reclamações cruzaram 1% e o painel dá <b>até 16/09</b> para recuperar o MercadoLíder Platinum. O <b>Madeira Madeira caiu para 1,45 e já perdeu um benefício</b>. A <b>Via Varejo</b> subiu de 1.7 para 2.0, mas só porque a reclamação melhorou — a expedição piorou de novo. Do lado saudável, <b>Magalu e Shopee</b> não pioraram em nada: o Magalu está a 0,1 ponto da meta de agilidade (89,9% contra 90%) e a Shopee repetiu 81,01% de resposta no chat. No <b>Reclame Aqui</b> o índice segue em ${FX(RA.indice)}, com ${FX(RA.paraRuim)} ponto de folga até "Ruim". O histórico diário logo abaixo mostra a trajetória de cada canal desde 25/08.</div></div>
+      <div class="note">${pior} das ${REP.canais.length+1} fontes estão fora da zona saudável, e a leitura de hoje tem uma boa notícia e uma má. A boa: <b>o Mercado Livre cumpriu o prazo e manteve o MercadoLíder Platinum</b>. As reclamações voltaram para baixo do teto (1,02% → 0,97%) e os <b>cancelamentos despencaram de 33 para 19 vendas</b> — o aviso de recuperação sumiu do painel. Sobre uma base que cresceu para 7.761 vendas e R$ 6,85M em 60 dias, a margem ainda é de 0,03 ponto: saiu do risco imediato, não da vigilância. A má: <b>a expedição continua piorando nos dois canais menores</b>, e agora sem a companhia do Mercado Livre. Na <b>Via Varejo chegou a 30,6%</b> — mais de seis vezes o teto de 5%, na quarta alta seguida — e no <b>Madeira Madeira foi de 7 para 8 pedidos</b> (14,8%), também o quarto aumento consecutivo. Nos dois canais, reclamação e cancelamento melhoraram; é só a expedição que não reage. Do lado saudável, o <b>Magalu</b> melhorou em nível de serviço (93,1%) e cancelamento (1,2%), com a agilidade parada a 0,1 ponto da meta pela segunda leitura. A <b>Shopee</b> recuou para 80,29% e acumula três leituras sem subir. No <b>Reclame Aqui</b> o índice subiu para ${FX(RA.indice)}, com ${FX(RA.paraRuim)} ponto de folga até "Ruim".</div></div>
     <div class="slab">Histórico diário</div>
     <div class="panel"><p class="pt">Nota de cada canal por leitura <small>${HIST.datas[0]} a ${HIST.datas[HIST.datas.length-1]}</small></p>
       <div style="overflow-x:auto"><table class="tb tbhist">
@@ -681,7 +683,7 @@ function viewRep(){
             }).join('')}
             <td style="color:${cor};font-weight:700">${seta} ${Math.abs(dif).toFixed(2).replace('.',',')}</td></tr>`;
         }).join('')}</tbody></table></div>
-      <div class="note">Verde e vermelho marcam a direção da variação em relação à leitura anterior, já considerando que no Mercado Livre <b>menos é melhor</b>. A coluna final compara a leitura de hoje com a primeira do acompanhamento. Em três semanas, <b>Shopee subiu 7,60 pontos</b> de taxa de resposta e é o único canal com saldo positivo; <b>Madeira Madeira perdeu 2,45</b> de score e a <b>Via Varejo 1,50</b>. As datas não são diárias corridas: correspondem às leituras efetivamente capturadas dos painéis.</div></div>
+      <div class="note">Verde e vermelho marcam a direção da variação em relação à leitura anterior, já considerando que no Mercado Livre <b>menos é melhor</b>. A coluna final compara a leitura de hoje com a primeira do acompanhamento. Em três semanas, <b>Shopee subiu 6,88 pontos</b> de taxa de resposta e é o único canal com saldo positivo; <b>Madeira Madeira perdeu 2,35</b> de score e a <b>Via Varejo 1,50</b>. O Mercado Livre voltou ao patamar de partida depois de furar o limite em 15/09. As datas não são diárias corridas: correspondem às leituras efetivamente capturadas dos painéis.</div></div>
 
     <details class="met" style="margin-top:14px"><summary>Como atualizar estes números</summary>
       <ul class="ls"><li>Os dados ficam no bloco <b>REP</b>, no início do script deste arquivo, separados dos dados mensais.</li>
@@ -695,7 +697,7 @@ function viewRA(){
   const kc=[
     {l:'Índice de reputação',v:FX(R.indice),g:'linear-gradient(90deg,#EAB308,#22C55E)',c:'#FACC15',
      s:`Faixa ${R.faixa} · nota do consumidor ${(P.nota_media??R.nota_consumidor).toFixed(1).replace('.',',')}/10`,gh:'😐',
-     b:['b-al',`${FX(R.indice)} pela ${R.leituras_estaveis}ª leitura · ${FX(R.paraRuim)} ponto até "Ruim"`]},
+     b:['b-wr',`subiu de ${FX(R.indice_anterior)} para ${FX(R.indice)}`]},
     {l:'Reclamações no período',v:NB(P.total),g:'linear-gradient(90deg,#FF6B35,#F59E0B)',s:P.janela,gh:'📣',
      b:['b-nt',(P.total/P.dias).toFixed(1)+' por dia']},
     {l:'Reclamações respondidas',v:Math.round(P.respondidas/P.total*100)+'%',g:P.nao_respondidas?'linear-gradient(90deg,#EAB308,#22C55E)':'linear-gradient(90deg,#22C55E,#4ADE80)',c:P.nao_respondidas>10?'#FACC15':'#4ADE80',
@@ -713,7 +715,7 @@ function viewRA(){
 
   if(raPer==='semestre'){
     h+=`<div class="obsbox" style="background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.28);color:#FDE68A">
-      <span class="oi">⚠️</span><span><b>Setembro disparou: 5 reclamações novas em um único dia (14/09) e o mês já soma ${P.meses[6].n}</b>, contra ${P.meses[5].n} em todo o mês de agosto. O dia 14 é agora o segundo pior dia do calendário em toda a janela. A equipe respondeu 4 casos no período, mas entraram 5 — as pendências foram de 5 para <b>${P.nao_respondidas}</b> e a taxa de resposta caiu para ${P.pct_respondidas.toString().replace('.',',')}%. A trajetória (${R.serie_pendentes.slice(-6).join(' → ')}) é a mesma curva que antecedeu o passivo de 54 casos em julho. O lado bom é que o <b>tempo médio melhorou para ${P.tempo_resposta}</b>, o menor da série. O índice segue em <b>${FX(R.indice)}</b> pela ${R.leituras_estaveis}ª leitura, com ${FX(R.paraRuim)} ponto de folga até "Ruim".</span></div>`;
+      <span class="oi">↗️</span><span><b>O índice subiu de ${FX(R.indice_anterior)} para ${FX(R.indice)}</b> e a folga até a faixa "Ruim" voltou de 0,1 para ${FX(R.paraRuim)} ponto. A série ${R.serie_indice.map(FX).join(' → ')} segue oscilando num platô estreito, mas desta vez a alta acompanha uma melhora real fora do Reclame Aqui: o Mercado Livre recuperou o MercadoLíder no prazo. <b>Os números de volume abaixo são da exportação de 14/09</b> — nesta atualização veio apenas a régua do índice, então total, pendências e avaliações não mudaram. O quadro daquela leitura segue valendo: setembro com ${P.meses[6].n} reclamações contra ${P.meses[5].n} em todo o mês de agosto, ${P.nao_respondidas} sem resposta e tempo médio de ${P.tempo_resposta}, o menor da série.</span></div>`;
   } else {
     h+=`<div class="obsbox" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86EFAC">
       <span class="oi">✅</span><span><b>Agosto é o melhor mês da série em velocidade.</b> ${P.total} reclamações no mês inteiro — o menor volume desde março — e <b>tempo de resposta de ${P.tempo_resposta}</b>, contra ${RA.periodos.semestre.tempo_resposta} da média dos 6 meses. É a prova de que a operação nova responde rápido: a média alta do semestre é herança do passivo antigo, não do ritmo atual. O ponto de atenção é outro: <b>${P.nao_respondidas} das ${P.total} fecharam o mês sem resposta</b> (${(100-P.pct_respondidas).toFixed(1).replace('.',',')}%). Duas já foram respondidas desde então — o acumulado de 6 meses, lido em ${RA.atualizado}, mostra ${RA.periodos.semestre.nao_respondidas} pendências.</span></div>`;
@@ -782,22 +784,22 @@ function viewRA(){
   h+=`<div class="slab">Leitura</div><div class="g2">
     <div class="panel"><p class="pt">✅ O que melhorou</p><ul class="ls">
       <li><b>Tempo médio de resposta segue em ${RA.periodos.semestre.tempo_resposta}</b>, o menor da série, e o passivo continua muito abaixo dos 54 casos de julho: ${RA.periodos.semestre.nao_respondidas} sem resposta em ${NB(RA.periodos.semestre.total)}.</li>
-      <li><b>Agilidade do Magalu voltou a subir</b>: 89,9%, a 0,1 ponto da meta de 90% — a correção mais barata disponível na carteira.</li>
+      <li><b>Mercado Livre recuperou o MercadoLíder no prazo</b>: reclamações de 1,02% para 0,97% e cancelamentos de 33 para 19 vendas. O aviso de prazo saiu do painel.</li>
       <li><b>Agosto respondeu em ${RA.periodos.mes.tempo_resposta}</b> contra ${RA.periodos.semestre.tempo_resposta} do semestre. A operação atual é muito mais rápida que a média que ainda pesa na nota.</li>
       <li><b>Menor volume da janela</b>: ${RA.periodos.semestre.meses[5].n} reclamações em agosto, contra 32 a 41 nos cinco meses anteriores — primeira quebra do platô.</li>
-      <li><b>Tempo médio caiu para ${RA.periodos.semestre.tempo_resposta}</b>, o menor da série e bem abaixo dos 39 dias e 4h de três semanas atrás.</li>
-      <li><b>Reclamação da Via Varejo subiu um nível</b>: de 6,8% para 5,1%, saindo do nível 2 para o 3 e levando a nota de 1.7 para 2.0.</li>
-      <li><b>Tom de voz é a melhor dimensão do auditor</b> (${AUDIT.media.tom}/100 na média ponderada): a equipe escreve bem, com clareza em ${AUDIT.media.clareza}/100.</li>
+      <li><b>Índice do Reclame Aqui subiu para ${FX(R.indice)}</b> e a folga até "Ruim" voltou a ${FX(R.paraRuim)} ponto.</li>
+      <li><b>Magalu melhorou em dois dos três indicadores</b>: nível de serviço para 93,1% e cancelamento para 1,2%, o menor já registrado no canal.</li>
+      <li><b>Reclamação e cancelamento da Via Varejo seguem caindo</b>: 4,6% e 1,6%, os melhores níveis do canal desde que entrou no acompanhamento.</li>
     <div class="panel"><p class="pt">⚠️ O que ainda pesa</p><ul class="ls">
-      <li><b>O Mercado Livre tem prazo até 16/09 para manter o MercadoLíder Platinum</b>: as reclamações cruzaram o limite e chegaram a 1,02%, com R$ 6,72M faturados em 60 dias em jogo.</li>
-      <li><b>Madeira Madeira caiu para 1,45 e já perdeu um benefício</b>: o atraso na expedição quase dobrou, de 5 para 7 pedidos, sobre uma base de ~52 pedidos.</li>
-      <li><b>Setembro já tem ${RA.periodos.semestre.meses[6].n} reclamações no Reclame Aqui</b> contra ${RA.periodos.semestre.meses[5].n} em todo o mês de agosto, com 5 delas entrando só no dia 14.</li>
+      <li><b>Expedição da Via Varejo em 30,6%</b>: quarta alta seguida e mais de seis vezes o teto de 5%. Quase um em cada três pedidos sai com atraso de despacho.</li>
+      <li><b>Expedição do Madeira Madeira subiu pela quarta vez</b>: de 7 para 8 pedidos (14,8%). É o único indicador do canal que não reagiu, com o benefício já perdido.</li>
+      <li><b>Shopee acumula três leituras sem subir</b>: a taxa de resposta caiu do pico de 81,64% para 80,29%, interrompendo dez altas seguidas.</li>
       <li><b>Índice de solução em ${RA.periodos.semestre.indice_solucao}%</b> e apenas ${RA.periodos.semestre.voltaria}% voltariam a comprar. Velocidade melhorou, resolução não: é essa a conta que o índice está fazendo.</li>
-      <li><b>Expedição da Via Varejo em 25,6%</b>, cinco vezes o teto de 5% e no piso da escala há três leituras. Somada ao Madeira, é o gargalo que atravessa a carteira.</li>
+      <li><b>Mercado Livre segue a 0,03 ponto do teto</b> de reclamações, sobre uma base que cresceu para 7.761 vendas. Saiu do risco imediato, não da vigilância.</li>
       <li><b>${RA.periodos.semestre.notas[0]} das ${RA.periodos.semestre.avaliadas} avaliações do Reclame Aqui são nota zero</b> e a nota do consumidor está em ${RA.periodos.semestre.nota_media.toFixed(2).replace('.',',')}. O índice de solução (${RA.periodos.semestre.indice_solucao}%) segue sendo a alavanca que não se move.</li>
       <li><b>Taxa de resposta de agosto (${RA.periodos.mes.pct_respondidas}%) ficou abaixo da do semestre (${RA.periodos.semestre.pct_respondidas}%)</b> — 1 em cada 5 reclamações do mês não foi respondida.</li>
       <li><b>Tempo de resposta é a pior dimensão do auditor de qualidade</b>: ${AUDIT.media.resposta}/100 na média ponderada, contra ${AUDIT.media.tom}/100 de tom de voz. A equipe escreve bem, mas demora.</li>
-      <li><b>As pendências subiram para ${RA.periodos.semestre.nao_respondidas}</b>: entraram 5 casos novos e a equipe respondeu 4, então a fila voltou a crescer.</li>
+      <li><b>Setembro segue com ${RA.periodos.semestre.meses[6].n} reclamações no Reclame Aqui</b> contra ${RA.periodos.semestre.meses[5].n} em todo o mês de agosto e ${RA.periodos.semestre.nao_respondidas} sem resposta — dados da exportação de 14/09.</li>
       <li><b>Causa raiz em produto</b>: defeito, avaria e peças faltando somam mais que atraso de entrega — assunto de embalagem e conferência, não de atendimento.</li></ul></div></div>`;
 
   h+=`<details class="met" style="margin-top:14px"><summary>Como atualizar estes números</summary>
@@ -807,7 +809,7 @@ function viewRA(){
       <li><b>A janela vai de 01/03 a 13/09</b> e inclui os ${RA.periodos.semestre.meses[6].n} primeiros casos de setembro — por isso o gráfico mensal tem uma barra parcial no fim.</li>
     <li><b>Índice de solução e "voltaria a comprar"</b> foram lidos na tela "Avaliações recebidas no período filtrado" (${RA.periodos.semestre.solucao_ref}) e correspondem à janela atual. Os ${RA.periodos.semestre.indice_solucao}% e ${RA.periodos.semestre.voltaria}% aparecem arredondados no painel.</li>
     <li><b>As três abas da classificação</b> — Categoria, Produtos e serviços e Principais problemas — estão atualizadas nesta edição, o que fecha a lacuna sinalizada na leitura anterior.</li>
-      <li><b>O total está em ${NB(RA.periodos.semestre.total)}</b>, com 1 reclamação nova desde a leitura anterior (dia 11). As respondidas não se movem desde 08/09, então todo caso novo do período segue em aberto.</li>
+      <li><b>Nesta atualização veio apenas a régua do índice</b>, sem a exportação de reclamações. Total, pendências, avaliações e distribuições continuam sendo os da leitura de 14/09 e estão marcados como tal. O índice, esse sim, é de hoje: ${FX(RA.indice)}.</li>
     <li><b>Índice de solução e "voltaria a comprar"</b> seguem na ${RA.periodos.semestre.solucao_ref} e não incluem a ${RA.periodos.semestre.avaliadas}ª avaliação, de nota zero. O valor real hoje deve estar ligeiramente abaixo dos ${RA.periodos.semestre.indice_solucao}% exibidos. Como esses dois passaram a ser a principal alavanca da nota, vale capturar a tela "Avaliações recebidas" nas próximas atualizações.</li>
       <li><b>O painel do Magalu alterna entre dois formatos</b> — régua de faixas e metas com bases absolutas — e nesta leitura veio no segundo. A nota geral de 1 a 5 não apareceu na captura: foi mantida em 4,3, a leitura anterior. Os três indicadores estão atualizados.</li>
     <li><b>Bases pequenas exigem leitura diferente.</b> Madeira Madeira trabalha com cerca de 53 pedidos em 30 dias e a Via Varejo com volume equivalente, então um único pedido move vários pontos percentuais. Nesta edição, porém, a piora veio acompanhada de aumento no número absoluto de pedidos afetados nos dois canais — o que a distingue das oscilações anteriores.</li>
@@ -873,7 +875,7 @@ function viewGeral(){
   h += `<div class="slab">Reputação externa <span class="hint">Reclame Aqui · últimos 6 meses</span></div>
     <div class="kgrid">`+[
       {l:'Índice Reclame Aqui',v:FX(RA.indice),g:'linear-gradient(90deg,#EAB308,#22C55E)',c:'#FACC15',
-       s:`Faixa ${RA.faixa} · ${S.janela}`,gh:'😐',b:['b-al',RA.leituras_estaveis+' leituras em '+FX(RA.indice)+' · '+FX(RA.paraRuim)+' até "Ruim"']},
+       s:`Faixa ${RA.faixa} · ${S.janela}`,gh:'😐',b:['b-wr','subiu para '+FX(RA.indice)+' · '+FX(RA.paraRuim)+' até "Ruim"']},
       {l:'Reclamações no semestre',v:NB(S.total),g:'linear-gradient(90deg,#FF6B35,#F59E0B)',
        s:`${NB(S.respondidas)} respondidas · ${NB(S.nao_respondidas)} sem resposta`,gh:'📣',b:['b-wr',(S.total/S.dias).toFixed(1)+' por dia']},
       {l:'Tempo de resposta',v:'34d',g:'linear-gradient(90deg,#EF4444,#F97316)',c:'#F87171',
@@ -881,7 +883,7 @@ function viewGeral(){
       {l:'Índice de solução',v:S.indice_solucao+'%',g:'linear-gradient(90deg,#EAB308,#22C55E)',c:'#FACC15',
        s:`${S.avaliadas} avaliações no período`,gh:'📊',b:['b-wr',S.voltaria+'% voltaria a comprar']}
     ].map(cardKPI).join('')+`</div>
-    <div class="note" style="margin-top:11px">O índice segue em <b>${FX(RA.indice)}</b>, com ${FX(RA.paraRuim)} ponto de folga até "Ruim". <b>Setembro já acumula ${S.meses[6].n} reclamações</b> contra ${S.meses[5].n} em todo o mês de agosto, com 5 delas entrando só no dia 14. As pendências subiram para <b>${S.nao_respondidas}</b> e a taxa de resposta caiu para ${S.pct_respondidas.toString().replace('.',',')}%. O tempo médio melhorou para ${S.tempo_resposta}, o menor da série, e agosto sozinho responde em ${RA.periodos.mes.tempo_resposta}. A alavanca que não se move continua sendo a resolução: <b>índice de solução em ${S.indice_solucao}%</b> e ${S.voltaria}% de recompra, com ${S.notas[0]} das ${S.avaliadas} avaliações em nota zero. Detalhamento na aba Reclame Aqui.</div>`;
+    <div class="note" style="margin-top:11px">O índice <b>subiu de ${FX(RA.indice_anterior)} para ${FX(RA.indice)}</b> e a folga até "Ruim" voltou a ${FX(RA.paraRuim)} ponto. Os números de volume abaixo são da exportação de 14/09 — nesta atualização veio só a régua do índice. Naquela leitura, setembro somava <b>${S.meses[6].n} reclamações</b> contra ${S.meses[5].n} em todo o mês de agosto, com ${S.nao_respondidas} sem resposta e taxa de ${S.pct_respondidas.toString().replace('.',',')}%. O tempo médio de ${S.tempo_resposta} é o menor da série, e agosto sozinho responde em ${RA.periodos.mes.tempo_resposta}. A alavanca que não se move continua sendo a resolução: <b>índice de solução em ${S.indice_solucao}%</b> e ${S.voltaria}% de recompra, com ${S.notas[0]} das ${S.avaliadas} avaliações em nota zero. Detalhamento na aba Reclame Aqui.</div>`;
 
   h += `<div class="slab">Qualidade do atendimento</div>
     <div class="panel"><p class="pt"><span class="tip">Auditor automático do Predize<span class="tipbox"><b>Como a nota é formada</b><br>A IA avalia cada mensagem em 5 critérios fixos, iguais para todos os sellers. Os <b>quatro primeiros</b> — empatia, tempo de resposta, clareza e tom de voz — julgam a mensagem de <b>quem atendeu</b>, seja humano ou a Mia. O <b>quinto, o CSAT</b>, é diferente: julga <b>como o comprador reagiu</b>, lendo as mensagens dele.<em>Passe o mouse sobre cada critério abaixo para ver o que ele mede.</em></span></span> <small>${AUDIT.periodo} · ${NB(AUDIT.total_tickets)} tickets avaliados</small></p>
