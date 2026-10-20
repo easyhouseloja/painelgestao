@@ -5977,7 +5977,9 @@ renderTodasAnalises();
    ══════════════════════════════════════════════════════════════════════════ */
 const NF_API = 'https://script.google.com/macros/s/AKfycbzLF6qm5Ou_nfLTGuYWORE4ssd0fvTgN_kXG5xVuIRD39StIzJJIv0-ZSwMVB6eobwy/exec';
 const NF_STATUS = ['PAID_WAITING_SHIP','PAID','NEW'];
-const NF_PAGE = 50;
+const NF_PAGE = 100;             // pede 100 por página (se a API devolver menos, o passo se ajusta)
+const NF_PARALELO = 6;            // páginas buscadas ao mesmo tempo
+const NF_CACHE_LS = 'nf_cache_pedidos_v1';
 const NF_MAX_PAGINAS = 80;
 const NF_AUTO_MS = 15 * 60 * 1000;
 const NF_DEPARA_PATH = 'estoque_eh/depara_anymarket';
@@ -6106,22 +6108,35 @@ async function nfFetchPagina(status, offset){
   if(json && json.erro) throw new Error(json.erro);
   return json || {};
 }
-async function nfBuscarStatus(status, onProg){
+async function nfBuscarStatus(status, onProg, onPagina){
   const primeira = await nfFetchPagina(status, 0);
-  let todos = (primeira.content || []).slice();
-  const totalPages = Math.min((primeira.page && primeira.page.totalPages) ? primeira.page.totalPages : 1, NF_MAX_PAGINAS);
-  if(onProg) onProg(status, 1, totalPages);
-  const offsets = [];
-  for(let p = 1; p < totalPages; p++) offsets.push(p * NF_PAGE);
+  const itens0 = primeira.content || [];
+  if(onPagina) onPagina(itens0);
+  const pg = primeira.page || {};
+  const passo = Number(pg.size) || itens0.length || NF_PAGE;     // tamanho real da página
+  let totalPages = Number(pg.totalPages) || 1;
+  if(pg.totalElements && passo) totalPages = Math.ceil(pg.totalElements / passo);
+  totalPages = Math.min(totalPages, NF_MAX_PAGINAS);
   let feitas = 1;
-  for(let i = 0; i < offsets.length; i += 4){
-    const lote = offsets.slice(i, i + 4);
-    const res = await Promise.all(lote.map(o => nfFetchPagina(status, o).catch(() => ({content:[]}))));
-    res.forEach(j => { todos = todos.concat(j.content || []); });
-    feitas += lote.length;
-    if(onProg) onProg(status, feitas, totalPages);
+  if(onProg) onProg(status, feitas, totalPages);
+  const fila = [];
+  for(let p = 1; p < totalPages; p++) fila.push(p * passo);
+  let falhou = 0;
+  async function trabalhador(){
+    while(fila.length){
+      const off = fila.shift();
+      let j = null;
+      for(let t = 0; t < 2 && !j; t++){                         // 1 nova tentativa por página
+        try{ j = await nfFetchPagina(status, off); }catch(e){ j = null; }
+      }
+      if(j){ if(onPagina) onPagina(j.content || []); } else falhou++;
+      feitas++;
+      if(onProg) onProg(status, feitas, totalPages);
+    }
   }
-  return todos;
+  await Promise.all(Array.from({ length: Math.min(NF_PARALELO, fila.length) }, trabalhador));
+  if(falhou) throw new Error(falhou + ' página(s) de ' + status + ' não responderam');
+  return true;
 }
 function nfTemNota(o){
   const inv = o.invoice || (o.invoices && o.invoices[0]) || null;
@@ -6160,55 +6175,96 @@ function nfDocumento(o){
   return { cnpj, doc: fmt };
 }
 
+/* Cache local: abre a aba na hora com a última busca e atualiza por trás */
+function nfSalvarCache(){
+  try{ localStorage.setItem(NF_CACHE_LS, JSON.stringify({ ts: Date.now(), pedidos: NF_PEDIDOS })); }catch(e){}
+}
+function nfLerCache(){
+  try{
+    const c = JSON.parse(localStorage.getItem(NF_CACHE_LS) || 'null');
+    if(!c || !Array.isArray(c.pedidos)) return null;
+    if(Date.now() - c.ts > 24 * 3600 * 1000) return null;          // mais de 1 dia: descarta
+    c.pedidos.forEach(p => { p.dias = nfDias(p.data); });
+    return c;
+  }catch(e){ return null; }
+}
+function nfSyncTxt(txt){ const s = document.getElementById('nfSync'); if(s) s.innerHTML = txt; }
+function nfHora(d){ return d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+
+let NF_DO_CACHE = false;
 function nfCarregar(forcar){
   if(NF_CARREGANDO) return NF_CARREGANDO;
   if(NF_CARREGADO && !forcar){ nfRender(); return Promise.resolve(); }
+
+  // 1) Mostra a última busca guardada enquanto a nova não chega
+  if(!NF_CARREGADO){
+    const c = nfLerCache();
+    if(c){
+      NF_PEDIDOS = c.pedidos; NF_CARREGADO = true; NF_DO_CACHE = true; NF_ATUALIZADO = new Date(c.ts);
+      nfAtualizarBadge(); nfRender();
+      nfSyncTxt('dados das ' + nfHora(NF_ATUALIZADO) + ' · <span class="nf-progress">atualizando…</span>');
+    }
+  }
   const btn = document.getElementById('nfBtnSync');
-  if(btn){ btn.disabled = true; btn.textContent = '⏳ Buscando...'; }
+  if(btn){ btn.disabled = true; btn.textContent = '⏳ Atualizando...'; }
   document.getElementById('nfErro').innerHTML = '';
-  if(!NF_CARREGADO) nfLoading('Buscando pedidos na Anymarket...');
+  const progressivo = !NF_CARREGADO;     // sem nada na tela: vai desenhando conforme as páginas chegam
+  if(progressivo) nfLoading('Buscando pedidos na Anymarket...');
+
+  const mapa = {};
   const prog = {};
-  const onProg = (st, feitas, total) => {
-    prog[st] = feitas + '/' + total;
-    if(!NF_CARREGADO) nfLoading('Buscando pedidos na Anymarket... <span class="nf-progress">'
-      + Object.keys(prog).map(k => k + ' ' + prog[k]).join(' · ') + ' páginas</span>');
+  let ultimoDesenho = 0;
+  const desenhar = (forca) => {
+    if(!progressivo) return;
+    const agora = Date.now();
+    if(!forca && agora - ultimoDesenho < 800) return;
+    ultimoDesenho = agora;
+    NF_PEDIDOS = Object.values(mapa); NF_CARREGADO = true;
+    nfAtualizarBadge(); nfRender();
   };
+  const onPagina = (lista) => {
+    lista.forEach(o => {
+      if(nfTemNota(o)) return;
+      const st = String(o.status || '').toUpperCase();
+      if(st && NF_STATUS.indexOf(st) === -1) return;
+      const k = o.id || o.marketPlaceNumber;
+      if(!mapa[k]) mapa[k] = nfNormalizarPedido(o);
+    });
+    desenhar(false);
+  };
+  const onProg = (st, feitas, total) => {
+    prog[st] = [feitas, total];
+    const f = Object.values(prog).reduce((a,x) => a + x[0], 0), t = Object.values(prog).reduce((a,x) => a + x[1], 0);
+    const pct = t ? Math.round(f / t * 100) : 0;
+    nfSyncTxt((NF_DO_CACHE ? 'dados das ' + nfHora(NF_ATUALIZADO) + ' · ' : '') + '<span class="nf-progress">atualizando ' + pct + '%</span>');
+    if(progressivo && !Object.keys(mapa).length) nfLoading('Buscando pedidos na Anymarket... <span class="nf-progress">' + pct + '%</span>');
+  };
+
   NF_CARREGANDO = Promise.all([
-    Promise.allSettled(NF_STATUS.map(s => nfBuscarStatus(s, onProg))),
+    Promise.allSettled(NF_STATUS.map(s => nfBuscarStatus(s, onProg, onPagina))),
     nfCarregarDepara()
   ]).then(([resultados]) => {
       const falhas = resultados.filter(r => r.status === 'rejected');
-      if(falhas.length === resultados.length) throw falhas[0].reason;
-      const mapa = {};
-      resultados.forEach(r => {
-        if(r.status !== 'fulfilled') return;
-        r.value.forEach(o => {
-          if(nfTemNota(o)) return;
-          const st = String(o.status || '').toUpperCase();
-          if(st && NF_STATUS.indexOf(st) === -1) return;
-          const k = o.id || o.marketPlaceNumber;
-          if(!mapa[k]) mapa[k] = nfNormalizarPedido(o);
-        });
-      });
+      if(falhas.length === resultados.length && !Object.keys(mapa).length) throw falhas[0].reason;
       NF_PEDIDOS = Object.values(mapa);
-      NF_CARREGADO = true;
+      NF_CARREGADO = true; NF_DO_CACHE = false;
       NF_ATUALIZADO = new Date();
       if(falhas.length){
         document.getElementById('nfErro').innerHTML = '<div class="nf-err">⚠️ Parte da busca falhou ('
-          + falhas.length + ' de ' + resultados.length + ' status). Os números podem estar incompletos — clique em Atualizar.</div>';
-      }
+          + nfEsc(falhas.map(f => f.reason && f.reason.message || f.reason).join(' · ')) + '). Os números podem estar incompletos — clique em Atualizar.</div>';
+      } else nfSalvarCache();
       nfAtualizarBadge();
       nfRender();
     })
     .catch(err => {
-      document.getElementById('nfErro').innerHTML = '<div class="nf-err">❌ Não foi possível consultar a Anymarket: ' + nfEsc(err && err.message || err) + '</div>';
+      document.getElementById('nfErro').innerHTML = '<div class="nf-err">❌ Não foi possível consultar a Anymarket: ' + nfEsc(err && err.message || err)
+        + (NF_DO_CACHE ? ' — mostrando os dados das ' + nfHora(NF_ATUALIZADO) + '.' : '') + '</div>';
       if(!NF_CARREGADO) document.getElementById('nfLista').innerHTML = '<div class="nf-empty">Sem dados. Tente atualizar em instantes.</div>';
     })
     .finally(() => {
       NF_CARREGANDO = null;
       if(btn){ btn.disabled = false; btn.textContent = '🔄 Atualizar'; }
-      const s = document.getElementById('nfSync');
-      if(s && NF_ATUALIZADO) s.textContent = 'atualizado às ' + NF_ATUALIZADO.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      if(NF_ATUALIZADO) nfSyncTxt((NF_DO_CACHE ? '⚠️ dados das ' : 'atualizado às ') + nfHora(NF_ATUALIZADO));
     });
   return NF_CARREGANDO;
 }
