@@ -654,6 +654,7 @@
   @keyframes nfspin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
   .nf-err{background:var(--danger-soft);border:1px solid rgba(239,68,68,.25);border-left:4px solid var(--danger);border-radius:12px;padding:14px 18px;margin-bottom:18px;color:#fca5a5;font-size:13px;}
   .nf-progress{font-size:11px;color:var(--muted);}
+  .tab.active-warn{background:var(--warn);border-color:var(--warn);color:#1a1300;}
   .nf-cnpj-aviso{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12.5px;color:#fca5a5;}
   .nf-cnpj-aviso b{color:#f87171;}
   .nf-cnpj-table{min-width:900px;}
@@ -1256,7 +1257,8 @@
       <div class="nf-filters">
         <div class="filter-tabs" id="nfFiltroSit">
           <div class="tab active" onclick="nfSetFiltro('todos',this)">Todos <span class="nf-cnt" id="nfCnt_todos">0</span></div>
-          <div class="tab" onclick="nfSetFiltro('falta',this)">⚠️ Falta reserva <span class="nf-cnt" id="nfCnt_falta">0</span></div>
+          <div class="tab" onclick="nfSetFiltro('falta',this)" title="Reserva zerada: nenhuma unidade reservada na carga">⛔ Falta reserva <span class="nf-cnt" id="nfCnt_falta">0</span></div>
+          <div class="tab" onclick="nfSetFiltro('parcial',this)" title="Tem reserva, mas não é suficiente para todos os pedidos">⚠️ Reserva insuficiente <span class="nf-cnt" id="nfCnt_parcial">0</span></div>
           <div class="tab" onclick="nfSetFiltro('coberto',this)">✓ Coberto <span class="nf-cnt" id="nfCnt_coberto">0</span></div>
           <div class="tab" onclick="nfSetFiltro('semvinculo',this)">🔗 A vincular <span class="nf-cnt" id="nfCnt_semvinculo">0</span></div>
           <div class="tab" id="nfTabCnpj" onclick="nfSetFiltro('cnpj',this)">🏢 CNPJ · não atendemos <span class="nf-cnt" id="nfCnt_cnpj">0</span></div>
@@ -6486,7 +6488,7 @@ function nfAgrupar(){
 function nfSetFiltro(f, el){
   nfFiltro = f;
   document.querySelectorAll('#nfFiltroSit .tab').forEach(t => t.className = 'tab');
-  el.classList.add(f === 'falta' || f === 'cnpj' ? 'active-alert' : 'active');
+  el.classList.add(f === 'falta' || f === 'cnpj' ? 'active-alert' : f === 'parcial' ? 'active-warn' : 'active');
   nfRender();
 }
 function nfToggle(k){
@@ -6508,8 +6510,8 @@ function nfOrdenarLista(arr){
 }
 function nfSitHTML(e){
   if(e.situacao === 'coberto') return '<span class="nf-pill ok">✓ Coberto</span>';
-  if(e.situacao === 'parcial') return '<span class="nf-pill warn">Faltam ' + nfNum(-e.saldo) + '</span>';
-  if(e.situacao === 'sem')     return '<span class="nf-pill danger">Sem reserva</span>';
+  if(e.situacao === 'parcial') return '<span class="nf-pill warn" title="Reserva de ' + nfNum(e.reservado) + ' para ' + nfNum(e.qtd) + ' unidades">Insuficiente · faltam ' + nfNum(-e.saldo) + '</span>';
+  if(e.situacao === 'sem')     return '<span class="nf-pill danger">Reserva zerada</span>';
   if(e.situacao === 'indef')   return '<span class="nf-pill muted">Escolher variação</span>';
   return '<span class="nf-pill muted">Não vinculado</span>';
 }
@@ -6603,6 +6605,8 @@ function nfRender(){
   const todas = nfAgrupar();
   const falta = todas.filter(e => e.situacao === 'parcial' || e.situacao === 'sem');
   const cob   = todas.filter(e => e.situacao === 'coberto');
+  const zerado  = todas.filter(e => e.situacao === 'sem');       // reserva 0
+  const parcial = todas.filter(e => e.situacao === 'parcial');   // tem reserva, mas não dá para todos os pedidos
   const semV  = todas.filter(e => e.situacao === 'semvinculo' || e.situacao === 'indef');
 
   // KPIs
@@ -6622,7 +6626,7 @@ function nfRender(){
   set('nfKOldSub', velho ? 'pedido ' + velho.numero + ' · ' + velho.canal : '');
   set('nfKFalta', nfNum(unFalta));
   set('nfKFaltaSub', falta.length + (falta.length !== 1 ? ' variações' : ' variação') + ' sem reserva suficiente');
-  const cnt = { todos: todas.length, falta: falta.length, coberto: cob.length, semvinculo: semV.length, cnpj: pedCNPJ.length };
+  const cnt = { todos: todas.length, falta: zerado.length, parcial: parcial.length, coberto: cob.length, semvinculo: semV.length, cnpj: pedCNPJ.length };
   const av = document.getElementById('nfCnpjAviso');
   if(av){
     const vC = pedCNPJ.reduce((a,p) => a + p.itens.reduce((s,i) => s + i.valor, 0), 0);
@@ -6637,7 +6641,7 @@ function nfRender(){
   if(nfFiltro === 'cnpj'){ nfRenderCNPJ(pedCNPJ); return; }
 
   // Filtros
-  let lista = nfFiltro === 'falta' ? falta : nfFiltro === 'coberto' ? cob : nfFiltro === 'semvinculo' ? semV : todas;
+  let lista = nfFiltro === 'falta' ? zerado : nfFiltro === 'parcial' ? parcial : nfFiltro === 'coberto' ? cob : nfFiltro === 'semvinculo' ? semV : todas;
   const q = ((document.getElementById('nfBusca') || {}).value || '').toLowerCase().trim();
   if(q) lista = lista.filter(e =>
     String(e.produto).toLowerCase().includes(q) || String(e.variacao).toLowerCase().includes(q) ||
