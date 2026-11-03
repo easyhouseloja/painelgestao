@@ -486,7 +486,7 @@ async function carregarComercial(){
   const metaCatPrinc = {}; CATEGORIAS_COM.forEach(c => metaCatPrinc[c] = 0);
 
   catPage.querySelectorAll('.cat-mp-card').forEach(card => {
-    const nome = (card.querySelector('.cat-mp-name')?.textContent || '?')
+    const nome = (card.querySelector('.cat-mp-name, .chart-title')?.textContent || '?')
                    .replace(/[^\wÀ-ÿ\s/./-]/g, '').trim();
     const principal = ehCanalPrincipal(nome);
     let totFat = null, totMeta = null;
