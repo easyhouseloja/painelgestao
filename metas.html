@@ -855,18 +855,25 @@ function renderReputacao(r){
 
   const linhas = r.canais.map(c =>
     linhaReputacao(c.nome, c.valorTxt, c.status, c.verde, false)).join('');
-  const verdes = r.canais.filter(c => c.verde).length;
+
+  /* Meta geral: considera SOMENTE os marketplaces (Mercado Livre, Shopee, Magalu).
+     O Reclame Aqui continua listado, mas fica fora do cálculo do TOTAL. */
+  const canaisRegra = r.canais.filter(c => c.id !== 'reclameaqui');
+  const verdes = canaisRegra.filter(c => c.verde).length;
+  const todosVerdes = canaisRegra.length > 0 && canaisRegra.every(c => c.verde);
+
   const totalLinha = linhaReputacao(
-    'TOTAL (' + verdes + '/' + r.canais.length + ' verdes)',
-    null, r.todosVerdes ? 'verde' : 'laranja', r.todosVerdes, true);
+    'TOTAL (' + verdes + '/' + canaisRegra.length + ' verdes)',
+    null, todosVerdes ? 'verde' : 'laranja', todosVerdes, true);
   tbody.innerHTML = linhas + totalLinha;
 
-  if(sub) sub.textContent = (r.todosVerdes
-    ? 'Todas as fontes em verde · meta geral atingida'
-    : (r.canais.length - verdes) + ' fonte(s) fora do verde · meta geral não atingida')
+  if(sub) sub.textContent = (todosVerdes
+    ? 'Todos os marketplaces em verde · meta geral atingida'
+    : (canaisRegra.length - verdes) + ' marketplace(s) fora do verde · meta geral não atingida')
+    + ' · Reclame Aqui não entra no cálculo'
     + (r.atualizado ? ' · atualizado em ' + r.atualizado : '');
 
-  return { atingiu: r.todosVerdes, erro:false };
+  return { atingiu: todosVerdes, erro:false };
 }
 
 function renderResumo(resultados){
