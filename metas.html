@@ -750,7 +750,7 @@ function miniBar(fat, meta){
     </div>`;
 }
 
-function linhaDetalhe(nome, fat, meta, isTotal, principal){
+function linhaDetalhe(nome, fat, meta, isTotal, principal, statusForcado){
   /* Categoria sem meta definida (ex.: cozinha zerada) → mostra "—" e status neutro */
   const semMeta = !isTotal && (!meta || meta <= 0);
   const ok     = fat >= meta;
@@ -761,9 +761,12 @@ function linhaDetalhe(nome, fat, meta, isTotal, principal){
   const corFat = semMeta ? 'var(--text)' : (ok ? '#66FF99' : '#ff8b7a');
   const metaCell   = semMeta ? '<span style="color:var(--muted)">—</span>' : fmt(meta, 'R$');
   const progCell   = semMeta ? '<span style="color:var(--muted);font-size:11px">sem meta</span>' : miniBar(fat, meta);
+  /* Status: no TOTAL usa o status forçado (regra "todos os itens atingiram");
+     nas demais linhas, o atingimento individual (fat >= meta). */
+  const okStatus = (typeof statusForcado === 'boolean') ? statusForcado : ok;
   const statusCell = semMeta
     ? '<span class="bdg" style="background:rgba(136,136,136,.15);color:var(--muted)">— sem meta</span>'
-    : `<span class="bdg ${ok ? 'bdg-ok' : 'bdg-nok'}">${ok ? '✅ Atingiu' : '⚠️ Não atingiu'}</span>`;
+    : `<span class="bdg ${okStatus ? 'bdg-ok' : 'bdg-nok'}">${okStatus ? '✅ Atingiu' : '⚠️ Não atingiu'}</span>`;
   /* Flag "conta na meta" — só aparece quando o campo principal é booleano (tabela de marketplace) */
   const flag = (typeof principal === 'boolean' && !isTotal)
     ? (principal
@@ -795,11 +798,22 @@ function renderMasterDetail(cfg, r){
   }
 
   const linhas = (r.detalhes || []).map(d => linhaDetalhe(d.nome, d.fat, d.meta, false, d.principal)).join('');
-  const totalLinha = linhaDetalhe('TOTAL', r.valor, r.metaReal, true);
+
+  /* Regra do status geral: a meta só é atingida se TODOS os itens que entram
+     no cálculo atingirem individualmente (fat >= meta).
+     Itens que entram:
+       - Marketplace: os marcados como principal (tag "na meta");
+       - Categoria:   os que têm meta > 0 (cozinha, sem meta, fica de fora). */
+  const itensRegra = (r.detalhes || []).filter(d =>
+    (typeof d.principal === 'boolean' ? d.principal : true) && d.meta > 0
+  );
+  const todosAtingiram = itensRegra.length > 0 && itensRegra.every(d => d.fat >= d.meta);
+
+  const totalLinha = linhaDetalhe('TOTAL', r.valor, r.metaReal, true, undefined, todosAtingiram);
   tbody.innerHTML = linhas + totalLinha;
 
   if(sub) sub.textContent = r.referencia || '';
-  return { atingiu: r.valor >= r.metaReal, erro:false };
+  return { atingiu: todosAtingiram, erro:false };
 }
 
 /* Renderiza a tabela de reputação e devolve o status do TOTAL (para o resumo).
