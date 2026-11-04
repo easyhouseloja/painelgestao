@@ -43,6 +43,9 @@ function showMonth(month, el) {
   if (month === 'out' && typeof buildOutCharts === 'function' && !outChartsBuilt['visao']) {
     setTimeout(function(){ buildOutCharts('visao'); outChartsBuilt['visao'] = true; }, 50);
   }
+  if (month === 'nov' && typeof buildNovCharts === 'function' && !novChartsBuilt['visao']) {
+    setTimeout(function(){ buildNovCharts('visao'); novChartsBuilt['visao'] = true; }, 50);
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -332,6 +335,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .month-btn.ytd    { --accent: #38bdf8; }
 .month-btn.jul    { --accent: #f59e0b; }
 .month-btn.ago    { --accent: #22c55e; }
+.month-btn.out    { --accent: #f97316; }
+.month-btn.nov    { --accent: #f472b6; }
 .month-dashboard { display: none; }
 .month-dashboard.active { display: block; }
 @media(max-width:640px){ .month-selector { padding: 10px 16px 0; } .month-btn { padding: 8px 16px; font-size:.75rem; } }
@@ -417,6 +422,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="month-btn ago"          onclick="showMonth('ago', this)">📅 Agosto 2026</div>
   <div class="month-btn set"          onclick="showMonth('set', this)">📅 Setembro 2026</div>
   <div class="month-btn out"          onclick="showMonth('out', this)">📅 Outubro 2026</div>
+  <div class="month-btn nov"          onclick="showMonth('nov', this)">📅 Novembro 2026</div>
 </div>
 
 <!-- ═══════════════ MÊS: MARÇO 2026 ═══════════════ -->
@@ -5812,6 +5818,574 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </div><!-- /month-out -->
 
 <!-- ═══════════════ ACUMULADO 2026 (YTD) ═══════════════ -->
+<div class="month-dashboard" id="month-nov">
+
+<div class="header">
+  <div>
+    <h1>📊 Dashboard Vendas</h1>
+    <div class="header-sub" id="nov-hdr-periodo">Novembro 2026 · <strong>EM ANDAMENTO</strong> · <strong>01-03/11</strong> &middot; <strong style="color:var(--yellow)">7,21% da meta</strong> &middot; meta R$ 25,00M &middot; ADS &amp; Afiliados ainda não enviados</div>
+  </div>
+  <div class="header-badges">
+    <span class="badge" style="color:var(--yellow)">3 dias · R$ 1.802.725,31 · <strong>7,21%</strong> de R$ 25,00M</span>
+    <span class="badge" style="color:var(--green)">A×A +210% · M×M -19,50%</span>
+  </div>
+</div>
+
+<div class="tabs" id="nov-tabs">
+  <div class="tab active" onclick="showNovPage('visao',event)">Visão Geral</div>
+  <div class="tab" onclick="showNovPage('marketplaces',event)">Marketplaces</div>
+  <div class="tab" onclick="showNovPage('categorias',event)">Categorias</div>
+  <div class="tab" onclick="showNovPage('diario',event)">Vendas Diárias</div>
+  <div class="tab" onclick="showNovPage('produtos',event)">Análise de Produtos</div>
+  <div class="tab" onclick="showNovPage('ads',event)">📣 ADS &amp; Afiliados</div>
+</div>
+<!-- ═══ NOVEMBRO: VISÃO GERAL ═══ -->
+<div class="page active" id="nov-page-visao">
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Faturamento · 01-03/11</div>
+      <div class="kpi-value">R$ 1.802.725,31</div>
+      <div class="kpi-sub"><span class="kpi-pill">3 dias corridos</span> · <strong style="color:var(--yellow)">1 único dia útil</strong> — 01/11 foi domingo e 02/11, feriado de Finados</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--yellow)">
+      <div class="kpi-label">% Meta Mensal · parcial</div>
+      <div class="kpi-value" style="color:var(--yellow)">7,21%</div>
+      <div class="kpi-sub">Meta novembro <strong>R$ 25.000.000,00</strong> · <span class="kpi-pill">+45,7% sobre outubro</span> — a maior elevação de régua do ano</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--green)">
+      <div class="kpi-label">Crescimento A×A</div>
+      <div class="kpi-value" style="color:var(--green)">+210%</div>
+      <div class="kpi-sub">Mesmo período de 2025: <strong>R$ 581.906,37</strong> — novembro/2026 abre com <strong>3,10×</strong> esse volume</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--yellow)">
+      <div class="kpi-label">Comparativo M×M</div>
+      <div class="kpi-value" style="color:var(--red)">-19,50%</div>
+      <div class="kpi-sub">Mesmo período de outubro: <strong>R$ 2.239.313,97</strong> — R$ 436.588,66 a menos, mas outubro abriu com 2 dias úteis contra 1</div>
+    </div>
+  </div>
+  <div style="background:linear-gradient(135deg,rgba(251,191,36,.08),transparent);border:1px solid rgba(251,191,36,.35);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.78rem;color:var(--muted);line-height:1.5;">
+    📌 <strong style="color:var(--yellow);">Novembro abre com R$ 1.802.725,31 em três dias — e a régua do mês subiu 45,7%.</strong> A meta passou de R$ 17.153.565,99 (outubro) para <strong>R$ 25.000.000,00</strong>, e a elevação foi idêntica em todas as categorias. <em>📅 <strong style="color:var(--text)">Leitura obrigatória do período:</strong> dos três dias, <strong>apenas 03/11 teve expediente</strong> — 01/11 caiu num domingo e 02/11 foi o feriado de Finados. O quadro do Orçado confirma: R$ 0,00 faturado nos dias 1 e 2 e <strong>os R$ 1,80 milhão inteiros lançados no dia 3</strong>. Então o número acima é, na prática, o resultado de <strong>um dia útil</strong> que absorveu o represamento do fim de semana prolongado. 📈 <strong style="color:var(--ml)">O Mercado Livre abriu o mês na liderança:</strong> R$ 714.439,04 contra R$ 708.336,95 da <strong style="color:var(--shopee)">Shopee</strong> — e é o único canal a crescer no M×M (<strong style="color:var(--green)">+37%</strong>), enquanto a Shopee recua 26%% e o <strong style="color:var(--magalu)">Magalu</strong>, 52%%. 🎯 <strong>Projeção da planilha: R$ 18.027.253,13</strong>, ou <strong style="color:var(--yellow)">72,11% da meta</strong> — praticamente o mesmo patamar de outubro fechado (R$ 18.155.426,26, −0,71%). Com a meta 45,7% maior, repetir outubro deixaria <strong>R$ 6.972.746,87</strong> na mesa. É esse o tamanho do salto pedido ao mês. 📊 <strong style="color:var(--gr)">O GR concentra 72,67% do faturamento</strong> e é a categoria em melhor ritmo (8,19% da meta); <strong style="color:var(--sala)">SALA</strong> (3,34%) e <strong style="color:#f59e0b">Cozinha</strong> (2,10%) abrem bem atrás. 🗺️ <strong style="color:#f59e0b">A Bahia saltou para 7,27%</strong> do faturamento, contra 4,33% em outubro, e o <strong style="color:#fb7185">Rio</strong> (28,99%) passou <strong style="color:#34d399">Minas</strong> (25,57%) — uma inversão em relação a todos os meses anteriores. 📋 As ressalvas de origem deste corte estão detalhadas nas sub-abas de Marketplaces, Categorias e Vendas Diárias.</em></div>
+  <div class="section-title">Performance por Categoria — 01-03/11 · metas de novembro</div>
+  <div class="grid-3" style="grid-template-columns:repeat(4,1fr);">
+    <div class="chart-card" style="border-color:rgba(52,211,153,.45);background:linear-gradient(135deg,rgba(52,211,153,.05),transparent);">
+      <div class="chart-title">🛋️ Guarda-Roupa (GR)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gr);margin-bottom:4px;">R$ 1,31M</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 16.000.000,00 · Faturado: <strong>R$ 1.309.998,23</strong></div>
+      <div class="prog-row"><div class="prog-label">Realizado</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:8.19%;background:var(--gr);"></div></div><div class="prog-val" style="color:var(--yellow)">8,19%</div></div>
+      <div class="prog-row"><div class="prog-label">Mix do período</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:72.67%;background:var(--gr);opacity:.55;"></div></div><div class="prog-val" style="color:var(--muted)">72,67%</div></div>
+      <div style="margin-top:12px;"><span class="tag tag-green">🥇 72,67% do faturamento do período</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">🏆 <strong style="color:var(--green)">A categoria em melhor ritmo do mês</strong> · tend. <strong style="color:var(--red)">-18%</strong> · responde por <strong>72,67% de tudo que foi faturado</strong> — uma concentração ainda maior que os 74,6% de outubro sobre uma base muito menor</div>
+    </div>
+    <div class="chart-card" style="border-color:rgba(129,140,248,.45);background:linear-gradient(135deg,rgba(129,140,248,.05),transparent);">
+      <div class="chart-title">🪞 Complementos (COMP)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--comp);margin-bottom:4px;">R$ 256,75K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 3.500.000,00 · Faturado: <strong>R$ 256.748,17</strong></div>
+      <div class="prog-row"><div class="prog-label">Realizado</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:7.34%;background:var(--comp);"></div></div><div class="prog-val" style="color:var(--yellow)">7,34%</div></div>
+      <div class="prog-row"><div class="prog-label">Mix do período</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:14.24%;background:var(--comp);opacity:.55;"></div></div><div class="prog-val" style="color:var(--muted)">14,24%</div></div>
+      <div style="margin-top:12px;"><span class="tag tag-yellow">📊 14,24% do faturamento do período</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">📊 Segundo melhor ritmo (7,34%) · tend. <strong style="color:var(--red)">-27%</strong> · <strong>14,24% do faturamento</strong> — acima dos 12,2% com que fechou outubro</div>
+    </div>
+    <div class="chart-card" style="border-color:rgba(251,113,133,.45);background:linear-gradient(135deg,rgba(251,113,133,.05),transparent);">
+      <div class="chart-title">🪑 Sala de Jantar (SALA)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--sala);margin-bottom:4px;">R$ 183,46K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta: R$ 5.500.000,00 · Faturado: <strong>R$ 183.462,33</strong></div>
+      <div class="prog-row"><div class="prog-label">Realizado</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:3.34%;background:var(--sala);"></div></div><div class="prog-val" style="color:var(--yellow)">3,34%</div></div>
+      <div class="prog-row"><div class="prog-label">Mix do período</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:10.18%;background:var(--sala);opacity:.55;"></div></div><div class="prog-val" style="color:var(--muted)">10,18%</div></div>
+      <div style="margin-top:12px;"><span class="tag tag-red">🔻 10,18% do período</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">🔻 <strong>Abre em menos da metade do ritmo do GR</strong> · tend. <strong style="color:var(--red)">-67%</strong> · 10,18% do faturamento · a meta subiu 45,7% e a categoria vinha de 49,69% em outubro</div>
+    </div>
+    <div class="chart-card" style="border-color:rgba(245,158,11,.35);background:linear-gradient(135deg,rgba(245,158,11,.05),transparent);">
+      <div class="chart-title" style="color:#f59e0b;">🍳 Cozinha</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#f59e0b;margin-bottom:4px;">R$ 52,52K</div>
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Meta-bônus: R$ 2.500.000,00 · Faturado: <strong>R$ 52.516,59</strong></div>
+      <div class="prog-row"><div class="prog-label">Realizado</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:2.10%;background:#f59e0b;"></div></div><div class="prog-val" style="color:var(--yellow)">2,10%</div></div>
+      <div class="prog-row"><div class="prog-label">Mix do período</div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:2.91%;background:#f59e0b;opacity:.55;"></div></div><div class="prog-val" style="color:var(--muted)">2,91%</div></div>
+      <div style="margin-top:12px;"><span class="tag " style="background:rgba(245,158,11,.15);color:#f59e0b;">🎁 BÔNUS · fora da meta total</span></div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:6px;">O pior ritmo do portfólio (2,10%) · tend. <strong style="color:var(--red)">-78,99%</strong> · 2,91% do faturamento · <strong>a meta de R$ 2,5M fica fora da meta total de R$ 25M</strong> da planilha</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-top:18px;margin-bottom:20px;overflow-x:auto;border-color:rgba(251,191,36,.35);background:linear-gradient(135deg,rgba(251,191,36,.04),transparent);">
+    <div class="chart-title" style="color:var(--yellow);">📌 Metas de novembro vs outubro — a maior elevação de régua do ano</div>
+    <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Meta</th><th>Outubro</th><th>Novembro</th><th style="text-align:center;">Δ</th><th style="text-align:center;">% em 01-03/11</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Geral</strong></td><td style="color:var(--muted);">R$ 17.153.565,99</td><td style="">R$ 25.000.000,00</td><td style="text-align:center;"><span class="tag tag-green">+45,7%</span></td><td style="text-align:center;"><span class="tag tag-yellow">7,21%</span></td></tr>
+        <tr><td>GR</td><td style="color:var(--muted);">R$ 10.978.282,23</td><td style="">R$ 16.000.000,00</td><td style="text-align:center;"><span class="tag tag-green">+45,7%</span></td><td style="text-align:center;"><span class="tag tag-yellow">8,19%</span></td></tr>
+        <tr><td>COMP</td><td style="color:var(--muted);">R$ 2.401.499,24</td><td style="">R$ 3.500.000,00</td><td style="text-align:center;"><span class="tag tag-green">+45,7%</span></td><td style="text-align:center;"><span class="tag tag-yellow">7,34%</span></td></tr>
+        <tr><td>SALA</td><td style="color:var(--muted);">R$ 3.773.784,52</td><td style="">R$ 5.500.000,00</td><td style="text-align:center;"><span class="tag tag-green">+45,7%</span></td><td style="text-align:center;"><span class="tag tag-red">3,34%</span></td></tr>
+        <tr><td><span style="color:#f59e0b">🎁 Cozinha (bônus)</span></td><td style="color:var(--muted);">R$ 1.715.356,60</td><td style="">R$ 2.500.000,00</td><td style="text-align:center;"><span class="tag tag-green">+45,7%</span></td><td style="text-align:center;"><span class="tag tag-red">2,10%</span></td></tr>
+        <tr><td style="border-top:2px solid var(--border);"><strong style="color:var(--shopee)">Shopee</strong></td><td style="color:var(--muted); border-top:2px solid var(--border);">R$ 8.600.000,00</td><td style=" border-top:2px solid var(--border);">R$ 11.000.000,00</td><td style="text-align:center; border-top:2px solid var(--border);"><span class="tag tag-yellow">+27,9%</span></td><td style="text-align:center; border-top:2px solid var(--border);"><span class="tag tag-yellow">6,44%</span></td></tr>
+        <tr><td><strong style="color:var(--ml)">ML</strong></td><td style="color:var(--muted);">R$ 5.350.000,00</td><td style="">R$ 8.000.000,00</td><td style="text-align:center;"><span class="tag tag-green">+49,5%</span></td><td style="text-align:center;"><span class="tag tag-yellow">8,57%</span></td></tr>
+        <tr><td><strong style="color:var(--magalu)">Magalu</strong></td><td style="color:var(--muted);">R$ 4.000.000,00</td><td style="">R$ 6.000.000,00</td><td style="text-align:center;"><span class="tag tag-green">+50,0%</span></td><td style="text-align:center;"><span class="tag tag-red">5,49%</span></td></tr>
+        <tr><td><strong style="color:var(--via)">Via</strong></td><td style="color:var(--muted);">R$ 300.000,00</td><td style="">R$ 500.000,00</td><td style="text-align:center;"><span class="tag tag-green">+66,7%</span></td><td style="text-align:center;"><span class="tag tag-yellow">6,22%</span></td></tr>
+        <tr><td><strong style="color:var(--madeira)">Madeira</strong></td><td style="color:var(--muted);">R$ 150.000,00</td><td style="">R$ 150.000,00</td><td style="text-align:center;"><span class="tag">=</span></td><td style="text-align:center;"><span class="tag tag-yellow">8,03%</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      📌 <strong style="color:var(--yellow);">A régua geral subiu exatamente 45,74% — e o mesmo fator foi aplicado a todas as quatro categorias.</strong> <em>📊 <strong>Por canal a elevação foi desigual:</strong> <strong style="color:var(--via)">Via</strong> +66,7%, <strong style="color:var(--magalu)">Magalu</strong> +50,0%, <strong style="color:var(--ml)">Mercado Livre</strong> +49,5%, <strong style="color:var(--shopee)">Shopee</strong> +27,9% e <strong style="color:var(--madeira)">Madeira</strong> inalterada. A Shopee, maior canal da operação, recebeu a menor elevação proporcional; o Magalu e o Via, que fecharam outubro em 142,33% e 137,69%, receberam as maiores. 📋 <strong style="color:var(--yellow)">Duas notas de régua:</strong> (1) a meta "Total" de <strong>R$ 25.000.000,00</strong> é exatamente a soma de COMP + GR + SALA — <strong>a Cozinha (R$ 2,5M) fica fora dela</strong>, embora o faturamento total informado inclua a Cozinha; o percentual de 7,21% portanto mistura numerador com Cozinha e denominador sem; (2) a soma das metas por canal (<strong>R$ 25.650.000,00</strong>) fica R$ 650.000,00 acima da meta geral — e não há meta de canal para Web Continental nem para o Site nesta remessa. Mantive os dois quadros como vieram.</em></div>
+  </div>
+  <div class="axo-grid">
+    <div class="axo-card" style="border-color:rgba(56,189,248,.3);">
+      <div class="axo-label">Mesmo período de outubro · 01-03/10</div>
+      <div class="axo-val" style="color:var(--muted);">R$ 2.239.313,97</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">outubro fechou em R$ 18.155.426,26 (105,84% da meta)</div>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:6px;line-height:1.45;">📅 A base não é simétrica: 01 e 02/10 caíram em quinta e sexta, dois dias úteis. Novembro teve <strong>um</strong>. A comparação por dia útil é de R$ 1.119.656,99/dia em outubro contra R$ 1.802.725,31 agora.</div>
+    </div>
+    <div class="axo-card" style="border-color:rgba(251,113,133,.4);background:linear-gradient(135deg,rgba(251,113,133,.05),transparent);">
+      <div class="axo-label">Variação M×M · parcial</div>
+      <div class="axo-val" style="color:var(--red);">▼ -19,50%</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">R$ 1.802.725,31 vs R$ 2.239.313,97</div>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:6px;line-height:1.45;">📉 São R$ 436.588,66 a menos — mas sobre metade dos dias úteis. <strong style="color:var(--green)">Normalizado por dia útil, novembro abre 61% acima de outubro.</strong> O indicador só fica comparável a partir da segunda semana.</div>
+    </div>
+    <div class="axo-card" style="border-color:rgba(34,197,94,.4);background:linear-gradient(135deg,rgba(34,197,94,.05),transparent);">
+      <div class="axo-label">Variação A×A · parcial</div>
+      <div class="axo-val" style="color:var(--green);">▲ +210%</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Mesmo período de 2025: R$ 581.906,37</div>
+      <div style="font-size:.7rem;color:var(--green);margin-top:6px;line-height:1.45;">✅ <strong>3,10× o volume do ano passado</strong> no mesmo recorte — o mesmo salto de patamar que marcou o ano inteiro (+126% no acumulado Jan–Out).</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">📈 Faturamento por Categoria · 01-03/11</div>
+      <div class="chart-wrap"><canvas id="novCatChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🛒 Faturamento por Marketplace · 01-03/11</div>
+      <div class="chart-wrap"><canvas id="novMktChart"></canvas></div>
+    </div>
+  </div>
+  <div class="section-title">🗺️ Representatividade por Estado — Novembro 2026 (01-03/11)</div>
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Distribuição do faturamento por UF · 01-03/11</div>
+      <div class="chart-wrap"><canvas id="novEstadoChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Faturamento por estado (VLR LIQ PEDIDO) · 01-03/11</div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead><tr><th>Estado</th><th>Faturamento</th><th style="text-align:center;">% do período</th><th style="text-align:center;">out/26</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="border-left:3px solid #3b82f6;padding-left:10px;"><strong>SP</strong> <span style="color:var(--muted);font-size:.7rem;">São Paulo</span></td>
+              <td><strong>R$ 687.735,61</strong></td>
+              <td style="text-align:center;"><span class="tag tag-green">38,17%</span></td>
+              <td style="text-align:center;color:var(--muted)">37,09%</td>
+            </tr>
+            <tr>
+              <td style="border-left:3px solid #fb7185;padding-left:10px;"><strong>RJ</strong> <span style="color:var(--muted);font-size:.7rem;">Rio de Janeiro</span></td>
+              <td><strong>R$ 522.323,97</strong></td>
+              <td style="text-align:center;"><span class="tag tag-green">28,99%</span></td>
+              <td style="text-align:center;color:var(--muted)">27,45%</td>
+            </tr>
+            <tr>
+              <td style="border-left:3px solid #34d399;padding-left:10px;"><strong>MG</strong> <span style="color:var(--muted);font-size:.7rem;">Minas Gerais</span></td>
+              <td><strong>R$ 460.728,78</strong></td>
+              <td style="text-align:center;"><span class="tag tag-yellow">25,57%</span></td>
+              <td style="text-align:center;color:var(--muted)">31,13%</td>
+            </tr>
+            <tr>
+              <td style="border-left:3px solid #f59e0b;padding-left:10px;"><strong>BA</strong> <span style="color:var(--muted);font-size:.7rem;">Bahia</span></td>
+              <td><strong>R$ 130.920,30</strong></td>
+              <td style="text-align:center;"><span class="tag tag-yellow">7,27%</span></td>
+              <td style="text-align:center;color:var(--muted)">4,33%</td>
+            </tr>
+            <tr class="total-row">
+              <td><strong>TOTAL com UF</strong></td>
+              <td><strong>R$ 1.801.708,66</strong></td>
+              <td style="text-align:center;"><strong>100%</strong></td>
+              <td style="text-align:center;"><strong>100%</strong></td>
+            </tr>
+            <tr style="opacity:.6;">
+              <td style="border-left:3px solid var(--muted);padding-left:10px;"><strong style="color:var(--muted)">sem UF</strong> <span style="color:var(--muted);font-size:.7rem;">não atribuído</span></td>
+              <td style="color:var(--muted)">R$ 1.016,65</td>
+              <td style="text-align:center;"><span class="tag">0,00%</span></td>
+              <td style="text-align:center;color:var(--muted)">0,13%</td>
+            </tr>
+            <tr class="total-row">
+              <td><strong>FATURAMENTO DO PERÍODO</strong></td>
+              <td><strong>R$ 1.802.725,31</strong></td>
+              <td style="text-align:center;"><strong>—</strong></td>
+              <td style="text-align:center;"><strong>—</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+        🗺️ <strong style="color:var(--text);">A abertura do mês inverte a ordem dos estados.</strong> <em>📊 O <strong style="color:#fb7185">Rio</strong> abre com <strong>28,99%</strong> e passa <strong style="color:#34d399">Minas</strong> (25,57%) pela primeira vez — em outubro Minas fez 31,13% contra 27,45% do Rio, e no acumulado do ano a diferença é ainda maior (33,70% contra 25,35%). 📈 <strong style="color:#f59e0b">A Bahia é o destaque do recorte:</strong> R$ 130.920,30, ou <strong>7,27%</strong> do período — praticamente o dobro dos 4,33% de outubro e seis vezes a participação dela no ano (1,20%). Vale acompanhar se o patamar se sustenta: a Bahia faturou em rajadas o mês inteiro em outubro. 📌 <strong style="color:#3b82f6">São Paulo</strong> segue na liderança com 38,17%, acima dos 37,09% de outubro. Como o período é de um único dia útil, qualquer leitura de tendência aqui é provisória.</em></div>
+      <div style="margin-top:8px;font-size:.7rem;color:var(--green);line-height:1.5;">
+        <strong style="color:var(--yellow);">Dados de origem:</strong> Faturamento por estado (VLR LIQ PEDIDO) de 01-03/11/2026. Total consolidado: <strong>R$ 1.801.708,66</strong>, contra R$ 1.802.725,31 do faturamento do período — <strong>R$ 1.016,65 em pedidos sem UF atribuída</strong> (0,00%). <em>✅ O preenchimento está melhor do que em outubro, que fechou com 0,13% sem UF. Os percentuais acima são calculados sobre o total com UF, para somarem 100%.</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NOVEMBRO: MARKETPLACES ═══ -->
+<div class="page" id="nov-page-marketplaces">
+  <div style="background:linear-gradient(135deg,rgba(34,197,94,.06),transparent);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:.78rem;color:var(--muted);line-height:1.5;">
+    🏁 <strong style="color:var(--text);">O Mercado Livre abre novembro na liderança — a primeira vez no ano.</strong> <em>📈 <strong style="color:var(--ml)">Meili/ML</strong> fez R$ 714.439,04 contra R$ 708.336,95 da <strong style="color:var(--shopee)">Shopee</strong>, uma diferença de apenas R$ 6.102,09, e é o <strong>único canal a crescer no mês contra mês</strong> (<strong style="color:var(--green)">+37%</strong>). A Shopee recua 26%, o <strong style="color:var(--magalu)">Magalu</strong> 52% e o <strong style="color:var(--via)">Via</strong> 32%. 🎯 <strong>Nenhum canal está no ritmo da própria meta:</strong> o melhor é o <strong style="color:var(--ml)">Mercado Livre</strong> com 8,93% da meta cheia (8,57% pelo total da planilha), seguido da <strong style="color:var(--madeira)">Madeira</strong> (8,03%) — ambos acima do ritmo geral de 7,21%. 📊 <strong>No ano a ano todos crescem forte</strong>, exceto a <strong style="color:var(--madeira)">Madeira</strong> (−57%), que vinha caindo o ano inteiro (−85% no acumulado). O <strong style="color:var(--magalu)">Magalu</strong> lidera com +453%. 📌 <strong style="color:var(--yellow)">Ressalvas de origem deste corte:</strong> (1) o <strong style="color:#06b6d4">Site/Venda Direta</strong> está zerado, com o A×A aparecendo como <strong>#DIV/0!</strong> na planilha, e não tem card de categoria nesta remessa; (2) o <strong style="color:var(--web)">Web Continental</strong> também não tem card nem meta de canal; (3) a soma dos sete canais dá <strong>R$ 1.801.195,14</strong>, R$ 1.530,17 abaixo do total de categorias (R$ 1.802.725,31) — a representatividade por canal da planilha é calculada sobre a soma dos canais. Mantive cada quadro como veio.</em></div>
+  <div class="section-title">Participação — 01-03/11</div>
+  <div class="grid-2">
+    <div class="chart-card">
+      <div class="chart-title">Distribuição do Faturamento — período parcial</div>
+      <div class="mkt-rows">
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--shopee)">🟠 Shopee</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:99.15%;background:var(--shopee);"></div></div><div class="mkt-val">R$ 708.336,95</div><div class="mkt-var"><span class="tag">39%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--ml)">🟡 Meili/ML</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:100.00%;background:var(--ml);"></div></div><div class="mkt-val">R$ 714.439,04</div><div class="mkt-var"><span class="tag">40%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--magalu)">🔵 Magalu</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:46.11%;background:var(--magalu);"></div></div><div class="mkt-val">R$ 329.393,04</div><div class="mkt-var"><span class="tag">18%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--via)">🟣 Via Varejo</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:4.36%;background:var(--via);"></div></div><div class="mkt-val">R$ 31.116,72</div><div class="mkt-var"><span class="tag">2%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--madeira)">🟤 Madeira</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:1.69%;background:var(--madeira);"></div></div><div class="mkt-val">R$ 12.052,45</div><div class="mkt-var"><span class="tag">0,7%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:var(--web)">⚪ Web Cont.</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:0.82%;background:var(--web);"></div></div><div class="mkt-val">R$ 5.856,94</div><div class="mkt-var"><span class="tag">0,3%</span></div></div>
+        <div class="mkt-row"><div class="mkt-name" style="color:#06b6d4">🌐 Site/Direta</div><div class="mkt-bar-bg"><div class="mkt-bar-fill" style="width:0.00%;background:#06b6d4;"></div></div><div class="mkt-val">R$ 0,00</div><div class="mkt-var"><span class="tag">0,0%</span></div></div>
+      </div>
+      <div style="margin-top:12px;font-size:.72rem;color:var(--muted);line-height:1.5;">📊 As barras são proporcionais ao maior canal do período. <strong style="color:var(--ml)">Meili/ML</strong> e <strong style="color:var(--shopee)">Shopee</strong> somam <strong>78,99%</strong> do faturamento do recorte, e os percentuais exibidos são os da planilha, calculados sobre a soma dos canais (R$ 1.801.195,14).</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🛒 Faturado × Meta por canal</div>
+      <div class="chart-wrap"><canvas id="novMktMetaChart"></canvas></div>
+    </div>
+  </div>
+  <div class="section-title">Detalhamento por Canal — Mês×Mês · Ano×Ano · Representatividade (01-03/11)</div>
+  <div class="chart-card" style="margin-bottom:20px;overflow-x:auto;">
+    <table class="data-table">
+      <thead>
+        <tr><th>Canal</th><th>Novembro 2026</th><th>Outubro 2026</th><th>Novembro 2025</th><th style="text-align:center;">M×M</th><th style="text-align:center;">A×A</th><th>Projeção</th><th style="text-align:center;">Repres.</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="border-left:3px solid var(--shopee);padding-left:10px;"><strong style="color:var(--shopee)">🟠 Shopee</strong></td>
+          <td><strong>R$ 708.336,95</strong></td>
+          <td style="color:var(--muted)">R$ 960.141,28</td>
+          <td style="color:var(--muted)">R$ 184.232,18</td>
+          <td style="text-align:center;"><span class="tag tag-yellow">▼ 26%</span></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +284%</span></td>
+          <td style="color:var(--green)">R$ 7.083.369,53</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">39%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid var(--ml);padding-left:10px;"><strong style="color:var(--ml)">🟡 Meili/ML</strong></td>
+          <td><strong>R$ 714.439,04</strong></td>
+          <td style="color:var(--muted)">R$ 520.075,74</td>
+          <td style="color:var(--muted)">R$ 279.513,80</td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +37%</span></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +156%</span></td>
+          <td style="color:var(--green)">R$ 7.144.390,42</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">40%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid var(--magalu);padding-left:10px;"><strong style="color:var(--magalu)">🔵 Magalu</strong></td>
+          <td><strong>R$ 329.393,04</strong></td>
+          <td style="color:var(--muted)">R$ 684.686,25</td>
+          <td style="color:var(--muted)">R$ 59.563,14</td>
+          <td style="text-align:center;"><span class="tag tag-red">▼ 52%</span></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +453%</span></td>
+          <td style="color:var(--green)">R$ 3.293.930,40</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">18%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid var(--via);padding-left:10px;"><strong style="color:var(--via)">🟣 Via Varejo</strong></td>
+          <td><strong>R$ 31.116,72</strong></td>
+          <td style="color:var(--muted)">R$ 45.444,50</td>
+          <td style="color:var(--muted)">R$ 21.318,47</td>
+          <td style="text-align:center;"><span class="tag tag-red">▼ 32%</span></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +46%</span></td>
+          <td style="color:var(--green)">R$ 311.167,24</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">2%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid var(--madeira);padding-left:10px;"><strong style="color:var(--madeira)">🟤 Madeira</strong></td>
+          <td><strong>R$ 12.052,45</strong></td>
+          <td style="color:var(--muted)">R$ 15.221,72</td>
+          <td style="color:var(--muted)">R$ 27.864,45</td>
+          <td style="text-align:center;"><span class="tag tag-yellow">▼ 21%</span></td>
+          <td style="text-align:center;"><span class="tag tag-red">▼ 57%</span></td>
+          <td style="color:var(--green)">R$ 120.524,46</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">0,7%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid var(--web);padding-left:10px;"><strong style="color:var(--web)">⚪ Web Cont.</strong></td>
+          <td><strong>R$ 5.856,94</strong></td>
+          <td style="color:var(--muted)">R$ 6.412,27</td>
+          <td style="color:var(--muted)">R$ 5.483,74</td>
+          <td style="text-align:center;"><span class="tag tag-yellow">▼ 9%</span></td>
+          <td style="text-align:center;"><span class="tag tag-green">▲ +7%</span></td>
+          <td style="color:var(--green)">R$ 58.569,39</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">0,3%</span></td>
+        </tr>
+        <tr>
+          <td style="border-left:3px solid #06b6d4;padding-left:10px;"><strong style="color:#06b6d4">🌐 Site/Direta</strong></td>
+          <td><strong>R$ 0,00</strong></td>
+          <td style="color:var(--muted)">R$ 4.901,41</td>
+          <td style="color:var(--muted)">—</td>
+          <td style="text-align:center;"><span class="tag tag-red">▼ 100%</span></td>
+          <td style="text-align:center;"><span class="tag" style="color:var(--muted)">#DIV/0!</span></td>
+          <td style="color:var(--green)">—</td>
+          <td style="text-align:center;"><span class="tag" style="background:rgba(56,189,248,.12);color:var(--accent);">0,0%</span></td>
+        </tr>
+        <tr class="total-row"><td><strong>TOTAL · 7 canais</strong></td><td><strong>R$ 1.801.195,14</strong></td><td><strong>R$ 2.239.313,97</strong></td><td><strong>R$ 581.906,37</strong></td><td style="text-align:center;"><span class="tag tag-red">▼ 19,50%</span></td><td style="text-align:center;"><span class="tag tag-green">▲ +210%</span></td><td><strong style="color:var(--green)">R$ 18.027.253,13</strong></td><td style="text-align:center;"><strong>100%</strong></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      📊 <strong style="color:var(--text);">Como ler o M×M neste corte:</strong> a coluna de outubro traz o mesmo intervalo 01-03 do mês passado, quando dois dos três dias foram úteis (01/10 quinta e 02/10 sexta) contra um só agora. <em>📈 <strong style="color:var(--ml)">O Mercado Livre cresce 37% mesmo com metade dos dias úteis</strong> — é o movimento mais expressivo do recorte. A <strong style="color:var(--shopee)">Shopee</strong> (−26%) e o <strong style="color:var(--magalu)">Magalu</strong> (−52%) recuam, mas a queda do Magalu precisa de contexto: o canal fechou outubro em 142,33% da meta, o melhor desempenho de todos. 🎯 <strong>% da meta de novembro por canal:</strong> <strong style="color:var(--ml)">ML</strong> 8,93% (R$ 714.439,04 ÷ R$ 8M), <strong style="color:var(--madeira)">Madeira</strong> 8,03%, <strong style="color:var(--shopee)">Shopee</strong> 6,44%, <strong style="color:var(--via)">Via</strong> 6,22% e <strong style="color:var(--magalu)">Magalu</strong> 5,49%. Nenhum atingiu os 10% que três dias de trinta pediriam numa régua linear — mas com um dia útil de vinte, o esperado seria 5%, e aí todos estão à frente. 📌 <strong style="color:var(--yellow)">O total da linha acima (R$ 1.801.195,14) é a soma dos canais</strong>, R$ 1.530,17 abaixo do total do quadro de categorias. A projeção total (R$ 18.027.253,13) vem do quadro de categorias, não da soma das projeções por canal — essa dá R$ 18.011.951,44.</em></div>
+  </div>
+</div>
+
+<!-- ═══ NOVEMBRO: CATEGORIAS ═══ -->
+<div class="page" id="nov-page-categorias">
+  <div style="background:linear-gradient(135deg,rgba(34,197,94,.06),transparent);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.78rem;color:var(--muted);line-height:1.5;">
+    📋 <strong style="color:var(--text);">Fonte deste bloco: a aba "Categoria × Marketplace" da planilha — período 01-03/11.</strong> <em>📈 <strong style="color:var(--ml)">O GR do Mercado Livre é a linha em melhor ritmo de todo o quadro:</strong> 10,57% da meta, contra 6,19% do GR da Shopee e 7,56% do GR do Magalu. Com um único dia útil de vinte, qualquer linha acima de 5% está adiantada — e o GR do ML está ao dobro disso. 📊 <strong style="color:var(--madeira)">A Madeira abre bem:</strong> 8,03% do canal e 10,45% no GR, apesar da queda de 57% no ano a ano. 🔻 <strong style="color:var(--magalu)">O COMP do Magalu é o ponto frágil:</strong> R$ 6.160,52 para uma meta de R$ 840.000,00 — 0,73%, o pior ritmo de qualquer linha do quadro. No <strong style="color:var(--via)">Via</strong>, SALA e Cozinha abrem zeradas, e na <strong style="color:var(--madeira)">Madeira</strong>, a SALA. 📌 <strong style="color:var(--yellow)">Ressalvas de origem que seguem de outubro:</strong> (1) o <strong>total do Mercado Livre continua sem a Cozinha</strong> — R$ 685.923,21 no card contra R$ 714.439,04 no quadro de marketplaces, diferença de exatamente os R$ 28.515,84 da categoria; foi sinalizado no fechamento de outubro e permanece; (2) a <strong>projeção do TOTAL exclui a Cozinha</strong> no <strong style="color:var(--ml)">ML</strong>, no <strong style="color:var(--magalu)">Magalu</strong> e na <strong style="color:var(--madeira)">Madeira</strong>, mas a inclui na <strong style="color:var(--shopee)">Shopee</strong> — nesses três canais o faturado soma a Cozinha e a projeção não; (3) a <strong>meta "TOTAL" de cada card exclui a meta da Cozinha</strong>, de forma consistente nos cinco canais. 🆕 <strong>Mudou em relação a outubro:</strong> o ML passou a excluir a Cozinha também na projeção, e o <strong style="color:#06b6d4">Site</strong> saiu do quadro. 📊 <strong>A conta do período:</strong> os cinco canais somam R$ 1.766.822,37 pelos totais exibidos; com a Cozinha do ML, R$ 1.795.338,20; somando o Web Continental, R$ 1.801.195,14 contra os R$ 1.802.725,31 do quadro de categorias — resíduo de R$ 1.530,17, ou 0,08%.</em></div>
+
+  <div class="grid-2">
+    <div class="chart-card cat-mp-card" style="border-color:rgba(249,115,22,.35);">
+      <div class="chart-title" style="color:var(--shopee);">🟠 SHOPEE</div>
+      <div class="cat-mp-total">01-03/11: R$ 708.336,95</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td>R$ 141.435,27</td><td>R$ 1.540.000,00</td><td><span class="tag tag-yellow">9,18%</span></td><td>R$ 1.414.352,67</td></tr>
+        <tr><td>GR</td><td>R$ 436.126,69</td><td>R$ 7.040.000,00</td><td><span class="tag tag-yellow">6,19%</span></td><td>R$ 4.361.266,86</td></tr>
+        <tr><td>SALA</td><td>R$ 110.121,74</td><td>R$ 2.420.000,00</td><td><span class="tag tag-red">4,55%</span></td><td>R$ 1.101.217,40</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td>R$ 20.653,26</td><td><span style="color:var(--muted)">bônus R$ 1.100.000</span></td><td><span class="tag tag-red">1,88%</span></td><td>R$ 206.532,60</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 708.336,95</td><td>R$ 11.000.000,00</td><td><span class="tag tag-yellow">6,44%</span></td><td>R$ 7.083.369,53</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;">📊 <strong>Maior canal da operação, mas o segundo em ritmo (6,44%).</strong> <em>O <strong style="color:var(--comp)">COMP</strong> abre melhor (9,18%) que o <strong style="color:var(--gr)">GR</strong> (6,19%) — inversão em relação a outubro, quando o COMP fechou em 123,16% e o GR em 90,40%. A meta do canal subiu 27,9%, a menor elevação entre os cinco. Aqui a projeção do TOTAL <strong>inclui</strong> a Cozinha.</em></div>
+    </div>
+
+    <div class="chart-card cat-mp-card" style="border-color:rgba(255,224,0,.3);">
+      <div class="chart-title" style="color:var(--ml);">🟡 MERCADO LIVRE</div>
+      <div class="cat-mp-total">01-03/11: R$ 685.923,21</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td>R$ 105.846,59</td><td>R$ 1.120.000,00</td><td><span class="tag tag-yellow">9,45%</span></td><td>R$ 1.058.465,93</td></tr>
+        <tr><td>GR</td><td>R$ 541.261,68</td><td>R$ 5.120.000,00</td><td><span class="tag tag-green">10,57%</span></td><td>R$ 5.412.616,80</td></tr>
+        <tr><td>SALA</td><td>R$ 38.814,93</td><td>R$ 1.760.000,00</td><td><span class="tag tag-red">2,21%</span></td><td>R$ 388.149,33</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td>R$ 28.515,84</td><td><span style="color:var(--muted)">bônus R$ 800.000</span></td><td><span class="tag tag-red">3,56%</span></td><td>R$ 285.158,36</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 685.923,21</td><td>R$ 8.000.000,00</td><td><span class="tag tag-green">8,57%</span></td><td>R$ 6.859.232,06</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;">🏆 <strong style="color:var(--green)">O canal em melhor ritmo do quadro — e o GR dele é a melhor linha de todas (10,57%).</strong> <em>Pela régua cheia, com a Cozinha, o canal faz R$ 714.439,04 e <strong>8,93% da meta</strong>; pelo total da planilha, que segue sem a Cozinha, 8,57%. A meta subiu 49,5% e, ainda assim, é o único canal que cresce no M×M (+37%). 📌 A diferença de R$ 28.515,84 entre este card e o quadro de marketplaces é exatamente a Cozinha.</em></div>
+    </div>
+
+    <div class="chart-card cat-mp-card" style="border-color:rgba(0,134,255,.3);">
+      <div class="chart-title" style="color:var(--magalu);">🔵 MAGALU</div>
+      <div class="cat-mp-total">01-03/11: R$ 329.393,04</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td>R$ 6.160,52</td><td>R$ 840.000,00</td><td><span class="tag tag-red">0,73%</span></td><td>R$ 61.605,23</td></tr>
+        <tr><td>GR</td><td>R$ 290.278,88</td><td>R$ 3.840.000,00</td><td><span class="tag tag-yellow">7,56%</span></td><td>R$ 2.902.788,84</td></tr>
+        <tr><td>SALA</td><td>R$ 30.654,05</td><td>R$ 1.320.000,00</td><td><span class="tag tag-red">2,32%</span></td><td>R$ 306.540,50</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td>R$ 2.299,58</td><td><span style="color:var(--muted)">bônus R$ 600.000</span></td><td><span class="tag tag-red">0,38%</span></td><td>R$ 22.995,83</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 329.393,04</td><td>R$ 6.000.000,00</td><td><span class="tag tag-red">5,49%</span></td><td>R$ 3.270.934,57</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;">🔻 <strong>Abre em 5,49%, o pior ritmo dos cinco — e com a maior queda M×M (−52%).</strong> <em>O contraste é grande: o canal fechou outubro em <strong>142,33%</strong> da meta, o melhor de todos. A meta subiu 50,0% e o <strong style="color:var(--comp)">COMP</strong> abre em <strong>0,73%</strong> (R$ 6.160,52 para R$ 840 mil), o pior número de qualquer linha. O <strong style="color:var(--gr)">GR</strong> segura o canal com 7,56% e 88,1% do faturado. 📌 A projeção do TOTAL aqui <strong>exclui</strong> a Cozinha, embora o faturado a inclua.</em></div>
+    </div>
+
+    <div class="chart-card cat-mp-card" style="border-color:rgba(224,123,84,.3);">
+      <div class="chart-title" style="color:var(--madeira);">🟤 MADEIRA</div>
+      <div class="cat-mp-total">01-03/11: R$ 12.052,45</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td>R$ 1.339,87</td><td>R$ 21.000,00</td><td><span class="tag tag-yellow">6,38%</span></td><td>R$ 13.398,74</td></tr>
+        <tr><td>GR</td><td>R$ 10.032,56</td><td>R$ 96.000,00</td><td><span class="tag tag-green">10,45%</span></td><td>R$ 100.325,63</td></tr>
+        <tr><td>SALA</td><td>R$ 0,00</td><td>R$ 33.000,00</td><td><span class="tag tag-red">0,00%</span></td><td>—</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td>R$ 680,01</td><td><span style="color:var(--muted)">bônus R$ 15.000</span></td><td><span class="tag tag-red">4,53%</span></td><td>R$ 6.800,09</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 12.052,45</td><td>R$ 150.000,00</td><td><span class="tag tag-green">8,03%</span></td><td>R$ 113.724,37</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;">📈 <strong>Segundo melhor ritmo do quadro (8,03%) — e a única meta que não subiu.</strong> <em>O <strong style="color:var(--gr)">GR</strong> abre em 10,45%, o segundo melhor do portfólio. A <strong style="color:var(--sala)">SALA</strong> está zerada, repetindo o padrão com que o canal fechou outubro. Vale acompanhar: no ano a ano a Madeira cai 57% e é o único canal em queda nessa comparação. 📌 A projeção do TOTAL <strong>exclui</strong> a Cozinha.</em></div>
+    </div>
+
+    <div class="chart-card cat-mp-card" style="border-color:rgba(192,132,252,.3);">
+      <div class="chart-title" style="color:var(--via);">🟣 VIA VAREJO</div>
+      <div class="cat-mp-total">01-03/11: R$ 31.116,72</div>
+      <table class="data-table">
+        <thead><tr><th>Categoria</th><th>Faturado</th><th>Meta</th><th style="text-align:center;">%</th><th>Projeção</th></tr></thead>
+        <tbody>
+        <tr><td>COMP</td><td>R$ 881,26</td><td>R$ 70.000,00</td><td><span class="tag tag-red">1,26%</span></td><td>R$ 8.812,59</td></tr>
+        <tr><td>GR</td><td>R$ 30.235,47</td><td>R$ 320.000,00</td><td><span class="tag tag-yellow">9,45%</span></td><td>R$ 302.354,65</td></tr>
+        <tr><td>SALA</td><td>R$ 0,00</td><td>R$ 110.000,00</td><td><span class="tag tag-red">0,00%</span></td><td>—</td></tr>
+        <tr><td style="color:#f59e0b">🎁 COZINHA</td><td>R$ 0,00</td><td><span style="color:var(--muted)">bônus R$ 50.000</span></td><td><span class="tag tag-red">0,00%</span></td><td>—</td></tr>
+        <tr class="total-row"><td>TOTAL</td><td>R$ 31.116,72</td><td>R$ 500.000,00</td><td><span class="tag tag-yellow">6,22%</span></td><td>R$ 311.167,24</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;">📊 <strong>Abre em 6,22% com a maior elevação de meta do mês (+66,7%).</strong> <em>O canal fechou outubro em 137,69% e viu a meta saltar de R$ 300 mil para R$ 500 mil. O <strong style="color:var(--gr)">GR</strong> responde por 97,2% do faturado — a concentração mais alta de todos os canais. <strong style="color:var(--sala)">SALA</strong> e <strong style="color:#f59e0b">Cozinha</strong> abrem zeradas, como vinham desde meados de outubro.</em></div>
+    </div>
+
+  </div>
+
+  <div class="chart-card" style="margin-top:18px;">
+    <div class="chart-title">📊 Fat. por Categoria — Todos Canais (01-03/11)</div>
+    <div class="chart-wrap"><canvas id="novCatDetailChart"></canvas></div>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      📊 <strong style="color:var(--text);">O GR domina todos os canais sem exceção.</strong> <em>Responde por 61,6% do faturado na <strong style="color:var(--shopee)">Shopee</strong>, 75,8% no <strong style="color:var(--ml)">Mercado Livre</strong>, 88,1% no <strong style="color:var(--magalu)">Magalu</strong>, 83,2% na <strong style="color:var(--madeira)">Madeira</strong> e 97,2% no <strong style="color:var(--via)">Via</strong>. A <strong style="color:var(--sala)">SALA</strong> só tem peso relevante na Shopee (15,5%). O gráfico usa o faturado por categoria de cada card, incluindo a Cozinha em todos os canais.</em></div>
+  </div>
+</div>
+
+<!-- ═══ NOVEMBRO: VENDAS DIÁRIAS ═══ -->
+<div class="page" id="nov-page-diario">
+  <div class="kpi-strip">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Total Vendas · 01-03/11</div>
+      <div class="kpi-value">R$ 1.880.863,66</div>
+      <div class="kpi-sub">3 dias corridos <span class="kpi-pill">parcial</span> · média R$ 626.954,55/dia</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--green)">
+      <div class="kpi-label">Melhor dia do período</div>
+      <div class="kpi-value" style="color:var(--green)">R$ 742K</div>
+      <div class="kpi-sub"><strong>03/11 (ter): R$ 742.242,49</strong> · pior 01/11 (dom): R$ 546.008,56 · <span class="kpi-pill pill-green">3 dias em alta seguida</span></div>
+    </div>
+    <div class="kpi-card" style="--c:var(--shopee)">
+      <div class="kpi-label">Melhor canal · vendas</div>
+      <div class="kpi-value" style="color:var(--shopee)">R$ 802K</div>
+      <div class="kpi-sub">Shopee R$ 801.928,34 · 42,6% das vendas · Meili vem logo atrás com R$ 749.941,11 (39,9%)</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Vendas × Faturamento</div>
+      <div class="kpi-value" style="color:var(--yellow)">4,15%</div>
+      <div class="kpi-sub">R$ 78.138,35 vendidos e ainda não faturados <span class="kpi-pill">defasagem baixa</span></div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,rgba(251,191,36,.08),transparent);border:1px solid rgba(251,191,36,.4);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.8rem;color:var(--muted);line-height:1.5;">
+    📅 <strong style="color:var(--yellow);">Vender e faturar andaram em descompasso neste recorte — e isso é esperado.</strong> As vendas correram nos três dias, inclusive no domingo 01/11 e no feriado de 02/11, porque os marketplaces não param. <em>O faturamento, não: ele todo saiu na terça 03/11. 📊 <strong>Foram R$ 1.880.863,66 vendidos contra R$ 1.802.725,31 faturados</strong> — defasagem de apenas <strong>4,15%</strong>, bem abaixo dos 9,32% com que outubro fechou. O dia útil único absorveu quase tudo o que o fim de semana prolongado acumulou. 📈 <strong>As vendas subiram nos três dias seguidos</strong>: R$ 546,0 mil, R$ 592,6 mil e R$ 742,2 mil — o melhor dia foi justamente o último, com o <strong style="color:var(--magalu)">Magalu</strong> dobrando de R$ 77,1 mil para R$ 132,3 mil. 📌 <strong style="color:var(--yellow)">Nota de origem:</strong> em <strong>02/11</strong>, a soma dos seis canais dá R$ 590.806,41 contra R$ 592.612,61 na coluna Geral — <strong>R$ 1.806,20 de diferença</strong>. Nos dias 01 e 03 as colunas fecham exatamente. A planilha de vendas não traz coluna para Site/Venda Direta, que é o candidato mais provável. Mantive os dois valores como vieram. 📊 <strong style="color:#2dd4bf">Zema</strong> e <strong style="color:#84cc16">Amazon</strong> seguem fora das remessas, como em outubro.</em></div>
+
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-title">📅 Vendas Diárias Gerais — Novembro 2026 (01-03/11)</div>
+    <div style="position:relative;height:280px;"><canvas id="novDailyChart"></canvas></div>
+  </div>
+
+  <div class="section-title">Detalhe Diário por Marketplace · período parcial</div>
+  <div class="daily-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th style="color:var(--text)">Geral</th>
+          <th style="color:var(--shopee)">Shopee</th>
+          <th style="color:var(--ml)">Meili/ML</th>
+          <th style="color:var(--magalu)">Magalu</th>
+          <th style="color:var(--madeira)">Madeira</th>
+          <th style="color:var(--via)">Via</th>
+          <th style="color:var(--web)">Web</th>
+          <th style="color:#2dd4bf">Zema</th>
+          <th style="color:#84cc16">Amazon</th>
+        </tr>
+      </thead>
+      <tbody id="novDailyTbody"></tbody>
+    </table>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      📊 <strong style="color:var(--accent);">MÉDIA</strong> = média diária por marketplace sobre os 3 dias lançados · 🎯 <strong style="color:var(--green);">PROJEÇÃO</strong> = projeção de vendas da planilha para o mês fechado (<strong>R$ 18.808.636,60</strong> no Geral).
+      <span style="color:var(--yellow);">A soma dos seis canais (R$ 1.879.057,46) fica R$ 1.806,20 abaixo do Geral, e a diferença está toda no dia 02/11. <strong style="color:#2dd4bf">Zema</strong> e <strong style="color:#84cc16">Amazon</strong> estão zeradas.</span></div>
+  </div>
+
+  <div class="section-title">📆 Vendas por Semana — Geral e por Marketplace</div>
+  <div class="kpi-strip" style="margin-bottom:14px;" id="novWeekKpis"></div>
+
+  <div class="chart-card" style="margin-bottom:16px;overflow-x:auto;">
+    <div class="chart-title">🗓️ Consolidado semanal (segunda a domingo)</div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Semana</th>
+          <th style="text-align:center;">Dias</th>
+          <th style="color:var(--text)">Geral</th>
+          <th style="color:var(--accent)">Média/dia</th>
+          <th style="color:var(--shopee)">Shopee</th>
+          <th style="color:var(--ml)">Meili/ML</th>
+          <th style="color:var(--magalu)">Magalu</th>
+          <th style="color:var(--madeira)">Madeira</th>
+          <th style="color:var(--via)">Via</th>
+          <th style="color:var(--web)">Web</th>
+          <th style="color:#2dd4bf">Zema</th>
+          <th style="color:#84cc16">Amazon</th>
+        </tr>
+      </thead>
+      <tbody id="novWeeklyTbody"></tbody>
+    </table>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;" id="novWeeklyNote"></div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:24px;">
+    <div class="chart-card">
+      <div class="chart-title">📊 Vendas Gerais por Semana · com média diária</div>
+      <div class="chart-wrap"><canvas id="novWeekChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🛒 Composição por Marketplace · por Semana</div>
+      <div class="chart-wrap"><canvas id="novWeekMktChart"></canvas></div>
+    </div>
+  </div>
+  <div class="section-title">💰 Orçado × Realizado por Dia — 01-03/11</div>
+  <div class="kpi-strip" style="margin-bottom:14px;">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Orçado · 3 dias corridos</div>
+      <div class="kpi-value">R$ 1.913.133,29</div>
+      <div class="kpi-sub">R$ 806.451,61 (dia 1) + 2 × R$ 553.340,84 <span class="kpi-pill">como veio na planilha</span></div>
+    </div>
+    <div class="kpi-card" style="--c:var(--green)">
+      <div class="kpi-label">Realizado · 01-03/11</div>
+      <div class="kpi-value" style="color:var(--green)">R$ 1.802.725,31</div>
+      <div class="kpi-sub">lançado integralmente em <strong>03/11</strong> · R$ 0,00 nos dias 1 e 2</div>
+    </div>
+    <div class="kpi-card" style="--c:var(--yellow)">
+      <div class="kpi-label">% do orçado corrido</div>
+      <div class="kpi-value" style="color:var(--yellow)">94,2%</div>
+      <div class="kpi-sub">R$ 1.802.725,31 vs R$ 1.913.133,29 · <span class="kpi-pill pill-green">325,8% do orçado do único dia útil</span></div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Dias úteis do período</div>
+      <div class="kpi-value" style="color:var(--green);">1 / 1</div>
+      <div class="kpi-sub">03/11 bateu o orçado diário · <span class="kpi-pill">novembro tem 20 dias úteis no total</span></div>
+    </div>
+  </div>
+  <div class="chart-card" style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Dia</th><th>Orçado</th><th>Realizado</th><th style="text-align:center;">%</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>01/11</strong> <span style="color:var(--muted);font-size:.68rem;">(dom)</span></td><td>R$ 806.451,61</td><td>R$ 0,00</td><td><span class="tag">—</span></td><td><span class="tag">sem expediente · domingo</span></td></tr>
+        <tr><td><strong>02/11</strong> <span style="color:var(--muted);font-size:.68rem;">(seg)</span></td><td>R$ 553.340,84</td><td>R$ 0,00</td><td><span class="tag">—</span></td><td><span class="tag">feriado · Finados</span></td></tr>
+        <tr style="background:rgba(34,197,94,.07);"><td><strong>03/11</strong> <span style="color:var(--muted);font-size:.68rem;">(ter)</span></td><td>R$ 553.340,84</td><td><strong style="color:var(--green)">R$ 1.802.725,31</strong></td><td><span class="tag tag-green">325,8%</span></td><td><span class="tag tag-green">🚀 único dia útil do período</span></td></tr>
+        <tr style="opacity:.55;"><td><strong>04 a 19/11</strong> <span style="color:var(--muted);font-size:.68rem;">(16 dias)</span></td><td>R$ 553.340,84 <span style="color:var(--muted);font-size:.68rem;">/ dia</span></td><td style="color:var(--muted)">aguardando</td><td><span class="tag">—</span></td><td><span class="tag">não faturado no corte</span></td></tr>
+        <tr class="total-row"><td><strong>TOTAL · 01-03/11</strong></td><td><strong>R$ 1.913.133,29</strong></td><td><strong>R$ 1.802.725,31</strong></td><td><span class="tag tag-yellow">94,2%</span></td><td><span class="tag tag-yellow">7,21% da meta mensal</span></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:.72rem;color:var(--muted);line-height:1.5;">
+      💡 <strong style="color:var(--text);">Como ler este quadro.</strong> <em>O faturamento do período saiu todo em 03/11, o único dia com expediente: 01/11 foi domingo e 02/11, feriado de Finados. Contra o orçado desse dia (R$ 553.340,84), o realizado foi de <strong style="color:var(--green)">325,8%</strong> — o dia absorveu o represamento dos dois anteriores. Contra o orçado corrido dos três dias, 94,2%. 📌 <strong style="color:var(--yellow)">Nota de origem — a régua diária:</strong> o dia 1 traz <strong>R$ 806.451,61</strong>, que é a meta nova (R$ 25.000.000,00) dividida por 31; do dia 2 em diante o quadro mantém <strong>R$ 553.340,84</strong>, que é o orçado diário de <em>outubro</em> (R$ 17.153.565,99 ÷ 31). A régua não foi atualizada da segunda linha em diante. Pela meta de novembro, o orçado diário seria R$ 833.333,33 (÷ 30 dias) ou R$ 806.451,61 (÷ 31). Mantive os valores exatamente como vieram. 📅 <strong>Novembro tem 20 dias úteis</strong> — 21 dias de segunda a sexta, menos Finados; o feriado de 15/11 cai num domingo este ano. No ritmo de outubro (R$ 864.760,16 por dia útil), o mês projetaria cerca de R$ 17,3 milhões, próximo dos R$ 18.027.253,13 que a planilha projeta.</em></div>
+  </div>
+</div>
+
+<!-- ═══ NOVEMBRO: ANÁLISE DE PRODUTOS ═══ -->
+<div class="page" id="nov-page-produtos">
+  <div class="section-title">📦 Análise de Produtos — Novembro 2026</div>
+  <div class="chart-card" style="border-color:rgba(148,163,184,.3);">
+    <div style="padding:40px 0;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7;">
+      ⏳ <strong style="color:var(--yellow);font-size:1rem;">Dados em breve</strong><br>
+      <span style="font-size:.78rem;">Esta sub-aba receberá a análise de produtos de novembro (Top 15 por faturamento, curva ABC e detalhamento por canal) quando os dados forem enviados.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NOVEMBRO: ADS & AFILIADOS ═══ -->
+<div class="page" id="nov-page-ads">
+  <div class="section-title">📣 ADS &amp; Afiliados — Novembro 2026</div>
+  <div class="chart-card" style="border-color:rgba(148,163,184,.3);">
+    <div style="padding:40px 0;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7;">
+      ⏳ <strong style="color:var(--yellow);font-size:1rem;">Dados em breve</strong><br>
+      <span style="font-size:.78rem;">Esta sub-aba receberá o investimento, as vendas atribuídas e o ROAS de ADS e Afiliados por marketplace (Shopee, Mercado Livre e Magalu) quando os prints forem enviados.</span><br>
+      <span style="font-size:.74rem;color:var(--muted);">Referência de outubro fechado: R$ 641.108,44 investidos (ADS R$ 303.183,52 + Afiliados R$ 337.924,92).</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
 <div class="month-dashboard active" id="month-ytd">
 <div class="header" style="background:linear-gradient(135deg,rgba(56,189,248,.08),rgba(124,58,237,.05));border-color:rgba(56,189,248,.3);">
   <div>
@@ -6828,6 +7402,9 @@ function showMonth(month, el) {
   }
   if (month === 'out' && typeof buildOutCharts === 'function' && !outChartsBuilt['visao']) {
     setTimeout(function(){ buildOutCharts('visao'); outChartsBuilt['visao'] = true; }, 50);
+  }
+  if (month === 'nov' && typeof buildNovCharts === 'function' && !novChartsBuilt['visao']) {
+    setTimeout(function(){ buildNovCharts('visao'); novChartsBuilt['visao'] = true; }, 50);
   }
 }
 
@@ -8659,6 +9236,289 @@ function buildOutCharts(page) {
       options: { responsive: true, maintainAspectRatio: false,
         plugins: { legend: legendCfg, tooltip: { callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + (ctx.raw === null ? 'n/d' : ctx.raw.toFixed(2).replace('.', ',') + 'x') } } },
         scales: { x: { grid: gridCfg, ticks: tickCfg }, y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => v + 'x' } } } }
+    });
+  }
+}
+
+// ══════════════════════════════════════════════
+// NOVEMBRO — TABS
+// ══════════════════════════════════════════════
+const novChartsBuilt = {};
+function showNovPage(id, e) {
+  const nov = document.getElementById('month-nov');
+  nov.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  nov.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('nov-page-' + id).classList.add('active');
+  if (e && e.currentTarget) e.currentTarget.classList.add('active');
+  if (!novChartsBuilt[id]) { buildNovCharts(id); novChartsBuilt[id] = true; }
+}
+
+// Vendas Diárias Novembro 2026 — parcial (01-03/11 · 3 dias)
+const novDaily = [
+  {d:'01/11', g:546008.56, sh:211479.09, me:252105.68, ma:53430.40,  mad:2677.42, via:24601.77, web:1714.20, zem:0, amz:0},
+  {d:'02/11', g:592612.61, sh:253343.69, me:242314.80, ma:77146.68,  mad:4882.69, via:10788.81, web:2329.74, zem:0, amz:0},
+  {d:'03/11', g:742242.49, sh:337105.56, me:255520.63, ma:132308.35, mad:5262.20, via:7905.99,  web:4139.76, zem:0, amz:0},
+];
+
+const novProjecao = {
+  g: 18808636.60, sh: 8019283.40, me: 7499411.10,
+  ma: 2628854.30, mad: 128223.10, via: 432965.70, web: 81837.00,
+  zem: 0, amz: 0
+};
+
+const novDiasCanal = { sh: 3, me: 3, ma: 3, mad: 3, via: 3, web: 3, zem: 0, amz: 0 };
+
+const NOV_MKT = [
+  { k:'sh',  nome:'Shopee',    cor:'#f97316' },
+  { k:'me',  nome:'Meili/ML',  cor:'#ffe000' },
+  { k:'ma',  nome:'Magalu',    cor:'#0086ff' },
+  { k:'mad', nome:'Madeira',   cor:'#e07b54' },
+  { k:'via', nome:'Via',       cor:'#c084fc' },
+  { k:'web', nome:'Web',       cor:'#64748b' },
+  { k:'zem', nome:'Zema',      cor:'#2dd4bf' },
+  { k:'amz', nome:'Amazon',    cor:'#84cc16' }
+];
+
+// 01/11/2026 cai num domingo, então ele fecha sozinho a semana aberta em outubro.
+function novSemanas() {
+  const bal = new Map();
+  novDaily.forEach(r => {
+    const dia = parseInt(r.d.slice(0, 2), 10);
+    const wi = dia <= 1 ? 0 : 1 + Math.floor((dia - 2) / 7);
+    if (!bal.has(wi)) bal.set(wi, { dias: [], g: 0, sh: 0, me: 0, ma: 0, mad: 0, via: 0, web: 0, zem: 0, amz: 0 });
+    const b = bal.get(wi);
+    b.dias.push(dia);
+    b.g += r.g;
+    NOV_MKT.forEach(m => { b[m.k] += r[m.k]; });
+  });
+  const pad = n => String(n).padStart(2, '0');
+  return [...bal.entries()].sort((a, b) => a[0] - b[0]).map(([wi, b]) => {
+    const ini = Math.min(...b.dias), fim = Math.max(...b.dias);
+    return Object.assign({}, b, {
+      label: 'Semana ' + (wi + 1),
+      periodo: pad(ini) + '/11 a ' + pad(fim) + '/11',
+      nd: b.dias.length,
+      parcial: b.dias.length < (wi === 0 ? 1 : 7),
+      media: b.g / b.dias.length
+    });
+  });
+}
+
+function renderNovSemanas() {
+  const tbody = document.getElementById('novWeeklyTbody');
+  if (!tbody) return;
+  const S = novSemanas();
+  const brl = v => v ? 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—';
+  tbody.innerHTML = '';
+
+  S.forEach((s, idx) => {
+    const tr = document.createElement('tr');
+    const varTxt = idx > 0
+      ? (() => { const d = (s.media / S[idx - 1].media - 1) * 100;
+                 const cls = d >= 0 ? 'tag-green' : 'tag-red';
+                 return ' <span class="tag ' + cls + '" style="font-size:.6rem;">' + (d >= 0 ? '▲ +' : '▼ ') + d.toFixed(1).replace('.', ',') + '%</span>'; })()
+      : '';
+    tr.innerHTML =
+      '<td><strong>' + s.label + '</strong> <span style="color:var(--muted);font-size:.68rem;">' + s.periodo + '</span>' +
+        (s.parcial ? ' <span class="tag tag-yellow" style="font-size:.6rem;">parcial</span>' : '') + '</td>' +
+      '<td style="text-align:center;">' + s.nd + '</td>' +
+      '<td><strong>' + brl(s.g) + '</strong></td>' +
+      '<td style="color:var(--accent);">' + brl(s.media) + varTxt + '</td>' +
+      NOV_MKT.map(m => '<td>' + brl(s[m.k]) + '</td>').join('');
+    tbody.appendChild(tr);
+  });
+
+  const tot = S.reduce((a, s) => {
+    a.g += s.g; a.nd += s.nd;
+    NOV_MKT.forEach(m => { a[m.k] += s[m.k]; });
+    return a;
+  }, { g: 0, nd: 0, sh: 0, me: 0, ma: 0, mad: 0, via: 0, web: 0, zem: 0, amz: 0 });
+
+  const tr = document.createElement('tr');
+  tr.className = 'total-row';
+  tr.innerHTML = '<td><strong>TOTAL ' + S.length + (S.length === 1 ? ' SEMANA' : ' SEMANAS') + '</strong></td>' +
+    '<td style="text-align:center;"><strong>' + tot.nd + '</strong></td>' +
+    '<td><strong>' + brl(tot.g) + '</strong></td>' +
+    '<td style="color:var(--accent);"><strong>' + brl(tot.g / tot.nd) + '</strong></td>' +
+    NOV_MKT.map(m => '<td><strong>' + brl(tot[m.k]) + '</strong></td>').join('');
+  tbody.appendChild(tr);
+
+  const kpis = document.getElementById('novWeekKpis');
+  if (kpis) {
+    const cores = ['var(--comp)', 'var(--green)', 'var(--shopee)', 'var(--ml)', 'var(--magalu)'];
+    kpis.innerHTML = S.map((s, idx) => {
+      const lider = NOV_MKT.slice().sort((a, b) => s[b.k] - s[a.k])[0];
+      const share = (s[lider.k] / s.g * 100).toFixed(1).replace('.', ',');
+      const dif = idx > 0 ? (s.media / S[idx - 1].media - 1) * 100 : null;
+      const pill = dif === null
+        ? '<span class="kpi-pill">base</span>'
+        : '<span class="kpi-pill ' + (dif >= 0 ? 'pill-green' : '') + '">' + (dif >= 0 ? '+' : '') + dif.toFixed(1).replace('.', ',') + '% méd./dia</span>';
+      return '<div class="kpi-card" style="--c:' + cores[idx % cores.length] + '">' +
+        '<div class="kpi-label">' + s.label + ' · ' + s.periodo + (s.parcial ? ' (parcial)' : '') + '</div>' +
+        '<div class="kpi-value" style="color:' + cores[idx % cores.length] + '">' + brl(s.g) + '</div>' +
+        '<div class="kpi-sub">' + s.nd + (s.nd === 1 ? ' dia · ' : ' dias · ') + brl(s.media) + '/dia · ' + pill +
+        ' · líder ' + lider.nome + ' (' + share + '%)</div></div>';
+    }).join('');
+  }
+
+  const nota = document.getElementById('novWeeklyNote');
+  if (nota) {
+    const pico = S.slice().sort((a, b) => b.media - a.media)[0];
+    nota.innerHTML = '📆 <strong style="color:var(--text);">Semanas de segunda a domingo.</strong> ' +
+      'Como 01/11/2026 caiu num <strong>domingo</strong>, ele fecha sozinho a semana aberta ainda em outubro — por isso a Semana 1 tem um único dia. ' +
+      'A Semana 2 começa na segunda 02/11, feriado de Finados, e por enquanto cobre só 02 e 03. A comparação justa entre semanas é a coluna ' +
+      '<strong style="color:var(--accent);">Média/dia</strong>, não o total. ' +
+      '<em>🏆 Melhor ritmo até aqui: <strong>' + pico.label + '</strong> (' + brl(pico.media) + '/dia). ' +
+      'Os valores são de <strong>vendas registradas</strong>, não de faturamento — domingos e feriados entram aqui, mas não geram faturamento no mesmo dia.</em>';
+  }
+}
+
+function renderNovDaily() {
+  const tbody = document.getElementById('novDailyTbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  const keys = ['sh','me','ma','mad','via','web','zem','amz'];
+  novDaily.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><strong>${row.d}</strong></td><td>R$ ${row.g.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>` +
+      keys.map(k => `<td>${row[k] ? 'R$ ' + row[k].toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</td>`).join('');
+    tbody.appendChild(tr);
+  });
+  const totalDays = novDaily.length;
+  const totals = keys.map(k => novDaily.reduce((a,r)=>a+r[k],0));
+  const totalG = novDaily.reduce((a,r)=>a+r.g,0);
+  const totalRow = document.createElement('tr');
+  totalRow.className = 'total-row';
+  totalRow.innerHTML = `<td><strong>TOTAL DO PERÍODO · ${totalDays} dias</strong></td><td><strong>R$ ${totalG.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></td>` +
+    totals.map(t => `<td><strong>${t ? 'R$ ' + t.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</strong></td>`).join('');
+  tbody.appendChild(totalRow);
+  const daysWithSales = {};
+  keys.forEach(k => daysWithSales[k] = novDiasCanal[k] || novDaily.filter(r => r[k] > 0).length || 1);
+  const avgs = keys.map(k => totals[keys.indexOf(k)] / daysWithSales[k]);
+  const avgG = totalG / totalDays;
+  const mediaRow = document.createElement('tr');
+  mediaRow.style.background = 'rgba(56,189,248,.06)';
+  mediaRow.innerHTML = `<td><strong style="color:var(--accent)">MÉDIA</strong></td><td><strong style="color:var(--accent)">R$ ${avgG.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></td>` +
+    avgs.map(v => `<td style="color:var(--accent)"><strong>${v ? 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</strong></td>`).join('');
+  tbody.appendChild(mediaRow);
+  const projRow = document.createElement('tr');
+  projRow.style.background = 'rgba(34,197,94,.06)';
+  projRow.innerHTML = `<td><strong style="color:var(--green)">PROJEÇÃO</strong></td><td><strong style="color:var(--green)">R$ ${novProjecao.g.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></td>` +
+    keys.map(k => {
+      const v = novProjecao[k];
+      return `<td style="color:var(--green)"><strong>${v ? 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</strong></td>`;
+    }).join('');
+  tbody.appendChild(projRow);
+}
+
+function buildNovCharts(page) {
+  if (page === 'visao') {
+    const ec = Chart.getChart(document.getElementById('novCatChart')); if(ec) ec.destroy();
+    const em = Chart.getChart(document.getElementById('novMktChart')); if(em) em.destroy();
+    const ee = Chart.getChart(document.getElementById('novEstadoChart')); if(ee) ee.destroy();
+    new Chart(document.getElementById('novCatChart'), {
+      type: 'doughnut',
+      data: { labels: ['GR', 'COMP', 'SALA', '🍳 Cozinha'],
+        datasets: [{ data: [1309998.23, 256748.17, 183462.33, 52516.59],
+          backgroundColor: ['#34d399', '#818cf8', '#fb7185', '#f59e0b'], borderWidth: 2, borderColor: '#161d2e' }] },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: legendCfg, tooltip: { callbacks: { label: ctx => ' R$ ' + (ctx.raw/1000).toFixed(1) + 'K' } } } }
+    });
+    new Chart(document.getElementById('novMktChart'), {
+      type: 'bar',
+      data: { labels: ['Meili/ML', 'Shopee', 'Magalu', 'Via', 'Madeira', 'Web', 'Site'],
+        datasets: [{ data: [714439.04, 708336.95, 329393.04, 31116.72, 12052.45, 5856.94, 0],
+          backgroundColor: ['#ffe000', '#f97316', '#0086ff', '#c084fc', '#e07b54', '#64748b', '#06b6d4'], borderRadius: 6, barThickness: 32 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { grid: gridCfg, ticks: tickCfg }, y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } } } }
+    });
+    new Chart(document.getElementById('novEstadoChart'), {
+      type: 'pie',
+      data: { labels: ['SP', 'RJ', 'MG', 'BA'],
+        datasets: [{ data: [687735.61, 522323.97, 460728.78, 130920.30],
+          backgroundColor: ['#3b82f6', '#fb7185', '#34d399', '#f59e0b'], borderWidth: 2, borderColor: '#161d2e' }] },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { ...legendCfg, position: 'right' },
+          tooltip: { callbacks: { label: ctx => {
+            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+            const pct = (ctx.raw / total * 100).toFixed(2);
+            const val = ctx.raw >= 1000000 ? 'R$ ' + (ctx.raw/1000000).toFixed(2) + 'M' : 'R$ ' + (ctx.raw/1000).toFixed(1) + 'K';
+            return ' ' + ctx.label + ': ' + val + ' (' + pct + '%)';
+          } } } } }
+    });
+  }
+  if (page === 'marketplaces') {
+    const em = Chart.getChart(document.getElementById('novMktMetaChart')); if(em) em.destroy();
+    new Chart(document.getElementById('novMktMetaChart'), {
+      type: 'bar',
+      data: { labels: ['Shopee', 'ML', 'Magalu', 'Via', 'Madeira'],
+        datasets: [
+          { label: 'Faturado 01-03/11', data: [708336.95, 714439.04, 329393.04, 31116.72, 12052.45], backgroundColor: '#38bdf8', borderRadius: 5 },
+          { label: 'Meta novembro', data: [11000000, 8000000, 6000000, 500000, 150000], backgroundColor: 'rgba(148,163,184,.28)', borderRadius: 5 }
+        ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: legendCfg },
+        scales: { x: { grid: gridCfg, ticks: tickCfg }, y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000000).toFixed(1) + 'M' } } } }
+    });
+  }
+  if (page === 'categorias') {
+    const ed = Chart.getChart(document.getElementById('novCatDetailChart')); if(ed) ed.destroy();
+    new Chart(document.getElementById('novCatDetailChart'), {
+      type: 'bar',
+      data: { labels: ['Shopee', 'ML', 'Magalu', 'Madeira', 'Via'],
+        datasets: [
+          { label: 'GR',   data: [436126.69, 541261.68, 290278.88, 10032.56, 30235.47], backgroundColor: '#34d399', borderRadius: 4 },
+          { label: 'SALA', data: [110121.74, 38814.93, 30654.05, 0, 0], backgroundColor: '#fb7185', borderRadius: 4 },
+          { label: 'COMP', data: [141435.27, 105846.59, 6160.52, 1339.87, 881.26], backgroundColor: '#818cf8', borderRadius: 4 },
+          { label: '🎁 Cozinha', data: [20653.26, 28515.84, 2299.58, 680.01, 0], backgroundColor: '#f59e0b', borderRadius: 4 }
+        ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: legendCfg },
+        scales: { x: { grid: gridCfg, ticks: tickCfg }, y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } } } }
+    });
+  }
+  if (page === 'diario') {
+    renderNovDaily();
+    renderNovSemanas();
+    const S = novSemanas();
+    const brlTip = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+    const ew1 = Chart.getChart(document.getElementById('novWeekChart')); if(ew1) ew1.destroy();
+    new Chart(document.getElementById('novWeekChart'), {
+      type: 'bar',
+      data: { labels: S.map(s => s.label + ' (' + s.periodo + ')'),
+        datasets: [
+          { label: 'Total da semana', data: S.map(s => s.g), backgroundColor: 'rgba(56,189,248,.75)', borderRadius: 6, order: 2, yAxisID: 'y' },
+          { label: 'Média por dia', data: S.map(s => s.media), type: 'line', borderColor: '#34d399', borderWidth: 2, pointRadius: 5, pointBackgroundColor: '#34d399', fill: false, tension: .25, order: 1, yAxisID: 'y1' }
+        ] },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: legendCfg, tooltip: { callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + brlTip(ctx.raw) } } },
+        scales: {
+          x: { grid: gridCfg, ticks: { ...tickCfg, font: { size: 10 } } },
+          y: { position: 'left', grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } },
+          y1: { position: 'right', grid: { display: false }, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } }
+        } }
+    });
+    const ew2 = Chart.getChart(document.getElementById('novWeekMktChart')); if(ew2) ew2.destroy();
+    new Chart(document.getElementById('novWeekMktChart'), {
+      type: 'bar',
+      data: { labels: S.map(s => s.label),
+        datasets: NOV_MKT.map(m => ({ label: m.nome, data: S.map(s => s[m.k]), backgroundColor: m.cor, borderRadius: 4 })) },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: legendCfg, tooltip: { callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + brlTip(ctx.raw) } } },
+        scales: {
+          x: { stacked: true, grid: gridCfg, ticks: tickCfg },
+          y: { stacked: true, grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } }
+        } }
+    });
+    const ed = Chart.getChart(document.getElementById('novDailyChart')); if(ed) ed.destroy();
+    const avg = novDaily.reduce((a,r)=>a+r.g,0)/novDaily.length;
+    new Chart(document.getElementById('novDailyChart'), {
+      type: 'bar',
+      data: { labels: novDaily.map(r=>r.d),
+        datasets: [
+          { label: 'Vendas Diárias', data: novDaily.map(r=>r.g), backgroundColor: 'rgba(34,197,94,.75)', borderRadius: 5, order: 2 },
+          { label: 'Média Diária', data: Array(novDaily.length).fill(avg), type: 'line', borderColor: '#38bdf8', borderWidth: 2, borderDash: [6,4], pointRadius: 0, fill: false, order: 1 }
+        ] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: legendCfg },
+        scales: { x: { grid: gridCfg, ticks: tickCfg }, y: { grid: gridCfg, ticks: { ...tickCfg, callback: v => 'R$' + (v/1000).toFixed(0) + 'K' } } } }
     });
   }
 }
